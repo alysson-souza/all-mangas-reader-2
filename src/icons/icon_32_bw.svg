@@ -1,0 +1,21 @@
+<svg version="1.1" 
+  id="svg-spinner" 
+  xmlns="http://www.w3.org/2000/svg" 
+  xmlns:xlink="http://www.w3.org/1999/xlink" 
+  x="0px" 
+  y="0px" 
+  viewBox="0 0 32 32" 
+  xml:space="preserve"
+>
+  <image width="32" height="32" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwQAADsEBuJFr7QAAABl0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMC4yMfEgaZUAAAUUSURBVFhHpZfda1xVFMUnrVobv9IikRi0ag2TZDJpJslMPlCEiiAaLVWUgkJFivQPCFrQIpa8FQQJUksQxQfxxYI+qHloUcEHg5T60Jj61Wox9aEFI2mSNjMTf+vk7OnJ8U4y0Q07995z9l5rnb3PPXeSqsUymcymzs7OHdg+fKyrq2sCn+Z+JpvNHmP+afwJnt8k7nnGWvHrffr/M4DyAH+Zy+Uu4qXu7u4lOfcXGH+U+fqWlpbreJ7y44v4n8x93NHRsc3DrN9Ivh+QtwG7aqQ9PT3OuZ+hAo8rjvuN3B/u7e0N503kAhiHwGp0oLUa5ewH9FcAykYsAu9FxvcSVqdY4u5l7Hw+nw9jKkKILSJisr29vU3xaxol3UXSxZhYBJ5kgvktPjxFzB7GFwuFwpI8iFtREYROsbCCT0s2AgYJvJREbgSMv0GoW72MucN9fX1L5qEQyzcRCJ+mEhmfutJY+XaVPSS31QjQE5QpZ5dPccbYRwMDA0v9/f3OQyFJIuA4gYgGn37N/IYrh+S2GgEKnPvf2PEbfIoz5j6UAPNQSJIIOBZZ7LBPXzZ2aR8TC1JoweHKBShwxt7zKRUj9qBi5LGQWETQijnOi7QDoO+bKMtXceljcjlz2v0rjNwHyJtRnuXUIoKKjw4NDdWp9ztQ5Hb9auQ8F0ne6XkrRt4NgB0FoyRw5VcTIXy5r8Jpdz6QvM+SYwEBueYWSMh73hXGvqinpDqi3R4ShomvVgU458kpSMBYWP549bpqjJjZSt8SrLW19Raq+SoifgSrrBxbgIkIBYgTvGH1cEIP8eqVNDg4aKuX4r8Qu93zpXiVNuO78J36FvjhOqp0F8DvKCdchFUhFADeuARcSBJg6k0AcZcAv08sIodkHACBlFj5B9rMToI3BO8G60wswKrgBfyuFly18icJ0LPmiTsLcbPAtXJPbl5m7EHH7E07HJJmsMarCWARV1SB+RoFnGhra7tJ4Co7z6VAQJGxbsccGZW4E4zPwXT7IqrArAT8UUsLUHsQPPcNUM9VdgB0NBdpzUhTU9NGzSUZ+LeB/VmCgLMS8E2SANtAuqcC30N4u8dzpp6r7FSlZzVyMyqRBf+8eFRRcbKoT1P8GdWDtSFBwA/MV339ajXtCUS8FAnYr034HBPhRiwh4jI+iesDterPKipxKy14ErAxsH4i/jI458h9H6zHGLvRh6p1G5g/JS6uOldy2lAN3DxM4FNcn0XZIwBkCGqMv3yxkZsl72va6D5kAlYbVUFVjyrO8fwu7av3KWr5AWLLXE/Ct9VtKFbwDEH3MF/5oVHNBAbRICBHuM6J1FfOtc9a5wVIjI75IyYC4iFVHOEjPC7zIWAbA6cI2l0ZjIyYmyF6EcBv8RmtMvSQOCB3ohBXhvQAMHUIGMCnad0dy8jeEHCIIP3gnMKPssLXIXwNfwuA4wD9HZMkuWIiclchqvAzxHezkIfwPZ72mjHYiIhJ66WS5FbacKWrucWF5HL1nZ6/kk6nm2l7ZWOuMMrSjsoz1USEQqq5xYXkwvICvvBU1Q0RBUS401GJsZBQTOw2HxJ7cn3MvuOt0UZf23wljmtPxNUwN7KYVB4SgzEP1jFOzPX9m8Z+aOCtGCbZveNhRZIEhXMWD7kOmxdY+WYPu34DII2YUcBOazUGXs1FiuiT5Iz861X7r6ZzXG8JYgpU5WXA9WPkHM9XuM7iv3D/Cb4fz+FbSVvzUEulUql/AHZBA9vkxAXOAAAAAElFTkSuQmCC">
+  <animateTransform 
+    attributeType="xml" 
+    attributeName="transform" 
+    type="rotate" 
+    from="0 16 16" 
+    to="360 16 16" 
+    dur="0.8s" 
+    repeatCount="indefinite" 
+  /> 
+  </image> 
+</svg>

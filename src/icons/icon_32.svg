@@ -1,0 +1,21 @@
+<svg version="1.1" 
+  id="svg-spinner" 
+  xmlns="http://www.w3.org/2000/svg" 
+  xmlns:xlink="http://www.w3.org/1999/xlink" 
+  x="0px" 
+  y="0px" 
+  viewBox="0 0 32 32" 
+  xml:space="preserve"
+>
+  <image width="32" height="32" xlink:href="data:image/png;base64,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">
+  <animateTransform 
+    attributeType="xml" 
+    attributeName="transform" 
+    type="rotate" 
+    from="0 16 16" 
+    to="360 16 16" 
+    dur="0.8s" 
+    repeatCount="indefinite" 
+  /> 
+  </image> 
+</svg>

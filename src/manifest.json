@@ -1,0 +1,66 @@
+{
+  "name": "All Mangas Reader",
+  "description": "All Mangas Reader",
+  "author": "",
+  "version": "2.0.0",
+  "manifest_version": 2,
+  "icons": {
+    "48": "icons/icon_48.png",
+    "128": "icons/icon_128.png"
+  },
+  "browser_action": {
+    "default_title": "All Mangas Reader",
+    "default_popup": "popup/popup.html"
+  },
+  "background": {
+    "persistent": true,
+    "scripts": [
+      "lib/jquery.min.js",
+      "background/background.js"
+    ]
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*/*"
+      ],
+      "exclude_matches": [
+        "*://*.allmangasreader.com/*"
+      ],
+      "js": [
+        "content/testcontent.js"
+      ]
+    }
+  ],
+  "permissions": [
+    "tabs",
+    "https://*/*",
+    "http://*/*",
+    "contextMenus",
+    "notifications"
+  ],
+  "content_security_policy": "script-src 'self' https://ssl.google-analytics.com       https://community.allmangasreader.com/ https://raw.github.com/ ; object-src 'self'",
+  "web_accessible_resources" : [
+    "icons/icon_32.png",
+    "icons/down.png",
+    "icons/bookmark.png",
+    "icons/read_stop.png",
+    "icons/lefttoright.png",
+    "icons/stop.gif",
+    "icons/loading.gif",
+    "icons/cancel.png",
+    "icons/ontop.png",
+    "icons/righttoleft.png",
+    "icons/load16.gif",
+    "icons/add.png",
+    "icons/bookmarkred.png",
+    "icons/warn.png",
+    "icons/read_play.png",
+    "icons/amrlittle.png",
+    "icons/dev.png",
+    "icons/ltload.gif",
+    "icons/imgerror.png",
+    "icons/load10.gif",
+    "icons/find.png"
+  ]
+}
