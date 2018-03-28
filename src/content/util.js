@@ -48,7 +48,7 @@ class Util {
         return url;
     }
     debug(message) {
-        if (options.debug == 1) console.log(message);
+        if (options.debug === 1) console.log(message);
     }
 }
 export default (new Util)

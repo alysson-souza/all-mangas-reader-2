@@ -48,6 +48,17 @@ export default {
     };
   },
   name: "App",
-  components: { MangaList }
+  components: { MangaList },
+  created() {
+		// initialize state for store in popup from background
+		this.$store.dispatch("getStateFromReference", {
+			module: "mirrors",
+			key: "all",
+			mutation: "setMirrors"
+		});
+	}
 };
 </script>
+<style>
+	
+</style>

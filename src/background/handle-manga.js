@@ -32,6 +32,7 @@ class HandleManga {
                     return Promise.resolve(null);
                 }
             case "readManga":
+                utils.debug("Read manga " + message.url);
                 return store.dispatch('readManga', message);
             case "getNextChapterImages": //returns list of images for prefetch of next chapter in content script
                 return this.getChapterImages(message); 
@@ -42,6 +43,8 @@ class HandleManga {
             case "setMangaChapter":
                 return store.dispatch('resetManga', message) // reset reading to first chapter
                     .then(() => store.dispatch('readManga', message)); // set reading to current chapter
+            case "importSamples":
+                return store.dispatch("importSamples");
         }
     }
 
@@ -53,6 +56,7 @@ class HandleManga {
      */
     async matchUrlAndLoadScripts(url, tabId) {
         const mir = utils.currentPageMatch(url);
+        console.log(mir);
         if (mir === null) return Promise.resolve(null);
         let impl;
         // Load mirror implementation from repo (try next repo if previous fail)
@@ -72,7 +76,7 @@ class HandleManga {
             // Inject mirror implementation (through a function called in the implementation and existing in back.js)
             await browser.tabs.executeScript(tabId, { code: impl.data });
         }
-        return Promise.resolve(mir);
+        return Promise.resolve(utils.serializeVuexObject(mir)); // doing that because content script is not vue aware, the reactive vuex object needs to be converted to POJSO
     }
 
     /**

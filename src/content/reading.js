@@ -268,7 +268,7 @@ class Reading {
         if (this.naturalWidth === 0) {
             //Here, number of tries before considering image can not be loaded
             if ($(this).data("number") == 2) {
-                console.log("Image has not been recovered");
+                console.error("Image has not been recovered");
                 $(this).attr("src", browser.extension.getURL("icons/imgerror.png"));
                 $(this).css("border", "0");
                 $(this).css("margin", "0");
@@ -308,7 +308,7 @@ class Reading {
                 });
 
             } else {
-                //console.log("An image has encountered a problem while loading... All Mangas Reader is trying to recover it...");
+                util.debug("An image has encountered a problem while loading... All Mangas Reader is trying to recover it...");
                 let imgSave = new Image();
 
                 if ($(this).data("hasErrors") != "1") {
@@ -394,7 +394,7 @@ class Reading {
             }
         }
         if (isOk) {
-            //console.log("finish loading images");
+            util.debug("finish loading images");
             this.transformImagesInBook(where, mode);
             mirrorImpl.get().doAfterMangaLoaded(document, window.location.href);
             $("title").text(title);
@@ -435,7 +435,7 @@ class Reading {
         let isEven = true;
         let reading = this;
 
-        console.log("Transformation book -> Nombre d'images :" + $(".imageAMR", where).size());
+        util.debug("Transformation book -> Nombre d'images :" + $(".imageAMR", where).size());
         $(".imageAMR", where).sort(function (a, b) {
             let nba = $(a).closest(".spanForImg").data("order");
             let nbb = $(b).closest(".spanForImg").data("order");

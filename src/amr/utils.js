@@ -38,6 +38,7 @@ const matchUrlWildCards = function(str, rule) {
  * @param {*} url of the current page
  */
 export function currentPageMatch(url) {
+    console.log(store.state.mirrors.all);
     for (let mir of store.state.mirrors.all) {
         if (mir.activated) {
             let wss = (typeof mir.webSites === 'object') ? mir.webSites : JSON.parse(wsloc[i].webSites);
@@ -49,4 +50,21 @@ export function currentPageMatch(url) {
         }
     }
     return null;
+}
+/**
+ * Logs a message if debug mode
+ */
+export function debug(message) {
+    if (store.state.options.debug === 1) {
+        console.log(message);
+    }
+}
+/**
+ * Serialize a vuex object.
+ * Doing that because content script is not vue aware, the reactive vuex object needs to be 
+ * converted to POJSO to work in non vue environment (else it will be {})
+ * @param {*} obj 
+ */
+export function serializeVuexObject(obj) {
+    return JSON.parse(JSON.stringify(obj)) // For an unknown reason, better than Object.assign({}, obj) in Firefox
 }

@@ -112,8 +112,8 @@ const mutations = {
      * @param {*} obj containing key and value
      */
     setOption(state, { key, value }) {
-        if (!obj.key) console.error("Impossible to set option with undefined key; value is " + obj.value);
-        else state[obj.key] = obj.value;
+        if (!key) console.error("Impossible to set option with undefined key; value is " + value);
+        else state[key] = value;
     }
 }
 

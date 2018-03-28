@@ -5,5 +5,5 @@
 import browser from "webextension-polyfill";
 
 (() => {
-    browser.runtime.sendMessage({ action: "pagematchurls", url: window.location.href });
+    browser.runtime.sendMessage({ action: "pagematchurls", url: window.location.href })
 })();

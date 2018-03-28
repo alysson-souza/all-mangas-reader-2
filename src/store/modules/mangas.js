@@ -4,6 +4,7 @@ import mirrorsImpl from '../../amr/mirrors-impl';
 import notifications from '../../amr/notifications';
 import statsEvents from '../../amr/stats-events';
 import * as utils from "../../amr/utils";
+import samples from "../../amr/samples";
 
 /**
  *  initial state of the mangas module
@@ -64,7 +65,10 @@ const actions = {
         try {
             dispatch("setOption", {key: "updated", value: new Date().getTime()});
             dispatch("setOption", {key: "changesSinceSync", value: 1});
-        } catch (e) {console.error("Error while updating sync timestamp")}
+        } catch (e) {
+            console.error("Error while updating sync timestamp")
+            console.error(e)
+        }
     },
     /**
      * Change manga display mode
@@ -73,7 +77,7 @@ const actions = {
      */
     async setMangaDisplayMode({ dispatch, commit, getters }, message) {
         commit('setMangaDisplayMode', message);
-        await dispatch('updateManga', state.all.find(manga => manga.url === message.url));
+        dispatch('updateManga', state.all.find(manga => manga.url === message.url));
     },
     /**
      * Reset manga reading for a manga to first chapter
@@ -83,7 +87,7 @@ const actions = {
     async resetManga({ dispatch, commit, getters }, message) {
         commit('resetManga', message);
         let mg = state.all.find(manga => manga.url === message.url);
-        await dispatch('updateManga', mg);
+        dispatch('updateManga', mg);
         statsEvents.trackResetManga(mg);
     },
     /**
@@ -94,18 +98,20 @@ const actions = {
     async readManga({ dispatch, commit, getters }, message) {
         let mg = state.all.find(manga => manga.url === message.url);
         if (mg === undefined) {
+            utils.debug("readManga of an unlisted manga --> create it");
             commit('createManga', message);
             mg = state.all.find(manga => manga.url === message.url);
             try {
                 await dispatch("refreshLastChapters", message);
             } catch (e) { console.error(e) } // ignore error if manga list can not be loaded --> save the manga
-            await dispatch('updateManga', mg);
-            statsEvents.trackAddManga(mg);
+            utils.debug("saving new manga to database");
+            dispatch('updateManga', mg);
+            if (!message.auto) statsEvents.trackAddManga(mg);
         } else {
             try {
                 await dispatch("consultManga", message);
             } catch (e) { console.error(e) } // ignore error if manga list can't be updated
-            await dispatch('updateManga', mg);
+            dispatch('updateManga', mg);
             statsEvents.trackReadManga(mg);
             statsEvents.trackReadMangaChapter(mg);
         }
@@ -117,9 +123,12 @@ const actions = {
      */
     async getMangaListOfChapters({ dispatch, commit, getters }, manga) {
         return new Promise(async (resolve, reject) => {
+            utils.debug("getMangaListOfChapters : get implementation of " + manga.mirror);
             let impl = await mirrorsImpl.getImpl(manga.mirror);
             //New chapter is not in chapters list --> Reload chapter list
             if (impl !== null) {
+                utils.debug("getMangaListOfChapters : implementation found, get list of chapters for manga " + manga.name + " url " + manga.url);
+                console.log(impl.getListChaps);
                 impl.getListChaps(manga.url, manga.name, manga, function (lst) {
                     resolve(lst);
                 });
@@ -197,7 +206,9 @@ const actions = {
                         reject(mg);
                     }, 60000);
                 try {
+                    utils.debug("waiting for manga list of chapters for " + mg.name + " on " + mg.mirror)
                     let listChaps = await dispatch("getMangaListOfChapters", mg)
+                    utils.debug(listChaps.length + " chapters found for " + mg.name + " on " + mg.mirror)
                     clearTimeout(timeOutRefresh);
                     if (listChaps.length > 0) {
                         let oldLastChap = (typeof mg.listChaps[0] === 'object' ? mg.listChaps[0][1] : undefined),
@@ -241,16 +252,27 @@ const actions = {
         let mg = state.all.find(manga => manga.url === message.url);
         if (mg !== undefined) {
             commit('setMangaReadTop', message);
-            await Store.storeManga(mg);
+            dispatch('updateManga', mg);
             statsEvents.trackReadTop(mg);
             if (message.updatesamemangas && rootState.options.groupmgs == 1) {
                 let titMg = utils.formatMgName(mg.name);
                 let smgs = state.all.filter(manga => utils.formatMgName(manga.name) === titMg)
                 for (let smg of smgs) {
                     commit('setMangaReadTop', { url: smg.url, read: request.read });
-                    await Store.storeManga(smg);
+                    dispatch('updateManga', smg);
                 }
             }
+        }
+    },
+    /**
+     * Import sample mangas on user request
+     * @param {*} param0 
+     */
+    importSamples({ dispatch }) {
+        utils.debug("Importing samples manga in AMR (" + samples.length + " mangas to import)");
+        for (let sample of samples) {
+            sample.auto = true;
+            dispatch("readManga", sample);
         }
     }
 }

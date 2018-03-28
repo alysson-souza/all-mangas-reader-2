@@ -1,6 +1,7 @@
 import Handler from './handler';
 import IconHelper from './icon-helper';
 import store from '../store';
+import * as utils from '../amr/utils';
 
 // Initialize store
 (async () => {
@@ -12,19 +13,23 @@ import store from '../store';
     /**
      * Initialize AMR options from locaStorage
      */
+    utils.debug("Initialize options");
     await store.dispatch('initOptions');
 
     /**
      * Initialize mirrors list in store from DB
      */
+    utils.debug("Initialize mirrors");
     await store.dispatch('initMirrors');
 
     /**
      * Initialize manga list in store from DB
      */
+    utils.debug("Initialize mangas");
     await store.dispatch('initMangasFromDB');
 
     // Starts message handling
+    utils.debug("Initialize message handler");
     Handler.handle();
 
     /**

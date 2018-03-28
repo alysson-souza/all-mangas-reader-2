@@ -25,7 +25,7 @@ class Handler {
                 result = handler.handle(message, sender);
                 if (result !== undefined) break;
             }
-            if (result === undefined) console.log("No handler for message action " + message.action);
+            if (result === undefined) console.error("No handler for message action " + message.action);
             return result;
         });
     }
