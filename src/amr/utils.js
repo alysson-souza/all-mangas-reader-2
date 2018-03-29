@@ -38,7 +38,6 @@ const matchUrlWildCards = function(str, rule) {
  * @param {*} url of the current page
  */
 export function currentPageMatch(url) {
-    console.log(store.state.mirrors.all);
     for (let mir of store.state.mirrors.all) {
         if (mir.activated) {
             let wss = (typeof mir.webSites === 'object') ? mir.webSites : JSON.parse(wsloc[i].webSites);
@@ -67,4 +66,61 @@ export function debug(message) {
  */
 export function serializeVuexObject(obj) {
     return JSON.parse(JSON.stringify(obj)) // For an unknown reason, better than Object.assign({}, obj) in Firefox
+}
+
+const extractHostname = function(url) {
+    var hostname;
+    //find & remove protocol (http, ftp, etc.) and get hostname
+
+    if (url.indexOf("://") > -1) {
+        hostname = url.split('/')[2];
+    }
+    else {
+        hostname = url.split('/')[0];
+    }
+
+    //find & remove port number
+    hostname = hostname.split(':')[0];
+    //find & remove "?"
+    hostname = hostname.split('?')[0];
+
+    return hostname;
+}
+
+const extractRootDomain = function(url) {
+    var domain = extractHostname(url),
+        splitArr = domain.split('.'),
+        arrLen = splitArr.length;
+
+    //extracting the root domain here
+    //if there is a subdomain 
+    if (arrLen > 2) {
+        domain = splitArr[arrLen - 2] + '.' + splitArr[arrLen - 1];
+        //check to see if it's using a Country Code Top Level Domain (ccTLD) (i.e. ".me.uk")
+        if (splitArr[arrLen - 2].length == 2 && splitArr[arrLen - 1].length == 2) {
+            //this is using a ccTLD
+            domain = splitArr[arrLen - 3] + '.' + domain;
+        }
+    }
+    return domain;
+}
+
+const afterHostURL = function(url) {
+    var after;
+    //find & remove protocol (http, ftp, etc.) and get hostname
+
+    if (url.indexOf("://") > -1) {
+        after = url.split('/').splice(3).join("/");
+    }
+    else {
+        after = url.split('/').splice(1).join("/");
+    }
+    return after;
+}
+export function mangaKey(url) {
+    if (!url) {
+        console.error("A manga key has been requested for undefined url, it will be melted in your database with other mangas with same issue, check the implementation of the mirror where your read this manga.")
+        return "_no_key_"; // should not happen !
+    }
+    return extractRootDomain(url) + "/" + afterHostURL(url);
 }

@@ -6,7 +6,7 @@ class HandleMisc {
             // get options array
             case "opentab":
                 browser.tabs.create({
-                    "url": request.url
+                    "url": message.url
                 });
                 return Promise.resolve();
         }

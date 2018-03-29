@@ -1,3 +1,5 @@
+import * as utils from './utils'
+
 /**
  * Manga entry followed in AMR 
  */
@@ -7,6 +9,7 @@ export default class {
      * @param {*} obj 
      */
     constructor(obj) {
+        this.key = utils.mangaKey(obj.url);
         this.mirror = obj.mirror;
         this.name = obj.name;
         this.url = obj.url;

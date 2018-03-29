@@ -76,8 +76,9 @@ const actions = {
      * @param {*} message containing url of the manga and new display mode
      */
     async setMangaDisplayMode({ dispatch, commit, getters }, message) {
+        let key = utils.mangaKey(message.url);
         commit('setMangaDisplayMode', message);
-        dispatch('updateManga', state.all.find(manga => manga.url === message.url));
+        dispatch('updateManga', state.all.find(manga => manga.key === key));
     },
     /**
      * Reset manga reading for a manga to first chapter
@@ -85,8 +86,9 @@ const actions = {
      * @param {*} message containing url of the manga
      */
     async resetManga({ dispatch, commit, getters }, message) {
+        let key = utils.mangaKey(message.url);
         commit('resetManga', message);
-        let mg = state.all.find(manga => manga.url === message.url);
+        let mg = state.all.find(manga => manga.key === key);
         dispatch('updateManga', mg);
         statsEvents.trackResetManga(mg);
     },
@@ -96,11 +98,12 @@ const actions = {
      * @param {*} message containing infos about the manga read
      */
     async readManga({ dispatch, commit, getters }, message) {
-        let mg = state.all.find(manga => manga.url === message.url);
+        let key = utils.mangaKey(message.url);
+        let mg = state.all.find(manga => manga.key === key);
         if (mg === undefined) {
             utils.debug("readManga of an unlisted manga --> create it");
             commit('createManga', message);
-            mg = state.all.find(manga => manga.url === message.url);
+            mg = state.all.find(manga => manga.key === key);
             try {
                 await dispatch("refreshLastChapters", message);
             } catch (e) { console.error(e) } // ignore error if manga list can not be loaded --> save the manga
@@ -127,8 +130,7 @@ const actions = {
             let impl = await mirrorsImpl.getImpl(manga.mirror);
             //New chapter is not in chapters list --> Reload chapter list
             if (impl !== null) {
-                utils.debug("getMangaListOfChapters : implementation found, get list of chapters for manga " + manga.name + " url " + manga.url);
-                console.log(impl.getListChaps);
+                utils.debug("getMangaListOfChapters : implementation found, get list of chapters for manga " + manga.name + " key " + manga.key);
                 impl.getListChaps(manga.url, manga.name, manga, function (lst) {
                     resolve(lst);
                 });
@@ -145,17 +147,18 @@ const actions = {
      * @param {*} message message contains info on a manga and flag fromSite
      */
     async consultManga({ dispatch, commit, getters }, message) {
-        let posOld = -1,
+        let key = utils.mangaKey(message.url),
+            posOld = -1,
             posNew = -1,
             isNew = false,
-            mg = state.all.find(manga => manga.url === message.url);
+            mg = state.all.find(manga => manga.key === key);
 
         for (let i = 0; i < mg.listChaps.length; i++) {
             if (mg.listChaps[i][1] === mg.lastChapterReadURL) posOld = i;
             if (mg.listChaps[i][1] === message.lastChapterReadURL) posNew = i;
         }
 
-        commit('updateMangaEntryWithInfos', { url: mg.url, obj: message });
+        commit('updateMangaEntryWithInfos', { key: mg.key, obj: message });
 
         return new Promise(async (resolve, reject) => {
             if (posNew === -1) {
@@ -163,13 +166,13 @@ const actions = {
                     try {
                         let listChaps = await dispatch("getMangaListOfChapters", mg)
                         if (listChaps.length > 0) {
-                            commit('updateMangaListChaps', { url: mg.url, listChaps: listChaps });
+                            commit('updateMangaListChaps', { key: mg.key, listChaps: listChaps });
                             for (let i = 0; i < listChaps.length; i++) {
                                 if (listChaps[i][1] === mg.lastChapterReadURL) posOld = i;
                                 if (listChaps[i][1] === message.lastChapterReadURL) posNew = i;
                             }
                             if (posNew !== -1 && (message.fromSite || (posNew < posOld || posOld === -1))) {
-                                commit('updateMangaLastChapter', { url: mg.url, obj: message });
+                                commit('updateMangaLastChapter', { key: mg.key, obj: message });
                             }
                         }
                         resolve();
@@ -181,7 +184,7 @@ const actions = {
                 }
             } else {
                 if (message.fromSite || (posNew < posOld || posOld === -1)) {
-                    commit('updateMangaLastChapter', { url: mg.url, obj: message });
+                    commit('updateMangaLastChapter', { key: mg.key, obj: message });
                 }
                 resolve();
             }
@@ -196,13 +199,14 @@ const actions = {
      * @param {*} message message contains info on a manga
      */
     async refreshLastChapters({ dispatch, commit, getters }, message) {
-        let mg = state.all.find(manga => manga.url === message.url);
+        let key = utils.mangaKey(message.url),
+            mg = state.all.find(manga => manga.key === key);
         if (mg.update === 1) {
             return new Promise(async (resolve, reject) => {
                 let hasBeenTimeout = false,
                     timeOutRefresh = setTimeout(function () {
                         hasBeenTimeout = true;
-                        console.error("Refreshing " + mg.url + " has been timeout... seems unreachable...");
+                        console.error("Refreshing " + mg.key + " has been timeout... seems unreachable...");
                         reject(mg);
                     }, 60000);
                 try {
@@ -213,20 +217,19 @@ const actions = {
                     if (listChaps.length > 0) {
                         let oldLastChap = (typeof mg.listChaps[0] === 'object' ? mg.listChaps[0][1] : undefined),
                             newLastChap;
-                        commit('updateMangaListChaps', { url: mg.url, listChaps: listChaps });
+                        commit('updateMangaListChaps', { key: mg.key, listChaps: listChaps });
                         newLastChap = mg.listChaps[0][1];
                         // if oldLastChap === undefined --> new manga added --> no notifications (Issue #40)
                         if ((newLastChap !== oldLastChap) && (oldLastChap !== undefined)) {
                             notifications.notifyNewChapter(mg);
-                            commit('updateMangaLastChapTime', { url: mg.url });
+                            commit('updateMangaLastChapTime', { key: mg.key });
                         }
                         if (mg.lastChapterReadURL === null) {
-                            commit('updateMangaLastChapter', {
-                                url: mg.url,
+                            commit('updateMangaLastChapter', {key: mg.key, obj : {
                                 lastChapterReadURL: lst[lst.length - 1][1],
                                 lastChapterReadName: lst[lst.length - 1][0],
                                 fromSite: false
-                            });
+                            }});
                         }
                     }
 
@@ -249,7 +252,8 @@ const actions = {
      * @param {*} message message contains info on a manga
      */
     async markMangaReadTop({ dispatch, commit, getters, rootState }, message) {
-        let mg = state.all.find(manga => manga.url === message.url);
+        let key = utils.mangaKey(message.url),
+            mg = state.all.find(manga => manga.key === key);
         if (mg !== undefined) {
             commit('setMangaReadTop', message);
             dispatch('updateManga', mg);
@@ -299,7 +303,8 @@ const mutations = {
      * @param {*} param1 url of the manga and display mode
      */
     setMangaDisplayMode(state, { url, display }) {
-        let mg = state.all.find(manga => manga.url === url)
+        let key = utils.mangaKey(url);
+        let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) mg.display = display;
     },
     /**
@@ -308,7 +313,8 @@ const mutations = {
      * @param {*} param1 url of the manga and read top
      */
     setMangaReadTop(state, { url, read }) {
-        let mg = state.all.find(manga => manga.url === url)
+        let key = utils.mangaKey(url),
+            mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) mg.read = read;
     },
     /**
@@ -316,8 +322,8 @@ const mutations = {
      * @param {*} state 
      * @param {*} param1 
      */
-    updateMangaLastChapTime(state, { url }) {
-        let mg = state.all.find(manga => manga.url === url)
+    updateMangaLastChapTime(state, { key }) {
+        let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) mg.upts = new Date().getTime();
     },
     /**
@@ -325,8 +331,8 @@ const mutations = {
      * @param {*} state 
      * @param {*} param1 
      */
-    updateMangaListChaps(state, { url, listChaps }) {
-        let mg = state.all.find(manga => manga.url === url)
+    updateMangaListChaps(state, { key, listChaps }) {
+        let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) mg.listChaps = listChaps;
     },
     /**
@@ -334,8 +340,8 @@ const mutations = {
      * @param {*} state 
      * @param {*} param1 
      */
-    updateMangaLastChapter(state, { url, obj }) {
-        let mg = state.all.find(manga => manga.url === url)
+    updateMangaLastChapter(state, { key, obj }) {
+        let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.lastChapterReadURL = obj.lastChapterReadURL;
             mg.lastChapterReadName = obj.lastChapterReadName;
@@ -347,10 +353,10 @@ const mutations = {
     /**
      * Change manga informations when a manga is consulted, update some of the properties
      * @param {*} state 
-     * @param {*} param1 url of the manga and informations
+     * @param {*} param1 key of the manga and informations
      */
-    updateMangaEntryWithInfos(state, { url, obj }) {
-        let mg = state.all.find(manga => manga.url === url)
+    updateMangaEntryWithInfos(state, { key, obj }) {
+        let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             //if the current manga doesnt have a name, and the request does, then we fix the current name
             if (mg.name === "" && obj.name !== mg.name) {
@@ -386,7 +392,8 @@ const mutations = {
      * @param {*} param1 url of the manga
      */
     resetManga(state, { url }) {
-        let mg = state.all.find(manga => manga.url === url)
+        let key = utils.mangaKey(url);
+        let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             if (mg.listChaps.length > 0) {
                 mg.lastChapterReadURL = mg.listChaps[mg.listChaps.length - 1][1];

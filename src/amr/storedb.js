@@ -44,7 +44,7 @@ class StoreDB {
                  */
                 db.createObjectStore("mirrors", { keyPath: "mirrorName" });
                 db.createObjectStore("mangalists", { keyPath: "mirrorName" });
-                db.createObjectStore("mangas", { keyPath: "url" });
+                db.createObjectStore("mangas", { keyPath: "key" });
             };
             request.onsuccess = function (event) {
                 store.db = event.target.result;
@@ -159,7 +159,7 @@ class StoreDB {
                     let transaction = store.db.transaction(["mangas"], "readwrite");
 
                     transaction.onerror = function (event) {
-                        reject("Impossible to store manga " + manga.url + ". Error code : " + event.target.errorCode);
+                        reject("Impossible to store manga " + manga.key + ". Error code : " + event.target.errorCode);
                     };
 
                     let objectStore = transaction.objectStore("mangas");

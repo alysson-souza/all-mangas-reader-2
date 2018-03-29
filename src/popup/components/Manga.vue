@@ -1,63 +1,127 @@
 <template>
-  <v-container fluid class="amr-list-line">
-    <v-layout row>
-		<v-flex xs3 class="amr-list-elt">
-		<v-card dark tile flat :color="color(3)" class="back-card">
-			<v-card dark :color="color(0)" class="amr-manga-title-cont">
-				<img :src="mirror.mirrorIcon" class="mirror-icon" /> 
-				<strong>{{ manga.name }}</strong>
-			</v-card>
-		</v-card>
-		</v-flex>
-		<v-flex xs6 class="amr-list-elt">
-		<v-card dark tile flat :color="color(3)" class="back-card amr-chapter-list-cont">
-			<!--<v-select dense :items="chapsForSelect" v-model="chapter"></v-select>-->
-			<select v-if="manga.listChaps.length" :value="manga.lastChapterReadURL" :class="color(2)">
-				<option v-for="chap in chapsForSelect" :key="chap.value" :value="chap.value">{{chap.text}}</option>
-			</select>
-			<v-tooltip top v-if="manga.listChaps.length">
-				<v-progress-linear :value="progress" height="3" :color="color(-1)" slot="activator"></v-progress-linear>
-				<span>Progression : {{Math.floor(progress)}} %</span>
-			</v-tooltip>
-      <span v-if="!manga.listChaps.length">Waiting...</span>
-		</v-card>
-		</v-flex>
-		<v-flex xs3 class="amr-list-elt" text-xs-center>
-			<v-card  dark tile flat :color="color(3)" class="back-card">
-				<v-card dark :color="color(0)" class="amr-manga-actions-cont">
-					<v-icon v-if="hasNew" @click='resetManga(manga.url)'>mdi-eye</v-icon>
-					<v-icon v-if="!hasNew" class="empty-icon"></v-icon> 
-					<v-icon>mdi-chevron-left</v-icon>
-					<v-icon>mdi-play</v-icon>
-					<v-icon>mdi-chevron-right</v-icon>
-					<v-icon>mdi-page-last</v-icon>
-					<v-icon>mdi-delete</v-icon>
-					<v-icon @click="details = !details">more_vert</v-icon>
-				</v-card>
-			</v-card>
-		</v-flex>
-	</v-layout>
-	<v-layout row v-if="details">
-		<v-flex xs12 class="amr-details">
-			<v-card dark tile flat :color="color(3)" class="back-card">
-				Details
-			</v-card>
-		</v-flex>
+    <!-- manga line, containing title, list of chapters and actions-->
+    <v-layout row v-if="!isInGroup || (isFirst || groupExpanded)">
+      <!-- Title and icon -->
+      <v-flex xs3 class="amr-list-elt">
+      <v-card dark tile flat :color="color(3)" class="back-card">
+        <v-card v-if="!isInGroup || isFirst" dark :color="color(0)" class="amr-manga-title-cont">
+          <!-- Icon of the mirror if not in group -->
+          <v-tooltip top content-class="icon-ttip">
+            <img v-if="!isInGroup" :src="mirror.mirrorIcon" class="mirror-icon" slot="activator" /> 
+            <span>{{mirror.mirrorName}}</span>
+          </v-tooltip>
+          <!-- + / - icon if group of mangas  -->
+          <v-icon v-if="isInGroup && isFirst && !expanded" @click="emitExpand()">mdi-plus</v-icon>
+          <v-icon v-if="isInGroup && isFirst && expanded" @click="emitExpand()">mdi-minus</v-icon>
+          <strong>{{ manga.name }}</strong>
+        </v-card>
+      </v-card>
+      </v-flex>
+      <!-- List of chapters and progressbar-->
+      <v-flex xs6 class="amr-list-elt">
+      <v-card dark tile flat :color="color(3)" class="back-card amr-chapter-list-cont">
+        <!-- List of chapters -->
+        <!-- Icon of the mirror if in group -->
+        <v-tooltip v-if="isInGroup" top content-class="icon-ttip" class="tip-icon-grouped">
+          <img :src="mirror.mirrorIcon" class="mirror-icon grouped" slot="activator" /> 
+          <span>{{mirror.mirrorName}}</span>
+        </v-tooltip>
+        <div v-if="manga.listChaps.length" class="amr-prog-cont">
+          <div class="amr-select-wrapper">
+            <select :value="manga.lastChapterReadURL" v-on:input="selChapter = $event.target.value" :class="color(2) + ' amr-chap-sel'" @change="playChap()">
+              <option v-for="chap in chapsForSelect" :key="chap.value" :value="chap.value">{{chap.text}}</option>
+            </select>
+          </div>
+          <!-- Reading progress -->
+          <v-tooltip top content-class="icon-ttip">
+            <v-progress-linear :value="progress" height="4" :color="color(-1)" slot="activator"></v-progress-linear>
+            <span>Progression : {{Math.floor(progress)}} %</span>
+          </v-tooltip>
+        </div>
+        <!-- Loading bar if chapters list is not loaded yet-->
+        <v-progress-linear v-if="!manga.listChaps.length" :indeterminate="true" height="4" style="margin-top: 7px"></v-progress-linear>
+      </v-card>
+      </v-flex>
+      <!-- Actions -->
+      <v-flex xs3 class="amr-list-elt" text-xs-center>
+        <v-card  dark tile flat :color="color(3)" class="back-card">
+          <v-card dark :color="color(0)" class="amr-manga-actions-cont">
+            <!-- Mark as read -->
+            <v-tooltip v-if="hasNew" top content-class="icon-ttip">
+              <v-icon v-if="hasNew" slot="activator" @click="markAsRead()">mdi-eye</v-icon>
+              <span>Mark last published chapter as read</span>
+            </v-tooltip>
+            <!-- Empty icon if all read -->
+            <v-icon v-if="!hasNew" class="empty-icon"></v-icon> 
+            <!-- Previous chapter -->
+            <v-tooltip v-if="posInChapList < manga.listChaps.length - 1" top content-class="icon-ttip">
+              <v-icon slot="activator" @click="play(-1)">mdi-chevron-left</v-icon>
+              <span>Read previous chapter</span>
+            </v-tooltip>
+            <!-- Empty icon if no previous -->
+            <v-icon v-if="posInChapList === manga.listChaps.length - 1" class="empty-icon"></v-icon> 
+            <!-- Current chapter play -->
+            <v-tooltip top content-class="icon-ttip">
+              <v-icon slot="activator" @click="play(0)">mdi-play</v-icon>
+              <span>Read current chapter</span>
+            </v-tooltip>
+            <!-- Next chapter play -->
+            <v-tooltip v-if="posInChapList > 0" top content-class="icon-ttip">
+              <v-icon slot="activator" @click="play(1)">mdi-chevron-right</v-icon>
+              <span>Read next chapter</span>
+            </v-tooltip>
+            <!-- Empty icon if no next chapter -->
+            <v-icon v-if="posInChapList === 0" class="empty-icon"></v-icon> 
+            <!-- Last chapter play -->
+            <v-tooltip top content-class="icon-ttip">
+              <v-icon slot="activator" @click="play(Infinity)">mdi-page-last</v-icon>
+              <span>Read last published chapter</span>
+            </v-tooltip>
+            <!-- Delete manga -->
+            <v-tooltip top content-class="icon-ttip">
+              <v-icon slot="activator" @click="trash()">mdi-delete</v-icon>
+              <span>Delete manga</span>
+            </v-tooltip>
+            <!-- Display details panel -->
+            <v-icon v-if="isFirst" @click="$emit('details-click')">more_vert</v-icon>
+            <!-- Empty icon if not first instead of details button -->
+            <v-icon v-if="!isFirst" class="empty-icon"></v-icon> 
+          </v-card>
+        </v-card>
+      </v-flex>
     </v-layout>
-  </v-container>
 </template>
+
 <script>
 import { mapGetters } from "vuex";
+import browser from "webextension-polyfill";
 
 export default {
   data() {
     return {
-      details: false
+      // current selected chapter
+      selChapter: this.manga.lastChapterReadURL,
+      // current state of other grouped mangas panel
+      expanded: false
     };
   },
-  props: ["manga"],
+  // property to load the component with --> the manga it represents
+  props: [
+    // the manga to display
+    "manga",
+    // is part of a group of mangas
+    "isInGroup",
+    // if manga is first of the group
+    "isFirst",
+    // is the group currently expanded
+    "groupExpanded"
+  ],
   computed: {
-    options: () => this.$store.state.options,
+    // AMR options
+    options: function() {
+      return this.$store.state.options;
+    },
+    // determine if this manga has new published chapters
     hasNew: function() {
       return (
         this.manga.read === 0 &&
@@ -65,31 +129,38 @@ export default {
           this.manga.lastChapterReadURL !== this.manga.listChaps[0][1])
       );
     },
+    // mirror for current chapter
     mirror: function() {
       return this.$store.state.mirrors.all.find(
         mir => mir.mirrorName === this.manga.mirror
       );
     },
+    // format chapters list to be displayed
     chapsForSelect: function() {
       return this.manga.listChaps.map(arr => {
         return { value: arr[1], text: arr[0] };
       });
     },
+    // calculate reading progress
     progress: function() {
-      return (
-        (1 -
-          this.manga.listChaps.findIndex(
-            arr => arr[1] === this.manga.lastChapterReadURL
-          ) /
-            this.manga.listChaps.length) *
-        100
+      return (1 - this.posInChapList / this.manga.listChaps.length) * 100;
+    },
+    // position of current chapter in chapters list
+    posInChapList() {
+      return this.manga.listChaps.findIndex(
+        arr => arr[1] === this.manga.lastChapterReadURL
       );
     }
   },
   methods: {
+    /**
+     * Return the right color for this manga, depending if it updates (you can stop following udates for a manga), if it has unread chapters or not
+     */
     color: function(light) {
       let lstr =
-        light === 0 ? "" : light < 0 ? " darken-" + -light : " lighten-" + light;
+        light === 0
+          ? ""
+          : light < 0 ? " darken-" + -light : " lighten-" + light;
       if (this.manga.read !== 0) return "blue-grey" + lstr;
       else if (
         this.manga.listChaps.length &&
@@ -100,11 +171,63 @@ export default {
         return "blue" + lstr;
       }
     },
-    resetManga(url) {
-      this.$store.dispatch("resetManga", { url: url });
+    /**
+     * Click on + / - to expand reduce similar mangas
+     */
+    emitExpand: function() {
+      this.expanded = !this.expanded;
+      this.$emit("expand-group");
+    },
+    /**
+     * Reset manga reading to first chapter
+     */
+    resetManga() {
+      this.$store.dispatch("resetManga", { url: this.manga.key });
+    },
+    /**
+     * Mark last chapter as read
+     */
+    markAsRead() {
+      this.$store.dispatch("readManga", {
+        url: this.manga.url,
+        mirror: this.manga.mirror,
+        lastChapterReadName: this.manga.listChaps[0][0],
+        lastChapterReadURL: this.manga.listChaps[0][1],
+        name: this.manga.name
+      });
+    },
+    /**
+     * Open a chapter in new tab
+     */
+    play(which) {
+      let pos;
+      if (which === Infinity) pos = 0;
+      else {
+        pos = this.posInChapList - which; // order of chapters is reversed
+        if (pos < 0) pos = 0;
+        else if (pos >= this.manga.listChaps.length)
+          pos = this.manga.listChaps.length - 1;
+      }
+      browser.runtime.sendMessage({
+        action: "opentab",
+        url: this.manga.listChaps[pos][1]
+      });
+    },
+    playChap() {
+      browser.runtime.sendMessage({ action: "opentab", url: this.selChapter });
+    },
+    /**
+     * Deletes a manga
+     */
+    trash() {
+      //TODO
     }
   },
-  name: "Manga"
+  // Name of the component
+  name: "Manga",
+  mount: function() {
+    console.log(this.manga);
+  }
 };
 </script>
 
@@ -143,15 +266,19 @@ export default {
 .amr-manga-actions-cont {
   padding: 4px;
 }
-.amr-manga-actions-cont i {
+.amr-manga-actions-cont i,
+.amr-manga-title-cont i {
   cursor: pointer;
   font-size: 18px;
 }
+.amr-manga-title-cont i {
+  font-size: 16px;
+}
 .amr-manga-actions-cont i:hover {
-	opacity: 0.6;
+  opacity: 0.6;
 }
 .container.amr-list-line .amr-list-elt .amr-chapter-list-cont {
-  padding: 8px;
+  padding: 6px;
 }
 .empty-icon {
   width: 13px;
@@ -159,35 +286,63 @@ export default {
 .mirror-icon {
   vertical-align: middle;
   padding-right: 2px;
+  display: inline-block;
 }
 .back-card {
   height: 100% !important;
 }
 
-/*Selects*/
-select {
-  -moz-appearance: menulist;
-  -webkit-appearance: menulist;
-  background-color: solid;
-  border-style: none;
-  width: 100%;
-  border-top-left-radius: 2px !important;
-  border-top-right-radius: 2px !important;
-}
 .progress-linear {
   margin: 0;
   margin-top: -1px;
 }
-/*
-.amr-chapter-list-cont > .input-group {
-	padding: 0;
+/*Selects*/
+.amr-select-wrapper {
+  display: inline-block;
+  position: relative;
+  width: 100%;
 }
-.input-group__details, .input-group__input {
-	min-height: auto!important;
+select.amr-chap-sel {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  -ms-appearance: none;
+  display: inline-block;
+  outline: none;
+  border-style: none;
+  width: 100%;
+  border-top-left-radius: 2px !important;
+  border-top-right-radius: 2px !important;
+  position: relative;
+  padding: 0px 4px;
 }
-.input-group__selections__comma {
-	font-size: 14px;
-    height: 20px;
+.amr-select-wrapper:after {
+  content: "▼";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  font-size: 75%;
+  line-height: 19px;
+  padding: 1px 5px;
+  pointer-events: none;
+  z-index: 1;
 }
-*/
+.btn {
+  text-transform: none;
+}
+
+.amr-chapter-list-cont {
+  overflow: auto;
+}
+.tip-icon-grouped {
+  float: left;
+  width: 20px;
+  height: 20px;
+}
+.amr-prog-cont {
+  margin-left: 0px;
+}
+.tip-icon-grouped + .amr-prog-cont {
+  margin-left: 25px;
+}
 </style>

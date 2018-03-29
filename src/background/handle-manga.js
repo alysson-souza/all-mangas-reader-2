@@ -17,12 +17,13 @@ const contentCss = ['content/content.css'];
 
 class HandleManga {
     handle(message, sender) {
+        let key = utils.mangaKey(message.url);
         switch (message.action) {
             case "pagematchurls":
                 // content script included, test if a mirror match the page and load AMR in tab
                 return this.matchUrlAndLoadScripts(message.url, sender.tab.id);
             case "mangaInfos":
-                let mg = store.state.mangas.all.find(manga => manga.url === message.url)
+                let mg = store.state.mangas.all.find(manga => manga.key === message.key)
                 if (mg !== undefined) {
                     return Promise.resolve({
                         read: mg.read,
@@ -56,7 +57,6 @@ class HandleManga {
      */
     async matchUrlAndLoadScripts(url, tabId) {
         const mir = utils.currentPageMatch(url);
-        console.log(mir);
         if (mir === null) return Promise.resolve(null);
         let impl;
         // Load mirror implementation from repo (try next repo if previous fail)
