@@ -6,7 +6,9 @@ class HandleVueInit {
         switch (message.action) {
             // get state object from reference state in the background store
             case "vuex_initstate":
-                return Promise.resolve(utils.serializeVuexObject(store.state[message.module][message.key]));
+                let mod_state_obj = store.state[message.module];
+                if (message.key) mod_state_obj = mod_state_obj[message.key]
+                return Promise.resolve(utils.serializeVuexObject(mod_state_obj));
         }
     }
 }

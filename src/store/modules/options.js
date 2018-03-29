@@ -52,6 +52,8 @@ const default_options = {
     ]
 }
 
+const jsonOptions = ["categoriesStates", "impl-repositories"];
+
 /**
  *  initial state of amr options
  */
@@ -71,10 +73,11 @@ const actions = {
      * Override default options with options values in localStorage
      * @param {*} param0 
      */
-    initOptions({ commit, dispatch }) {
+    initOptions({ commit, dispatch, state }) {
         for (let key of Object.keys(state)) {
             let storedVal = localStorage["o." + key];
             if (storedVal) {
+                if (jsonOptions.includes(key)) storedVal = JSON.parse(storedVal);
                 commit('setOption', { key: key, value: storedVal });
             }
         }
@@ -87,6 +90,33 @@ const actions = {
     setOption({ commit, dispatch }, keyValObj) {
         commit('setOption', keyValObj);
         localStorage["o." + keyValObj.key] = keyValObj.value;
+    },
+    /**
+     * Adds a category in categories states and save
+     * @param {*} param0 
+     * @param {*} name 
+     */
+    addCategory({ commit, dispatch, state }, name) {
+        commit('addCategory', name);
+        localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates);
+    },
+    /**
+     * Remove a non native category from categories states and save
+     * @param {*} param0 
+     * @param {*} name 
+     */
+    removeCategory({ commit, dispatch, state }, name) {
+        commit('removeCategory', name);
+        localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates);
+    },
+    /**
+     * Updates a categories state and save
+     * @param {*} param0 
+     * @param {*} catObj 
+     */
+    updateCategory({ commit, dispatch, state }, catObj) {
+        commit('updateCategory', catObj);
+        localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates);
     }
 }
 
@@ -114,6 +144,36 @@ const mutations = {
     setOption(state, { key, value }) {
         if (!key) console.error("Impossible to set option with undefined key; value is " + value);
         else state[key] = value;
+    },
+    /**
+     * Adds a category in categories states
+     * @param {*} state 
+     * @param {*} name 
+     */
+    addCategory(state, name) {
+        let toadd = {
+            name: name,
+            state: "include"
+        }
+        state.categoriesStates.push(toadd);
+    },
+    /**
+     * Remove a non native category from categories states
+     * @param {*} state 
+     * @param {*} name 
+     */
+    removeCategory(state, name) {
+        let index = state.categoriesStates.findIndex(cat => cat.type !== "native" && cat.name === name);
+        if (index >= 0) state.categoriesStates.splice(index, 1);
+    },
+    /**
+     * Updates a categories state
+     * @param {*} state 
+     * @param {*} param1 
+     */
+    updateCategory(state, {name, catstate}) {
+        let cat = state.categoriesStates.find(cat => cat.name === name);
+        cat.state = catstate;
     }
 }
 

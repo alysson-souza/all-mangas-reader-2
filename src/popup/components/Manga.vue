@@ -1,6 +1,6 @@
 <template>
     <!-- manga line, containing title, list of chapters and actions-->
-    <v-layout row v-if="!isInGroup || (isFirst || groupExpanded)">
+    <v-layout row v-if="display && (!isInGroup || (isFirst || groupExpanded))">
       <!-- Title and icon -->
       <v-flex xs3 class="amr-list-elt">
       <v-card dark tile flat :color="color(3)" class="back-card">
@@ -39,7 +39,7 @@
           </v-tooltip>
         </div>
         <!-- Loading bar if chapters list is not loaded yet-->
-        <v-progress-linear v-if="!manga.listChaps.length" :indeterminate="true" height="4" style="margin-top: 7px"></v-progress-linear>
+        <v-progress-linear v-if="!manga.listChaps.length" :indeterminate="true" height="4" class="amr-manga-waiting"></v-progress-linear>
       </v-card>
       </v-flex>
       <!-- Actions -->
@@ -95,6 +95,7 @@
 <script>
 import { mapGetters } from "vuex";
 import browser from "webextension-polyfill";
+import * as utils from "../utils";
 
 export default {
   data() {
@@ -121,13 +122,19 @@ export default {
     options: function() {
       return this.$store.state.options;
     },
+    categories: function() {
+      return this.options.categoriesStates;
+    },
+    display: function() {
+      return utils.displayFilterCats(this.manga, this.categories);
+    },
     // determine if this manga has new published chapters
     hasNew: function() {
-      return (
-        this.manga.read === 0 &&
-        (this.manga.listChaps.length &&
-          this.manga.lastChapterReadURL !== this.manga.listChaps[0][1])
-      );
+      return utils.hasNew(this.manga);
+    },
+    // determine if this manga has been read entirely
+    hasBeenRead: function() {
+      return utils.hasBeenRead(this.manga);
     },
     // mirror for current chapter
     mirror: function() {
@@ -235,19 +242,7 @@ export default {
 * {
   font-size: 10pt;
 }
-.container.amr-list-line {
-  padding: 0px 10px;
-}
-.container.amr-list-line:first-child {
-  padding-top: 10px;
-}
-.container.amr-list-line:last-child {
-  padding-bottom: 10px;
-}
-.container.amr-list-line:first-child
-  .row:first-child
-  .flex:first-child
-  > .card {
+.container.amr-list-line:first-child .row:first-child .flex:first-child > .card {
   border-top-left-radius: 5px;
 }
 .container.amr-list-line:first-child .row:first-child .flex:last-child > .card {
@@ -261,6 +256,9 @@ export default {
 }
 .container.amr-list-line .amr-list-elt > .card {
   padding: 4px;
+}
+.container.amr-list-line .amr-list-elt .amr-chapter-list-cont {
+  padding: 6px;
 }
 .amr-manga-title-cont,
 .amr-manga-actions-cont {
@@ -276,9 +274,6 @@ export default {
 }
 .amr-manga-actions-cont i:hover {
   opacity: 0.6;
-}
-.container.amr-list-line .amr-list-elt .amr-chapter-list-cont {
-  padding: 6px;
 }
 .empty-icon {
   width: 13px;
@@ -327,9 +322,6 @@ select.amr-chap-sel {
   pointer-events: none;
   z-index: 1;
 }
-.btn {
-  text-transform: none;
-}
 
 .amr-chapter-list-cont {
   overflow: auto;
@@ -344,5 +336,12 @@ select.amr-chap-sel {
 }
 .tip-icon-grouped + .amr-prog-cont {
   margin-left: 25px;
+}
+.amr-manga-waiting {
+  margin-top: 7px;
+}
+.tip-icon-grouped + .amr-manga-waiting {
+  margin-left: 25px;
+  width: auto;
 }
 </style>

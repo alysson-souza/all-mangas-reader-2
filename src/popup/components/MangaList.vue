@@ -1,13 +1,21 @@
 <template>
     <div>
+        <!-- Before mangas are loaded into popup -->
         <div v-if="!loaded" class="amr-loader">
             <v-progress-circular indeterminate :width="4" :size="50" color="red darken-2"></v-progress-circular>
         </div>
+        <!-- Once loaded -->
         <div v-if="loaded">
             <div v-if="allMangas.length" class="amr-mangas">
-                <MangaGroup v-if="options.groupmgs === 0"  v-for="mg in allMangas" v-bind:key="mg.key" :mangas="[mg]" />
-                <MangaGroup v-if="options.groupmgs !== 0"  v-for="(grp, key) in groupedMangas" v-bind:key="key" :mangas="grp" />
+                <!-- Categories -->
+                <Categories :categories="categories" />
+                <!-- Load manga list -->
+                <div class="amr-manga-list-container">
+                    <MangaGroup v-if="options.groupmgs === 0"  v-for="mg in allMangas" v-bind:key="mg.key" :mangas="[mg]" />
+                    <MangaGroup v-if="options.groupmgs !== 0"  v-for="(grp, key) in groupedMangas" v-bind:key="key" :mangas="grp" />
+                </div>
             </div>
+            <!-- No mangas yet -->
             <div v-if="!allMangas.length" class="amr-nomangas">
                 <p>
                     <strong>No manga in your list</strong>. Check the filters above or add mangas to the list. 
@@ -23,6 +31,7 @@
 <script>
 import { mapGetters } from "vuex";
 import MangaGroup from "./MangaGroup";
+import Categories from "./Categories";
 import browser from "webextension-polyfill";
 import * as utils from '../../amr/utils';
 
@@ -37,6 +46,9 @@ export default {
     options: function() {
         return this.$store.state.options;
     },
+    categories: function() {
+        return this.options.categoriesStates;
+    },
     groupedMangas: function() {
         // create groups
         var groups = this.allMangas.reduce((grps, manga) => {
@@ -49,7 +61,7 @@ export default {
     ...mapGetters(["countMangas", "allMangas"])
   },
   name: "MangaList",
-  components: { MangaGroup },
+  components: { MangaGroup, Categories },
   methods: {
     importSamples() {
       // we don't do this.$store.dispatch("importSamples"); because to load list of chapters, implementations rely on jQuery, which is not loaded in pages, rely on background page to do so

@@ -50,6 +50,11 @@ export default {
   name: "App",
   components: { MangaList },
   created() {
+	  	// initialize state for store in popup from background
+		this.$store.dispatch("getStateFromReference", {
+			module: "options",
+			mutation: "extendOptions"
+		});
 		// initialize state for store in popup from background
 		this.$store.dispatch("getStateFromReference", {
 			module: "mirrors",

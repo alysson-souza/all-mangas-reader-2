@@ -1,0 +1,33 @@
+export function hasNew(manga) {
+    return (
+        manga.read === 0 &&
+        (manga.listChaps.length &&
+            manga.lastChapterReadURL !== manga.listChaps[0][1])
+    );
+}
+export function hasBeenRead(manga) {
+    return (manga.listChaps.length &&
+        manga.lastChapterReadURL === manga.listChaps[0][1]);
+}
+export function displayFilterCats(manga, categories) {
+    let include = false, exclude = false;
+    let needInclude = false, needExclude = false;
+    let incexc = (cat, include, exclude) => {
+        return [(cat.state === "include") || include, (cat.state === "exclude") || exclude]
+    }
+    for (let cat of categories) {
+        if (cat.type === "native") {
+            if (cat.name === "New" && hasNew(manga))[include, exclude] = incexc(cat, include, exclude);
+            if (cat.name === "Read" && hasBeenRead(manga))[include, exclude] = incexc(cat, include, exclude);
+            if (cat.name === "Unread" && !hasBeenRead(manga))[include, exclude] = incexc(cat, include, exclude);
+            if (cat.name === "One Shots" && manga.listChaps.length === 1)[include, exclude] = incexc(cat, include, exclude);
+        }
+        if (manga.cats && manga.cats.length && manga.cats.includes(cat.name))[include, exclude] = incexc(cat, include, exclude);
+        if (cat.state === "include") needInclude = true;
+        if (cat.state === "exclude") needExclude = true;
+    }
+    if (!needInclude && !needExclude) return true;
+    else if (needInclude && !needExclude) return include;
+    else if (!needInclude && needExclude) return !exclude;
+    else return include && !exclude;
+}

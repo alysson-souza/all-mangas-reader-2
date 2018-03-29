@@ -1,13 +1,13 @@
 <!-- The prop "mangas" used to initialize this component is a list of manga objects with the same name : a manga read on multile sites -->
 <template>
-  <v-container fluid class="amr-list-line">
+  <v-container fluid class="amr-list-line" v-if="nbDisplayed > 0">
     <!-- Manga line-->
-    <Manga 
-      v-for="(manga, index) in mangas" 
+    <Manga
+      v-for="manga in mangas" 
       v-bind:key="manga.key" 
       :manga="manga" 
-      :is-in-group="mangas.length > 1" 
-      :is-first="index === 0" 
+      :is-in-group="nbDisplayed > 1" 
+      :is-first="manga.key === first.key" 
       :group-expanded="expanded"
       @details-click="details = !details"
       @expand-group="expanded = !expanded" />
@@ -27,6 +27,7 @@
 import { mapGetters } from "vuex";
 import browser from "webextension-polyfill";
 import Manga from "./Manga";
+import * as utils from "../utils";
 
 export default {
   data() {
@@ -42,7 +43,22 @@ export default {
   components: { Manga },
   computed: {
     first: function() {
-        return this.mangas[0];
+      /** returns the first DISPLAYED manga of the group */
+      for (let mg of this.mangas) {
+        if (utils.displayFilterCats(mg, this.options.categoriesStates))
+          return mg;
+      }
+      return this.mangas[0];
+    },
+    /**
+     * Returns number of manga of this group which will be displayed according to the filters
+     */
+    nbDisplayed: function() {
+      let nb = 0;
+      for (let mg of this.mangas) {
+        if (utils.displayFilterCats(mg, this.options.categoriesStates)) nb++;
+      }
+      return nb;
     },
     // AMR options
     options: function() {
@@ -75,94 +91,11 @@ export default {
 </script>
 
 <style lang="css" scoped>
-* {
-  font-size: 10pt;
-}
 .container.amr-list-line {
   padding: 0px 10px;
 }
-.container.amr-list-line:first-child {
-  padding-top: 10px;
-}
 .container.amr-list-line:last-child {
   padding-bottom: 10px;
-}
-.container.amr-list-line:first-child
-  .row:first-child
-  .flex:first-child
-  > .card {
-  border-top-left-radius: 5px;
-}
-.container.amr-list-line:first-child .row:first-child .flex:last-child > .card {
-  border-top-right-radius: 5px;
-}
-.container.amr-list-line:last-child .row:last-child .flex:first-child > .card {
-  border-bottom-left-radius: 5px;
-}
-.container.amr-list-line:last-child .row:last-child .flex:last-child > .card {
-  border-bottom-right-radius: 5px;
-}
-.container.amr-list-line .amr-list-elt > .card {
-  padding: 4px;
-}
-.amr-manga-title-cont,
-.amr-manga-actions-cont {
-  padding: 4px;
-}
-.amr-manga-actions-cont i {
-  cursor: pointer;
-  font-size: 18px;
-}
-.amr-manga-actions-cont i:hover {
-  opacity: 0.6;
-}
-.container.amr-list-line .amr-list-elt .amr-chapter-list-cont {
-  padding: 8px;
-}
-.empty-icon {
-  width: 13px;
-}
-.mirror-icon {
-  vertical-align: middle;
-  padding-right: 2px;
-}
-.back-card {
-  height: 100% !important;
-}
-
-.progress-linear {
-  margin: 0;
-  margin-top: -1px;
-}
-/*Selects*/
-.amr-select-wrapper {
-  display: inline-block;
-  position: relative;
-  width: 100%;
-}
-select.amr-chap-sel {
-  -moz-appearance: none;
-  -webkit-appearance: none;
-  -ms-appearance: none;
-  display: inline-block;
-  outline: none;
-  border-style: none;
-  width: 100%;
-  border-top-left-radius: 2px !important;
-  border-top-right-radius: 2px !important;
-  position: relative;
-}
-.amr-select-wrapper:after {
-  content: "▼";
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  font-size: 75%;
-  line-height: 19px;
-  padding: 1px 5px;
-  pointer-events: none;
-  z-index: 1;
 }
 .btn {
   text-transform: none;
