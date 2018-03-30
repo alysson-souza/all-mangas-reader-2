@@ -4,7 +4,7 @@
     <!-- Manga line-->
     <Manga
       v-for="manga in mangas" 
-      v-bind:key="manga.key" 
+      :key="manga.key" 
       :manga="manga" 
       :is-in-group="nbDisplayed > 1" 
       :is-first="manga.key === first.key" 
@@ -13,13 +13,52 @@
       @expand-group="expanded = !expanded" />
 
     <!-- Details, hidden, more actions on manga group -->
+    <transition name="fadeHeight">
     <v-layout row v-if="details">
       <v-flex xs12 class="amr-details">
-        <v-card dark tile flat :color="color(3)" class="back-card">
-          <v-btn @click='resetManga(first.key)' :color="color(0)" small>Reset reading</v-btn>
+        <v-card tile flat :color="color(3)" class="back-card">
+          <v-container grid-list-md>
+            <v-layout row>
+              <!-- Manage manga categories -->
+              <v-flex xs6 class="amr-categories">
+                <span>Categories : </span>
+                <!-- Categories -->
+                <Categories 
+                  :categories="mangaCats" 
+                  :static-cats="true" 
+                  :delegate-delete="true" 
+                  @delete-category="deleteCategory" />
+                <div class="det-sel-wrapper">
+                <select dark v-model="newCat" @change="addCategory()" :class="color(2)">
+                  <option value="">Category to add</option>
+                  <option v-for="(cat, key) of this.options.categoriesStates" 
+                          v-if="cat.type !== 'native'" 
+                          :key="key" 
+                          :value="cat.name">
+                      {{cat.name}}
+                  </option>
+                </select>
+                </div>
+              </v-flex>
+              <!-- Manage manga bookmarks -->
+              <v-flex xs6 class="amr-bookmarks">
+                <span>Bookmarks : </span>
+              </v-flex>
+            </v-layout>
+            <!-- Actions buttons -->
+            <v-layout row text-xs-center>
+              <v-flex xs12 class="amr-actions">
+                <v-btn dark @click='' :color="color(0)" small>Search this manga elsewhere</v-btn>
+                <v-btn dark @click='resetManga()' :color="color(0)" small>Reset manga reading</v-btn>
+                <v-btn dark v-if="mangas[0].read === 0" @click='stopFollowingUpdates()' :color="color(0)" small>Stop following updates</v-btn>
+                <v-btn dark v-if="mangas[0].read === 1" @click='followUpdates()' :color="color(0)" small>Follow updates</v-btn>
+              </v-flex>
+            </v-layout>
+          </v-container>
         </v-card>
       </v-flex>
     </v-layout>
+    </transition>
   </v-container>
 </template>
 
@@ -27,6 +66,7 @@
 import { mapGetters } from "vuex";
 import browser from "webextension-polyfill";
 import Manga from "./Manga";
+import Categories from "./Categories";
 import * as utils from "../utils";
 
 export default {
@@ -35,12 +75,14 @@ export default {
       // current state of details panel
       details: false,
       // is the group expanded
-      expanded: false
+      expanded: false, 
+      // category to add to this group of mangas
+      newCat: "",
     };
   },
   // property to load the component with --> a group of manga
   props: ["mangas"],
-  components: { Manga },
+  components: { Manga, Categories },
   computed: {
     first: function() {
       /** returns the first DISPLAYED manga of the group */
@@ -49,6 +91,17 @@ export default {
           return mg;
       }
       return this.mangas[0];
+    },
+    mangaCats: function() {
+      return this.mangas.reduce((cats, manga) => {
+        return cats.concat(
+          manga.cats.filter(
+            cat => cats.findIndex(
+              c => c.name === cat.name
+            ) < 0
+          )
+        );
+      }, []);
     },
     /**
      * Returns number of manga of this group which will be displayed according to the filters
@@ -83,6 +136,53 @@ export default {
       } else {
         return "blue" + lstr;
       }
+    },
+    /**
+     * Reset manga reading to first chapter for the group of mangas
+     */
+    resetManga() {
+      for (let mg of this.mangas)
+        this.$store.dispatch("resetManga", { url: mg.url });
+    },
+    /**
+     * Stop following manga updates for this group
+     */
+    stopFollowingUpdates: function() {
+      this.$store.dispatch("markMangaReadTop", {
+        url: this.mangas[0].url,
+        updatesamemangas: true,
+        read: 1
+      });
+    },
+    /**
+     * Following manga updates for this group
+     */
+    followUpdates: function() {
+      this.$store.dispatch("markMangaReadTop", {
+        url: this.mangas[0].url,
+        updatesamemangas: true,
+        read: 0
+      });
+    }, 
+    /**
+     * Delete a category on this group of manga
+     */
+    deleteCategory: function(cat) {
+      for (let mg of this.mangas) {
+        this.$store.dispatch("removeCategoryFromManga", {
+          key: mg.key,
+          name: cat
+        });
+      }
+    }, 
+    addCategory: function() {
+      for (let mg of this.mangas) {
+        this.$store.dispatch("addCategoryToManga", {
+          key: mg.key,
+          name: this.newCat
+        });
+      }
+      this.newCat = "";
     }
   },
   // Name of the component
@@ -99,5 +199,47 @@ export default {
 }
 .btn {
   text-transform: none;
+}
+.fadeHeight-enter-active,
+.fadeHeight-leave-active {
+  transition: all 0.5s;
+  max-height: 100px;
+}
+.fadeHeight-enter,
+.fadeHeight-leave-to
+{
+  max-height: 0px;
+}
+.det-sel-wrapper {
+  display: inline-block;
+  position: relative;
+}
+select {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  -ms-appearance: none;
+  display: inline-block;
+  outline: none;
+  border-style: none;
+  border-radius: 2px !important;
+  position: relative;
+  padding: 2px 4px;
+  padding-right: 15px;
+  color: white;
+}
+.det-sel-wrapper:after {
+  content: "▼";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  font-size: 75%;
+  line-height: 19px;
+  padding: 1px 5px;
+  pointer-events: none;
+  z-index: 1;
+}
+.cat-cont {
+  display: inline-block;
 }
 </style>

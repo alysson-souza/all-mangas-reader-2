@@ -31,3 +31,13 @@ export function displayFilterCats(manga, categories) {
     else if (!needInclude && needExclude) return !exclude;
     else return include && !exclude;
 }
+export function countUsed(category, mangas) {
+    if (category.type === "native") {
+        if (category.name === "New") return mangas.reduce((nb, mg) => hasNew(mg) ? nb + 1 : nb, 0);
+        if (category.name === "Read") return mangas.reduce((nb, mg) => hasBeenRead(mg) ? nb + 1 : nb, 0);
+        if (category.name === "Unread") return mangas.reduce((nb, mg) => !hasBeenRead(mg) ? nb + 1 : nb, 0);
+        if (category.name === "One Shots") return mangas.reduce((nb, mg) => mg.listChaps.length === 1 ? nb + 1 : nb, 0);
+    } else {
+        return mangas.reduce((nb, mg) => mg.cats.includes(category.name) ? nb + 1 : nb, 0);
+    }
+}

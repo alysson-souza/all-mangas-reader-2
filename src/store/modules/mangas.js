@@ -41,6 +41,21 @@ const getters = {
             }
         }
         return false;
+    }, 
+    /**
+     * Return true is there is unread chapters in manga list
+     */
+    nbNewMangas: (state) => {
+        let nb = 0;
+        for (let mg of state.all) {
+            if (mg.listChaps.length > 0) {
+                var lastUrl = mg.listChaps[0][1];
+                if (lastUrl != mg.lastChapterReadURL && mg.read == 0) {
+                    nb++;
+                }
+            }
+        }
+        return nb;
     }
 }
 
@@ -258,11 +273,11 @@ const actions = {
             commit('setMangaReadTop', message);
             dispatch('updateManga', mg);
             statsEvents.trackReadTop(mg);
-            if (message.updatesamemangas && rootState.options.groupmgs == 1) {
+            if (message.updatesamemangas && rootState.options.groupmgs === 1) {
                 let titMg = utils.formatMgName(mg.name);
                 let smgs = state.all.filter(manga => utils.formatMgName(manga.name) === titMg)
                 for (let smg of smgs) {
-                    commit('setMangaReadTop', { url: smg.url, read: request.read });
+                    commit('setMangaReadTop', { url: smg.url, read: message.read });
                     dispatch('updateManga', smg);
                 }
             }
@@ -278,7 +293,27 @@ const actions = {
             sample.auto = true;
             dispatch("readManga", sample);
         }
-    }
+    },
+    /**
+     * Add category
+     * @param {*} param0 
+     * @param {*} obj containing key of the manga and name of the category 
+     */
+    addCategoryToManga({ commit, dispatch }, obj) {
+        let mg = state.all.find(manga => manga.key === obj.key);
+        commit("addCategoryToManga", obj);
+        dispatch('updateManga', mg);
+    },
+    /**
+     * Remove category
+     * @param {*} param0 
+     * @param {*} param0 
+     */
+    removeCategoryFromManga({ commit, dispatch }, obj) {
+        let mg = state.all.find(manga => manga.key === obj.key);
+        commit("removeCategoryFromManga", obj);
+        dispatch('updateManga', mg);
+    },
 }
 
 /**
@@ -422,6 +457,32 @@ const mutations = {
             }
         }
         state.all.push(mg);
+    }, 
+    /**
+     * Links a category to a manga
+     * @param {*} state 
+     * @param {*} param1 containing key of the manga and name of the category to add
+     */
+    addCategoryToManga(state, {key, name}) {
+        let mg = state.all.find(manga => manga.key === key)
+        if (mg !== undefined) {
+            if (!mg.cats.includes(name)) {
+                mg.cats.push(name);
+            }
+        }
+    },
+    /**
+     * Unlink a category from a manga
+     * @param {*} state 
+     * @param {*} param1 containing key of the manga and name of the category to remove
+     */
+    removeCategoryFromManga(state, {key, name}) {
+        let mg = state.all.find(manga => manga.key === key)
+        if (mg !== undefined) {
+            if (mg.cats.includes(name)) {
+                mg.cats.splice(mg.cats.indexOf(name), 1);
+            }
+        }
     }
 }
 

@@ -65,5 +65,10 @@ export default {
 };
 </script>
 <style>
-	
+	.dialog .card__title, .dialog .card__text {
+    	padding: 4px 16px;
+	}
+	.dialog .card__title {
+		padding-top: 10px;
+	}
 </style>

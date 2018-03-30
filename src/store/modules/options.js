@@ -105,9 +105,14 @@ const actions = {
      * @param {*} param0 
      * @param {*} name 
      */
-    removeCategory({ commit, dispatch, state }, name) {
+    removeCategory({ commit, dispatch, state, rootState }, name) {
         commit('removeCategory', name);
         localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates);
+        for (let mg of rootState.mangas.all) {
+            if (mg.cats.includes(name)) {
+                dispatch("removeCategoryFromManga", {key: mg.key, name: name});
+            }
+        }
     },
     /**
      * Updates a categories state and save

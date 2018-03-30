@@ -8,7 +8,7 @@
         <div v-if="loaded">
             <div v-if="allMangas.length" class="amr-mangas">
                 <!-- Categories -->
-                <Categories :categories="categories" />
+                <Categories :categories="categories" :static-cats="false" :delegate-delete="false" />
                 <!-- Load manga list -->
                 <div class="amr-manga-list-container">
                     <MangaGroup v-if="options.groupmgs === 0"  v-for="mg in allMangas" v-bind:key="mg.key" :mangas="[mg]" />

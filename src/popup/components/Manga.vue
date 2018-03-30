@@ -71,7 +71,7 @@
               <span>Read next chapter</span>
             </v-tooltip>
             <!-- Empty icon if no next chapter -->
-            <v-icon v-if="posInChapList === 0" class="empty-icon"></v-icon> 
+            <v-icon v-if="posInChapList <= 0" class="empty-icon"></v-icon> 
             <!-- Last chapter play -->
             <v-tooltip top content-class="icon-ttip">
               <v-icon slot="activator" @click="play(Infinity)">mdi-page-last</v-icon>
@@ -186,12 +186,6 @@ export default {
       this.$emit("expand-group");
     },
     /**
-     * Reset manga reading to first chapter
-     */
-    resetManga() {
-      this.$store.dispatch("resetManga", { url: this.manga.key });
-    },
-    /**
      * Mark last chapter as read
      */
     markAsRead() {
@@ -276,7 +270,8 @@ export default {
   opacity: 0.6;
 }
 .empty-icon {
-  width: 13px;
+  width: 18px;
+  height: 18x;
 }
 .mirror-icon {
   vertical-align: middle;
