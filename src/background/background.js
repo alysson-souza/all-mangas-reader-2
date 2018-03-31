@@ -15,7 +15,7 @@ import * as utils from '../amr/utils';
      */
     utils.debug("Initialize options");
     await store.dispatch('initOptions');
-
+    
     /**
      * Initialize mirrors list in store from DB
      */

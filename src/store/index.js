@@ -35,7 +35,7 @@ export default new Vuex.Store({
          */
         async getStateFromReference({ commit }, { module, key, mutation }) {
             return new Promise(async (resolve, reject) => {
-                browser.runtime.sendMessage({ action: "vuex_initstate", module: module, key: key })
+                await browser.runtime.sendMessage({ action: "vuex_initstate", module: module, key: key })
                     .then(async object => {
                         await commit(mutation, object)
                         resolve()

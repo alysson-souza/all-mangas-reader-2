@@ -135,8 +135,14 @@ export default {
     margin-left: 4px;
     cursor: pointer;
 }
+.theme--dark .icon.amr-filter {
+    color:grey;
+}
 .amr-filter.activated {
     color: black;
+}
+.theme--dark .icon.amr-filter.activated {
+    color: white;
 }
 .flip-list-move {
   transition: transform 1s;

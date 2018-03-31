@@ -39,7 +39,7 @@
           </v-tooltip>
         </div>
         <!-- Loading bar if chapters list is not loaded yet-->
-        <v-progress-linear v-if="!manga.listChaps.length" :indeterminate="true" height="4" class="amr-manga-waiting"></v-progress-linear>
+        <v-progress-linear v-if="!manga.listChaps.length" :indeterminate="true" height="4" class="amr-manga-waiting" :color="color(1)"></v-progress-linear>
       </v-card>
       </v-flex>
       <!-- Actions -->
@@ -168,14 +168,14 @@ export default {
         light === 0
           ? ""
           : light < 0 ? " darken-" + -light : " lighten-" + light;
-      if (this.manga.read !== 0) return "blue-grey" + lstr;
+      if (this.manga.read !== 0) return this.options.colornotfollow + lstr;
       else if (
         this.manga.listChaps.length &&
         this.manga.lastChapterReadURL !== this.manga.listChaps[0][1]
       ) {
-        return "green" + lstr;
+        return this.options.colornew + lstr;
       } else {
-        return "blue" + lstr;
+        return this.options.colorread + lstr;
       }
     },
     /**
@@ -225,10 +225,7 @@ export default {
     }
   },
   // Name of the component
-  name: "Manga",
-  mount: function() {
-    console.log(this.manga);
-  }
+  name: "Manga"
 };
 </script>
 

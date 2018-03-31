@@ -6,6 +6,7 @@ import Axios from 'axios';
  * Each option MUST figure in this object
  */
 const default_options = {
+    debug: 1, // display debug traces in content script, background, popup, ...
     /**
      * Options used by background script
      */
@@ -29,14 +30,27 @@ const default_options = {
     displayMode: 3,
     addauto: 1, // automatically mark chapters as read while reading
     resize: 1, // resize scans to fit in viewport
-    debug: 1, // display debug traces in content script, background, popup, ...
     autobm: 1, // bookmark automatically the scans when dlbclicked in page
     markwhendownload: 0, // mark mangas as read when all images downloaded
     prefetch: 1, // load next chapter in background while reading 
     groupmgs: 1, // group manga with similar name (one piece and One Piece)
     lrkeys: 1, // use arrows keys to read chapter
     rightnext: 1,
+    //TO IMPLEMENT
+    load: 0, //See loading progression in the title bar
+    imgorder: 0, //Load scans in order
 
+    /** Customization options */
+    newTab: 0, //Open popup in new tab
+    displastup: 0, // Display a badge with last time updated in popup
+    dark: 0, //DONE // Use a dark backgroup for AMR pages,
+    colornew: "green", //DONE // color of mangas with new chapters
+    colorread: "blue", //DONE// color of mangas with all chapters read
+    colornotfollow: "blue-grey", //DONE // color of mangas which are not followed
+
+    /** Updates options */
+    updatechap: 1800000, // update chapters frequency
+    
     /**
      * Categories states, each custom category is stored in localStorage in this array
      * states are 
@@ -53,6 +67,7 @@ const default_options = {
 }
 
 const jsonOptions = ["categoriesStates", "impl-repositories"];
+const stringOptions = ["colornew", "colorread", "colornotfollow"];
 
 /**
  *  initial state of amr options
@@ -78,6 +93,11 @@ const actions = {
             let storedVal = localStorage["o." + key];
             if (storedVal) {
                 if (jsonOptions.includes(key)) storedVal = JSON.parse(storedVal);
+                else {
+                    if (!stringOptions.includes(key)) {
+                        storedVal = parseInt(storedVal); // all non Json and non String values are considered Integers --> this is right for now
+                    }
+                }
                 commit('setOption', { key: key, value: storedVal });
             }
         }

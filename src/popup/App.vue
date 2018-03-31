@@ -1,10 +1,10 @@
 <template>
-	<v-app>
+	<v-app :dark="$store.state.options.dark === 1">
 		<v-toolbar app>
 			<img src="/icons/icon_32.png" alt="All Mangas Reader">
 			<v-toolbar-title v-text="title"></v-toolbar-title>
 			<v-spacer></v-spacer>
-			<v-btn icon @click.stop="options = true">
+			<v-btn icon @click.stop="openOptions()">
 				<v-icon>mdi-settings</v-icon>
 			</v-btn>
 			<v-btn icon @click.stop="bottomSearch = !bottomSearch">
@@ -32,6 +32,7 @@
 		</v-toolbar>
 		<v-content>
 			<MangaList></MangaList>
+			<div id="__bottom_app__"></div>
 		</v-content>
 		<v-dialog
 			v-model="options"
@@ -41,8 +42,8 @@
 			scrollable
 			>
         <v-card tile>
-          <v-toolbar card dark color="red darken-1">
-            <v-btn icon @click.native="options = false" dark>
+          <v-toolbar card dark color="primary">
+            <v-btn icon @click.native="closeOptions()" dark>
               <v-icon>close</v-icon>
             </v-btn>
             <v-toolbar-title>Settings</v-toolbar-title>
@@ -56,14 +57,15 @@
 <script>
 import MangaList from "./components/MangaList";
 import Options from "./components/Options";
+import PopupResizer from './resizePopup';
 
 export default {
   data() {
     return {
       bottomSearch: false,
       bottomOptions: false,
-	  title: "All Mangas Reader", 
-	  options: false
+			title: "All Mangas Reader", 
+			options: false
     };
   },
   name: "App",
@@ -71,16 +73,26 @@ export default {
   created() {
     // initialize state for store in popup from background
     this.$store.dispatch("getStateFromReference", {
-      module: "options",
-      mutation: "extendOptions"
-    });
-    // initialize state for store in popup from background
-    this.$store.dispatch("getStateFromReference", {
       module: "mirrors",
       key: "all",
       mutation: "setMirrors"
     });
-  }
+	}, 
+	methods: {
+		openOptions() {
+			this.options = true;
+			PopupResizer.setHeightToMax();
+		}, 
+		closeOptions() {
+			this.options = false;
+			PopupResizer.setHeightToCurrent();
+		}
+	}, 
+	mounted: function () {
+  	this.$nextTick(function () {
+    	PopupResizer.checkHeight();
+		})
+	}
 };
 </script>
 <style>

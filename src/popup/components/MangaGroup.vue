@@ -127,14 +127,14 @@ export default {
         light === 0
           ? ""
           : light < 0 ? " darken-" + -light : " lighten-" + light;
-      if (this.first.read !== 0) return "blue-grey" + lstr;
+      if (this.first.read !== 0) return this.options.colornotfollow + lstr;
       else if (
         this.first.listChaps.length &&
         this.first.lastChapterReadURL !== this.first.listChaps[0][1]
       ) {
-        return "green" + lstr;
+        return this.options.colornew + lstr;
       } else {
-        return "blue" + lstr;
+        return this.options.colorread + lstr;
       }
     },
     /**
@@ -226,6 +226,10 @@ select {
   padding: 2px 4px;
   padding-right: 15px;
   color: white;
+  font-size: 11px;
+}
+select option {
+    font-size: 11px;
 }
 .det-sel-wrapper:after {
   content: "▼";

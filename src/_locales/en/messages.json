@@ -1,0 +1,216 @@
+{
+  "description": {
+    "message": "Follow updates of online manga readers. Beautify reading, with full chapters scans.",
+    "description": "Description of the extension."
+  },
+  "licence": {
+    "message": "All Mangas Reader is under the licence of GLPv3",
+    "description": "This is the licencing info"
+  },
+  "options_on_websites": {
+    "message": "While reading mangas",
+    "description": "This is the header of the options page tab about reading mangas"
+  },
+  "options_general": {
+    "message": "General",
+    "description": "This is the header of the options page tab general"
+  },
+  "options_supported": {
+    "message": "Supported websites",
+    "description": "This is the header of the options page tab about supported websites"
+  },
+  "options_web_chapter_display_mode": {
+    "message": "Chapter display mode",
+    "description": "This is the title of the options page section chapter display mode"
+  },
+  "options_web_chapter_display_chapter_opt": {
+    "message": "Display chapters",
+    "description": "Option display Chapter"
+  },
+  "options_web_chapter_display_chapter_desc": {
+    "message": "While reading a manga, display the whole chapter instead of the current page",
+    "description": "Option display Chapter description"
+  },
+  "options_web_chapter_display_mode_opt": {
+    "message": "Chapters display mode",
+    "description": "Option Chapter display mode"
+  },
+  "options_web_chapter_display_mode_1": {
+    "message": "Scans are displayed on top of one another",
+    "description": "Option Chapter display mode 1 --> images are displayed on top of one another"
+  },
+  "options_web_chapter_display_mode_2": {
+    "message": "Scans are displayed two by two occidental reading mode",
+    "description": "Option Chapter display mode 2 --> images are displayed two by two occidental reading mode"
+  },
+  "options_web_chapter_display_mode_3": {
+    "message": "Scans are displayed two by two japanese reading mode",
+    "description": "Option Chapter display mode 3 --> images are displayed two by two japanese reading mode"
+  },
+  "options_web_resize_opt": {
+    "message": "Resize scans",
+    "description": "Option Resize scans"
+  },
+  "options_web_resize_desc": {
+    "message": "Resize scans images to fit screen if they are to wide",
+    "description": "Option Resize scans description"
+  },
+  "options_web_loading": {
+    "message": "Loading options",
+    "description": "This is the title of the options page section loading"
+  },
+  "options_web_load_opt": {
+    "message": "Loading progression",
+    "description": "Option Loading progression"
+  },
+  "options_web_load_desc": {
+    "message": "See loading progression in the title bar",
+    "description": "Option Loading progression description"
+  },
+  "options_web_imgorder_opt": {
+    "message": "Load scans in order",
+    "description": "Option Loading sans order"
+  },
+  "options_web_imgorder_desc": {
+    "message": "Load scans in the order of the chapter (This option involve that the chapter's loading will be slower but guarantees that the first scan which will be loaded is the first of the chapter and so on...)",
+    "description": "Option Loading sans order description"
+  },
+  "options_web_prefetch_opt": {
+    "message": "Prefetch next chapter",
+    "description": "Option prefetch next chapter"
+  },
+  "options_web_prefetch_desc": {
+    "message": "Prefetch next chapter while reading manga. (A progress bar indicating the prefetch level of the next chapter appears inside the \"Next\" button)",
+    "description": "Option prefetch next chapter description"
+  },
+  "options_web_markwhendownload_opt": {
+    "message": "Update once fully loaded",
+    "description": "Option Update once fully loaded"
+  },
+  "options_web_markwhendownload_desc": {
+    "message": "Mark chapter as read when the full chapter has been downloaded",
+    "description": "Option Update once fully loaded description"
+  },
+  "options_web_facilities": {
+    "message": "Facilities",
+    "description": "This is the title of the options page section facilities"
+  },
+  "options_web_newbar_opt": {
+    "message": "Navigation in one top bar",
+    "description": "Option Navigation in one top bar"
+  },
+  "options_web_newbar_desc": {
+    "message": "Display navigation features in one always visible bar. (If you uncheck it, two navigation panels are included in each page, one on top of the scans and one at the bottom)",
+    "description": "Option Navigation in one top bar description"
+  },
+  "options_web_addauto_opt": {
+    "message": "Automatically add manga to updates list",
+    "description": "Option automatically add manga to list"
+  },
+  "options_web_addauto_desc": {
+    "message": "Automatically add manga in my reading list when I read it. If you uncheck this option, you will have a button in the navigation bar to add the current manga in the list.",
+    "description": "Option automatically add manga to list description"
+  },
+  "options_web_lrkeys_opt": {
+    "message": "Use keys to read manga",
+    "description": "Option Use keys to read manga"
+  },
+  "options_web_lrkeys_desc": {
+    "message": "Use left /right keys while reading to go previous / next scan.",
+    "description": "Option Use keys to read manga description"
+  },
+  "options_web_autobm_opt": {
+    "message": "Quickly bookmark scans",
+    "description": "Option Quickly bookmark scans"
+  },
+  "options_web_autobm_desc": {
+    "message": "Automatically Bookmark scans when double click on it.",
+    "description": "Option Quickly bookmark scans description"
+  },
+  "options_web_rightnext_opt": {
+    "message": "Next chapter when read ended (right key)",
+    "description": "Option next chapter on right key"
+  },
+  "options_web_rightnext_desc": {
+    "message": "Right key goes to next chapter when at bottom of the page.",
+    "description": "Option next chapter on right key description"
+  },
+
+  "options_gen_aspect": {
+    "message": "Customization",
+    "description": "This is the title of the options page section customization"
+  },
+  "options_gen_newTab_opt": {
+    "message": "Open popup in new tab",
+    "description": "Option Open popup in new tab"
+  },
+  "options_gen_newTab_desc": {
+    "message": "Open my manga reading list in a new tab when i click on the All Mangas Reader's icon",
+    "description": "Option Open popup in new tab description"
+  },
+  "options_gen_groupmgs_opt": {
+    "message": "Group mangas by name",
+    "description": "Option Group mangas by name"
+  },
+  "options_gen_groupmgs_desc": {
+    "message": "Group mangas which have the same name on one line. When mangas are grouped, you can see all occurrences of the manga by clicking on the + icon next to the manga's name.",
+    "description": "Option Group mangas by name description"
+  },
+  "options_gen_displastup_opt": {
+    "message": "Badge with last time updated on manga",
+    "description": "Option Badge with last time updated"
+  },
+  "options_gen_displastup_desc": {
+    "message": "Display a badge with a calendar icon representing the last time a new chapter has been published",
+    "description": "Option Badge with last time updated description"
+  },
+  "options_gen_dark_opt": {
+    "message": "Dark background",
+    "description": "Option Dark popup"
+  },
+  "options_gen_dark_desc": {
+    "message": "Use a dark background in All Mangas Reader pages",
+    "description": "Option Dark popup description"
+  }, 
+  "options_gen_colors_new": {
+    "message": "Color of mangas with unread chapters",
+    "description": "Option color of mangas new"
+  }, 
+  "options_gen_colors_read": {
+    "message": "Color of mangas with all chapters read",
+    "description": "Option color of mangas read"
+  }, 
+  "options_gen_colors_notfollow": {
+    "message": "Color of mangas which you choose to stop following",
+    "description": "Option color of mangas not followed"
+  },
+
+  "options_gen_updates": {
+    "message": "Updates",
+    "description": "This is the title of the options page section updates"
+  },
+  "options_gen_update_chap_label": {
+    "message": "Update chapters list every",
+    "description": "Option update chapters list"
+  },
+  "options_minutes": {
+    "message": "$1 minutes", 
+    "description": "Display a number of minutes"
+  },
+  "options_hours": {
+    "message": "$1 hours", 
+    "description": "Display a number of hours"
+  },
+  "options_days": {
+    "message": "$1 days", 
+    "description": "Display a number of days"
+  },
+  "options_week": {
+    "message": "$1 week", 
+    "description": "Display a number of week"
+  }, 
+  "options_update_chap_btn": {
+    "message": "Refresh now",
+    "description": "Button refresh chapters list now"
+  }
+}

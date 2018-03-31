@@ -124,10 +124,14 @@ export default {
   outline: none;
   display: -webkit-inline-box;
   display: -ms-inline-flexbox;
+  font-size:11px;
 }
 .cat-act {
   font-size: 12px;
   cursor: pointer;
+}
+.application .theme--dark.icon, .theme--dark .icon.cat-act {
+  color: rgba(0,0,0,.54);
 }
 .cat-act:hover {
   opacity: 0.6;
@@ -147,12 +151,16 @@ export default {
   border-radius: 2px;
   outline: none;
   transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+  color: black;
 }
-.cat-chip.include {
+.cat-chip:hover {
+  background: #777;
+}
+.cat-chip.include, .cat-chip.exclude {
   background: #e0e0e0;
 }
-.cat-chip.exclude {
-  background: #e0e0e0;
+.cat-chip.include:hover, .cat-chip.exclude:hover {
+  background: #a0a0a0;
 }
 .cat-chip.exclude .cat-name {
   text-decoration: line-through;
