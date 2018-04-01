@@ -1,6 +1,6 @@
 
 import browser from "webextension-polyfill";
-import * as utils from "../amr/utils";
+import * as utils from "./utils";
 import store from "../store";
 
 class IconHelper {
@@ -18,28 +18,43 @@ class IconHelper {
             this.animationSpeed = 50;
             this.rotation = 0;
             this.icon = document.createElement('img');
-            this.icon.src = 'icons/icon_32.png';
+            this.icon.src = '/icons/icon_32.png';
             this.icon_bw = document.createElement('img');
-            this.icon_bw.src = 'icons/icon_32_bw.png';
+            this.icon_bw.src = '/icons/icon_32_bw.png';
         }
+        this.requireStop = false;
+    }
+    updateBadge(nb) {
+        browser.browserAction.setBadgeText({text: ""+nb});
+        if (nb === 0) {
+            //set grey background
+            browser.browserAction.setBadgeBackgroundColor({color:"#aaaaaa"});
+        } else {
+            //set red background
+            browser.browserAction.setBadgeBackgroundColor({color:"red"});
+        }
+    }
+    resetBadge() {
+        browser.browserAction.setBadgeText({text: ""});
     }
     /**
      * Set AMR icon to blue sharingan
      */
     setBlueIcon() {
-        browser.browserAction.setIcon({ path: "icons/icon_32_blue.png" });
+        browser.browserAction.setIcon({ path: "/icons/icon_32_blue.png" });
     }
     /**
      * Set AMR icon to grayscale sharingan
      */
     setBWIcon() {
-        browser.browserAction.setIcon({ path: "icons/icon_32_bw.png" });
+        browser.browserAction.setIcon({ path: "/icons/icon_32_bw.png" });
     }
     /**
      * Set AMR icon to default sharingan
      */
     resetIcon() {
-        browser.browserAction.setIcon({ path: "icons/icon_32.png" });
+        this.requireStop = true;
+        browser.browserAction.setIcon({ path: "/icons/icon_32.png" });
     }
     /**
      * Set AMR icon to spinning sharingan (normal or grayscale depending on options)
@@ -47,12 +62,13 @@ class IconHelper {
     spinIcon() {
         if (!utils.isFirefox()) {
             // chrome does not support animated svg as icon
+            this.requireStop = false;
             this.waitSpinning();
         } else {
-            if (store.state.options.nocount == 1 && !store.getters.hasNewMangas()) {
-                browser.browserAction.setIcon({ path: "icons/icon_32_bw.svg" });
+            if (store.state.options.nocount == 1 && !store.getters.hasNewMangas) {
+                browser.browserAction.setIcon({ path: "/icons/icon_32_bw.svg" });
             } else {
-                browser.browserAction.setIcon({ path: "icons/icon_32.svg" });
+                browser.browserAction.setIcon({ path: "/icons/icon_32.svg" });
             }
         }
     }
@@ -68,7 +84,7 @@ class IconHelper {
         this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.canvasContext.translate(this.canvas.width / 2, this.canvas.height / 2);
         this.canvasContext.rotate(2 * Math.PI * (doEase ? this.ease(this.rotation) : this.rotation));
-        if (store.state.options.nocount == 1 && !store.getters.hasNewMangas()) {
+        if (store.state.options.nocount == 1 && !store.getters.hasNewMangas) {
             this.canvasContext.drawImage(this.icon_bw, -this.canvas.width / 2, -this.canvas.height / 2);
         } else {
             this.canvasContext.drawImage(this.icon, -this.canvas.width / 2, -this.canvas.height / 2);
@@ -82,16 +98,17 @@ class IconHelper {
      * Animation loop
      */
     waitSpinning() {
+        if (this.requireStop) {
+            this.requireStop = false;
+            return;
+        }
         this.rotation += 1 / this.animationFrames;
         if (this.rotation > 1) {
             this.rotation = this.rotation - 1;
             this.doEase = false;
         }
         this.drawIconAtRotation(false);
-        var _self = this;
-        setTimeout(function () {
-            _self.waitSpinning();
-        }, this.animationSpeed);
+        setTimeout(this.waitSpinning.bind(this), this.animationSpeed);
     }
     /**
      * Ease for rotation

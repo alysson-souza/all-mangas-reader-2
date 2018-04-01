@@ -130,11 +130,79 @@
                                 {{ i18n("options_gen_update_chap_label") }} : 
                             </v-flex>
                             <v-flex xs4>
-                                <v-select v-model="updatechap" v-on:change="setOption('updatechap')" :items="update_chap_values">
+                                <v-select v-model="updatechap" :items="update_chap_values">
                                 </v-select>
                             </v-flex>
                             <v-flex>
-                                <v-btn color="primary" class="btn-sel" small>{{i18n("options_update_chap_btn")}}</v-btn>
+                                <v-btn color="primary" class="btn-sel" small 
+                                    @click="updateChaps()" 
+                                    :loading="loadingChapters" 
+                                    :disabled="loadingChapters">
+                                    {{i18n("options_update_chap_btn")}}
+                                </v-btn>
+                            </v-flex>
+                        </v-layout>
+                    </v-container>
+                </div>
+                <!-- Update mirrors list -->
+                <div class="subtitle">
+                    <v-container fluid class="opt-container">
+                        <v-layout row wrap>
+                            <v-flex xs4 class="sel-title">
+                                {{ i18n("options_gen_update_mir_label") }} : 
+                            </v-flex>
+                            <v-flex xs4>
+                                <v-select v-model="updatemg" :items="update_mir_values">
+                                </v-select>
+                            </v-flex>
+                            <v-flex>
+                                <v-btn color="primary" class="btn-sel" small 
+                                    @click="updateMirrors()" 
+                                    :loading="loadingMirrors" 
+                                    :disabled="loadingMirrors">
+                                    {{i18n("options_update_mir_btn")}}
+                                </v-btn>
+                            </v-flex>
+                        </v-layout>
+                    </v-container>
+                </div>
+                <!-- Update on startup -->
+                <div class="subtitle">{{i18n('options_gen_checkmgstart_desc')}}</div>
+                <v-checkbox v-model="checkmgstart" @change="setOption('checkmgstart')"
+                        :label="i18n('options_gen_checkmgstart_opt')"></v-checkbox>
+                <!-- Spin icon while loading chapters -->
+                <div class="subtitle">{{i18n('options_gen_refreshspin_desc')}}</div>
+                <v-checkbox v-model="refreshspin" @change="setOption('refreshspin')"
+                        :label="i18n('options_gen_refreshspin_opt')"></v-checkbox>
+                <!-- Save bandwidth while loading chapters -->
+                <div class="subtitle">{{i18n('options_gen_savebandwidth_desc')}}</div>
+                <v-checkbox v-model="savebandwidth" @change="setOption('savebandwidth')"
+                        :label="i18n('options_gen_savebandwidth_opt')"></v-checkbox>
+                <!-- Display grey 0 when no new -->
+                <div class="subtitle">{{i18n('options_gen_displayzero_desc')}}</div>
+                <v-checkbox v-model="displayzero" @change="setOption('displayzero')"
+                        :label="i18n('options_gen_displayzero_opt')"></v-checkbox>
+                <!-- Grey sharingan if no new -->
+                <div class="subtitle">{{i18n('options_gen_nocount_desc')}}</div>
+                <v-checkbox v-model="nocount" @change="setOption('nocount')"
+                        :label="i18n('options_gen_nocount_opt')"></v-checkbox>
+                
+                <!-- Notifications -->
+                <div class="headline">{{ i18n("options_gen_notifs") }}</div>
+                <!-- Notify on new chapter -->
+                <div class="subtitle">{{i18n('options_gen_shownotifications_desc')}}</div>
+                <v-checkbox v-model="shownotifications" @change="setOption('shownotifications')"
+                        :label="i18n('options_gen_shownotifications_opt')"></v-checkbox>
+                <!-- Time to close notification -->
+                <div class="subtitle">
+                    <v-container fluid class="opt-container">
+                        <v-layout row wrap>
+                            <v-flex xs6 class="sel-title">
+                                {{ i18n("options_gen_notificationtimer_label") }} : 
+                            </v-flex>
+                            <v-flex xs6>
+                                <v-select v-model="notificationtimer" :items="notificationtimer_values">
+                                </v-select>
                             </v-flex>
                         </v-layout>
                     </v-container>
@@ -149,6 +217,8 @@
 </template>
 <script>
 import i18n from "../../amr/i18n";
+import browser from "webextension-polyfill";
+import amrUpdater from "../../amr/amr-updater";
 
 /**
  * Converters to format options in db and in page (ex : booleans are store as 0:1 in db)
@@ -173,7 +243,13 @@ const converters = {
       "newTab",
       "groupmgs",
       "displastup",
-      "dark"
+      "dark",
+      "checkmgstart",
+      "refreshspin",
+      "savebandwidth",
+      "displayzero",
+      "nocount",
+      "shownotifications"
     ]
   }
 };
@@ -205,16 +281,33 @@ export default {
         "grey"
       ],
       update_chap_values: [
-          {value: 5 * 60 * 1000, text: i18n("options_minutes", 5)},
-          {value: 10 * 60 * 1000, text: i18n("options_minutes", 10)},
-          {value: 15 * 60 * 1000, text: i18n("options_minutes", 15)},
-          {value: 30 * 60 * 1000, text: i18n("options_minutes", 30)},
-          {value: 1 * 60 * 60 * 1000, text: i18n("options_hours", 1)},
-          {value: 2 * 60 * 60 * 1000, text: i18n("options_hours", 2)},
-          {value: 6 * 60 * 60 * 1000, text: i18n("options_hours", 6)},
-          {value: 12 * 60 * 60 * 1000, text: i18n("options_hours", 12)},
-          {value: 24 * 60 * 60 * 1000, text: i18n("options_days", 1)},
-          {value: 7 * 24 * 60 * 60 * 1000, text: i18n("options_week", 1)},
+        { value: 5 * 60 * 1000, text: i18n("options_minutes", 5) },
+        { value: 10 * 60 * 1000, text: i18n("options_minutes", 10) },
+        { value: 15 * 60 * 1000, text: i18n("options_minutes", 15) },
+        { value: 30 * 60 * 1000, text: i18n("options_minutes", 30) },
+        { value: 1 * 60 * 60 * 1000, text: i18n("options_hours", 1) },
+        { value: 2 * 60 * 60 * 1000, text: i18n("options_hours", 2) },
+        { value: 6 * 60 * 60 * 1000, text: i18n("options_hours", 6) },
+        { value: 12 * 60 * 60 * 1000, text: i18n("options_hours", 12) },
+        { value: 24 * 60 * 60 * 1000, text: i18n("options_days", 1) },
+        { value: 7 * 24 * 60 * 60 * 1000, text: i18n("options_week", 1) }
+      ],
+      loadingChapters: false,
+      update_mir_values: [
+        { value: 24 * 60 * 60 * 1000, text: i18n("options_days", 1) },
+        { value: 2 * 24 * 60 * 60 * 1000, text: i18n("options_days", 2) },
+        { value: 7 * 24 * 60 * 60 * 1000, text: i18n("options_week", 1) },
+        { value: 2 * 7 * 24 * 60 * 60 * 1000, text: i18n("options_week", 2) }
+      ],
+      loadingMirrors: false,
+      notificationtimer_values: [
+        { value: 0, text: i18n("options_gen_notificationtimer_def") },
+        { value: 5 * 1000, text: i18n("options_seconds", 5) },
+        { value: 10 * 1000, text: i18n("options_seconds", 10) },
+        { value: 15 * 1000, text: i18n("options_seconds", 15) },
+        { value: 30 * 1000, text: i18n("options_seconds", 30) },
+        { value: 60 * 1000, text: i18n("options_minutes", 1) },
+        { value: 2 * 60 * 1000, text: i18n("options_minutes", 2) }
       ]
     };
     // add all options properties in data model; this properties are the right one in store because synchronization with background has been called by encapsuler (popup.js / other) before initializing vue
@@ -226,6 +319,24 @@ export default {
       }
     });
     return res;
+  },
+  watch: {
+    /**
+     * For v-select, v-model is updated after event change is called so we
+     * need to watch the value to update the model properly
+     */
+    updatechap: function(n, o) {
+      this.setOption("updatechap");
+    },
+    updatemg: function(n, o) {
+      this.setOption("updatemg");
+    },
+    displayzero: function() {
+      amrUpdater.refreshBadgeAndIcon();
+    },
+    nocount: function() {
+      amrUpdater.refreshBadgeAndIcon();
+    }
   },
   methods: {
     i18n: (message, ...args) => i18n(message, ...args),
@@ -241,8 +352,24 @@ export default {
           if (prop === optstr) val = converters[key].toDb(val);
         }
       });
-      console.log(optstr + " --> " + val + " - " + typeof val);
       this.$store.dispatch("setOption", { key: optstr, value: val });
+    },
+    /**
+     * Updates chapters lists
+     */
+    async updateChaps() {
+      this.loadingChapters = true;
+      //We don't call the store updateChaptersLists because when refreshing chapters, it will use jQuery (inside implementations), which is not loaded in the popup, let's do it in background
+      await browser.runtime.sendMessage({ action: "updateChaptersLists" });
+      this.loadingChapters = false;
+    },
+    /**
+     * Update mirrors lists
+     */
+    async updateMirrors() {
+      this.loadingMirrors = true;
+      await this.$store.dispatch("updateMirrorsLists");
+      this.loadingMirrors = false;
     }
   }
 };
@@ -269,13 +396,13 @@ export default {
   opacity: 0.5;
 }
 .sel-title {
-    line-height: 40px;
+  line-height: 40px;
 }
 .btn-sel {
-    padding: 0px 8px;
+  padding: 0px 8px;
 }
 .opt-container {
-    padding: 0;
+  padding: 0;
 }
 </style>
 

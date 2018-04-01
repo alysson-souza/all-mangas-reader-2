@@ -5,6 +5,8 @@ import notifications from '../../amr/notifications';
 import statsEvents from '../../amr/stats-events';
 import * as utils from "../../amr/utils";
 import samples from "../../amr/samples";
+import amrUpdater from '../../amr/amr-updater';
+import iconHelper from '../../amr/icon-helper';
 
 /**
  *  initial state of the mangas module
@@ -85,6 +87,7 @@ const actions = {
             console.error(e)
         }
     },
+    
     /**
      * Change manga display mode
      * @param {*} vuex object 
@@ -106,6 +109,8 @@ const actions = {
         let mg = state.all.find(manga => manga.key === key);
         dispatch('updateManga', mg);
         statsEvents.trackResetManga(mg);
+        // refresh badge
+        amrUpdater.refreshBadgeAndIcon();
     },
     /**
      * Read a manga : update latest read chapter if the current chapter is more recent than the previous one
@@ -133,6 +138,8 @@ const actions = {
             statsEvents.trackReadManga(mg);
             statsEvents.trackReadMangaChapter(mg);
         }
+        // refresh badge
+        amrUpdater.refreshBadgeAndIcon();
     },
     /**
      * Get list of chapters for a manga
@@ -254,6 +261,7 @@ const actions = {
                 } catch (e) {
                     // implementation was not loaded
                     console.error("Impossible to load mirror implementation " + mg.mirror);
+                    console.error(e);
                     reject(mg);
                 }
             });
@@ -261,6 +269,33 @@ const actions = {
             return Promise.resolve(mg);
         }
     },
+
+    /**
+     * Update all mangas chapters lists
+     * @param {*} param0 
+     * @param {*} message 
+     */
+    async updateChaptersLists({ dispatch, commit, getters, state }) {
+        // spin the badge
+        iconHelper.spinIcon();
+        
+        // update last update ts
+        dispatch("setOption", {key: "lastChaptersUpdate", value: new Date().getTime()});
+
+        // refresh all mangas chapters lists
+        let refchaps = [];
+        for (let mg of state.all) {
+            refchaps.push(
+                // we catch the reject from the promise to prevent the Promise.all to fail due to a rejected promise. Thanks to that, Promise.all will wait that each manga is refreshed, even if it does not work
+                dispatch("refreshLastChapters", {url: mg.url}).catch(e => e)
+            );
+        }
+        await Promise.all(refchaps); // wait for everything to be updated
+
+        //update badges and icon state
+        amrUpdater.refreshBadgeAndIcon();
+    },
+    
     /**
      * Change the read top on a manga
      * @param {*} vuex object 
@@ -282,6 +317,8 @@ const actions = {
                 }
             }
         }
+        // refresh badge
+        amrUpdater.refreshBadgeAndIcon();
     },
     /**
      * Import sample mangas on user request

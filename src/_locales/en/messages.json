@@ -193,6 +193,10 @@
     "message": "Update chapters list every",
     "description": "Option update chapters list"
   },
+  "options_seconds": {
+    "message": "$1 seconds", 
+    "description": "Display a number of seconds"
+  },
   "options_minutes": {
     "message": "$1 minutes", 
     "description": "Display a number of minutes"
@@ -212,5 +216,74 @@
   "options_update_chap_btn": {
     "message": "Refresh now",
     "description": "Button refresh chapters list now"
+  },
+  "options_gen_update_mir_label": {
+    "message": "Update mirrors list every",
+    "description": "Option update mirrors list"
+  },
+  "options_update_mir_btn": {
+    "message": "Refresh now",
+    "description": "Button refresh mirrors list now"
+  },
+  "options_gen_checkmgstart_opt": {
+    "message": "Update on startup",
+    "description": "Option Update on startup"
+  },
+  "options_gen_checkmgstart_desc": {
+    "message": "Update chapters list on browser startup",
+    "description": "Option Update on startup description"
+  },
+  "options_gen_refreshspin_opt": {
+    "message": "Spin icon",
+    "description": "Option Spin icon"
+  },
+  "options_gen_refreshspin_desc": {
+    "message": "Spin the sharingan icon when All Mangas Reader is updating chapters list.",
+    "description": "Option Spin icon description"
+  },
+  "options_gen_savebandwidth_opt": {
+    "message": "Save bandwidth",
+    "description": "Option Save bandwidth"
+  },
+  "options_gen_savebandwidth_desc": {
+    "message": "Save bandwidth while loading chapter list (this options waits for one manga to be updated before updating the next one, update is slower)",
+    "description": "Option Save bandwidth description"
+  },
+  "options_gen_displayzero_opt": {
+    "message": "Grey \"0\" on icon",
+    "description": "Option grey 0 on icon"
+  },
+  "options_gen_displayzero_desc": {
+    "message": "Display a grey \"0\" on AMR's icon when there is no new manga.",
+    "description": "Option grey 0 on icon description"
+  },
+  "options_gen_nocount_opt": {
+    "message": "Grey sharingan as icon",
+    "description": "Option grey sharingan as icon"
+  },
+  "options_gen_nocount_desc": {
+    "message": "Do not display a badge with the number of unread manga but display AMR's icon in color if there are new mangas and in grey if not.",
+    "description": "Option grey sharingan as icon description"
+  }, 
+  "options_gen_notifs": {
+    "message": "Notifications",
+    "description": "This is the title of the options page section notifications"
+  },
+  "options_gen_shownotifications_opt": {
+    "message": "Notify on new chapter",
+    "description": "Option Notify on new chapter"
+  },
+  "options_gen_shownotifications_desc": {
+    "message": "Show browser notification when new chapters are found.",
+    "description": "Option Notify on new chapter description"
+  },
+  "options_gen_notificationtimer_label": {
+    "message": "Time before the notification close itself",
+    "description": "Option select time before notif closes"
+  },
+  "options_gen_notificationtimer_def": {
+    "message": "Closed by user action",
+    "description": "Option closed by user action for option select time before notif closes"
   }
+  
 }

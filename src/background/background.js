@@ -1,15 +1,13 @@
 import Handler from './handler';
-import IconHelper from './icon-helper';
+import IconHelper from '../amr/icon-helper';
 import store from '../store';
 import * as utils from '../amr/utils';
+import amrUpdater from '../amr/amr-updater';
 
 // Initialize store
 (async () => {
-    // Set blue icon until AMR is loaded
+    // Blue icon while loading
     IconHelper.setBlueIcon();
-    // Turn icon back to normal when mirrors loaded
-    document.addEventListener("mirrorsLoaded", () => IconHelper.resetIcon());
-
     /**
      * Initialize AMR options from locaStorage
      */
@@ -17,7 +15,7 @@ import * as utils from '../amr/utils';
     await store.dispatch('initOptions');
     
     /**
-     * Initialize mirrors list in store from DB
+     * Initialize mirrors list in store from DB or repo
      */
     utils.debug("Initialize mirrors");
     await store.dispatch('initMirrors');
@@ -28,9 +26,21 @@ import * as utils from '../amr/utils';
     utils.debug("Initialize mangas");
     await store.dispatch('initMangasFromDB');
 
+    // set icon and badge
+    amrUpdater.refreshBadgeAndIcon();
+    /**
+     * If option update chapters lists on startup --> do it
+     */
+    if (store.state.options.checkmgstart === 1) {
+        store.dispatch("updateChaptersLists");
+    }
+
     // Starts message handling
     utils.debug("Initialize message handler");
     Handler.handle();
+
+    // Check if we need to refresh chapters lists, mirrors lists and launch automatic checker
+    amrUpdater.load();
 
     /**
      * The function below increments the reading of each manga in the list from a chapter each 2 seconds

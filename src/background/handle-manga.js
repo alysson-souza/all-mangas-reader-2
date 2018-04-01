@@ -17,7 +17,8 @@ const contentCss = ['content/content.css'];
 
 class HandleManga {
     handle(message, sender) {
-        let key = utils.mangaKey(message.url);
+        let key;
+        if (message.url) key = utils.mangaKey(message.url);
         switch (message.action) {
             case "pagematchurls":
                 // content script included, test if a mirror match the page and load AMR in tab
@@ -46,6 +47,9 @@ class HandleManga {
                     .then(() => store.dispatch('readManga', message)); // set reading to current chapter
             case "importSamples":
                 return store.dispatch("importSamples");
+            case "updateChaptersLists":
+                // updates all mangas lists (do it in background if called from popup because it requires jQuery)
+                return store.dispatch("updateChaptersLists");
         }
     }
 

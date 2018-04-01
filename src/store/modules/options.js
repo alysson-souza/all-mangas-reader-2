@@ -1,5 +1,4 @@
 import storedb from '../../amr/storedb'
-import Axios from 'axios';
 
 /**
  * Default options of AMR.
@@ -15,13 +14,14 @@ const default_options = {
         "https://raw.github.com/AllMangasReader-dev/mirrors/master/"
     ],
     shownotifications: 1, //display notifications on new chapter
-    nocount: 1, // 1 : display gray sharingan and normal if new chaps; 0 : badge
+    notificationtimer: 0, //time to clear notification auto
 
     /**
      * Options used in content scripts (included in mangas pages)
      */
     displayChapters: 1, // display scans as a book
-    newbar: 1,
+    newbar: 1, // display one navigation bar on top
+
     /**
      * mode = 1 --> images are displayed on top of one another
      * mode = 2 --> images are displayed two by two occidental reading mode
@@ -35,7 +35,8 @@ const default_options = {
     prefetch: 1, // load next chapter in background while reading 
     groupmgs: 1, // group manga with similar name (one piece and One Piece)
     lrkeys: 1, // use arrows keys to read chapter
-    rightnext: 1,
+    rightnext: 1, // arrow right goes to next chapter at bottom
+
     //TO IMPLEMENT
     load: 0, //See loading progression in the title bar
     imgorder: 0, //Load scans in order
@@ -49,7 +50,13 @@ const default_options = {
     colornotfollow: "blue-grey", //DONE // color of mangas which are not followed
 
     /** Updates options */
-    updatechap: 1800000, // update chapters frequency
+    updatechap: 1800000, //DONE // update chapters frequency
+    updatemg: 86400000, //DONE // update mirrors frequency
+    checkmgstart: 0, //DONE // update chapters lists on startup
+    refreshspin: 1, // spin the icon while loading chapters
+    savebandwidth: 0, // save bandwidth while loading chapters
+    displayzero: 1, // display a grey zero when no new chapter
+    nocount: 1, // 1 : display gray sharingan and normal if new chaps; 0 : badge
     
     /**
      * Categories states, each custom category is stored in localStorage in this array
@@ -63,7 +70,14 @@ const default_options = {
         { name: "Read", state: "include", type: "native" },
         { name: "Unread", state: "include", type: "native" },
         { name: "One Shots", state: "include", type: "native" }
-    ]
+    ], 
+
+    /** Internal timestamps and state booleans */
+    updated: 0, // last time something has been changed in the list
+    changesSinceSync: 0, // 1 : something has been changed since last sync
+    lastChaptersUpdate: 0, // last time chapters lists have been updated
+    lastMirrorsUpdate: 0, // last time mirrors have been updated
+    
 }
 
 const jsonOptions = ["categoriesStates", "impl-repositories"];

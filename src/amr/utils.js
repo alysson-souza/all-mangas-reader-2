@@ -67,7 +67,10 @@ export function debug(message) {
 export function serializeVuexObject(obj) {
     return JSON.parse(JSON.stringify(obj)) // For an unknown reason, better than Object.assign({}, obj) in Firefox
 }
-
+/**
+ * Extract the full host name
+ * @param {*} url 
+ */
 const extractHostname = function(url) {
     var hostname;
     //find & remove protocol (http, ftp, etc.) and get hostname
@@ -86,7 +89,10 @@ const extractHostname = function(url) {
 
     return hostname;
 }
-
+/**
+ * Extract the root domain of a url without subdomain
+ * @param {*} url 
+ */
 const extractRootDomain = function(url) {
     var domain = extractHostname(url),
         splitArr = domain.split('.'),
@@ -104,7 +110,10 @@ const extractRootDomain = function(url) {
     }
     return domain;
 }
-
+/**
+ * Extract the part of a url following the domain
+ * @param {*} url 
+ */
 const afterHostURL = function(url) {
     var after;
     //find & remove protocol (http, ftp, etc.) and get hostname
@@ -117,6 +126,10 @@ const afterHostURL = function(url) {
     }
     return after;
 }
+/**
+ * Calculate manga key for a url (just host name, without subdomain followed by url of manga)
+ * @param {*} url 
+ */
 export function mangaKey(url) {
     if (!url) {
         console.error("A manga key has been requested for undefined url, it will be melted in your database with other mangas with same issue, check the implementation of the mirror where your read this manga.")

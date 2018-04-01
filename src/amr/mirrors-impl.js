@@ -1,5 +1,4 @@
 import 'regenerator-runtime/runtime';
-import Axios from 'axios';
 import store from '../store';
 
 /**
@@ -20,6 +19,13 @@ class MirrorsImpl {
     }
 
     /**
+     * Removes the implementation cache
+     */
+    resetImplementations() {
+        this.implementations = [];
+    }
+
+    /**
      * Load a mirror implementation file and return a Promise containing implementation object when loaded
      * @param {*} scripturl 
      */
@@ -37,7 +43,7 @@ class MirrorsImpl {
             };
             script.onerror = reject;
             script.async = true;
-            script.src = scripturl;
+            script.src = scripturl + "?ts=" + new Date().getTime(); // do not cache script implementation when loading it
         });
     }
 

@@ -1,6 +1,8 @@
 import storedb from '../../amr/storedb'
 import Axios from 'axios'
 import * as utils from '../../amr/utils'
+import iconHelper from '../../amr/icon-helper';
+import mirrorsImpl from '../../amr/mirrors-impl';
 
 /**
  *  initial state of the mirrors module
@@ -38,29 +40,17 @@ const actions = {
      * Get mirrors from local database, fetch it from repository if empty
      * @param {*} param0 
      */
-    async initMirrors({ commit, dispatch, rootState }) {
+    async initMirrors({ commit, dispatch }) {
         let websites = await storedb.getWebsites(); // Get mirrors from local database
         if (!websites.length) {
             // No mirrors known yet, get the list
-            // Try all repos --> first to work wins.
-            for (let repo of rootState.options["impl-repositories"]) {
-                let ws = await Axios.get(repo + "websites.json");
-                if (ws && ws.data) {
-                    let updts = []
-                    for (let w of ws.data) {
-                        w.activated = true;
-                        updts.push(dispatch("updateMirror", w));
-                    }
-                    Promise.all(updts); // do not wait that all implementations are in db... few seconds. if we need to wait for it, just add await in front of Promise.all
-                    websites = ws.data;
-                }
-            }
+            websites = await dispatch("updateMirrorsLists");
         }
         if (!websites.length) {
             document.dispatchEvent(new CustomEvent("mirrorsError"));
         } else {
+            // set mirrors list in store
             commit('setMirrors', websites);
-            document.dispatchEvent(new CustomEvent("mirrorsLoaded"));
         }
     },
     /**
@@ -74,8 +64,50 @@ const actions = {
     },
 
     // update mirrors from repository
-    updateFromRepo() {
-        // TODO
+    async updateMirrorsLists({ commit, dispatch, rootState }) {
+        // set the blue badge
+        iconHelper.setBlueIcon();
+
+        // update last update ts
+        dispatch("setOption", {key: "lastMirrorsUpdate", value: new Date().getTime()});
+                
+        let websites = [];
+        let config = {	
+            headers: {
+                'Content-Type': 'application/json',
+                'Cache-Control' : 'no-cache'
+            }
+        };
+
+        // Try all repos --> first to work wins.
+        for (let repo of rootState.options["impl-repositories"]) {
+            let ws = await Axios.get(repo + "websites.json", config);
+            if (ws && ws.data) {
+                let updts = []
+                for (let w of ws.data) {
+                    w.activated = true;
+                    updts.push(
+                        dispatch("updateMirror", w).catch(e => e) // avoid blocking the Promise.all due to an update failure
+                    );
+                }
+                // do not wait that all implementations are in db... few seconds. as the stores have been updated instantly, we do not need to wait for it to be in db
+                Promise.all(updts); 
+                websites = ws.data;
+            }
+        }
+        if (!websites.length) {
+            document.dispatchEvent(new CustomEvent("mirrorsError"));
+        } else {
+            // set mirrors list in store
+            commit('setMirrors', websites);
+        }
+        // reset implementations
+        mirrorsImpl.resetImplementations();
+
+        //update badges and icon state
+        iconHelper.resetIcon();
+
+        return websites;
     }
 }
 
