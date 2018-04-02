@@ -12,7 +12,6 @@ const default_options = {
      * Options used in content scripts (included in mangas pages)
      */
     displayChapters: 1, // display scans as a book
-    newbar: 1, // display one navigation bar on top
     /**
      * mode = 1 --> images are displayed on top of one another
      * mode = 2 --> images are displayed two by two occidental reading mode

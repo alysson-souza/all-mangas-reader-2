@@ -9,7 +9,8 @@ const config = {
     'background/background': './background/background.js',
     'content/testcontent': './content/testcontent.js',
     'content/back': './content/back.js',
-    'popup/popup': './popup/popup.js'
+    'pages/popup/popup': './pages/popup/popup.js', 
+    'pages/lab/lab': './pages/lab/lab.js'
   },
   output: {
     path: __dirname + '/dist',
@@ -63,7 +64,8 @@ const config = {
     }),
     new CopyWebpackPlugin([
       {from: 'icons', to: 'icons', ignore: ['icon.xcf']},
-      {from: 'popup/popup.html', to: 'popup/popup.html'},
+      {from: 'pages/popup/popup.html', to: 'pages/popup/popup.html'},
+      {from: 'pages/lab/lab.html', to: 'pages/lab/lab.html'},
       {from: 'manifest.json', to: 'manifest.json'},
       {from: 'content/*.css', to: '.'},
       {from: '_locales/**/*', to: '.'},

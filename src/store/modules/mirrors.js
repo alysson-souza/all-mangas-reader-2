@@ -3,6 +3,7 @@ import Axios from 'axios'
 import * as utils from '../../amr/utils'
 import iconHelper from '../../amr/icon-helper';
 import mirrorsImpl from '../../amr/mirrors-impl';
+import amrUpdater from '../../amr/amr-updater';
 
 /**
  *  initial state of the mirrors module
@@ -83,7 +84,8 @@ const actions = {
         for (let repo of rootState.options["impl_repositories"]) {
             utils.debug("loading from repository " + repo);
             let ws = await Axios.get(repo + "websites.json", config).catch(e => {
-                utils.debug("Failed to load websites.json from repo " + repo);
+                console.error("Failed to load websites.json from repo " + repo);
+                console.error(e);
                 return e;
             });
             if (ws && ws.data) {
@@ -97,6 +99,7 @@ const actions = {
                 // do not wait that all implementations are in db... few seconds. as the stores have been updated instantly, we do not need to wait for it to be in db
                 Promise.all(updts); 
                 websites = ws.data;
+                break;
             }
         }
         if (!websites.length) {
@@ -109,7 +112,7 @@ const actions = {
         mirrorsImpl.resetImplementations();
 
         //update badges and icon state
-        iconHelper.resetIcon();
+        amrUpdater.refreshBadgeAndIcon();
 
         return websites;
     }
@@ -129,7 +132,8 @@ const mutations = {
      * @param {*} mirrors 
      */
     setMirrors(state, mirrors) {
-        state.all = mirrors
+        state.all = []
+        state.all.push(...mirrors)
     }
 }
 

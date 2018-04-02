@@ -95,14 +95,6 @@
     "message": "Facilities",
     "description": "This is the title of the options page section facilities"
   },
-  "options_web_newbar_opt": {
-    "message": "Navigation in one top bar",
-    "description": "Option Navigation in one top bar"
-  },
-  "options_web_newbar_desc": {
-    "message": "Display navigation features in one always visible bar. (If you uncheck it, two navigation panels are included in each page, one on top of the scans and one at the bottom)",
-    "description": "Option Navigation in one top bar description"
-  },
   "options_web_addauto_opt": {
     "message": "Automatically add manga to updates list",
     "description": "Option automatically add manga to list"

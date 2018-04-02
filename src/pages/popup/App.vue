@@ -55,8 +55,8 @@
 </template>
 
 <script>
-import MangaList from "./components/MangaList";
-import Options from "./components/Options";
+import MangaList from "../components/MangaList";
+import Options from "../components/Options";
 import PopupResizer from './resizePopup';
 
 export default {
@@ -76,9 +76,7 @@ export default {
       module: "mirrors",
       key: "all",
       mutation: "setMirrors"
-    }).then(() => {
-				document.dispatchEvent(new CustomEvent("mirrorsLoaded"));
-		});
+    });
 	}, 
 	methods: {
 		openOptions() {

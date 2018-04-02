@@ -16,27 +16,11 @@ class Navigation {
 
     async createNavBar() {
         // Get the chapter select from page
-        let select = mirrorImpl.get().getMangaSelectFromPage(document, window.location.href);
-        let isSel = true;
-        if (select === null) {
-            // If non existing, build one
-            let selectIns = $("<select></select>");
-            selectIns.data("mangaCurUrl", pageData.currentChapterURL);
-            // Change currentMangaURL so no conflict in http over https
-            mirrorImpl.get().getListChaps(util.removeProtocol(pageData.currentMangaURL), pageData.name, selectIns, this.callbackListChaps.bind(this));
-            isSel = false;
-        }
-        if (isSel) {
-            let whereNav;
-            if (options.newbar == 1) {
-                let barstate = await browser.runtime.sendMessage({ action: "barState" });
-                whereNav = this.createBar(barstate.barVis);
-            } else {
-                whereNav = mirrorImpl.get().whereDoIWriteNavigation(document, window.location.href);
-            }
-
-            this.writeNavigation(whereNav, select);
-        }
+        // Build the select
+        let selectIns = $("<select></select>");
+        selectIns.data("mangaCurUrl", pageData.currentChapterURL);
+        // Change currentMangaURL so no conflict in http over https
+        mirrorImpl.get().getListChaps(util.removeProtocol(pageData.currentMangaURL), pageData.name, selectIns, this.callbackListChaps.bind(this));
     }
 
     /**
@@ -58,14 +42,9 @@ class Navigation {
         }
 
         let whereNav;
-        if (options.newbar == 1) {
-            let barstate = await browser.runtime.sendMessage({ action: "barState" });
-            whereNav = this.createBar(barstate.barVis);
-            this.writeNavigation(whereNav, select);
-        } else {
-            whereNav = mirrorImpl.get().whereDoIWriteNavigation(document, window.location.href);
-            this.writeNavigation(whereNav, select);
-        }
+        let barstate = await browser.runtime.sendMessage({ action: "barState" });
+        whereNav = this.createBar(barstate.barVis);
+        this.writeNavigation(whereNav, select);
     }
 
     /**
@@ -230,15 +209,20 @@ class Navigation {
                 window.location.href = $("option:selected", $(this)).val();
             });
 
-            let prevUrl = mirrorImpl.get().previousChapterUrl(selectIns, document, window.location.href);
+            let prevUrl;
+            if (selectIns.children("option:selected").next().length > 0) {
+                prevUrl = selectIns.children("option:selected").next().val();
+            }
             if (prevUrl !== null) {
                 let aprev = $("<a id='pChapBtn" + index + "' class='buttonAMR' href='" + prevUrl + "' onclick='window.location.href = this.href; window.location.reload();'>Previous</a>");
                 aprev.appendTo($w);
             }
 
             selectIns.appendTo($w);
-
-            let nextUrl = mirrorImpl.get().nextChapterUrl(selectIns, document, window.location.href);
+            let nextUrl;
+            if (selectIns.children("option:selected").prev().length > 0) {
+                nextUrl = selectIns.children("option:selected").prev().val();
+            }
             if (nextUrl !== null) {
                 let anext = $("<a id='nChapBtn" + index + "' class='buttonAMR' href='" + nextUrl + "' onclick='window.location.href = this.href; window.location.reload();'>Next</a>");
                 anext.appendTo($w);
@@ -401,9 +385,6 @@ class Navigation {
             }
 
             $w.addClass("amrbarlayout");
-
-            let whereNavToTrail = mirrorImpl.get().whereDoIWriteNavigation(document, window.location.href);
-            navigation.addTrailingLastChap($(whereNavToTrail).last());
         });
     }
 

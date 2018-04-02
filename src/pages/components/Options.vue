@@ -61,10 +61,6 @@
                 
                 <!-- Facilities -->
                 <div class="headline">{{ i18n("options_web_facilities") }}</div>
-                <!-- Display one always visible bar-->
-                <div class="subtitle">{{i18n('options_web_newbar_desc')}}</div>
-                <v-checkbox v-model="newbar" @change="setOption('newbar')"
-                        :label="i18n('options_web_newbar_opt')"></v-checkbox>
                 <!-- Automatically add manga to updates list -->
                 <div class="subtitle">{{i18n('options_web_addauto_desc')}}</div>
                 <v-checkbox v-model="addauto" @change="setOption('addauto')"
@@ -545,7 +541,6 @@ const converters = {
       "imgorder",
       "prefetch",
       "markwhendownload",
-      "newbar",
       "addauto",
       "lrkeys",
       "autobm",
@@ -624,7 +619,6 @@ export default {
         { text: "Website name / number of mangas read", value: "name" },
         { text: "Language", value: "lang" }
       ],
-      supportedWebsites: [],
       newRepo: "",
       newRepositoryDialog: false
     };
@@ -638,15 +632,10 @@ export default {
     });
     return res;
   },
-  created() {
-    document.addEventListener(
-      "mirrorsLoaded",
-      function() {
-        // set mirrors in table once loaded
-        console.log("loaded");
-        this.supportedWebsites = this.$store.state.mirrors.all;
-      }.bind(this)
-    );
+  computed: {
+      supportedWebsites() {
+          return this.$store.state.mirrors.all
+      }
   },
   watch: {
     /**
@@ -714,7 +703,9 @@ export default {
     },
     addRepository() {
         if (this.newRepo !== "") {
-            this.$store.dispatch("addRepository", this.newRepo);
+            let r = this.newRepo;
+            if (r.slice(-1) !== "/") r += "/"
+            this.$store.dispatch("addRepository", r);
         }
         this.newRepositoryDialog = false;
     }

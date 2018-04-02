@@ -39,8 +39,8 @@ const matchUrlWildCards = function(str, rule) {
  */
 export function currentPageMatch(url) {
     for (let mir of store.state.mirrors.all) {
-        if (mir.activated) {
-            let wss = (typeof mir.webSites === 'object') ? mir.webSites : JSON.parse(wsloc[i].webSites);
+        if (mir.activated && mir.webSites) {
+            let wss = (mir.webSites.length) ? mir.webSites : JSON.parse(mir.webSites);
             for (let u of wss) {
                 if (matchUrlWildCards(url, u)) {
                     return mir;

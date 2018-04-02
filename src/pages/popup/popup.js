@@ -6,8 +6,8 @@ import browser from "webextension-polyfill";
 import Vue from 'vue';
 import Vuetify from 'vuetify';
 import App from './App.vue';
-import store from './../store';
-import theme from './theme';
+import store from '../../store';
+import theme from '../theme';
 
 (async function() {
   // Load options in store before everything
@@ -21,7 +21,7 @@ import theme from './theme';
     && window.location.href.indexOf("mode=tab") < 0) {
     browser.runtime.sendMessage({
       action: "opentab",
-      url: "/popup/popup.html?mode=tab"
+      url: "/pages/popup/popup.html?mode=tab"
     });
   }
 

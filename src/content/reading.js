@@ -443,7 +443,7 @@ class Reading {
             return ((nba < nbb) ? -1 : ((nba == nbb) ? 0 : 1));
         }).each(function (index) {
             //console.log("setting image position...");
-            if (reading.isLandscape(this) || mirrorImpl.get().isImageInOneCol(this, document, window.location.href)) {
+            if (reading.isLandscape(this)) {
                 posImg[index] = 2;
                 if (reading.isLandscape(this) && isFirstDouble) {
                     if (index !== 0 && posImg[index - 1] != 1) {
