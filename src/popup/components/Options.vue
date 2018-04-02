@@ -210,7 +210,7 @@
               </v-container>
             </v-tab-item>
             <v-tab-item id="supported">
-
+                
             </v-tab-item>
         </v-tabs-items>
     </div>

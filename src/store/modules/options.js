@@ -6,22 +6,12 @@ import storedb from '../../amr/storedb'
  */
 const default_options = {
     debug: 1, // display debug traces in content script, background, popup, ...
-    /**
-     * Options used by background script
-     */
-    "impl-repositories": [ // repositories containing mirrors implementations
-        "https://community.allmangasreader.com/latest_v2/",
-        "https://raw.github.com/AllMangasReader-dev/mirrors/master/"
-    ],
-    shownotifications: 1, //display notifications on new chapter
-    notificationtimer: 0, //time to clear notification auto
 
     /**
      * Options used in content scripts (included in mangas pages)
      */
     displayChapters: 1, // display scans as a book
     newbar: 1, // display one navigation bar on top
-
     /**
      * mode = 1 --> images are displayed on top of one another
      * mode = 2 --> images are displayed two by two occidental reading mode
@@ -33,31 +23,41 @@ const default_options = {
     autobm: 1, // bookmark automatically the scans when dlbclicked in page
     markwhendownload: 0, // mark mangas as read when all images downloaded
     prefetch: 1, // load next chapter in background while reading 
-    groupmgs: 1, // group manga with similar name (one piece and One Piece)
     lrkeys: 1, // use arrows keys to read chapter
     rightnext: 1, // arrow right goes to next chapter at bottom
-
-    //TO IMPLEMENT
     load: 0, //See loading progression in the title bar
     imgorder: 0, //Load scans in order
+
+    /**
+     * Options used by background script
+     */
+    "impl-repositories": [ // repositories containing mirrors implementations
+        "https://community.allmangasreader.com/latest_v2/",
+        "https://raw.github.com/AllMangasReader-dev/mirrors/master/"
+    ],
 
     /** Customization options */
     newTab: 0, //Open popup in new tab
     displastup: 0, // Display a badge with last time updated in popup
-    dark: 0, //DONE // Use a dark backgroup for AMR pages,
-    colornew: "green", //DONE // color of mangas with new chapters
-    colorread: "blue", //DONE// color of mangas with all chapters read
-    colornotfollow: "blue-grey", //DONE // color of mangas which are not followed
+    dark: 0, // Use a dark backgroup for AMR pages,
+    colornew: "green", // color of mangas with new chapters
+    colorread: "blue", // color of mangas with all chapters read
+    colornotfollow: "blue-grey",  // color of mangas which are not followed
+    groupmgs: 1, // group manga with similar name (one piece and One Piece)
 
     /** Updates options */
-    updatechap: 1800000, //DONE // update chapters frequency
-    updatemg: 86400000, //DONE // update mirrors frequency
-    checkmgstart: 0, //DONE // update chapters lists on startup
+    updatechap: 1800000, // update chapters frequency
+    updatemg: 86400000, // update mirrors frequency
+    checkmgstart: 0, // update chapters lists on startup
     refreshspin: 1, // spin the icon while loading chapters
     savebandwidth: 0, // save bandwidth while loading chapters
     displayzero: 1, // display a grey zero when no new chapter
     nocount: 1, // 1 : display gray sharingan and normal if new chaps; 0 : badge
-    
+
+    /** Notification options */
+    shownotifications: 1, //display notifications on new chapter
+    notificationtimer: 0, //time to clear notification auto
+
     /**
      * Categories states, each custom category is stored in localStorage in this array
      * states are 

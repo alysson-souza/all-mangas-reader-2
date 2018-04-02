@@ -2,13 +2,15 @@
 import browser from "webextension-polyfill";
 import * as utils from "./utils";
 import store from "../store";
+import amrUpdater from "./amr-updater";
 
 class IconHelper {
     /**
-     * Initialize canvas to draw icon on chrome which does not suort animated svg as icon
+     * Initialize canvas to draw icon on chrome which does not support animated svg as icon
      */
     constructor() {
-        if (!utils.isFirefox()) {
+        // We spin the sharingan programmatically even in Firefox (which supports animated svg) because this way, we can pass from grey to colored sharingan smoothly and stop the spinning properly
+        //if (!utils.isFirefox()) {
             this.doEase = true;
             this.canvas = document.createElement('canvas');
             this.canvas.width = '32';
@@ -21,8 +23,9 @@ class IconHelper {
             this.icon.src = '/icons/icon_32.png';
             this.icon_bw = document.createElement('img');
             this.icon_bw.src = '/icons/icon_32_bw.png';
-        }
+        //}
         this.requireStop = false;
+        this.spinning = false;
     }
     updateBadge(nb) {
         browser.browserAction.setBadgeText({text: ""+nb});
@@ -41,36 +44,45 @@ class IconHelper {
      * Set AMR icon to blue sharingan
      */
     setBlueIcon() {
+        if (this.spinning) return;
         browser.browserAction.setIcon({ path: "/icons/icon_32_blue.png" });
     }
     /**
      * Set AMR icon to grayscale sharingan
      */
     setBWIcon() {
+        if (this.spinning) return;
         browser.browserAction.setIcon({ path: "/icons/icon_32_bw.png" });
     }
     /**
      * Set AMR icon to default sharingan
      */
     resetIcon() {
-        this.requireStop = true;
+        if (this.spinning) return;
         browser.browserAction.setIcon({ path: "/icons/icon_32.png" });
     }
     /**
      * Set AMR icon to spinning sharingan (normal or grayscale depending on options)
      */
     spinIcon() {
-        if (!utils.isFirefox()) {
+        // Let's do it the chrome way, it's smoother.
+        //if (!utils.isFirefox()) {
             // chrome does not support animated svg as icon
-            this.requireStop = false;
             this.waitSpinning();
-        } else {
+            this.spinning = true;
+        /*} else {
             if (store.state.options.nocount == 1 && !store.getters.hasNewMangas) {
                 browser.browserAction.setIcon({ path: "/icons/icon_32_bw.svg" });
             } else {
                 browser.browserAction.setIcon({ path: "/icons/icon_32.svg" });
             }
-        }
+        }*/
+    }
+    /**
+     * Stop the spinning
+     */
+    stopSpinning() {
+        this.requireStop = true;
     }
     /**
      * Draw spinning sharingan on chrome
@@ -98,12 +110,16 @@ class IconHelper {
      * Animation loop
      */
     waitSpinning() {
-        if (this.requireStop) {
-            this.requireStop = false;
-            return;
-        }
         this.rotation += 1 / this.animationFrames;
         if (this.rotation > 1) {
+            // stop the rotation once the turn is over
+            if (this.requireStop) {
+                this.requireStop = false;
+                this.spinning = false;
+                // update the badge and icon one last time
+                amrUpdater.refreshBadgeAndIcon();
+                return;
+            }
             this.rotation = this.rotation - 1;
             this.doEase = false;
         }

@@ -157,11 +157,11 @@
     "description": "Option Group mangas by name description"
   },
   "options_gen_displastup_opt": {
-    "message": "Badge with last time updated on manga",
+    "message": "Badge with last time manga had new chapter",
     "description": "Option Badge with last time updated"
   },
   "options_gen_displastup_desc": {
-    "message": "Display a badge with a calendar icon representing the last time a new chapter has been published",
+    "message": "Display a badge with a calendar icon and the last time in days a new chapter has been published (badge will be removed if last chapter is more than 50 days old)",
     "description": "Option Badge with last time updated description"
   },
   "options_gen_dark_opt": {

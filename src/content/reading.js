@@ -351,11 +351,12 @@ class Reading {
         }
 
         if (options.imgorder == 1) {
-            if (nbLoaded(where) == pos) {
+            if (this.nbLoaded(where) == pos) {
                 mirrorImpl.get().getImageFromPageAndWrite(util.removeProtocol(url), img, document, window.location.href);
             } else {
+                var _self = this;
                 setTimeout(function () {
-                    loadImageAMR(where, url, img, pos, mode, true);
+                    _self.loadImageAMR(where, url, img, pos, mode, true);
                 }, 100);
             }
         } else {

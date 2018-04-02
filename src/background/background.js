@@ -4,10 +4,11 @@ import store from '../store';
 import * as utils from '../amr/utils';
 import amrUpdater from '../amr/amr-updater';
 
+// Blue icon while loading
+IconHelper.setBlueIcon();
+
 // Initialize store
 (async () => {
-    // Blue icon while loading
-    IconHelper.setBlueIcon();
     /**
      * Initialize AMR options from locaStorage
      */

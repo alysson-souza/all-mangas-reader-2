@@ -275,25 +275,42 @@ const actions = {
      * @param {*} param0 
      * @param {*} message 
      */
-    async updateChaptersLists({ dispatch, commit, getters, state }) {
-        // spin the badge
-        iconHelper.spinIcon();
-        
+    async updateChaptersLists({ dispatch, commit, getters, state, rootState }) {
+        if (rootState.options.refreshspin === 1) {
+            // spin the badge
+            iconHelper.spinIcon();
+        }
+
         // update last update ts
         dispatch("setOption", {key: "lastChaptersUpdate", value: new Date().getTime()});
 
         // refresh all mangas chapters lists
         let refchaps = [];
         for (let mg of state.all) {
-            refchaps.push(
-                // we catch the reject from the promise to prevent the Promise.all to fail due to a rejected promise. Thanks to that, Promise.all will wait that each manga is refreshed, even if it does not work
-                dispatch("refreshLastChapters", {url: mg.url}).catch(e => e)
-            );
+            // we catch the reject from the promise to prevent the Promise.all to fail due to a rejected promise. Thanks to that, Promise.all will wait that each manga is refreshed, even if it does not work
+            let mgupdate = Promise.resolve(
+                dispatch("refreshLastChapters", {url: mg.url})
+                    .then(() => {
+                        //save updated manga do not wait
+                        dispatch('updateManga', mg);
+                        //update badges and icon state
+                        amrUpdater.refreshBadgeAndIcon();
+                    })
+                    .catch(e => e));
+            if (rootState.options.savebandwidth === 1) {
+                await mgupdate;
+            } else {
+                refchaps.push(mgupdate);
+            }
         }
-        await Promise.all(refchaps); // wait for everything to be updated
+        if (rootState.options.savebandwidth !== 1) {
+            await Promise.all(refchaps); // wait for everything to be updated
+        }
 
-        //update badges and icon state
-        amrUpdater.refreshBadgeAndIcon();
+        if (rootState.options.refreshspin === 1) {
+            //stop the spinning
+            iconHelper.stopSpinning();
+        }
     },
     
     /**

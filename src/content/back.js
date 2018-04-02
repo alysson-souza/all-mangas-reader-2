@@ -40,12 +40,15 @@ window["registerMangaObject"] = async function (mirrorName, object) {
         // Initialize pageData state
         pageData.load(data);
 
-        // retrieve images to load (before doSomethingBeforeWritingScans because it can harm the source of data)
-        let imagesUrl = mirrorImpl.get().getListImages(document, window.location.href);
-        util.debug(imagesUrl.length + " images to load");
-
+        let imagesUrl = [];
+        if (options.displayChapters == 1) { // if display book
+            // retrieve images to load (before doSomethingBeforeWritingScans because it can harm the source of data)
+            imagesUrl = mirrorImpl.get().getListImages(document, window.location.href);
+            util.debug(imagesUrl.length + " images to load");
+        }
         // some mirrors need to do something before the page is transformed
         mirrorImpl.get().doSomethingBeforeWritingScans(document, window.location.href);
+    
         // create AMR navigation bar
         navigation.createNavBar();
         // tranform the page to a book
@@ -57,8 +60,10 @@ window["registerMangaObject"] = async function (mirrorName, object) {
         }
 
         // Initialize key handling
-        HandleKeys.init();
-        
+        if (options.displayChapters == 1) { // if display book
+            HandleKeys.init();
+        }
+
         // TODO stats perso
         // TODO context menu for bookmarks and bookmarks
     });

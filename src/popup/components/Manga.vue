@@ -13,7 +13,17 @@
           <!-- + / - icon if group of mangas  -->
           <v-icon v-if="isInGroup && isFirst && !expanded" @click="emitExpand()">mdi-plus</v-icon>
           <v-icon v-if="isInGroup && isFirst && expanded" @click="emitExpand()">mdi-minus</v-icon>
+          <!-- Manga name -->
           <strong>{{ manga.name }}</strong>
+          <!-- Display a calendar with last update -->
+          <v-tooltip v-if="options.displastup === 1 && manga.upts != 0 && timeUpdated < 50" top content-class="icon-ttip">
+            <v-card dark :class="color(-2) + ' amr-calendar-badge'" slot="activator">
+              <v-icon>mdi-calendar-clock</v-icon>
+              <span v-if="timeUpdated > 0">{{ timeUpdated }}</span>
+            </v-card>
+            <span v-if="timeUpdated === 0">Last chapter found today !</span>
+            <span v-else>Last chapter found {{ timeUpdated }} days ago</span>
+          </v-tooltip>
         </v-card>
       </v-card>
       </v-flex>
@@ -157,6 +167,11 @@ export default {
       return this.manga.listChaps.findIndex(
         arr => arr[1] === this.manga.lastChapterReadURL
       );
+    }, 
+    // number of days since last chapter has been published
+    timeUpdated() {
+      let nbdays = Math.floor((new Date().getTime() - this.manga.upts) / (1000 * 60 * 60 * 24));
+      return nbdays;
     }
   },
   methods: {
@@ -335,5 +350,9 @@ select.amr-chap-sel {
 .tip-icon-grouped + .amr-manga-waiting {
   margin-left: 25px;
   width: auto;
+}
+.amr-calendar-badge {
+  float: right;
+  padding: 0px 4px;
 }
 </style>

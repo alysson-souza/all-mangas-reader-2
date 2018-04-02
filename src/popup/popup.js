@@ -9,13 +9,21 @@ import App from './App.vue';
 import store from './../store';
 import theme from './theme';
 
-
 (async function() {
   // Load options in store before everything
   await store.dispatch("getStateFromReference", {
     module: "options",
     mutation: "extendOptions"
   });
+
+  /** Open in new tab if required */
+  if (store.state.options.newTab === 1 
+    && window.location.href.indexOf("mode=tab") < 0) {
+    browser.runtime.sendMessage({
+      action: "opentab",
+      url: "/popup/popup.html?mode=tab"
+    });
+  }
 
   // Load vue
   Vue.config.productionTip = false
