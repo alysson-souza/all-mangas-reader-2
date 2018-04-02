@@ -80,8 +80,12 @@ const actions = {
         };
 
         // Try all repos --> first to work wins.
-        for (let repo of rootState.options["impl-repositories"]) {
-            let ws = await Axios.get(repo + "websites.json", config);
+        for (let repo of rootState.options["impl_repositories"]) {
+            utils.debug("loading from repository " + repo);
+            let ws = await Axios.get(repo + "websites.json", config).catch(e => {
+                utils.debug("Failed to load websites.json from repo " + repo);
+                return e;
+            });
             if (ws && ws.data) {
                 let updts = []
                 for (let w of ws.data) {

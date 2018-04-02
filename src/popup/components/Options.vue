@@ -210,7 +210,99 @@
               </v-container>
             </v-tab-item>
             <v-tab-item id="supported">
-                
+                <v-container fluid>
+                <div class="subtitle">{{i18n('options_sup_desc')}}</div>
+                <v-data-table
+                    v-model="activatedWebsites"
+                    :headers="headersSupportedWebsites"
+                    :items="supportedWebsites"
+                    select-all
+                    item-key="mirrorName"
+                    hide-actions
+                >
+                    <template slot="headers" slot-scope="props">
+                    <tr>
+                        <th>
+                        <v-checkbox
+                            primary
+                            hide-details
+                            @click.native="toggleAll"
+                            :input-value="props.all"
+                            :indeterminate="props.indeterminate"
+                        ></v-checkbox>
+                        </th>
+                        <th
+                            v-for="header in props.headers"
+                            :key="header.text"
+                            class="column"
+                            >
+                            {{ header.text }}
+                        </th>
+                    </tr>
+                    </template>
+                    <template slot="items" slot-scope="props">
+                    <tr :active="props.selected" @click="props.selected = !props.selected">
+                        <td>
+                        <v-checkbox
+                            primary
+                            hide-details
+                            :input-value="props.selected"
+                        ></v-checkbox>
+                        </td>
+                        <td>
+                            {{ props.item.mirrorName }}
+                            <!-- Badge with number of mangas read -->
+                        </td>
+                        <td class="text-xs-right">{{ props.item.language }}</td>
+                    </tr>
+                    </template>
+                </v-data-table>
+                <!-- Repositories -->
+                <div class="headline mt-4">{{ i18n("options_sup_repos") }}</div>
+                <div class="subtitle">{{i18n('options_sup_repos_desc')}}</div>
+                <v-dialog v-model="newRepositoryDialog" max-width="500px">
+                    <v-btn color="primary" dark slot="activator" class="mb-2">New Repository</v-btn>
+                    <v-card>
+                        <v-card-title>
+                        <span class="headline">Add new repository</span>
+                        </v-card-title>
+                        <v-card-text>
+                        <v-container grid-list-md>
+                            <v-layout wrap>
+                            <v-flex xs12>
+                                <v-text-field label="Repo URL" v-model="newRepo" class="normal-input-group"></v-text-field>
+                            </v-flex>
+                            </v-layout>
+                        </v-container>
+                        </v-card-text>
+                        <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="blue darken-1" flat @click.native="newRepositoryDialog = false">Cancel</v-btn>
+                        <v-btn color="blue darken-1" flat @click.native="addRepository">Add</v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+                <v-data-table
+                    :items="impl_repositories"
+                    hide-actions
+                    hide-headers
+                    >
+                    <template slot="items" slot-scope="props">
+                        <td>{{ props.item }}</td>
+                        <td class="justify-center layout px-0">
+                        <v-btn icon class="mx-0" @click="moveUpRepository(props.item)">
+                            <v-icon color="primary">mdi-chevron-up</v-icon>
+                        </v-btn>
+                        <v-btn icon class="mx-0" @click="moveDownRepository(props.item)">
+                            <v-icon color="primary">mdi-chevron-down</v-icon>
+                        </v-btn>
+                        <v-btn icon class="mx-0" @click="deleteRepository(props.item)">
+                            <v-icon color="primary">mdi-delete</v-icon>
+                        </v-btn>
+                        </td>
+                    </template>
+                    </v-data-table>
+                </v-container>
             </v-tab-item>
         </v-tabs-items>
     </div>
@@ -219,6 +311,224 @@
 import i18n from "../../amr/i18n";
 import browser from "webextension-polyfill";
 import amrUpdater from "../../amr/amr-updater";
+
+/**
+ * List of languages
+ */
+const languages = [
+  {
+    code: "af",
+    language: "Afrikaans"
+  },
+  {
+    code: "sq",
+    language: "Albanian"
+  },
+  {
+    code: "ar",
+    language: "Arabic"
+  },
+  {
+    code: "be",
+    language: "Belarusian"
+  },
+  {
+    code: "bg",
+    language: "Bulgarian"
+  },
+  {
+    code: "ca",
+    language: "Catalan"
+  },
+  {
+    code: "zh",
+    language: "Chinese"
+  },
+  {
+    code: "zh-CN",
+    language: "Chinese Simplified"
+  },
+  {
+    code: "zh-TW",
+    language: "Chinese Traditional"
+  },
+  {
+    code: "hr",
+    language: "Croatian"
+  },
+  {
+    code: "cs",
+    language: "Czech"
+  },
+  {
+    code: "da",
+    language: "Danish"
+  },
+  {
+    code: "nl",
+    language: "Dutch"
+  },
+  {
+    code: "en",
+    language: "English"
+  },
+  {
+    code: "et",
+    language: "Estonian"
+  },
+  {
+    code: "tl",
+    language: "Filipino"
+  },
+  {
+    code: "fi",
+    language: "Finnish"
+  },
+  {
+    code: "fr",
+    language: "French"
+  },
+  {
+    code: "gl",
+    language: "Galician"
+  },
+  {
+    code: "de",
+    language: "German"
+  },
+  {
+    code: "el",
+    language: "Greek"
+  },
+  {
+    code: "ht",
+    language: "Haitian Creole"
+  },
+  {
+    code: "iw",
+    language: "Hebrew"
+  },
+  {
+    code: "hi",
+    language: "Hindi"
+  },
+  {
+    code: "hu",
+    language: "Hungarian"
+  },
+  {
+    code: "is",
+    language: "Icelandic"
+  },
+  {
+    code: "id",
+    language: "Indonesian"
+  },
+  {
+    code: "ga",
+    language: "Irish"
+  },
+  {
+    code: "it",
+    language: "Italian"
+  },
+  {
+    code: "ja",
+    language: "Japanese"
+  },
+  {
+    code: "lv",
+    language: "Latvian"
+  },
+  {
+    code: "lt",
+    language: "Lithuanian"
+  },
+  {
+    code: "mk",
+    language: "Macedonian"
+  },
+  {
+    code: "ms",
+    language: "Malay"
+  },
+  {
+    code: "mt",
+    language: "Maltese"
+  },
+  {
+    code: "no",
+    language: "Norwegian"
+  },
+  {
+    code: "fa",
+    language: "Persian"
+  },
+  {
+    code: "pl",
+    language: "Polish"
+  },
+  {
+    code: "pt",
+    language: "Portuguese"
+  },
+  {
+    code: "ro",
+    language: "Romanian"
+  },
+  {
+    code: "ru",
+    language: "Russian"
+  },
+  {
+    code: "sr",
+    language: "Serbian"
+  },
+  {
+    code: "sk",
+    language: "Slovak"
+  },
+  {
+    code: "sl",
+    language: "Slovenian"
+  },
+  {
+    code: "es",
+    language: "Spanish"
+  },
+  {
+    code: "sw",
+    language: "Swahili"
+  },
+  {
+    code: "sv",
+    language: "Swedish"
+  },
+  {
+    code: "th",
+    language: "Thai"
+  },
+  {
+    code: "tr",
+    language: "Turkish"
+  },
+  {
+    code: "uk",
+    language: "Ukrainian"
+  },
+  {
+    code: "vi",
+    language: "Vietnamese"
+  },
+  {
+    code: "cy",
+    language: "Welsh"
+  },
+  {
+    code: "yi",
+    language: "Yiddish"
+  }
+];
 
 /**
  * Converters to format options in db and in page (ex : booleans are store as 0:1 in db)
@@ -308,7 +618,15 @@ export default {
         { value: 30 * 1000, text: i18n("options_seconds", 30) },
         { value: 60 * 1000, text: i18n("options_minutes", 1) },
         { value: 2 * 60 * 1000, text: i18n("options_minutes", 2) }
-      ]
+      ],
+      activatedWebsites: [],
+      headersSupportedWebsites: [
+        { text: "Website name / number of mangas read", value: "name" },
+        { text: "Language", value: "lang" }
+      ],
+      supportedWebsites: [],
+      newRepo: "",
+      newRepositoryDialog: false
     };
     // add all options properties in data model; this properties are the right one in store because synchronization with background has been called by encapsuler (popup.js / other) before initializing vue
     res = Object.assign(res, this.$store.state.options);
@@ -319,6 +637,16 @@ export default {
       }
     });
     return res;
+  },
+  created() {
+    document.addEventListener(
+      "mirrorsLoaded",
+      function() {
+        // set mirrors in table once loaded
+        console.log("loaded");
+        this.supportedWebsites = this.$store.state.mirrors.all;
+      }.bind(this)
+    );
   },
   watch: {
     /**
@@ -370,6 +698,25 @@ export default {
       this.loadingMirrors = true;
       await this.$store.dispatch("updateMirrorsLists");
       this.loadingMirrors = false;
+    },
+    toggleAll() {
+      if (this.selected.length) this.selected = [];
+      else this.selected = this.items.slice();
+    },
+    moveUpRepository(repo) {
+        this.$store.dispatch("moveUpRepository", repo);
+    },
+    moveDownRepository(repo) {
+        this.$store.dispatch("moveDownRepository", repo);
+    },
+    deleteRepository(repo) {
+        this.$store.dispatch("deleteRepository", repo);
+    },
+    addRepository() {
+        if (this.newRepo !== "") {
+            this.$store.dispatch("addRepository", this.newRepo);
+        }
+        this.newRepositoryDialog = false;
     }
   }
 };
@@ -391,6 +738,9 @@ export default {
 }
 .input-group {
   padding: 0;
+}
+.normal-input-group {
+  padding: 18px 0 0;
 }
 .colored-radio .input-group--selection-controls__ripple:before {
   opacity: 0.5;

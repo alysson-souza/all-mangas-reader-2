@@ -76,7 +76,9 @@ export default {
       module: "mirrors",
       key: "all",
       mutation: "setMirrors"
-    });
+    }).then(() => {
+				document.dispatchEvent(new CustomEvent("mirrorsLoaded"));
+		});
 	}, 
 	methods: {
 		openOptions() {

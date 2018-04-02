@@ -1,4 +1,5 @@
 import storedb from '../../amr/storedb'
+import Vue from 'vue';
 
 /**
  * Default options of AMR.
@@ -31,7 +32,7 @@ const default_options = {
     /**
      * Options used by background script
      */
-    "impl-repositories": [ // repositories containing mirrors implementations
+    "impl_repositories": [ // repositories containing mirrors implementations
         "https://community.allmangasreader.com/latest_v2/",
         "https://raw.github.com/AllMangasReader-dev/mirrors/master/"
     ],
@@ -70,17 +71,17 @@ const default_options = {
         { name: "Read", state: "include", type: "native" },
         { name: "Unread", state: "include", type: "native" },
         { name: "One Shots", state: "include", type: "native" }
-    ], 
+    ],
 
     /** Internal timestamps and state booleans */
     updated: 0, // last time something has been changed in the list
     changesSinceSync: 0, // 1 : something has been changed since last sync
     lastChaptersUpdate: 0, // last time chapters lists have been updated
     lastMirrorsUpdate: 0, // last time mirrors have been updated
-    
+
 }
 
-const jsonOptions = ["categoriesStates", "impl-repositories"];
+const jsonOptions = ["categoriesStates", "impl_repositories"];
 const stringOptions = ["colornew", "colorread", "colornotfollow"];
 
 /**
@@ -144,7 +145,7 @@ const actions = {
         localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates);
         for (let mg of rootState.mangas.all) {
             if (mg.cats.includes(name)) {
-                dispatch("removeCategoryFromManga", {key: mg.key, name: name});
+                dispatch("removeCategoryFromManga", { key: mg.key, name: name });
             }
         }
     },
@@ -156,7 +157,43 @@ const actions = {
     updateCategory({ commit, dispatch, state }, catObj) {
         commit('updateCategory', catObj);
         localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates);
-    }
+    },
+    /**
+     * Move a repository up in the list
+     * @param {*} param0 
+     * @param {*} repourl 
+     */
+    moveUpRepository({ commit, state }, repourl) {
+        commit('moveUpRepository', repourl);
+        localStorage["o.impl_repositories"] = JSON.stringify(state.impl_repositories);
+    },
+    /**
+     * Move a repository down in the list
+     * @param {*} param0 
+     * @param {*} repourl 
+     */
+    moveDownRepository({ commit, state }, repourl) {
+        commit('moveDownRepository', repourl);
+        localStorage["o.impl_repositories"] = JSON.stringify(state.impl_repositories);
+    },
+    /**
+     * Delete a repository from the list
+     * @param {*} param0 
+     * @param {*} repourl 
+     */
+    deleteRepository({ commit, state }, repourl) {
+        commit('deleteRepository', repourl);
+        localStorage["o.impl_repositories"] = JSON.stringify(state.impl_repositories);
+    },
+    /**
+     * Adds a repository in the list
+     * @param {*} param0 
+     * @param {*} repourl 
+     */
+    addRepository({ commit, state }, repourl) {
+        commit('addRepository', repourl);
+        localStorage["o.impl_repositories"] = JSON.stringify(state.impl_repositories);
+    },
 }
 
 /**
@@ -210,10 +247,53 @@ const mutations = {
      * @param {*} state 
      * @param {*} param1 
      */
-    updateCategory(state, {name, catstate}) {
+    updateCategory(state, { name, catstate }) {
         let cat = state.categoriesStates.find(cat => cat.name === name);
         cat.state = catstate;
-    }
+    },
+    /**
+     * Move a repository up in the list
+     * @param {*} state 
+     * @param {*} repourl 
+     */
+    moveUpRepository(state, repourl) {
+        let index = state.impl_repositories.indexOf(repourl);
+        if (index > 0) {
+            let tmp = state.impl_repositories[index];
+            Vue.set(state.impl_repositories, index, state.impl_repositories[index - 1]);
+            Vue.set(state.impl_repositories, index - 1, tmp);
+        }
+    },
+    /**
+     * Move a repository down in the list
+     * @param {*} state 
+     * @param {*} repourl 
+     */
+    moveDownRepository(state, repourl) {
+        let index = state.impl_repositories.indexOf(repourl);
+        if (index < state.impl_repositories.length - 1) {
+            let tmp = state.impl_repositories[index];
+            Vue.set(state.impl_repositories, index, state.impl_repositories[index + 1]);
+            Vue.set(state.impl_repositories, index + 1, tmp);
+        }
+    },
+    /**
+     * Delete a repository from the list
+     * @param {*} state 
+     * @param {*} repourl 
+     */
+    deleteRepository(state, repourl) {
+        let index = state.impl_repositories.indexOf(repourl);
+        if (index >= 0) state.impl_repositories.splice(index, 1);
+    },
+    /**
+     * Adds a repository in the list
+     * @param {*} state 
+     * @param {*} repourl 
+     */
+    addRepository(state, repourl) {
+        state.impl_repositories.unshift(repourl);
+    },
 }
 
 export default {
