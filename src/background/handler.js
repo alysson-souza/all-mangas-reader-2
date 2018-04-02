@@ -5,6 +5,7 @@ import HandleBookmarks from './handle-bookmarks';
 import HandleOptions from "./handle-options";
 import HandleMisc from "./handle-misc";
 import HandleVueInit from "./handle-vue-init";
+import HandleLab from "./handle-lab";
 
 class Handler {
     handle() {
@@ -19,7 +20,8 @@ class Handler {
                 HandleManga, 
                 HandleOptions, 
                 HandleNavigation, 
-                HandleBookmarks
+                HandleBookmarks, 
+                HandleLab
             ];
             for (let handler of handlers) {
                 result = handler.handle(message, sender);
