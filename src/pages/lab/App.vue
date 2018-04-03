@@ -60,16 +60,21 @@
                         <div v-for="(res, index) in testsResults[index].results" :key="index">
                             <span v-html="res"></span>
                         </div>
-                        <div v-if="test.output">
-
+                        <div v-if="testsResults[index].output.length > 0">
+                            <!-- display generated oututs during test -->
+                            <div v-for="(out, key) in testsResults[index].output" :key="key">
+                                <!-- name, value, display -->
+                                {{out.name}} : 
+                                <v-select v-if="out.display === 'select'" :items="out.value" v-model="out.currentValue">
+                                </v-select>
+                                <span v-if="out.display === 'object'">{{JSON.stringify(out.value)}}</span>
+                            </div>
                         </div>
                     </v-flex>
                     <v-flex xs3>
-                        {{test.comment}}
+                        <span v-html="test.comment"></span>
                     </v-flex>
                 </v-layout>
-
-
             </v-container>
 		</v-content>
 		<v-dialog
@@ -94,36 +99,26 @@
 
 <script>
 import Options from "../components/Options";
-import browser from "webextension-polyfill";
+import tests from "./tests";
 
 export default {
   data() {
     return {
       title: "All Mangas Reader Lab",
-      options: false, 
+      options: false,
       loadingMirrors: false,
       loadingTests: false,
       current: "Manga Reader", // current selected mirror
       search: "", // current search phrase
-      tests: [
-          {
-              name: "implementation attributes",
-              tests: ["mirrorName", "mirrorLanguages", "mirrorIcon", "mirrorWebSites"]
-          }, 
-          {
-              name: "search mangas", 
-              tests: ["searchMangas"],
-              output: "list"
-          }
-      ], 
+      tests: tests,
       testsResults: [],
-      currentTest: 0, //current test, display all tests before
+      currentTest: 0 //current test, display all tests before
     };
   },
   computed: {
-      mirrors() {
-          return this.$store.state.mirrors.all
-      }
+    mirrors() {
+      return this.$store.state.mirrors.all;
+    }
   },
   name: "App",
   components: { Options },
@@ -134,110 +129,159 @@ export default {
       key: "all",
       mutation: "setMirrors"
     });
-  }, 
+  },
   methods: {
-      async reloadMirrors() {
-        this.loadingMirrors = true;
-        await this.$store.dispatch("updateMirrorsLists");
-        this.loadingMirrors = false;
-      }, 
-      async loadTests() {
-          this.testsResults = [];
-          this.currentTest = 0;
-          let mirror = this.mirrors.find(mir => mir.mirrorName === this.current);
-          let prevres;
-          for (let test of this.tests) {
-              let passed = true;
-              let results = [];
-              let output;
-              for (let unit of test.tests) {
-                  let isok, text, res;
-                  try {
-                      [isok, text, res] = await this[unit](mirror, prevres);
-                  } catch (e) {
-                      isok = false;
-                      text = "<span style='color:red'>" + e.message + "</span>";
-                  }
-                  if (test.output === "list") {
-                      if (res && res.length) {
-                          output = res;
-                          passed = isok;
-                      } else {
-                          passed = false;
-                      }
-                  } else {
-                      passed &= isok;
-                  }
-                  if (!passed) {
-                      results.push("<span style='color:red'><strong>" + text + "</strong></span>");
-                  } else {
-                      results.push(text);
-                  }
-              }
-              
-              this.testsResults[this.currentTest] = {
-                  passed: passed, 
-                  results: results,
-                  output: output,
-              }
-              prevres = output;
-              this.currentTest++;
-              if (!passed) {
-                  break;
-              }
-          }
-      }, 
-        mirrorName(mirror) {
-            if (mirror.mirrorName && mirror.mirrorName.length > 0) {
-                return [true, "Mirror name is : " + mirror.mirrorName];
-            } else {
-                return [false, "Mirror name is missing"];
-            }
-        }, 
-        mirrorLanguages(mirror) {
-            if (mirror.languages && mirror.languages.length > 0) {
-                let spl = mirror.languages.split(",");
-                if (spl.length > 0) {
-                    return [true, spl.length + " languages found : " + spl.join(", ")]
-                } else {
-                    return [false, "Languages string is malformed, must be languages separated by commas"]
-                }
-            } else {
-                return [false, "No languages defined for this mirror"]
-            }
-        }, 
-        mirrorIcon(mirror) {
-            if (mirror.mirrorIcon) {
-                return [true, "Mirror icon of this mirror is <img src='" + mirror.mirrorIcon + "' />"];
-            } else {
-                return [false, "No mirror icon for this mirror"];
-            }
-        }, 
-        mirrorWebSites(mirror) {
-            if (mirror.webSites && mirror.webSites.length > 0) {
-                return [true, "Websites on which this mirror will be loaded : " + mirror.webSites.join(", ")];
-            } else {
-                return [false, "No websites to load this mirror on"];
-            }
-        }, 
-        async searchMangas(mirror) {
-            let result = await browser.runtime.sendMessage({
-                action: "lab", 
-                torun: "search", 
-                search: this.search, 
-                mirror: mirror.mirrorName
-            });
-            if (result && result.length > 0) {
-                return [true, "<strong>" + result.length + " mangas found</strong> for the search phrase : <i>" + this.search + "</i>", result.map(arr => { 
-                    return {
-                        value: arr[1], 
-                        text: arr[0]
+    /**
+     * Reload the mirrors list
+     */
+    async reloadMirrors() {
+      this.loadingMirrors = true;
+      await this.$store.dispatch("updateMirrorsLists");
+      this.loadingMirrors = false;
+    },
+    /**
+     * Runs the test course
+     */
+    async loadTests() {
+      this.testsResults = [];
+      this.currentTest = 0;
+      let mirror = this.mirrors.find(mir => mir.mirrorName === this.current);
+      let outputs = {};
+      for (let test of this.tests) {
+        let passed = true; // result of current test
+        let results = []; // text results of sub tests of the test
+        let testouts = [];
+        if (test.set) { // values to set before testing
+            for (let toset of test.set) {
+                let spl = toset.split(" ");
+                if (spl.length > 1) {
+                    if (spl[0] === "oneof") {
+                        // select one entry in previous output list
+                        this.selectEntryRandomly(spl[1]);
                     }
-                })];
-            } else {
-                return [false, "No mangas found for the search phrase : " + this.search + ". Change the search phrase or fix the implementation"];
+                }
             }
         }
+        for (let unit of test.tests) {
+          let isok, text; // return from the test function
+          let tocall; // test function to call
+          let inputs = []; // inputs of the test function (first parameter is mirror)
+          let output; // output of the test function
+          if (typeof unit === "function") {
+            tocall = unit;
+          } else {
+            tocall = unit.test;
+            // bind inputs
+            if (unit.input) {
+              for (let inp of unit.input) {
+                let spl = inp.split(" ");
+                if (spl.length > 1) {
+                  if (!outputs[spl[1]])
+                    console.error("the required input " + spl[1] + " is missing.");
+                  if (spl[0] === "oneof") {
+                    // select one entry in previous output
+                    inputs.push(this.selectEntryRandomly(spl[1]));
+                  } else if (spl[0] === "valueof") {
+                     inputs.push(this.getEntryValue(spl[1]));
+                  } else if (spl[0] === "textof") {
+                     inputs.push(this.getEntryText(spl[1]));
+                  }
+                } else {
+                  if (!outputs[inp])
+                    console.error("the required input " + inp + " is missing.");
+                  inputs.push(outputs[inp]);
+                }
+              }
+            }
+          }
+          try {
+            let ress = await tocall.bind(this)(mirror, ...inputs);
+            let allres = [];
+            // if there is only one result, add it to the result array
+            if (ress.length > 0 && (ress[0] === true || ress[0] === false)) { 
+                allres.push(ress);
+            } else {
+                allres.push(...ress);
+            }
+            for ([isok, text, output] of allres) { // for all results of unit test
+                if (unit.output && output) {
+                    outputs[unit.output] = output; // save the output
+                    testouts.push({
+                        name: unit.output,
+                        value: output,
+                        display: unit.display,
+                        currentValue: undefined
+                    });
+                }
+                passed &= isok; // check if test passed
+                if (!isok) {
+                    results.push(
+                    "<span style='color:red'><strong>" + text + "</strong></span>"
+                    );
+                } else {
+                    results.push(text);
+                }
+            }
+          } catch (e) {
+            isok = false;
+            text =
+              "<span style='color:red'>Error while running test : " +
+              e.message +
+              "</span>";
+            console.error(e);
+          }
+        }
+        // global object containing tests results
+        this.testsResults[this.currentTest] = {
+          passed: passed, // result of the test
+          results: results, // list of text unit results
+          output: testouts // array of outputs
+        };
+        this.currentTest++;
+        if (!passed) {
+          break;
+        }
+      }
+    },
+    selectEntryRandomly(outputName) {
+      for (let i = 0; i < this.currentTest; i++) {
+        for (let out of this.testsResults[i].output) {
+          if (out.name === outputName) {
+            //select a random value
+            let val =
+              out.value[Math.floor(Math.random() * out.value.length)].value;
+            //set it as model
+            out.currentValue = val;
+            //return it
+            return val;
+          }
+        }
+      }
+      return undefined;
+    },
+    getEntryValue(outputName) {
+      for (let i = 0; i < this.currentTest; i++) {
+        for (let out of this.testsResults[i].output) {
+          if (out.name === outputName) {
+            //return it
+            return out.currentValue;
+          }
+        }
+      }
+      return undefined;
+    },
+    getEntryText(outputName) {
+      for (let i = 0; i < this.currentTest; i++) {
+        for (let out of this.testsResults[i].output) {
+          if (out.name === outputName) {
+            //return the text
+            return out.value.find(el => el.value === out.currentValue).text;
+          }
+        }
+      }
+      return undefined;
+    }
+
   }
 };
 </script>
@@ -250,6 +294,6 @@ export default {
   padding-top: 10px;
 }
 * {
-    font-size:12px;
+  font-size: 12px;
 }
 </style>

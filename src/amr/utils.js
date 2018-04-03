@@ -23,7 +23,7 @@ export function formatMgName(name) {
  * @param {*} str 
  * @param {*} rule 
  */
-const matchUrlWildCards = function(str, rule) {
+export function matchUrlWildCards(str, rule) {
     let doMatch = new RegExp("^" + rule.replace(/\*/g, '.*') + "$").test(str);
     // If pattern starts with http, try https too
     if (!doMatch && rule.indexOf("http://") == 0) {
