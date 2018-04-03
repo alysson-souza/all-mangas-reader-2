@@ -1,5 +1,6 @@
 import 'regenerator-runtime/runtime';
 import store from '../store';
+import * as utils from './utils';
 
 /**
  * Mirrors implementation loader and reference.
@@ -56,6 +57,7 @@ class MirrorsImpl {
         if (this.implementations[mirrorName]) {
             return Promise.resolve(this.implementations[mirrorName]);
         }
+        utils.debug("Load implementation of mirror " + mirrorName + " from repository");
         let self = this;
         return new Promise(async (resolve, reject) => {
             let found = false;

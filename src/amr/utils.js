@@ -29,6 +29,14 @@ export function matchUrlWildCards(str, rule) {
     if (!doMatch && rule.indexOf("http://") == 0) {
         doMatch = new RegExp("^https://" + rule.substring(7).replace(/\*/g, '.*') + "$").test(str);
     }
+    // If pattern starts with http, try // too
+    if (!doMatch && rule.indexOf("http://") == 0) {
+        doMatch = new RegExp("^" + rule.substring(5).replace(/\*/g, '.*') + "$").test(str);
+    }
+    // If pattern starts with https, try // too
+    if (!doMatch && rule.indexOf("https://") == 0) {
+        doMatch = new RegExp("^" + rule.substring(6).replace(/\*/g, '.*') + "$").test(str);
+    }
     return doMatch;
 }
 

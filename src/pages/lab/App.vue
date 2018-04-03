@@ -40,7 +40,7 @@
                         :loading="loadingTests" 
                         :disabled="loadingTests" 
                         color="primary" 
-                        @click="loadTests()">Load tests</v-btn>
+                        @click="loadCourse()">Load tests</v-btn>
                     <v-btn  
                         :loading="loadingMirrors" 
                         :disabled="loadingMirrors" 
@@ -48,30 +48,50 @@
                         @click="reloadMirrors()">Reload mirrors</v-btn>
                 </v-flex>
                 </v-layout>
-                <div class="headline mt-4" v-if="testsResults.length > 0 ">Course of tests</div>
-                <!-- Display tests -->
-                <v-layout row v-if="index < currentTest && testsResults.length > index" v-for="(test, index) in tests" :key="index" :class="'ma-4 pa-4 elevation-1 lighten-5 ' + (testsResults[index].passed ? 'green' : 'red')">
+                <v-layout row v-if="testsResults.length > 0" class="mt-4">
                     <v-flex xs3>
-                        <v-icon v-if="testsResults[index].passed" color="green">mdi-check</v-icon>
-                        <v-icon v-else color="red">mdi-alert-circle</v-icon>
+                        <div class="headline">
+                            Course of tests
+                        </div>
+                    </v-flex>
+                    <v-flex xs9>
+                        Test {{ currentTest + 1 }} / {{ nbtests }} ({{ nbfailed }} failed)
+                        <v-progress-linear :value="(currentTest + 1) / nbtests * 100" :color="nbfailed > 0 ? 'red' : 'green'"></v-progress-linear>
+                    </v-flex>
+                </v-layout>
+                <!-- Display tests -->
+                <v-layout row v-if="currentTest >= 0 && index <= currentTest && testsResults.length >= index" v-for="(test, index) in tests" :key="index" :class="'ma-4 pa-4 elevation-1 lighten-5 ' + (testsResults[index] && testsResults[index].passed ? 'green' : 'red')">
+                    <v-flex xs3>
+                        <v-icon v-if="testsResults[index] && testsResults[index].passed" color="green" class="test-icon">mdi-check</v-icon>
+                        <v-icon v-else-if="testsResults[index]" color="red" class="test-icon">mdi-alert-circle</v-icon>
+                        <v-progress-circular v-else indeterminate color="green" class="test-icon"></v-progress-circular>
                         <span><strong>Test {{test.name}}</strong></span>
                     </v-flex>
-                    <v-flex xs6>
+                    <v-flex xs6 v-if="testsResults[index]">
                         <div v-for="(res, index) in testsResults[index].results" :key="index">
                             <span v-html="res"></span>
                         </div>
-                        <div v-if="testsResults[index].output.length > 0">
+                        <div v-if="testsResults[index].output.length > 0" class="green lighten-3 ma-2 pa-2 elevation-1">
                             <!-- display generated oututs during test -->
-                            <div v-for="(out, key) in testsResults[index].output" :key="key">
+                            <div v-for="(out, ind) in testsResults[index].output" :key="ind">
                                 <!-- name, value, display -->
                                 {{out.name}} : 
-                                <v-select v-if="out.display === 'select'" :items="out.value" v-model="out.currentValue">
+                                <v-select v-if="out.display === 'select'" :items="out.value" v-model="out.currentValue" class="list-results">
                                 </v-select>
-                                <span v-if="out.display === 'object'">{{JSON.stringify(out.value)}}</span>
+                                <span v-if="out.display === 'object'">{{JSON.stringify(out.value, null, 4)}}</span>
+                                <div v-if="out.display === 'image'" :ref='out.name' class="dom-elt">
+                                    <img :src="out.value" />
+                                </div>
+                                <div v-if="out.buttons && out.buttons.length > 0">
+                                    <div v-for="(but, indd) in out.buttons" :key="indd" class="result-button">
+                                        <v-btn v-if="but === 'gotourl'" @click="goToUrl(out.currentValue)" small>Go to url</v-btn>
+                                        <v-btn v-if="but === 'reloadtestforvalue'" @click="reloadNextWith(out.name, out.currentValue)" small>Reload following tests with the selected value</v-btn>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </v-flex>
-                    <v-flex xs3>
+                    <v-flex xs3 v-if="testsResults[index]">
                         <span v-html="test.comment"></span>
                     </v-flex>
                 </v-layout>
@@ -100,6 +120,8 @@
 <script>
 import Options from "../components/Options";
 import tests from "./tests";
+import browser from "webextension-polyfill";
+import Vue from 'vue';
 
 export default {
   data() {
@@ -112,12 +134,25 @@ export default {
       search: "", // current search phrase
       tests: tests,
       testsResults: [],
-      currentTest: 0 //current test, display all tests before
+      currentTest: -1, //current test, display all tests before, 
+      forcedValues: {}, // values selected manually to test
+      outputs: {}, // values retrieved while testing
+      curtest: 0 // current test id
     };
   },
   computed: {
     mirrors() {
       return this.$store.state.mirrors.all;
+    }, 
+    nbtests() {
+        return this.tests.length;
+    },
+    nbfailed() {
+        let nb = 0;
+        for (let res of this.testsResults) {
+            if (!res.passed) nb++;
+        }
+        return nb;
     }
   },
   name: "App",
@@ -139,111 +174,145 @@ export default {
       await this.$store.dispatch("updateMirrorsLists");
       this.loadingMirrors = false;
     },
+    loadCourse() {
+        this.curtest++;
+        this.loadTests();
+    },
     /**
      * Runs the test course
      */
-    async loadTests() {
-      this.testsResults = [];
-      this.currentTest = 0;
+    async loadTests(step = 0, substep = 0) {
+        console.log("Load the test course " + this.curtest);
+        let testid = this.curtest;
+        if (step === substep && step === 0) {
+            this.testsResults = [];
+            this.currentTest = 0;
+            this.forcedValues = {};
+            this.outputs = {};
+        }
       let mirror = this.mirrors.find(mir => mir.mirrorName === this.current);
-      let outputs = {};
+      let i = 0;
       for (let test of this.tests) {
-        let passed = true; // result of current test
-        let results = []; // text results of sub tests of the test
-        let testouts = [];
-        if (test.set) { // values to set before testing
-            for (let toset of test.set) {
-                let spl = toset.split(" ");
-                if (spl.length > 1) {
-                    if (spl[0] === "oneof") {
-                        // select one entry in previous output list
-                        this.selectEntryRandomly(spl[1]);
+          i++;
+          if (step !== 0 && i <= step) continue;
+          this.currentTest = i - 1;
+          let breakingFail = false;
+        try {
+            let passed = true; // result of current test
+            let results = []; // text results of sub tests of the test
+            let testouts = [];
+            if (test.set) { // values to set before testing
+                for (let toset of test.set) {
+                    let spl = toset.split(" ");
+                    if (spl.length > 1) {
+                        if (!this.outputs[spl[1]])
+                            throw({message:"the required input " + spl[1] + " is missing."});
+                        if (spl[0] === "oneof") {
+                            // select one entry in previous output list
+                            this.selectEntryRandomly(spl[1]);
+                        }
                     }
                 }
             }
-        }
-        for (let unit of test.tests) {
-          let isok, text; // return from the test function
-          let tocall; // test function to call
-          let inputs = []; // inputs of the test function (first parameter is mirror)
-          let output; // output of the test function
-          if (typeof unit === "function") {
-            tocall = unit;
-          } else {
-            tocall = unit.test;
-            // bind inputs
-            if (unit.input) {
-              for (let inp of unit.input) {
-                let spl = inp.split(" ");
-                if (spl.length > 1) {
-                  if (!outputs[spl[1]])
-                    console.error("the required input " + spl[1] + " is missing.");
-                  if (spl[0] === "oneof") {
-                    // select one entry in previous output
-                    inputs.push(this.selectEntryRandomly(spl[1]));
-                  } else if (spl[0] === "valueof") {
-                     inputs.push(this.getEntryValue(spl[1]));
-                  } else if (spl[0] === "textof") {
-                     inputs.push(this.getEntryText(spl[1]));
-                  }
+            for (let unit of test.tests) {
+                let isok, text; // return from the test function
+                let tocall; // test function to call
+                let inputs = []; // inputs of the test function (first parameter is mirror)
+                let output; // output of the test function
+                if (typeof unit === "function") {
+                    tocall = unit;
                 } else {
-                  if (!outputs[inp])
-                    console.error("the required input " + inp + " is missing.");
-                  inputs.push(outputs[inp]);
+                    tocall = unit.test;
+                    // bind inputs
+                    if (unit.input) {
+                        for (let inp of unit.input) {
+                            let spl = inp.split(" ");
+                            if (spl.length > 1) {
+                            if (!this.outputs[spl[1]])
+                                throw({message:"the required input " + spl[1] + " is missing."});
+                            if (spl[0] === "oneof") {
+                                // select one entry in previous output
+                                inputs.push(this.selectEntryRandomly(spl[1]));
+                            } else if (spl[0] === "valueof") {
+                                inputs.push(this.getEntryValue(spl[1]));
+                            } else if (spl[0] === "textof") {
+                                inputs.push(this.getEntryText(spl[1]));
+                            }
+                            } else {
+                            if (!this.outputs[inp])
+                                throw({message:"the required input " + inp + " is missing."});
+                            inputs.push(this.outputs[inp]);
+                            }
+                        }
+                    }
                 }
-              }
-            }
-          }
-          try {
-            let ress = await tocall.bind(this)(mirror, ...inputs);
-            let allres = [];
-            // if there is only one result, add it to the result array
-            if (ress.length > 0 && (ress[0] === true || ress[0] === false)) { 
-                allres.push(ress);
-            } else {
-                allres.push(...ress);
-            }
-            for ([isok, text, output] of allres) { // for all results of unit test
-                if (unit.output && output) {
-                    outputs[unit.output] = output; // save the output
-                    testouts.push({
-                        name: unit.output,
-                        value: output,
-                        display: unit.display,
-                        currentValue: undefined
-                    });
-                }
-                passed &= isok; // check if test passed
-                if (!isok) {
+                try {
+                    let ress = await tocall.bind(this)(mirror, ...inputs);
+                    if (testid !== this.curtest) {
+                        console.log("Interrupt the " + testid + " test course, has been deprecated")
+                        return // the current test course is deprecated, a new one has been launched
+                    }
+                    let allres = [];
+                    // if there is only one result, add it to the result array
+                    if (ress.length > 0 && (ress[0] === true || ress[0] === false)) { 
+                        allres.push(ress);
+                    } else {
+                        allres.push(...ress);
+                    }
+                    for ([isok, text, output] of allres) { // for all results of unit test
+                        if (unit.output && output) {
+                            this.outputs[unit.output] = output; // save the output
+                            testouts.push({
+                                name: unit.output,
+                                value: output,
+                                display: unit.display,
+                                currentValue: undefined, 
+                                buttons: unit.buttons
+                            });
+                        }
+                        passed &= isok; // check if test passed
+                        if (!isok) {
+                            results.push(
+                            "<span style='color:red'><strong>" + text + "</strong></span>"
+                            );
+                        } else {
+                            results.push(text);
+                        }
+                    }
+                } catch (e) {
+                    passed = false;
+                    breakingFail = true;
                     results.push(
-                    "<span style='color:red'><strong>" + text + "</strong></span>"
+                        "<span style='color:red'>Error while running test : " + e.message + "</span>"
                     );
-                } else {
-                    results.push(text);
+                    console.error(e);
                 }
             }
-          } catch (e) {
-            isok = false;
-            text =
-              "<span style='color:red'>Error while running test : " +
-              e.message +
-              "</span>";
+            // global object containing tests results
+            Vue.set(this.testsResults, this.currentTest, {
+                passed: passed, // result of the test
+                results: results, // list of text unit results
+                output: testouts // array of outputs
+            });
+            if (breakingFail) {
+                break;
+            }
+        } catch (e) {
             console.error(e);
-          }
-        }
-        // global object containing tests results
-        this.testsResults[this.currentTest] = {
-          passed: passed, // result of the test
-          results: results, // list of text unit results
-          output: testouts // array of outputs
-        };
-        this.currentTest++;
-        if (!passed) {
-          break;
+            Vue.set(this.testsResults, this.currentTest, {
+                passed: false, // result of the test
+                results: ["<span style='color:red'><strong>" + e.message + "</strong></span>"], // list of text unit results
+                output: []
+            });
+            break;
         }
       }
     },
+    /**
+     * Select a value randomly in an output
+     */
     selectEntryRandomly(outputName) {
+        if (this.forcedValues[outputName]) return this.forcedValues[outputName]
       for (let i = 0; i < this.currentTest; i++) {
         for (let out of this.testsResults[i].output) {
           if (out.name === outputName) {
@@ -259,6 +328,9 @@ export default {
       }
       return undefined;
     },
+    /**
+     * Return the value of an output
+     */
     getEntryValue(outputName) {
       for (let i = 0; i < this.currentTest; i++) {
         for (let out of this.testsResults[i].output) {
@@ -270,6 +342,9 @@ export default {
       }
       return undefined;
     },
+    /**
+     * Return the text of an output
+     */
     getEntryText(outputName) {
       for (let i = 0; i < this.currentTest; i++) {
         for (let out of this.testsResults[i].output) {
@@ -280,8 +355,44 @@ export default {
         }
       }
       return undefined;
+    }, 
+    /**
+     * Opens a url
+     */
+    goToUrl(url) {
+        browser.runtime.sendMessage({
+            action: "opentab",
+            url: url
+        });
+    }, 
+    /**
+     * Reloads the tests after a step with a selected value
+     */
+    reloadNextWith(outname, outvalue) {
+        // slice the results after the generated output
+        let i = 0, found = false;
+        for (let res of this.testsResults) {
+            for (let out of res.output) {
+                if (found === true) {
+                    //delete outputs found after from previous outputs
+                    delete this.outputs[out.name];
+                }
+                if (out.name === outname) {
+                    this.currentTest = i + 1;
+                    found = true;
+                }
+            }
+            i++;
+        }
+        // adds the forced value
+        this.forcedValues = {}; // reset forced values, only one at a time
+        this.forcedValues[outname] = outvalue;
+        // remove the results of previous tests after the one to reload
+        this.testsResults.splice(this.currentTest, this.testsResults.length);
+        // reload tests after
+        this.curtest++;
+        this.loadTests(this.currentTest, 0);
     }
-
   }
 };
 </script>
@@ -295,5 +406,24 @@ export default {
 }
 * {
   font-size: 12px;
+}
+.test-icon {
+    vertical-align: middle;
+    margin-right: 10px;
+}
+.dom-elt img {
+    height: 200px;
+}
+.list-results {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 10px;
+    width: auto;
+}
+.list-results .input-group__details {
+    min-height: auto;
+}
+.result-button {
+    display: inline-block;
 }
 </style>

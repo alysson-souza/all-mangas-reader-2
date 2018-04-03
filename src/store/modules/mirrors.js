@@ -108,9 +108,7 @@ const actions = {
             // set mirrors list in store
             commit('setMirrors', websites);
         }
-        // reset implementations
-        mirrorsImpl.resetImplementations();
-
+        
         //update badges and icon state
         amrUpdater.refreshBadgeAndIcon();
 
@@ -134,6 +132,10 @@ const mutations = {
     setMirrors(state, mirrors) {
         state.all = []
         state.all.push(...mirrors)
+
+        // reset implementations
+        // we do that in the mutation to affect all instances
+        mirrorsImpl.resetImplementations();
     }
 }
 
