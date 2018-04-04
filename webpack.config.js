@@ -3,6 +3,9 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const WebpackShellPlugin = require('webpack-shell-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
+const normalize = function(path) {
+  return path.replace(/\\/g, "/");
+}
 const config = {
   context: __dirname + '/src',
   entry: {
@@ -40,7 +43,14 @@ const config = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        exclude: /node_modules/
+        /** Excludes node_modules except webextension-polyfill which is written in es6 and not transcompiled */
+        exclude(file) {
+          const funi = normalize(file);
+          if (funi.startsWith(normalize(__dirname + '/node_modules/webextension-polyfill'))) {
+            return false;
+          }
+          return funi.startsWith(normalize(__dirname + '/node_modules'));
+        }
       },
       {
         test: /\.css$/,
