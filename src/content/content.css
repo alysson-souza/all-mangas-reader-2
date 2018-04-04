@@ -226,6 +226,7 @@ a.buttonAMR:active {
 }
 #AMRBarIn select, .amrbarlayout select {
   vertical-align:middle!important;
+  color: black!important;
 }
 #AMRBarIn a, .amrbarlayout a {
   vertical-align:middle!important;

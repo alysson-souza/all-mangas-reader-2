@@ -78,6 +78,7 @@
                                 {{out.name}} : 
                                 <v-select v-if="out.display === 'select'" :items="out.value" v-model="out.currentValue" class="list-results">
                                 </v-select>
+                                <div v-if="out.display === 'select'">Selected value : <i>{{ out.currentValue }}</i></div>
                                 <span v-if="out.display === 'object'">{{JSON.stringify(out.value, null, 4)}}</span>
                                 <div v-if="out.display === 'image'" :ref='out.name' class="dom-elt">
                                     <img :src="out.value" />
@@ -312,7 +313,7 @@ export default {
      * Select a value randomly in an output
      */
     selectEntryRandomly(outputName) {
-        if (this.forcedValues[outputName]) return this.forcedValues[outputName]
+      if (this.forcedValues[outputName]) return this.forcedValues[outputName]
       for (let i = 0; i < this.currentTest; i++) {
         for (let out of this.testsResults[i].output) {
           if (out.name === outputName) {

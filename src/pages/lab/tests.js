@@ -105,6 +105,9 @@ const tests = [
             {
                 input: ["chaptersList"],
                 test: function (mirror, list) {
+                    if (!mirror.webSites || mirror.webSites.length === 0) {
+                        return [false, "Can't run test because the webSites attribute is missing on implementation"]
+                    }
                     let nbok = 0;
                     let lstko = [];
                     for (let res of list) {

@@ -338,6 +338,20 @@ const actions = {
         amrUpdater.refreshBadgeAndIcon();
     },
     /**
+     * Given its key, deletes a manga from reading list
+     * @param {*} param0 
+     * @param {*} message 
+     */
+    async deleteManga({ dispatch, commit, getters, rootState }, message) {
+        let mg = state.all.find(manga => manga.key === message.key);
+        if (mg !== undefined) {
+            commit('deleteManga', message.key);
+            storedb.deleteManga(message.key);
+        }
+        // refresh badge
+        amrUpdater.refreshBadgeAndIcon();
+    },
+    /**
      * Import sample mangas on user request
      * @param {*} param0 
      */
@@ -511,6 +525,17 @@ const mutations = {
             }
         }
         state.all.push(mg);
+    }, 
+    /**
+     * Create a new manga
+     * @param {*} state 
+     * @param {*} mgdef object containing manga info
+     */
+    deleteManga(state, key) {
+        let mgindex = state.all.findIndex(manga => manga.key === key)
+        if (mgindex >= 0) {
+            state.all.splice(mgindex, 1);
+        }
     }, 
     /**
      * Links a category to a manga

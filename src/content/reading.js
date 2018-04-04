@@ -156,7 +156,7 @@ class Reading {
             $("#" + $(this).data("divLoad")).css("display", "none");
             $(this).data("finish", "1");
             $(this).css("margin-right", "10px");
-            if ($(this).attr("src") != browser.extension.getURL("img/imgerror.png")) {
+            if ($(this).attr("src") != browser.extension.getURL("icons/imgerror.png")) {
                 $(this).css("border", "5px solid white");
                 $(this).css("margin-bottom", "50px");
             }
@@ -267,7 +267,7 @@ class Reading {
         $(this).css("margin-right", "10px");
         if (this.naturalWidth === 0) {
             //Here, number of tries before considering image can not be loaded
-            if ($(this).data("number") == 2) {
+            if ($(this).data("number") == 4) {
                 console.error("Image has not been recovered");
                 $(this).attr("src", browser.extension.getURL("icons/imgerror.png"));
                 $(this).css("border", "0");
@@ -301,7 +301,7 @@ class Reading {
                     $(img).appendTo(spanner);
 
                     let div = $("<div id='" + divLoadId + "' class='divLoading'></div>");
-                    div.css("background", "url(" + browser.extension.getURL("img/loading.gif") + ") no-repeat center center");
+                    div.css("background", "url(" + browser.extension.getURL("icons/loading.gif") + ") no-repeat center center");
                     $(img).data("divLoad", divLoadId);
                     $(img).data("idScan", idScan);
                     div.appendTo(spanner);
@@ -328,7 +328,7 @@ class Reading {
                 $(imgSave).addClass("imageAMR");
                 $(imgSave).load(reading.onLoadImage);
                 $(imgSave).error(reading.onErrorImage);
-                mirrorImpl.get()().getImageFromPageAndWrite($(this).data("urlToLoad"), imgSave, document, window.location.href);
+                mirrorImpl.get().getImageFromPageAndWrite($(this).data("urlToLoad"), imgSave, document, window.location.href);
 
                 $(this).after($(imgSave));
                 $(this).remove();

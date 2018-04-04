@@ -65,7 +65,9 @@ class HandleManga {
         let impl;
         // Load mirror implementation from repo (try next repo if previous fail)
         for (let repo of store.state.options["impl_repositories"]) {
-            impl = await Axios.get(repo + mir.jsFile).catch(() => { }); // ignore error, jump to next repo
+            let url = repo + mir.jsFile;
+            if (url.indexOf("localhost") > 0) url += "?ts=" + new Date().getTime();
+            impl = await Axios.get(url).catch(() => { }); // ignore error, jump to next repo
             if (impl) break;
         }
         if (impl) {

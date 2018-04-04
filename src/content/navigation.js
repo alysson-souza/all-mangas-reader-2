@@ -265,7 +265,7 @@ class Navigation {
                     $("#bookmarkData").data("note", result.note);
                     if (result.note !== "") $(".bookAMR").attr("title", "Note : " + result.note);
                     $("#bookmarkData").data("chapbooked", true);
-                    $(".bookAMR").attr("src", browser.extension.getURL("img/bookmarkred.png"));
+                    $(".bookAMR").attr("src", browser.extension.getURL("icons/bookmarkred.png"));
                 }*/
             }
 

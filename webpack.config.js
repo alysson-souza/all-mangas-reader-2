@@ -46,9 +46,10 @@ const config = {
         /** Excludes node_modules except webextension-polyfill which is written in es6 and not transcompiled */
         exclude(file) {
           const funi = normalize(file);
-          if (funi.startsWith(normalize(__dirname + '/node_modules/webextension-polyfill'))) {
+          // webextension polyfill is transpiled by babel if you uncomment below BUT, when loaded, the extension crashes on a WeakMap...
+          /*if (funi.startsWith(normalize(__dirname + '/node_modules/webextension-polyfill'))) {
             return false;
-          }
+          }*/
           return funi.startsWith(normalize(__dirname + '/node_modules'));
         }
       },
@@ -80,7 +81,8 @@ const config = {
       {from: 'content/*.css', to: '.'},
       {from: '_locales/**/*', to: '.'},
       {from: '../node_modules/jquery/dist/jquery.min.js', to: 'lib/jquery.min.js'},
-      {from: '../node_modules/jquery-modal/jquery.modal.min.js', to: 'lib/jquery.modal.min.js'}
+      {from: '../node_modules/jquery-modal/jquery.modal.min.js', to: 'lib/jquery.modal.min.js'}, 
+      {from: '../node_modules/jquery.scrollto/jquery.scrollTo.min.js', to: 'lib/jquery.scrollTo.min.js'}
     ]),
     new WebpackShellPlugin({
       onBuildEnd: ['node scripts/remove-evals.js']

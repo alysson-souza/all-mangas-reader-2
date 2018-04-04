@@ -170,6 +170,26 @@ class StoreDB {
                 });
             });
     }
+    // deletes an entry
+    deleteManga(key) {
+        let store = this;
+        return this.checkInit()
+            .then(() => {
+                return new Promise((resolve, result) => {
+                    let transaction = store.db.transaction(["mangas"], "readwrite");
+
+                    transaction.onerror = function (event) {
+                        reject("Impossible to delete manga " + key + ". Error code : " + event.target.errorCode);
+                    };
+
+                    let objectStore = transaction.objectStore("mangas");
+                    let request = objectStore.delete(key);
+                    request.onsuccess = function (event) {
+                        resolve(event.target.result);
+                    };
+                });
+            });
+    }
     getMangaList() {
         let store = this;
         return this.checkInit()

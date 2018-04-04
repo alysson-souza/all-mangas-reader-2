@@ -89,7 +89,7 @@
             </v-tooltip>
             <!-- Delete manga -->
             <v-tooltip top content-class="icon-ttip">
-              <v-icon slot="activator" @click="trash()">mdi-delete</v-icon>
+              <v-icon slot="activator" @click="deleteManga = true">mdi-delete</v-icon>
               <span>Delete manga</span>
             </v-tooltip>
             <!-- Display details panel -->
@@ -99,6 +99,18 @@
           </v-card>
         </v-card>
       </v-flex>
+      <v-dialog v-model="deleteManga" max-width="500px">
+        <v-card>
+            <v-card-title>
+            <span class="headline">Are you sure to delete {{manga.name}} on {{manga.mirror}} ?</span>
+            </v-card-title>
+            <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" flat @click.native="deleteManga = false">No</v-btn>
+            <v-btn color="blue darken-1" flat @click.native="trash()">Yes</v-btn>
+            </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-layout>
 </template>
 
@@ -113,7 +125,9 @@ export default {
       // current selected chapter
       selChapter: this.manga.lastChapterReadURL,
       // current state of other grouped mangas panel
-      expanded: false
+      expanded: false, 
+      // delete manga popup state
+      deleteManga: false,
     };
   },
   // property to load the component with --> the manga it represents
@@ -229,6 +243,9 @@ export default {
         url: this.manga.listChaps[pos][1]
       });
     },
+    /**
+     * Opens a chapter from select
+     */
     playChap() {
       browser.runtime.sendMessage({ action: "opentab", url: this.selChapter });
     },
@@ -236,7 +253,9 @@ export default {
      * Deletes a manga
      */
     trash() {
-      //TODO
+      this.$store.dispatch("deleteManga", {
+        key: this.manga.key
+      });
     }
   },
   // Name of the component
