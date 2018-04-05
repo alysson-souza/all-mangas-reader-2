@@ -43,7 +43,6 @@ const actions = {
      */
     async initMirrors({ commit, dispatch }) {
         let websites = await storedb.getWebsites(); // Get mirrors from local database
-        websites = []; //TOREMOVE TODO !!!!
         if (!websites.length) {
             // No mirrors known yet, get the list
             websites = await dispatch("updateMirrorsLists");
