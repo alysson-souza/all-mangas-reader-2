@@ -43,6 +43,7 @@ const actions = {
      */
     async initMirrors({ commit, dispatch }) {
         let websites = await storedb.getWebsites(); // Get mirrors from local database
+        websites = []; //TOREMOVE TODO !!!!
         if (!websites.length) {
             // No mirrors known yet, get the list
             websites = await dispatch("updateMirrorsLists");
@@ -71,7 +72,10 @@ const actions = {
 
         // update last update ts
         dispatch("setOption", {key: "lastMirrorsUpdate", value: new Date().getTime()});
-                
+
+        let websitesdb = await storedb.getWebsites();
+        if (websitesdb === undefined) websitesdb = [];
+
         let websites = [];
         let config = {	
             headers: {
@@ -91,7 +95,11 @@ const actions = {
             if (ws && ws.data) {
                 let updts = []
                 for (let w of ws.data) {
-                    w.activated = true;
+                    // get activated property in db, do not overright it
+                    let act = true;
+                    let wdb = websitesdb.find(m => m.mirrorName === w.mirrorName);
+                    if (wdb != undefined) act = wdb.activated;
+                    w.activated = act;
                     updts.push(
                         dispatch("updateMirror", w).catch(e => e) // avoid blocking the Promise.all due to an update failure
                     );
@@ -109,10 +117,22 @@ const actions = {
             commit('setMirrors', websites);
         }
         
-        //update badges and icon state
+        // remove deleted mirrors
+        // TODO --> what do we do if there are mangas in list from these mirrors ?
+
+        // update badges and icon state
         amrUpdater.refreshBadgeAndIcon();
 
         return websites;
+    },
+    /**
+     * Set the activated / deactivated flag on a mirror
+     * @param {*} param0 
+     * @param {*} mirror 
+     */
+    changeMirrorActivation({ commit, dispatch, rootState }, mirror) {
+        commit('changeMirrorActivation', mirror);
+        dispatch("updateMirror", mirror);
     }
 }
 
@@ -136,6 +156,17 @@ const mutations = {
         // reset implementations
         // we do that in the mutation to affect all instances
         mirrorsImpl.resetImplementations();
+    },
+    /**
+     * Set the activated / deactivated flag on a mirror
+     * @param {*} state 
+     * @param {*} mirror 
+     */
+    changeMirrorActivation(state, mirror) {
+        let mir = state.all.find(m => m.mirrorName === mirror.mirrorName)
+        if (mir !== undefined) {
+            mir.activated = mirror.activated;
+        }
     }
 }
 

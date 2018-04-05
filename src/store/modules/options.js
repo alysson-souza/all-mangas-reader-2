@@ -25,7 +25,7 @@ const default_options = {
     prefetch: 1, // load next chapter in background while reading 
     lrkeys: 1, // use arrows keys to read chapter
     rightnext: 1, // arrow right goes to next chapter at bottom
-    load: 0, //See loading progression in the title bar
+    load: 1, //See loading progression in the title bar
     imgorder: 0, //Load scans in order
 
     /**
@@ -39,19 +39,19 @@ const default_options = {
     /** Customization options */
     newTab: 0, //Open popup in new tab
     displastup: 0, // Display a badge with last time updated in popup
-    dark: 0, // Use a dark backgroup for AMR pages,
+    dark: 0, // Use a dark backgroud for AMR pages,
     colornew: "green", // color of mangas with new chapters
     colorread: "blue", // color of mangas with all chapters read
     colornotfollow: "blue-grey",  // color of mangas which are not followed
     groupmgs: 1, // group manga with similar name (one piece and One Piece)
 
     /** Updates options */
-    updatechap: 1800000, // update chapters frequency
+    updatechap: 3600000, // update chapters frequency
     updatemg: 86400000, // update mirrors frequency
     checkmgstart: 0, // update chapters lists on startup
     refreshspin: 1, // spin the icon while loading chapters
     savebandwidth: 0, // save bandwidth while loading chapters
-    displayzero: 1, // display a grey zero when no new chapter
+    displayzero: 0, // display a grey zero when no new chapter
     nocount: 1, // 1 : display gray sharingan and normal if new chaps; 0 : badge
 
     /** Notification options */

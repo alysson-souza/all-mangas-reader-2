@@ -78,13 +78,16 @@ class Reading {
         let title = $("title").text();
         this.waitForImages(where, mode, title);
     }
-    async onLoadImage() {
-        if ($(this).data("canvasId")) {
+    async onLoadImage(img) {
+        console.log("Load image");
+        console.log(this);
+        console.log(img);
+        if ($(img).data("canvasId")) {
             let width, height;
-            let ancCan = $("#" + $(this).data("canvasId"));
+            let ancCan = $("#" + $(img).data("canvasId"));
 
-            let resize = $(this).data("resize");
-            let mode = $(this).data("modedisplay");
+            let resize = $(img).data("resize");
+            let mode = $(img).data("modedisplay");
 
             if (resize == 1) {
                 if (ancCan.width() < ancCan.height()) {
@@ -147,24 +150,24 @@ class Reading {
 
             $(ancCan).css("margin-bottom", "50px");
             $(ancCan).css("border", "5px solid white");
-            $("#" + $(this).data("divLoad")).css("display", "none");
-            $(this).data("finish", "1");
-            $(this).css("display", "none");
+            $("#" + $(img).data("divLoad")).css("display", "none");
+            $(img).data("finish", "1");
+            $(img).css("display", "none");
 
             //Bookmark DIV MOD ??? TODO
         } else {
-            $("#" + $(this).data("divLoad")).css("display", "none");
-            $(this).data("finish", "1");
-            $(this).css("margin-right", "10px");
-            if ($(this).attr("src") != browser.extension.getURL("icons/imgerror.png")) {
-                $(this).css("border", "5px solid white");
-                $(this).css("margin-bottom", "50px");
+            $("#" + $(img).data("divLoad")).css("display", "none");
+            $(img).data("finish", "1");
+            $(img).css("margin-right", "10px");
+            if ($(img).attr("src") != browser.extension.getURL("icons/imgerror.png")) {
+                $(img).css("border", "5px solid white");
+                $(img).css("margin-bottom", "50px");
             }
 
             //Create contextual menu to bookmark image
             browser.runtime.sendMessage({
                 action: "createContextMenu",
-                lstUrls: [$(this).attr("src")]
+                lstUrls: [$(img).attr("src")]
             });
             //Check bookmarks
             let objBM = {
@@ -173,8 +176,8 @@ class Reading {
                 url: $("#bookmarkData").data("url"),
                 chapUrl: $("#bookmarkData").data("chapUrl"),
                 type: "scan",
-                scanUrl: $(this).attr("src"),
-                scanName: $(this).data("idScan")
+                scanUrl: $(img).attr("src"),
+                scanName: $(img).data("idScan")
             };
             let result = await browser.runtime.sendMessage(objBM);
             if (result.isBooked) {
@@ -188,7 +191,7 @@ class Reading {
                 imgScan.css("border-color", "#999999");
             }
             if (options.autobm) {
-                $(this).dblclick(function () {
+                $(img).dblclick(function () {
                     let obj;
                     if ($(this).data("booked")) {
                         obj = {
@@ -232,8 +235,8 @@ class Reading {
                 });
             }
         }
-        let divNum = $("<div class='pagenumberAMR'><div class='number'>" + ($(this).data("idScan") + 1) + "</div></div>");
-        divNum.appendTo($(this).closest(".spanForImg"));
+        let divNum = $("<div class='pagenumberAMR'><div class='number'>" + ($(img).data("idScan") + 1) + "</div></div>");
+        divNum.appendTo($(img).closest(".spanForImg"));
     }
 
     clickOnBM(src) {
@@ -261,19 +264,22 @@ class Reading {
 
     }
 
-    onErrorImage() {
+    onErrorImage(img) {
+        console.log("Error image");
+        console.log(this);
+        console.log(img);
         let reading = this;
-        $(this).css("margin-bottom", "50px");
-        $(this).css("margin-right", "10px");
-        if (this.naturalWidth === 0) {
+        $(img).css("margin-bottom", "50px");
+        $(img).css("margin-right", "10px");
+        if (img.naturalWidth === 0) {
             //Here, number of tries before considering image can not be loaded
-            if ($(this).data("number") == 4) {
+            if ($(img).data("number") == 4) {
                 console.error("Image has not been recovered");
-                $(this).attr("src", browser.extension.getURL("icons/imgerror.png"));
-                $(this).css("border", "0");
-                $(this).css("margin", "0");
-                $(this).data("finish", "1");
-                $("#" + $(this).data("divLoad")).css("display", "none");
+                $(img).attr("src", browser.extension.getURL("icons/imgerror.png"));
+                $(img).css("border", "0");
+                $(img).css("margin", "0");
+                $(img).data("finish", "1");
+                $("#" + $(img).data("divLoad")).css("display", "none");
 
                 //Create the reload button
                 let butReco = $("<a class='buttonAMR'>Try to reload</a>");
@@ -281,7 +287,7 @@ class Reading {
                 butReco.css("max-width", "200px");
                 butReco.css("margin-left", "auto");
                 butReco.css("margin-right", "auto");
-                $(this).after(butReco);
+                $(img).after(butReco);
                 butReco.click(function () {
                     let imgAnc = $(this).prev();
                     let url = $(imgAnc).data("urlToLoad");
@@ -290,20 +296,20 @@ class Reading {
                     let spanner = $(this).parent();
                     spanner.empty();
 
-                    let img = new Image();
+                    let nimg = new Image();
                     //== loadImage
-                    $(img).data("urlToLoad", url);
-                    $(img).css("border", "5px solid white");
-                    $(img).load(reading.onLoadImage);
-                    $(img).error(reading.onErrorImage);
-                    mirrorImpl.get().getImageFromPageAndWrite(util.removeProtocol(url), img, document, window.location.href);
+                    $(nimg).data("urlToLoad", url);
+                    $(nimg).css("border", "5px solid white");
+                    $(nimg).load(() => reading.onLoadImage(nimg));
+                    $(nimg).error(() => reading.onErrorImage(nimg));
+                    mirrorImpl.get().getImageFromPageAndWrite(util.removeProtocol(url), nimg, document, window.location.href);
 
-                    $(img).appendTo(spanner);
+                    $(nimg).appendTo(spanner);
 
                     let div = $("<div id='" + divLoadId + "' class='divLoading'></div>");
                     div.css("background", "url(" + browser.extension.getURL("icons/loading.gif") + ") no-repeat center center");
-                    $(img).data("divLoad", divLoadId);
-                    $(img).data("idScan", idScan);
+                    $(nimg).data("divLoad", divLoadId);
+                    $(nimg).data("idScan", idScan);
                     div.appendTo(spanner);
                 });
 
@@ -311,32 +317,32 @@ class Reading {
                 util.debug("An image has encountered a problem while loading... All Mangas Reader is trying to recover it...");
                 let imgSave = new Image();
 
-                if ($(this).data("hasErrors") != "1") {
+                if ($(img).data("hasErrors") != "1") {
                     $(imgSave).data("hasErrors", "1");
                     $(imgSave).data("number", 1);
                 } else {
                     $(imgSave).data("hasErrors", "1");
-                    $(imgSave).data("number", $(this).data("number") + 1);
+                    $(imgSave).data("number", $(img).data("number") + 1);
                 }
 
-                $(imgSave).data("divLoad", $(this).data("divLoad"));
-                $(imgSave).data("idScan", $(this).data("idScan"));
+                $(imgSave).data("divLoad", $(img).data("divLoad"));
+                $(imgSave).data("idScan", $(img).data("idScan"));
 
                 //== loadImage
-                $(imgSave).data("urlToLoad", $(this).data("urlToLoad"));
+                $(imgSave).data("urlToLoad", $(img).data("urlToLoad"));
                 $(imgSave).css("border", "5px solid white");
                 $(imgSave).addClass("imageAMR");
-                $(imgSave).load(reading.onLoadImage);
-                $(imgSave).error(reading.onErrorImage);
-                mirrorImpl.get().getImageFromPageAndWrite($(this).data("urlToLoad"), imgSave, document, window.location.href);
+                $(imgSave).load(() => reading.onLoadImage(imgSave));
+                $(imgSave).error(() => reading.onErrorImage(imgSave));
+                mirrorImpl.get().getImageFromPageAndWrite($(img).data("urlToLoad"), imgSave, document, window.location.href);
 
-                $(this).after($(imgSave));
-                $(this).remove();
+                $(img).after($(imgSave));
+                $(img).remove();
             }
         } else {
-            $("#" + $(this).data("divLoad")).css("display", "none");
-            $(this).data("finish", "1");
-            $(this).data("error", "1");
+            $("#" + $(img).data("divLoad")).css("display", "none");
+            $(img).data("finish", "1");
+            $(img).data("error", "1");
         }
     }
 
@@ -346,8 +352,8 @@ class Reading {
             $(img).data("resize", options.resize);
             $(img).data("modedisplay", mode);
 
-            $(img).load(this.onLoadImage);
-            $(img).error(this.onErrorImage);
+            $(img).load(() => this.onLoadImage(img));
+            $(img).error(() => this.onErrorImage(img));
         }
 
         if (options.imgorder == 1) {
@@ -597,8 +603,8 @@ class Reading {
                 $(img).data("urltoload", lst[i]);
                 $(img).data("urlnext", urlNext);
                 $(img).data("total", lst.length);
-                $(img).load(this.onLoadNextImage);
-                $(img).error(this.onErrorNextImage);
+                $(img).load(() => this.onLoadNextImage());
+                $(img).error(() => this.onErrorNextImage());
                 mirrorImpl.get().getImageFromPageAndWrite(lst[i], img, document, urlNext);
             }
         } else {

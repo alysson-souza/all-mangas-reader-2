@@ -208,25 +208,24 @@
             <v-tab-item id="supported">
                 <v-container fluid>
                 <div class="subtitle">{{i18n('options_sup_desc')}}</div>
+                <!-- Filters -->
+                <v-layout flex class="mt-2">
+                    <v-flex xs4>
+                        <v-select v-model="selectedLang" :items="distinctLangs"></v-select>
+                    </v-flex>
+                    <v-flex xs8>
+                        <v-btn @click="deactivateAll()" color="primary" small>Deactivate all visible</v-btn>
+                        <v-btn @click="activateAll()" color="primary" small>Activate all visible</v-btn>
+                    </v-flex>
+                </v-layout>
                 <v-data-table
-                    v-model="activatedWebsites"
                     :headers="headersSupportedWebsites"
                     :items="supportedWebsites"
-                    select-all
                     item-key="mirrorName"
                     hide-actions
                 >
                     <template slot="headers" slot-scope="props">
                     <tr>
-                        <th>
-                        <v-checkbox
-                            primary
-                            hide-details
-                            @click.native="toggleAll"
-                            :input-value="props.all"
-                            :indeterminate="props.indeterminate"
-                        ></v-checkbox>
-                        </th>
                         <th
                             v-for="header in props.headers"
                             :key="header.text"
@@ -237,19 +236,23 @@
                     </tr>
                     </template>
                     <template slot="items" slot-scope="props">
-                    <tr :active="props.selected" @click="props.selected = !props.selected">
+                    <tr :active="props.selected" @click="props.selected = !props.selected" v-if="filterLanguage(props.item)">
                         <td>
-                        <v-checkbox
-                            primary
-                            hide-details
-                            :input-value="props.selected"
-                        ></v-checkbox>
-                        </td>
-                        <td>
+                            <img :src="props.item.mirrorIcon" class="mirror-icon" />
                             {{ props.item.mirrorName }}
                             <!-- Badge with number of mangas read -->
+                            <v-card v-if="nbMangas(props.item.mirrorName) > 0" color="primary" dark class="mirror-manga-info">
+                                {{ nbMangas(props.item.mirrorName) }} mangas in list
+                            </v-card>
                         </td>
-                        <td class="text-xs-right">{{ props.item.language }}</td>
+                        <td class="text-xs-right">
+                            <span v-for="(lang, key) in props.item.languages.split(',')" :key="key">
+                                {{ getLang(lang) }}
+                            </span>
+                        </td>
+                        <td class="text-xs-right">
+                            <v-checkbox :disabled="nbMangas(props.item.mirrorName) > 0" v-model="props.item.activated" @change="changeActivation(props.item)"/>
+                        </td>
                     </tr>
                     </template>
                 </v-data-table>
@@ -397,13 +400,14 @@ export default {
         { value: 60 * 1000, text: i18n("options_minutes", 1) },
         { value: 2 * 60 * 1000, text: i18n("options_minutes", 2) }
       ],
-      activatedWebsites: [],
       headersSupportedWebsites: [
         { text: "Website name / number of mangas read", value: "name" },
-        { text: "Language", value: "lang" }
+        { text: "Language", value: "lang" },
+        { text: "Activated", value: "activ" },
       ],
       newRepo: "",
-      newRepositoryDialog: false
+      newRepositoryDialog: false,
+      selectedLang: "",
     };
     // add all options properties in data model; this properties are the right one in store because synchronization with background has been called by encapsuler (popup.js / other) before initializing vue
     res = Object.assign(res, this.$store.state.options);
@@ -418,6 +422,16 @@ export default {
   computed: {
       supportedWebsites() {
           return this.$store.state.mirrors.all
+      },
+      distinctLangs() {
+          let dis = [];
+          dis.push({value: "", text: "All Languages"});
+          let dislangs = this.$store.state.mirrors.all.reduce((dm, mir) => {
+              mir.languages.split(",").forEach(lang => !dm.includes(lang) ? dm.push(lang) : dm)
+              return dm;
+          }, []);
+          dis.push(...dislangs.map(lang => {return {value: lang, text: this.getLang(lang)}}));
+          return dis;
       }
   },
   watch: {
@@ -471,19 +485,33 @@ export default {
       await this.$store.dispatch("updateMirrorsLists");
       this.loadingMirrors = false;
     },
-    toggleAll() {
-      if (this.selected.length) this.selected = [];
-      else this.selected = this.items.slice();
+    /**
+     * Return language name from code
+     */
+    getLang(code) {
+        return languages.get(code);
     },
+    /**
+     * Move a repo up in list
+     */
     moveUpRepository(repo) {
         this.$store.dispatch("moveUpRepository", repo);
     },
+    /**
+     * Move a repo down in list
+     */
     moveDownRepository(repo) {
         this.$store.dispatch("moveDownRepository", repo);
     },
+    /**
+     * Deletes a repo
+     */
     deleteRepository(repo) {
         this.$store.dispatch("deleteRepository", repo);
     },
+    /**
+     * Adds a repository
+     */
     addRepository() {
         if (this.newRepo !== "") {
             let r = this.newRepo;
@@ -491,6 +519,50 @@ export default {
             this.$store.dispatch("addRepository", r);
         }
         this.newRepositoryDialog = false;
+    }, 
+    /**
+     * Update activation state in store and db (value is already set on mirror object)
+     */
+    changeActivation(mirror) {
+        this.$store.dispatch("changeMirrorActivation", mirror);
+    },
+    /**
+     * Number of manga in list for a mirror
+     */
+    nbMangas(mirrorName) {
+        return this.$store.state.mangas.all.reduce((count, mg) => {
+            return mg.mirror === mirrorName ? count + 1 : count;
+        }, 0);
+    }, 
+    /**
+     * Determine if a mirror is displayed depending on the language filter
+     */
+    filterLanguage(mirror) {
+        return this.selectedLang === "" || mirror.languages.split(",").includes(this.selectedLang);
+    }, 
+    /**
+     * Deactivate all visible mirrors (which can be deactivated)
+     */
+    deactivateAll() {
+        let _self = this;
+        this.$store.state.mirrors.all.forEach(mir => {
+            if (_self.filterLanguage(mir) && _self.nbMangas(mir.mirrorName) === 0) {
+                mir.activated = false;
+                _self.changeActivation(mir);
+            }
+        })
+    }, 
+    /**
+     * Activate all visible mirrors (which can be activated)
+     */
+    activateAll() {
+        let _self = this;
+        this.$store.state.mirrors.all.forEach(mir => {
+            if (_self.filterLanguage(mir) && _self.nbMangas(mir.mirrorName) === 0) {
+                mir.activated = true;
+                _self.changeActivation(mir);
+            }
+        })
     }
   }
 };
@@ -527,6 +599,16 @@ export default {
 }
 .opt-container {
   padding: 0;
+}
+.mirror-icon {
+    vertical-align: middle;
+    margin-right:4px;
+}
+.mirror-manga-info {
+    display: inline-block;
+    width: auto;
+    padding:2px 5px;
+    margin-left: 5px;
 }
 </style>
 
