@@ -21,8 +21,8 @@
               <v-icon>mdi-calendar-clock</v-icon>
               <span v-if="timeUpdated > 0">{{ timeUpdated }}</span>
             </v-card>
-            <span v-if="timeUpdated === 0">Last chapter found today !</span>
-            <span v-else>Last chapter found {{ timeUpdated }} days ago</span>
+            <span v-if="timeUpdated === 0">{{i18n("list_calendar_today")}}</span>
+            <span v-else>{{i18n("list_calendar_days_found", timeUpdated)}}</span>
           </v-tooltip>
         </v-card>
       </v-card>
@@ -45,7 +45,7 @@
           <!-- Reading progress -->
           <v-tooltip top content-class="icon-ttip">
             <v-progress-linear :value="progress" height="4" :color="color(-1)" slot="activator"></v-progress-linear>
-            <span>Progression : {{Math.floor(progress)}} %</span>
+            <span>{{ i18n("list_progress_reading", Math.floor(progress)) }}</span>
           </v-tooltip>
         </div>
         <!-- Loading bar if chapters list is not loaded yet-->
@@ -59,38 +59,38 @@
             <!-- Mark as read -->
             <v-tooltip v-if="hasNew" top content-class="icon-ttip">
               <v-icon v-if="hasNew" slot="activator" @click="markAsRead()">mdi-eye</v-icon>
-              <span>Mark last published chapter as read</span>
+              <span>{{i18n("list_mg_act_read")}}</span>
             </v-tooltip>
             <!-- Empty icon if all read -->
             <v-icon v-if="!hasNew" class="empty-icon"></v-icon> 
             <!-- Previous chapter -->
             <v-tooltip v-if="posInChapList < manga.listChaps.length - 1" top content-class="icon-ttip">
               <v-icon slot="activator" @click="play(-1)">mdi-chevron-left</v-icon>
-              <span>Read previous chapter</span>
+              <span>{{i18n("list_mg_act_prev")}}</span>
             </v-tooltip>
             <!-- Empty icon if no previous -->
             <v-icon v-if="posInChapList === manga.listChaps.length - 1" class="empty-icon"></v-icon> 
             <!-- Current chapter play -->
             <v-tooltip top content-class="icon-ttip">
               <v-icon slot="activator" @click="play(0)">mdi-play</v-icon>
-              <span>Read current chapter</span>
+              <span>{{i18n("list_mg_act_cur")}}</span>
             </v-tooltip>
             <!-- Next chapter play -->
             <v-tooltip v-if="posInChapList > 0" top content-class="icon-ttip">
               <v-icon slot="activator" @click="play(1)">mdi-chevron-right</v-icon>
-              <span>Read next chapter</span>
+              <span>{{i18n("list_mg_act_next")}}</span>
             </v-tooltip>
             <!-- Empty icon if no next chapter -->
             <v-icon v-if="posInChapList <= 0" class="empty-icon"></v-icon> 
             <!-- Last chapter play -->
             <v-tooltip top content-class="icon-ttip">
               <v-icon slot="activator" @click="play(Infinity)">mdi-page-last</v-icon>
-              <span>Read last published chapter</span>
+              <span>{{i18n("list_mg_act_latest")}}</span>
             </v-tooltip>
             <!-- Delete manga -->
             <v-tooltip top content-class="icon-ttip">
               <v-icon slot="activator" @click="deleteManga = true">mdi-delete</v-icon>
-              <span>Delete manga</span>
+              <span>{{i18n("list_mg_act_delete")}}</span>
             </v-tooltip>
             <!-- Display details panel -->
             <v-icon v-if="isFirst" @click="$emit('details-click')">more_vert</v-icon>
@@ -102,12 +102,12 @@
       <v-dialog v-model="deleteManga" max-width="500px">
         <v-card>
             <v-card-title>
-            <span class="headline">Are you sure to delete {{manga.name}} on {{manga.mirror}} ?</span>
+            <span class="headline">{{i18n("list_mg_delete_question", manga.name, manga.mirror)}}</span>
             </v-card-title>
             <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" flat @click.native="deleteManga = false">No</v-btn>
-            <v-btn color="blue darken-1" flat @click.native="trash()">Yes</v-btn>
+            <v-btn color="blue darken-1" flat @click.native="deleteManga = false">{{i18("button_no")}}</v-btn>
+            <v-btn color="blue darken-1" flat @click.native="trash()">{{i18("button_yes")}}</v-btn>
             </v-card-actions>
         </v-card>
       </v-dialog>

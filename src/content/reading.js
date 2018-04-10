@@ -4,6 +4,7 @@ import options from './options';
 import mirrorImpl from './mirrorimpl'
 import pageData from './pagedata'
 import util from './util';
+import i18n from '../amr/i18n';
 
 class Reading {
     consultManga() {
@@ -79,10 +80,8 @@ class Reading {
         this.waitForImages(where, mode, title);
     }
     async onLoadImage(img) {
-        console.log("Load image");
-        console.log(this);
-        console.log(img);
         if ($(img).data("canvasId")) {
+            // This mode is no more used... was used when some websites did not display a scan to read but a canvas with parts of image on it...
             let width, height;
             let ancCan = $("#" + $(img).data("canvasId"));
 
@@ -265,9 +264,6 @@ class Reading {
     }
 
     onErrorImage(img) {
-        console.log("Error image");
-        console.log(this);
-        console.log(img);
         let reading = this;
         $(img).css("margin-bottom", "50px");
         $(img).css("margin-right", "10px");
@@ -282,7 +278,7 @@ class Reading {
                 $("#" + $(img).data("divLoad")).css("display", "none");
 
                 //Create the reload button
-                let butReco = $("<a class='buttonAMR'>Try to reload</a>");
+                let butReco = $("<a class='buttonAMR'>" + i18n("content_read_reload") + "</a>");
                 butReco.css("display", "block");
                 butReco.css("max-width", "200px");
                 butReco.css("margin-left", "auto");

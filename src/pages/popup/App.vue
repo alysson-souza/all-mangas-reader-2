@@ -46,7 +46,7 @@
             <v-btn icon @click.native="closeOptions()" dark>
               <v-icon>close</v-icon>
             </v-btn>
-            <v-toolbar-title>Settings</v-toolbar-title>
+            <v-toolbar-title>{{i18n("options_title")}}</v-toolbar-title>
           </v-toolbar>
           <Options />
         </v-card>

@@ -21,7 +21,7 @@
             <v-layout row>
               <!-- Manage manga categories -->
               <v-flex xs6 class="amr-categories">
-                <span>Categories : </span>
+                <span>{{i18n("list_details_cats")}} : </span>
                 <!-- Categories -->
                 <Categories 
                   :categories="mangaCats" 
@@ -30,7 +30,7 @@
                   @delete-category="deleteCategory" />
                 <div class="det-sel-wrapper">
                 <select dark v-model="newCat" @change="addCategory()" :class="color(2)">
-                  <option value="">Category to add</option>
+                  <option value="">{{i18n("list_details_cats_select")}}</option>
                   <option v-for="(cat, key) of this.options.categoriesStates" 
                           v-if="cat.type !== 'native'" 
                           :key="key" 
@@ -42,16 +42,16 @@
               </v-flex>
               <!-- Manage manga bookmarks -->
               <v-flex xs6 class="amr-bookmarks">
-                <span>Bookmarks : </span>
+                <span>{{i18n("list_details_books")}} : </span>
               </v-flex>
             </v-layout>
             <!-- Actions buttons -->
             <v-layout row text-xs-center>
               <v-flex xs12 class="amr-actions">
-                <v-btn dark @click='' :color="color(0)" small>Search this manga elsewhere</v-btn>
-                <v-btn dark @click='resetManga()' :color="color(0)" small>Reset manga reading</v-btn>
-                <v-btn dark v-if="mangas[0].read === 0" @click='stopFollowingUpdates()' :color="color(0)" small>Stop following updates</v-btn>
-                <v-btn dark v-if="mangas[0].read === 1" @click='followUpdates()' :color="color(0)" small>Follow updates</v-btn>
+                <v-btn dark @click='true' :color="color(0)" small>{{i18n("list_details_act_search")}}</v-btn>
+                <v-btn dark @click='resetManga()' :color="color(0)" small>{{i18n("list_details_act_reset")}}</v-btn>
+                <v-btn dark v-if="mangas[0].read === 0" @click='stopFollowingUpdates()' :color="color(0)" small>{{i18n("list_details_act_stop_follow")}}</v-btn>
+                <v-btn dark v-if="mangas[0].read === 1" @click='followUpdates()' :color="color(0)" small>{{i18n("list_details_act_follow")}}</v-btn>
               </v-flex>
             </v-layout>
           </v-container>

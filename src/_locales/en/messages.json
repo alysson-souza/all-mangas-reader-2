@@ -7,6 +7,30 @@
     "message": "All Mangas Reader is under the licence of GLPv3",
     "description": "This is the licencing info"
   },
+  "button_add": {
+    "message": "Add",
+    "description": "Add button label"
+  },
+  "button_cancel": {
+    "message": "Cancel",
+    "description": "Cancel button label"
+  },
+  "button_yes": {
+    "message": "Yes",
+    "description": "Yes button label"
+  },
+  "button_no": {
+    "message": "No",
+    "description": "No button label"
+  },
+  "button_save": {
+    "message": "Save",
+    "description": "Save button label"
+  },
+  "options_title": {
+    "message": "Settings",
+    "description": "Settings page title"
+  },
   "options_on_websites": {
     "message": "While reading mangas",
     "description": "This is the header of the options page tab about reading mangas"
@@ -278,7 +302,7 @@
     "description": "Option closed by user action for option select time before notif closes"
   },
   "options_sup_desc": {
-    "message": "AMR provides many supported Web Sites. For each web sites, AMR stores the list of existing mangas. To prevent AMR from using too much RAM, you can deactivate web sites you don't use. Only web sites for which you don't have mangas in your reading list can be deactivated. You can filter the websites supporting specific language to help you. Clicking a checkbox in the table below deactivate the corresponding website.",
+    "message": "AMR provides many supported Web Sites. You can deactivate web sites you don't use. Only web sites for which you don't have mangas in your reading list can be deactivated. You can filter the websites supporting specific language to help you. Clicking a checkbox in the table below deactivate the corresponding website.",
     "description": "Description of the supported websites tab"
   }, 
   "options_sup_repos": {
@@ -288,6 +312,248 @@
   "options_sup_repos_desc": {
     "message": "Here you can define the different repositories in which All Mangas Reader will try to load mirrors implementations. AMR loads the first repository from which it can download the file websites.json correctly. If you want to help us and want to develop new implementations for a website or fix bugs in existing one, you can fork the official github mirrors repo and serve the files on your localhost (the procedure is described in the github repo). Set your local server on top of the list and refresh mirrors lists when you update something, don't forget to share your implementations !",
     "description": "Options page section mirrors repositories description"
+  },
+  "options_gen_deactivate_all": {
+    "message": "Deactivate all visible",
+    "description": "Button deactivate all visible websites"
+  },
+  "options_gen_activate_all": {
+    "message": "Activate all visible",
+    "description": "Button activate all visible websites"
+  },
+  "options_gen_mirrornbmangas": {
+    "message": "$1 mangas in list",
+    "description": "Label in mirrors list to tell how many mangas are read on this mirror"
+  },
+  "options_gen_repos_dialog_title": {
+    "message": "New Repository",
+    "description": "Title of new repository dialog"
+  },
+  "options_gen_repos_dialog_desc": {
+    "message": "Add new repository",
+    "description": "Description in new repository dialog"
+  },
+  "options_gen_repos_input": {
+    "message": "URL of the repository",
+    "description": "Label of the new repository input field"
+  },
+  "options_gen_laboratory": {
+    "message": "Laboratory",
+    "description": "Label of the laboratory button"
+  },
+  "options_gen_mirrors_header_name": {
+    "message": "Website name / number of mangas read",
+    "description": "Label of the mirrors table header containing name of mirror and number of mangas read"
+  },
+  "options_gen_mirrors_header_lang": {
+    "message": "Language",
+    "description": "Label of the mirrors table header containing list of languages"
+  },
+  "options_gen_mirrors_header_act": {
+    "message": "Activated",
+    "description": "Label of the mirrors table header containing activation checkbox"
+  },
+  "options_gen_mirrors_filter_all": {
+    "message": "All Languages",
+    "description": "Label of the option in filter languages list for no filter (display all languages)"
+  }, 
+
+
+  "list_sort_alpha": {
+    "message": "Sort mangas in alphabetical order",
+    "description": "Tooltip for alphabetical sort on mangas list"
+  },
+  "list_sort_new": {
+    "message": "New chapters to read first !",
+    "description": "Tooltip for last new chapters sort on mangas list"
+  },
+  "list_no_manga_message": {
+    "message": "<strong>No manga in your list</strong>. Check the filters above or add mangas to the list. To add a manga in the reading list, just go read a manga on a site supported by All Mangas Reader. Each manga you are reading is added or updated in the All Mangas Reader reading list. You can start reading a manga by searching one using the <v-icon>mdi-magnify</v-icon>",
+    "description": "Message displayed when the reading list is empty"
+  },
+  "list_import_samples": {
+    "message": "Start immediately by importing a few mangas we recommend !",
+    "description": "Link to import samples mangas when reading list is empty"
+  },
+  "list_details_cats": {
+    "message": "Categories",
+    "description": "Title of categories list in manga detail"
+  },
+  "list_details_cats_select": {
+    "message": "Category to add",
+    "description": "Default otion in categories list select in manga details"
+  },
+  "list_details_books": {
+    "message": "Bookmarks",
+    "description": "Title of bookmarks list in manga detail"
+  },
+  "list_details_act_search": {
+    "message": "Search this manga elsewhere",
+    "description": "Seacrh elsewhere action button in manga details"
+  },
+  "list_details_act_reset": {
+    "message": "Reset manga reading",
+    "description": "Reset reading action button in manga details"
+  },
+  "list_details_act_stop_follow": {
+    "message": "Stop following updates",
+    "description": "Stop following updates action button in manga details"
+  },
+  "list_details_act_follow": {
+    "message": "Follow updates",
+    "description": "Follow updates action button in manga details"
+  },
+  "list_calendar_today": {
+    "message": "Last chapter found today !",
+    "description": "Tooltip on calendar icon when last chater was found today"
+  },
+  "list_calendar_days_found": {
+    "message": "Last chapter found $1 days ago",
+    "description": "Tooltip on calendar icon to tell how many days since last chater found"
+  },
+  "list_progress_reading": {
+    "message": "Progression : $1 %",
+    "description": "Tooltip on progress bar below chapters list to tell the reading progression"
+  },
+  "list_mg_act_read": {
+    "message": "Mark last published chapter as read",
+    "description": "Tooltip on manga to mark as read (eye icon)"
+  },
+  "list_mg_act_prev": {
+    "message": "Read previous chapter",
+    "description": "Tooltip on manga to read previous chapter"
+  },
+  "list_mg_act_cur": {
+    "message": "Read current chapter",
+    "description": "Tooltip on manga to read current chapter"
+  },
+  "list_mg_act_next": {
+    "message": "Read next chapter",
+    "description": "Tooltip on manga to read next chapter"
+  },
+  "list_mg_act_latest": {
+    "message": "Read last published chapter",
+    "description": "Tooltip on manga to read last published chapter"
+  },
+  "list_mg_act_delete": {
+    "message": "Delete manga",
+    "description": "Tooltip on manga to delete manga entry"
+  },
+  "list_mg_delete_question": {
+    "message": "Are you sure to delete $1 on $2 ?",
+    "description": "Question to delete a manga, $1 is the name of the manga and $2 the website on which it is read"
+  },
+  "list_cat_include": {
+    "message": "Mangas from category \"$1\" are <strong>included</strong> in the list",
+    "description": "Tooltip on category when included, $1 is category name"
+  },
+  "list_cat_exclude": {
+    "message": "Mangas from category \"$1\" are <strong>excluded</strong> from the list",
+    "description": "Tooltip on category when excluded, $1 is category name"
+  },
+  "list_cat_no": {
+    "message": "Do not care about category \"$1\" to filter mangas",
+    "description": "Tooltip on category when not selected"
+  },
+  "list_cat_only": {
+    "message": "View only mangas from this category",
+    "description": "Tooltip on category button view only from this category"
+  },
+  "list_cat_delete": {
+    "message": "Delete this category",
+    "description": "Tooltip on category button delete"
+  },
+  "list_cat_delete_title": {
+    "message": "Delete category $1 ?",
+    "description": "Title of the popup when deleting category, $1 is the name of the category"
+  },
+  "list_cat_delete_desc": {
+    "message": "This category is associated to $1 mangas. This action will remove the category from these mangas too. Are you sure to do that ?",
+    "description": "Description of the popup when deleting category, $1 is the number of mangas associated to the category"
+  },
+  "notif_message": {
+    "message": "... has new chapter(s) on $1! Click anywhere to open the next unread chapter.",
+    "description": "Text from notification. The notification title is the manga name, $1 is the website on which the manga to notify is read"
+  }, 
+  "content_nav_hidebar": {
+    "message": "Hide AMR Toolbar",
+    "description": "Tooltip to hide AMR bar in navigation bar"
+  }, 
+  "content_nav_showbar": {
+    "message": "Display AMR ToolBar",
+    "description": "Tooltip to show AMR bar when icon clicked and bar hidden"
+  }, 
+  "bookmark_popup_title": {
+    "message": "Bookmark",
+    "description": "Title of the bookmark popup"
+  }, 
+  "bookmark_popup_note": {
+    "message": "Note",
+    "description": "Label of the note textfield in the bookmarks popup"
+  }, 
+  "bookmark_popup_delete": {
+    "message": "Delete Bookmark",
+    "description": "Delete bookmark button in the bookmark popup in content script"
+  }, 
+  "bookmark_popup_tip": {
+    "message": "<span>To bookmark a scan, right click on it and choose 'Bookmark in AMR'.</span><br /><span>To manage bookmarks, go to </span><a href='#'>AMR Bookmark Page</a>",
+    "description": "In bookmark popup in content script, tip on how to manage bookmarks, contains a link to AMR bookmarks page"
+  }, 
+  "content_nav_previous": {
+    "message": "Previous",
+    "description": "Previous button in AMR toolbar in websites"
+  }, 
+  "content_nav_next": {
+    "message": "Next",
+    "description": "Next button in AMR toolbar in websites"
+  }, 
+  "content_nav_stopfollow": {
+    "message": "Stop following updates for this manga",
+    "description": "Tooltip of the stop following updates for this manga button"
+  }, 
+  "content_nav_follow": {
+    "message": "Follow updates for this manga",
+    "description": "Tooltip of the follow updates for this manga button"
+  }, 
+  "content_nav_chapmode_1": {
+    "message": "Scans displayed on top of each other (click to switch display mode for this manga only)",
+    "description": "Tooltip of the chapter mode button when value is 1 (Scans displayed on top of each other)"
+  }, 
+  "content_nav_chapmode_2": {
+    "message": "Scans displayed as a book in occidental mode (left to right) (click to switch display mode for this manga only)",
+    "description": "Tooltip of the chapter mode button when value is 2 (Scans displayed as a book in occidental mode (left to right))"
+  }, 
+  "content_nav_chapmode_3": {
+    "message": "Scans displayed as a book in japanese mode (right to left) (click to switch display mode for this manga only)",
+    "description": "Tooltip of the chapter mode button when value is 3 (Scans displayed as a book in japanese mode (right to left))"
+  }, 
+  "content_nav_mark_read": {
+    "message": "Mark this chapter as latest chapter read",
+    "description": "Tooltip of the mark chapter as read button"
+  }, 
+  "content_nav_mark_read_confirm": {
+    "message": "This action will reset your reading state for this manga and this chapter will be considered as the latest you have read. Do you confirm this action ?",
+    "description": "Text of the confirmation popup when marking a chapter as latest read"
+  }, 
+  "content_nav_add_list": {
+    "message": "Add this manga to your reading list",
+    "description": "Tooltip of the add manga to reading list button if not automatic"
+  }, 
+  "content_nav_last_chap": {
+    "message": "This is the latest published chapter !",
+    "description": "Panel at bottom of page to tell that the chapter is the latest published"
+  }, 
+  "bookmark_chapter_text": {
+    "message": "Bookmark chapter '$1' of '$2' on '$3'. You can add notes below which will be associated with this bookmark.",
+    "description": "Text in the bookmark popup to bookmark current chapter. $1 is chapter name, $2 manga name and $3 website name"
+  }, 
+  "bookmark_chapter_scan": {
+    "message": "Bookmark scan '$1' of chapter '$2' of '$3' on '$4'. You can add notes below which will be associated with this bookmark.",
+    "description": "Text in the bookmark popup to bookmark a scan. $1 is scan name/id, $2 is chapter name, $3 manga name and $4 website name"
+  }, 
+  "content_read_reload": {
+    "message": "Try to reload",
+    "description": "Message displayed on a scan if it failed to be loaded so the user can try to force its reload"
   }
   
 }

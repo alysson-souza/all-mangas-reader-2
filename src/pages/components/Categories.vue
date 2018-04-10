@@ -8,20 +8,20 @@
         <!-- Category name and tooltip -->
         <v-tooltip v-if="!staticCats" top content-class="icon-ttip" class="cat-name">
           <span class="cat-name" slot="activator">{{cat.name}}</span>
-          <span v-if="cat.state==='include'">Mangas from category "{{cat.name}}" are <strong>included</strong> in the list</span>
-          <span v-if="cat.state==='exclude'">Mangas from category "{{cat.name}}" are <strong>excluded</strong> in the list</span>
-          <span v-if="!cat.state">Do not care about category "{{cat.name}}" to filter mangas</span>
+          <span v-if="cat.state==='include'">{{i18n("list_cat_include", cat.name)}}</span>
+          <span v-if="cat.state==='exclude'">{{i18n("list_cat_exclude", cat.name)}}</span>
+          <span v-if="!cat.state">{{i18n("list_cat_no", cat.name)}}</span>
         </v-tooltip>
         <span v-if="staticCats" class="cat-name">{{cat}}</span>
         <!-- Icon only me -->
         <v-tooltip v-if="!staticCats" top content-class="icon-ttip">
             <v-icon class="cat-act" @click.stop="onlyMe(cat)" slot="activator">mdi-eye</v-icon>
-            <span>View only mangas from this category</span>
+            <span>{{i18n("list_cat_only")}}</span>
         </v-tooltip>
         <!-- Trash icon -->
         <v-tooltip top content-class="icon-ttip">
             <v-icon v-if="cat.type !== 'native'" class="cat-act" @click.stop="deleteCat(cat)" slot="activator">mdi-close</v-icon>
-            <span>Delete this category</span>
+            <span>{{i18n("list_cat_delete")}}</span>
         </v-tooltip>
         <!-- badge nb mangas -->
         <span v-if="countUsed(cat) > 0" class="cat-badge grey darken-1">{{countUsed(cat)}}</span>
@@ -31,12 +31,12 @@
         @keyup.enter="addCategory()" />
     <v-dialog v-model="deleteCatDialog" max-width="290">
       <v-card>
-        <v-card-title class="headline">Delete category {{catToDelete.name}} ?</v-card-title>
-        <v-card-text>This category is associated to {{countUsed(catToDelete)}} mangas. This action will remove the category from these mangas too. Are you sure to do that ?</v-card-text>
+        <v-card-title class="headline">{{i18n("list_cat_delete", catToDelete.name)}}</v-card-title>
+        <v-card-text>{{i18n("list_cat_delete", countUsed(catToDelete))}}</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red darken-1" flat @click.native="reallyDeleteCat()">Yes</v-btn>
-          <v-btn color="grey darken-1" flat @click.native="deleteCatDialog = false">No</v-btn>
+          <v-btn color="red darken-1" flat @click.native="reallyDeleteCat()">{{i18n("button_yes")}}</v-btn>
+          <v-btn color="grey darken-1" flat @click.native="deleteCatDialog = false">{{i18n("button_no")}}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

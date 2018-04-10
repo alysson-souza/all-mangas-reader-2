@@ -10,11 +10,11 @@
                 <div class="amr-filters-container">
                     <v-tooltip top content-class="icon-ttip">
                         <v-icon slot="activator" @click="sort = 'az'" :class="'amr-filter ' + (sort === 'az' ? 'activated' : '')">mdi-sort-alphabetical</v-icon>
-                        <span>Sort mangas in alphabetical order</span>
+                        <span>{{i18n("list_sort_alpha")}}</span>
                     </v-tooltip>
                     <v-tooltip top content-class="icon-ttip">
                         <v-icon slot="activator" @click="sort = 'updates'" :class="'amr-filter ' + (sort === 'updates' ? 'activated' : '')">mdi-flash</v-icon>
-                        <span>New chapters to read first !</span>
+                        <span>{{i18n("list_sort_new")}}</span>
                     </v-tooltip>
                 </div>
                 <!-- Categories -->
@@ -31,12 +31,10 @@
             </div>
             <!-- No mangas yet -->
             <div v-if="!allMangas.length" class="amr-nomangas">
-                <p>
-                    <strong>No manga in your list</strong>. Check the filters above or add mangas to the list. 
-    To add a manga in the reading list, just go read a manga on a site supported by All Mangas Reader. Each manga you are reading is added or updated in the All Mangas Reader reading list. You can start reading a manga by searching one using the <v-icon>mdi-magnify</v-icon>.
+                <p :v-html="i18n('list_no_manga_message')">
                 </p>
                 <p>
-                    <a @click.prevent="importSamples()">Start immediately by importing a few mangas we recommend !</a>
+                    <a @click.prevent="importSamples()">{{ i18n("list_import_samples")}}</a>
                 </p>
             </div>
         </div>

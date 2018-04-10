@@ -214,8 +214,8 @@
                         <v-select v-model="selectedLang" :items="distinctLangs"></v-select>
                     </v-flex>
                     <v-flex xs8>
-                        <v-btn @click="deactivateAll()" color="primary" small>Deactivate all visible</v-btn>
-                        <v-btn @click="activateAll()" color="primary" small>Activate all visible</v-btn>
+                        <v-btn @click="deactivateAll()" color="primary" small>{{i18n('options_gen_deactivate_all')}}</v-btn>
+                        <v-btn @click="activateAll()" color="primary" small>{{i18n('options_gen_activate_all')}}</v-btn>
                     </v-flex>
                 </v-layout>
                 <v-data-table
@@ -242,7 +242,7 @@
                             {{ props.item.mirrorName }}
                             <!-- Badge with number of mangas read -->
                             <v-card v-if="nbMangas(props.item.mirrorName) > 0" color="primary" dark class="mirror-manga-info">
-                                {{ nbMangas(props.item.mirrorName) }} mangas in list
+                                {{ i18n('options_gen_mirrornbmangas', nbMangas(props.item.mirrorName)) }}
                             </v-card>
                         </td>
                         <td class="text-xs-right">
@@ -259,28 +259,33 @@
                 <!-- Repositories -->
                 <div class="headline mt-4">{{ i18n("options_sup_repos") }}</div>
                 <div class="subtitle">{{i18n('options_sup_repos_desc')}}</div>
+                <v-layout row>
+                    <v-flex xs12>
                 <v-dialog v-model="newRepositoryDialog" max-width="500px">
-                    <v-btn color="primary" dark slot="activator" class="mb-2">New Repository</v-btn>
+                    <v-btn color="primary" dark slot="activator" class="mb-2" small>{{i18n('options_gen_repos_dialog_title')}}</v-btn>
                     <v-card>
                         <v-card-title>
-                        <span class="headline">Add new repository</span>
+                        <span class="headline">{{i18n('options_gen_repos_dialog_desc')}}</span>
                         </v-card-title>
                         <v-card-text>
                         <v-container grid-list-md>
                             <v-layout wrap>
                             <v-flex xs12>
-                                <v-text-field label="Repo URL" v-model="newRepo" class="normal-input-group"></v-text-field>
+                                <v-text-field :label="i18n('options_gen_repos_input')" v-model="newRepo" class="normal-input-group"></v-text-field>
                             </v-flex>
                             </v-layout>
                         </v-container>
                         </v-card-text>
                         <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="blue darken-1" flat @click.native="newRepositoryDialog = false">Cancel</v-btn>
-                        <v-btn color="blue darken-1" flat @click.native="addRepository">Add</v-btn>
+                        <v-btn color="blue darken-1" flat @click.native="newRepositoryDialog = false">{{i18n('button_cancel')}}</v-btn>
+                        <v-btn color="blue darken-1" flat @click.native="addRepository">{{i18n('button_add')}}</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
+                <v-btn color="primary" dark class="mb-2" @click="goLab()" small>{{i18n('options_gen_laboratory')}}</v-btn>
+                    </v-flex>
+                </v-layout>
                 <v-data-table
                     :items="impl_repositories"
                     hide-actions
@@ -401,9 +406,9 @@ export default {
         { value: 2 * 60 * 1000, text: i18n("options_minutes", 2) }
       ],
       headersSupportedWebsites: [
-        { text: "Website name / number of mangas read", value: "name" },
-        { text: "Language", value: "lang" },
-        { text: "Activated", value: "activ" },
+        { text: i18n("options_gen_mirrors_header_name"), value: "name" },
+        { text: i18n("options_gen_mirrors_header_lang"), value: "lang" },
+        { text: i18n("options_gen_mirrors_header_act"), value: "activ" },
       ],
       newRepo: "",
       newRepositoryDialog: false,
@@ -425,7 +430,7 @@ export default {
       },
       distinctLangs() {
           let dis = [];
-          dis.push({value: "", text: "All Languages"});
+          dis.push({value: "", text: i18n("options_gen_mirrors_filter_all")});
           let dislangs = this.$store.state.mirrors.all.reduce((dm, mir) => {
               mir.languages.split(",").forEach(lang => !dm.includes(lang) ? dm.push(lang) : dm)
               return dm;
@@ -563,6 +568,12 @@ export default {
                 _self.changeActivation(mir);
             }
         })
+    },
+    /**
+     * Opens lab
+     */
+    goLab() {
+        browser.runtime.sendMessage({ action: "opentab", url: "/pages/lab/lab.html" });
     }
   }
 };

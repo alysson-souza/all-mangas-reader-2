@@ -1,5 +1,6 @@
 import browser from "webextension-polyfill";
 import store from "../store";
+import i18n from "./i18n";
 
 /**
  * Managa browser notifications
@@ -44,7 +45,7 @@ class Notification {
                 url: urls[urls.indexOf(mg.lastChapterReadURL) - 1]
             };
             // Notification data added to letiables to be used by the old or by the new notification API.
-            let description = "... has new chapter(s) on " + mangaData.mirror + "! Click anywhere to open the next unread chapter.";
+            let description = i18n("notif_message", mangaData.mirror);
             let title = mangaData.name;
             let icon = browser.extension.getURL('/icons/icon_32.png');
             let url = mangaData.url;

@@ -5,6 +5,7 @@ import mirrorImpl from './mirrorimpl';
 import pageData from './pagedata'
 import util from './util'
 import reading from './reading';
+import i18n from '../amr/i18n';
 
 /**
  * Manage and create navigation bar in pages
@@ -63,7 +64,7 @@ class Navigation {
 
         let divBottom = $("<div></div>");
         divBottom.css("display", "inline-block");
-        let imgBtn = $("<img src='" + browser.extension.getURL("icons/down.png") + "' width='16px;' title='Hide AMR Toolbar'/>");
+        let imgBtn = $("<img src='" + browser.extension.getURL("icons/down.png") + "' width='16px;' title='" + i18n("content_nav_hidebar") + "'/>");
         imgBtn.appendTo(divBottom);
         imgBtn.click(async () => {
             let response = await browser.runtime.sendMessage({ action: "hideBar" });
@@ -123,7 +124,7 @@ class Navigation {
         let divInLtl = $("<div id='AMRBarInLtl'></div>");
         divInLtl.css("display", "inline-block");
 
-        let imgLtl = $("<img src='" + browser.extension.getURL("icons/icon_32.png") + "' width='40px;' title='Display AMR ToolBar'/>");
+        let imgLtl = $("<img src='" + browser.extension.getURL("icons/icon_32.png") + "' width='40px;' title='" + i18n("content_nav_showbar") + "'/>");
         imgLtl.css("margin-top", "-10px");
         imgLtl.css("margin-left", "-10px");
         imgLtl.css("cursor", "pointer");
@@ -162,30 +163,28 @@ class Navigation {
      */
     async writeNavigation(where, select) {
         let div = $("<div id='bookmarkPop' style='display:none'></div>"),
-            btn = $("<a id='saveBtnAMR' class='buttonAMR'>Save</a>");
-        $("<h3>Bookmark</h3>").appendTo(div);
+            btn = $("<a id='saveBtnAMR' class='buttonAMR'>" + i18n("button_save") + "</a>");
+        $("<h3>" + i18n("bookmark_popup_title") + "</h3>").appendTo(div);
         $("<div id='descEltAMR'></div>").appendTo(div);
-        $("<table><tr><td style='vertical-align:top'><b>Note:</b></td><td><textarea id='noteAMR' cols='50' rows='5' /></td></tr></table>").appendTo(div);
+        $("<table><tr><td style='vertical-align:top'><b>" + i18n("bookmark_popup_note") +  ":</b></td><td><textarea id='noteAMR' cols='50' rows='5' /></td></tr></table>").appendTo(div);
 
         //TODO !!
         //btn.click(add_bookmark_button);
 
-        let btndel = $("<a id='delBtnAMR' class='buttonAMR'>Delete Bookmark</a>");
+        let btndel = $("<a id='delBtnAMR' class='buttonAMR'>" + i18n("bookmark_popup_delete") + "</a>");
         //TODO !!
         //btndel.click(delete_bookmark_button);
         btndel.appendTo(div);
         btn.appendTo(div);
 
         let divTip = $("<div id='tipBMAMR'></div>");
-        $("<span>To bookmark a scan, right click on it and choose 'Bookmark in AMR'.</span><br /><span>To manage bookmarks, go to </span>").appendTo(divTip);
-        let aBMPage = $("<a href='#'>AMR Bookmark Page</a>");
-        aBMPage.click(function () {
+        $(i18n("bookmark_popup_tip")).appendTo(divTip);
+        $("a", divTip).click(function () {
             browser.runtime.sendMessage({
                 action: "opentab",
                 url: "/bookmarks.html"
             });
         });
-        aBMPage.appendTo(divTip);
         divTip.appendTo(div);
         div.appendTo($(document.body));
 
@@ -214,7 +213,7 @@ class Navigation {
                 prevUrl = selectIns.children("option:selected").next().val();
             }
             if (prevUrl !== null) {
-                let aprev = $("<a id='pChapBtn" + index + "' class='buttonAMR' href='" + prevUrl + "' onclick='window.location.href = this.href; window.location.reload();'>Previous</a>");
+                let aprev = $("<a id='pChapBtn" + index + "' class='buttonAMR' href='" + prevUrl + "' onclick='window.location.href = this.href; window.location.reload();'>" + i18n("content_nav_previous") + "</a>");
                 aprev.appendTo($w);
             }
 
@@ -224,7 +223,7 @@ class Navigation {
                 nextUrl = selectIns.children("option:selected").prev().val();
             }
             if (nextUrl !== null) {
-                let anext = $("<a id='nChapBtn" + index + "' class='buttonAMR' href='" + nextUrl + "' onclick='window.location.href = this.href; window.location.reload();'>Next</a>");
+                let anext = $("<a id='nChapBtn" + index + "' class='buttonAMR' href='" + nextUrl + "' onclick='window.location.href = this.href; window.location.reload();'>" + i18n("content_nav_next") + "</a>");
                 anext.appendTo($w);
                 pageData.add("nexturltoload", nextUrl);
             }
@@ -270,7 +269,7 @@ class Navigation {
             }
 
             let isRead = (mangaInfos === null ? false : (mangaInfos.read == 1));
-            let imgread = $("<img class='butamrread' src='" + browser.extension.getURL("icons/" + (!isRead ? "read_stop.png" : "read_play.png")) + "' title='" + (!isRead ? "Stop following updates for this manga" : "Follow updates for this manga") + "' />");
+            let imgread = $("<img class='butamrread' src='" + browser.extension.getURL("icons/" + (!isRead ? "read_stop.png" : "read_play.png")) + "' title='" + (!isRead ? i18n("content_nav_stopfollow") : i18n("content_nav_follow")) + "' />");
             if (mangaInfos === null && options.addauto === 0) {
                 imgread.hide();
             }
@@ -290,10 +289,10 @@ class Navigation {
                 util.sendExtRequest(obj, $(this), function () {
                     if (curRead) {
                         $(_but).attr("src", browser.extension.getURL("icons/read_stop.png"));
-                        $(_but).attr("title", "Stop following updates for this manga");
+                        $(_but).attr("title", i18n("content_nav_stopfollow"));
                     } else {
                         $(_but).attr("src", browser.extension.getURL("icons/read_play.png"));
-                        $(_but).attr("title", "Follow updates for this manga");
+                        $(_but).attr("title", i18n("content_nav_follow"));
                     }
                 }, false);
             });
@@ -310,7 +309,7 @@ class Navigation {
             //mode = 1 --> images are displayed on top of one another
             //mode = 2 --> images are displayed two by two occidental reading mode
             //mode = 3 --> images are displayed two by two japanese reading mode
-            let imgmode = $("<img src='" + browser.extension.getURL("icons/" + ((curmode == 1) ? "ontop.png" : ((curmode == 2) ? "righttoleft.png" : "lefttoright.png"))) + "' title='" + ((curmode == 1) ? "Scans displayed on top of each other (click to switch display mode for this manga only)" : ((curmode == 2) ? "Scans displayed as a book in occidental mode (left to right) (click to switch display mode for this manga only)" : "Scans displayed as a book in japanese mode (right to left) (click to switch display mode for this manga only)")) + "' />");
+            let imgmode = $("<img src='" + browser.extension.getURL("icons/" + ((curmode == 1) ? "ontop.png" : ((curmode == 2) ? "righttoleft.png" : "lefttoright.png"))) + "' title='" + ((curmode == 1) ? i18n("content_nav_chapmode_1") : ((curmode == 2) ? i18n("content_nav_chapmode_2") : i18n("content_nav_chapmode_3"))) + "' />");
             imgmode.appendTo($w);
             imgmode.data("curmode", curmode);
             imgmode.data("mangaurl", pageData.currentMangaURL);
@@ -328,18 +327,18 @@ class Navigation {
                     reading.transformImagesInBook(pageData.whereScans, mdnext);
                     if (mdnext == 1) {
                         $(_butMode).attr("src", browser.extension.getURL("icons/ontop.png"));
-                        $(_butMode).attr("title", "Scans displayed on top of each other (click to switch display mode for this manga only)");
+                        $(_butMode).attr("title", i18n("content_nav_chapmode_1"));
                     } else if (mdnext == 2) {
                         $(_butMode).attr("src", browser.extension.getURL("icons/righttoleft.png"));
-                        $(_butMode).attr("title", "Scans displayed as a book in occidental mode (left to right) (click to switch display mode for this manga only)");
+                        $(_butMode).attr("title", i18n("content_nav_chapmode_2"));
                     } else {
                         $(_butMode).attr("src", browser.extension.getURL("icons/lefttoright.png"));
-                        $(_butMode).attr("title", "Scans displayed as a book in japanese mode (right to left) (click to switch display mode for this manga only)");
+                        $(_butMode).attr("title", i18n("content_nav_chapmode_3"));
                     }
                 }, false);
             });
 
-            let imgstop = $("<img class='butamrstop' src='" + browser.extension.getURL("icons/stop.gif") + "' title='Mark this chapter as latest chapter read' />");
+            let imgstop = $("<img class='butamrstop' src='" + browser.extension.getURL("icons/stop.gif") + "' title='" + i18n("content_nav_mark_read") + "' />");
             if (mangaInfos === null && options.addauto === 0) {
                 imgstop.hide();
             }
@@ -347,7 +346,7 @@ class Navigation {
             imgstop.data("mangainfo", pageData);
 
             imgstop.click(function () {
-                let ret = confirm("This action will reset your reading state for this manga and this chapter will be considered as the latest you have read. Do you confirm this action ?");
+                let ret = confirm(i18n("content_nav_mark_read_confirm"));
                 if (ret) {
                     let obj = {
                         "action": "setMangaChapter",
@@ -362,7 +361,7 @@ class Navigation {
             });
 
             if (options.addauto === 0 && mangaInfos === null) {
-                let imgadd = $("<img src='" + browser.extension.getURL("icons/add.png") + "' title='Add this manga to your reading list' />");
+                let imgadd = $("<img src='" + browser.extension.getURL("icons/add.png") + "' title='" + i18n("content_nav_add_list") + "' />");
                 imgadd.appendTo($w);
                 imgadd.data("mangainfo", pageData);
 
@@ -390,7 +389,7 @@ class Navigation {
 
     addTrailingLastChap(where) {
         if ($("#nChapBtn0").size() === 0) {
-            $("<div style=\"width:100%; background-color:white; border-radius:5px;margin-top:15px;margin-bottom:15px;\"><img src=\"" + browser.extension.getURL("icons/warn.png") + "\" style=\"vertical-align:middle;margin-right:10px;\"/><span style=\"font-weight:bold;font-size:12pt;color:black;vertical-align:middle;\">This is the latest published chapter !</span></div>").appendTo(where);
+            $("<div style=\"width:100%; background-color:white; border-radius:5px;margin-top:15px;margin-bottom:15px;\"><img src=\"" + browser.extension.getURL("icons/warn.png") + "\" style=\"vertical-align:middle;margin-right:10px;\"/><span style=\"font-weight:bold;font-size:12pt;color:black;vertical-align:middle;\">" + i18n("content_nav_last_chap") + "</span></div>").appendTo(where);
         }
     }
 
@@ -398,11 +397,16 @@ class Navigation {
     showDialog(dialog) {
         let textDesc;
         if ($("#bookmarkData").data("type") == "chapter") {
-            textDesc = "Bookmark chapter '" + $("#bookmarkData").data("chapName") + "' of '" + $("#bookmarkData").data("name") + "' on '" + $("#bookmarkData").data("mirror");
-            textDesc += "'. You can add notes below which will be associated with this bookmark.";
+            textDesc = i18n("bookmark_chapter_text", 
+                $("#bookmarkData").data("chapName"), 
+                $("#bookmarkData").data("name"), 
+                $("#bookmarkData").data("mirror"));
         } else {
-            textDesc = "Bookmark scan '" + $("#bookmarkData").data("scanName") + "' of chapter '" + $("#bookmarkData").data("chapName") + "' of '" + $("#bookmarkData").data("name") + "' on '" + $("#bookmarkData").data("mirror");
-            textDesc += "'. You can add notes below which will be associated with this bookmark.";
+            textDesc = i18n("bookmark_chapter_scan", 
+                $("#bookmarkData").data("scanName"),
+                $("#bookmarkData").data("chapName"),
+                $("#bookmarkData").data("name"),
+                $("#bookmarkData").data("mirror"));
         }
         $("#bookmarkPop #descEltAMR").text(textDesc);
     }
