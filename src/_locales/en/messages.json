@@ -554,6 +554,9 @@
   "content_read_reload": {
     "message": "Try to reload",
     "description": "Message displayed on a scan if it failed to be loaded so the user can try to force its reload"
+  },
+  "search_button": {
+    "message": "Search",
+    "description": "Button label in search panel"
   }
-  
 }

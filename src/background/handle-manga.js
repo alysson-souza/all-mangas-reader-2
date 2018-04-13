@@ -4,12 +4,13 @@ import browser from "webextension-polyfill";
 import mirrorsImpl from '../amr/mirrors-impl';
 import store from '../store';
 import * as utils from '../amr/utils';
+import storedb from '../amr/storedb';
 
 /** Scripts to inject in pages containing mangas */
 const contentScripts = [
-    'lib/jquery.min.js', 
-    'lib/jquery.scrollTo.min.js', 
-    'lib/jquery.modal.min.js', 
+    'lib/jquery.min.js',
+    'lib/jquery.scrollTo.min.js',
+    'lib/jquery.modal.min.js',
     'content/back.js'
 ];
 /** CSS to inject in pages containing mangas */
@@ -37,7 +38,7 @@ class HandleManga {
                 utils.debug("Read manga " + message.url);
                 return store.dispatch('readManga', message);
             case "getNextChapterImages": //returns list of images for prefetch of next chapter in content script
-                return this.getChapterImages(message); 
+                return this.getChapterImages(message);
             case "markReadTop":
                 return store.dispatch('markMangaReadTop', message);
             case "setDisplayMode":
@@ -50,9 +51,77 @@ class HandleManga {
             case "updateChaptersLists":
                 // updates all mangas lists (do it in background if called from popup because it requires jQuery)
                 return store.dispatch("updateChaptersLists");
+            case "searchList":
+                return this.searchList(message);
         }
     }
 
+    /**
+     * Search mangas on a mirror from search phrase
+     * @param {*} message 
+     */
+    async searchList(message) {
+        return new Promise(async (resolve, reject) => {
+            let impl = await mirrorsImpl.getImpl(message.mirror);
+            // check if mirror can list all mangas
+            if (impl.canListFullMangas) {
+                // check if mirror list is in local db and filter
+                let list = storedb.getListOfMangaForMirror(message.mirror)
+                if (list && list.length > 0) {
+                    // filter entries on search phrase
+                    resolve(this.resultSearchFromArray(
+                        this.filterSearchList(list, message.search), 
+                        message.mirror));
+                } else {
+                    // retrieve from website
+                    let mgs = await this.searchListRemote(message.search, impl);
+                    // store result
+                    storedb.storeListOfMangaForMirror(message.mirror, mgs);
+                    // return filtered results
+                    resolve(this.resultSearchFromArray(
+                        this.filterSearchList(mgs, message.search), 
+                        message.mirror));
+                }
+            } else {
+                // let website search 
+                resolve(this.resultSearchFromArray(
+                    await this.searchListRemote(message.search, impl), 
+                    message.mirror));
+            }
+        });
+    }
+    /**
+     * Convert array of array (standard result from implementation) in proper result
+     * @param {*} list 
+     * @param {*} mirror 
+     */
+    resultSearchFromArray(list, mirror) {
+        return list.map(arr => {
+            return {
+                url: arr[1],
+                name: arr[0],
+                mirror: mirror
+            }
+        })
+    }
+    /**
+     * Return entries matching the search phrase from a list of results
+     * @param {*} list 
+     * @param {*} search 
+     */
+    filterSearchList(list, search) {
+        return list.filter(arr => utils.formatMgName(arr[0]).indexOf(utils.formatMgName(search)) !== -1);
+    }
+    /**
+     * Call search function from remote website
+     */
+    async searchListRemote(search, impl) {
+        return new Promise(async (resolve, reject) => {
+            impl.getMangaList(search, function (mirrorName, res) {
+                resolve(res);
+            });
+        });
+    }
     /**
      * Test if the url matches a mirror implementation. 
      * If so, inject content script to transform the page and the mirror implementation inside the tab

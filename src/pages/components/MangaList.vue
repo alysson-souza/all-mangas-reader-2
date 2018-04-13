@@ -41,6 +41,7 @@
     </div>
 </template>
 <script>
+import i18n from "../../amr/i18n";
 import { mapGetters } from "vuex";
 import MangaGroup from "./MangaGroup";
 import Categories from "./Categories";
@@ -88,6 +89,7 @@ export default {
   name: "MangaList",
   components: { MangaGroup, Categories },
   methods: {
+    i18n: (message, ...args) => i18n(message, ...args),
     importSamples() {
       // we don't do this.$store.dispatch("importSamples"); because to load list of chapters, implementations rely on jQuery, which is not loaded in pages, rely on background page to do so
       browser.runtime.sendMessage({ action: "importSamples" });

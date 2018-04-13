@@ -63,6 +63,7 @@
 </template>
 
 <script>
+import i18n from "../../amr/i18n";
 import { mapGetters } from "vuex";
 import browser from "webextension-polyfill";
 import Manga from "./Manga";
@@ -119,6 +120,7 @@ export default {
     }
   },
   methods: {
+    i18n: (message, ...args) => i18n(message, ...args),
     /**
      * Return the right color for this manga, depending if it updates (you can stop following udates for a manga), if it has unread chapters or not
      */

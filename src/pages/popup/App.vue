@@ -7,7 +7,7 @@
 			<v-btn icon @click.stop="openOptions()">
 				<v-icon>mdi-settings</v-icon>
 			</v-btn>
-			<v-btn icon @click.stop="bottomSearch = !bottomSearch">
+			<v-btn icon @click.stop="openSearch()">
 				<v-icon>mdi-magnify</v-icon>
 			</v-btn>
 			<v-menu bottom left>
@@ -51,25 +51,43 @@
           <Options />
         </v-card>
 	</v-dialog>
+	<v-dialog
+			v-model="search"
+			fullscreen
+			transition="dialog-bottom-transition"
+			:overlay="false"
+			scrollable
+			>
+        <v-card tile>
+          <v-toolbar card dark color="primary">
+            <v-btn icon @click.native="closeSearch()" dark>
+              <v-icon>close</v-icon>
+            </v-btn>
+            <v-toolbar-title>{{i18n("search_title")}}</v-toolbar-title>
+          </v-toolbar>
+          <Search />
+        </v-card>
+	</v-dialog>
 	</v-app>
 </template>
 
 <script>
+import i18n from "../../amr/i18n";
 import MangaList from "../components/MangaList";
 import Options from "../components/Options";
+import Search from "../components/Search";
 import PopupResizer from './resizePopup';
 
 export default {
   data() {
     return {
-      bottomSearch: false,
-      bottomOptions: false,
 			title: "All Mangas Reader", 
-			options: false
+			options: false,
+			search: false,
     };
   },
   name: "App",
-  components: { MangaList, Options },
+  components: { MangaList, Options, Search },
   created() {
     // initialize state for store in popup from background
     this.$store.dispatch("getStateFromReference", {
@@ -79,12 +97,21 @@ export default {
     });
 	}, 
 	methods: {
+		i18n: (message, ...args) => i18n(message, ...args),
 		openOptions() {
 			this.options = true;
 			PopupResizer.setHeightToMax();
 		}, 
 		closeOptions() {
 			this.options = false;
+			PopupResizer.setHeightToCurrent();
+		},
+		openSearch() {
+			this.search = true;
+			PopupResizer.setHeightToMax();
+		}, 
+		closeSearch() {
+			this.search = false;
 			PopupResizer.setHeightToCurrent();
 		}
 	}, 

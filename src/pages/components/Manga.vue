@@ -106,8 +106,8 @@
             </v-card-title>
             <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" flat @click.native="deleteManga = false">{{i18("button_no")}}</v-btn>
-            <v-btn color="blue darken-1" flat @click.native="trash()">{{i18("button_yes")}}</v-btn>
+            <v-btn color="blue darken-1" flat @click.native="deleteManga = false">{{i18n("button_no")}}</v-btn>
+            <v-btn color="blue darken-1" flat @click.native="trash()">{{i18n("button_yes")}}</v-btn>
             </v-card-actions>
         </v-card>
       </v-dialog>
@@ -115,6 +115,7 @@
 </template>
 
 <script>
+import i18n from "../../amr/i18n";
 import { mapGetters } from "vuex";
 import browser from "webextension-polyfill";
 import * as utils from "../utils";
@@ -189,6 +190,7 @@ export default {
     }
   },
   methods: {
+    i18n: (message, ...args) => i18n(message, ...args),
     /**
      * Return the right color for this manga, depending if it updates (you can stop following udates for a manga), if it has unread chapters or not
      */

@@ -43,6 +43,7 @@
   </div>
 </template>
 <script>
+import i18n from "../../amr/i18n";
 import * as utils from "../utils";
 
 export default {
@@ -62,6 +63,7 @@ export default {
     "delegate-delete"
   ],
   methods: {
+    i18n: (message, ...args) => i18n(message, ...args),
     switchState(cat) {
       let nstate = "";
       if (cat.state === "include") nstate = "exclude";
