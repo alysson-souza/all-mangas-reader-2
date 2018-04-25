@@ -1,4 +1,5 @@
 import store from '../store';
+import i18n from './i18n';
 
 /**
  * Test if current browser is Firefox
@@ -144,4 +145,21 @@ export function mangaKey(url) {
         return "_no_key_"; // should not happen !
     }
     return extractRootDomain(url) + "/" + afterHostURL(url);
+}
+/**
+ * Tells in human language how much time has been spent since this ts
+ * @param {*} ts 
+ */
+export function lasttime(diffts) {
+    let diff = Math.floor( (diffts) / 1000 );
+    if (diff < 0) diff = 0;
+    if (diff < 60) return i18n("options_seconds", diff)
+    diff = Math.floor(diff / 60);
+    if (diff < 60) return i18n("options_minutes", diff)
+    diff = Math.floor(diff / 60);
+    if (diff < 24) return i18n("options_hours", diff)
+    diff = Math.floor(diff / 24);
+    if (diff < 7) return i18n("options_days", diff)
+    diff = Math.floor(diff / 7);
+    return i18n("options_weeks", diff) //TODO months , years ?  --> not needed in AMR yet  
 }

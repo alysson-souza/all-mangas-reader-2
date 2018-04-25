@@ -53,11 +53,11 @@ class HandleKey {
                     //Left key or A
                     if ((e.which == 37) || (e.which == 65)) {
                         doubleTap = false;
-                        if (self.lastpresstime !== undefined && new Date().getTime() - self.lastpresstime < 500 && self.dirpress !== undefined && self.dirpress == 1) {
+                        if (self.lastpresstime !== undefined && Date.now() - self.lastpresstime < 500 && self.dirpress !== undefined && self.dirpress == 1) {
                             doubleTap = true;
                         }
                         self.dirpress = 1;
-                        self.lastpresstime = new Date().getTime();
+                        self.lastpresstime = Date.now();
                         //Get first visible image
                         curimg = self.whichImageIsFirst(true);
                         if (curimg !== null && curimg.size() > 0) {
@@ -89,10 +89,10 @@ class HandleKey {
                     //Right key or D
                     if ((e.which == 39) || (e.which == 68)) {
                         doubleTap = false;
-                        if (self.lastpresstime !== undefined && new Date().getTime() - self.lastpresstime < 500 && self.dirpress !== undefined && self.dirpress == 2) {
+                        if (self.lastpresstime !== undefined && Date.now() - self.lastpresstime < 500 && self.dirpress !== undefined && self.dirpress == 2) {
                             doubleTap = true;
                         }
-                        self.lastpresstime = new Date().getTime();
+                        self.lastpresstime = Date.now();
                         self.dirpress = 2;
                         //If we are at top of the page --> move to first scan
                         if (window.pageYOffset === 0) {

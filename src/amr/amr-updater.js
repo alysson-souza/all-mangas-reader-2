@@ -15,7 +15,7 @@ class Updater {
     checkChaptersUpdates() {
         let lastUpdt = store.state.options.lastChaptersUpdate;
         let frequency = store.state.options.updatechap;
-        if (lastUpdt + frequency < new Date().getTime()) {
+        if (lastUpdt + frequency < Date.now()) {
             // time to refresh !
             store.dispatch("updateChaptersLists");
         }
@@ -27,7 +27,7 @@ class Updater {
     checkMirrorsUpdates() {
         let lastUpdt = store.state.options.lastMirrorsUpdate;
         let frequency = store.state.options.updatemg;
-        if (lastUpdt + frequency < new Date().getTime()) {
+        if (lastUpdt + frequency < Date.now()) {
             // time to refresh !
             store.dispatch("updateMirrorsLists");
         }

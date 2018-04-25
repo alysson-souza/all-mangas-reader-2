@@ -10,25 +10,9 @@
 			<v-btn icon @click.stop="openSearch()">
 				<v-icon>mdi-magnify</v-icon>
 			</v-btn>
-			<v-menu bottom left>
-				<v-btn icon slot="activator">
-					<v-icon>more_vert</v-icon>
-				</v-btn>
-				<v-list>
-					<v-list-tile>
-						<v-list-tile-action>
-							<v-icon>mdi mdi-timer</v-icon>
-						</v-list-tile-action>
-						<v-list-tile-title>Timers</v-list-tile-title>
-					</v-list-tile>
-					<v-list-tile>
-						<v-list-tile-action>
-							<v-icon>mdi mdi-content-save-settings</v-icon>
-						</v-list-tile-action>
-						<v-list-tile-title>Import / Export</v-list-tile-title>
-					</v-list-tile>
-				</v-list>
-          	</v-menu>
+			<v-btn icon @click.stop="rpanel = !rpanel">
+				<v-icon>more_vert</v-icon>
+			</v-btn>
 		</v-toolbar>
 		<v-content>
 			<MangaList></MangaList>
@@ -68,6 +52,16 @@
           <Search />
         </v-card>
 	</v-dialog>
+	<v-navigation-drawer
+      temporary
+      v-model="rpanel"
+			right
+      :dark="$store.state.options.dark === 1"
+      absolute
+			width="500"
+    >
+		<Timers />
+	</v-navigation-drawer>
 	</v-app>
 </template>
 
@@ -77,6 +71,7 @@ import MangaList from "../components/MangaList";
 import Options from "../components/Options";
 import Search from "../components/Search";
 import PopupResizer from './resizePopup';
+import Timers from '../components/Timers';
 
 export default {
   data() {
@@ -84,10 +79,11 @@ export default {
 			title: "All Mangas Reader", 
 			options: false,
 			search: false,
+			rpanel: false,
     };
   },
   name: "App",
-  components: { MangaList, Options, Search },
+  components: { MangaList, Options, Search, Timers },
   created() {
     // initialize state for store in popup from background
     this.$store.dispatch("getStateFromReference", {

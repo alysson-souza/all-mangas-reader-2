@@ -555,8 +555,52 @@
     "message": "Try to reload",
     "description": "Message displayed on a scan if it failed to be loaded so the user can try to force its reload"
   },
+  "search_title": {
+    "message": "Search mangas",
+    "description": "Search dialog title"
+  },
   "search_button": {
     "message": "Search",
     "description": "Button label in search panel"
+  },
+  "search_result_add": {
+    "message": "Add manga $1 from $2 to your reading list",
+    "description": "Mirror icon button in search panel to add a manga to reading list. $1 is manga name, $2 is website name"
+  },
+  "search_result_inlist": {
+    "message": "Manga $1 from $2 is in your reading list",
+    "description": "Mirror icon button in search panel when a manga is already in reading list. $1 is manga name, $2 is website name"
+  },
+  "search_mirror_disable": {
+    "message": "Click to disable search on $1",
+    "description": "Mirror icon button over search bar. Label click button to disable search on mirror. $1 is website name"
+  },
+  "search_mirror_enable": {
+    "message": "Click to enable search on $1",
+    "description": "Mirror icon button over search bar. Label click button to enable search on mirror. $1 is website name"
+  },
+  "refresh_chapters": {
+    "message": "Refresh chapters now",
+    "description": "Refresh chapters button in refresh panel"
+  },
+  "refresh_mirrors": {
+    "message": "Refresh websites now",
+    "description": "Refresh websites button in refresh panel"
+  },
+  "refresh_lists": {
+    "message": "Reset manga lists now",
+    "description": "Reset manga lists button in refresh panel"
+  },
+  "refresh_last": {
+    "message": "Refreshed $1 ago",
+    "description": "Label to tell last time something was refreshed. $1 is an i18n string telling last time it was refreshed"
+  },
+  "refresh_lists_desc": {
+    "message": "Delete lists of manga stored in local database. These lists are retrieved from websites on which we can get the whole manga list that can be read on the website. Deleting it does not affect your current reading list, these lists will be reloaded on next search for the enabled websites which support this functionality",
+    "description": "Tooltip of the reset stored manga lists button in right panel"
+  },
+  "refresh_lists_nb": {
+    "message": "$1 lists containing $2 entries",
+    "description": "Label to tell the number of stored lists. $1 is the number of lists and $2 the number of manga names and urls stored"
   }
 }

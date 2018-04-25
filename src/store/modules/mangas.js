@@ -80,7 +80,7 @@ const actions = {
     async updateManga({ dispatch, commit }, manga) {
         await storedb.storeManga(manga);
         try {
-            dispatch("setOption", {key: "updated", value: new Date().getTime()});
+            dispatch("setOption", {key: "updated", value: Date.now()});
             dispatch("setOption", {key: "changesSinceSync", value: 1});
         } catch (e) {
             console.error("Error while updating sync timestamp")
@@ -246,10 +246,10 @@ const actions = {
                             notifications.notifyNewChapter(mg);
                             commit('updateMangaLastChapTime', { key: mg.key });
                         }
-                        if (mg.lastChapterReadURL === null) {
+                        if (!mg.lastChapterReadURL) { // no last chapter read (imported from samples or from search)
                             commit('updateMangaLastChapter', {key: mg.key, obj : {
-                                lastChapterReadURL: lst[lst.length - 1][1],
-                                lastChapterReadName: lst[lst.length - 1][0],
+                                lastChapterReadURL: listChaps[listChaps.length - 1][1],
+                                lastChapterReadName: listChaps[listChaps.length - 1][0],
                                 fromSite: false
                             }});
                         }
@@ -282,7 +282,7 @@ const actions = {
         }
 
         // update last update ts
-        dispatch("setOption", {key: "lastChaptersUpdate", value: new Date().getTime()});
+        dispatch("setOption", {key: "lastChaptersUpdate", value: Date.now()});
 
         // refresh all mangas chapters lists
         let refchaps = [];
@@ -427,7 +427,7 @@ const mutations = {
      */
     updateMangaLastChapTime(state, { key }) {
         let mg = state.all.find(manga => manga.key === key)
-        if (mg !== undefined) mg.upts = new Date().getTime();
+        if (mg !== undefined) mg.upts = Date.now();
     },
     /**
      * Update the list of chapters of a manga
@@ -449,7 +449,7 @@ const mutations = {
             mg.lastChapterReadURL = obj.lastChapterReadURL;
             mg.lastChapterReadName = obj.lastChapterReadName;
             if (!obj.fromSite) {
-                mg.ts = Math.round((new Date()).getTime() / 1000);
+                mg.ts = Math.round(Date.now() / 1000);
             }
         }
     },

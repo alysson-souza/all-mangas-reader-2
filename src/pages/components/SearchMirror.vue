@@ -1,8 +1,12 @@
 <template>
-    <div class="mirror-search">
-        <v-progress-circular v-if="searching" indeterminate :width="3" color="primary" class="mirror-progress"></v-progress-circular>
-        <img :src="mirror.mirrorIcon" :class="'mirror-search-icon ' + (disabled ? 'disabled': '')" @click.stop="disabled = !disabled" />
-    </div>
+    <v-tooltip top>
+        <div class="mirror-search" slot="activator">
+            <v-progress-circular v-if="searching" indeterminate :width="3" color="primary" class="mirror-progress"></v-progress-circular>
+            <img :src="mirror.mirrorIcon" :class="'mirror-search-icon ' + (disabled ? 'disabled': '')" @click.stop="disabled = !disabled" />
+        </div>
+        <span v-if="disabled">{{i18n('search_mirror_enable', mirror.mirrorName)}}</span>
+        <span v-else>{{i18n('search_mirror_disable', mirror.mirrorName)}}</span>
+    </v-tooltip>
 </template>
 
 <script>
@@ -13,7 +17,7 @@ export default {
     data() {
         return {
             searching: false, // currently searching
-            disabled: false // is disabled in search
+            disabled: localStorage["s." + this.mirror.mirrorName + ".disabled"] ? true : false // is disabled in search
         };
     },
     props: [
@@ -23,19 +27,28 @@ export default {
     methods: {
         i18n: (message, ...args) => i18n(message, ...args),
         async search() {
+            if (this.disabled) return;
             this.searching = true;
+            let searchinit = this.searchPhrase;
             let mgs = await browser.runtime.sendMessage({
                 action: "searchList", 
                 mirror: this.mirror.mirrorName,
-                search: this.searchPhrase
+                search: searchinit
             });
-            this.$emit("add-mangas", mgs);
+            this.$emit("add-mangas", mgs, searchinit);
             this.searching = false;
         }
     },
     watch: {
         "searchPhrase": function() {
             this.search();
+        },
+        disabled: function(nv) {
+            if (nv) {
+                localStorage.setItem("s." + this.mirror.mirrorName + ".disabled", true);
+            } else {
+                localStorage.removeItem("s." + this.mirror.mirrorName + ".disabled");
+            }
         }
     },
     name: "SearchMirror",

@@ -66,7 +66,7 @@ class HandleManga {
             // check if mirror can list all mangas
             if (impl.canListFullMangas) {
                 // check if mirror list is in local db and filter
-                let list = storedb.getListOfMangaForMirror(message.mirror)
+                let list = await storedb.getListOfMangaForMirror(message.mirror)
                 if (list && list.length > 0) {
                     // filter entries on search phrase
                     resolve(this.resultSearchFromArray(
@@ -135,7 +135,7 @@ class HandleManga {
         // Load mirror implementation from repo (try next repo if previous fail)
         for (let repo of store.state.options["impl_repositories"]) {
             let url = repo + mir.jsFile;
-            if (url.indexOf("localhost") > 0) url += "?ts=" + new Date().getTime();
+            if (url.indexOf("localhost") > 0) url += "?ts=" + Date.now();
             impl = await Axios.get(url).catch(() => { }); // ignore error, jump to next repo
             if (impl) break;
         }

@@ -185,7 +185,7 @@ export default {
     }, 
     // number of days since last chapter has been published
     timeUpdated() {
-      let nbdays = Math.floor((new Date().getTime() - this.manga.upts) / (1000 * 60 * 60 * 24));
+      let nbdays = Math.floor((Date.now() - this.manga.upts) / (1000 * 60 * 60 * 24));
       return nbdays;
     }
   },

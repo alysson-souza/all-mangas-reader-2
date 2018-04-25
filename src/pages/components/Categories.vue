@@ -8,9 +8,9 @@
         <!-- Category name and tooltip -->
         <v-tooltip v-if="!staticCats" top content-class="icon-ttip" class="cat-name">
           <span class="cat-name" slot="activator">{{cat.name}}</span>
-          <span v-if="cat.state==='include'">{{i18n("list_cat_include", cat.name)}}</span>
-          <span v-if="cat.state==='exclude'">{{i18n("list_cat_exclude", cat.name)}}</span>
-          <span v-if="!cat.state">{{i18n("list_cat_no", cat.name)}}</span>
+          <span v-if="cat.state==='include'" v-html='i18n("list_cat_include", cat.name)'></span>
+          <span v-if="cat.state==='exclude'" v-html='i18n("list_cat_exclude", cat.name)'></span>
+          <span v-if="!cat.state" v-html='i18n("list_cat_no", cat.name)'></span>
         </v-tooltip>
         <span v-if="staticCats" class="cat-name">{{cat}}</span>
         <!-- Icon only me -->

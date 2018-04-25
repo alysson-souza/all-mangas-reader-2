@@ -44,7 +44,7 @@ class MirrorsImpl {
             };
             script.onerror = reject;
             script.async = true;
-            script.src = scripturl + "?ts=" + new Date().getTime(); // do not cache script implementation when loading it
+            script.src = scripturl + "?ts=" + Date.now(); // do not cache script implementation when loading it
         });
     }
 

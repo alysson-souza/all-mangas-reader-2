@@ -70,7 +70,7 @@ const actions = {
         iconHelper.setBlueIcon();
 
         // update last update ts
-        dispatch("setOption", {key: "lastMirrorsUpdate", value: new Date().getTime()});
+        dispatch("setOption", {key: "lastMirrorsUpdate", value: Date.now()});
 
         let websitesdb = await storedb.getWebsites();
         if (websitesdb === undefined) websitesdb = [];
@@ -123,6 +123,13 @@ const actions = {
         amrUpdater.refreshBadgeAndIcon();
 
         return websites;
+    },
+    /**
+     * Reset mirrors manga lists from db
+     * @param {*} param0 
+     */
+    async resetMirrorsMangaLists({ commit, dispatch, rootState }) {
+        await storedb.deleteAllListOfManga()
     },
     /**
      * Set the activated / deactivated flag on a mirror

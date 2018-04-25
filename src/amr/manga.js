@@ -13,8 +13,8 @@ export default class {
         this.mirror = obj.mirror;
         this.name = obj.name;
         this.url = obj.url;
-        this.lastChapterReadURL = obj.lastChapterReadURL || null;
-        this.lastChapterReadName = obj.lastChapterReadName || null;
+        this.lastChapterReadURL = obj.lastChapterReadURL;
+        this.lastChapterReadName = obj.lastChapterReadName;
         this.listChaps = [];
         if (obj.listChaps && typeof obj.listChaps === "string") {
             this.listChaps = JSON.parse(obj.listChaps)
@@ -30,7 +30,7 @@ export default class {
         } else if (obj.cats) {
             this.cats = obj.cats;
         }
-        this.ts = obj.ts || Math.round((new Date()).getTime() / 1000);
+        this.ts = obj.ts || Math.round(Date.now() / 1000);
         this.upts = obj.upts || 0;
     }
 }

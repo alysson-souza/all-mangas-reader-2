@@ -131,25 +131,103 @@ class StoreDB {
     }
 
     // Accessors for mangas list (full list of mangas from mirror)
+    /**
+     * Store a list of mangas for a mirror implementation
+     * @param {*} mirror 
+     * @param {*} list 
+     */
     storeListOfMangaForMirror(mirror, list) {
+        let store = this;
         return this.checkInit()
             .then(() => {
                 return new Promise((resolve, result) => {
-                    //TODO
-                    resolve({});
-                });
-            });
-    }
-    getListOfMangaForMirror(mirror) {
-        return this.checkInit()
-            .then(() => {
-                return new Promise((resolve, result) => {
-                    //TODO
-                    resolve([]);
-                });
-            });
-    }
+                    let transaction = store.db.transaction(["mangalists"], "readwrite");
 
+                    transaction.onerror = function (event) {
+                        reject("Impossible to store mangalists " + mirror + ". Error code : " + event.target.errorCode);
+                    };
+                    let objectStore = transaction.objectStore("mangalists");
+                    let request = objectStore.put({
+                        mirrorName: mirror,
+                        list: list 
+                    });
+                    request.onsuccess = function (event) {
+                        resolve(event.target.result);
+                    };
+                });
+            });
+    }
+    /**
+     * Get a list of manga stored from a mirror implementation
+     * @param {*} mirror 
+     */
+    getListOfMangaForMirror(mirror) {
+        let store = this;
+        return this.checkInit()
+            .then(() => {
+                return new Promise((resolve, result) => {
+                    let transaction = store.db.transaction(["mangalists"]);
+                    let objectStore = transaction.objectStore("mangalists");
+
+                    let objectStoreRequest = objectStore.get(mirror);
+
+                    objectStoreRequest.onsuccess = function (event) {
+                        let obj = objectStoreRequest.result;
+                        resolve(obj ? obj.list : obj);
+                    };
+                    objectStoreRequest.onerror = function (event) {
+                        resolve([]);
+                    }
+                });
+            });
+    }
+    /**
+     * Get how many lists and manga names are stored
+     */
+    getListsOfMangaStats() {
+        let store = this;
+        return this.checkInit()
+            .then(() => {
+                return new Promise((resolve, result) => {
+                    let transaction = store.db.transaction(["mangalists"]);
+                    let objectStore = transaction.objectStore("mangalists");
+                    let stat = {nb: 0, nbmangas: 0}
+                    objectStore.openCursor().onsuccess = function (event) {
+                        let cursor = event.target.result;
+                        if (cursor) {
+                            stat.nb++;
+                            stat.nbmangas += cursor.value.list.length;
+                            cursor.continue();
+                        }
+                        else {
+                            resolve(stat);
+                        }
+                    };
+                });
+            });
+    }
+    /**
+     * Clear all stored lists of mangas for mirror implementations
+     */
+    deleteAllListOfManga() {
+        let store = this;
+        return this.checkInit()
+            .then(() => {
+                return new Promise((resolve, result) => {
+                    let transaction = store.db.transaction(["mangalists"], "readwrite");
+
+                    transaction.onerror = function (event) {
+                        reject("Impossible to clear mangalists. Error code : " + event.target.errorCode);
+                    };
+
+                    let objectStore = transaction.objectStore("mangalists");
+                    let objectStoreRequest = objectStore.clear();
+                    objectStoreRequest.onsuccess = function (event) {
+                        resolve();
+                    };
+                });
+            });
+    }
     // Accessors for reading storage
     storeManga(manga) {
         let store = this;
@@ -190,6 +268,9 @@ class StoreDB {
                 });
             });
     }
+    /**
+     * Return the stored list of manga (reading list)
+     */
     getMangaList() {
         let store = this;
         return this.checkInit()
