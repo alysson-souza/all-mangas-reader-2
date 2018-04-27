@@ -602,5 +602,74 @@
   "refresh_lists_nb": {
     "message": "$1 lists containing $2 entries",
     "description": "Label to tell the number of stored lists. $1 is the number of lists and $2 the number of manga names and urls stored"
+  },
+  "ie_import": {
+    "message": "Import",
+    "description": "Import export tab import title"
+  },
+  "ie_export": {
+    "message": "Export",
+    "description": "Import export tab export title"
+  },
+  "ie_import_placeholder": {
+    "message": "Paste file to import here",
+    "description": "Placeholder of the import json area"
+  },
+  "ie_export_manga_all": {
+    "message": "Export mangas with their reading state",
+    "description": "Description for exporting mangas with their reading state options"
+  },
+  "ie_export_mangas_viewable_desc": {
+    "message": "Export only mangas currently viewable in your list, if this option is unchecked, all mangas from your list will be exported. To select only some mangas to export, you can order them using categories and view only the category you want to export.",
+    "description": "Export only mangas currently viewable in your list option description"
+  },
+  "ie_export_mangas_viewable": {
+    "message": "Export only mangas currently viewable in your list",
+    "description": "Export only mangas currently viewable in your list option"
+  },
+  "ie_export_manga_noreading": {
+    "message": "Export manga name and url so people importing your export will start reading mangas from start",
+    "description": "Description for exporting mangas without reading state option"
+  },
+  "ie_export_bookmarks_opt": {
+    "message": "Export bookmarks (only bookmarks from exported mangas are exported)",
+    "description": "Description for exporting bookmarks option"
+  },
+  "ie_export_filename": {
+    "message": "Name of the file to export",
+    "description": "Description for filename to export field placeholder"
+  },
+  "ie_export_btn": {
+    "message": "Export",
+    "description": "Label for the export button"
+  },
+  "ie_import_pickfile": {
+    "message": "Import file",
+    "description": "Label for the pick file to import button"
+  },
+  "ie_has_mangas": {
+    "message": "Snippet contains $1 mangas to import.",
+    "description": "Part of the text describing data to import. Describe how many mangas will be imported. $1 is the number of mangas to import"
+  },
+  "ie_has_bookmarks": {
+    "message": "Snippet contains $1 bookmarks to import.",
+    "description": "Part of the text describing data to import. Describe how many bookmarks will be imported. $1 is the number of bookmarks to import"
+  },
+  "ie_import_mangas": {
+    "message": "Import mangas",
+    "description": "Label of the button to import only mangas"
+  },
+  "ie_import_bookmarks": {
+    "message": "Import bookmarks",
+    "description": "Label of the button to import only bookmarks"
+  },
+  "ie_import_all": {
+    "message": "Import all",
+    "description": "Label of the button to import all data"
+  },
+  "ie_import_defaultcat": {
+    "message": "Default category to add to imported mangas",
+    "description": "Placeholder for the input field in import section to specify a category to add on imported mangas"
   }
+  
 }

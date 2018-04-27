@@ -39,7 +39,8 @@
     "http://*/*",
     "unlimitedStorage",
     "contextMenus",
-    "notifications"
+    "notifications",
+    "downloads"
   ],
   "content_security_policy": "script-src 'self' https://localhost:8080/ https://ssl.google-analytics.com       https://community.allmangasreader.com/ https://raw.github.com/ ; object-src 'self'",
   "web_accessible_resources" : [

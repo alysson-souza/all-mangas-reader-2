@@ -163,3 +163,15 @@ export function lasttime(diffts) {
     diff = Math.floor(diff / 7);
     return i18n("options_weeks", diff) //TODO months , years ?  --> not needed in AMR yet  
 }
+const twodigits = function(i) {
+    if (i < 10) return "0" + i;
+    return i;
+}
+/**
+ * Returns current date formatted
+ */
+export function fdate() {
+    var d = new Date();
+    return d.getFullYear() + "-" + twodigits(d.getMonth()+1) + "-" + twodigits(d.getDate()) + "_" +
+    twodigits(d.getHours()) + "-" + twodigits(d.getMinutes()) + "-" + twodigits(d.getSeconds());
+}
