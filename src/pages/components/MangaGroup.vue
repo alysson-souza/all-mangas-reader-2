@@ -3,8 +3,8 @@
   <v-container fluid class="amr-list-line" v-if="nbDisplayed > 0">
     <!-- Manga line-->
     <Manga
-      v-for="manga in mangas" 
-      :key="manga.key" 
+      v-for="(manga, key) in mangas" 
+      :key="key" 
       :manga="manga" 
       :is-in-group="nbDisplayed > 1" 
       :is-first="manga.key === first.key" 

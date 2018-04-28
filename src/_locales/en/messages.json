@@ -358,7 +358,30 @@
     "description": "Label of the option in filter languages list for no filter (display all languages)"
   }, 
 
-
+  "list_global_read": {
+    "message": "Mark all visible mangas as read",
+    "description": "Tooltip for button to mark all visible mangas as read"
+  },
+  "list_global_read_title": {
+    "message": "Mark all as read",
+    "description": "Title of the dialog to mark all visible mangas as read"
+  },
+  "list_global_read_text": {
+    "message": "Mark all currently visible mangas which have new chapters ($1 mangas) as read ?",
+    "description": "Text of the dialog to mark all visible mangas as read, $1 is the number of mangas which have new chapters and which will be affected by the action"
+  },
+  "list_global_delete": {
+    "message": "Delete all visible mangas",
+    "description": "Tooltip for button to delete all visible mangas"
+  },
+  "list_global_delete_title": {
+    "message": "Delete all visible",
+    "description": "Title of the dialog to delete all visible mangas"
+  },
+  "list_global_delete_text": {
+    "message": "Delete all currently visible mangas ($1 mangas) ?",
+    "description": "Text of the dialog to delete all visible mangas, $1 is the number of mangas which will be affected by the action"
+  },
   "list_sort_alpha": {
     "message": "Sort mangas in alphabetical order",
     "description": "Tooltip for alphabetical sort on mangas list"

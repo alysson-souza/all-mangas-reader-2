@@ -8,14 +8,27 @@
         <div v-if="loaded">
             <div v-if="allMangas.length" class="amr-mangas">
                 <div class="amr-filters-container">
-                    <v-tooltip top content-class="icon-ttip">
-                        <v-icon slot="activator" @click="sort = 'az'" :class="'amr-filter ' + (sort === 'az' ? 'activated' : '')">mdi-sort-alphabetical</v-icon>
-                        <span>{{i18n("list_sort_alpha")}}</span>
-                    </v-tooltip>
-                    <v-tooltip top content-class="icon-ttip">
-                        <v-icon slot="activator" @click="sort = 'updates'" :class="'amr-filter ' + (sort === 'updates' ? 'activated' : '')">mdi-flash</v-icon>
-                        <span>{{i18n("list_sort_new")}}</span>
-                    </v-tooltip>
+                    <v-card v-if="visMangas.length" color="grey lighten-4" class="hover-card">
+                        <v-tooltip v-if="visNewMangas.length" top content-class="icon-ttip">
+                            <v-icon slot="activator" @click="markAllAsRead()">mdi-eye</v-icon>
+                            <span>{{i18n("list_global_read")}}</span>
+                        </v-tooltip>
+                        <v-tooltip top content-class="icon-ttip">
+                            <v-icon slot="activator" @click="deleteAll()">mdi-delete</v-icon>
+                            <span>{{i18n("list_global_delete")}}</span>
+                        </v-tooltip>
+                    </v-card>
+                    <v-card v-if="visMangas.length" color="grey lighten-2" class="hover-card">
+                        <v-icon class="filters-icon">mdi-filter</v-icon>
+                        <v-tooltip top content-class="icon-ttip">
+                            <v-icon slot="activator" @click="sort = 'az'" :class="'amr-filter ' + (sort === 'az' ? 'activated' : '')">mdi-sort-alphabetical</v-icon>
+                            <span>{{i18n("list_sort_alpha")}}</span>
+                        </v-tooltip>
+                        <v-tooltip top content-class="icon-ttip">
+                            <v-icon slot="activator" @click="sort = 'updates'" :class="'amr-filter ' + (sort === 'updates' ? 'activated' : '')">mdi-flash</v-icon>
+                            <span>{{i18n("list_sort_new")}}</span>
+                        </v-tooltip>
+                    </v-card>
                 </div>
                 <!-- Categories -->
                 <div class="amr-categories-container">
@@ -24,13 +37,13 @@
                 <!-- Load manga list -->
                 <div class="amr-manga-list-container">
                     <transition-group name="flip-list" tag="div">
-                        <MangaGroup v-if="options.groupmgs === 0"  v-for="mg in allMangas" v-bind:key="mg.key" :mangas="[mg]" />
+                        <MangaGroup v-if="options.groupmgs === 0"  v-for="(mg, key) in allMangas" v-bind:key="key" :mangas="[mg]" />
                         <MangaGroup v-if="options.groupmgs !== 0"  v-for="(grp, key) in groupedMangas" v-bind:key="key" :mangas="grp" />
                     </transition-group>
                 </div>
             </div>
             <!-- No mangas in list because of caegories state -->
-            <div v-if="!hasDispMangas && allMangas.length > 0" class="amr-nomangas">
+            <div v-if="visMangas.length === 0 && allMangas.length > 0" class="amr-nomangas">
                 <p v-html="i18n('list_no_manga_catstate_message')">
                 </p>
             </div>
@@ -43,6 +56,21 @@
                 </p>
             </div>
         </div>
+        <v-dialog v-model="showDialog" max-width="500px">
+            <v-card>
+                <v-card-title>
+                    <span class="headline" v-html="dialogTitle"></span>
+                </v-card-title>
+                <v-card-text>
+                    <span v-html="dialogText"></span>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" flat @click.native="showDialog = false">{{i18n("button_no")}}</v-btn>
+                    <v-btn color="blue darken-1" flat @click.native="dialogAction">{{i18n("button_yes")}}</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 <script>
@@ -58,7 +86,11 @@ export default {
   data() {
     return {
       loaded: false,
-      sort: "updates" // sort mode for list (az : alphabetical, updates : mangas with updates first)
+      sort: "updates", // sort mode for list (az : alphabetical, updates : mangas with updates first)
+      showDialog: false, // do show dialog to ask smthg
+      dialogTitle: "", //title of opened dialog
+      dialogText: "", // text of opened dialog
+      dialogAction: () => {} // action to take on yes in dialog
     };
   },
   computed: {
@@ -71,14 +103,20 @@ export default {
         return this.options.categoriesStates;
     },
     /**
-     * Return number of displayed mangas (depending on categories state)
+     * Return all visible mangas
      */
-    hasDispMangas: function() {
-      for (let mg of this.allMangas) {
-        if (utils.displayFilterCats(mg, this.options.categoriesStates))
-          return true
-      }
-      return false
+    visMangas: function() {
+        return this.allMangas.filter(
+            mg => utils.displayFilterCats(mg, this.options.categoriesStates)
+        )
+    },
+    /**
+     * Return all visible mangas having new chapters to read
+     */
+    visNewMangas: function() {
+        return this.visMangas.filter(
+            mg => utils.hasNew(mg)
+        )
     },
     /**
      * Build mangas groups (by name)
@@ -86,7 +124,7 @@ export default {
     groupedMangas: function() {
         // sort mangas
         let sort = this.sort;
-        let sorted = this.allMangas.sort(function(a, b) {
+        let sorted = this.visMangas.sort(function(a, b) {
             if (sort === "az") {
                 return a.name < b.name ? -1 : (a.name === b.name ? 0 : 1);
             } else if (sort === "updates") {
@@ -112,6 +150,38 @@ export default {
     importSamples() {
       // we don't do this.$store.dispatch("importSamples"); because to load list of chapters, implementations rely on jQuery, which is not loaded in pages, rely on background page to do so
       browser.runtime.sendMessage({ action: "importSamples" });
+    }, 
+    markAllAsRead() {
+        this.dialogTitle = i18n("list_global_read_title");
+        this.dialogText = i18n("list_global_read_text", this.visNewMangas.length);
+        let self = this;
+        this.dialogAction = () => {
+            self.visNewMangas.forEach(mg => {
+                self.$store.dispatch("readManga", {
+                    url: mg.url,
+                    mirror: mg.mirror,
+                    lastChapterReadName: mg.listChaps[0][0],
+                    lastChapterReadURL: mg.listChaps[0][1],
+                    name: mg.name
+                })
+            })
+            self.showDialog = false
+        }
+        this.showDialog = true;
+    },
+    deleteAll() {
+        this.dialogTitle = i18n("list_global_delete_title");
+        this.dialogText = i18n("list_global_delete_text", this.visMangas.length);
+        let self = this;
+        this.dialogAction = () => {
+            self.visMangas.forEach(mg => {
+                self.$store.dispatch("deleteManga", {
+                    key: mg.key
+                })
+            })
+            self.showDialog = false
+        }
+        this.showDialog = true;
     }
   },
   async created() {
@@ -142,17 +212,14 @@ export default {
 }
 .amr-filters-container {
     float: right;
-    margin-top: 10px;
-    margin-right: 10px;
+    margin-top: 7px;
+    margin-right: 9px;
 }
 .amr-categories-container {
     margin-right: 44px;
 }
 .amr-filter {
-    font-size: 20px;
     color:grey;
-    margin-left: 4px;
-    cursor: pointer;
 }
 .theme--dark .icon.amr-filter {
     color:grey;
@@ -165,5 +232,21 @@ export default {
 }
 .flip-list-move {
   transition: transform 1s;
+}
+.hover-card {
+    margin: 0px 2px;
+    padding: 0px 2px;
+    display: inline-block;
+}
+.hover-card i {
+    font-size: 16px;
+    margin: 0px 2px;
+}
+.hover-card .tooltip {
+    cursor: pointer;
+}
+.hover-card .filters-icon {
+    margin: 0;
+    font-size: 10px;
 }
 </style>

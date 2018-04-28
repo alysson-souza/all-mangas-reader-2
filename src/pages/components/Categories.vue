@@ -1,11 +1,11 @@
 <template>
   <div class="cat-cont">
       <!-- Eye button to include all / do not care about all -->
-      <v-tooltip v-if="!allincluded" top content-class="icon-ttip">
+      <v-tooltip v-if="!staticCats && !allincluded" top content-class="icon-ttip">
           <v-icon class="cat-act" @click.stop="stateAll('include')" slot="activator">mdi-eye</v-icon>
           <span>{{i18n("list_cat_include_all")}}</span>
       </v-tooltip>
-      <v-tooltip v-if="allincluded" top content-class="icon-ttip">
+      <v-tooltip v-if="!staticCats && allincluded" top content-class="icon-ttip">
           <v-icon class="cat-act" @click.stop="stateAll('')" slot="activator">mdi-eye-off</v-icon>
           <span>{{i18n("list_cat_donotcare_all")}}</span>
       </v-tooltip>
