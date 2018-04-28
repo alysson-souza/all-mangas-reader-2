@@ -367,8 +367,12 @@
     "message": "New chapters to read first !",
     "description": "Tooltip for last new chapters sort on mangas list"
   },
+  "list_no_manga_catstate_message": {
+    "message": "Your categories state does not match any manga, include categories from which you want to view mangas !",
+    "description": "Message displayed when the reading list does not display any manga because of categories states"
+  },
   "list_no_manga_message": {
-    "message": "<strong>No manga in your list</strong>. Check the filters above or add mangas to the list. To add a manga in the reading list, just go read a manga on a site supported by All Mangas Reader. Each manga you are reading is added or updated in the All Mangas Reader reading list. You can start reading a manga by searching one using the <v-icon>mdi-magnify</v-icon>",
+    "message": "<strong>No manga in your list</strong>. To add a manga in the reading list, just go read a manga on a site supported by All Mangas Reader. Each manga you are reading is added or updated in the All Mangas Reader reading list. You can start reading a manga by searching one using the <v-icon>mdi-magnify</v-icon>",
     "description": "Message displayed when the reading list is empty"
   },
   "list_import_samples": {
@@ -442,6 +446,14 @@
   "list_mg_delete_question": {
     "message": "Are you sure to delete $1 on $2 ?",
     "description": "Question to delete a manga, $1 is the name of the manga and $2 the website on which it is read"
+  },
+  "list_cat_include_all": {
+    "message": "Include all categories",
+    "description": "Tooltip on eye button before categories to include all categories (change state to include for all)"
+  },
+  "list_cat_donotcare_all": {
+    "message": "Do not care about categories",
+    "description": "Tooltip on eye off button before categories to stop caring about all categories (change state to empty for all)"
   },
   "list_cat_include": {
     "message": "Mangas from category \"$1\" are <strong>included</strong> in the list",
@@ -615,10 +627,6 @@
     "message": "Paste file to import here",
     "description": "Placeholder of the import json area"
   },
-  "ie_export_manga_all": {
-    "message": "Export mangas with their reading state",
-    "description": "Description for exporting mangas with their reading state options"
-  },
   "ie_export_mangas_viewable_desc": {
     "message": "Export only mangas currently viewable in your list, if this option is unchecked, all mangas from your list will be exported. To select only some mangas to export, you can order them using categories and view only the category you want to export.",
     "description": "Export only mangas currently viewable in your list option description"
@@ -627,13 +635,25 @@
     "message": "Export only mangas currently viewable in your list",
     "description": "Export only mangas currently viewable in your list option"
   },
+  "ie_export_content": {
+    "message": "Choose if export must contain your personal reading state. If you want the export to be used as a backup of your reading, include manga reading state. If you want to share it with people, choose export to share (your personal reading state and options for these mangas will not be exported)",
+    "description": "Export reading state or to share description"
+  },
+  "ie_export_manga_all": {
+    "message": "Export mangas with their reading state",
+    "description": "Description for exporting mangas with their reading state options"
+  },
   "ie_export_manga_noreading": {
-    "message": "Export manga name and url so people importing your export will start reading mangas from start",
+    "message": "Export to share",
     "description": "Description for exporting mangas without reading state option"
   },
-  "ie_export_bookmarks_opt": {
-    "message": "Export bookmarks (only bookmarks from exported mangas are exported)",
+  "ie_export_bookmarks_desc": {
+    "message": "Export bookmarks: only bookmarks from exported mangas will be included in the export",
     "description": "Description for exporting bookmarks option"
+  },
+  "ie_export_bookmarks_opt": {
+    "message": "Export bookmarks",
+    "description": "Text for exporting bookmarks option"
   },
   "ie_export_filename": {
     "message": "Name of the file to export",

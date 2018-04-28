@@ -29,9 +29,14 @@
                     </transition-group>
                 </div>
             </div>
+            <!-- No mangas in list because of caegories state -->
+            <div v-if="!hasDispMangas && allMangas.length > 0" class="amr-nomangas">
+                <p v-html="i18n('list_no_manga_catstate_message')">
+                </p>
+            </div>
             <!-- No mangas yet -->
             <div v-if="!allMangas.length" class="amr-nomangas">
-                <p :v-html="i18n('list_no_manga_message')">
+                <p v-html="i18n('list_no_manga_message')">
                 </p>
                 <p>
                     <a @click.prevent="importSamples()">{{ i18n("list_import_samples")}}</a>
@@ -61,9 +66,23 @@ export default {
     options: function() {
         return this.$store.state.options;
     },
+    // categories states
     categories: function() {
         return this.options.categoriesStates;
     },
+    /**
+     * Return number of displayed mangas (depending on categories state)
+     */
+    hasDispMangas: function() {
+      for (let mg of this.allMangas) {
+        if (utils.displayFilterCats(mg, this.options.categoriesStates))
+          return true
+      }
+      return false
+    },
+    /**
+     * Build mangas groups (by name)
+     */
     groupedMangas: function() {
         // sort mangas
         let sort = this.sort;

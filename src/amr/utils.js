@@ -144,7 +144,16 @@ export function mangaKey(url) {
         console.error("A manga key has been requested for undefined url, it will be melted in your database with other mangas with same issue, check the implementation of the mirror where your read this manga.")
         return "_no_key_"; // should not happen !
     }
-    return extractRootDomain(url) + "/" + afterHostURL(url);
+    let rootdomain = extractRootDomain(url);
+    // look for mirror implementation matching this root domain
+    let mirror = store.state.mirrors.all.find(
+        mir => mir.webSites.findIndex(
+            ws => ws.indexOf(rootdomain) >= 0
+        ) !== -1
+    );
+    let mstr = "unknown" // should never be unknown. Old domains need to be kept in webSites description in the implementations
+    if (mirror) mstr = this.formatMgName(mirror.mirrorName).toLowerCase()
+    return mstr + "/" + afterHostURL(url);
 }
 /**
  * Tells in human language how much time has been spent since this ts

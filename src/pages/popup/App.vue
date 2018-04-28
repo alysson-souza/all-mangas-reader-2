@@ -85,7 +85,7 @@
 					</v-btn>
 				</v-flex>
 				<v-flex xs4>
-					<v-btn flat icon color="blue" @click="opentab('https://gitlab.com/allmangasreader/wiki')">
+					<v-btn flat icon color="blue" @click="opentab('https://gitlab.com/plduhoux/all-mangas-reader-2/wikis/home')">
 						<v-icon>help</v-icon>
 					</v-btn>
 				</v-flex>
@@ -130,6 +130,7 @@ import Search from "../components/Search";
 import PopupResizer from './resizePopup';
 import Timers from '../components/Timers';
 import ImportExport from '../components/ImportExport';
+import browser from "webextension-polyfill";
 
 export default {
   data() {
@@ -180,7 +181,16 @@ export default {
 		}, 
 		closeRPanel() {
 			PopupResizer.setHeightToCurrent();
-		}
+		},
+		/**
+     * Opens a url
+     */
+    opentab(url) {
+        browser.runtime.sendMessage({
+            action: "opentab",
+            url: url
+        });
+    },
 	}, 
 	mounted: function () {
   	this.$nextTick(function () {

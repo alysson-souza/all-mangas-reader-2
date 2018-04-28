@@ -1,5 +1,14 @@
 <template>
   <div class="cat-cont">
+      <!-- Eye button to include all / do not care about all -->
+      <v-tooltip v-if="!allincluded" top content-class="icon-ttip">
+          <v-icon class="cat-act" @click.stop="stateAll('include')" slot="activator">mdi-eye</v-icon>
+          <span>{{i18n("list_cat_include_all")}}</span>
+      </v-tooltip>
+      <v-tooltip v-if="allincluded" top content-class="icon-ttip">
+          <v-icon class="cat-act" @click.stop="stateAll('')" slot="activator">mdi-eye-off</v-icon>
+          <span>{{i18n("list_cat_donotcare_all")}}</span>
+      </v-tooltip>
       <!-- Display all categories -->
       <div v-for="(cat, key) in categories" 
         :class="'cat-chip ' + (staticCats ? 'include' : cat.state)"
@@ -62,6 +71,13 @@ export default {
     // delegate delete function
     "delegate-delete"
   ],
+  computed: {
+    allincluded: function() {
+      return this.categories.reduce(
+        (nb, cat) => cat.state === "include" ? nb + 1 : nb
+      , 0) === this.categories.length;
+    }
+  },
   methods: {
     i18n: (message, ...args) => i18n(message, ...args),
     switchState(cat) {
@@ -111,6 +127,14 @@ export default {
     },
     countUsed(cat) {
       return utils.countUsed(cat, this.$store.state.mangas.all);
+    },
+    stateAll(state) {
+      for (let c of this.categories) {
+        this.$store.dispatch("updateCategory", {
+          name: c.name,
+          catstate: state
+        });
+      }
     }
   },
   name: "Categories"

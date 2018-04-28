@@ -62,10 +62,12 @@
                     <div class="subtitle">{{ i18n("ie_export_mangas_viewable_desc") }}</div>
                     <v-checkbox v-model="viewable"
                         :label="i18n('ie_export_mangas_viewable')"></v-checkbox>
+                    <div class="subtitle">{{ i18n("ie_export_content") }}</div>
                     <v-radio-group v-model="exportMode" column>
                         <v-radio :label="i18n('ie_export_manga_all')" :value="1" ></v-radio>
                         <v-radio :label="i18n('ie_export_manga_noreading')" :value="2"></v-radio>
                     </v-radio-group>
+                    <div class="subtitle">{{ i18n("ie_export_bookmarks_desc") }}</div>
                     <v-checkbox v-model="bookmarks"
                         :label="i18n('ie_export_bookmarks_opt')"></v-checkbox>
                     <v-text-field v-model="filename" :label="i18n('ie_export_filename')" class="txtfield"></v-text-field>
