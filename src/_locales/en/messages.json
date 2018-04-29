@@ -694,9 +694,17 @@
     "message": "Snippet contains $1 mangas to import.",
     "description": "Part of the text describing data to import. Describe how many mangas will be imported. $1 is the number of mangas to import"
   },
+  "ie_has_mangas_v1": {
+    "message": "Snippet is from All Mangas Reader V1 and contains $1 mangas to import.",
+    "description": "Part of the text describing data to import. Text used if data to import is in AMR V1 format. Describe how many mangas will be imported. $1 is the number of mangas to import"
+  },
   "ie_has_bookmarks": {
     "message": "Snippet contains $1 bookmarks to import.",
     "description": "Part of the text describing data to import. Describe how many bookmarks will be imported. $1 is the number of bookmarks to import"
+  },
+  "ie_has_bookmarks_v1": {
+    "message": "Snippet is from All Mangas Reader V1 and contains $1 bookmarks to import.",
+    "description": "Part of the text describing data to import. Text used if data to import is in AMR V1 format. Describe how many bookmarks will be imported. $1 is the number of bookmarks to import"
   },
   "ie_import_mangas": {
     "message": "Import mangas",
