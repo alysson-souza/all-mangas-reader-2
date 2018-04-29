@@ -51,6 +51,19 @@ export default {
             results: []
         };
     },
+    props: [
+        // search phrase from includer (used to trigger search from manga)
+        "to-search"
+    ],
+    watch: {
+        /**
+         * When property fromStr is changed, launch search (used when click on search mangas elsewhere)
+         */
+        toSearch: function(n) {
+            this.searchwrite = n;
+            this.launchSearch();
+        }
+    },
     computed: {
         activatedWebsites() {
             return this.$store.state.mirrors.all

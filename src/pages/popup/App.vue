@@ -17,7 +17,7 @@
 		</v-toolbar>
 		<!-- Default panel containing manga list -->
 		<v-content>
-			<MangaList></MangaList>
+			<MangaList @search-request="openSearch"></MangaList>
 			<div id="__bottom_app__"></div>
 		</v-content>
 		<!-- Options dialog -->
@@ -56,7 +56,7 @@
             <v-toolbar-title>{{i18n("search_title")}}</v-toolbar-title>
           </v-toolbar>
 					<v-content>
-          	<Search />
+          	<Search :to-search="toSearch" />
 					</v-content>
         </v-card>
 	</v-dialog>
@@ -140,6 +140,7 @@ export default {
 			search: false,
 			rpanel: false,
 			tabs: "refresh", // in rpanel, right tabs state
+			toSearch: "", // phrase to search in search panel (used to load search from manga)
     };
   },
   name: "App",
@@ -167,8 +168,12 @@ export default {
 			this.options = false;
 			PopupResizer.setHeightToCurrent();
 		},
-		openSearch() {
+		/**
+		 * Open search panel, if launch trough event search-reaquest, the parameter is the search phrase to search
+		 */
+		openSearch(pstr = "") {
 			this.search = true;
+			if (pstr != "") this.toSearch = pstr;
 			PopupResizer.setHeightToMax();
 		}, 
 		closeSearch() {

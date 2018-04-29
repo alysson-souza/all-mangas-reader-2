@@ -48,7 +48,7 @@
             <!-- Actions buttons -->
             <v-layout row text-xs-center>
               <v-flex xs12 class="amr-actions">
-                <v-btn dark @click='true' :color="color(0)" small>{{i18n("list_details_act_search")}}</v-btn>
+                <v-btn dark @click='searchElsewhere()' :color="color(0)" small>{{i18n("list_details_act_search")}}</v-btn>
                 <v-btn dark @click='resetManga()' :color="color(0)" small>{{i18n("list_details_act_reset")}}</v-btn>
                 <v-btn dark v-if="mangas[0].read === 0" @click='stopFollowingUpdates()' :color="color(0)" small>{{i18n("list_details_act_stop_follow")}}</v-btn>
                 <v-btn dark v-if="mangas[0].read === 1" @click='followUpdates()' :color="color(0)" small>{{i18n("list_details_act_follow")}}</v-btn>
@@ -185,6 +185,9 @@ export default {
         });
       }
       this.newCat = "";
+    }, 
+    searchElsewhere: function() {
+      this.$emit("search-request", this.first.name);
     }
   },
   // Name of the component

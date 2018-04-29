@@ -37,8 +37,8 @@
                 <!-- Load manga list -->
                 <div class="amr-manga-list-container">
                     <transition-group name="flip-list" tag="div">
-                        <MangaGroup v-if="options.groupmgs === 0"  v-for="(mg, key) in allMangas" v-bind:key="key" :mangas="[mg]" />
-                        <MangaGroup v-if="options.groupmgs !== 0"  v-for="(grp, key) in groupedMangas" v-bind:key="key" :mangas="grp" />
+                        <MangaGroup @search-request="propagateSR" v-if="options.groupmgs === 0"  v-for="(mg, key) in allMangas" v-bind:key="key" :mangas="[mg]" />
+                        <MangaGroup @search-request="propagateSR" v-if="options.groupmgs !== 0"  v-for="(grp, key) in groupedMangas" v-bind:key="key" :mangas="grp" />
                     </transition-group>
                 </div>
             </div>
@@ -182,6 +182,12 @@ export default {
             self.showDialog = false
         }
         this.showDialog = true;
+    }, 
+    /**
+     * Propagate search request event from MangaGroup to parent
+     */
+    propagateSR(str) {
+        this.$emit("search-request", str)
     }
   },
   async created() {
