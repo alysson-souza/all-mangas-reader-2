@@ -25,7 +25,7 @@ class HandleManga {
                 // content script included, test if a mirror match the page and load AMR in tab
                 return this.matchUrlAndLoadScripts(message.url, sender.tab.id);
             case "mangaInfos":
-                let mg = store.state.mangas.all.find(manga => manga.key === message.key)
+                let mg = store.state.mangas.all.find(manga => manga.key === key)
                 if (mg !== undefined) {
                     return Promise.resolve({
                         read: mg.read,
