@@ -26,7 +26,7 @@ All Mangas Reader has been fully rewritten with modern standards (ES6 (Babel), W
 
 ## Installation
 To install All Mangas Reader, go to [the main website](https://allmangasreader.com) and choose which extension to install depending on your browser
-** Extension is not packaged yet, to install, follow the developer installation **
+**Extension is not packaged yet, to install, follow the developer installation**
 
 ## Developer installation
 First clone this repository locally.
