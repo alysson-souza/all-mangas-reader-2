@@ -20,8 +20,18 @@ class Navigation {
         // Build the select
         let selectIns = $("<select></select>");
         selectIns.data("mangaCurUrl", pageData.currentChapterURL);
-        // Change currentMangaURL so no conflict in http over https
-        mirrorImpl.get().getListChaps(util.removeProtocol(pageData.currentMangaURL), pageData.name, selectIns, this.callbackListChaps.bind(this));
+        
+        // try to get list chap from background (already loaded in local db)
+        let alreadyLoadedListChaps = await browser.runtime.sendMessage({
+            action: "getListChaps",
+            url: pageData.currentMangaURL
+        });
+        if (alreadyLoadedListChaps && alreadyLoadedListChaps.length > 0) {
+            this.callbackListChaps(alreadyLoadedListChaps, selectIns)
+        } else {
+            // Change currentMangaURL so no conflict in http over https
+            mirrorImpl.get().getListChaps(util.removeProtocol(pageData.currentMangaURL), pageData.name, selectIns, this.callbackListChaps.bind(this));
+        }
     }
 
     /**

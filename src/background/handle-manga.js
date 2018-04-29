@@ -53,6 +53,13 @@ class HandleManga {
                 return store.dispatch("updateChaptersLists");
             case "searchList":
                 return this.searchList(message);
+            case "getListChaps":
+                let mgch = store.state.mangas.all.find(mg => mg.key === key);
+                if (mgch !== undefined) {
+                    return Promise.resolve(mgch.listChaps);
+                } else {
+                    return Promise.resolve();
+                }
         }
     }
 
