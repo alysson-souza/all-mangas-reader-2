@@ -1,19 +1,59 @@
 # All Mangas Reader V2
 
+## What is All Mangas Reader
+All Mangas Reader is a browser extension which is designed to help you read and follow mangas on a lot of manga websites. It's main features are :
+* Read whole chapters on manga websites
+* Follow mangas you like with your reading list
+* Be notified when new chapters are published
+* Order, classify mangas in your reading list
+* A lot of supported websites
+
 ## Why a V2 ?
-All Mangas Reader is a browser extension which is designed to help you read and follow mangas on a lot of manga websites.
 The first version, created in 2012, is no more maintained due to poor code design.
 All Mangas Reader V2 has been created to solve the two main issues of the V1 : 
- - Chrome removed AMR from its store because of terms service violation. Since then, a lot of workarounds have been found to install AMR, but its more difficult to install.
-
-**All Mangas Reader V2 is supported by Firefox, Chrome (Chromium, Canary), Opera**, and Edge once it will implement properly native Promises
+ - Chrome removed AMR from its store because of terms service violation. Since then, a lot of workarounds have been found to install AMR, but it is quite complicated to install.
+>>>
+All Mangas Reader V2 is supported by **Firefox, Chrome (Chromium, Canary), Opera**, and Edge once it will implement properly native Promises
+>>>
  - The code was really difficult to maintain because of really long and unreadable files full of jQuery code without comments
-
-**All Mangas Reader has been fully rewritten with modern standards (ES6 (Babel), Webpack, VueJS) and is well documented**
+>>>
+All Mangas Reader has been fully rewritten with modern standards (ES6 (Babel), Webpack, VueJS) and is well documented
+>>>
 
 ## Installation
+To install All Mangas Reader, go to [the main website](https://allmangasreader.com) and choose which extension to install depending on your browser
+** Extension is not packaged yet, to install, follow the developer installation **
+
+## Developer installation
+First clone this repository locally.
+Build it using npm (if you don't have npm, [install it](https://www.npmjs.com/get-npm), you will need it or [yarn](https://yarnpkg.com)) : 
+```
+    npm run build:dev
+```
+This will create the deployable extension in the `dist` folder
+Once done, you can install the extension as a temporary extension in the main browsers (please note that browsers may delete the associated database when the extension is temporal)
+
+### Chrome
+Go to [chrome://extensions/](chrome://extensions/) and switch to developer mode (in the top right hand corner). Click on **LOAD UNPACKED** and select the `dist` folder of your local repository. That's done !
+
+### Firefox
+Go to [about:debugging#addons](about:debugging#addons) and click on **Load temporal module**. Select the `manifest.json` file from the `dist` folder. That's done !
+
+If you want to debug the extension while testing in Firefox, you will need web-ext. To install :
+```
+    npm i -g web-ext
+```
+To load firefox with All Mangas Reader in debug mode, execute the following command in the `dist` folder of your local repository :
+```
+    web-ext run
+```
+
+### Opera
+Go to Menu > Extensions and click on **Load unpacked extension**. Select the `dist` folder of your local repository. That's done !
 
 ## Contribute
+There are many ways to contribute to All Mangas Reader.
+...
 
 ## Dependencies
  - Vue : One of the most popular reactive framework, Vue allows to create great UI
@@ -27,3 +67,7 @@ All Mangas Reader V2 has been created to solve the two main issues of the V1 :
 
 ## Dev dependencies
 All Mangas Reader V2 is based on Webpack to compile the code. It uses Babel to compile EcmaScript 6 syntax, which is much more readable.
+
+## License
+All Mangas Reader is licensed under GPL V3
+[View LICENSE FILE](LICENSE)

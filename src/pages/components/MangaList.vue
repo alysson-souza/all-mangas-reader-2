@@ -239,7 +239,7 @@ export default {
     display: inline-block;
 }
 .hover-card i {
-    font-size: 16px;
+    font-size: 18px;
     margin: 0px 2px;
 }
 .hover-card .tooltip {
