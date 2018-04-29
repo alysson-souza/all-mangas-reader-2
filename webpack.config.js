@@ -13,7 +13,8 @@ const config = {
     'content/testcontent': './content/testcontent.js',
     'content/back': './content/back.js',
     'pages/popup/popup': './pages/popup/popup.js', 
-    'pages/lab/lab': './pages/lab/lab.js'
+    'pages/lab/lab': './pages/lab/lab.js',
+    'pages/options/options': './pages/options/options.js'
   },
   output: {
     path: __dirname + '/dist',
@@ -77,6 +78,7 @@ const config = {
       {from: 'icons', to: 'icons', ignore: ['icon.xcf']},
       {from: 'pages/popup/popup.html', to: 'pages/popup/popup.html'},
       {from: 'pages/lab/lab.html', to: 'pages/lab/lab.html'},
+      {from: 'pages/options/options.html', to: 'pages/options/options.html'},
       {from: 'manifest.json', to: 'manifest.json'},
       {from: 'content/*.css', to: '.'},
       {from: '_locales/**/*', to: '.'},

@@ -13,6 +13,9 @@
     "default_title": "All Mangas Reader",
     "default_popup": "pages/popup/popup.html"
   },
+  "options_ui": {
+    "page": "pages/options/options.html"
+  },
   "background": {
     "scripts": [
       "lib/jquery.min.js",
@@ -42,7 +45,7 @@
     "downloads"
   ],
   "content_security_policy": "script-src 'self' https://localhost:8080/ https://ssl.google-analytics.com       https://community.allmangasreader.com/ https://raw.github.com/ ; object-src 'self'",
-  "web_accessible_resources" : [
+  "web_accessible_resources": [
     "icons/icon_32.png",
     "icons/down.png",
     "icons/bookmark.png",
