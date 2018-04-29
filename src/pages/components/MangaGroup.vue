@@ -1,6 +1,6 @@
-<!-- The prop "mangas" used to initialize this component is a list of manga objects with the same name : a manga read on multile sites -->
+<!-- The prop "mangas" used to initialize this component is a list of manga objects with the same name : a manga read on multiple sites -->
 <template>
-  <v-container fluid class="amr-list-line" v-if="nbDisplayed > 0">
+  <v-container fluid :class="'amr-list-line ' + (updating ? '' : 'noupdates')" v-if="nbDisplayed > 0">
     <!-- Manga line-->
     <Manga
       v-for="(manga, key) in mangas" 
@@ -52,6 +52,8 @@
                 <v-btn dark @click='resetManga()' :color="color(0)" small>{{i18n("list_details_act_reset")}}</v-btn>
                 <v-btn dark v-if="mangas[0].read === 0" @click='stopFollowingUpdates()' :color="color(0)" small>{{i18n("list_details_act_stop_follow")}}</v-btn>
                 <v-btn dark v-if="mangas[0].read === 1" @click='followUpdates()' :color="color(0)" small>{{i18n("list_details_act_follow")}}</v-btn>
+                <v-btn dark v-if="mangas[0].update === 1" @click='stopUpdating()' :color="color(0)" small>{{i18n("list_details_act_stop_updating")}}</v-btn>
+                <v-btn dark v-if="mangas[0].update === 0" @click='restartUpdating()' :color="color(0)" small>{{i18n("list_details_act_restart_updating")}}</v-btn>
               </v-flex>
             </v-layout>
           </v-container>
@@ -103,6 +105,15 @@ export default {
           )
         );
       }, []);
+    },
+    /**
+     * return true if at least one manga of the group is still updating (update top is 1)
+     */
+    updating: function() {
+      for (let mg of this.mangas) {
+        if (mg.update === 1) return true;
+      }
+      return false;
     },
     /**
      * Returns number of manga of this group which will be displayed according to the filters
@@ -167,6 +178,26 @@ export default {
       });
     }, 
     /**
+     * Stop updating (looking for new chapters) mangas in this group
+     */
+    stopUpdating: function() {
+      this.$store.dispatch("markMangaUpdateTop", {
+        url: this.mangas[0].url,
+        updatesamemangas: true,
+        update: 0
+      });
+    },
+    /**
+     * Restart updating (looking for new chapters) mangas in this group
+     */
+    restartUpdating: function() {
+      this.$store.dispatch("markMangaUpdateTop", {
+        url: this.mangas[0].url,
+        updatesamemangas: true,
+        update: 1
+      });
+    },
+    /**
      * Delete a category on this group of manga
      */
     deleteCategory: function(cat) {
@@ -198,6 +229,9 @@ export default {
 <style lang="css" scoped>
 .container.amr-list-line {
   padding: 0px 10px;
+}
+.container.amr-list-line.noupdates {
+  opacity: 0.75;
 }
 .container.amr-list-line:last-child {
   padding-bottom: 10px;

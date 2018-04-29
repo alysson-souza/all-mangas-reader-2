@@ -22,7 +22,8 @@ export default class {
             this.listChaps = obj.listChaps;
         }
         this.read = obj.read || 0;
-        this.update = obj.update || 1;
+        this.update = obj.update;
+        if (this.update === undefined || this.update === null) this.update = 1;
         this.display = obj.display || 0;
         this.cats = obj.cats || [];
         if (obj.cats && typeof obj.cats === "string") {

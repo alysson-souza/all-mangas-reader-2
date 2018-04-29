@@ -338,6 +338,29 @@ const actions = {
         amrUpdater.refreshBadgeAndIcon();
     },
     /**
+     * Change the update top on a manga
+     * @param {*} vuex object 
+     * @param {*} message message contains info on a manga
+     */
+    async markMangaUpdateTop({ dispatch, commit, getters, rootState }, message) {
+        let key = utils.mangaKey(message.url),
+            mg = state.all.find(manga => manga.key === key);
+        if (mg !== undefined) {
+            commit('setMangaUpdateTop', message);
+            dispatch('updateManga', mg);
+            if (message.updatesamemangas && rootState.options.groupmgs === 1) {
+                let titMg = utils.formatMgName(mg.name);
+                let smgs = state.all.filter(manga => utils.formatMgName(manga.name) === titMg)
+                for (let smg of smgs) {
+                    commit('setMangaUpdateTop', { url: smg.url, update: message.update });
+                    dispatch('updateManga', smg);
+                }
+            }
+        }
+        // refresh badge
+        amrUpdater.refreshBadgeAndIcon();
+    },
+    /**
      * Given its key, deletes a manga from reading list
      * @param {*} param0 
      * @param {*} message 
@@ -419,6 +442,16 @@ const mutations = {
         let key = utils.mangaKey(url),
             mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) mg.read = read;
+    },
+    /**
+     * Change manga update top
+     * @param {*} state 
+     * @param {*} param1 url of the manga and update top
+     */
+    setMangaUpdateTop(state, { url, update }) {
+        let key = utils.mangaKey(url),
+            mg = state.all.find(manga => manga.key === key)
+        if (mg !== undefined) mg.update = update;
     },
     /**
      * Set upts to now (means : 'last time we found a new chapter is now');

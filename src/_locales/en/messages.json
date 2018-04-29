@@ -430,6 +430,14 @@
     "message": "Follow updates",
     "description": "Follow updates action button in manga details"
   },
+  "list_details_act_stop_updating": {
+    "message": "Stop updating",
+    "description": "Stop updating action button in manga details"
+  },
+  "list_details_act_restart_updating": {
+    "message": "Restart updating",
+    "description": "Restart updating action button in manga details"
+  },
   "list_calendar_today": {
     "message": "Last chapter found today !",
     "description": "Tooltip on calendar icon when last chater was found today"
@@ -437,6 +445,10 @@
   "list_calendar_days_found": {
     "message": "Last chapter found $1 days ago",
     "description": "Tooltip on calendar icon to tell how many days since last chater found"
+  },
+  "list_stopped_updating": {
+    "message": "Chapter list is not refreshed for this manga. To restart it, click on the Restart updating button",
+    "description": "Tooltip on timer off icon to explain that this manga's chapter list is no more updated."
   },
   "list_progress_reading": {
     "message": "Progression : $1 %",

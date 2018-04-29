@@ -24,6 +24,11 @@
             <span v-if="timeUpdated === 0">{{i18n("list_calendar_today")}}</span>
             <span v-else>{{i18n("list_calendar_days_found", timeUpdated)}}</span>
           </v-tooltip>
+          <!-- Display a timer off if the manga is not updating anymore -->
+          <v-tooltip v-if="manga.update === 0" top content-class="icon-ttip">
+            <v-icon class="amr-timeroff-badge" slot="activator">mdi-timer-off</v-icon>
+            <span>{{i18n("list_stopped_updating")}}</span>
+          </v-tooltip>
         </v-card>
       </v-card>
       </v-flex>
@@ -372,8 +377,11 @@ select.amr-chap-sel {
   margin-left: 25px;
   width: auto;
 }
-.amr-calendar-badge {
+.amr-calendar-badge, .amr-timeroff-badge {
   float: right;
   padding: 0px 4px;
+}
+.amr-timeroff-badge {
+    margin-top: 2px;
 }
 </style>
