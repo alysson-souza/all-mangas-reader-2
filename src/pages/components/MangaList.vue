@@ -207,7 +207,7 @@ export default {
   text-align: center;
 }
 .amr-mangas {
-  max-height: 350px;
+  max-height: 452px;
   overflow-y: auto;
   overflow-x: hidden;
 }

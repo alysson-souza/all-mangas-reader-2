@@ -101,21 +101,22 @@
             <v-icon v-if="isFirst" @click="$emit('details-click')">more_vert</v-icon>
             <!-- Empty icon if not first instead of details button -->
             <v-icon v-if="!isFirst" class="empty-icon"></v-icon> 
+            <!-- Delete manga dialog -->
+            <v-dialog v-model="deleteManga" max-width="500px">
+              <v-card>
+                  <v-card-title>
+                  <span class="headline">{{i18n("list_mg_delete_question", manga.name, manga.mirror)}}</span>
+                  </v-card-title>
+                  <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="blue darken-1" flat @click.native="deleteManga = false">{{i18n("button_no")}}</v-btn>
+                  <v-btn color="blue darken-1" flat @click.native="trash()">{{i18n("button_yes")}}</v-btn>
+                  </v-card-actions>
+              </v-card>
+            </v-dialog>
           </v-card>
         </v-card>
-      </v-flex>
-      <v-dialog v-model="deleteManga" max-width="500px">
-        <v-card>
-            <v-card-title>
-            <span class="headline">{{i18n("list_mg_delete_question", manga.name, manga.mirror)}}</span>
-            </v-card-title>
-            <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" flat @click.native="deleteManga = false">{{i18n("button_no")}}</v-btn>
-            <v-btn color="blue darken-1" flat @click.native="trash()">{{i18n("button_yes")}}</v-btn>
-            </v-card-actions>
-        </v-card>
-      </v-dialog>
+      </v-flex>      
     </v-layout>
 </template>
 
