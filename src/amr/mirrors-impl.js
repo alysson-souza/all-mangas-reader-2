@@ -64,17 +64,18 @@ class MirrorsImpl {
             // Try to load script from first repo, next, ...
             for (let repo of store.state.options["impl_repositories"]) {
                 let mirror = store.state.mirrors.all.find(mir => mir.mirrorName === mirrorName);
-                await self.loadImplScript(mirrorName, repo + mirror.jsFile)
-                    .catch(() => { }) // ignore repo and go to next
-                    .then((obj) => {
-                        // implementation loaded
-                        resolve(obj);
-                        found = true;
-                    });
-                if (found) break;
+                try {
+                    let obj = await self.loadImplScript(mirrorName, repo + mirror.jsFile)
+                    // implementation loaded
+                    resolve(obj)
+                    found = true
+                    break
+                } catch (e) {
+                    // ignore repo and go to next
+                }
             }
             // No repo can load the implementation
-            if (!found) return Promise.reject();
+            if (!found) reject();
         });
     }
 }
