@@ -47,9 +47,14 @@ const config = {
         /** Excludes node_modules except webextension-polyfill which is written in es6 and not transcompiled */
         exclude(file) {
           const funi = normalize(file);
+          //const es6 = ["request", "tunnel-agent", "forever-agent", "tough-cookie", /*"webextension-polyfill"*/]
+
           // webextension polyfill is transpiled by babel if you uncomment below BUT, when loaded, the extension crashes on a WeakMap...
-          /*if (funi.startsWith(normalize(__dirname + '/node_modules/webextension-polyfill'))) {
-            return false;
+          /*for (let mod of es6) {
+            if (funi.startsWith(normalize(__dirname + '/node_modules/' + mod))) {
+              console.log("do not exclude " + funi)
+              return false;
+            }
           }*/
           return funi.startsWith(normalize(__dirname + '/node_modules'));
         }
@@ -76,6 +81,7 @@ const config = {
     }),
     new CopyWebpackPlugin([
       {from: 'icons', to: 'icons', ignore: ['icon.xcf']},
+      {from: 'background/background.html', to: 'background/background.html'},
       {from: 'pages/popup/popup.html', to: 'pages/popup/popup.html'},
       {from: 'pages/lab/lab.html', to: 'pages/lab/lab.html'},
       {from: 'pages/options/options.html', to: 'pages/options/options.html'},

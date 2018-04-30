@@ -215,4 +215,7 @@ export default {
 .navigation-drawer {
     padding: 0;
 }
+.dialog .card--tile {
+	overflow: auto;
+}
 </style>

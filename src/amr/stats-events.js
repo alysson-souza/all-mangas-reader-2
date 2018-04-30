@@ -1,32 +1,45 @@
+import store from '../store';
+
 class StatsEvents {
-    trackResetManga(mg) {
+    constructor() {
+        window.dataLayer = window.dataLayer || [];
+        this.gtag('js', new Date());
+        this.gtag('config', 'UA-118453067-1');
+    }
+    gtag() {
+        dataLayer.push(arguments);
+    }
+    trackEvent(category, action, label) {
         try {
-            _gaq.push(['_trackEvent', 'ResetManga', mg.mirror, mg.name]);
-        } catch (e) { }
+            this.gtag('event', action, {
+                'event_category': category,
+                'event_label': label
+            });
+        } catch (e) {
+            if (store.state.options.debug === 1) {
+                console.error("Error while recording statistics : ")
+                console.error(e)
+            }
+        }
+    }
+    trackResetManga(mg) {
+        this.trackEvent('ResetManga', mg.mirror, mg.name);
     }
     trackAddManga(mg) {
-        try {
-            _gaq.push(['_trackEvent', 'AddManga', mg.mirror, mg.name]);
-        } catch (e) { }
+        this.trackEvent('AddManga', mg.mirror, mg.name);
     }
     trackReadManga(mg) {
-        try {
-            _gaq.push(['_trackEvent', 'ReadManga', mg.mirror, mg.name]);
-        } catch (e) { }
+        this.trackEvent('ReadManga', mg.mirror, mg.name);
     }
     trackReadMangaChapter(mg) {
-        try {
-            _gaq.push(['_trackEvent', 'ReadMangaChapter', mg.name, mg.lastChapterReadName]);
-        } catch (e) { }
+        this.trackEvent('ReadMangaChapter', mg.name, mg.lastChapterReadName);
     }
     trackReadTop(mg) {
-        try {
-            if (mg.read == 1) {
-                _gaq.push(['_trackEvent', 'SetReadState', mg.mirror, mg.name]);
-            } else {
-                _gaq.push(['_trackEvent', 'ReleaseReadState', mg.mirror, mg.name]);
-            }
-        } catch (e) { }
+        if (mg.read == 1) {
+            this.trackEvent('SetReadState', mg.mirror, mg.name);
+        } else {
+            this.trackEvent('ReleaseReadState', mg.mirror, mg.name);
+        }
     }
 }
 export default (new StatsEvents)
