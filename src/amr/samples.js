@@ -3,23 +3,28 @@
  */
 export default [
     {
+        mirror: "Manga Panda",
         name: "One Piece",
-        mirror: "Manga Reader",
-        url: "https://www.mangareader.net/one-piece",
+        url: "https://www.mangapanda.com/one-piece"
     },
     {
-        name: "Naruto",
-        mirror: "Manga Reader",
-        url: "https://www.mangareader.net/naruto",
+        mirror: "MangaStream",
+        name: "Dragon Ball Super",
+        url: "https://readms.net/manga/dragon_ball_super"
     },
     {
-        name: "Bleach",
-        mirror: "Manga Reader",
-        url: "https://www.mangareader.net/bleach",
-    },
-    {
+        mirror: "Manga Here",
         name: "Fairy Tail",
+        url: "https://www.mangahere.cc/manga/fairy_tail/"
+    },
+    {
         mirror: "Manga Reader",
-        url: "https://www.mangareader.net/fairy-tail",
+        name: "Hunter X Hunter",
+        url: "https://www.mangareader.net/hunter-x-hunter"
+    },
+    {
+        mirror: "GoodManga",
+        name: "Naruto",
+        url: "http://www.goodmanga.net/3/naruto"
     }
 ];
