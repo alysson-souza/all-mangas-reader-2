@@ -93,7 +93,7 @@ export default {
     async updateChaps() {
       this.loadingChapters = true
       //We don't call the store updateChaptersLists because when refreshing chapters, it will use jQuery (inside implementations), which is not loaded in the popup, let's do it in background
-      await browser.runtime.sendMessage({ action: "updateChaptersLists" })
+      await browser.runtime.sendMessage({ action: "updateChaptersLists" }) // update is forced by default (mangas are updated even if chapters has been found recently (less than a week ago) and the pause for a week option is checked) but is done manually by the user (this case is called from options page or for timers page)
       this.loadingChapters = false
     },
     /**

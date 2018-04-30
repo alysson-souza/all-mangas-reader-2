@@ -17,7 +17,7 @@ class Updater {
         let frequency = store.state.options.updatechap;
         if (lastUpdt + frequency < Date.now()) {
             // time to refresh !
-            store.dispatch("updateChaptersLists");
+            store.dispatch("updateChaptersLists", {force: false}); // force to false to avoid updating if not necessary
         }
         setTimeout(this.checkChaptersUpdates.bind(this), 60 * 1000); // check every minutes
     }

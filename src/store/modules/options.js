@@ -46,8 +46,9 @@ const default_options = {
     groupmgs: 1, // group manga with similar name (one piece and One Piece)
 
     /** Updates options */
-    updatechap: 3600000, // update chapters frequency
+    updatechap: 21600000, // update chapters frequency (6 hours default)
     updatemg: 86400000, // update mirrors frequency
+    stopupdateforaweek: 1, // stop updates for a week after last chapter was found
     checkmgstart: 0, // update chapters lists on startup
     refreshspin: 1, // spin the icon while loading chapters
     savebandwidth: 0, // save bandwidth while loading chapters

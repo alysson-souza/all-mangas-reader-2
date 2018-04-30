@@ -33,7 +33,7 @@ IconHelper.setBlueIcon();
      * If option update chapters lists on startup --> do it
      */
     if (store.state.options.checkmgstart === 1) {
-        store.dispatch("updateChaptersLists");
+        store.dispatch("updateChaptersLists", {force: false}); // force to false to avoid updating if not necessary
     }
 
     // Starts message handling

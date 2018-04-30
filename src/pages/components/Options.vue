@@ -140,6 +140,11 @@
                         </v-layout>
                     </v-container>
                 </div>
+                <!-- Stop updates for a week -->
+                <div class="subtitle">{{i18n('options_gen_stopupdateforaweek_desc')}}</div>
+                <v-checkbox v-model="stopupdateforaweek" @change="setOption('stopupdateforaweek')"
+                        :label="i18n('options_gen_stopupdateforaweek_opt')"></v-checkbox>
+                
                 <!-- Update mirrors list -->
                 <div class="subtitle">
                     <v-container fluid class="opt-container">
@@ -345,7 +350,8 @@ const converters = {
       "savebandwidth",
       "displayzero",
       "nocount",
-      "shownotifications"
+      "shownotifications",
+      "stopupdateforaweek"
     ]
   }
 };
@@ -477,18 +483,18 @@ export default {
      * Updates chapters lists
      */
     async updateChaps() {
-      this.loadingChapters = true;
+      this.loadingChapters = true
       //We don't call the store updateChaptersLists because when refreshing chapters, it will use jQuery (inside implementations), which is not loaded in the popup, let's do it in background
-      await browser.runtime.sendMessage({ action: "updateChaptersLists" });
-      this.loadingChapters = false;
+      await browser.runtime.sendMessage({ action: "updateChaptersLists" }) // update is forced by default (mangas are updated even if chapters has been found recently (less than a week ago) and the pause for a week option is checked) but is done manually by the user (this case is called from options page or for timers page)
+      this.loadingChapters = false
     },
     /**
      * Update mirrors lists
      */
     async updateMirrors() {
-      this.loadingMirrors = true;
-      await this.$store.dispatch("updateMirrorsLists");
-      this.loadingMirrors = false;
+      this.loadingMirrors = true
+      await this.$store.dispatch("updateMirrorsLists")
+      this.loadingMirrors = false
     },
     /**
      * Return language name from code

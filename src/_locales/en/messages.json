@@ -241,6 +241,14 @@
     "message": "Refresh now",
     "description": "Button refresh mirrors list now"
   },
+  "options_gen_stopupdateforaweek_opt": {
+    "message": "Pause updates for a week after new chapter",
+    "description": "Option to pause updates for a week after new chapter"
+  },
+  "options_gen_stopupdateforaweek_desc": {
+    "message": "When a new chapter is found, the next one will be released at least a week after. Check the box below to decide to pause updates for a manga during a week after a new chapter has been found. Doing that, updates will restart for two days (one before and one after) after a week. If no chapters are found, updates will be paused for another week and so on.",
+    "description": "Description of the functionning of the pause updates for a week after new chapter option"
+  },
   "options_gen_checkmgstart_opt": {
     "message": "Update on startup",
     "description": "Option Update on startup"

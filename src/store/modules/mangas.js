@@ -273,9 +273,9 @@ const actions = {
     /**
      * Update all mangas chapters lists
      * @param {*} param0 
-     * @param {*} message 
+     * @param {*} force force update if true. If false, check last time manga has been updated and take parameter pause for a week into account 
      */
-    async updateChaptersLists({ dispatch, commit, getters, state, rootState }) {
+    async updateChaptersLists({ dispatch, commit, getters, state, rootState }, {force} = {force: true}) {
         if (rootState.options.refreshspin === 1) {
             // spin the badge
             iconHelper.spinIcon();
@@ -287,20 +287,41 @@ const actions = {
         // refresh all mangas chapters lists
         let refchaps = [];
         for (let mg of state.all) {
-            // we catch the reject from the promise to prevent the Promise.all to fail due to a rejected promise. Thanks to that, Promise.all will wait that each manga is refreshed, even if it does not work
-            let mgupdate = Promise.resolve(
-                dispatch("refreshLastChapters", {url: mg.url})
-                    .then(() => {
-                        //save updated manga do not wait
-                        dispatch('updateManga', mg);
-                        //update badges and icon state
-                        amrUpdater.refreshBadgeAndIcon();
-                    })
-                    .catch(e => e));
-            if (rootState.options.savebandwidth === 1) {
-                await mgupdate;
-            } else {
-                refchaps.push(mgupdate);
+            let doupdate = true;
+            // check if we are in a pause case (if pause for a week option is checked, we check updates only during 2 days (one before and one after) around each 7 days after last chapter found)
+            if (!force && rootState.options.stopupdateforaweek === 1 && mg.upts) {
+                let day = 1000 * 60 * 60 * 24
+                let week = day * 7
+                doupdate = false
+                // number of weeks since last update
+                let nbweeks = Math.floor((Date.now() - mg.upts) / week) + 1;
+                // check if we are in the gap between minus one day to plus one day compared to nbweeks weeks after last update
+                if (mg.upts + week * nbweeks - day <= Date.now() && Date.now() <= mg.upts + week * nbweeks + day) {
+                    doupdate = true;
+                }
+                if (doupdate) {
+                    utils.debug("Manga " + mg.key + " has been updated less than " + nbweeks + " ago. We are in the minus one day to plus one day gap for this week number. We update the chapters list.")
+                } else {
+                    utils.debug("Manga " + mg.key + " has been updated less than " + nbweeks + " week ago. We are NOT in the minus one day to plus one day gap for this week number. We do not update the chapters list.")
+                }
+            }
+            // we update if it has been forced by the user (through option or timers page) or if we need to update
+            if (force || doupdate) {
+                // we catch the reject from the promise to prevent the Promise.all to fail due to a rejected promise. Thanks to that, Promise.all will wait that each manga is refreshed, even if it does not work
+                let mgupdate = Promise.resolve(
+                    dispatch("refreshLastChapters", {url: mg.url})
+                        .then(() => {
+                            //save updated manga do not wait
+                            dispatch('updateManga', mg);
+                            //update badges and icon state
+                            amrUpdater.refreshBadgeAndIcon();
+                        })
+                        .catch(e => e));
+                if (rootState.options.savebandwidth === 1) {
+                    await mgupdate;
+                } else {
+                    refchaps.push(mgupdate);
+                }
             }
         }
         if (rootState.options.savebandwidth !== 1) {

@@ -50,7 +50,7 @@ class HandleManga {
                 return store.dispatch("importSamples");
             case "updateChaptersLists":
                 // updates all mangas lists (do it in background if called from popup because it requires jQuery)
-                return store.dispatch("updateChaptersLists");
+                return store.dispatch("updateChaptersLists"); // update is forced by default (mangas are updated even if chapters has been found recently (less than a week ago) and the pause for a week option is checked) but is done manually by the user (this case is called from options page or for timers page)
             case "searchList":
                 return this.searchList(message);
             case "getListChaps":
