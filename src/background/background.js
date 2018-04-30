@@ -3,6 +3,7 @@ import IconHelper from '../amr/icon-helper';
 import store from '../store';
 import * as utils from '../amr/utils';
 import amrUpdater from '../amr/amr-updater';
+import amrInit from '../amr/amr-init';
 
 // Blue icon while loading
 IconHelper.setBlueIcon();
@@ -27,6 +28,11 @@ IconHelper.setBlueIcon();
     utils.debug("Initialize mangas");
     await store.dispatch('initMangasFromDB');
 
+    /**
+     * Initiliaze extension versioning
+     */
+    amrInit()
+    
     // set icon and badge
     amrUpdater.refreshBadgeAndIcon();
     /**

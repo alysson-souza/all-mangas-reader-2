@@ -345,7 +345,6 @@ const actions = {
         if (mg !== undefined) {
             commit('setMangaReadTop', message);
             dispatch('updateManga', mg);
-            statsEvents.trackReadTop(mg);
             if (message.updatesamemangas && rootState.options.groupmgs === 1) {
                 let titMg = utils.formatMgName(mg.name);
                 let smgs = state.all.filter(manga => utils.formatMgName(manga.name) === titMg)
@@ -391,6 +390,7 @@ const actions = {
         if (mg !== undefined) {
             commit('deleteManga', message.key);
             storedb.deleteManga(message.key);
+            statsEvents.trackDeleteManga(mg);
         }
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();

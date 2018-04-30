@@ -28,18 +28,23 @@ class StatsEvents {
     trackAddManga(mg) {
         this.trackEvent('AddManga', mg.mirror, mg.name);
     }
+    trackDeleteManga(mg) {
+        this.trackEvent('DeleteManga', mg.mirror, mg.name);
+    }
     trackReadManga(mg) {
         this.trackEvent('ReadManga', mg.mirror, mg.name);
     }
     trackReadMangaChapter(mg) {
         this.trackEvent('ReadMangaChapter', mg.name, mg.lastChapterReadName);
     }
-    trackReadTop(mg) {
-        if (mg.read == 1) {
-            this.trackEvent('SetReadState', mg.mirror, mg.name);
-        } else {
-            this.trackEvent('ReleaseReadState', mg.mirror, mg.name);
-        }
+    trackBeta(version) {
+        this.trackEvent('Install', 'Beta Channel', version);
+    }
+    trackInstall(version) {
+        this.trackEvent('Install', version);
+    }
+    trackActive(granularity, datestr) {
+        this.trackEvent('Active', granularity, datestr);
     }
 }
 export default (new StatsEvents)
