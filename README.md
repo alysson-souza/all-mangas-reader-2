@@ -13,15 +13,11 @@ The first version, created in 2012, is no more maintained due to poor code desig
 All Mangas Reader V2 has been created to solve the two main issues of the V1 : 
  - Chrome removed AMR from its store because of terms service violation. Since then, a lot of workarounds have been found to install AMR, but it is quite complicated to install.
 
->>>
 All Mangas Reader V2 is supported by **Firefox, Chrome (Chromium, Canary), Opera**, and Edge once it will implement properly native Promises
->>>
 
  - The code was really difficult to maintain because of really long and unreadable files full of jQuery code without comments
 
->>>
-All Mangas Reader has been fully rewritten with modern standards (ES6 (Babel), Webpack, VueJS) and is well documented
->>>
+**All Mangas Reader has been fully rewritten with modern standards (ES6 (Babel), Webpack, VueJS) and is well documented**
 
 
 ## Installation
@@ -56,8 +52,16 @@ To load firefox with All Mangas Reader in debug mode, execute the following comm
 Go to Menu > Extensions and click on **Load unpacked extension**. Select the `dist` folder of your local repository. That's done !
 
 ## Contribute
-There are many ways to contribute to All Mangas Reader.
-...
+Before contributing to the project, please read [Contribution guide](CONTRIBUTING.md)
+To contribute, fork the project and work on opened issues. Once fixed, submit a pull request which owners will merge as soon as possible
+
+You can submit issues through GitLab issues tool. Please do not post issues related to mirrors implementation on this repository, do it on the [dedicated repository](https://gitlab.com/all-mangas-reader/all-mangas-reader-2-mirrors/issues)
+Please submit a test case to reproduce your issue.
+
+If you are not a developer, you can contribute as a translator too, to do so, clone the repository locally and work on the messages.json file in your language as explained in [this doc](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/i18n/Locale-Specific_Message_reference)
+
+You can also work on the [wiki](https://gitlab.com/all-mangas-reader/all-mangas-reader-2/wikis/) to help us explain to everyone how All Mangas Reader works
+
 
 ## Dependencies
  - Vue : One of the most popular reactive framework, Vue allows to create great UI
