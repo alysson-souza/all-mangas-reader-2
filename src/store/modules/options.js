@@ -32,8 +32,7 @@ const default_options = {
      * Options used by background script
      */
     "impl_repositories": [ // repositories containing mirrors implementations
-        "https://community.allmangasreader.com/latest_v2/",
-        "https://raw.github.com/AllMangasReader-dev/mirrors/master/"
+        "https://mirrors.allmangasreader.com/v3/"
     ],
 
     /** Customization options */
