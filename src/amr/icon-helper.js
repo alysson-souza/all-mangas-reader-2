@@ -4,6 +4,9 @@ import * as utils from "./utils";
 import store from "../store";
 import amrUpdater from "./amr-updater";
 
+/**
+ * Class used to change AMR icon
+ */
 class IconHelper {
     /**
      * Initialize canvas to draw icon on chrome which does not support animated svg as icon

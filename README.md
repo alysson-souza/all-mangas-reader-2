@@ -25,12 +25,15 @@ To install All Mangas Reader, go to [the main website](https://allmangasreader.c
 **Extension is not packaged yet, to install, follow the developer installation**
 
 ## Developer installation
-First clone this repository locally.
-Build it using npm (if you don't have npm, [install it](https://www.npmjs.com/get-npm), you will need it or [yarn](https://yarnpkg.com)) : 
+First clone this repository locally and install it using `npm install` command or just `yarn` if you prefer (if you don't have npm, [install it](https://www.npmjs.com/get-npm), you will need it or [yarn](https://yarnpkg.com)).
+
+Build the extension using npm (note that you will need to run this command when updating extension code) : 
 ```
     npm run build:dev
 ```
-This will create the deployable extension in the `dist` folder
+
+This will create the deployable extension in the `dist` folder.
+
 Once done, you can install the extension as a temporary extension in the main browsers (please note that browsers may delete the associated database when the extension is temporal)
 
 ### Chrome
@@ -52,15 +55,17 @@ To load firefox with All Mangas Reader in debug mode, execute the following comm
 Go to Menu > Extensions and click on **Load unpacked extension**. Select the `dist` folder of your local repository. That's done !
 
 ## Contribute
-Before contributing to the project, please read [Contribution guide](CONTRIBUTING.md)
+Before contributing to the project, please read [Contribution guide](CONTRIBUTING.md).
+
 To contribute, fork the project and work on opened issues. Once fixed, submit a pull request which owners will merge as soon as possible
 
-You can submit issues through GitLab issues tool. Please do not post issues related to mirrors implementation on this repository, do it on the [dedicated repository](https://gitlab.com/all-mangas-reader/all-mangas-reader-2-mirrors/issues)
+You can submit issues through GitLab issues tool. **Please do not post issues related to mirrors implementation on this repository, do it on the [dedicated repository](https://gitlab.com/all-mangas-reader/all-mangas-reader-2-mirrors/issues)**.
+
 Please submit a test case to reproduce your issue.
 
-If you are not a developer, you can contribute as a translator too, to do so, clone the repository locally and work on the messages.json file in your language as explained in [this doc](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/i18n/Locale-Specific_Message_reference)
+If you are not a developer, you can contribute as a translator too, to do so, clone the repository locally and work on the **messages.json** file in your language as explained in [this doc](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/i18n/Locale-Specific_Message_reference).
 
-You can also work on the [wiki](https://gitlab.com/all-mangas-reader/all-mangas-reader-2/wikis/) to help us explain to everyone how All Mangas Reader works
+You can also work on the [wiki](https://gitlab.com/all-mangas-reader/all-mangas-reader-2/wikis/) to help us explain to everyone how All Mangas Reader works.
 
 
 ## Dependencies

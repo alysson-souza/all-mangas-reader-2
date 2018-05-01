@@ -1,6 +1,9 @@
 import store from '../store';
 import iconHelper from './icon-helper';
 
+/**
+ * This class is used to update periodically manga chapters lists and mirrors list
+ */
 class Updater {
     /**
      * Initialize refresh checkers

@@ -1,5 +1,9 @@
 import store from '../store';
 
+/**
+ * This class sends tracking information or statistical purposes
+ * All tracking information are used to improve manga reading knowledge and are anonymous
+ */
 class StatsEvents {
     constructor() {
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

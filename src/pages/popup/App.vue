@@ -85,7 +85,7 @@
 					</v-btn>
 				</v-flex>
 				<v-flex xs4>
-					<v-btn flat icon color="blue" @click="opentab('https://gitlab.com/plduhoux/all-mangas-reader-2/wikis/home')">
+					<v-btn flat icon color="blue" @click="opentab('https://gitlab.com/all-mangas-reader/all-mangas-reader-2/wikis/home')">
 						<v-icon>help</v-icon>
 					</v-btn>
 				</v-flex>
