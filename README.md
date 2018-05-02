@@ -21,16 +21,18 @@ All Mangas Reader V2 is supported by **Firefox, Chrome (Chromium, Canary), Opera
 
 
 ## Installation
-To install All Mangas Reader, go to [the main website](https://allmangasreader.com) and choose which extension to install depending on your browser
-**Extension is not packaged yet, to install, follow the developer installation**
+All Mangas Reader V2 has been package for Firefox and Chromium / Opera. **These releases are just for test purpose and does not contain automatic update yet, you will have to uninstall / reinstall it to change version**
+
+Download :
+ - **[All Mangas Reader V2 for Firefox](https://release.allmangasreader.com/all-mangas-reader-2.0.0.xpi)**
+ - **[All Mangas Reader V2 for Chromium / Opera](https://release.allmangasreader.com/all-mangas-reader-2.0.0.crx)**
+
+Google Chrome disabled extensions which are not reference in their store. All Mangas Reader does not comply with their terms of services and **will not be able to be published on Google's platform**
 
 ## Developer installation
 First clone this repository locally and install it using `npm install` command or just `yarn` if you prefer (if you don't have npm, [install it](https://www.npmjs.com/get-npm), you will need it or [yarn](https://yarnpkg.com)).
 
-Build the extension using npm (note that you will need to run this command when updating extension code) : 
-```
-    npm run build:dev
-```
+Build the extension using npm (note that you will need to run this command when updating extension code) `npm run build:dev` or using yarn `yarn run build:dev`
 
 This will create the deployable extension in the `dist` folder.
 
