@@ -422,6 +422,10 @@
     "message": "Bookmarks",
     "description": "Title of bookmarks list in manga detail"
   },
+  "list_details_no_bookmarks": {
+    "message": "No bookmarks",
+    "description": "In manga detail, information to tell that there is no bookmarks for this manga / group of mangas"
+  },
   "list_details_act_search": {
     "message": "Search this manga elsewhere",
     "description": "Seacrh elsewhere action button in manga details"

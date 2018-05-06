@@ -153,7 +153,7 @@ class Reading {
             $(img).data("finish", "1");
             $(img).css("display", "none");
 
-            //Bookmark DIV MOD ??? TODO
+            //Bookmark DIV MOD ??? MODE CANVAS NOT USED ANYMORE
         } else {
             $("#" + $(img).data("divLoad")).css("display", "none");
             $(img).data("finish", "1");
