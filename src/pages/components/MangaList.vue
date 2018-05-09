@@ -123,7 +123,7 @@ export default {
         )
     },
     /**
-     * Build mangas groups (by name)
+     * Sort mangas (according to this.sort)
      */
     sortedMangas: function() {
         var cmp;
@@ -141,6 +141,9 @@ export default {
         };
         return this.visMangas.sort(cmp);
     },
+    /**
+     * Build mangas groups (by name)
+     */
     groupedMangas: function() {
         // create groups
         return this.sortedMangas.reduce((grps, manga) => {
