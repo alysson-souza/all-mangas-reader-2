@@ -37,8 +37,12 @@
                 <!-- Load manga list -->
                 <div class="amr-manga-list-container">
                     <transition-group name="flip-list" tag="div">
-                        <MangaGroup @search-request="propagateSR" v-if="options.groupmgs === 0"  v-for="(mg, key) in allMangas" v-bind:key="key" :mangas="[mg]" />
-                        <MangaGroup @search-request="propagateSR" v-if="options.groupmgs !== 0"  v-for="(grp, key) in groupedMangas" v-bind:key="key" :mangas="grp" />
+                        <template v-if="options.groupmgs === 0">
+                            <MangaGroup @search-request="propagateSR" v-for="(mg, key) in allMangas" v-bind:key="key" :mangas="[mg]" />
+                        </template>
+                        <template v-else>
+                            <MangaGroup @search-request="propagateSR" v-for="(grp, key) in groupedMangas" v-bind:key="key" :mangas="grp" />
+                        </template>
                     </transition-group>
                 </div>
             </div>
