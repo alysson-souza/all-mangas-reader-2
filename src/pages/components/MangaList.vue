@@ -125,21 +125,25 @@ export default {
     /**
      * Build mangas groups (by name)
      */
-    groupedMangas: function() {
-        // sort mangas
-        let sort = this.sort;
-        let sorted = this.visMangas.sort(function(a, b) {
-            if (sort === "az") {
+    sortedMangas: function() {
+        var cmp;
+        if (this.sort === "az") {
+            cmp = function(a, b) {
                 return a.name < b.name ? -1 : (a.name === b.name ? 0 : 1);
-            } else if (sort === "updates") {
+            };
+        } else /*if (sort === "updates")*/ {
+            cmp = function(a, b) {
                 let ha = utils.hasNew(a),
                     hb = utils.hasNew(b);
                 // primary sort on manga has new chapter, secondary on alphabetical
                 return (ha === hb ? (a.name < b.name ? -1 : (a.name === b.name ? 0 : 1)) : (ha && !hb ? -1 : 1));
-            }
-        });
+            };
+        };
+        return this.visMangas.sort(cmp);
+    },
+    groupedMangas: function() {
         // create groups
-        return sorted.reduce((grps, manga) => {
+        return this.sortedMangas.reduce((grps, manga) => {
             let key = utilsamr.formatMgName(manga.name);
             (grps[key] = grps[key] || []).push(manga);
             return grps;
