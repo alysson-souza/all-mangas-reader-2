@@ -17,7 +17,11 @@
 		</v-toolbar>
 		<!-- Default panel containing manga list -->
 		<v-content>
-			<MangaList @search-request="openSearch"></MangaList>
+			<MangaList
+				@search-request="openSearch"
+				@manga-loaded="handleLoaded()"
+				>
+			</MangaList>
 			<div id="__bottom_app__"></div>
 		</v-content>
 		<!-- Options dialog -->
@@ -166,6 +170,9 @@ export default {
 		}, 
 		closeOptions() {
 			this.options = false;
+			PopupResizer.setHeightToCurrent();
+		},
+		handleLoaded() {
 			PopupResizer.setHeightToCurrent();
 		},
 		/**

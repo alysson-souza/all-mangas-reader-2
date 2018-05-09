@@ -209,6 +209,7 @@ export default {
       mutation: "setMangas"
     });
     this.loaded = true;
+    this.$emit("manga-loaded")
   }
 };
 </script>
