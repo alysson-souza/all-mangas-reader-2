@@ -21,11 +21,11 @@
                     <v-card v-if="visMangas.length" color="grey lighten-2" class="hover-card">
                         <v-icon class="filters-icon">mdi-filter</v-icon>
                         <v-tooltip top content-class="icon-ttip">
-                            <v-icon slot="activator" @click="sort = 'az'" :class="'amr-filter ' + (sort === 'az' ? 'activated' : '')">mdi-sort-alphabetical</v-icon>
+                            <v-icon slot="activator" @click="sort = 'az'" :class="['amr-filter', {activated: sort === 'az'}]">mdi-sort-alphabetical</v-icon>
                             <span>{{i18n("list_sort_alpha")}}</span>
                         </v-tooltip>
                         <v-tooltip top content-class="icon-ttip">
-                            <v-icon slot="activator" @click="sort = 'updates'" :class="'amr-filter ' + (sort === 'updates' ? 'activated' : '')">mdi-flash</v-icon>
+                            <v-icon slot="activator" @click="sort = 'updates'" :class="['amr-filter', {activated: sort === 'updates'}]">mdi-flash</v-icon>
                             <span>{{i18n("list_sort_new")}}</span>
                         </v-tooltip>
                     </v-card>
