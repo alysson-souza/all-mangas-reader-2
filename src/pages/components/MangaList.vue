@@ -38,10 +38,18 @@
                 <div class="amr-manga-list-container">
                     <transition-group name="flip-list" tag="div">
                         <template v-if="options.groupmgs === 0">
-                            <MangaGroup @search-request="propagateSR" v-for="(mg, key) in sortedMangas" v-bind:key="key" :mangas="[mg]" />
+                            <MangaGroup
+                                @search-request="propagateSR"
+                                v-for="mg in sortedMangas"
+                                :key="'GROUP' + mg.key"
+                                :mangas="[mg]" />
                         </template>
                         <template v-else>
-                            <MangaGroup @search-request="propagateSR" v-for="(grp, key) in groupedMangas" v-bind:key="key" :mangas="grp" />
+                            <MangaGroup
+                                @search-request="propagateSR"
+                                v-for="(grp, key) in groupedMangas"
+                                :key="key"
+                                :mangas="grp" />
                         </template>
                     </transition-group>
                 </div>
