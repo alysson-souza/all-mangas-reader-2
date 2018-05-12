@@ -40,6 +40,8 @@
                         <template v-if="options.groupmgs === 0">
                             <MangaGroup
                                 @search-request="propagateSR"
+                                @start-observing="startObserving"
+                                @stop-observing="stopObserving"
                                 v-for="mg in sortedMangas"
                                 :key="'GROUP' + mg.key"
                                 :mangas="[mg]" />
@@ -47,6 +49,8 @@
                         <template v-else>
                             <MangaGroup
                                 @search-request="propagateSR"
+                                @start-observing="startObserving"
+                                @stop-observing="stopObserving"
                                 v-for="(grp, key) in groupedMangas"
                                 :key="key"
                                 :mangas="grp" />
@@ -207,9 +211,34 @@ export default {
      */
     propagateSR(str) {
         this.$emit("search-request", str)
+    },
+    /**
+     * IntersectionObserver register/unregister
+     */
+    startObserving(mangagroup) {
+        // setup a backref on the HTMLElement
+        mangagroup.$el.mangagroup = mangagroup;
+        // add the HTMLElement to the observer
+        this.observer.observe(mangagroup.$el);
+    },
+    stopObserving(mangagroup) {
+        this.observer.unobserve(mangagroup.$el);
     }
   },
   async created() {
+    // initialize the IntersectionObserver for visibility checks
+    this.observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach( (entry) => {
+                if (entry.isIntersecting) {
+                    let mg = entry.target.mangagroup;
+                    mg.seen = true;
+                    this.stopObserving(mg);
+                }
+            });
+        },
+        {} // default options
+    );
     // initialize state for store in popup from background
     await this.$store.dispatch("getStateFromReference", {
       module: "mangas",

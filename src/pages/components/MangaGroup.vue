@@ -81,6 +81,8 @@ export default {
       expanded: false, 
       // category to add to this group of mangas
       newCat: "",
+      // has the mangagroup been seen in the UI
+      seen: false,
     };
   },
   // property to load the component with --> a group of manga
@@ -222,7 +224,13 @@ export default {
     }
   },
   // Name of the component
-  name: "MangaGroup"
+  name: "MangaGroup",
+  mounted() {
+      this.$emit("start-observing", this);
+  },
+  beforeDestroy() {
+      this.$emit("stop-observing", this);
+  }
 };
 </script>
 
