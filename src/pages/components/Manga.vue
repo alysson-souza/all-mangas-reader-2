@@ -15,6 +15,7 @@
           <v-icon v-if="isInGroup && isFirst && expanded" @click="emitExpand()">mdi-minus</v-icon>
           <!-- Manga name -->
           <strong>{{ manga.name }}</strong>
+          <template v-if="seen">
           <!-- Display a calendar with last update -->
           <v-tooltip v-if="options.displastup === 1 && manga.upts != 0 && timeUpdated < 50" top content-class="icon-ttip">
             <v-card dark :class="color(-2) + ' amr-calendar-badge'" slot="activator">
@@ -29,12 +30,14 @@
             <v-icon class="amr-timeroff-badge" slot="activator">mdi-timer-off</v-icon>
             <span>{{i18n("list_stopped_updating")}}</span>
           </v-tooltip>
+          </template>
         </v-card>
       </v-card>
       </v-flex>
       <!-- List of chapters and progressbar-->
       <v-flex xs6 class="amr-list-elt">
       <v-card dark tile flat :color="color(3)" class="back-card amr-chapter-list-cont">
+          <template v-if="seen">
         <!-- List of chapters -->
         <!-- Icon of the mirror if in group -->
         <v-tooltip v-if="isInGroup" top content-class="icon-ttip" class="tip-icon-grouped">
@@ -55,11 +58,13 @@
         </div>
         <!-- Loading bar if chapters list is not loaded yet-->
         <v-progress-linear v-if="!manga.listChaps.length" :indeterminate="true" height="4" class="amr-manga-waiting" :color="color(1)"></v-progress-linear>
+          </template>
       </v-card>
       </v-flex>
       <!-- Actions -->
       <v-flex xs3 class="amr-list-elt" text-xs-center>
         <v-card  dark tile flat :color="color(3)" class="back-card">
+          <template v-if="seen">
           <v-card dark :color="color(0)" class="amr-manga-actions-cont">
             <!-- Mark as read -->
             <v-tooltip v-if="hasNew" top content-class="icon-ttip">
@@ -115,6 +120,7 @@
               </v-card>
             </v-dialog>
           </v-card>
+          </template>
         </v-card>
       </v-flex>      
     </v-layout>
@@ -146,7 +152,9 @@ export default {
     // if manga is first of the group
     "isFirst",
     // is the group currently expanded
-    "groupExpanded"
+    "groupExpanded",
+    // has the group been in the viewport at least once
+    "seen",
   ],
   computed: {
     // AMR options

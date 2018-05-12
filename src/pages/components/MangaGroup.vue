@@ -7,8 +7,9 @@
       :key="key" 
       :manga="manga" 
       :is-in-group="nbDisplayed > 1" 
-      :is-first="manga.key === first.key" 
+      :is-first="manga.key === first.key"
       :group-expanded="expanded"
+      :seen="seen"
       @details-click="details = !details"
       @expand-group="expanded = !expanded" />
 
