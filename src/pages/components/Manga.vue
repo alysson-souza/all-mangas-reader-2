@@ -1,6 +1,6 @@
 <template>
     <!-- manga line, containing title, list of chapters and actions-->
-    <v-layout row v-if="display && (!isInGroup || (isFirst || groupExpanded))">
+    <v-layout row v-if="!isInGroup || (isFirst || groupExpanded)">
       <!-- Title and icon -->
       <v-flex xs3 class="amr-list-elt">
       <v-card dark tile flat :color="color(3)" class="back-card">
@@ -155,9 +155,6 @@ export default {
     },
     categories: function() {
       return this.options.categoriesStates;
-    },
-    display: function() {
-      return utils.displayFilterCats(this.manga, this.categories);
     },
     // determine if this manga has new published chapters
     hasNew: function() {

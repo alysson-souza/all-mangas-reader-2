@@ -21,11 +21,11 @@
                     <v-card v-if="visMangas.length" color="grey lighten-2" class="hover-card">
                         <v-icon class="filters-icon">mdi-filter</v-icon>
                         <v-tooltip top content-class="icon-ttip">
-                            <v-icon slot="activator" @click="sort = 'az'" :class="'amr-filter ' + (sort === 'az' ? 'activated' : '')">mdi-sort-alphabetical</v-icon>
+                            <v-icon slot="activator" @click="sort = 'az'" :class="['amr-filter', {activated: sort === 'az'}]">mdi-sort-alphabetical</v-icon>
                             <span>{{i18n("list_sort_alpha")}}</span>
                         </v-tooltip>
                         <v-tooltip top content-class="icon-ttip">
-                            <v-icon slot="activator" @click="sort = 'updates'" :class="'amr-filter ' + (sort === 'updates' ? 'activated' : '')">mdi-flash</v-icon>
+                            <v-icon slot="activator" @click="sort = 'updates'" :class="['amr-filter', {activated: sort === 'updates'}]">mdi-flash</v-icon>
                             <span>{{i18n("list_sort_new")}}</span>
                         </v-tooltip>
                     </v-card>
@@ -37,8 +37,20 @@
                 <!-- Load manga list -->
                 <div class="amr-manga-list-container">
                     <transition-group name="flip-list" tag="div">
-                        <MangaGroup @search-request="propagateSR" v-if="options.groupmgs === 0"  v-for="(mg, key) in allMangas" v-bind:key="key" :mangas="[mg]" />
-                        <MangaGroup @search-request="propagateSR" v-if="options.groupmgs !== 0"  v-for="(grp, key) in groupedMangas" v-bind:key="key" :mangas="grp" />
+                        <template v-if="options.groupmgs === 0">
+                            <MangaGroup
+                                @search-request="propagateSR"
+                                v-for="mg in sortedMangas"
+                                :key="'GROUP' + mg.key"
+                                :mangas="[mg]" />
+                        </template>
+                        <template v-else>
+                            <MangaGroup
+                                @search-request="propagateSR"
+                                v-for="(grp, key) in groupedMangas"
+                                :key="key"
+                                :mangas="grp" />
+                        </template>
                     </transition-group>
                 </div>
             </div>
@@ -119,23 +131,30 @@ export default {
         )
     },
     /**
-     * Build mangas groups (by name)
+     * Sort mangas (according to this.sort)
      */
-    groupedMangas: function() {
-        // sort mangas
-        let sort = this.sort;
-        let sorted = this.visMangas.sort(function(a, b) {
-            if (sort === "az") {
+    sortedMangas: function() {
+        var cmp;
+        if (this.sort === "az") {
+            cmp = function(a, b) {
                 return a.name < b.name ? -1 : (a.name === b.name ? 0 : 1);
-            } else if (sort === "updates") {
+            };
+        } else /*if (sort === "updates")*/ {
+            cmp = function(a, b) {
                 let ha = utils.hasNew(a),
                     hb = utils.hasNew(b);
                 // primary sort on manga has new chapter, secondary on alphabetical
                 return (ha === hb ? (a.name < b.name ? -1 : (a.name === b.name ? 0 : 1)) : (ha && !hb ? -1 : 1));
-            }
-        });
+            };
+        };
+        return this.visMangas.sort(cmp);
+    },
+    /**
+     * Build mangas groups (by name)
+     */
+    groupedMangas: function() {
         // create groups
-        return sorted.reduce((grps, manga) => {
+        return this.sortedMangas.reduce((grps, manga) => {
             let key = utilsamr.formatMgName(manga.name);
             (grps[key] = grps[key] || []).push(manga);
             return grps;
@@ -198,6 +217,7 @@ export default {
       mutation: "setMangas"
     });
     this.loaded = true;
+    this.$emit("manga-loaded")
   }
 };
 </script>
