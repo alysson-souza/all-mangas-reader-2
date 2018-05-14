@@ -45,10 +45,18 @@ class StoreDB {
                 /**
                  * Create stores for AMR objects
                  */
-                db.createObjectStore("mirrors", { keyPath: "mirrorName" });
-                db.createObjectStore("mangalists", { keyPath: "mirrorName" });
-                db.createObjectStore("mangas", { keyPath: "key" });
-                db.createObjectStore("bookmarks", { keyPath: "key" });
+                if (!db.objectStoreNames.contains("mirrors")) {
+                    db.createObjectStore("mirrors", { keyPath: "mirrorName" });
+                }
+                if (!db.objectStoreNames.contains("mangalists")) {
+                    db.createObjectStore("mangalists", { keyPath: "mirrorName" });
+                }
+                if (!db.objectStoreNames.contains("mangas")) {
+                    db.createObjectStore("mangas", { keyPath: "key" });
+                }
+                if (!db.objectStoreNames.contains("bookmarks")) {
+                    db.createObjectStore("bookmarks", { keyPath: "key" });
+                }
             };
             request.onsuccess = function (event) {
                 store.db = event.target.result;
