@@ -1,0 +1,45 @@
+image: registry.gitlab.com/frnchfrgg/docker-web-ext
+
+stages:
+    - build
+    - package
+
+before_script:
+    - yarn
+
+build:
+    stage: build
+    script: yarn run build
+    allow_failure: true
+    artifacts:
+        paths:
+            - dist/
+        expire_in: 1 day
+
+build:dev:
+    stage: build
+    script: yarn run build:dev
+    artifacts:
+        paths:
+            - dist/
+        expire_in: 1 day
+
+zip:
+    stage: package
+    script: yarn run build-zip
+    artifacts:
+        paths:
+            - dist-zip/*.zip
+        expire_in: 1 week
+    dependencies:
+        - build
+
+zip:dev:
+    stage: package
+    script: yarn run build-zip
+    artifacts:
+        paths:
+            - dist-zip/*.zip
+        expire_in: 1 week
+    dependencies:
+        - build:dev
