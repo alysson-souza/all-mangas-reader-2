@@ -167,6 +167,70 @@ class Navigation {
     }
 
     /**
+     * Action for the button to add a bookmark
+     */
+    async add_bookmark_button () {
+        var obj = {
+            action: "addUpdateBookmark",
+            mirror: $("#bookmarkData").data("mirror"),
+            url: $("#bookmarkData").data("url"),
+            chapUrl: $("#bookmarkData").data("chapUrl"),
+            type: $("#bookmarkData").data("type"),
+            name: $("#bookmarkData").data("name"),
+            chapName: $("#bookmarkData").data("chapName"),
+            note: $("#noteAMR").val()
+        };
+        if ($("#bookmarkData").data("type") !== "chapter") {
+            obj.scanUrl = $("#bookmarkData").data("scanUrl");
+            obj.scanName = $("#bookmarkData").data("scanName");
+            var imgScan = $(".spanForImg img[src='" + obj.scanUrl + "']");
+            imgScan.css("border-color", "#999999");
+            if ($("#noteAMR").val() !== "") {
+                imgScan.attr("title", "Note : " + $("#noteAMR").val());
+            }
+            imgScan.data("note", $("#noteAMR").val());
+            imgScan.data("booked", true);
+        } else {
+            $("#bookmarkData").data("note", $("#noteAMR").val());
+            if ($("#noteAMR").val() !== "") {
+                $(".bookAMR").attr("title", "Note : " + $("#noteAMR").val());
+            }
+            $(".bookAMR").attr("src", browser.extension.getURL("icons/bookmarkred.png"));
+            $("#bookmarkData").data("chapbooked", true);
+        }
+    
+        await browser.runtime.sendMessage(obj);
+        $.modal.close();
+    }
+
+    /**
+     * Action for the button to delete current bookmark 
+     */
+    async delete_bookmark_button () {
+        var obj = {
+            action: "deleteBookmark",
+            mirror: $("#bookmarkData").data("mirror"),
+            url: $("#bookmarkData").data("url"),
+            chapUrl: $("#bookmarkData").data("chapUrl"),
+            type: $("#bookmarkData").data("type")
+        };
+        if ($("#bookmarkData").data("type") !== "chapter") {
+            obj.scanUrl = $("#bookmarkData").data("scanUrl");
+            var imgScan = $(".spanForImg img[src='" + obj.scanUrl + "']");
+            imgScan.css("border-color", "white");
+            imgScan.removeAttr("title");
+            imgScan.removeData("booked");
+        } else {
+            $(".bookAMR").removeAttr("title");
+            $(".bookAMR").attr("src", browser.extension.getURL("icons/bookmark.png"));
+            $("#bookmarkData").removeData("chapbooked");
+        }
+    
+        await browser.runtime.sendMessage(obj);
+        $.modal.close();
+    }
+
+    /**
      * 
      * @param {*} where 
      * @param {*} select 
@@ -178,12 +242,10 @@ class Navigation {
         $("<div id='descEltAMR'></div>").appendTo(div);
         $("<table><tr><td style='vertical-align:top'><b>" + i18n("bookmark_popup_note") +  ":</b></td><td><textarea id='noteAMR' cols='50' rows='5' /></td></tr></table>").appendTo(div);
 
-        //TODO !!
-        //btn.click(add_bookmark_button);
+        btn.click(this.add_bookmark_button);
 
         let btndel = $("<a id='delBtnAMR' class='buttonAMR'>" + i18n("bookmark_popup_delete") + "</a>");
-        //TODO !!
-        //btndel.click(delete_bookmark_button);
+        btndel.click(this.delete_bookmark_button);
         btndel.appendTo(div);
         btn.appendTo(div);
 
@@ -205,7 +267,7 @@ class Navigation {
             action: "mangaInfos",
             url: pageData.currentMangaURL
         });
-        where.each((index, w) => {
+        where.each(async (index, w) => {
             let selectIns;
             let $w = $(w);
 
@@ -249,16 +311,9 @@ class Navigation {
                 } else {
                     $("#delBtnAMR").hide();
                 }
-
-                $("#bookmarkPop").modal({
-                    focus: false,
-                    onShow: navigation.showDialog,
-                    zIndex: 10000000
-                });
+                navigation.showDialog();
             });
             if (index === 0) {
-                //TODO !! careful there is an await but no async as it is an anonymous function wrapped by jQuery --> externalize to function
-                /*
                 let objBM = {
                     action: "getBookmarkNote",
                     mirror: mirrorImpl.get().mirrorName,
@@ -269,13 +324,13 @@ class Navigation {
                 let result = await browser.runtime.sendMessage(objBM);
                 if (!result.isBooked) {
                     $("#bookmarkData").data("note", "");
-                    $(".bookAMR").attr("title", "Click here to bookmark this chapter");
+                    $(".bookAMR").attr("title", i18n("content_nav_click_bm"));
                 } else {
                     $("#bookmarkData").data("note", result.note);
-                    if (result.note !== "") $(".bookAMR").attr("title", "Note : " + result.note);
+                    if (result.note !== "") $(".bookAMR").attr("title", i18n("content_nav_note_bm", result.note));
                     $("#bookmarkData").data("chapbooked", true);
                     $(".bookAMR").attr("src", browser.extension.getURL("icons/bookmarkred.png"));
-                }*/
+                }
             }
 
             let isRead = (mangaInfos === null ? false : (mangaInfos.read == 1));
@@ -403,8 +458,10 @@ class Navigation {
         }
     }
 
-    //TODO
-    showDialog(dialog) {
+    /**
+     * Show bookmarks dialog
+     */
+    showDialog() {
         let textDesc;
         if ($("#bookmarkData").data("type") == "chapter") {
             textDesc = i18n("bookmark_chapter_text", 
@@ -419,6 +476,7 @@ class Navigation {
                 $("#bookmarkData").data("mirror"));
         }
         $("#bookmarkPop #descEltAMR").text(textDesc);
+        $("#bookmarkPop").modal();
     }
 }
 export default (new Navigation) // singleton

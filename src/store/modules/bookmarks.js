@@ -41,6 +41,15 @@ const actions = {
         await storedb.storeBookmark(bm);
     },
     /**
+     * Updates the note on a bookmark
+     * @param {*} param0 
+     * @param {*} bm bookmark with new note
+     */
+    async updateBookmarkNote({ commit }, bm) {
+        commit('updateBookmarkNote', bm);
+        await storedb.storeBookmark(bm);
+    },
+    /**
      * Delete a bookmark in the store
      * @param {*} param0 
      * @param {*} key 
@@ -78,10 +87,21 @@ const mutations = {
      */
     createBookmark(state, bm) {
         if (!bm.key) {
-            bm.key = utils.mangaKey(bm.url)
+            bm.key = utils.mangaKey(bm.chapUrl) + bm.scanUrl ? "_" + utils.mangaKey(bm.scanUrl) : ""
         }
         state.all.push(bm)
     }, 
+    /**
+     * Updates the note on a bookmark
+     * @param {*} state 
+     * @param {*} bm bookmark with new note
+     */
+    async updateBookmarkNote(state, bm) {
+        let bmn = state.all.find(bookmark => bookmark.key === key)
+        if (bmn !== undefined) {
+            bmn.note = bm.note
+        }
+    },
     /**
      * Delete a bookmark
      * @param {*} state 

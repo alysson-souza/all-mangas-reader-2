@@ -222,7 +222,7 @@ a.buttonAMR:active {
   vertical-align:middle!important;
 }
 .buttonAMR.progress{
-  margin-button: auto !important;
+  margin: auto !important;
 }
 #AMRBarIn select, .amrbarlayout select {
   vertical-align:middle!important;
@@ -272,4 +272,8 @@ a.buttonAMR:active {
   vertical-align:middle!important;
   padding:0!important;
   margin:0!important;
+}
+
+.jquery-modal.blocker {
+  z-index: 10000001;
 }

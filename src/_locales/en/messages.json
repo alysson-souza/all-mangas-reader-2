@@ -541,7 +541,16 @@
   "content_nav_showbar": {
     "message": "Display AMR ToolBar",
     "description": "Tooltip to show AMR bar when icon clicked and bar hidden"
+  },  
+  "content_nav_click_bm": {
+    "message": "Click here to bookmark this chapter",
+    "description": "Tooltip on button to bookmark a chapter"
+  },  
+  "content_nav_note_bm": {
+    "message": "Note : $1",
+    "description": "Text to display the note for a bookmark. $1 is the note"
   }, 
+
   "bookmark_popup_title": {
     "message": "Bookmark",
     "description": "Title of the bookmark popup"
