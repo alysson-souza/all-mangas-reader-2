@@ -7,39 +7,36 @@ stages:
 before_script:
     - yarn
 
-build:
+.build_common: &build_common
     stage: build
-    script: yarn run build
-    allow_failure: true
     artifacts:
         paths:
             - dist/
         expire_in: 1 day
 
-build:dev:
-    stage: build
-    script: yarn run build:dev
-    artifacts:
-        paths:
-            - dist/
-        expire_in: 1 day
-
-zip:
+.zip_common: &zip_common
     stage: package
     script: yarn run build-zip
     artifacts:
         paths:
             - dist-zip/*.zip
         expire_in: 1 week
+
+build:
+    <<: *build_common
+    allow_failure: true
+    script: yarn run build
+
+build:dev:
+    <<: *build_common
+    script: yarn run build:dev
+
+zip:
+    <<: *zip_common
     dependencies:
         - build
 
 zip:dev:
-    stage: package
-    script: yarn run build-zip
-    artifacts:
-        paths:
-            - dist-zip/*.zip
-        expire_in: 1 week
+    <<: *zip_common
     dependencies:
         - build:dev
