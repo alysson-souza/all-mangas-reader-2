@@ -5,6 +5,8 @@ stages:
     - package
 
 before_script:
+    - export LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null)
+    - export PATCH=$(git rev-list ${LAST_TAG:+$LAST_TAG..}HEAD | wc -l)
     - yarn
 
 .build_common: &build_common
@@ -13,14 +15,6 @@ before_script:
         paths:
             - dist/
         expire_in: 1 day
-
-.zip_common: &zip_common
-    stage: package
-    script: yarn run build-zip
-    artifacts:
-        paths:
-            - dist-zip/*.zip
-        expire_in: 1 week
 
 build:
     <<: *build_common
@@ -31,6 +25,14 @@ build:dev:
     <<: *build_common
     script: yarn run build:dev
 
+.zip_common: &zip_common
+    stage: package
+    script: yarn run build-zip
+    artifacts:
+        paths:
+            - dist-zip/*.zip
+        expire_in: 1 week
+
 zip:
     <<: *zip_common
     dependencies:
@@ -40,3 +42,18 @@ zip:dev:
     <<: *zip_common
     dependencies:
         - build:dev
+
+xpi-beta:
+    stage: package
+    script:
+        - yarn run manifest:specify -firefox -version $PATCH
+        - web-ext sign --source-dir=dist --api-key=$WEB_EXT_FF_API_KEY --api-secret=$WEB_EXT_FF_API_SECRET --artifacts-dir=dist-zip
+    artifacts:
+        paths:
+            - dist-zip/*.xpi
+        expire_in: 1 week
+    except:
+        variables:
+            - $WEB_EXT_FF_API_KEY == null
+    dependencies:
+        - build:dev # should be `build`, but that job currently returns errors
