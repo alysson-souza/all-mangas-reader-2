@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const zipFolder = require('zip-folder');
+const zipFolder = require('zip-dir');
 
 const DEST_DIR = path.join(__dirname, '../dist');
 const DEST_ZIP_DIR = path.join(__dirname, '../dist-zip'); 
@@ -26,7 +26,7 @@ const buildZip = (src, dist, zipFilename) => {
   console.info(`Building ${zipFilename}...`);
 
   return new Promise((resolve, reject) => {
-    zipFolder(src, path.join(dist, zipFilename), (err) => {
+    zipFolder(src, {saveTo: path.join(dist, zipFilename)}, (err, _) => {
       if(err) {
         reject(err);
       } else {
