@@ -47,13 +47,13 @@ xpi-beta:
     stage: package
     script:
         - yarn run manifest:specify -firefox -version $PATCH
-        - web-ext sign --source-dir=dist --api-key=$WEB_EXT_FF_API_KEY --api-secret=$WEB_EXT_FF_API_SECRET --artifacts-dir=dist-zip
+        - web-ext sign --source-dir=dist --api-key="$SIGN_FF_API_KEY" --api-secret="$SIGN_FF_API_SECRET" --artifacts-dir=dist-zip
     artifacts:
         paths:
             - dist-zip/*.xpi
         expire_in: 1 week
     except:
         variables:
-            - $WEB_EXT_FF_API_KEY == null
+            - $SIGN_FF_API_KEY == null
     dependencies:
         - build:dev # should be `build`, but that job currently returns errors
