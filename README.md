@@ -21,11 +21,11 @@ All Mangas Reader V2 is supported by **Firefox, Chrome (Chromium, Canary), Opera
 
 
 ## Installation
-All Mangas Reader V2 has been package for Firefox and Chromium / Opera. **These releases are just for test purpose and does not contain automatic update yet, you will have to uninstall / reinstall it to change version**
+All Mangas Reader V2 has been package for Firefox and Opera. **These releases are just for test purpose and does not contain automatic update yet, you will have to uninstall / reinstall it to change version**
 
 Download :
  - **[All Mangas Reader V2 for Firefox](https://release.allmangasreader.com/all-mangas-reader-2.0.0.xpi)**
- - **[All Mangas Reader V2 for Chromium / Opera](https://release.allmangasreader.com/all-mangas-reader-2.0.0.crx)**
+ - **[All Mangas Reader V2 for Opera](https://release.allmangasreader.com/all-mangas-reader-2.0.0.crx)**
 
 Google Chrome disabled extensions which are not reference in their store. All Mangas Reader does not comply with their terms of services and **will not be able to be published on Google's platform**
 
