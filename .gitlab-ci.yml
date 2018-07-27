@@ -58,6 +58,21 @@ xpi-beta:
     dependencies:
         - build:dev # should be `build`, but that job currently returns errors
         
+xpi-unsigned:
+    stage: package
+    script:
+        - yarn run manifest:specify -firefox
+        - yarn run build-zip
+        # do not sign file, has to be manually updated to Mozilla Addons, just prepare it for signing
+    artifacts:
+        paths:
+            - dist-zip/*.zip
+        expire_in: 1 week
+    only:
+        - tags
+    dependencies:
+        - build:dev # should be `build`, but that job currently returns errors
+        
 crx-beta:
     stage: package
     script:
@@ -67,6 +82,20 @@ crx-beta:
         paths:
             - dist-zip/*.zip
         expire_in: 1 week
+    dependencies:
+        - build:dev # should be `build`, but that job currently returns errors
+
+crx:
+    stage: package
+    script:
+        - yarn run manifest:specify -chrome
+        - yarn run build-zip
+    artifacts:
+        paths:
+            - dist-zip/*.zip
+        expire_in: 1 week
+    only:
+        - tags
     dependencies:
         - build:dev # should be `build`, but that job currently returns errors
 
