@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const WebpackShellPlugin = require('webpack-shell-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const normalize = function(path) {
   return path.replace(/\\/g, "/");
@@ -44,20 +45,7 @@ const config = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        /** Excludes node_modules except webextension-polyfill which is written in es6 and not transcompiled */
-        exclude(file) {
-          const funi = normalize(file);
-          //const es6 = ["request", "tunnel-agent", "forever-agent", "tough-cookie", /*"webextension-polyfill"*/]
-
-          // webextension polyfill is transpiled by babel if you uncomment below BUT, when loaded, the extension crashes on a WeakMap...
-          /*for (let mod of es6) {
-            if (funi.startsWith(normalize(__dirname + '/node_modules/' + mod))) {
-              console.log("do not exclude " + funi)
-              return false;
-            }
-          }*/
-          return funi.startsWith(normalize(__dirname + '/node_modules'));
-        }
+        exclude: /node_modules/
       },
       {
         test: /\.css$/,
@@ -108,11 +96,11 @@ if (process.env.NODE_ENV === 'production') {
         NODE_ENV: '"production"'
       }
     }),
-    new webpack.optimize.UglifyJsPlugin({
-      sourceMap: true,
+    new UglifyJsPlugin({
+      sourceMap: true/*,
       compress: {
         warnings: false
-      }
+      }*/
     }),
     new webpack.LoaderOptionsPlugin({
       minimize: true

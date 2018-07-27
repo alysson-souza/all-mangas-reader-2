@@ -35,6 +35,7 @@
     "file-loader": "^0.11.2",
     "node-sass": "^4.5.3",
     "sass-loader": "^6.0.6",
+    "uglifyjs-webpack-plugin": "^1.2.7",
     "vue-loader": "^14.1.1",
     "vue-template-compiler": "^2.5.13",
     "webpack": "^3.10.0",
