@@ -237,7 +237,7 @@ class Navigation {
      */
     async writeNavigation(where, select) {
         //create bookmark popup
-        let div = $("<div id='bookmarkPop' style='display:none;position: static;padding: 20px!important;'></div>"),
+        let div = $("<div id='bookmarkPop' style='display:none;'></div>"),
             btn = $("<a id='saveBtnAMR' class='buttonAMR'>" + i18n("button_save") + "</a>");
         $("<h3>" + i18n("bookmark_popup_title") + "</h3>").appendTo(div);
         $("<div id='descEltAMR'></div>").appendTo(div);
@@ -480,7 +480,9 @@ class Navigation {
                 mirrorImpl.get().mirrorName);
         }
         $("#bookmarkPop #descEltAMR").text(textDesc);
-        $("#bookmarkPop").modal();
+        $("#bookmarkPop").modal({
+            modalClass: "amr-modal"
+        });
     }
 }
 export default (new Navigation) // singleton

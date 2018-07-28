@@ -550,7 +550,11 @@
     "message": "Note : $1",
     "description": "Text to display the note for a bookmark. $1 is the note"
   }, 
-
+  "background_bookmark_menu": {
+    "message": "Bookmark this scan",
+    "description": "Context menu when right click on a scan"
+  },
+  
   "bookmark_popup_title": {
     "message": "Bookmark",
     "description": "Title of the bookmark popup"

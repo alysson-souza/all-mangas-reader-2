@@ -238,31 +238,6 @@ class Reading {
         divNum.appendTo($(img).closest(".spanForImg"));
     }
 
-    clickOnBM(src) {
-        let imgScan = $(".spanForImg img[src='" + src + "']");
-        if (imgScan.size() === 0) {
-            imgScan = $(".spanForImg img[src='" + decodeURI(src) + "']");
-        }
-
-        pageData.curbookmark.type = "scan";
-        pageData.curbookmark.scanUrl = src;
-        pageData.curbookmark.scanName = imgScan.data("idScan");
-
-        if (imgScan.data("note") !== undefined) {
-            $("#noteAMR").val(imgScan.data("note"));
-        } else {
-            $("#noteAMR").val("");
-        }
-        if (imgScan.data("booked")) {
-            $("#delBtnAMR").show();
-        } else {
-            $("#delBtnAMR").hide();
-        }
-
-        $("#bookmarkPop").modal({ focus: false, onShow: this.showDialog, zIndex: 10000000 });
-
-    }
-
     onErrorImage(img) {
         let reading = this;
         $(img).css("margin-bottom", "50px");

@@ -1,7 +1,12 @@
 import store from '../store';
 import * as utils from '../amr/utils';
+import i18n from '../amr/i18n';
+import browser from "webextension-polyfill";
 
 class HandleBookmarks {
+    constructor() {
+        this.context_ids = [];
+    }
     handle(message, sender) {
         switch (message.action) {
             case "getBookmarkNote":
@@ -17,7 +22,21 @@ class HandleBookmarks {
             case "addUpdateBookmark":
                 this.addBookmark(message);
                 return Promise.resolve({});
-            case "createContextMenu": //TODO
+            case "createContextMenu":
+                let url = message.lstUrls[0];
+                if (this.context_ids.indexOf(url) < 0) {
+                    this.context_ids.push(url);
+                    let id = browser.contextMenus.create({
+                        title: i18n("background_bookmark_menu"),
+                        contexts: ["image"],
+                        onclick: function (info, tab) {
+                            browser.tabs.executeScript(tab.id, {
+                                code: "clickOnBM(\"" + info.srcUrl + "\")"
+                            });
+                        }, 
+                        targetUrlPatterns: [encodeURI(url), url]
+                    });
+                }
                 return Promise.resolve({});
         }
     }
