@@ -172,17 +172,17 @@ class Navigation {
     async add_bookmark_button () {
         var obj = {
             action: "addUpdateBookmark",
-            mirror: $("#bookmarkData").data("mirror"),
-            url: $("#bookmarkData").data("url"),
-            chapUrl: $("#bookmarkData").data("chapUrl"),
-            type: $("#bookmarkData").data("type"),
-            name: $("#bookmarkData").data("name"),
-            chapName: $("#bookmarkData").data("chapName"),
+            mirror: mirrorImpl.get().mirrorName,
+            url: pageData.currentMangaURL,
+            chapUrl: pageData.currentChapterURL,
+            type: pageData.curbookmark.type,
+            name: pageData.name,
+            chapName: pageData.currentChapter,
             note: $("#noteAMR").val()
         };
-        if ($("#bookmarkData").data("type") !== "chapter") {
-            obj.scanUrl = $("#bookmarkData").data("scanUrl");
-            obj.scanName = $("#bookmarkData").data("scanName");
+        if (pageData.curbookmark.type !== "chapter") {
+            obj.scanUrl = pageData.curbookmark.scanUrl;
+            obj.scanName = pageData.curbookmark.scanName;
             var imgScan = $(".spanForImg img[src='" + obj.scanUrl + "']");
             imgScan.css("border-color", "#999999");
             if ($("#noteAMR").val() !== "") {
@@ -191,12 +191,12 @@ class Navigation {
             imgScan.data("note", $("#noteAMR").val());
             imgScan.data("booked", true);
         } else {
-            $("#bookmarkData").data("note", $("#noteAMR").val());
+            pageData.curbookmark.note = $("#noteAMR").val();
             if ($("#noteAMR").val() !== "") {
                 $(".bookAMR").attr("title", "Note : " + $("#noteAMR").val());
             }
             $(".bookAMR").attr("src", browser.extension.getURL("icons/bookmarkred.png"));
-            $("#bookmarkData").data("chapbooked", true);
+            pageData.curbookmark.chapbooked = true;
         }
     
         await browser.runtime.sendMessage(obj);
@@ -209,13 +209,13 @@ class Navigation {
     async delete_bookmark_button () {
         var obj = {
             action: "deleteBookmark",
-            mirror: $("#bookmarkData").data("mirror"),
-            url: $("#bookmarkData").data("url"),
-            chapUrl: $("#bookmarkData").data("chapUrl"),
-            type: $("#bookmarkData").data("type")
+            mirror: mirrorImpl.get().mirrorName,
+            url: pageData.currentMangaURL,
+            chapUrl: pageData.currentChapterURL,
+            type: pageData.curbookmark.type
         };
-        if ($("#bookmarkData").data("type") !== "chapter") {
-            obj.scanUrl = $("#bookmarkData").data("scanUrl");
+        if (pageData.curbookmark.type !== "chapter") {
+            obj.scanUrl = pageData.curbookmark.scanUrl;
             var imgScan = $(".spanForImg img[src='" + obj.scanUrl + "']");
             imgScan.css("border-color", "white");
             imgScan.removeAttr("title");
@@ -223,7 +223,7 @@ class Navigation {
         } else {
             $(".bookAMR").removeAttr("title");
             $(".bookAMR").attr("src", browser.extension.getURL("icons/bookmark.png"));
-            $("#bookmarkData").removeData("chapbooked");
+            pageData.curbookmark.chapbooked = false;
         }
     
         await browser.runtime.sendMessage(obj);
@@ -236,7 +236,8 @@ class Navigation {
      * @param {*} select 
      */
     async writeNavigation(where, select) {
-        let div = $("<div id='bookmarkPop' style='display:none'></div>"),
+        //create bookmark popup
+        let div = $("<div id='bookmarkPop' style='display:none;position: static;padding: 20px!important;'></div>"),
             btn = $("<a id='saveBtnAMR' class='buttonAMR'>" + i18n("button_save") + "</a>");
         $("<h3>" + i18n("bookmark_popup_title") + "</h3>").appendTo(div);
         $("<div id='descEltAMR'></div>").appendTo(div);
@@ -254,19 +255,22 @@ class Navigation {
         $("a", divTip).click(function () {
             browser.runtime.sendMessage({
                 action: "opentab",
-                url: "/bookmarks.html"
+                url: "/pages/bookmarks/bookmarks.html"
             });
         });
         divTip.appendTo(div);
         div.appendTo($(document.body));
 
-        where.empty();
-        let navigation = this;
-        //Get specific read for currentManga
+
+        //Get specific read and display option for currentManga
         let mangaInfos = await browser.runtime.sendMessage({
             action: "mangaInfos",
             url: pageData.currentMangaURL
         });
+
+        let navigation = this;
+        // create navigation bar
+        where.empty();
         where.each(async (index, w) => {
             let selectIns;
             let $w = $(w);
@@ -304,9 +308,9 @@ class Navigation {
             let book = $("<img class='bookAMR' src='" + browser.extension.getURL("icons/bookmark.png") + "'/>");
             book.appendTo($w);
             book.click(function () {
-                $("#bookmarkData").data("type", "chapter");
-                $("#noteAMR").val($("#bookmarkData").data("note"));
-                if ($("#bookmarkData").data("chapbooked")) {
+                pageData.curbookmark.type = "chapter";
+                $("#noteAMR").val(pageData.curbookmark.note);
+                if (pageData.curbookmark.chapbooked) {
                     $("#delBtnAMR").show();
                 } else {
                     $("#delBtnAMR").hide();
@@ -323,12 +327,12 @@ class Navigation {
                 };
                 let result = await browser.runtime.sendMessage(objBM);
                 if (!result.isBooked) {
-                    $("#bookmarkData").data("note", "");
+                    pageData.curbookmark.note = "";
                     $(".bookAMR").attr("title", i18n("content_nav_click_bm"));
                 } else {
-                    $("#bookmarkData").data("note", result.note);
+                    pageData.curbookmark.note = result.note;
                     if (result.note !== "") $(".bookAMR").attr("title", i18n("content_nav_note_bm", result.note));
-                    $("#bookmarkData").data("chapbooked", true);
+                    pageData.curbookmark.chapbooked = true;
                     $(".bookAMR").attr("src", browser.extension.getURL("icons/bookmarkred.png"));
                 }
             }
@@ -463,17 +467,17 @@ class Navigation {
      */
     showDialog() {
         let textDesc;
-        if ($("#bookmarkData").data("type") == "chapter") {
+        if (pageData.curbookmark.type == "chapter") {
             textDesc = i18n("bookmark_chapter_text", 
-                $("#bookmarkData").data("chapName"), 
-                $("#bookmarkData").data("name"), 
-                $("#bookmarkData").data("mirror"));
+                pageData.currentChapter, 
+                pageData.name, 
+                mirrorImpl.get().mirrorName);
         } else {
             textDesc = i18n("bookmark_chapter_scan", 
-                $("#bookmarkData").data("scanName"),
-                $("#bookmarkData").data("chapName"),
-                $("#bookmarkData").data("name"),
-                $("#bookmarkData").data("mirror"));
+                pageData.curbookmark.scanName,
+                pageData.currentChapter,
+                pageData.name,
+                mirrorImpl.get().mirrorName);
         }
         $("#bookmarkPop #descEltAMR").text(textDesc);
         $("#bookmarkPop").modal();

@@ -36,9 +36,9 @@ const actions = {
      * @param {*} bm 
      */
     async createBookmark({ commit }, bm) {
-        utils.debug("create description of bookmark " + bm.key + " in db");
         commit('createBookmark', bm);
         await storedb.storeBookmark(bm);
+        utils.debug("created description of bookmark " + bm.key + " in db");
     },
     /**
      * Updates the note on a bookmark
@@ -54,7 +54,8 @@ const actions = {
      * @param {*} param0 
      * @param {*} key 
      */
-    async deleteBookmark({ commit }, key) {
+    async deleteBookmark({ commit }, {chapUrl, scanUrl}) {
+        let key = utils.mangaKey(chapUrl) + (scanUrl ? "_" + utils.mangaKey(scanUrl) : "")
         let bm = state.all.find(bookmark => bookmark.key === key);
         if (bm !== undefined) {
             commit('deleteBookmark', key);
@@ -87,7 +88,7 @@ const mutations = {
      */
     createBookmark(state, bm) {
         if (!bm.key) {
-            bm.key = utils.mangaKey(bm.chapUrl) + bm.scanUrl ? "_" + utils.mangaKey(bm.scanUrl) : ""
+            bm.key = utils.mangaKey(bm.chapUrl) + (bm.scanUrl ? "_" + utils.mangaKey(bm.scanUrl) : "")
         }
         state.all.push(bm)
     }, 
@@ -97,6 +98,7 @@ const mutations = {
      * @param {*} bm bookmark with new note
      */
     async updateBookmarkNote(state, bm) {
+        let key = utils.mangaKey(bm.chapUrl) + (bm.scanUrl ? "_" + utils.mangaKey(bm.scanUrl) : "")
         let bmn = state.all.find(bookmark => bookmark.key === key)
         if (bmn !== undefined) {
             bmn.note = bm.note

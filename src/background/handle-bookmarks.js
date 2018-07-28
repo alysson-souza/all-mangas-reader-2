@@ -1,4 +1,5 @@
 import store from '../store';
+import * as utils from '../amr/utils';
 
 class HandleBookmarks {
     handle(message, sender) {
@@ -10,9 +11,10 @@ class HandleBookmarks {
                     note: noteBM.note,
                     scanSrc: noteBM.scanSrc
                 });
-            case "deleteBookmark": //TODO
+            case "deleteBookmark":
+                this.deleteBookmark(message);
                 return Promise.resolve({});
-            case "addUpdateBookmark": //TODO
+            case "addUpdateBookmark":
                 this.addBookmark(message);
                 return Promise.resolve({});
             case "createContextMenu": //TODO
@@ -25,16 +27,8 @@ class HandleBookmarks {
      * @param {*} obj 
      */
     findBookmark(obj) {
-        return store.state.bookmarks.all.find(
-            bm => 
-                obj.mirror === bm.mirror && 
-                obj.url === bm.url && 
-                obj.chapUrl === bm.chapUrl && 
-                obj.type === bm.type &&
-                (obj.type === "chapter" ||
-                    (obj.scanUrl === bm.scanUrl || encodeURI(obj.scanUrl) === bm.scanUrl)
-                )
-            )
+        let key = utils.mangaKey(obj.chapUrl) + (obj.scanUrl ? "_" + utils.mangaKey(obj.scanUrl): "")
+        return store.state.bookmarks.all.find(bookmark => bookmark.key === key)
     }
     /**
      * Retrieve a stored bookmark
@@ -68,23 +62,36 @@ class HandleBookmarks {
      */
     addBookmark(obj) {
         let bm = this.findBookmark(obj);
+        let tosave = {
+            mirror : obj.mirror,
+            url : obj.url,
+            chapUrl : obj.chapUrl,
+            type : obj.type,
+            name : obj.name,
+            chapName : obj.chapName,
+            scanUrl : obj.scanUrl,
+            scanName : obj.scanName,
+            note : obj.note
+        };
         if (bm === undefined) {
             // adds a new bookmark
-            store.dispatch("createBookmark", {
-                mirror : obj.mirror,
-                url : obj.url,
-                chapUrl : obj.chapUrl,
-                type : obj.type,
-                name : obj.name,
-                chapName : obj.chapName,
-                scanUrl : obj.scanUrl,
-                scanName : obj.scanName,
-                note : obj.note
-            })
+            store.dispatch("createBookmark", tosave)
         } else {
             // update bookmark note
-            store.dispatch("updateBookmarkNote", obj.note);
+            store.dispatch("updateBookmarkNote", tosave);
         }
+    }
+
+    /**
+     * Deletes a bookmark from store
+     * @param {*} obj 
+     */
+    deleteBookmark(obj) {
+        // adds a new bookmark
+        store.dispatch("deleteBookmark", {
+            chapUrl : obj.chapUrl,
+            scanUrl : obj.scanUrl
+        })
     }
 }
 export default (new HandleBookmarks)
