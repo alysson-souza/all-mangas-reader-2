@@ -84,7 +84,7 @@
 					</v-btn>
 				</v-flex>
 				<v-flex xs4>
-					<v-btn flat icon color="yellow" @click="opentab('/pages/bookmarks.html')">
+					<v-btn flat icon color="yellow" @click="opentab('/pages/bookmarks/bookmarks.html')">
 						<v-icon>star</v-icon>
 					</v-btn>
 				</v-flex>
