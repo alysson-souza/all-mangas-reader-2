@@ -788,10 +788,6 @@
     "message": "Small",
     "description": "Size of the bookmarks in list : small"
   },
-  "bookmarks_no_mangas": {
-    "message": "No mangas have bookmarks",
-    "description": "Label when no mangas have bookmarks"
-  },
   "bookmarks_no_bookmarks": {
     "message": "No bookmarks yet. To bookmark a scan, double click on the scan while reading. Bookmarked scans have a grey border. <br /> To bookmark a chapter, click on the star in the top bar while reading.",
     "description": "Label when no bookmarks. Help about how to bookmark a scan and chapter"

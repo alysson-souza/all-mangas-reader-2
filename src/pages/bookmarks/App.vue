@@ -7,7 +7,7 @@
       app
     >
     <v-card flat>
-      <v-list two-line v-if="mangas">
+      <v-list two-line>
         <v-list-tile @click="switchAllStates()" avatar ripple>
             <v-list-tile-content>
               <v-list-tile-title>
@@ -62,7 +62,6 @@
             ></v-divider>
         </template>
       </v-list>
-      <v-card-text v-else>{{i18n("bookmarks_no_mangas")}}</v-card-text>
     </v-card>
     </v-navigation-drawer>
     <v-toolbar
@@ -124,7 +123,7 @@
           <!-- Once loaded -->
           <Bookmarks :bookmark-list="displayedBookmarks" :size="size.value" v-if="nbBookmarks > 0 && displayedBookmarks.length > 0"/>
           <h2 v-else align-center>
-            <span v-if="displayedBookmarks.length==0" v-html="i18n('bookmarks_no_bookmarks_filter')"></span>
+            <span v-if="nbBookmarks > 0" v-html="i18n('bookmarks_no_bookmarks_filter')"></span>
             <span v-else v-html="i18n('bookmarks_no_bookmarks')"></span>
           </h2>
         </v-layout>
