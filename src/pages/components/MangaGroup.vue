@@ -259,7 +259,7 @@ export default {
 .container.amr-list-line:last-child {
   padding-bottom: 10px;
 }
-.btn {
+.v-btn {
   text-transform: none;
 }
 .fadeHeight-enter-active,

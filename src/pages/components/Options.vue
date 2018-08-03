@@ -611,7 +611,7 @@ export default {
 .sel-title {
   line-height: 40px;
 }
-.btn-sel {
+.v-btn-sel {
   padding: 0px 8px;
 }
 .opt-container {

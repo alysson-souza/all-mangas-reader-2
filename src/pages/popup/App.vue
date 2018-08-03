@@ -212,17 +212,17 @@ export default {
 };
 </script>
 <style>
-.dialog .card__title,
-.dialog .card__text {
+.v-dialog .v-card__title,
+.v-dialog .v-card__text {
   padding: 4px 16px;
 }
-.dialog .card__title {
+.v-dialog .v-card__title {
   padding-top: 10px;
 }
 .navigation-drawer {
     padding: 0;
 }
-.dialog .card--tile {
+.v-dialog .v-card--tile {
 	overflow: auto;
 }
 </style>
