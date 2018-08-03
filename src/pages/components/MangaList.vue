@@ -65,7 +65,7 @@
             </div>
             <!-- No mangas yet -->
             <div v-if="!allMangas.length" class="amr-nomangas">
-                <p v-html="i18n('list_no_manga_message')">
+                <p v-html="convertIcons(i18n('list_no_manga_message'))">
                 </p>
                 <p>
                     <a @click.prevent="importSamples()">{{ i18n("list_import_samples")}}</a>
@@ -170,6 +170,7 @@ export default {
   components: { MangaGroup, Categories },
   methods: {
     i18n: (message, ...args) => i18n(message, ...args),
+    convertIcons: str => utils.convertIcons(str),
     importSamples() {
       // we don't do this.$store.dispatch("importSamples"); because to load list of chapters, implementations rely on jQuery, which is not loaded in pages, rely on background page to do so
       browser.runtime.sendMessage({ action: "importSamples" });
