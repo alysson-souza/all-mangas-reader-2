@@ -105,7 +105,7 @@
             <v-tab href="#refresh">
                 <v-icon>refresh</v-icon>
             </v-tab>
-            <v-tab href="#importexport">
+            <v-tab @click="openImportExport()" href="#importexport">
                 <v-icon>save</v-icon>
             </v-tab>
         </v-tabs>
@@ -135,6 +135,7 @@ import PopupResizer from './resizePopup';
 import Timers from '../components/Timers';
 import ImportExport from '../components/ImportExport';
 import browser from "webextension-polyfill";
+import * as utils from '../../amr/utils';
 
 export default {
   data() {
@@ -202,7 +203,14 @@ export default {
             action: "opentab",
             url: url
         });
-    },
+		},
+		/** Opens import export tab. If Firefox, opens it in a new tab because file input closes the extension : https://bugzilla.mozilla.org/show_bug.cgi?id=1292701 */
+		openImportExport() {
+			if (utils.isFirefox()) {
+				this.opentab("/pages/importexport/importexport.html");
+				window.close();
+			}
+		}
 	}, 
 	mounted: function () {
   	this.$nextTick(function () {

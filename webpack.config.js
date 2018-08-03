@@ -16,7 +16,8 @@ const config = {
     'pages/popup/popup': './pages/popup/popup.js', 
     'pages/lab/lab': './pages/lab/lab.js',
     'pages/options/options': './pages/options/options.js',
-    'pages/bookmarks/bookmarks': './pages/bookmarks/bookmarks.js'
+    'pages/bookmarks/bookmarks': './pages/bookmarks/bookmarks.js',
+    'pages/importexport/importexport': './pages/importexport/importexport.js'
   },
   output: {
     path: __dirname + '/dist',
@@ -75,6 +76,7 @@ const config = {
       {from: 'pages/lab/lab.html', to: 'pages/lab/lab.html'},
       {from: 'pages/options/options.html', to: 'pages/options/options.html'},
       {from: 'pages/bookmarks/bookmarks.html', to: 'pages/bookmarks/bookmarks.html'},
+      {from: 'pages/importexport/importexport.html', to: 'pages/importexport/importexport.html'},
       {from: 'manifest.json', to: 'manifest.json'},
       {from: 'content/*.css', to: '.'},
       {from: '_locales/**/*', to: '.'},

@@ -843,7 +843,10 @@
   "bookmarks_scan_number": {
     "message": "Scan $1",
     "description": "Label of the scan in amr bookmarks page. $1 is scan name"
+  },
+  "importexport_title": {
+    "message": "Import / Export",
+    "description": "Import Export page title"
   }
-  
   
 }
