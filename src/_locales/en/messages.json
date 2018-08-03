@@ -839,6 +839,10 @@
   "bookmarks_chapter_title": {
     "message": "Chapter $1",
     "description": "Label of the option in select in amr popup in manga details for chapters. $1 is chapter name"
+  },
+  "bookmarks_scan_number": {
+    "message": "Scan $1",
+    "description": "Label of the scan in amr bookmarks page. $1 is scan name"
   }
   
   

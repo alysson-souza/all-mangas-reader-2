@@ -2,7 +2,7 @@
     <v-container fluid grid-list-lg>
         <gallery :images="scans" :index="curScan" @close="curScan = null" :options="{closeOnSlideClick:true}"></gallery>
         <v-layout row wrap>
-            <v-flex xs12 sm6  v-bind="getSize()" v-for="bm in bookmarkList" :key="bm.key">
+            <v-flex xs12 sm6  v-bind="getSize()" v-for="bm in sortBookmarkList" :key="bm.key">
                 <v-card tile>
                     <v-card-media v-if="bm.type == 'scan'"
                         :src="bm.scanUrl"
@@ -29,7 +29,8 @@
                                 <img :src="getIcon(bm.mirror)" /> 
                                 {{bm.name}} - {{bm.chapName}}
                             </div>
-                            <span class="subtitle grey--text">{{bm.note}}</span>
+                            <p class="grey--text mb-0" v-if="bm.scanUrl">{{i18n("bookmarks_scan_number", bm.scanName)}}</p>
+                            <p class="subtitle grey--text mb-0">{{bm.note}}</p>
                         </div>
                     </v-card-title>
                 </v-card>
@@ -88,9 +89,28 @@ export default {
   },
   computed: {
     scans: function() {
-      return this.bookmarkList
+      return this.sortBookmarkList
         .filter(bm => bm.type === "scan")
         .map(bm => bm.scanUrl);
+    },
+    sortBookmarkList: function() {
+        return this.bookmarkList.sort((a, b) => {
+            let cmp = a.name.localeCompare(b.name);
+            let cmpc = a.chapName.localeCompare(b.chapName);
+            let cmps = 0;
+            if (a.scanName && b.scanName) {
+                if (typeof a.scanName === "string") {
+                    cmps = a.scanName.localeCompare(b.scanName);
+                } else if (typeof a.scanName === "number") {
+                    cmps = a.scanName - b.scanName;
+                }
+            } else if (!a.scanName && b.scanName) cmps = -1;
+            else if (a.scanName && !b.scanName) cmps = 1;
+            
+            return cmp === 0 ? (
+                cmpc === 0 ? -cmps : -cmpc
+            ) : cmp;
+        });
     }
   },
   props: ["bookmarkList", "size"],
