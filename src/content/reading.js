@@ -153,7 +153,7 @@ class Reading {
             $(img).data("finish", "1");
             $(img).css("display", "none");
 
-            //Bookmark DIV MOD ??? TODO
+            //Bookmark DIV MOD ??? MODE CANVAS NOT USED ANYMORE
         } else {
             $("#" + $(img).data("divLoad")).css("display", "none");
             $(img).data("finish", "1");
@@ -171,9 +171,9 @@ class Reading {
             //Check bookmarks
             let objBM = {
                 action: "getBookmarkNote",
-                mirror: $("#bookmarkData").data("mirror"),
-                url: $("#bookmarkData").data("url"),
-                chapUrl: $("#bookmarkData").data("chapUrl"),
+                mirror: mirrorImpl.get().mirrorName,
+                url: pageData.currentMangaURL,
+                chapUrl: pageData.currentChapterURL,
                 type: "scan",
                 scanUrl: $(img).attr("src"),
                 scanName: $(img).data("idScan")
@@ -195,9 +195,9 @@ class Reading {
                     if ($(this).data("booked")) {
                         obj = {
                             action: "deleteBookmark",
-                            mirror: $("#bookmarkData").data("mirror"),
-                            url: $("#bookmarkData").data("url"),
-                            chapUrl: $("#bookmarkData").data("chapUrl"),
+                            mirror: mirrorImpl.get().mirrorName,
+                            url: pageData.currentMangaURL,
+                            chapUrl: pageData.currentChapterURL,
                             type: "scan"
                         };
                         obj.scanUrl = $(this).attr("src");
@@ -214,15 +214,15 @@ class Reading {
                     } else {
                         obj = {
                             action: "addUpdateBookmark",
-                            mirror: $("#bookmarkData").data("mirror"),
-                            url: $("#bookmarkData").data("url"),
-                            chapUrl: $("#bookmarkData").data("chapUrl"),
+                            mirror: mirrorImpl.get().mirrorName,
+                            url: pageData.currentMangaURL,
+                            chapUrl: pageData.currentChapterURL,
                             type: "scan",
-                            name: $("#bookmarkData").data("name"),
-                            chapName: $("#bookmarkData").data("chapName")
+                            name: pageData.name,
+                            chapName: pageData.currentChapter
                         };
                         obj.scanUrl = $(this).attr("src");
-                        obj.scanName = $(this).data("scanName");
+                        obj.scanName = $(this).data("idScan");
                         obj.note = "";
 
                         $(this).css("border-color", "#999999");
@@ -236,31 +236,6 @@ class Reading {
         }
         let divNum = $("<div class='pagenumberAMR'><div class='number'>" + ($(img).data("idScan") + 1) + "</div></div>");
         divNum.appendTo($(img).closest(".spanForImg"));
-    }
-
-    clickOnBM(src) {
-        let imgScan = $(".spanForImg img[src='" + src + "']");
-        if (imgScan.size() === 0) {
-            imgScan = $(".spanForImg img[src='" + decodeURI(src) + "']");
-        }
-
-        $("#bookmarkData").data("type", "scan");
-        $("#bookmarkData").data("scanUrl", src);
-        $("#bookmarkData").data("scanName", imgScan.data("idScan"));
-
-        if (imgScan.data("note") !== undefined) {
-            $("#noteAMR").val(imgScan.data("note"));
-        } else {
-            $("#noteAMR").val("");
-        }
-        if (imgScan.data("booked")) {
-            $("#delBtnAMR").show();
-        } else {
-            $("#delBtnAMR").hide();
-        }
-
-        $("#bookmarkPop").modal({ focus: false, onShow: this.showDialog, zIndex: 10000000 });
-
     }
 
     onErrorImage(img) {

@@ -84,7 +84,7 @@
 					</v-btn>
 				</v-flex>
 				<v-flex xs4>
-					<v-btn flat icon color="yellow" @click="opentab('/pages/bookmarks.html')">
+					<v-btn flat icon color="yellow" @click="opentab('/pages/bookmarks/bookmarks.html')">
 						<v-icon>star</v-icon>
 					</v-btn>
 				</v-flex>
@@ -212,17 +212,17 @@ export default {
 };
 </script>
 <style>
-.dialog .card__title,
-.dialog .card__text {
+.v-dialog .v-card__title,
+.v-dialog .v-card__text {
   padding: 4px 16px;
 }
-.dialog .card__title {
+.v-dialog .v-card__title {
   padding-top: 10px;
 }
 .navigation-drawer {
     padding: 0;
 }
-.dialog .card--tile {
+.v-dialog .v-card--tile {
 	overflow: auto;
 }
 </style>

@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const WebpackShellPlugin = require('webpack-shell-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const normalize = function(path) {
   return path.replace(/\\/g, "/");
@@ -14,7 +15,8 @@ const config = {
     'content/back': './content/back.js',
     'pages/popup/popup': './pages/popup/popup.js', 
     'pages/lab/lab': './pages/lab/lab.js',
-    'pages/options/options': './pages/options/options.js'
+    'pages/options/options': './pages/options/options.js',
+    'pages/bookmarks/bookmarks': './pages/bookmarks/bookmarks.js'
   },
   output: {
     path: __dirname + '/dist',
@@ -44,20 +46,7 @@ const config = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        /** Excludes node_modules except webextension-polyfill which is written in es6 and not transcompiled */
-        exclude(file) {
-          const funi = normalize(file);
-          //const es6 = ["request", "tunnel-agent", "forever-agent", "tough-cookie", /*"webextension-polyfill"*/]
-
-          // webextension polyfill is transpiled by babel if you uncomment below BUT, when loaded, the extension crashes on a WeakMap...
-          /*for (let mod of es6) {
-            if (funi.startsWith(normalize(__dirname + '/node_modules/' + mod))) {
-              console.log("do not exclude " + funi)
-              return false;
-            }
-          }*/
-          return funi.startsWith(normalize(__dirname + '/node_modules'));
-        }
+        exclude: /node_modules/
       },
       {
         test: /\.css$/,
@@ -85,11 +74,13 @@ const config = {
       {from: 'pages/popup/popup.html', to: 'pages/popup/popup.html'},
       {from: 'pages/lab/lab.html', to: 'pages/lab/lab.html'},
       {from: 'pages/options/options.html', to: 'pages/options/options.html'},
+      {from: 'pages/bookmarks/bookmarks.html', to: 'pages/bookmarks/bookmarks.html'},
       {from: 'manifest.json', to: 'manifest.json'},
       {from: 'content/*.css', to: '.'},
       {from: '_locales/**/*', to: '.'},
       {from: '../node_modules/jquery/dist/jquery.min.js', to: 'lib/jquery.min.js'},
       {from: '../node_modules/jquery-modal/jquery.modal.min.js', to: 'lib/jquery.modal.min.js'}, 
+      {from: '../node_modules/jquery-modal/jquery.modal.min.css', to: 'lib/jquery.modal.min.css'},
       {from: '../node_modules/jquery.scrollto/jquery.scrollTo.min.js', to: 'lib/jquery.scrollTo.min.js'}
     ]),
     new WebpackShellPlugin({
@@ -107,11 +98,11 @@ if (process.env.NODE_ENV === 'production') {
         NODE_ENV: '"production"'
       }
     }),
-    new webpack.optimize.UglifyJsPlugin({
-      sourceMap: true,
+    new UglifyJsPlugin({
+      sourceMap: true/*,
       compress: {
         warnings: false
-      }
+      }*/
     }),
     new webpack.LoaderOptionsPlugin({
       minimize: true

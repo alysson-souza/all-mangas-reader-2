@@ -14,7 +14,10 @@ const contentScripts = [
     '/content/back.js'
 ];
 /** CSS to inject in pages containing mangas */
-const contentCss = ['/content/content.css'];
+const contentCss = [
+    '/content/content.css',
+    '/lib/jquery.modal.min.css'
+];
 
 class HandleManga {
     handle(message, sender) {

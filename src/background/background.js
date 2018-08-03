@@ -29,6 +29,12 @@ IconHelper.setBlueIcon();
     await store.dispatch('initMangasFromDB');
 
     /**
+     * Initialize bookmarks list in store from DB
+     */
+    utils.debug("Initialize bookmarks");
+    await store.dispatch('initBookmarksFromDB');
+
+    /**
      * Initiliaze extension versioning
      */
     amrInit()

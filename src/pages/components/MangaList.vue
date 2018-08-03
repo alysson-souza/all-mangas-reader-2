@@ -245,6 +245,12 @@ export default {
       key: "all",
       mutation: "setMangas"
     });
+    // initialize state for store in popup from background
+    await this.$store.dispatch("getStateFromReference", {
+      module: "bookmarks",
+      key: "all",
+      mutation: "setBookmarks"
+    });
     this.loaded = true;
     this.$emit("manga-loaded")
   }

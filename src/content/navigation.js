@@ -167,23 +167,86 @@ class Navigation {
     }
 
     /**
+     * Action for the button to add a bookmark
+     */
+    async add_bookmark_button () {
+        var obj = {
+            action: "addUpdateBookmark",
+            mirror: mirrorImpl.get().mirrorName,
+            url: pageData.currentMangaURL,
+            chapUrl: pageData.currentChapterURL,
+            type: pageData.curbookmark.type,
+            name: pageData.name,
+            chapName: pageData.currentChapter,
+            note: $("#noteAMR").val()
+        };
+        if (pageData.curbookmark.type !== "chapter") {
+            obj.scanUrl = pageData.curbookmark.scanUrl;
+            obj.scanName = pageData.curbookmark.scanName;
+            var imgScan = $(".spanForImg img[src='" + obj.scanUrl + "']");
+            imgScan.css("border-color", "#999999");
+            if ($("#noteAMR").val() !== "") {
+                imgScan.attr("title", "Note : " + $("#noteAMR").val());
+            }
+            imgScan.data("note", $("#noteAMR").val());
+            imgScan.data("booked", true);
+        } else {
+            pageData.curbookmark.note = $("#noteAMR").val();
+            if ($("#noteAMR").val() !== "") {
+                $(".bookAMR").attr("title", "Note : " + $("#noteAMR").val());
+            }
+            $(".bookAMR").attr("src", browser.extension.getURL("icons/bookmarkred.png"));
+            pageData.curbookmark.chapbooked = true;
+        }
+    
+        await browser.runtime.sendMessage(obj);
+        $.modal.close();
+    }
+
+    /**
+     * Action for the button to delete current bookmark 
+     */
+    async delete_bookmark_button () {
+        var obj = {
+            action: "deleteBookmark",
+            mirror: mirrorImpl.get().mirrorName,
+            url: pageData.currentMangaURL,
+            chapUrl: pageData.currentChapterURL,
+            type: pageData.curbookmark.type
+        };
+        if (pageData.curbookmark.type !== "chapter") {
+            obj.scanUrl = pageData.curbookmark.scanUrl;
+            var imgScan = $(".spanForImg img[src='" + obj.scanUrl + "']");
+            imgScan.css("border-color", "white");
+            imgScan.removeAttr("title");
+            imgScan.removeData("booked");
+        } else {
+            $(".bookAMR").removeAttr("title");
+            $(".bookAMR").attr("src", browser.extension.getURL("icons/bookmark.png"));
+            pageData.curbookmark.chapbooked = false;
+        }
+    
+        await browser.runtime.sendMessage(obj);
+        $.modal.close();
+    }
+
+    /**
      * 
      * @param {*} where 
      * @param {*} select 
      */
     async writeNavigation(where, select) {
-        let div = $("<div id='bookmarkPop' style='display:none'></div>"),
+        //create bookmark popup
+        let div = $("<div id='bookmarkPop' style='display:none;'></div>"),
             btn = $("<a id='saveBtnAMR' class='buttonAMR'>" + i18n("button_save") + "</a>");
         $("<h3>" + i18n("bookmark_popup_title") + "</h3>").appendTo(div);
         $("<div id='descEltAMR'></div>").appendTo(div);
         $("<table><tr><td style='vertical-align:top'><b>" + i18n("bookmark_popup_note") +  ":</b></td><td><textarea id='noteAMR' cols='50' rows='5' /></td></tr></table>").appendTo(div);
 
-        //TODO !!
-        //btn.click(add_bookmark_button);
+        btn.click(this.add_bookmark_button);
 
         let btndel = $("<a id='delBtnAMR' class='buttonAMR'>" + i18n("bookmark_popup_delete") + "</a>");
-        //TODO !!
-        //btndel.click(delete_bookmark_button);
+        btndel.click(this.delete_bookmark_button);
         btndel.appendTo(div);
         btn.appendTo(div);
 
@@ -192,20 +255,23 @@ class Navigation {
         $("a", divTip).click(function () {
             browser.runtime.sendMessage({
                 action: "opentab",
-                url: "/bookmarks.html"
+                url: "/pages/bookmarks/bookmarks.html"
             });
         });
         divTip.appendTo(div);
         div.appendTo($(document.body));
 
-        where.empty();
-        let navigation = this;
-        //Get specific read for currentManga
+
+        //Get specific read and display option for currentManga
         let mangaInfos = await browser.runtime.sendMessage({
             action: "mangaInfos",
             url: pageData.currentMangaURL
         });
-        where.each((index, w) => {
+
+        let navigation = this;
+        // create navigation bar
+        where.empty();
+        where.each(async (index, w) => {
             let selectIns;
             let $w = $(w);
 
@@ -242,23 +308,16 @@ class Navigation {
             let book = $("<img class='bookAMR' src='" + browser.extension.getURL("icons/bookmark.png") + "'/>");
             book.appendTo($w);
             book.click(function () {
-                $("#bookmarkData").data("type", "chapter");
-                $("#noteAMR").val($("#bookmarkData").data("note"));
-                if ($("#bookmarkData").data("chapbooked")) {
+                pageData.curbookmark.type = "chapter";
+                $("#noteAMR").val(pageData.curbookmark.note);
+                if (pageData.curbookmark.chapbooked) {
                     $("#delBtnAMR").show();
                 } else {
                     $("#delBtnAMR").hide();
                 }
-
-                $("#bookmarkPop").modal({
-                    focus: false,
-                    onShow: navigation.showDialog,
-                    zIndex: 10000000
-                });
+                navigation.showDialog();
             });
             if (index === 0) {
-                //TODO !! careful there is an await but no async as it is an anonymous function wrapped by jQuery --> externalize to function
-                /*
                 let objBM = {
                     action: "getBookmarkNote",
                     mirror: mirrorImpl.get().mirrorName,
@@ -268,14 +327,14 @@ class Navigation {
                 };
                 let result = await browser.runtime.sendMessage(objBM);
                 if (!result.isBooked) {
-                    $("#bookmarkData").data("note", "");
-                    $(".bookAMR").attr("title", "Click here to bookmark this chapter");
+                    pageData.curbookmark.note = "";
+                    $(".bookAMR").attr("title", i18n("content_nav_click_bm"));
                 } else {
-                    $("#bookmarkData").data("note", result.note);
-                    if (result.note !== "") $(".bookAMR").attr("title", "Note : " + result.note);
-                    $("#bookmarkData").data("chapbooked", true);
+                    pageData.curbookmark.note = result.note;
+                    if (result.note !== "") $(".bookAMR").attr("title", i18n("content_nav_note_bm", result.note));
+                    pageData.curbookmark.chapbooked = true;
                     $(".bookAMR").attr("src", browser.extension.getURL("icons/bookmarkred.png"));
-                }*/
+                }
             }
 
             let isRead = (mangaInfos === null ? false : (mangaInfos.read == 1));
@@ -403,22 +462,27 @@ class Navigation {
         }
     }
 
-    //TODO
-    showDialog(dialog) {
+    /**
+     * Show bookmarks dialog
+     */
+    showDialog() {
         let textDesc;
-        if ($("#bookmarkData").data("type") == "chapter") {
+        if (pageData.curbookmark.type == "chapter") {
             textDesc = i18n("bookmark_chapter_text", 
-                $("#bookmarkData").data("chapName"), 
-                $("#bookmarkData").data("name"), 
-                $("#bookmarkData").data("mirror"));
+                pageData.currentChapter, 
+                pageData.name, 
+                mirrorImpl.get().mirrorName);
         } else {
             textDesc = i18n("bookmark_chapter_scan", 
-                $("#bookmarkData").data("scanName"),
-                $("#bookmarkData").data("chapName"),
-                $("#bookmarkData").data("name"),
-                $("#bookmarkData").data("mirror"));
+                pageData.curbookmark.scanName,
+                pageData.currentChapter,
+                pageData.name,
+                mirrorImpl.get().mirrorName);
         }
         $("#bookmarkPop #descEltAMR").text(textDesc);
+        $("#bookmarkPop").modal({
+            modalClass: "amr-modal"
+        });
     }
 }
 export default (new Navigation) // singleton

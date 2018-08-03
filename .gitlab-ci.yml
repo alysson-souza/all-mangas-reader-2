@@ -56,7 +56,7 @@ xpi-beta:
         variables:
             - $SIGN_FF_API_KEY == null
     dependencies:
-        - build:dev # should be `build`, but that job currently returns errors
+        - build
         
 xpi-unsigned:
     stage: package
@@ -71,7 +71,7 @@ xpi-unsigned:
     only:
         - tags
     dependencies:
-        - build:dev # should be `build`, but that job currently returns errors
+        - build
         
 crx-beta:
     stage: package
@@ -83,7 +83,7 @@ crx-beta:
             - dist-zip/*.zip
         expire_in: 1 week
     dependencies:
-        - build:dev # should be `build`, but that job currently returns errors
+        - build
 
 crx:
     stage: package
@@ -97,5 +97,5 @@ crx:
     only:
         - tags
     dependencies:
-        - build:dev # should be `build`, but that job currently returns errors
+        - build
 

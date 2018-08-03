@@ -280,19 +280,19 @@ export default {
 * {
   font-size: 10pt;
 }
-.container.amr-list-line:first-child .row:first-child .flex:first-child > .card {
+.container.amr-list-line:first-child .row:first-child .flex:first-child > .v-card {
   border-top-left-radius: 5px;
 }
-.container.amr-list-line:first-child .row:first-child .flex:last-child > .card {
+.container.amr-list-line:first-child .row:first-child .flex:last-child > .v-card {
   border-top-right-radius: 5px;
 }
-.container.amr-list-line:last-child .row:last-child .flex:first-child > .card {
+.container.amr-list-line:last-child .row:last-child .flex:first-child > .v-card {
   border-bottom-left-radius: 5px;
 }
-.container.amr-list-line:last-child .row:last-child .flex:last-child > .card {
+.container.amr-list-line:last-child .row:last-child .flex:last-child > .v-card {
   border-bottom-right-radius: 5px;
 }
-.container.amr-list-line .amr-list-elt > .card {
+.container.amr-list-line .amr-list-elt > .v-card {
   padding: 4px;
 }
 .container.amr-list-line .amr-list-elt .amr-chapter-list-cont {
@@ -326,7 +326,7 @@ export default {
   height: 100% !important;
 }
 
-.progress-linear {
+.v-progress-linear {
   margin: 0;
   margin-top: -1px;
 }
@@ -390,4 +390,5 @@ select.amr-chap-sel {
 .amr-timeroff-badge {
     margin-top: 2px;
 }
+
 </style>
