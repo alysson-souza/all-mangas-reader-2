@@ -835,6 +835,14 @@
   "bookmarks_edit_note": {
     "message": "Note",
     "description": "Label of the textarea in bookmark edition"
+  },
+  "bookmarks_scan_title": {
+    "message": "Scan $2 - Chapter $1",
+    "description": "Label of the option in select in amr popup in manga details for scans. $1 is chapter name, $2 is scan name"
+  },
+  "bookmarks_chapter_title": {
+    "message": "Chapter $1",
+    "description": "Label of the option in select in amr popup in manga details for chapters. $1 is chapter name"
   }
   
   

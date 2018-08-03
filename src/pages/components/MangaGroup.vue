@@ -47,8 +47,8 @@
                 <select v-if="bookmarks.length" dark v-model="curBm" @change="openBookmark()" :class="color(2)">
                   <option v-for="(bm, key) of bookmarks" 
                           :key="key" 
-                          :value="bm.key">
-                      {{bm.title}}
+                          :value="bm.chapUrl">
+                      {{bm.type === 'scan' ? i18n("bookmarks_scan_title", bm.chapName, bm.scanName) : i18n("bookmarks_chapter_title", bm.chapName)}}
                   </option>
                 </select>
                 <span v-if="!bookmarks.length">{{i18n("list_details_no_bookmarks")}}</span>
@@ -80,6 +80,7 @@ import browser from "webextension-polyfill";
 import Manga from "./Manga";
 import Categories from "./Categories";
 import * as utils from "../utils";
+import * as amrutils from "../../amr/utils";
 
 export default {
   data() {
@@ -92,6 +93,8 @@ export default {
       newCat: "",
       // has the mangagroup been seen in the UI
       seen: false,
+      // selected bookmark
+      curBm: null,
     };
   },
   // property to load the component with --> a group of manga
@@ -120,7 +123,7 @@ export default {
     // bookmarks for this group
     bookmarks: function() {
       return this.$store.state.bookmarks.all.filter(
-        bm => this.mangas.findIndex(mg => mg.key === bm.mgkey) !== -1
+        bm => this.mangas.findIndex(mg => mg.key === amrutils.mangaKey(bm.url)) !== -1
       )
     },
     /**
@@ -234,8 +237,17 @@ export default {
       }
       this.newCat = "";
     }, 
+    /**
+     * Open search panel with search field prefilled with manga name
+     */
     searchElsewhere: function() {
       this.$emit("search-request", this.first.name);
+    },
+    /**
+     * Open bookmark in a new tab (the chapter corresponding to bookmark)
+     */
+    openBookmark: function() {
+      browser.runtime.sendMessage({ action: "opentab", url: this.curBm });
     }
   },
   // Name of the component
