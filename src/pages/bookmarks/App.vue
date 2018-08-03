@@ -7,26 +7,25 @@
       app
     >
     <v-card flat>
-      <v-list two-line>
+      <v-list two-line v-if="mangas">
         <v-list-tile @click="switchAllStates()" avatar ripple>
             <v-list-tile-content>
               <v-list-tile-title>
-                All mangas
+                {{i18n("bookmarks_allmangas")}}
               </v-list-tile-title>
-              <v-list-tile-sub-title class="text--primary">{{ nbBookmarks }} bookmarks</v-list-tile-sub-title>
+              <v-list-tile-sub-title class="text--primary">{{i18n("bookmarks_number", nbBookmarks)}}
+              </v-list-tile-sub-title>
             </v-list-tile-content>
               <v-list-tile-action>
                   <v-icon
                     v-if="hasOneUnState()"
                     color="red darken-2"
-                    @click="switchAllStates()"
                   >
                   mdi-eye
                   </v-icon>
                   <v-icon
                     v-else
                     color="grey lighten-1"
-                    @click="switchAllStates()"
                   >
                   mdi-eye-off
                   </v-icon>
@@ -39,20 +38,19 @@
               <v-list-tile-title>
                 {{ mg.name }}
               </v-list-tile-title>
-              <v-list-tile-sub-title class="text--primary">{{ mg.nb }} bookmarks</v-list-tile-sub-title>
+              <v-list-tile-sub-title class="text--primary">{{i18n("bookmarks_number", mg.nb)}}
+              </v-list-tile-sub-title>
             </v-list-tile-content>
               <v-list-tile-action>
                   <v-icon
                     v-if="!mangasUnSel[mg.key]"
                     color="red darken-2"
-                    @click="switchMgState(mg)"
                   >
                   mdi-eye
                   </v-icon>
                   <v-icon
                     v-else
                     color="grey lighten-1"
-                    @click="switchMgState(mg)"
                   >
                   mdi-eye-off
                   </v-icon>
@@ -64,6 +62,7 @@
             ></v-divider>
         </template>
       </v-list>
+      <v-card-text v-else>{{i18n("bookmarks_no_mangas")}}</v-card-text>
     </v-card>
     </v-navigation-drawer>
     <v-toolbar
@@ -75,22 +74,37 @@
     >
       <v-toolbar-title style="width: 300px" class="ml-0 pl-3">
         <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-        <v-btn icon large color="white">
+        <v-btn icon large color="white" class="hidden-sm-and-down">
           <v-avatar size="32px" tile>
             <img src="/icons/icon_32.png" alt="All Mangas Reader">
           </v-avatar>
         </v-btn>
-        <span class="hidden-sm-and-down">Bookmarks</span>
+        <span>{{i18n("bookmarks_title")}}</span>
       </v-toolbar-title>
       <v-text-field
         flat
         solo-inverted
         hide-details
         prepend-inner-icon="search"
-        label="Search"
+        :label="i18n('bookmarks_search')"
         class="hidden-sm-and-down"
+        v-model="search"
       ></v-text-field>
       <v-spacer></v-spacer>
+      <v-overflow-btn
+        :items="dropdown_size"
+        label="Select size"
+        hide-details
+        overflow
+        v-model="size"
+        class="hidden-md-and-down mr-2"
+        item-text="text"
+        item-value="value"
+        single-line
+        return-object
+        solo-inverted
+        flat
+      ></v-overflow-btn>
       <v-btn-toggle v-model="toggle_type" multiple class="transparent">
         <v-btn flat>
           <v-icon>mdi-image</v-icon>
@@ -108,7 +122,11 @@
         </v-layout>
         <v-layout v-else>
           <!-- Once loaded -->
-          <Bookmarks :bookmark-list="displayedBookmarks"/>
+          <Bookmarks :bookmark-list="displayedBookmarks" :size="size.value" v-if="nbBookmarks > 0 && displayedBookmarks.length > 0"/>
+          <h2 v-else align-center>
+            <span v-if="displayedBookmarks.length==0" v-html="i18n('bookmarks_no_bookmarks_filter')"></span>
+            <span v-else v-html="i18n('bookmarks_no_bookmarks')"></span>
+          </h2>
         </v-layout>
       </v-container>
     </v-content>
@@ -121,13 +139,21 @@ import Bookmarks from "../components/Bookmarks";
 import * as utils from "../../amr/utils";
 import Vue from 'vue';
 
+const sizes = [
+          { text: i18n("bookmarks_size_large"), value: 2 },
+          { text: i18n("bookmarks_size_medium"), value: 3 },
+          { text: i18n("bookmarks_size_small"), value: 4 }
+        ];
 export default {
   data() {
     return {
       loaded: false,
       drawer: true, /* display left panel by default */
       toggle_type: [0,1], /* select both scan and chapter by default */
-      mangasUnSel: {},
+      mangasUnSel: {}, /* list of manga state (key is formatMgName(mg.name)) */
+      search: "",
+      dropdown_size: sizes,
+      size: sizes[1],
     };
   },
   computed: {
@@ -165,8 +191,13 @@ export default {
         if (this.mangasUnSel[bmmgname]) return false;
 
         // by search text
+        let sc = utils.formatMgName(this.search)
+        let contains = false;
+        if (utils.formatMgName(bm.name).indexOf(sc) >= 0) contains = true;
+        else if (utils.formatMgName(bm.note).indexOf(sc) >= 0) contains = true;
+        else if (utils.formatMgName(bm.chapterName).indexOf(sc) >= 0) contains = true;
 
-        return true;
+        return contains;
       }); 
     },
     nbBookmarks: function() {

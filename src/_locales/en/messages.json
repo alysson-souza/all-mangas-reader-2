@@ -758,6 +758,84 @@
   "ie_import_defaultcat": {
     "message": "Default category to add to imported mangas",
     "description": "Placeholder for the input field in import section to specify a category to add on imported mangas"
+  },
+
+  "bookmarks_title": {
+    "message": "Bookmarks",
+    "description": "Title of the bookmarks page"
+  },
+  "bookmarks_search": {
+    "message": "Search",
+    "description": "Placeholder for the search text input on top of the bookmarks page"
+  },
+  "bookmarks_number": {
+    "message": "$1 bookmarks",
+    "description": "Label to display the total number of bookmarks from a manga in the left panel, $1 is the number of bookmarks"
+  },
+  "bookmarks_allmangas": {
+    "message": "All mangas",
+    "description": "Title of the first entry from the left panel representing all the mangas"
+  },
+  "bookmarks_size_large": {
+    "message": "Large",
+    "description": "Size of the bookmarks in list : large"
+  },
+  "bookmarks_size_medium": {
+    "message": "Medium",
+    "description": "Size of the bookmarks in list : medium"
+  },
+  "bookmarks_size_small": {
+    "message": "Small",
+    "description": "Size of the bookmarks in list : small"
+  },
+  "bookmarks_no_mangas": {
+    "message": "No mangas have bookmarks",
+    "description": "Label when no mangas have bookmarks"
+  },
+  "bookmarks_no_bookmarks": {
+    "message": "No bookmarks yet. To bookmark a scan, double click on the scan while reading. Bookmarked scans have a grey border. <br /> To bookmark a chapter, click on the star in the top bar while reading.",
+    "description": "Label when no bookmarks. Help about how to bookmark a scan and chapter"
+  },
+  "bookmarks_no_bookmarks_filter": {
+    "message": "No bookmarks matching your filters",
+    "description": "Label when no bookmarks match the filters"
+  },
+  "bookmarks_chapter_delete": {
+    "message": "Delete bookmarked chapter ?",
+    "description": "Popup title for bookmarked chapter deletion"
+  },
+  "bookmarks_scan_delete": {
+    "message": "Delete bookmarked scan ?",
+    "description": "Popup title for bookmarked scan deletion"
+  },
+  "bookmarks_chapter_delete_text": {
+    "message": "Are you sure to remove the bookmarked chapter from $1 chapter $2 ?",
+    "description": "Popup text for bookmarked chapter deletion. $1 is manga name, $2 is chapter name"
+  },
+  "bookmarks_scan_delete_text": {
+    "message": "Are you sure to remove the bookmarked scan from $1 chapter $2, scan $3 ?",
+    "description": "Popup text for bookmarked chapter deletion. $1 is manga name, $2 is chapter name, $3 is scan name"
+  },
+  "bookmarks_chapter_edit": {
+    "message": "Edit bookmarked chapter ?",
+    "description": "Popup title for bookmarked chapter edition"
+  },
+  "bookmarks_scan_edit": {
+    "message": "Edit bookmarked scan ?",
+    "description": "Popup title for bookmarked scan edition"
+  },
+  "bookmarks_chapter_edit_text": {
+    "message": "Update note of bookmarked chapter from $1 chapter $2",
+    "description": "Popup text for bookmarked chapter edition. $1 is manga name, $2 is chapter name"
+  },
+  "bookmarks_scan_edit_text": {
+    "message": "Update note of bookmarked scan from $1 chapter $2, scan $3",
+    "description": "Popup text for bookmarked chapter edition. $1 is manga name, $2 is chapter name, $3 is scan name"
+  },
+  "bookmarks_edit_note": {
+    "message": "Note",
+    "description": "Label of the textarea in bookmark edition"
   }
+  
   
 }
