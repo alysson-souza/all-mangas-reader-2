@@ -21,12 +21,11 @@
                         <v-btn @click.native="onFocus" color="primary">{{i18n("ie_import_pickfile")}}</v-btn>
                         <input ref="fileInput" type="file" @change="handleFileChange"/>
                     </label>
-                    <v-text-field
+                    <v-textarea
                         v-model="importstr"
                         :label="i18n('ie_import_placeholder')"
-                        multi-line
                         class="import-text txtfield"
-                    ></v-text-field>
+                    ></v-textarea>
                     <span v-html="importmessage"></span>
                     <v-text-field v-if="hasmgs" v-model="importcat" :label="i18n('ie_import_defaultcat')" class="txtfield"></v-text-field>
                     <v-btn 
