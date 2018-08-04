@@ -151,7 +151,7 @@ const actions = {
             utils.debug("getMangaListOfChapters : get implementation of " + manga.mirror);
             let impl = await mirrorsImpl.getImpl(manga.mirror);
             //New chapter is not in chapters list --> Reload chapter list
-            if (impl !== null) {
+            if (impl) {
                 utils.debug("getMangaListOfChapters : implementation found, get list of chapters for manga " + manga.name + " key " + manga.key);
                 impl.getListChaps(manga.url, manga.name, manga, function (lst) {
                     resolve(lst);

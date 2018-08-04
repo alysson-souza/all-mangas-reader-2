@@ -58,8 +58,10 @@ class HandleLab {
                         id = id + i;
                         $(div).attr("id", id);
                         document.body.appendChild(div);
-                        document.getElementById(id).contentWindow.document.documentElement.innerHTML = resp.data;
-                        $(document.getElementById(id).contentWindow.document).ready(() => {
+                        // was $(document.getElementById(id).contentWindow.document).ready(...); but ready method was removed from jQuery 3.x --> do it the js way
+                        let ldoc = document.getElementById(id).contentWindow.document;
+                        ldoc.documentElement.innerHTML = resp.data;
+                        let readyCall = () => {
                             //once the iframe is ready
                             if (message.task === "containScans") {
                                 resolve(
@@ -90,7 +92,13 @@ class HandleLab {
                                 resolve(where.length);
                             }
                             $("#" + id).remove();
-                        });
+                        }
+                        if (ldoc.readyState === "complete" ||
+                            (ldoc.readyState !== "loading" && !ldoc.documentElement.doScroll)) {
+                            readyCall();
+                        } else {
+                            ldoc.addEventListener("DOMContentLoaded", readyCall);
+                        }
                     } catch (e) {
                         reject(e);
                     }

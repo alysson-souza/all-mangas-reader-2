@@ -288,7 +288,7 @@ class Navigation {
             if (selectIns.children("option:selected").next().length > 0) {
                 prevUrl = selectIns.children("option:selected").next().val();
             }
-            if (prevUrl !== null) {
+            if (prevUrl !== undefined) {
                 let aprev = $("<a id='pChapBtn" + index + "' class='buttonAMR' href='" + prevUrl + "' onclick='window.location.href = this.href; window.location.reload();'>" + i18n("content_nav_previous") + "</a>");
                 aprev.appendTo($w);
             }
@@ -298,7 +298,7 @@ class Navigation {
             if (selectIns.children("option:selected").prev().length > 0) {
                 nextUrl = selectIns.children("option:selected").prev().val();
             }
-            if (nextUrl !== null) {
+            if (nextUrl !== undefined) {
                 let anext = $("<a id='nChapBtn" + index + "' class='buttonAMR' href='" + nextUrl + "' onclick='window.location.href = this.href; window.location.reload();'>" + i18n("content_nav_next") + "</a>");
                 anext.appendTo($w);
                 pageData.add("nexturltoload", nextUrl);
@@ -337,9 +337,9 @@ class Navigation {
                 }
             }
 
-            let isRead = (mangaInfos === null ? false : (mangaInfos.read == 1));
+            let isRead = (!mangaInfos ? false : (mangaInfos.read == 1));
             let imgread = $("<img class='butamrread' src='" + browser.extension.getURL("icons/" + (!isRead ? "read_stop.png" : "read_play.png")) + "' title='" + (!isRead ? i18n("content_nav_stopfollow") : i18n("content_nav_follow")) + "' />");
-            if (mangaInfos === null && options.addauto === 0) {
+            if (!mangaInfos && options.addauto === 0) {
                 imgread.hide();
             }
             imgread.appendTo($w);
@@ -368,7 +368,7 @@ class Navigation {
 
             //Get specific mode for currentManga
             let curmode = -1;
-            if (mangaInfos !== null && mangaInfos.display) {
+            if (mangaInfos && mangaInfos.display) {
                 curmode = mangaInfos.display;
             }
             //If not use res.mode
@@ -408,7 +408,7 @@ class Navigation {
             });
 
             let imgstop = $("<img class='butamrstop' src='" + browser.extension.getURL("icons/stop.gif") + "' title='" + i18n("content_nav_mark_read") + "' />");
-            if (mangaInfos === null && options.addauto === 0) {
+            if (!mangaInfos && options.addauto === 0) {
                 imgstop.hide();
             }
             imgstop.appendTo($w);
@@ -429,7 +429,7 @@ class Navigation {
                 }
             });
 
-            if (options.addauto === 0 && mangaInfos === null) {
+            if (options.addauto === 0 && !mangaInfos) {
                 let imgadd = $("<img src='" + browser.extension.getURL("icons/add.png") + "' title='" + i18n("content_nav_add_list") + "' />");
                 imgadd.appendTo($w);
                 imgadd.data("mangainfo", pageData);
@@ -457,7 +457,7 @@ class Navigation {
     }
 
     addTrailingLastChap(where) {
-        if ($("#nChapBtn0").size() === 0) {
+        if ($("#nChapBtn0").length === 0) {
             $("<div style=\"width:100%; background-color:white; border-radius:5px;margin-top:15px;margin-bottom:15px;\"><img src=\"" + browser.extension.getURL("icons/warn.png") + "\" style=\"vertical-align:middle;margin-right:10px;\"/><span style=\"font-weight:bold;font-size:12pt;color:black;vertical-align:middle;\">" + i18n("content_nav_last_chap") + "</span></div>").appendTo(where);
         }
     }

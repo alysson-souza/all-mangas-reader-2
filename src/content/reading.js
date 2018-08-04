@@ -25,7 +25,7 @@ class Reading {
             //Get specific mode for currentManga
             let curmode = -1;
             let specific = await browser.runtime.sendMessage({ action: "mangaInfos", url: pageData.currentMangaURL });
-            if (specific !== null && specific.display) {
+            if (specific && specific.display) {
                 curmode = specific.display;
             }
             //If not use default options mode
@@ -181,7 +181,7 @@ class Reading {
             let result = await browser.runtime.sendMessage(objBM);
             if (result.isBooked) {
                 let imgScan = $(".spanForImg img[src='" + result.scanSrc + "']");
-                if (imgScan.size() === 0) {
+                if (imgScan.length === 0) {
                     imgScan = $(".spanForImg img[src='" + decodeURI(result.scanSrc) + "']");
                 }
                 imgScan.data("note", result.note);
@@ -271,8 +271,8 @@ class Reading {
                     //== loadImage
                     $(nimg).data("urlToLoad", url);
                     $(nimg).css("border", "5px solid white");
-                    $(nimg).load(() => reading.onLoadImage(nimg));
-                    $(nimg).error(() => reading.onErrorImage(nimg));
+                    $(nimg).on("load", () => reading.onLoadImage(nimg));
+                    $(nimg).on("error", () => reading.onErrorImage(nimg));
                     mirrorImpl.get().getImageFromPageAndWrite(util.removeProtocol(url), nimg, document, window.location.href);
 
                     $(nimg).appendTo(spanner);
@@ -303,8 +303,8 @@ class Reading {
                 $(imgSave).data("urlToLoad", $(img).data("urlToLoad"));
                 $(imgSave).css("border", "5px solid white");
                 $(imgSave).addClass("imageAMR");
-                $(imgSave).load(() => reading.onLoadImage(imgSave));
-                $(imgSave).error(() => reading.onErrorImage(imgSave));
+                $(imgSave).on("load", () => reading.onLoadImage(imgSave));
+                $(imgSave).on("error", () => reading.onErrorImage(imgSave));
                 mirrorImpl.get().getImageFromPageAndWrite($(img).data("urlToLoad"), imgSave, document, window.location.href);
 
                 $(img).after($(imgSave));
@@ -323,8 +323,8 @@ class Reading {
             $(img).data("resize", options.resize);
             $(img).data("modedisplay", mode);
 
-            $(img).load(() => this.onLoadImage(img));
-            $(img).error(() => this.onErrorImage(img));
+            $(img).on("load", () => this.onLoadImage(img));
+            $(img).on("error", () => this.onErrorImage(img));
         }
 
         if (options.imgorder == 1) {
@@ -413,7 +413,7 @@ class Reading {
         let isEven = true;
         let reading = this;
 
-        util.debug("Transformation book -> Nombre d'images :" + $(".imageAMR", where).size());
+        util.debug("Transformation book -> Nombre d'images :" + $(".imageAMR", where).length);
         $(".imageAMR", where).sort(function (a, b) {
             let nba = $(a).closest(".spanForImg").data("order");
             let nbb = $(b).closest(".spanForImg").data("order");
@@ -434,7 +434,7 @@ class Reading {
                 }
                 isEven = true;
             } else {
-                if (index == $(".imageAMR", where).size() - 1 && isEven) {
+                if (index == $(".imageAMR", where).length - 1 && isEven) {
                     posImg[index] = 2;
                 } else {
                     posImg[index] = isEven ? 0 : 1;
@@ -574,8 +574,8 @@ class Reading {
                 $(img).data("urltoload", lst[i]);
                 $(img).data("urlnext", urlNext);
                 $(img).data("total", lst.length);
-                $(img).load(() => this.onLoadNextImage());
-                $(img).error(() => this.onErrorNextImage());
+                $(img).on("load", () => this.onLoadNextImage());
+                $(img).on("error", () => this.onErrorNextImage());
                 mirrorImpl.get().getImageFromPageAndWrite(lst[i], img, document, urlNext);
             }
         } else {
@@ -587,7 +587,7 @@ class Reading {
         let lstbtn = [];
         let id = "nChapBtn";
         let i = 0;
-        while ($("#" + id + i).size() > 0) {
+        while ($("#" + id + i).length > 0) {
             lstbtn[lstbtn.length] = $("#" + id + i);
             i++;
         }
@@ -599,7 +599,7 @@ class Reading {
                 $(this).data("nbloaded", 1);
             }
             let prog;
-            if ($(".AMRprogress", $(this)).size() === 0) {
+            if ($(".AMRprogress", $(this)).length === 0) {
                 prog = $("<span class='buttonAMR AMRprogress'></span>");
                 prog.css("position", "relative");
                 prog.css("top", "0");

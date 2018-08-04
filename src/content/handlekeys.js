@@ -9,18 +9,8 @@ class HandleKey {
      * Initialize keys handling
      */
     init() {
-        //disable default websites shortcuts (mangafox)
-        document.onkeypress = null;
-        document.onkeydown = null;
-        document.onkeyup = null;
-        $(document).unbind('keyup');
-        $(document).unbind('keydown');
-        $(document).unbind('keypress');
-        $(document).keyup((e) => e.stopPropagation());
-        $(document).delegate('*', 'keyup', (e) => e.stopPropagation());
-
         let self = this;
-        $(document).keydown(function (e) {
+        let regiterKeys = (e) => {
             let t = self.getTarget(e);
             if (!((t.type && t.type == "text") || t.nodeName.toLowerCase() == "textarea")) {
                 if (e.which == 87) { //W
@@ -36,12 +26,12 @@ class HandleKey {
                     self.zoomout();
                 }
                 if (e.which == 66) { //b
-                    if ($("#pChapBtn0").size() > 0) {
+                    if ($("#pChapBtn0").length > 0) {
                         window.location.href = $("#pChapBtn0").attr("href");
                     }
                 }
                 if (e.which == 78) { //n
-                    if ($("#nChapBtn0").size() > 0) {
+                    if ($("#nChapBtn0").length > 0) {
                         window.location.href = $("#nChapBtn0").attr("href");
                     }
                 }
@@ -60,7 +50,7 @@ class HandleKey {
                         self.lastpresstime = Date.now();
                         //Get first visible image
                         curimg = self.whichImageIsFirst(true);
-                        if (curimg !== null && curimg.size() > 0) {
+                        if (curimg !== null && curimg.length > 0) {
                             //Check if top and bottom of this image are visible
                             viss = self.topbotVis(curimg);
                             //If top not visible
@@ -105,14 +95,14 @@ class HandleKey {
                         } else {
                             if (window.pageYOffset >= document.documentElement.scrollHeight - window.innerHeight) {
                                 if (options.rightnext == 1) {
-                                    if ($("#nChapBtn0").size() > 0) {
+                                    if ($("#nChapBtn0").length > 0) {
                                         window.location.href = $("#nChapBtn0").attr("href");
                                     }
                                 }
                             }
                             //Get first visible image
                             curimg = self.whichImageIsFirst(false);
-                            if (curimg !== null && curimg.size() > 0) {
+                            if (curimg !== null && curimg.length > 0) {
                                 //Check if top and bottom of this image are visible
                                 viss = self.topbotVis(curimg[0]);
                                 //If bottom not visible
@@ -122,7 +112,7 @@ class HandleKey {
                                 } else {
                                     //Calculate next scan id
                                     nb = curimg.data("order") + 1;
-                                    if (nb >= $(".spanForImg").size()) {
+                                    if (nb >= $(".spanForImg").length) {
                                         //Current scan was last scan -> move to bottom of page
                                         $.scrollTo($(document.body), 800, { queue: true, offset: { top: document.body.offsetHeight } });
                                     } else {
@@ -138,10 +128,19 @@ class HandleKey {
                         }
                         e.preventDefault();
                         e.stopPropagation();
+                        e.stopImmediatePropagation()
                     }
                 }
             }
-        });
+        }
+        window.addEventListener('keydown', regiterKeys, true);
+
+        //disable default websites shortcuts (fanfox)
+        let stopProp = (e) => e.stopImmediatePropagation();
+        if (options.lrkeys == 1) {
+            window.addEventListener('keyup', stopProp, true);
+            window.addEventListener('keypress', stopProp, true);
+        }
 
         let timer = window.setInterval(function () {
             if (/loaded|complete/.test(document.readyState)) {

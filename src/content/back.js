@@ -71,7 +71,7 @@ window["registerMangaObject"] = async function (mirrorName, object) {
 /** Function called through executeScript when context menu button invoked */
 window["clickOnBM"] = function(src) {
     let imgScan = $(".spanForImg img[src='" + src + "']");
-    if (imgScan.size() === 0) {
+    if (imgScan.length === 0) {
         imgScan = $(".spanForImg img[src='" + decodeURI(src) + "']");
     }
 
