@@ -13,7 +13,7 @@ The first version, created in 2012, is no more maintained due to poor code desig
 All Mangas Reader V2 has been created to solve the two main issues of the V1 : 
  - Chrome removed AMR from its store because of terms service violation. Since then, a lot of workarounds have been found to install AMR, but it is quite complicated to install.
 
-All Mangas Reader V2 is supported by **Firefox, Opera**, and Edge once it will implement properly native Promises
+All Mangas Reader V2 is supported by **Firefox, Chrom(ium/e), Opera**, and Edge once it will implement properly native Promises
 
  - The code was really difficult to maintain because of really long and unreadable files full of jQuery code without comments
 
@@ -21,13 +21,15 @@ All Mangas Reader V2 is supported by **Firefox, Opera**, and Edge once it will i
 
 
 ## Installation
-All Mangas Reader V2 has been package for Firefox and Opera. **These releases are just for test purpose and does not contain automatic update yet, you will have to uninstall / reinstall it to change version**
+All Mangas Reader V2 has been package for Firefox, Chrom(ium/e) and Opera. You can find the links to download the stable version on **[All Mangas Reader's main website](https://v2.allmangasreader.com)**
 
-Download :
- - **[All Mangas Reader V2 for Firefox](https://release.allmangasreader.com/all-mangas-reader-2.0.0.xpi)**
- - **[All Mangas Reader V2 for Opera](https://release.allmangasreader.com/all-mangas-reader-2.0.0.crx)**
+Download Beta Channel:
+ - **[All Mangas Reader Beta V2 for Firefox](https://release.allmangasreader.com/all-mangas-reader-beta-latest.xpi)**
+ - **[All Mangas Reader Beta V2 for Chrom(ium/e) and Opera](https://release.allmangasreader.com/all-mangas-reader-beta-latest.crx)**
 
-Google Chrome disabled extensions which are not reference in their store. All Mangas Reader does not comply with their terms of services and **will not be able to be published on Google's platform**
+Google Chrome disabled extensions which are not referenced in their store. All Mangas Reader does not comply with their terms of services and **will not be able to be published on Google's platform**
+
+If you really want to have it in Chrom(ium/e), you will have to either follow the developer installation or to unzip the crx file and follow the developer installation / chrome instructions. Note that as it will be for development purpose, you may loose your local database doing that...
 
 ## Developer installation
 First clone this repository locally and install it using `npm install` command or just `yarn` if you prefer (if you don't have npm, [install it](https://www.npmjs.com/get-npm), you will need it or [yarn](https://yarnpkg.com)).
@@ -38,7 +40,7 @@ This will create the deployable extension in the `dist` folder.
 
 Once done, you can install the extension as a temporary extension in the main browsers (please note that browsers may delete the associated database when the extension is temporal)
 
-### Chrome
+### Chrom(ium/e)
 Go to [chrome://extensions/](chrome://extensions/) and switch to developer mode (in the top right hand corner). Click on **LOAD UNPACKED** and select the `dist` folder of your local repository. That's done !
 
 ### Firefox
@@ -77,11 +79,22 @@ You can also work on the [wiki](https://gitlab.com/all-mangas-reader/all-mangas-
  - vuex-shared-mutations : a great plugin for Vuex which allows to synchronize vuex data model through different instances of Vue using localStorage events
  - webextension-polyfill : web extension API has been normalize and is implemented in Chrome, Firefox, Edge, ... but with still a few differences, thanks to this polyfill, the code works everywhere
  - axios : for xhr
- - jQuery : jQuery is still there, to manipulate DOM, it's still the best. Mirrors implementations are based on jQuery and the content script uses it as well. We are stuck in jQuery 2.x.x because a lot of mirrors implementations are still using jQuery functions deprecated in jQuery 3.x (like size())
+ - jQuery : jQuery is still there, to manipulate DOM, it's still the best. Mirrors implementations are based on jQuery and the content script uses it as well.
  - regenerator-runtime : the original Facebook plugin to execute ES6 async / await code. When Babel compiles async / await code, it generates references to this plugin. This one is way much lighter than the babel-polyfill which can do the same (and more) and is the reference implementation for babel as well.
 
 ## Dev dependencies
 All Mangas Reader V2 is based on Webpack to compile the code. It uses Babel to compile EcmaScript 6 syntax, which is much more readable.
+
+## Release version
+**For repository admins only**
+
+Beta channel is automatically updated on each commit.
+
+Process to release a stable version : 
+ - commit version change with message 'Update version to x.y.z before tag NO-CI' : CI will run on gitlab but webhook (which generates xpi and crx server side) will not consider artefacts as a version because of the 'NO-CI' in commit message, do not forget NO-CI, if not, beta Vx.y.z.157 will be generated and will prevent next commits to create valid versions because after the version is tagged, beta version will start at 1 after the first commit after tag
+ - tag version on develop (will generate beta for Vx.y.z.0)
+ - merge develop into master
+ - tag version on master (will generate release Vx.y.z when the tag CI runs on master)
 
 ## License
 All Mangas Reader is licensed under GPL V3

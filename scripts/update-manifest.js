@@ -33,7 +33,7 @@ if (process.argv.includes("-chrome")) {
     ext.applications = ext.applications || {}
     if (!isBeta) {
         ext.applications.gecko = {
-            "id": "master@allmangasreader.com" //no update url, distributed on AMO
+            "id": "stable@allmangasreader.com" //no update url, distributed on AMO
         }
     } else {
         ext.applications.gecko = {
