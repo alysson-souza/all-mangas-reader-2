@@ -80,159 +80,83 @@ class Reading {
         this.waitForImages(where, mode, title);
     }
     async onLoadImage(img) {
-        if ($(img).data("canvasId")) {
-            // This mode is no more used... was used when some websites did not display a scan to read but a canvas with parts of image on it...
-            let width, height;
-            let ancCan = $("#" + $(img).data("canvasId"));
+        $("#" + $(img).data("divLoad")).css("display", "none");
+        $(img).data("finish", "1");
+        $(img).css("margin-right", "10px");
+        if ($(img).attr("src") != browser.extension.getURL("icons/imgerror.png")) {
+            $(img).css("border", "5px solid white");
+            $(img).css("margin-bottom", "50px");
+        }
 
-            let resize = $(img).data("resize");
-            let mode = $(img).data("modedisplay");
+        //Create contextual menu to bookmark image
+        browser.runtime.sendMessage({
+            action: "createContextMenu",
+            lstUrls: [$(img).attr("src")]
+        });
+        //Check bookmarks
+        let objBM = {
+            action: "getBookmarkNote",
+            mirror: mirrorImpl.get().mirrorName,
+            url: pageData.currentMangaURL,
+            chapUrl: pageData.currentChapterURL,
+            type: "scan",
+            scanUrl: $(img).attr("src"),
+            scanName: $(img).data("idScan")
+        };
+        let result = await browser.runtime.sendMessage(objBM);
+        if (result.isBooked) {
+            let imgScan = $(".spanForImg img[src='" + result.scanSrc + "']");
+            if (imgScan.length === 0) {
+                imgScan = $(".spanForImg img[src='" + decodeURI(result.scanSrc) + "']");
+            }
+            imgScan.data("note", result.note);
+            imgScan.data("booked", 1);
+            if (result.note !== "") imgScan.attr("title", "Note : " + result.note);
+            imgScan.css("border-color", "#999999");
+        }
+        if (options.autobm) {
+            $(img).dblclick(function () {
+                let obj;
+                if ($(this).data("booked")) {
+                    obj = {
+                        action: "deleteBookmark",
+                        mirror: mirrorImpl.get().mirrorName,
+                        url: pageData.currentMangaURL,
+                        chapUrl: pageData.currentChapterURL,
+                        type: "scan"
+                    };
+                    obj.scanUrl = $(this).attr("src");
 
-            if (resize == 1) {
-                if (ancCan.width() < ancCan.height()) {
-                    if (mode != 1) {
-                        if (ancCan.width() > (screen.width - 200) / 2) {
-                            width = (screen.width - 200) / 2;
-                        } else {
-                            width = ancCan.width();
-                        }
-                    } else {
-                        if (ancCan.width() > (screen.width - 200)) {
-                            width = (screen.width - 200);
-                        } else {
-                            width = ancCan.width();
-                        }
-                    }
+                    $(this).css("border-top-color", "white");
+                    $(this).css("border-right-color", "white");
+                    $(this).css("border-bottom-color", "white");
+                    $(this).css("border-left-color", "white");
+                    $(this).removeAttr("title");
+                    $(this).removeData("booked");
+                    $(this).removeData("note");
+
+                    browser.runtime.sendMessage(obj);
                 } else {
-                    if (ancCan.width() > (screen.width - 200)) {
-                        width = (screen.width - 200);
-                    } else {
-                        width = ancCan.width();
-                    }
-                }
-            } else {
-                width = ancCan.width();
-            }
-            height = (width / ancCan.width()) * ancCan.height();
+                    obj = {
+                        action: "addUpdateBookmark",
+                        mirror: mirrorImpl.get().mirrorName,
+                        url: pageData.currentMangaURL,
+                        chapUrl: pageData.currentChapterURL,
+                        type: "scan",
+                        name: pageData.name,
+                        chapName: pageData.currentChapter
+                    };
+                    obj.scanUrl = $(this).attr("src");
+                    obj.scanName = $(this).data("idScan");
+                    obj.note = "";
 
-            //DIV VERSION
-            $("div", ancCan).add($("div > img", ancCan)).each(function (index) {
-                //FIX CONFLICT WITH AdBlock -->
-                let wori = $(this).width();
-                if (wori === 0) {
-                    //console.log("zero width img to " + $(this).data("width"));
-                    wori = $(this).data("width");
-                }
-                let hori = $(this).height();
-                if (hori === 0) {
-                    //console.log("zero height img to " + $(this).data("height"));
-                    hori = $(this).data("height");
-                }
-                //---
-                let w = Math.floor((width / ancCan.width()) * wori) + 1;
-                let h = Math.floor((width / ancCan.width()) * hori) + 1;
+                    $(this).css("border-color", "#999999");
+                    $(this).data("note", "");
+                    $(this).data("booked", 1);
 
-                $(this).css("width", w + 'px');
-                $(this).css("height", h + 'px');
-                if ($(this).css("position") == "absolute") {
-                    let l = Math.floor((width / ancCan.width()) * $(this).position().left);
-                    if (l !== 0) l++;
-                    let t = Math.floor((width / ancCan.width()) * $(this).position().top);
-                    if (t !== 0) t++;
-                    $(this).css("left", l + 'px');
-                    $(this).css("top", t + 'px');
+                    browser.runtime.sendMessage(obj);
                 }
             });
-
-            $(ancCan).css("width", width + 'px');
-            $(ancCan).css("height", height + 'px');
-
-            $(ancCan).css("margin-bottom", "50px");
-            $(ancCan).css("border", "5px solid white");
-            $("#" + $(img).data("divLoad")).css("display", "none");
-            $(img).data("finish", "1");
-            $(img).css("display", "none");
-
-            //Bookmark DIV MOD ??? MODE CANVAS NOT USED ANYMORE
-        } else {
-            $("#" + $(img).data("divLoad")).css("display", "none");
-            $(img).data("finish", "1");
-            $(img).css("margin-right", "10px");
-            if ($(img).attr("src") != browser.extension.getURL("icons/imgerror.png")) {
-                $(img).css("border", "5px solid white");
-                $(img).css("margin-bottom", "50px");
-            }
-
-            //Create contextual menu to bookmark image
-            browser.runtime.sendMessage({
-                action: "createContextMenu",
-                lstUrls: [$(img).attr("src")]
-            });
-            //Check bookmarks
-            let objBM = {
-                action: "getBookmarkNote",
-                mirror: mirrorImpl.get().mirrorName,
-                url: pageData.currentMangaURL,
-                chapUrl: pageData.currentChapterURL,
-                type: "scan",
-                scanUrl: $(img).attr("src"),
-                scanName: $(img).data("idScan")
-            };
-            let result = await browser.runtime.sendMessage(objBM);
-            if (result.isBooked) {
-                let imgScan = $(".spanForImg img[src='" + result.scanSrc + "']");
-                if (imgScan.length === 0) {
-                    imgScan = $(".spanForImg img[src='" + decodeURI(result.scanSrc) + "']");
-                }
-                imgScan.data("note", result.note);
-                imgScan.data("booked", 1);
-                if (result.note !== "") imgScan.attr("title", "Note : " + result.note);
-                imgScan.css("border-color", "#999999");
-            }
-            if (options.autobm) {
-                $(img).dblclick(function () {
-                    let obj;
-                    if ($(this).data("booked")) {
-                        obj = {
-                            action: "deleteBookmark",
-                            mirror: mirrorImpl.get().mirrorName,
-                            url: pageData.currentMangaURL,
-                            chapUrl: pageData.currentChapterURL,
-                            type: "scan"
-                        };
-                        obj.scanUrl = $(this).attr("src");
-
-                        $(this).css("border-top-color", "white");
-                        $(this).css("border-right-color", "white");
-                        $(this).css("border-bottom-color", "white");
-                        $(this).css("border-left-color", "white");
-                        $(this).removeAttr("title");
-                        $(this).removeData("booked");
-                        $(this).removeData("note");
-
-                        browser.runtime.sendMessage(obj);
-                    } else {
-                        obj = {
-                            action: "addUpdateBookmark",
-                            mirror: mirrorImpl.get().mirrorName,
-                            url: pageData.currentMangaURL,
-                            chapUrl: pageData.currentChapterURL,
-                            type: "scan",
-                            name: pageData.name,
-                            chapName: pageData.currentChapter
-                        };
-                        obj.scanUrl = $(this).attr("src");
-                        obj.scanName = $(this).data("idScan");
-                        obj.note = "";
-
-                        $(this).css("border-color", "#999999");
-                        $(this).data("note", "");
-                        $(this).data("booked", 1);
-
-                        browser.runtime.sendMessage(obj);
-                    }
-                });
-            }
         }
         let divNum = $("<div class='pagenumberAMR'><div class='number'>" + ($(img).data("idScan") + 1) + "</div></div>");
         divNum.appendTo($(img).closest(".spanForImg"));
@@ -444,7 +368,8 @@ class Reading {
         });
 
         let parity = nbSinglePages % 2;
-
+        let viewportWidthToUse = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - 200;
+        
         $(where).css("text-align", "center");
         let evenImg = null;
         let tableRes = $("<table class='AMRtable'></table>");
@@ -478,7 +403,7 @@ class Reading {
                     evenImg.attr("colspan", "2");
                     evenImg = null;
                     if (options.resize == 1) {
-                        if (!divMode) $("img", trForEven).css("max-width", (screen.width - 200) + 'px');
+                        if (!divMode) $("img", trForEven).css("max-width", viewportWidthToUse + 'px');
                     }
                 }
                 trTmp = $("<tr></tr>");
@@ -486,7 +411,7 @@ class Reading {
                 td.attr("colspan", "2");
                 td.appendTo(trTmp);
                 if (options.resize == 1) {
-                    if (!divMode) $("img", trTmp).css("max-width", (screen.width - 200) + 'px');
+                    if (!divMode) $("img", trTmp).css("max-width", viewportWidthToUse + 'px');
                 }
             } else {
                 if (evenImg !== null) {
@@ -504,7 +429,7 @@ class Reading {
                         evenImg.css("text-align", "left");
                     }
                     if (options.resize == 1) {
-                        if (!divMode) $("img", trTmp).css("max-width", ((screen.width - 200) / 2) + 'px');
+                        if (!divMode) $("img", trTmp).css("max-width", (viewportWidthToUse / 2) + 'px');
                     }
                     evenImg = null;
                 } else {
@@ -516,7 +441,7 @@ class Reading {
                         td.attr("colspan", "2");
                         td.appendTo(trTmp);
                         if (options.resize == 1) {
-                            if (!divMode) $("img", trTmp).css("max-width", ((screen.width - 200) / 2) + 'px');
+                            if (!divMode) $("img", trTmp).css("max-width", (viewportWidthToUse / 2) + 'px');
                         }
                     }
                 }
@@ -547,7 +472,7 @@ class Reading {
                 evenImg.css("text-align", "left");
             }
             if (options.resize == 1) {
-                if (!divMode) $("img", trTmp).css("max-width", ((screen.width - 200) / 2) + 'px');
+                if (!divMode) $("img", trTmp).css("max-width", (viewportWidthToUse / 2) + 'px');
             }
             evenImg = null;
         }
