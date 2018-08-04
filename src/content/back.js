@@ -15,8 +15,7 @@ import HandleKeys from './handlekeys';
 /**
  * Every mirror implementation ends by a call to registerMangaObject
  * This function is defined here.
- * This script is injected by background script if the default content script (testcontent.js)
- * found that the page could be a manga page. 
+ * This script is injected by background script if the page could be a manga page. 
  * Once loaded, the mirror implementation is called and results in this function call
  */
 window["registerMangaObject"] = async function (mirrorName, object) {

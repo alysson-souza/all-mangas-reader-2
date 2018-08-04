@@ -11,7 +11,6 @@ const config = {
   context: __dirname + '/src',
   entry: {
     'background/background': './background/background.js',
-    'content/testcontent': './content/testcontent.js',
     'content/back': './content/back.js',
     'pages/popup/popup': './pages/popup/popup.js', 
     'pages/lab/lab': './pages/lab/lab.js',
