@@ -183,13 +183,15 @@ class Navigation {
         if (pageData.curbookmark.type !== "chapter") {
             obj.scanUrl = pageData.curbookmark.scanUrl;
             obj.scanName = pageData.curbookmark.scanName;
-            var imgScan = $(".spanForImg img[src='" + obj.scanUrl + "']");
-            imgScan.css("border-color", "#999999");
-            if ($("#noteAMR").val() !== "") {
-                imgScan.attr("title", "Note : " + $("#noteAMR").val());
+            let imgScan = util.getScan(obj.scanUrl);
+            if (imgScan && imgScan.length > 0) {
+                imgScan.css("border-color", "#999999");
+                if ($("#noteAMR").val() !== "") {
+                    imgScan.attr("title", "Note : " + $("#noteAMR").val());
+                }
+                imgScan.data("note", $("#noteAMR").val());
+                imgScan.data("booked", 1);
             }
-            imgScan.data("note", $("#noteAMR").val());
-            imgScan.data("booked", true);
         } else {
             pageData.curbookmark.note = $("#noteAMR").val();
             if ($("#noteAMR").val() !== "") {
@@ -198,7 +200,7 @@ class Navigation {
             $(".bookAMR").attr("src", browser.extension.getURL("icons/bookmarkred.png"));
             pageData.curbookmark.chapbooked = true;
         }
-    
+
         await browser.runtime.sendMessage(obj);
         $.modal.close();
     }
@@ -216,10 +218,12 @@ class Navigation {
         };
         if (pageData.curbookmark.type !== "chapter") {
             obj.scanUrl = pageData.curbookmark.scanUrl;
-            var imgScan = $(".spanForImg img[src='" + obj.scanUrl + "']");
-            imgScan.css("border-color", "white");
-            imgScan.removeAttr("title");
-            imgScan.removeData("booked");
+            let imgScan = util.getScan(obj.scanUrl);
+            if (imgScan && imgScan.length > 0) {
+                imgScan.css("border-color", "white");
+                imgScan.removeAttr("title");
+                imgScan.removeData("booked");
+            }
         } else {
             $(".bookAMR").removeAttr("title");
             $(".bookAMR").attr("src", browser.extension.getURL("icons/bookmark.png"));

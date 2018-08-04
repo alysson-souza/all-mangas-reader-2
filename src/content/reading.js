@@ -32,6 +32,12 @@ class Reading {
             if (curmode == -1) {
                 curmode = options.displayMode;
             }
+            imagesUrl = imagesUrl.map(url => {
+                if (url.indexOf("//") === 0) {
+                    return location.protocol + url;
+                }
+                return url;
+            });
             this.writeImages(where, imagesUrl, curmode);
         }
     }
@@ -89,9 +95,13 @@ class Reading {
         }
 
         //Create contextual menu to bookmark image
+        let url = $(img).attr("src");
+        if (url.indexOf("//") === 0) {
+            url = location.protocol + url;
+        }
         browser.runtime.sendMessage({
             action: "createContextMenu",
-            lstUrls: [$(img).attr("src")]
+            lstUrls: [url]
         });
         //Check bookmarks
         let objBM = {
@@ -105,19 +115,15 @@ class Reading {
         };
         let result = await browser.runtime.sendMessage(objBM);
         if (result.isBooked) {
-            let imgScan = $(".spanForImg img[src='" + result.scanSrc + "']");
-            if (imgScan.length === 0) {
-                imgScan = $(".spanForImg img[src='" + decodeURI(result.scanSrc) + "']");
-            }
-            imgScan.data("note", result.note);
-            imgScan.data("booked", 1);
-            if (result.note !== "") imgScan.attr("title", "Note : " + result.note);
-            imgScan.css("border-color", "#999999");
+            $(img).data("note", result.note);
+            $(img).data("booked", 1);
+            if (result.note !== "") $(img).attr("title", "Note : " + result.note);
+            $(img).css("border-color", "#999999");
         }
         if (options.autobm) {
             $(img).dblclick(function () {
                 let obj;
-                if ($(this).data("booked")) {
+                if ($(img).data("booked") === 1) {
                     obj = {
                         action: "deleteBookmark",
                         mirror: mirrorImpl.get().mirrorName,
@@ -125,15 +131,15 @@ class Reading {
                         chapUrl: pageData.currentChapterURL,
                         type: "scan"
                     };
-                    obj.scanUrl = $(this).attr("src");
+                    obj.scanUrl = $(img).attr("src");
 
-                    $(this).css("border-top-color", "white");
-                    $(this).css("border-right-color", "white");
-                    $(this).css("border-bottom-color", "white");
-                    $(this).css("border-left-color", "white");
-                    $(this).removeAttr("title");
-                    $(this).removeData("booked");
-                    $(this).removeData("note");
+                    $(img).css("border-top-color", "white");
+                    $(img).css("border-right-color", "white");
+                    $(img).css("border-bottom-color", "white");
+                    $(img).css("border-left-color", "white");
+                    $(img).removeAttr("title");
+                    $(img).removeData("booked");
+                    $(img).removeData("note");
 
                     browser.runtime.sendMessage(obj);
                 } else {
@@ -146,13 +152,14 @@ class Reading {
                         name: pageData.name,
                         chapName: pageData.currentChapter
                     };
-                    obj.scanUrl = $(this).attr("src");
-                    obj.scanName = $(this).data("idScan");
+                    obj.scanUrl = $(img).attr("src");
+                    if (obj.scanUrl.indexOf("//") === 0) obj.scanUrl = location.protocol + obj.scanUrl;
+                    obj.scanName = $(img).data("idScan");
                     obj.note = "";
-
-                    $(this).css("border-color", "#999999");
-                    $(this).data("note", "");
-                    $(this).data("booked", 1);
+                    
+                    $(img).css("border-color", "#999999");
+                    $(img).data("note", "");
+                    $(img).data("booked", 1);
 
                     browser.runtime.sendMessage(obj);
                 }
