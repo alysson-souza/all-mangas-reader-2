@@ -24,9 +24,6 @@ class HandleManga {
         let key;
         if (message.url) key = utils.mangaKey(message.url);
         switch (message.action) {
-            case "pagematchurls":
-                // content script included, test if a mirror match the page and load AMR in tab
-                return this.matchUrlAndLoadScripts(message.url, sender.tab.id);
             case "mangaInfos":
                 let mg = store.state.mangas.all.find(manga => manga.key === key)
                 if (mg !== undefined) {
@@ -35,7 +32,7 @@ class HandleManga {
                         display: mg.display
                     });
                 } else {
-                    return Promise.resolve(null);
+                    return Promise.resolve();
                 }
             case "readManga":
                 utils.debug("Read manga " + message.url);
@@ -74,7 +71,7 @@ class HandleManga {
         return new Promise(async (resolve, reject) => {
             let impl = await mirrorsImpl.getImpl(message.mirror);
             // check if mirror can list all mangas
-            if (impl.canListFullMangas) {
+            if (impl && impl.canListFullMangas) {
                 // check if mirror list is in local db and filter
                 let list = await storedb.getListOfMangaForMirror(message.mirror)
                 if (list && list.length > 0) {
@@ -176,21 +173,29 @@ class HandleManga {
                     div.style.display = "none";
                     var id = "mangaNextChap";
                     var i = 0;
-                    while ($("#" + id + i).size() > 0) {
+                    while ($("#" + id + i).length > 0) {
                         i++;
                     }
                     id = id + i;
                     $(div).attr("id", id);
                     document.body.appendChild(div);
-                    document.getElementById(id).contentWindow.document.documentElement.innerHTML = resp.data;
-                    $(document.getElementById(id).contentWindow.document).ready(async () => {
+                    // was $(document.getElementById(id).contentWindow.document).ready(...); but ready method was removed from jQuery 3.x --> do it the js way
+                    let ldoc = document.getElementById(id).contentWindow.document;
+                    ldoc.documentElement.innerHTML = resp.data;
+                    let readyCall = async () => {
                         let impl = await mirrorsImpl.getImpl(message.mirrorName);
                         var imagesUrl = impl.getListImages(document.getElementById(id).contentWindow.document, message.url);
                         resolve({
                             images: imagesUrl
                         });
                         $("#" + id).remove();
-                    });
+                    }
+                    if (ldoc.readyState === "complete" ||
+                        (ldoc.readyState !== "loading" && !ldoc.documentElement.doScroll)) {
+                        readyCall();
+                    } else {
+                        ldoc.addEventListener("DOMContentLoaded", readyCall);
+                    }
                 });
             })
             .catch((e) => {

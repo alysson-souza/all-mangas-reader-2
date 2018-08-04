@@ -403,7 +403,7 @@
     "description": "Message displayed when the reading list does not display any manga because of categories states"
   },
   "list_no_manga_message": {
-    "message": "<strong>No manga in your list</strong>. To add a manga in the reading list, just go read a manga on a site supported by All Mangas Reader. Each manga you are reading is added or updated in the All Mangas Reader reading list. You can start reading a manga by searching one using the <v-icon>mdi-magnify</v-icon>",
+    "message": "<strong>No manga in your list</strong>. To add a manga in the reading list, just go read a manga on a site supported by All Mangas Reader. Each manga you are reading is added or updated in the All Mangas Reader reading list. You can start reading a manga by searching one using the [mdi-magnify]",
     "description": "Message displayed when the reading list is empty"
   },
   "list_import_samples": {
@@ -843,7 +843,10 @@
   "bookmarks_scan_number": {
     "message": "Scan $1",
     "description": "Label of the scan in amr bookmarks page. $1 is scan name"
+  },
+  "importexport_title": {
+    "message": "Import / Export",
+    "description": "Import Export page title"
   }
-  
   
 }

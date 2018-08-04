@@ -25,13 +25,19 @@ class Reading {
             //Get specific mode for currentManga
             let curmode = -1;
             let specific = await browser.runtime.sendMessage({ action: "mangaInfos", url: pageData.currentMangaURL });
-            if (specific !== null && specific.display) {
+            if (specific && specific.display) {
                 curmode = specific.display;
             }
             //If not use default options mode
             if (curmode == -1) {
                 curmode = options.displayMode;
             }
+            imagesUrl = imagesUrl.map(url => {
+                if (url.indexOf("//") === 0) {
+                    return location.protocol + url;
+                }
+                return url;
+            });
             this.writeImages(where, imagesUrl, curmode);
         }
     }
@@ -80,159 +86,84 @@ class Reading {
         this.waitForImages(where, mode, title);
     }
     async onLoadImage(img) {
-        if ($(img).data("canvasId")) {
-            // This mode is no more used... was used when some websites did not display a scan to read but a canvas with parts of image on it...
-            let width, height;
-            let ancCan = $("#" + $(img).data("canvasId"));
+        $("#" + $(img).data("divLoad")).css("display", "none");
+        $(img).data("finish", "1");
+        $(img).css("margin-right", "10px");
+        if ($(img).attr("src") != browser.extension.getURL("icons/imgerror.png")) {
+            $(img).css("border", "5px solid white");
+            $(img).css("margin-bottom", "50px");
+        }
 
-            let resize = $(img).data("resize");
-            let mode = $(img).data("modedisplay");
+        //Create contextual menu to bookmark image
+        let url = $(img).attr("src");
+        if (url.indexOf("//") === 0) {
+            url = location.protocol + url;
+        }
+        browser.runtime.sendMessage({
+            action: "createContextMenu",
+            lstUrls: [url]
+        });
+        //Check bookmarks
+        let objBM = {
+            action: "getBookmarkNote",
+            mirror: mirrorImpl.get().mirrorName,
+            url: pageData.currentMangaURL,
+            chapUrl: pageData.currentChapterURL,
+            type: "scan",
+            scanUrl: $(img).attr("src"),
+            scanName: $(img).data("idScan")
+        };
+        let result = await browser.runtime.sendMessage(objBM);
+        if (result.isBooked) {
+            $(img).data("note", result.note);
+            $(img).data("booked", 1);
+            if (result.note !== "") $(img).attr("title", "Note : " + result.note);
+            $(img).css("border-color", "#999999");
+        }
+        if (options.autobm) {
+            $(img).dblclick(function () {
+                let obj;
+                if ($(img).data("booked") === 1) {
+                    obj = {
+                        action: "deleteBookmark",
+                        mirror: mirrorImpl.get().mirrorName,
+                        url: pageData.currentMangaURL,
+                        chapUrl: pageData.currentChapterURL,
+                        type: "scan"
+                    };
+                    obj.scanUrl = $(img).attr("src");
 
-            if (resize == 1) {
-                if (ancCan.width() < ancCan.height()) {
-                    if (mode != 1) {
-                        if (ancCan.width() > (screen.width - 200) / 2) {
-                            width = (screen.width - 200) / 2;
-                        } else {
-                            width = ancCan.width();
-                        }
-                    } else {
-                        if (ancCan.width() > (screen.width - 200)) {
-                            width = (screen.width - 200);
-                        } else {
-                            width = ancCan.width();
-                        }
-                    }
+                    $(img).css("border-top-color", "white");
+                    $(img).css("border-right-color", "white");
+                    $(img).css("border-bottom-color", "white");
+                    $(img).css("border-left-color", "white");
+                    $(img).removeAttr("title");
+                    $(img).removeData("booked");
+                    $(img).removeData("note");
+
+                    browser.runtime.sendMessage(obj);
                 } else {
-                    if (ancCan.width() > (screen.width - 200)) {
-                        width = (screen.width - 200);
-                    } else {
-                        width = ancCan.width();
-                    }
-                }
-            } else {
-                width = ancCan.width();
-            }
-            height = (width / ancCan.width()) * ancCan.height();
+                    obj = {
+                        action: "addUpdateBookmark",
+                        mirror: mirrorImpl.get().mirrorName,
+                        url: pageData.currentMangaURL,
+                        chapUrl: pageData.currentChapterURL,
+                        type: "scan",
+                        name: pageData.name,
+                        chapName: pageData.currentChapter
+                    };
+                    obj.scanUrl = $(img).attr("src");
+                    if (obj.scanUrl.indexOf("//") === 0) obj.scanUrl = location.protocol + obj.scanUrl;
+                    obj.scanName = $(img).data("idScan");
+                    obj.note = "";
+                    
+                    $(img).css("border-color", "#999999");
+                    $(img).data("note", "");
+                    $(img).data("booked", 1);
 
-            //DIV VERSION
-            $("div", ancCan).add($("div > img", ancCan)).each(function (index) {
-                //FIX CONFLICT WITH AdBlock -->
-                let wori = $(this).width();
-                if (wori === 0) {
-                    //console.log("zero width img to " + $(this).data("width"));
-                    wori = $(this).data("width");
-                }
-                let hori = $(this).height();
-                if (hori === 0) {
-                    //console.log("zero height img to " + $(this).data("height"));
-                    hori = $(this).data("height");
-                }
-                //---
-                let w = Math.floor((width / ancCan.width()) * wori) + 1;
-                let h = Math.floor((width / ancCan.width()) * hori) + 1;
-
-                $(this).css("width", w + 'px');
-                $(this).css("height", h + 'px');
-                if ($(this).css("position") == "absolute") {
-                    let l = Math.floor((width / ancCan.width()) * $(this).position().left);
-                    if (l !== 0) l++;
-                    let t = Math.floor((width / ancCan.width()) * $(this).position().top);
-                    if (t !== 0) t++;
-                    $(this).css("left", l + 'px');
-                    $(this).css("top", t + 'px');
+                    browser.runtime.sendMessage(obj);
                 }
             });
-
-            $(ancCan).css("width", width + 'px');
-            $(ancCan).css("height", height + 'px');
-
-            $(ancCan).css("margin-bottom", "50px");
-            $(ancCan).css("border", "5px solid white");
-            $("#" + $(img).data("divLoad")).css("display", "none");
-            $(img).data("finish", "1");
-            $(img).css("display", "none");
-
-            //Bookmark DIV MOD ??? MODE CANVAS NOT USED ANYMORE
-        } else {
-            $("#" + $(img).data("divLoad")).css("display", "none");
-            $(img).data("finish", "1");
-            $(img).css("margin-right", "10px");
-            if ($(img).attr("src") != browser.extension.getURL("icons/imgerror.png")) {
-                $(img).css("border", "5px solid white");
-                $(img).css("margin-bottom", "50px");
-            }
-
-            //Create contextual menu to bookmark image
-            browser.runtime.sendMessage({
-                action: "createContextMenu",
-                lstUrls: [$(img).attr("src")]
-            });
-            //Check bookmarks
-            let objBM = {
-                action: "getBookmarkNote",
-                mirror: mirrorImpl.get().mirrorName,
-                url: pageData.currentMangaURL,
-                chapUrl: pageData.currentChapterURL,
-                type: "scan",
-                scanUrl: $(img).attr("src"),
-                scanName: $(img).data("idScan")
-            };
-            let result = await browser.runtime.sendMessage(objBM);
-            if (result.isBooked) {
-                let imgScan = $(".spanForImg img[src='" + result.scanSrc + "']");
-                if (imgScan.size() === 0) {
-                    imgScan = $(".spanForImg img[src='" + decodeURI(result.scanSrc) + "']");
-                }
-                imgScan.data("note", result.note);
-                imgScan.data("booked", 1);
-                if (result.note !== "") imgScan.attr("title", "Note : " + result.note);
-                imgScan.css("border-color", "#999999");
-            }
-            if (options.autobm) {
-                $(img).dblclick(function () {
-                    let obj;
-                    if ($(this).data("booked")) {
-                        obj = {
-                            action: "deleteBookmark",
-                            mirror: mirrorImpl.get().mirrorName,
-                            url: pageData.currentMangaURL,
-                            chapUrl: pageData.currentChapterURL,
-                            type: "scan"
-                        };
-                        obj.scanUrl = $(this).attr("src");
-
-                        $(this).css("border-top-color", "white");
-                        $(this).css("border-right-color", "white");
-                        $(this).css("border-bottom-color", "white");
-                        $(this).css("border-left-color", "white");
-                        $(this).removeAttr("title");
-                        $(this).removeData("booked");
-                        $(this).removeData("note");
-
-                        browser.runtime.sendMessage(obj);
-                    } else {
-                        obj = {
-                            action: "addUpdateBookmark",
-                            mirror: mirrorImpl.get().mirrorName,
-                            url: pageData.currentMangaURL,
-                            chapUrl: pageData.currentChapterURL,
-                            type: "scan",
-                            name: pageData.name,
-                            chapName: pageData.currentChapter
-                        };
-                        obj.scanUrl = $(this).attr("src");
-                        obj.scanName = $(this).data("idScan");
-                        obj.note = "";
-
-                        $(this).css("border-color", "#999999");
-                        $(this).data("note", "");
-                        $(this).data("booked", 1);
-
-                        browser.runtime.sendMessage(obj);
-                    }
-                });
-            }
         }
         let divNum = $("<div class='pagenumberAMR'><div class='number'>" + ($(img).data("idScan") + 1) + "</div></div>");
         divNum.appendTo($(img).closest(".spanForImg"));
@@ -271,8 +202,8 @@ class Reading {
                     //== loadImage
                     $(nimg).data("urlToLoad", url);
                     $(nimg).css("border", "5px solid white");
-                    $(nimg).load(() => reading.onLoadImage(nimg));
-                    $(nimg).error(() => reading.onErrorImage(nimg));
+                    $(nimg).on("load", () => reading.onLoadImage(nimg));
+                    $(nimg).on("error", () => reading.onErrorImage(nimg));
                     mirrorImpl.get().getImageFromPageAndWrite(util.removeProtocol(url), nimg, document, window.location.href);
 
                     $(nimg).appendTo(spanner);
@@ -303,8 +234,8 @@ class Reading {
                 $(imgSave).data("urlToLoad", $(img).data("urlToLoad"));
                 $(imgSave).css("border", "5px solid white");
                 $(imgSave).addClass("imageAMR");
-                $(imgSave).load(() => reading.onLoadImage(imgSave));
-                $(imgSave).error(() => reading.onErrorImage(imgSave));
+                $(imgSave).on("load", () => reading.onLoadImage(imgSave));
+                $(imgSave).on("error", () => reading.onErrorImage(imgSave));
                 mirrorImpl.get().getImageFromPageAndWrite($(img).data("urlToLoad"), imgSave, document, window.location.href);
 
                 $(img).after($(imgSave));
@@ -323,8 +254,8 @@ class Reading {
             $(img).data("resize", options.resize);
             $(img).data("modedisplay", mode);
 
-            $(img).load(() => this.onLoadImage(img));
-            $(img).error(() => this.onErrorImage(img));
+            $(img).on("load", () => this.onLoadImage(img));
+            $(img).on("error", () => this.onErrorImage(img));
         }
 
         if (options.imgorder == 1) {
@@ -413,7 +344,7 @@ class Reading {
         let isEven = true;
         let reading = this;
 
-        util.debug("Transformation book -> Nombre d'images :" + $(".imageAMR", where).size());
+        util.debug("Transformation book -> Nombre d'images :" + $(".imageAMR", where).length);
         $(".imageAMR", where).sort(function (a, b) {
             let nba = $(a).closest(".spanForImg").data("order");
             let nbb = $(b).closest(".spanForImg").data("order");
@@ -434,7 +365,7 @@ class Reading {
                 }
                 isEven = true;
             } else {
-                if (index == $(".imageAMR", where).size() - 1 && isEven) {
+                if (index == $(".imageAMR", where).length - 1 && isEven) {
                     posImg[index] = 2;
                 } else {
                     posImg[index] = isEven ? 0 : 1;
@@ -444,7 +375,8 @@ class Reading {
         });
 
         let parity = nbSinglePages % 2;
-
+        let viewportWidthToUse = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) - 200;
+        
         $(where).css("text-align", "center");
         let evenImg = null;
         let tableRes = $("<table class='AMRtable'></table>");
@@ -478,7 +410,7 @@ class Reading {
                     evenImg.attr("colspan", "2");
                     evenImg = null;
                     if (options.resize == 1) {
-                        if (!divMode) $("img", trForEven).css("max-width", (screen.width - 200) + 'px');
+                        if (!divMode) $("img", trForEven).css("max-width", viewportWidthToUse + 'px');
                     }
                 }
                 trTmp = $("<tr></tr>");
@@ -486,7 +418,7 @@ class Reading {
                 td.attr("colspan", "2");
                 td.appendTo(trTmp);
                 if (options.resize == 1) {
-                    if (!divMode) $("img", trTmp).css("max-width", (screen.width - 200) + 'px');
+                    if (!divMode) $("img", trTmp).css("max-width", viewportWidthToUse + 'px');
                 }
             } else {
                 if (evenImg !== null) {
@@ -504,7 +436,7 @@ class Reading {
                         evenImg.css("text-align", "left");
                     }
                     if (options.resize == 1) {
-                        if (!divMode) $("img", trTmp).css("max-width", ((screen.width - 200) / 2) + 'px');
+                        if (!divMode) $("img", trTmp).css("max-width", (viewportWidthToUse / 2) + 'px');
                     }
                     evenImg = null;
                 } else {
@@ -516,7 +448,7 @@ class Reading {
                         td.attr("colspan", "2");
                         td.appendTo(trTmp);
                         if (options.resize == 1) {
-                            if (!divMode) $("img", trTmp).css("max-width", ((screen.width - 200) / 2) + 'px');
+                            if (!divMode) $("img", trTmp).css("max-width", (viewportWidthToUse / 2) + 'px');
                         }
                     }
                 }
@@ -547,7 +479,7 @@ class Reading {
                 evenImg.css("text-align", "left");
             }
             if (options.resize == 1) {
-                if (!divMode) $("img", trTmp).css("max-width", ((screen.width - 200) / 2) + 'px');
+                if (!divMode) $("img", trTmp).css("max-width", (viewportWidthToUse / 2) + 'px');
             }
             evenImg = null;
         }
@@ -574,8 +506,8 @@ class Reading {
                 $(img).data("urltoload", lst[i]);
                 $(img).data("urlnext", urlNext);
                 $(img).data("total", lst.length);
-                $(img).load(() => this.onLoadNextImage());
-                $(img).error(() => this.onErrorNextImage());
+                $(img).on("load", () => this.onLoadNextImage());
+                $(img).on("error", () => this.onErrorNextImage());
                 mirrorImpl.get().getImageFromPageAndWrite(lst[i], img, document, urlNext);
             }
         } else {
@@ -587,7 +519,7 @@ class Reading {
         let lstbtn = [];
         let id = "nChapBtn";
         let i = 0;
-        while ($("#" + id + i).size() > 0) {
+        while ($("#" + id + i).length > 0) {
             lstbtn[lstbtn.length] = $("#" + id + i);
             i++;
         }
@@ -599,7 +531,7 @@ class Reading {
                 $(this).data("nbloaded", 1);
             }
             let prog;
-            if ($(".AMRprogress", $(this)).size() === 0) {
+            if ($(".AMRprogress", $(this)).length === 0) {
                 prog = $("<span class='buttonAMR AMRprogress'></span>");
                 prog.css("position", "relative");
                 prog.css("top", "0");

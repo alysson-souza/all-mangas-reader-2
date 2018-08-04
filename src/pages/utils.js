@@ -41,3 +41,7 @@ export function countUsed(category, mangas) {
         return mangas.reduce((nb, mg) => mg.cats.includes(category.name) ? nb + 1 : nb, 0);
     }
 }
+/** replace string inside brackets by html tag for icon */
+export function convertIcons(input) {
+    return input.replace(/\[mdi-(.+)\]/g,'<i aria-hidden="true" class="v-icon mdi mdi-$1"></i>');
+}

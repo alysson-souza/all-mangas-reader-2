@@ -20,19 +20,6 @@
   "background": {
     "page": "background/background.html"
   },
-  "content_scripts": [
-    {
-      "matches": [
-        "*://*/*"
-      ],
-      "exclude_matches": [
-        "*://*.allmangasreader.com/*"
-      ],
-      "js": [
-        "content/testcontent.js"
-      ]
-    }
-  ],
   "permissions": [
     "tabs",
     "https://*/*",

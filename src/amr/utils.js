@@ -84,7 +84,7 @@ const extractHostname = function(url) {
     var hostname;
     //find & remove protocol (http, ftp, etc.) and get hostname
 
-    if (url.indexOf("://") > -1) {
+    if (url.indexOf("://") > -1 || url.indexOf("//") === 0) {
         hostname = url.split('/')[2];
     }
     else {
@@ -127,7 +127,7 @@ const afterHostURL = function(url) {
     var after;
     //find & remove protocol (http, ftp, etc.) and get hostname
 
-    if (url.indexOf("://") > -1) {
+    if (url.indexOf("://") > -1 || url.indexOf("//") === 0) {
         after = url.split('/').splice(3).join("/");
     }
     else {
