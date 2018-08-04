@@ -22,11 +22,11 @@ if (process.argv.includes("-version")) {
 if (process.argv.includes("-chrome")) {
     if (!isBeta) {
         // Chrome public key
-        ext.key = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDFE73kwUiPfxcBtTkkkboktSCXCrDxMWvYSO72IabK3Q9pqvkEcViyFcuj6mpztx55kYhwFT+ntasZZiNgzhxkjc9zEuHopyrg+/S2tgGa7ueZ+P8s3IMOeEWj9Mqw2qyvPoZ508Q6FwrGjU6rZAhBtS5dzhibkFxRQc9Yej2ppQIDAQAB"
+        ext.key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2auEKHQ6Te138RdBhkI0iaCAkCQIddSyMYebuy//9xgtvYlFOKo0eX7S1FYaAUTccU0ZfkJGWUvzXiXTJ9eoKl+Wh4YHw/Yn4wHotDzbKl/ekl2icgMAldxcahXd4gLaBdMkEh/rQPFInJlm4oRAfQhoFIQtD3eHFxrYk4+B65hVEVhtiKGVF3Q9JTLeGaWTnYB6pnw+ch+/4zUG8i0OYjehmzKCCVERRb5w3QGG8DowbMsRojPpjfdAvXK6phURKbbQXh3pXRo5GfXtkdObnTd6TBS7txGIPjY5FjbFvyVXw8VJRVTEWoZ2feG9X4WPLuLs6XMzhcHSB1fR2HVFgQIDAQAB"
         ext.update_url = "https://release.allmangasreader.com/update/chrome.xml"
     } else {
         // Chrome public key
-        ext.key = "MD8BIjANCgYJKj9IPz8NCgEBAQUAAz8BDwAwPwENCgI/AQEAP0Y/ZT8/Aj8/IT8/aD9dPz8IP0Q/aj8/dD8AOhoHPw0KZj8/LD9NGj9USD9+DDI/Uz8/Pz8/FVojPw0KPz9SQy0/Pz8QTz8dPz8/YR0/P3lULQ0KID8uWC8/ADo/Pz8dP3k/Pys/Ij8/U0xjP3Q/NC8/BT9OJgtFIlg1Pz8/BnZzB0UNCiQvPz0tTGM/P2I/Pz8/P34/PD8DP3A/ET8jPz96Pz8/IT8/P20EWj8/Yg9YPyYZPyA/Pz9HPz8/CD8/PWVXTD96Pz8SKj8/Pz8/MW4/Pz90PyE/ACcGPj90ahtdVz9vbD9TMj8mPz8/Pz8/D2s/NT8/Pz8/WAc/Pz8/P3w/Pz8CAwEAAQ0K"
+        ext.key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwEXrIivz3obLG3bW6G+r3GJr+4OGo/QLWVRBwzO64Nnzlert7fAgZWT1suTchA5kc+nZRVwyE4cbi3HRSKcnMYFK1oQjq83XgeXD9uRee743P8S3Ek09TUecI/wYm1mi0r9khrBZgGIpO07Bj23/70VktYLBU4Sei8au2evcdJXcuNJ89LqwhagQGdfQGvN9RrAU/opk99Wn2OWjD6sYFhOMx/EBxgokJUeYHeBOmNNbyDrAoz8CkaEm2gqSRJ1AntoUfNgbwGtvmA4YYsR2jp8XMBQiPr75pE85t2I6spSDvIM0/uuH65cwcmBkrW3P4AohWD4DyCFThxQUjB534wIDAQAB"
         ext.update_url = "https://release.allmangasreader.com/update/chrome-beta.xml"
     }
 } else if (process.argv.includes("-firefox")) {
