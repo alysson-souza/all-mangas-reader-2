@@ -55,6 +55,9 @@ xpi-beta:
     except:
         variables:
             - $SIGN_FF_API_KEY == null
+            - $CI_COMMIT_MESSAGE =~ /NO-CI/
+    only:
+        - develop
     dependencies:
         - build
         
@@ -70,6 +73,7 @@ xpi-unsigned:
         expire_in: 1 week
     only:
         - tags
+        - master
     dependencies:
         - build
         
@@ -82,6 +86,11 @@ crx-beta:
         paths:
             - dist-zip/*.zip
         expire_in: 1 week
+    except:
+        variables:
+            - $CI_COMMIT_MESSAGE =~ /NO-CI/
+    only:
+        - develop
     dependencies:
         - build
 
@@ -96,6 +105,7 @@ crx:
         expire_in: 1 week
     only:
         - tags
+        - master
     dependencies:
         - build
 
