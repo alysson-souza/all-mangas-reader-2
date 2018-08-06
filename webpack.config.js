@@ -56,10 +56,11 @@ const config = {
         })
       },
       {
-        test: /\.(png|jpg|gif|svg|ico)$/,
-        loader: 'file-loader',
+        test: /\.(png|jp(e*)g|gif|svg|ico)$/,
+        loader: 'url-loader',
         options: {
-          name: '[name].[ext]?emitFile=false'
+          limit: 8000,
+          name: 'img/[name].[ext]'
         }
       }
     ],
