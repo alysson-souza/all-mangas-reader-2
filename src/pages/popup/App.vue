@@ -151,6 +151,7 @@ export default {
   name: "App",
   components: { MangaList, Options, Search, Timers, ImportExport },
   created() {
+		document.title = i18n("page_popup_title");
     // initialize state for store in popup from background
     this.$store.dispatch("getStateFromReference", {
       module: "mirrors",

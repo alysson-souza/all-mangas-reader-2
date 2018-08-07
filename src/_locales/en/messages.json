@@ -1,4 +1,8 @@
 {
+  "extension_name": {
+    "message": "All Mangas Reader",
+    "description": "Extension name - do not translate !"
+  },
   "description": {
     "message": "Follow updates of online manga readers. Beautify reading, with full chapters scans.",
     "description": "Description of the extension."
@@ -6,6 +10,22 @@
   "licence": {
     "message": "All Mangas Reader is under the licence of GLPv3",
     "description": "This is the licencing info"
+  },
+  "page_popup_title": {
+    "message": "Reading list - All Mangas Reader",
+    "description": "Page title of popup page > Reading list"
+  },
+  "page_bookmarks_title": {
+    "message": "Bookmarks - All Mangas Reader",
+    "description": "Page title of bookmarks page"
+  },
+  "page_ie_title": {
+    "message": "Import / Export - All Mangas Reader",
+    "description": "Page title of import export page"
+  },
+  "page_options_title": {
+    "message": "Settings - All Mangas Reader",
+    "description": "Page title of import export page"
   },
   "button_add": {
     "message": "Add",
@@ -76,7 +96,7 @@
     "description": "Option Resize scans"
   },
   "options_web_resize_desc": {
-    "message": "Resize scans images to fit screen if they are to wide",
+    "message": "Resize scans images to fit screen if they are too wide",
     "description": "Option Resize scans description"
   },
   "options_web_loading": {
@@ -120,11 +140,11 @@
     "description": "This is the title of the options page section facilities"
   },
   "options_web_addauto_opt": {
-    "message": "Automatically add manga to updates list",
-    "description": "Option automatically add manga to list"
+    "message": "Automatically add read manga to reading list",
+    "description": "Option automatically add read manga to reading list"
   },
   "options_web_addauto_desc": {
-    "message": "Automatically add manga in my reading list when I read it. If you uncheck this option, you will have a button in the navigation bar to add the current manga in the list.",
+    "message": "Automatically add manga in my reading list when I read it. If you uncheck this option, you will have a '+' button in the navigation bar to add the current manga in the list.",
     "description": "Option automatically add manga to list description"
   },
   "options_web_lrkeys_opt": {

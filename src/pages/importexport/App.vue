@@ -39,6 +39,7 @@ export default {
     };
   },
   async created() {
+    document.title = i18n("page_ie_title");
     let init = [];
     // initialize mirrors state for store in ie from background
     init.push(this.$store.dispatch("getStateFromReference", {
