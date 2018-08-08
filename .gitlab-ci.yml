@@ -73,7 +73,6 @@ xpi-unsigned:
         expire_in: 1 week
     only:
         - tags
-        - master
     dependencies:
         - build
         
@@ -105,7 +104,6 @@ crx:
         expire_in: 1 week
     only:
         - tags
-        - master
     dependencies:
         - build
 
