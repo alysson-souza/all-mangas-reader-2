@@ -596,11 +596,12 @@ export default {
   padding-bottom: 16px;
   font-weight: bold;
 }
-.input-group label {
+.v-input label {
   font-size: 14px !important;
 }
-.input-group {
+.v-input {
   padding: 0;
+  margin: 0;
 }
 .normal-input-group {
   padding: 18px 0 0;

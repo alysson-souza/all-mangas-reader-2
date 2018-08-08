@@ -11,7 +11,7 @@ html {
 }
 /** Added here because this class is added on detached tooltip box which is outside component scope */
 .icon-ttip {
-    margin-top: -15px;
+    /*margin-top: -15px;*/ /* Has been fixed in Vuetify V1.1.9 */
 }
 body {
     font-size:11px;
