@@ -103,7 +103,7 @@
               <span>{{i18n("list_mg_act_delete")}}</span>
             </v-tooltip>
             <!-- Display details panel -->
-            <v-icon v-if="isFirst" @click="$emit('details-click')">more_vert</v-icon>
+            <v-icon v-if="isFirst" @click="$emit('details-click')">mdi-dots-vertical</v-icon>
             <!-- Empty icon if not first instead of details button -->
             <v-icon v-if="!isFirst" class="empty-icon"></v-icon> 
             <!-- Delete manga dialog -->
