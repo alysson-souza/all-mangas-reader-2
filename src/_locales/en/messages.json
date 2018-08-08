@@ -867,6 +867,10 @@
   "importexport_title": {
     "message": "Import / Export",
     "description": "Import Export page title"
+  },
+  "list_cat_add": {
+    "message": "Add category",
+    "description": "Placeholder of input to add a category in categories list"
   }
   
 }
