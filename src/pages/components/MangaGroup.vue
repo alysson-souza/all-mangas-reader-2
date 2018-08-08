@@ -7,8 +7,9 @@
       :key="key" 
       :manga="manga" 
       :is-in-group="nbDisplayed > 1" 
-      :is-first="manga.key === first.key" 
+      :is-first="manga.key === first.key"
       :group-expanded="expanded"
+      :seen="seen"
       @details-click="details = !details"
       @expand-group="expanded = !expanded" />
 
@@ -31,7 +32,7 @@
                 <div class="det-sel-wrapper">
                 <select dark v-model="newCat" @change="addCategory()" :class="color(2)">
                   <option value="">{{i18n("list_details_cats_select")}}</option>
-                  <option v-for="(cat, key) of this.options.categoriesStates" 
+                  <option v-for="(cat, key) of options.categoriesStates" 
                           v-if="cat.type !== 'native'" 
                           :key="key" 
                           :value="cat.name">
@@ -43,6 +44,14 @@
               <!-- Manage manga bookmarks -->
               <v-flex xs6 class="amr-bookmarks">
                 <span>{{i18n("list_details_books")}} : </span>
+                <select v-if="bookmarks.length" dark v-model="curBm" @change="openBookmark()" :class="color(2)">
+                  <option v-for="(bm, key) of bookmarks" 
+                          :key="key" 
+                          :value="bm.chapUrl">
+                      {{bm.type === 'scan' ? i18n("bookmarks_scan_title", bm.chapName, bm.scanName) : i18n("bookmarks_chapter_title", bm.chapName)}}
+                  </option>
+                </select>
+                <span v-if="!bookmarks.length">{{i18n("list_details_no_bookmarks")}}</span>
               </v-flex>
             </v-layout>
             <!-- Actions buttons -->
@@ -71,6 +80,7 @@ import browser from "webextension-polyfill";
 import Manga from "./Manga";
 import Categories from "./Categories";
 import * as utils from "../utils";
+import * as amrutils from "../../amr/utils";
 
 export default {
   data() {
@@ -81,6 +91,10 @@ export default {
       expanded: false, 
       // category to add to this group of mangas
       newCat: "",
+      // has the mangagroup been seen in the UI
+      seen: false,
+      // selected bookmark
+      curBm: null,
     };
   },
   // property to load the component with --> a group of manga
@@ -105,6 +119,12 @@ export default {
           )
         );
       }, []);
+    },
+    // bookmarks for this group
+    bookmarks: function() {
+      return this.$store.state.bookmarks.all.filter(
+        bm => this.mangas.findIndex(mg => mg.key === amrutils.mangaKey(bm.url)) !== -1
+      )
     },
     /**
      * return true if at least one manga of the group is still updating (update top is 1)
@@ -217,12 +237,27 @@ export default {
       }
       this.newCat = "";
     }, 
+    /**
+     * Open search panel with search field prefilled with manga name
+     */
     searchElsewhere: function() {
       this.$emit("search-request", this.first.name);
+    },
+    /**
+     * Open bookmark in a new tab (the chapter corresponding to bookmark)
+     */
+    openBookmark: function() {
+      browser.runtime.sendMessage({ action: "opentab", url: this.curBm });
     }
   },
   // Name of the component
-  name: "MangaGroup"
+  name: "MangaGroup",
+  mounted() {
+      this.$emit("start-observing", this);
+  },
+  beforeDestroy() {
+      this.$emit("stop-observing", this);
+  }
 };
 </script>
 
@@ -236,7 +271,7 @@ export default {
 .container.amr-list-line:last-child {
   padding-bottom: 10px;
 }
-.btn {
+.v-btn {
   text-transform: none;
 }
 .fadeHeight-enter-active,

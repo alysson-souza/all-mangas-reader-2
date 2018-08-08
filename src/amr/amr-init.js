@@ -83,10 +83,10 @@ export default function () {
 
     let url = manifest.homepage_url;
     let beta = false;
-    //TODO
-    /*if (url && url.indexOf("gitlab.com") > 0) {
+    
+    if (manifest.name.indexOf("Beta") > 0) {
         beta = true;
-    }*/
+    }
 
     if (!ancVersion || curVersion !== ancVersion) {
         localStorage.version = curVersion;
@@ -98,7 +98,7 @@ export default function () {
     }
     if (beta) {
         browser.browserAction.setTitle({
-            title: "All Mangas Reader Beta Channel " + curVersion
+            title: "All Mangas Reader Beta " + curVersion
         });
     } else {
         browser.browserAction.setTitle({

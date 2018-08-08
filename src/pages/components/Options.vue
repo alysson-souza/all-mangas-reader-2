@@ -103,17 +103,17 @@
                 <!-- Mangas with new chapters color -->
                 <div class="subtitle">{{ i18n("options_gen_colors_new") }}</div>
                 <v-radio-group v-model="colornew" @change="setOption('colornew')" row class="colored-radio">
-                    <v-radio v-for="c in colors" :key="c" :value="c" :color="c" ></v-radio>
+                    <v-radio v-for="c in colors" :key="c" :value="c" :color="c" :class="c + '--text'" ></v-radio>
                 </v-radio-group>
                 <!-- Mangas with read chapters color -->
                 <div class="subtitle">{{ i18n("options_gen_colors_read") }}</div>
                 <v-radio-group v-model="colorread" @change="setOption('colorread')" row class="colored-radio">
-                    <v-radio v-for="c in colors" :key="c" :value="c" :color="c" ></v-radio>
+                    <v-radio v-for="c in colors" :key="c" :value="c" :color="c" :class="c + '--text'" ></v-radio>
                 </v-radio-group>
                 <!-- Mangas with notfollow chapters color -->
                 <div class="subtitle">{{ i18n("options_gen_colors_notfollow") }}</div>
                 <v-radio-group v-model="colornotfollow" @change="setOption('colornotfollow')" row class="colored-radio">
-                    <v-radio v-for="c in colors" :key="c" :value="c" :color="c" ></v-radio>
+                    <v-radio v-for="c in colors" :key="c" :value="c" :color="c" :class="c + '--text'" ></v-radio>
                 </v-radio-group>
 
                 <!-- Updates -->
@@ -596,22 +596,24 @@ export default {
   padding-bottom: 16px;
   font-weight: bold;
 }
-.input-group label {
+.v-input label {
   font-size: 14px !important;
 }
-.input-group {
+.v-input {
   padding: 0;
+  margin: 0;
 }
 .normal-input-group {
   padding: 18px 0 0;
 }
-.colored-radio .input-group--selection-controls__ripple:before {
-  opacity: 0.5;
+/** hint to color radio buttons even if not selected */
+.colored-radio .v-input--selection-controls__input .v-icon {
+    color: inherit!important;
 }
 .sel-title {
   line-height: 40px;
 }
-.btn-sel {
+.v-btn-sel {
   padding: 0px 8px;
 }
 .opt-container {

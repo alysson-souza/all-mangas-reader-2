@@ -21,12 +21,11 @@
                         <v-btn @click.native="onFocus" color="primary">{{i18n("ie_import_pickfile")}}</v-btn>
                         <input ref="fileInput" type="file" @change="handleFileChange"/>
                     </label>
-                    <v-text-field
+                    <v-textarea
                         v-model="importstr"
                         :label="i18n('ie_import_placeholder')"
-                        multi-line
                         class="import-text txtfield"
-                    ></v-text-field>
+                    ></v-textarea>
                     <span v-html="importmessage"></span>
                     <v-text-field v-if="hasmgs" v-model="importcat" :label="i18n('ie_import_defaultcat')" class="txtfield"></v-text-field>
                     <v-btn 
@@ -191,11 +190,46 @@ export default {
           };
         }
       });
+      let exp = { mangas: mgs };
 
-      //TODO add bookmarks
+      //add bookmarks
+      if (this.bookmarks) {
+        let bms = this.$store.state.bookmarks.all;
+        if (this.viewable) {
+          bms = bms.filter(bm => {
+              let mgbm = this.$store.state.mangas.all.find(mg => mg.key === mgutils.mangaKey(bm.url)); // find manga associated with bookmark
+              if (mgbm !== undefined) {
+                return mgutils.displayFilterCats( // check if manga is viewable
+                  mgbm,
+                  self.$store.state.options.categoriesStates
+                )
+              } else { // do not export bookmarks from deleted mangas in viewable mode
+                return false; 
+              }
+            }
+          );
+        }
+        bms = bms.map(bm => {
+            let res = {
+              m: bm.mirror,
+              n: bm.name,
+              u: bm.url,
+              c: bm.chapUrl,
+              h: bm.chapName,
+              o: bm.note,
+              t: bm.type
+            }
+            if (bm.type === "scan") {
+              res.s = bm.scanUrl;
+              res.a = bm.scanName;
+            }
+            return res;
+        });
+
+        exp.bookmarks = bms;
+      }
 
       // create a file containing export and download it
-      let exp = { mangas: mgs /*, bookmarks: bms */ };
       var blob = new Blob([JSON.stringify(exp, null, 2)], {
         type: "text/json"
       });
@@ -269,8 +303,47 @@ export default {
      * Import bookmarks described in importstr in reading list.
      * Button is accessible only if json is valid and contains bookmarks
      */
-    importBookmarks: function() {
-      //TODO
+    importBookmarks: async function() {
+      this.importingbookmarks = true;
+      let imps = JSON.parse(this.importstr);
+      // AMR V1 export --> convert it to AMR V2
+      if (typeof imps.bookmarks === "string") {
+        imps.bookmarks = JSON.parse(imps.bookmarks).map(bm => {
+          return {
+            m: bm.mirror,
+            n: bm.name,
+            u: bm.url,
+            c: bm.chapUrl,
+            h: bm.chapName,
+            o: bm.note,
+            t: bm.type,
+            s: bm.scanUrl,
+            a: bm.scanName
+          };
+        });
+      }
+      if (imps.bookmarks && imps.bookmarks.length > 0) {
+        let addall = [];
+        imps.bookmarks.forEach(bm => {
+          // convert bookmark to something matching internal bookmarks
+          let nbm = {
+            mirror: bm.m,
+            name: bm.n,
+            url: bm.u,
+            chapUrl: bm.c,
+            chapName: bm.h,
+            note: bm.o,
+            type: bm.t,
+          };
+          if (bm.s) nbm.scanUrl = bm.s;
+          if (bm.a) nbm.scanName = bm.a;
+          nbm.action = "addUpdateBookmark";
+          addall.push(browser.runtime.sendMessage(nbm));
+        });
+        // add update all bookmarks
+        await Promise.all(addall);
+      }
+      this.importingbookmarks = false;
     },
     /**
      * Import mangas and bookmarks described in importstr in reading list.

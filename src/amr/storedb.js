@@ -1,3 +1,5 @@
+import * as utils from './utils'
+
 /**
  * Class helping to store data in IndexedDb
  * In AMR V1, objects were stored in WebDB. WebDB is deprecated and Mozilla never implemented WebDB in FireFox
@@ -6,6 +8,7 @@
  *  - mirrors definition, 
  *  - mirrors full list of mangas 
  *  - mangas reading list
+ *  - bookmarked chapters and scans
  */
 class StoreDB {
     constructor() {
@@ -17,7 +20,7 @@ class StoreDB {
      */
     initDB() {
         this.status = 3;
-        this.dbversion = 1;
+        this.dbversion = 2;
         this.db = undefined;
         let store = this;
         return new Promise((resolve, reject) => {
@@ -42,9 +45,18 @@ class StoreDB {
                 /**
                  * Create stores for AMR objects
                  */
-                db.createObjectStore("mirrors", { keyPath: "mirrorName" });
-                db.createObjectStore("mangalists", { keyPath: "mirrorName" });
-                db.createObjectStore("mangas", { keyPath: "key" });
+                if (!db.objectStoreNames.contains("mirrors")) {
+                    db.createObjectStore("mirrors", { keyPath: "mirrorName" });
+                }
+                if (!db.objectStoreNames.contains("mangalists")) {
+                    db.createObjectStore("mangalists", { keyPath: "mirrorName" });
+                }
+                if (!db.objectStoreNames.contains("mangas")) {
+                    db.createObjectStore("mangas", { keyPath: "key" });
+                }
+                if (!db.objectStoreNames.contains("bookmarks")) {
+                    db.createObjectStore("bookmarks", { keyPath: "key" });
+                }
             };
             request.onsuccess = function (event) {
                 store.db = event.target.result;
@@ -288,6 +300,80 @@ class StoreDB {
                         else {
                             resolve(mangas);
                         }
+                    };
+                });
+            });
+    }
+    /**
+     * Store a bookmark entry
+     * @param {*} bm {url, type (0: chapter, 1: scan), mgkey, title}
+     */
+    storeBookmark(bm) {
+        let store = this;
+        return this.checkInit()
+            .then(() => {
+                return new Promise((resolve, result) => {
+                    let transaction = store.db.transaction(["bookmarks"], "readwrite");
+
+                    transaction.onerror = function (event) {
+                        reject("Impossible to store bookmarks " + bm.url + ". Error code : " + event.target.errorCode);
+                    };
+
+                    let objectStore = transaction.objectStore("bookmarks");
+                    if (!bm.key) {
+                        bm.key = utils.mangaKey(bm.chapUrl) + (bm.scanUrl ? "_" + utils.mangaKey(bm.scanUrl) : "")
+                    }
+                    let request = objectStore.put(bm);
+                    request.onsuccess = function (event) {
+                        resolve(event.target.result);
+                    };
+                });
+            });
+    }
+    /**
+     * Get all bookmarks
+     * @param {*} bm 
+     */
+    getBookmarks() {
+        let store = this;
+        return this.checkInit()
+            .then(() => {
+                return new Promise((resolve, result) => {
+                    let transaction = store.db.transaction(["bookmarks"]);
+                    let objectStore = transaction.objectStore("bookmarks");
+                    let bms = []
+                    objectStore.openCursor().onsuccess = function (event) {
+                        let cursor = event.target.result;
+                        if (cursor) {
+                            bms.push(cursor.value);
+                            cursor.continue();
+                        }
+                        else {
+                            resolve(bms);
+                        }
+                    };
+                });
+            });
+    }
+    /**
+     * Delete a bookmark
+     * @param {*} bm 
+     */
+    deleteBookmark(key) {
+        let store = this;
+        return this.checkInit()
+            .then(() => {
+                return new Promise((resolve, result) => {
+                    let transaction = store.db.transaction(["bookmarks"], "readwrite");
+
+                    transaction.onerror = function (event) {
+                        reject("Impossible to delete bookmarks " + key + ". Error code : " + event.target.errorCode);
+                    };
+
+                    let objectStore = transaction.objectStore("bookmarks");
+                    let request = objectStore.delete(key);
+                    request.onsuccess = function (event) {
+                        resolve(event.target.result);
                     };
                 });
             });

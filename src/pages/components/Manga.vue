@@ -1,6 +1,6 @@
 <template>
     <!-- manga line, containing title, list of chapters and actions-->
-    <v-layout row v-if="display && (!isInGroup || (isFirst || groupExpanded))">
+    <v-layout row v-if="!isInGroup || (isFirst || groupExpanded)">
       <!-- Title and icon -->
       <v-flex xs3 class="amr-list-elt">
       <v-card dark tile flat :color="color(3)" class="back-card">
@@ -15,6 +15,7 @@
           <v-icon v-if="isInGroup && isFirst && expanded" @click="emitExpand()">mdi-minus</v-icon>
           <!-- Manga name -->
           <strong>{{ manga.name }}</strong>
+          <template v-if="seen">
           <!-- Display a calendar with last update -->
           <v-tooltip v-if="options.displastup === 1 && manga.upts != 0 && timeUpdated < 50" top content-class="icon-ttip">
             <v-card dark :class="color(-2) + ' amr-calendar-badge'" slot="activator">
@@ -29,12 +30,14 @@
             <v-icon class="amr-timeroff-badge" slot="activator">mdi-timer-off</v-icon>
             <span>{{i18n("list_stopped_updating")}}</span>
           </v-tooltip>
+          </template>
         </v-card>
       </v-card>
       </v-flex>
       <!-- List of chapters and progressbar-->
       <v-flex xs6 class="amr-list-elt">
       <v-card dark tile flat :color="color(3)" class="back-card amr-chapter-list-cont">
+          <template v-if="seen">
         <!-- List of chapters -->
         <!-- Icon of the mirror if in group -->
         <v-tooltip v-if="isInGroup" top content-class="icon-ttip" class="tip-icon-grouped">
@@ -55,11 +58,13 @@
         </div>
         <!-- Loading bar if chapters list is not loaded yet-->
         <v-progress-linear v-if="!manga.listChaps.length" :indeterminate="true" height="4" class="amr-manga-waiting" :color="color(1)"></v-progress-linear>
+          </template>
       </v-card>
       </v-flex>
       <!-- Actions -->
       <v-flex xs3 class="amr-list-elt" text-xs-center>
         <v-card  dark tile flat :color="color(3)" class="back-card">
+          <template v-if="seen">
           <v-card dark :color="color(0)" class="amr-manga-actions-cont">
             <!-- Mark as read -->
             <v-tooltip v-if="hasNew" top content-class="icon-ttip">
@@ -98,7 +103,7 @@
               <span>{{i18n("list_mg_act_delete")}}</span>
             </v-tooltip>
             <!-- Display details panel -->
-            <v-icon v-if="isFirst" @click="$emit('details-click')">more_vert</v-icon>
+            <v-icon v-if="isFirst" @click="$emit('details-click')">mdi-dots-vertical</v-icon>
             <!-- Empty icon if not first instead of details button -->
             <v-icon v-if="!isFirst" class="empty-icon"></v-icon> 
             <!-- Delete manga dialog -->
@@ -115,6 +120,7 @@
               </v-card>
             </v-dialog>
           </v-card>
+          </template>
         </v-card>
       </v-flex>      
     </v-layout>
@@ -146,7 +152,9 @@ export default {
     // if manga is first of the group
     "isFirst",
     // is the group currently expanded
-    "groupExpanded"
+    "groupExpanded",
+    // has the group been in the viewport at least once
+    "seen",
   ],
   computed: {
     // AMR options
@@ -155,9 +163,6 @@ export default {
     },
     categories: function() {
       return this.options.categoriesStates;
-    },
-    display: function() {
-      return utils.displayFilterCats(this.manga, this.categories);
     },
     // determine if this manga has new published chapters
     hasNew: function() {
@@ -275,19 +280,19 @@ export default {
 * {
   font-size: 10pt;
 }
-.container.amr-list-line:first-child .row:first-child .flex:first-child > .card {
+.container.amr-list-line:first-child .row:first-child .flex:first-child > .v-card {
   border-top-left-radius: 5px;
 }
-.container.amr-list-line:first-child .row:first-child .flex:last-child > .card {
+.container.amr-list-line:first-child .row:first-child .flex:last-child > .v-card {
   border-top-right-radius: 5px;
 }
-.container.amr-list-line:last-child .row:last-child .flex:first-child > .card {
+.container.amr-list-line:last-child .row:last-child .flex:first-child > .v-card {
   border-bottom-left-radius: 5px;
 }
-.container.amr-list-line:last-child .row:last-child .flex:last-child > .card {
+.container.amr-list-line:last-child .row:last-child .flex:last-child > .v-card {
   border-bottom-right-radius: 5px;
 }
-.container.amr-list-line .amr-list-elt > .card {
+.container.amr-list-line .amr-list-elt > .v-card {
   padding: 4px;
 }
 .container.amr-list-line .amr-list-elt .amr-chapter-list-cont {
@@ -321,7 +326,7 @@ export default {
   height: 100% !important;
 }
 
-.progress-linear {
+.v-progress-linear {
   margin: 0;
   margin-top: -1px;
 }
@@ -385,4 +390,5 @@ select.amr-chap-sel {
 .amr-timeroff-badge {
     margin-top: 2px;
 }
+
 </style>

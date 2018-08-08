@@ -121,7 +121,7 @@ export default {
 .refresh-button {
   margin: 6px;
 }
-.refresh-button .btn__content {
+.refresh-button .v-btn__content {
   text-transform: none;
 }
 .refresh-button i {

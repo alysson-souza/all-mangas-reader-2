@@ -108,7 +108,7 @@
         <v-card tile>
           <v-toolbar card dark color="primary">
             <v-btn icon @click.native="options = false" dark>
-              <v-icon>close</v-icon>
+              <v-icon>mdi-close</v-icon>
             </v-btn>
             <v-toolbar-title>Settings</v-toolbar-title>
           </v-toolbar>
@@ -398,11 +398,11 @@ export default {
 };
 </script>
 <style>
-.dialog .card__title,
-.dialog .card__text {
+.v-dialog .v-card__title,
+.v-dialog .v-card__text {
   padding: 4px 16px;
 }
-.dialog .card__title {
+.v-dialog .v-card__title {
   padding-top: 10px;
 }
 * {

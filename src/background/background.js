@@ -4,6 +4,8 @@ import store from '../store';
 import * as utils from '../amr/utils';
 import amrUpdater from '../amr/amr-updater';
 import amrInit from '../amr/amr-init';
+import browser from "webextension-polyfill";
+import HandleManga from './handle-manga';
 
 // Blue icon while loading
 IconHelper.setBlueIcon();
@@ -29,6 +31,12 @@ IconHelper.setBlueIcon();
     await store.dispatch('initMangasFromDB');
 
     /**
+     * Initialize bookmarks list in store from DB
+     */
+    utils.debug("Initialize bookmarks");
+    await store.dispatch('initBookmarksFromDB');
+
+    /**
      * Initiliaze extension versioning
      */
     amrInit()
@@ -48,6 +56,13 @@ IconHelper.setBlueIcon();
 
     // Check if we need to refresh chapters lists, mirrors lists and launch automatic checker
     amrUpdater.load();
+
+    // content script included, test if a mirror match the page and load AMR in tab
+    browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
+        if (changeInfo.status === "loading") { // just load scripts once, when the tab is loading
+            HandleManga.matchUrlAndLoadScripts(tabInfo.url, tabId)
+        }
+    });
 
     /**
      * The function below increments the reading of each manga in the list from a chapter each 2 seconds

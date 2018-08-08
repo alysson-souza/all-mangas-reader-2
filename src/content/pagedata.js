@@ -4,6 +4,7 @@
 class PageData {
     constructor() {
         this.__data__ = null;
+        this.curbookmark = {};
     }
     get() {
         return this.__data__;

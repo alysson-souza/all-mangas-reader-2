@@ -12,12 +12,16 @@
 				<v-icon>mdi-magnify</v-icon>
 			</v-btn>
 			<v-btn icon @click.stop="openRPanel()">
-				<v-icon>more_vert</v-icon>
+				<v-icon>mdi-dots-vertical</v-icon>
 			</v-btn>
 		</v-toolbar>
 		<!-- Default panel containing manga list -->
 		<v-content>
-			<MangaList @search-request="openSearch"></MangaList>
+			<MangaList
+				@search-request="openSearch"
+				@manga-loaded="handleLoaded()"
+				>
+			</MangaList>
 			<div id="__bottom_app__"></div>
 		</v-content>
 		<!-- Options dialog -->
@@ -31,7 +35,7 @@
         <v-card tile>
           <v-toolbar app>
             <v-btn icon @click.native="closeOptions()">
-              <v-icon>close</v-icon>
+              <v-icon>mdi-close</v-icon>
             </v-btn>
             <v-toolbar-title>{{i18n("options_title")}}</v-toolbar-title>
           </v-toolbar>
@@ -51,7 +55,7 @@
         <v-card tile>
           <v-toolbar app>
             <v-btn icon @click.native="closeSearch()">
-              <v-icon>close</v-icon>
+              <v-icon>mdi-close</v-icon>
             </v-btn>
             <v-toolbar-title>{{i18n("search_title")}}</v-toolbar-title>
           </v-toolbar>
@@ -80,13 +84,13 @@
 					</v-btn>
 				</v-flex>
 				<v-flex xs4>
-					<v-btn flat icon color="yellow" @click="opentab('/pages/bookmarks.html')">
-						<v-icon>star</v-icon>
+					<v-btn flat icon color="yellow" @click="opentab('/pages/bookmarks/bookmarks.html')">
+						<v-icon>mdi-star</v-icon>
 					</v-btn>
 				</v-flex>
 				<v-flex xs4>
 					<v-btn flat icon color="blue" @click="opentab('https://gitlab.com/all-mangas-reader/all-mangas-reader-2/wikis/home')">
-						<v-icon>help</v-icon>
+						<v-icon>mdi-help</v-icon>
 					</v-btn>
 				</v-flex>
 					</v-layout>
@@ -99,10 +103,10 @@
         		>
             <v-tabs-slider></v-tabs-slider>
             <v-tab href="#refresh">
-                <v-icon>refresh</v-icon>
+                <v-icon>mdi-refresh</v-icon>
             </v-tab>
-            <v-tab href="#importexport">
-                <v-icon>save</v-icon>
+            <v-tab @click="openImportExport()" href="#importexport">
+                <v-icon>mdi-content-save</v-icon>
             </v-tab>
         </v-tabs>
 				</v-flex>
@@ -131,6 +135,7 @@ import PopupResizer from './resizePopup';
 import Timers from '../components/Timers';
 import ImportExport from '../components/ImportExport';
 import browser from "webextension-polyfill";
+import * as utils from '../../amr/utils';
 
 export default {
   data() {
@@ -146,6 +151,7 @@ export default {
   name: "App",
   components: { MangaList, Options, Search, Timers, ImportExport },
   created() {
+		document.title = i18n("page_popup_title");
     // initialize state for store in popup from background
     this.$store.dispatch("getStateFromReference", {
       module: "mirrors",
@@ -166,6 +172,9 @@ export default {
 		}, 
 		closeOptions() {
 			this.options = false;
+			PopupResizer.setHeightToCurrent();
+		},
+		handleLoaded() {
 			PopupResizer.setHeightToCurrent();
 		},
 		/**
@@ -195,7 +204,14 @@ export default {
             action: "opentab",
             url: url
         });
-    },
+		},
+		/** Opens import export tab. If Firefox, opens it in a new tab because file input closes the extension : https://bugzilla.mozilla.org/show_bug.cgi?id=1292701 */
+		openImportExport() {
+			if (utils.isFirefox()) {
+				this.opentab("/pages/importexport/importexport.html");
+				window.close();
+			}
+		}
 	}, 
 	mounted: function () {
   	this.$nextTick(function () {
@@ -205,17 +221,17 @@ export default {
 };
 </script>
 <style>
-.dialog .card__title,
-.dialog .card__text {
+.v-dialog .v-card__title,
+.v-dialog .v-card__text {
   padding: 4px 16px;
 }
-.dialog .card__title {
+.v-dialog .v-card__title {
   padding-top: 10px;
 }
 .navigation-drawer {
     padding: 0;
 }
-.dialog .card--tile {
+.v-dialog .v-card--tile {
 	overflow: auto;
 }
 </style>

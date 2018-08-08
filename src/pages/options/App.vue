@@ -22,6 +22,7 @@ export default {
     };
   },
   async created() {
+    document.title = i18n("page_options_title");
     let init = [];
     // initialize mirrors state for store in options from background
     init.push(this.$store.dispatch("getStateFromReference", {

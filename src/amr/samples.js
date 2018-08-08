@@ -13,9 +13,9 @@ export default [
         url: "https://readms.net/manga/dragon_ball_super"
     },
     {
-        mirror: "Manga Here",
+        mirror: "Manga Panda",
         name: "Fairy Tail",
-        url: "https://www.mangahere.cc/manga/fairy_tail/"
+        url: "https://www.mangapanda.com/fairy-tail"
     },
     {
         mirror: "Manga Reader",

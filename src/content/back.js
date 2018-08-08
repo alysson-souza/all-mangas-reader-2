@@ -15,8 +15,7 @@ import HandleKeys from './handlekeys';
 /**
  * Every mirror implementation ends by a call to registerMangaObject
  * This function is defined here.
- * This script is injected by background script if the default content script (testcontent.js) 
- * found that the page could be a manga page. 
+ * This script is injected by background script if the page could be a manga page. 
  * Once loaded, the mirror implementation is called and results in this function call
  */
 window["registerMangaObject"] = async function (mirrorName, object) {
@@ -64,7 +63,30 @@ window["registerMangaObject"] = async function (mirrorName, object) {
             HandleKeys.init();
         }
 
-        // TODO stats perso
-        // TODO context menu for bookmarks and bookmarks
+        // TODO stats perso --> v2.0.3
     });
+}
+
+/** Function called through executeScript when context menu button invoked */
+window["clickOnBM"] = function(src) {
+    let imgScan = util.getScan(src);
+    if (!imgScan) return;
+
+    pageData.curbookmark.type = "scan";
+    pageData.curbookmark.scanUrl = src;
+    pageData.curbookmark.scanName = imgScan.data("idScan");
+
+    if (imgScan.data("note") !== undefined) {
+        $("#noteAMR").val(imgScan.data("note"));
+    } else {
+        $("#noteAMR").val("");
+    }
+    if (imgScan.data("booked") === 1) {
+        $("#delBtnAMR").show();
+    } else {
+        $("#delBtnAMR").hide();
+    }
+
+    navigation.showDialog();
+
 }

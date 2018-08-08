@@ -2,11 +2,12 @@
   "name": "All Mangas Reader",
   "description": "__MSG_description__",
   "author": "",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "manifest_version": 2,
   "default_locale": "en",
   "icons": {
     "48": "icons/icon_48.png",
+    "96": "icons/icon_96.png",
     "128": "icons/icon_128.png"
   },
   "browser_action": {
@@ -19,19 +20,6 @@
   "background": {
     "page": "background/background.html"
   },
-  "content_scripts": [
-    {
-      "matches": [
-        "*://*/*"
-      ],
-      "exclude_matches": [
-        "*://*.allmangasreader.com/*"
-      ],
-      "js": [
-        "content/testcontent.js"
-      ]
-    }
-  ],
   "permissions": [
     "tabs",
     "https://*/*",
@@ -41,7 +29,7 @@
     "notifications",
     "downloads"
   ],
-  "content_security_policy": "script-src 'self' https://localhost:8080/ https://www.google-analytics.com/ https://mirrors.allmangasreader.com/ ; object-src 'self'",
+  "content_security_policy": "script-src 'self' https://localhost:8080/ https://matomo.allmangasreader.com/ https://mirrors.allmangasreader.com/ ; object-src 'self'",
   "web_accessible_resources": [
     "icons/icon_32.png",
     "icons/down.png",
@@ -64,5 +52,6 @@
     "icons/imgerror.png",
     "icons/load10.gif",
     "icons/find.png"
-  ]
+  ],
+  "homepage_url" : "https://www.allmangasreader.com/"
 }

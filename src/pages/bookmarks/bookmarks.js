@@ -1,5 +1,5 @@
 import 'vuetify/dist/vuetify.min.css';
-import './lab.css';
+import './bookmarks.css';
 
 import 'regenerator-runtime/runtime';
 import browser from "webextension-polyfill";
@@ -10,12 +10,6 @@ import store from '../../store';
 import theme from '../theme';
 
 (async function() {
-  // Load options in store before everything
-  await store.dispatch("getStateFromReference", {
-    module: "options",
-    mutation: "extendOptions"
-  });
-
   // Load vue
   Vue.config.productionTip = false
   Vue.use(Vuetify, {theme: theme})
