@@ -84,7 +84,7 @@
         flat
         solo-inverted
         hide-details
-        prepend-inner-icon="search"
+        prepend-inner-icon="mdi-magnify"
         :label="i18n('bookmarks_search')"
         class="hidden-sm-and-down"
         v-model="search"
