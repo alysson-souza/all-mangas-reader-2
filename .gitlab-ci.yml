@@ -18,12 +18,7 @@ before_script:
 
 build:
     <<: *build_common
-    allow_failure: true
     script: yarn run build
-
-build:dev:
-    <<: *build_common
-    script: yarn run build:dev
 
 .zip_common: &zip_common
     stage: package
@@ -37,11 +32,6 @@ zip:
     <<: *zip_common
     dependencies:
         - build
-
-zip:dev:
-    <<: *zip_common
-    dependencies:
-        - build:dev
 
 xpi-beta:
     stage: package
