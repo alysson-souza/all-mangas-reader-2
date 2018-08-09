@@ -17,7 +17,7 @@ import theme from '../theme';
 
   // Load vue
   Vue.config.productionTip = false
-  Vue.use(Vuetify, {theme: theme})
+  Vue.use(Vuetify, {theme: theme, iconfont: 'mdi'})
   new Vue({
     el: '#app',
     store,
