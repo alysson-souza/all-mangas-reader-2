@@ -5,7 +5,7 @@ stages:
     - package
 
 before_script:
-    - export LAST_TAG=$(git describe --tags --abbrev=0 --always 2>/dev/null)
+    - export LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null)
     - export PATCH=$(git rev-list ${LAST_TAG:+$LAST_TAG..}HEAD | wc -l)
     - yarn
 
