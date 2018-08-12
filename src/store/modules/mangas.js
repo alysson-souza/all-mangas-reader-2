@@ -108,7 +108,6 @@ const actions = {
         commit('resetManga', message);
         let mg = state.all.find(manga => manga.key === key);
         dispatch('updateManga', mg);
-        statsEvents.trackResetManga(mg);
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();
     },
@@ -136,7 +135,6 @@ const actions = {
             } catch (e) { console.error(e) } // ignore error if manga list can't be updated
             dispatch('updateManga', mg);
             statsEvents.trackReadManga(mg);
-            statsEvents.trackReadMangaChapter(mg);
         }
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();
