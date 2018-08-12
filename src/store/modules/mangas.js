@@ -131,7 +131,6 @@ const actions = {
             } catch (e) { console.error(e) } // ignore error if manga list can not be loaded --> save the manga
             utils.debug("saving new manga to database");
             dispatch('updateManga', mg);
-            if (!message.auto) statsEvents.trackAddManga(mg);
         } else {
             try {
                 await dispatch("consultManga", message);
@@ -418,7 +417,6 @@ const actions = {
         if (mg !== undefined) {
             commit('deleteManga', message.key);
             storedb.deleteManga(message.key);
-            statsEvents.trackDeleteManga(mg);
         }
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();

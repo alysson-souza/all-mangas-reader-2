@@ -34,12 +34,6 @@ class StatsEvents {
             }
         }
     }
-    trackAddManga(mg) {
-        this.trackEvent('AddManga', mg.mirror, mg.name);
-    }
-    trackDeleteManga(mg) {
-        this.trackEvent('DeleteManga', mg.mirror, mg.name);
-    }
     trackReadManga(mg) {
         this.trackEvent('ReadManga', mg.mirror, mg.name);
     }
