@@ -106,7 +106,7 @@ export default {
       showDialog: false, // do show dialog to ask smthg
       dialogTitle: "", //title of opened dialog
       dialogText: "", // text of opened dialog
-      dialogAction: () => {} // action to take on yes in dialog
+      dialogAction: () => {self.showDialog = false} // action to take on yes in dialog
     };
   },
   computed: {
@@ -180,6 +180,7 @@ export default {
         this.dialogText = i18n("list_global_read_text", this.visNewMangas.length);
         let self = this;
         this.dialogAction = () => {
+            self.showDialog = false
             self.visNewMangas.forEach(mg => {
                 self.$store.dispatch("readManga", {
                     url: mg.url,
@@ -189,7 +190,6 @@ export default {
                     name: mg.name
                 })
             })
-            self.showDialog = false
         }
         this.showDialog = true;
     },
@@ -198,12 +198,12 @@ export default {
         this.dialogText = i18n("list_global_delete_text", this.visMangas.length);
         let self = this;
         this.dialogAction = () => {
+            self.showDialog = false
             self.visMangas.forEach(mg => {
                 self.$store.dispatch("deleteManga", {
                     key: mg.key
                 })
             })
-            self.showDialog = false
         }
         this.showDialog = true;
     }, 
