@@ -46,7 +46,7 @@
         </v-tooltip>
         <div v-if="manga.listChaps.length" class="amr-prog-cont">
           <div class="amr-select-wrapper">
-            <select :value="manga.lastChapterReadURL" v-on:input="selChapter = $event.target.value" :class="color(2) + ' amr-chap-sel'" @change="playChap()">
+            <select :value="selValue" v-on:input="selChapter = urlFromValue($event.target.value)" :class="color(2) + ' amr-chap-sel'" @change="playChap()">
               <option v-for="chap in chapsForSelect" :key="chap.value" :value="chap.value">{{chap.text}}</option>
             </select>
           </div>
@@ -131,12 +131,15 @@ import i18n from "../../amr/i18n";
 import { mapGetters } from "vuex";
 import browser from "webextension-polyfill";
 import * as utils from "../utils";
+import * as amrutils from "../../amr/utils";
 
 export default {
   data() {
     return {
       // current selected chapter
       selChapter: this.manga.lastChapterReadURL,
+      // current selected value
+      selValue: amrutils.chapPath(this.manga.lastChapterReadURL),
       // current state of other grouped mangas panel
       expanded: false, 
       // delete manga popup state
@@ -181,7 +184,7 @@ export default {
     // format chapters list to be displayed
     chapsForSelect: function() {
       return this.manga.listChaps.map(arr => {
-        return { value: arr[1], text: arr[0] };
+        return { value: amrutils.chapPath(arr[1]), text: arr[0], url: arr[1] };
       });
     },
     // calculate reading progress
@@ -190,8 +193,8 @@ export default {
     },
     // position of current chapter in chapters list
     posInChapList() {
-      return this.manga.listChaps.findIndex(
-        arr => arr[1] === this.manga.lastChapterReadURL
+      return this.chapsForSelect.findIndex(
+        el => el.value === this.selValue
       );
     }, 
     // number of days since last chapter has been published
@@ -211,14 +214,15 @@ export default {
           ? ""
           : light < 0 ? " darken-" + -light : " lighten-" + light;
       if (this.manga.read !== 0) return this.options.colornotfollow + lstr;
-      else if (
-        this.manga.listChaps.length &&
-        this.manga.lastChapterReadURL !== this.manga.listChaps[0][1]
-      ) {
+      else if (utils.hasNew(this.manga)) {
         return this.options.colornew + lstr;
       } else {
         return this.options.colorread + lstr;
       }
+    },
+    /** get the real url from the value (url path used in select) in the manga list */
+    urlFromValue: function(val) {
+      return this.manga.listChaps.find(arr => amrutils.chapPath(arr[1]) === val)[1];
     },
     /**
      * Click on + / - to expand reduce similar mangas

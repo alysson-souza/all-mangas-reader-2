@@ -161,10 +161,7 @@ export default {
           ? ""
           : light < 0 ? " darken-" + -light : " lighten-" + light;
       if (this.first.read !== 0) return this.options.colornotfollow + lstr;
-      else if (
-        this.first.listChaps.length &&
-        this.first.lastChapterReadURL !== this.first.listChaps[0][1]
-      ) {
+      else if (utils.hasNew(this.first)) {
         return this.options.colornew + lstr;
       } else {
         return this.options.colorread + lstr;

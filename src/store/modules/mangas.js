@@ -36,8 +36,7 @@ const getters = {
     hasNewMangas: (state) => {
         for (let mg of state.all) {
             if (mg.listChaps.length > 0) {
-                var lastUrl = mg.listChaps[0][1];
-                if (lastUrl != mg.lastChapterReadURL && mg.read == 0) {
+                if (utils.chapPath(mg.listChaps[0][1]) != utils.chapPath(mg.lastChapterReadURL) && mg.read == 0) {
                     return true;
                 }
             }
@@ -51,8 +50,7 @@ const getters = {
         let nb = 0;
         for (let mg of state.all) {
             if (mg.listChaps.length > 0) {
-                var lastUrl = mg.listChaps[0][1];
-                if (lastUrl != mg.lastChapterReadURL && mg.read == 0) {
+                if (utils.chapPath(mg.listChaps[0][1]) != utils.chapPath(mg.lastChapterReadURL) && mg.read == 0) {
                     nb++;
                 }
             }
@@ -173,9 +171,11 @@ const actions = {
             isNew = false,
             mg = state.all.find(manga => manga.key === key);
 
+        let mgchap = utils.chapPath(mg.lastChapterReadURL), 
+            messchap = utils.chapPath(message.lastChapterReadURL);
         for (let i = 0; i < mg.listChaps.length; i++) {
-            if (mg.listChaps[i][1] === mg.lastChapterReadURL) posOld = i;
-            if (mg.listChaps[i][1] === message.lastChapterReadURL) posNew = i;
+            if (utils.chapPath(mg.listChaps[i][1]) === mgchap) posOld = i;
+            if (utils.chapPath(mg.listChaps[i][1]) === messchap) posNew = i;
         }
 
         commit('updateMangaEntryWithInfos', { key: mg.key, obj: message });
@@ -187,9 +187,11 @@ const actions = {
                         let listChaps = await dispatch("getMangaListOfChapters", mg)
                         if (listChaps.length > 0) {
                             commit('updateMangaListChaps', { key: mg.key, listChaps: listChaps });
+                            let mgchap = utils.chapPath(mg.lastChapterReadURL), 
+                                messchap = utils.chapPath(message.lastChapterReadURL);
                             for (let i = 0; i < listChaps.length; i++) {
-                                if (listChaps[i][1] === mg.lastChapterReadURL) posOld = i;
-                                if (listChaps[i][1] === message.lastChapterReadURL) posNew = i;
+                                if (utils.chapPath(listChaps[i][1]) === mgchap) posOld = i;
+                                if (utils.chapPath(listChaps[i][1]) === messchap) posNew = i;
                             }
                             if (posNew !== -1 && (message.fromSite || (posNew < posOld || posOld === -1))) {
                                 commit('updateMangaLastChapter', { key: mg.key, obj: message });

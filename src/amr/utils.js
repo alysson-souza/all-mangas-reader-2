@@ -184,3 +184,10 @@ export function fdate() {
     return d.getFullYear() + "-" + twodigits(d.getMonth()+1) + "-" + twodigits(d.getDate()) + "_" +
     twodigits(d.getHours()) + "-" + twodigits(d.getMinutes()) + "-" + twodigits(d.getSeconds());
 }
+/**
+ * Return the path from a url (used for chapters url)
+ */
+export function chapPath(chap_url) {
+    if (!chap_url) return chap_url;
+    return chap_url.split("/").slice(3).join("/")//new URL(chap_url).pathname
+}

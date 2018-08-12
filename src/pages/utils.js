@@ -1,13 +1,16 @@
+import * as amrutils from '../amr/utils';
+
 export function hasNew(manga) {
     return (
         manga.read === 0 &&
         (manga.listChaps.length &&
-            manga.lastChapterReadURL !== manga.listChaps[0][1])
+            amrutils.chapPath(manga.lastChapterReadURL) !== amrutils.chapPath(manga.listChaps[0][1]))
     );
 }
+
 export function hasBeenRead(manga) {
     return (manga.listChaps.length &&
-        manga.lastChapterReadURL === manga.listChaps[0][1]);
+        amrutils.chapPath(manga.lastChapterReadURL) === amrutils.chapPath(manga.listChaps[0][1]));
 }
 export function displayFilterCats(manga, categories) {
     let include = false, exclude = false;
