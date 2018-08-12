@@ -116,6 +116,11 @@ const actions = {
      */
     async readManga({ dispatch, commit, getters }, message) {
         let key = utils.mangaKey(message.url);
+        if (key.indexOf("unknown") === 0) {
+            console.error("Impossible to import manga because mirror can't be found. Perhaps has it been deleted...");
+            console.error(message);
+            return;
+        }
         let mg = state.all.find(manga => manga.key === key);
         if (mg === undefined) {
             utils.debug("readManga of an unlisted manga --> create it");
@@ -252,6 +257,29 @@ const actions = {
                                 lastChapterReadName: listChaps[listChaps.length - 1][0],
                                 fromSite: false
                             }});
+                        } else {
+                            // test if lastChapterRead is consistent (exists)
+                            let lastReadPath = utils.chapPath(mg.lastChapterReadURL)
+                            let lastRead = mg.listChaps.find(arr => utils.chapPath(arr[1]) === lastReadPath)
+                            if (!lastRead) {
+                                console.error("Manga " + mg.name + " on " + mg.mirror + " has a lastChapterReadURL set to " + mg.lastChapterReadURL + " but this url can no more be found in the chapters list. First url in list is " + mg.listChaps[0][1] + ". " );
+                                let probable = utils.findProbableChapter(mg.lastChapterReadURL, mg.listChaps);
+                                if (probable !== undefined) {
+                                    console.log("Found probable chapter : " + probable[0] + " : " + probable[1])
+                                    commit('updateMangaLastChapter', {key: mg.key, obj : {
+                                        lastChapterReadURL: probable[1],
+                                        lastChapterReadName: probable[0],
+                                        fromSite: false
+                                    }});
+                                } else {
+                                    console.log("No list entry or multiple list entries match the known last chapter. Reset to first chapter");
+                                    commit('updateMangaLastChapter', {key: mg.key, obj : {
+                                        lastChapterReadURL: listChaps[listChaps.length - 1][1],
+                                        lastChapterReadName: listChaps[listChaps.length - 1][0],
+                                        fromSite: false
+                                    }});
+                                }
+                            }
                         }
                     }
 

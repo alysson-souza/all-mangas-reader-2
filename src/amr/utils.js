@@ -191,3 +191,39 @@ export function chapPath(chap_url) {
     if (!chap_url) return chap_url;
     return chap_url.split("/").slice(3).join("/")//new URL(chap_url).pathname
 }
+/**
+ * Return the list of pathname elements 
+ */
+export function urlwords(url) {
+    return url.split("/").slice(3)
+}
+/**
+ * Test if a chapter url matchs another pathname
+ * Return n the number of matched pathname parts
+ */
+export function matchurl(url, paths) {
+    let chps = urlwords(url);
+    let res = chps.reduce(
+        (nb, path) => paths.findIndex(p => path === p) >= 0 ? nb + 1 : nb
+    , 0)
+    return res;
+}
+/**
+ * Find the probable chapter from its url and list of chapters
+ */
+export function findProbableChapter(lastReadURL, list) {
+    let lws = urlwords(lastReadURL);
+    let max = 0;
+    let lstMax = [];
+    for (let arr of list) {
+        let prob = matchurl(arr[1], lws);
+        if (prob > max) {
+            max = prob;
+            lstMax = [arr];
+        } else if (prob === max) {
+            lstMax.push(arr);
+        }
+    }
+    if (lstMax.length === 1) return lstMax[0];
+    return;
+}
