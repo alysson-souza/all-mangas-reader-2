@@ -136,10 +136,8 @@ import * as amrutils from "../../amr/utils";
 export default {
   data() {
     return {
-      // current selected chapter
+      // current selected chapter in the select, used to handle click in select list
       selChapter: this.manga.lastChapterReadURL,
-      // current selected value
-      selValue: amrutils.chapPath(this.manga.lastChapterReadURL),
       // current state of other grouped mangas panel
       expanded: false, 
       // delete manga popup state
@@ -160,6 +158,8 @@ export default {
     "seen",
   ],
   computed: {
+    // current selected value
+    selValue: function() {return amrutils.chapPath(this.manga.lastChapterReadURL)},
     // AMR options
     options: function() {
       return this.$store.state.options;
