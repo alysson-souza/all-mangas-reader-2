@@ -8,7 +8,7 @@ import * as utils from './utils';
  */
 class MirrorsImpl {
     constructor() {
-        this.implementations = [];
+        this.implementations = {};
         /**
          * This function is called when an implementation is loaded
          */
@@ -23,7 +23,14 @@ class MirrorsImpl {
      * Removes the implementation cache
      */
     resetImplementations() {
-        this.implementations = [];
+        this.implementations = {};
+        let scripts = document.getElementsByTagName("script");
+        for (let i = scripts.length - 1; i > 0; i--) {
+            if (store.state.options["impl_repositories"].findIndex(repo => scripts[i].src.indexOf(repo) >= 0) >= 0) {
+                // delete script
+                scripts[i].parentNode.removeChild(scripts[i]);
+            }
+        }
     }
 
     /**
@@ -35,12 +42,13 @@ class MirrorsImpl {
         return new Promise((resolve, reject) => {
             const script = document.createElement('script');
             document.body.appendChild(script);
+            self.implementations[mirrorName] = {}
             script.onload = () => {
-                //wait for implemenattion object to be populated
+                // wait for implemenattion object to be populated
                 (function waitForInit() {
-                    if (self.implementations[mirrorName]) return resolve(self.implementations[mirrorName]);
+                    if (self.implementations[mirrorName].home) return resolve(self.implementations[mirrorName]);
                     setTimeout(waitForInit, 10);
-                })();
+                })()
             };
             script.onerror = reject;
             script.async = true;
@@ -53,12 +61,22 @@ class MirrorsImpl {
      * @param {*} mirrorName 
      */
     async getImpl(mirrorName) {
-        if (!this.implementations) this.implementations = [];
-        if (this.implementations[mirrorName]) {
-            return Promise.resolve(this.implementations[mirrorName]);
+        let self = this;
+        if (this.implementations === undefined) this.implementations = {};
+        if (this.implementations[mirrorName] !== undefined) {
+            if (this.implementations[mirrorName].home) { // really loaded
+                return Promise.resolve(this.implementations[mirrorName]);
+            } else { // loading
+                // wait for implemenattion object to be populated
+                return new Promise((resolve, reject) => {
+                    (function waitForInit() {
+                        if (self.implementations[mirrorName].home) return resolve(self.implementations[mirrorName]);
+                        setTimeout(waitForInit, 10);
+                    })()
+                });
+            }
         }
         utils.debug("Load implementation of mirror " + mirrorName + " from repository");
-        let self = this;
         return new Promise(async (resolve, reject) => {
             let found = false;
             // Try to load script from first repo, next, ...
