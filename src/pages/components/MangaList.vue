@@ -262,7 +262,13 @@ export default {
   padding: 20px;
   text-align: center;
 }
-.amr-mangas {
+.amr-nomangas, .amr-mangas {
+    max-width: 750px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+body.popup .amr-mangas {
   max-height: 452px;
   overflow-y: auto;
   overflow-x: hidden;

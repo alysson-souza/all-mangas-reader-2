@@ -16,15 +16,21 @@ import theme from '../theme';
     mutation: "extendOptions"
   });
 
+  let popup = true;
+  if (window.location.href.indexOf("mode=tab") >= 0) {
+    popup = false;
+  }
+
   /** Open in new tab if required */
-  if (store.state.options.newTab === 1 
-    && window.location.href.indexOf("mode=tab") < 0) {
+  if (store.state.options.newTab === 1 && popup) {
     browser.runtime.sendMessage({
       action: "opentab",
       url: "/pages/popup/popup.html?mode=tab"
     });
   }
-
+  if (popup) {
+    document.body.classList.add("popup");
+  }
   // Load vue
   Vue.config.productionTip = false
   Vue.use(Vuetify, {theme: theme, iconfont: 'mdi'})
