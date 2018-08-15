@@ -37,8 +37,8 @@ class StatsEvents {
     trackReadManga(mg) {
         this.trackEvent('ReadManga', mg.mirror, mg.name);
     }
-    trackInstall(version, isbeta) {
-        this.trackEvent('Install', version);
+    trackInstall(version, isbeta, navigator) {
+        this.trackEvent('Install', version, navigator);
     }
 }
 export default (new StatsEvents)
