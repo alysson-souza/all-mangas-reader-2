@@ -38,7 +38,7 @@ zip:
 xpi-beta:
     stage: package
     script:
-        - yarn run manifest:specify -firefox -version $PATCH
+        - yarn run manifest:specify -firefox -patch $PATCH
         - web-ext sign --source-dir=dist --api-key="$SIGN_FF_API_KEY" --api-secret="$SIGN_FF_API_SECRET" --artifacts-dir=dist-zip
     artifacts:
         paths:
@@ -71,7 +71,7 @@ xpi-unsigned:
 crx-beta:
     stage: package
     script:
-        - yarn run manifest:specify -chrome -version $PATCH
+        - yarn run manifest:specify -chrome -patch $PATCH
         - yarn run build-zip
     artifacts:
         paths:

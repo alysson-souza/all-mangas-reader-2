@@ -1,7 +1,7 @@
 /**
  * Update the manifest.json file from dist folder to create a releasable extension : 
  * Options are : 
- *  -version x : number that will be added to the current version number (if current version is 2.0.0 and x is 67, generated version will be 2.0.0.67). If version is specified, the generated extension will be supposed to update on the beta channel and "Beta" will be added to the extension name
+ *  -patch x : number that will be added to the current version number (if current version is 2.0.0 and x is 67, generated version will be 2.0.0.67). If is specified, the generated extension will be supposed to update on the beta channel and "Beta" will be added to the extension name
  *  -chrome : if option is present, manifest will be adapted for chrome needs
  *  -firefox : if option is present, manifest will be adapted for firefox needs
  */
@@ -12,8 +12,8 @@ let ext = require(fileName);
 
 // update file entries
 let isBeta = false;
-if (process.argv.includes("-version")) {
-    let inc = process.argv[process.argv.findIndex(el => el === "-version") + 1];
+if (process.argv.includes("-patch")) {
+    let inc = process.argv[process.argv.findIndex(el => el === "-patch") + 1];
     ext.version = ext.version + "." + inc;
     ext.name = ext.name + " Beta";
     isBeta = true;
