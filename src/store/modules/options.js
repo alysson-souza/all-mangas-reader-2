@@ -32,7 +32,7 @@ const default_options = {
      * Options used by background script
      */
     "impl_repositories": [ // repositories containing mirrors implementations
-        "https://mirrors.allmangasreader.com/v3/"
+        "https://mirrors.allmangasreader.com/v4/"
     ],
 
     /** Customization options */
@@ -185,6 +185,15 @@ const actions = {
         localStorage["o.impl_repositories"] = JSON.stringify(state.impl_repositories);
     },
     /**
+     * Update a repository in the list
+     * @param {*} param0 
+     * @param {*} repourl 
+     */
+    updateRepository({ commit, state }, {old_repo, new_repo}) {
+        commit('updateRepository', {repourl: old_repo, newrepo: new_repo});
+        localStorage["o.impl_repositories"] = JSON.stringify(state.impl_repositories);
+    },
+    /**
      * Adds a repository in the list
      * @param {*} param0 
      * @param {*} repourl 
@@ -284,6 +293,15 @@ const mutations = {
     deleteRepository(state, repourl) {
         let index = state.impl_repositories.indexOf(repourl);
         if (index >= 0) state.impl_repositories.splice(index, 1);
+    },
+    /**
+     * Update a repository in the list
+     * @param {*} state 
+     * @param {*} repourl 
+     */
+    updateRepository(state, {repourl, newrepo}) {
+        let index = state.impl_repositories.indexOf(repourl);
+        state.impl_repositories[index] = newrepo;
     },
     /**
      * Adds a repository in the list

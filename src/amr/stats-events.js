@@ -40,5 +40,9 @@ class StatsEvents {
     trackInstall(version, isbeta, navigator) {
         this.trackEvent('Install', version, navigator);
     }
+    trackUpdate(version, isbeta, navigator) {
+        this.trackEvent('Update', version, navigator);
+    }
+    
 }
 export default (new StatsEvents)
