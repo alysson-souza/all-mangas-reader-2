@@ -60,8 +60,20 @@ class Util {
         ];
         let imgScan;
         let i = 0;
-        while (!imgScan || imgScan.length === 0 || i < urls.length) {
-            imgScan = $(".spanForImg img[src='" + urls[i++] + "']");
+        while ((!imgScan || imgScan.length === 0) && i < urls.length) {
+            imgScan = $(".spanForImg img[src='" + urls[i] + "']");
+            if (imgScan.length === 0) {
+                imgScan = $("a.spanForImg[href='" + urls[i] + "'] img");
+            }
+            i++;
+        }
+        if (imgScan.length === 0) {
+            $(".spanForImg img").each(function(ind, img) {
+                if (urls.find($(img).data("urlToLoad")) >= 0) {
+                    imgScan = $(img);
+                    return false;
+                }
+            })
         }
         if (imgScan.length === 0) {
             console.error("Scan to bookmark not found !");

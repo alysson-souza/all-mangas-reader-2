@@ -33,7 +33,7 @@ window["registerMangaObject"] = async function (mirrorName, object) {
         return;
     }
     // Retrieve informations relative to current chapter / manga read
-    mirrorImpl.get().getInformationsFromCurrentPage(document, window.location.href, function (data) {
+    mirrorImpl.get().getInformationsFromCurrentPage(document, window.location.href, async function (data) {
         util.debug("Informations for current page loaded : ");
         util.debug(data);
         // Initialize pageData state
@@ -43,6 +43,7 @@ window["registerMangaObject"] = async function (mirrorName, object) {
         if (options.displayChapters == 1) { // if display book
             // retrieve images to load (before doSomethingBeforeWritingScans because it can harm the source of data)
             imagesUrl = mirrorImpl.get().getListImages(document, window.location.href);
+            if (imagesUrl.then !== undefined) imagesUrl = await imagesUrl // imagesUrl is a Promise
             util.debug(imagesUrl.length + " images to load");
         }
         // some mirrors need to do something before the page is transformed
@@ -73,7 +74,7 @@ window["clickOnBM"] = function(src) {
     if (!imgScan) return;
 
     pageData.curbookmark.type = "scan";
-    pageData.curbookmark.scanUrl = src;
+    pageData.curbookmark.scanUrl = imgScan.data("urlToLoad");
     pageData.curbookmark.scanName = imgScan.data("idScan");
 
     if (imgScan.data("note") !== undefined) {

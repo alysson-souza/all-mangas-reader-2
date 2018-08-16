@@ -1,5 +1,6 @@
 import storedb from '../../amr/storedb'
 import * as utils from '../../amr/utils'
+import mirrors from './mirrors';
 
 /**
  *  initial state of the bookmarks module
@@ -54,8 +55,8 @@ const actions = {
      * @param {*} param0 
      * @param {*} key 
      */
-    async deleteBookmark({ commit }, {chapUrl, scanUrl}) {
-        let key = utils.mangaKey(chapUrl) + (scanUrl ? "_" + utils.mangaKey(scanUrl) : "")
+    async deleteBookmark({ commit }, {chapUrl, scanUrl, mirror}) {
+        let key = utils.mangaKey(chapUrl) + (scanUrl ? "_" + utils.mangaKey(scanUrl, mirror) : "")
         let bm = state.all.find(bookmark => bookmark.key === key);
         if (bm !== undefined) {
             commit('deleteBookmark', key);
@@ -88,7 +89,7 @@ const mutations = {
      */
     createBookmark(state, bm) {
         if (!bm.key) {
-            bm.key = utils.mangaKey(bm.chapUrl) + (bm.scanUrl ? "_" + utils.mangaKey(bm.scanUrl) : "")
+            bm.key = utils.mangaKey(bm.chapUrl) + (bm.scanUrl ? "_" + utils.mangaKey(bm.scanUrl, bm.mirror) : "")
         }
         state.all.push(bm)
     }, 
@@ -98,7 +99,7 @@ const mutations = {
      * @param {*} bm bookmark with new note
      */
     async updateBookmarkNote(state, bm) {
-        let key = utils.mangaKey(bm.chapUrl) + (bm.scanUrl ? "_" + utils.mangaKey(bm.scanUrl) : "")
+        let key = utils.mangaKey(bm.chapUrl) + (bm.scanUrl ? "_" + utils.mangaKey(bm.scanUrl, bm.mirror) : "")
         let bmn = state.all.find(bookmark => bookmark.key === key)
         if (bmn !== undefined) {
             bmn.note = bm.note

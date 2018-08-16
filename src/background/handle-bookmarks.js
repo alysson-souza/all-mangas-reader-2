@@ -2,6 +2,7 @@ import store from '../store';
 import * as utils from '../amr/utils';
 import i18n from '../amr/i18n';
 import browser from "webextension-polyfill";
+import mirrorsImpl from '../amr/mirrors-impl';
 
 class HandleBookmarks {
     constructor() {
@@ -28,7 +29,7 @@ class HandleBookmarks {
                     this.context_ids.push(url);
                     let id = browser.contextMenus.create({
                         title: i18n("background_bookmark_menu"),
-                        contexts: ["image"],
+                        contexts: ["image", "link"],
                         onclick: function (info, tab) {
                             browser.tabs.executeScript(tab.id, {
                                 code: "clickOnBM(\"" + info.srcUrl + "\")"
@@ -38,15 +39,34 @@ class HandleBookmarks {
                     });
                 }
                 return Promise.resolve({});
+            case "getScanUrl":
+                return this.getScanUrl(message);
         }
     }
 
+    /**
+     * Gets a scan url
+     */
+    async getScanUrl(message) {
+        return new Promise(async (resolve, reject) => {
+            let img = new Image();
+            img.onerror = (e) => reject(e);
+            let impl = await mirrorsImpl.getImpl(message.mirror);
+            impl.getImageFromPageAndWrite(message.url, img);
+            (function wait() {
+                if (img.src && img.src != "") {
+                    resolve(img.src);
+                }
+                setTimeout(wait, 20);
+            })()
+        })
+    }
     /**
      * Find a bookmark from store
      * @param {*} obj 
      */
     findBookmark(obj) {
-        let key = utils.mangaKey(obj.chapUrl) + (obj.scanUrl ? "_" + utils.mangaKey(obj.scanUrl): "")
+        let key = utils.mangaKey(obj.chapUrl) + (obj.scanUrl ? "_" + utils.mangaKey(obj.scanUrl, obj.mirror): "")
         return store.state.bookmarks.all.find(bookmark => bookmark.key === key)
     }
     /**
@@ -109,7 +129,8 @@ class HandleBookmarks {
         // adds a new bookmark
         store.dispatch("deleteBookmark", {
             chapUrl : obj.chapUrl,
-            scanUrl : obj.scanUrl
+            scanUrl : obj.scanUrl,
+            mirror: obj.mirror
         })
     }
 }

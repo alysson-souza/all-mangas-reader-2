@@ -200,7 +200,6 @@ class Navigation {
             $(".bookAMR").attr("src", browser.extension.getURL("icons/bookmarkred.png"));
             pageData.curbookmark.chapbooked = true;
         }
-
         await browser.runtime.sendMessage(obj);
         $.modal.close();
     }

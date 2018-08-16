@@ -79,7 +79,7 @@ class HandleLab {
                                 resolve(imagesUrl);
                             } else if (message.task === "getScanUrl") {
                                 let img = new Image();
-                                impl.getImageFromPageAndWrite(message.url, img, document.getElementById(id).contentWindow.document, message.url);
+                                impl.getImageFromPageAndWrite(message.url, img);
                                 (function wait() {
                                     if (img.src && img.src != "") {
                                         resolve(img.src);

@@ -4,13 +4,12 @@
         <v-layout row wrap>
             <v-flex xs12 sm6  v-bind="getSize()" v-for="bm in sortBookmarkList" :key="bm.key">
                 <v-card tile>
-                    <v-card-media v-if="bm.type == 'scan'"
-                        :src="bm.scanUrl"
-                        :height="getHeight()"
-                        @click="setScan(bm)"
-                        class="amr-scan"
-                        >
-                    </v-card-media>
+                    <BookmarkScan 
+                         v-if="bm.type == 'scan'"
+                        :bookmark="bm" 
+                        @click-scan="setScan(bm)" 
+                        @change-url="changeUrl"
+                        :height="getHeight()" />
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn icon @click="openEdit(bm)">
@@ -75,7 +74,9 @@
 <script>
 import i18n from "../../amr/i18n";
 import VueGallery from "vue-gallery";
+import BookmarkScan from "./BookmarkScan";
 import browser from "webextension-polyfill";
+import Vue from 'vue';
 
 export default {
   data() {
@@ -91,7 +92,7 @@ export default {
     scans: function() {
       return this.sortBookmarkList
         .filter(bm => bm.type === "scan")
-        .map(bm => bm.scanUrl);
+        .map(bm => bm.displayedUrl);
     },
     sortBookmarkList: function() {
         return this.bookmarkList.sort((a, b) => {
@@ -144,7 +145,7 @@ export default {
       this.editBookmarkDialog = false;
     },
     setScan(bm) {
-      this.curScan = this.scans.findIndex(sc => sc === bm.scanUrl);
+      this.curScan = this.scans.findIndex(sc => sc === bm.displayedUrl || sc === bm.scanUrl);
     },
     openTab(bm) {
         browser.runtime.sendMessage({ action: "opentab", url: bm.chapUrl });
@@ -154,11 +155,17 @@ export default {
      */
     getIcon(mirrorname) {
         return this.$store.state.mirrors.all.find(mir => mir.mirrorName === mirrorname).mirrorIcon
+    },
+    /** Called when BookmarkScan updates the url to display */
+    changeUrl({url, key}) {
+        let nbm = this.bookmarkList.find(bm => bm.key === key);
+        Vue.set(nbm, "displayedUrl", url)
     }
   },
 
   components: {
-    gallery: VueGallery
+    gallery: VueGallery,
+    BookmarkScan
   }
 };
 </script>
@@ -167,9 +174,6 @@ export default {
   font-size: 14px !important;
   line-height: 24px !important;
   letter-spacing: normal !important;
-}
-.amr-scan {
-    cursor: pointer;
 }
 </style>
 

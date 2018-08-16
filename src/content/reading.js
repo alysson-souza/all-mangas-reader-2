@@ -56,11 +56,12 @@ class Reading {
             td.css("text-align", "center");
             td.appendTo(tr);
 
-            let spanner = $("<div class='spanForImg'></div>");
+            let spanner = $("<a class='spanForImg' href='" + list[i] + "'></div>");
             $(spanner).css("vertical-align", "middle");
             $(spanner).css("text-align", "center");
             $(spanner).data("order", i);
             spanner.appendTo(td);
+            spanner.click((e) => e.preventDefault());
 
             let div = $("<div id='loader" + i + "' class='divLoading'></div>");
             div.css("background", "url(" + browser.extension.getURL("icons/loading.gif") + ") no-repeat center center");
@@ -95,7 +96,7 @@ class Reading {
         }
 
         //Create contextual menu to bookmark image
-        let url = $(img).attr("src");
+        let url = $(img).data("urlToLoad");
         if (url.indexOf("//") === 0) {
             url = location.protocol + url;
         }
@@ -110,7 +111,7 @@ class Reading {
             url: pageData.currentMangaURL,
             chapUrl: pageData.currentChapterURL,
             type: "scan",
-            scanUrl: $(img).attr("src"),
+            scanUrl: $(img).data("urlToLoad"),
             scanName: $(img).data("idScan")
         };
         let result = await browser.runtime.sendMessage(objBM);
@@ -131,7 +132,7 @@ class Reading {
                         chapUrl: pageData.currentChapterURL,
                         type: "scan"
                     };
-                    obj.scanUrl = $(img).attr("src");
+                    obj.scanUrl = $(img).data("urlToLoad");
 
                     $(img).css("border-top-color", "white");
                     $(img).css("border-right-color", "white");
@@ -152,7 +153,7 @@ class Reading {
                         name: pageData.name,
                         chapName: pageData.currentChapter
                     };
-                    obj.scanUrl = $(img).attr("src");
+                    obj.scanUrl = $(img).data("urlToLoad");
                     if (obj.scanUrl.indexOf("//") === 0) obj.scanUrl = location.protocol + obj.scanUrl;
                     obj.scanName = $(img).data("idScan");
                     obj.note = "";
@@ -204,7 +205,7 @@ class Reading {
                     $(nimg).css("border", "5px solid white");
                     $(nimg).on("load", () => reading.onLoadImage(nimg));
                     $(nimg).on("error", () => reading.onErrorImage(nimg));
-                    mirrorImpl.get().getImageFromPageAndWrite(util.removeProtocol(url), nimg, document, window.location.href);
+                    mirrorImpl.get().getImageFromPageAndWrite(util.removeProtocol(url), nimg);
 
                     $(nimg).appendTo(spanner);
 
@@ -236,7 +237,7 @@ class Reading {
                 $(imgSave).addClass("imageAMR");
                 $(imgSave).on("load", () => reading.onLoadImage(imgSave));
                 $(imgSave).on("error", () => reading.onErrorImage(imgSave));
-                mirrorImpl.get().getImageFromPageAndWrite($(img).data("urlToLoad"), imgSave, document, window.location.href);
+                mirrorImpl.get().getImageFromPageAndWrite($(img).data("urlToLoad"), imgSave);
 
                 $(img).after($(imgSave));
                 $(img).remove();
@@ -260,7 +261,7 @@ class Reading {
 
         if (options.imgorder == 1) {
             if (this.nbLoaded(where) == pos) {
-                mirrorImpl.get().getImageFromPageAndWrite(util.removeProtocol(url), img, document, window.location.href);
+                mirrorImpl.get().getImageFromPageAndWrite(util.removeProtocol(url), img);
             } else {
                 var _self = this;
                 setTimeout(function () {
@@ -268,7 +269,7 @@ class Reading {
                 }, 100);
             }
         } else {
-            mirrorImpl.get().getImageFromPageAndWrite(util.removeProtocol(url), img, document, window.location.href);
+            mirrorImpl.get().getImageFromPageAndWrite(util.removeProtocol(url), img);
         }
     }
 
@@ -508,7 +509,7 @@ class Reading {
                 $(img).data("total", lst.length);
                 $(img).on("load", () => this.onLoadNextImage());
                 $(img).on("error", () => this.onErrorNextImage());
-                mirrorImpl.get().getImageFromPageAndWrite(lst[i], img, document, urlNext);
+                mirrorImpl.get().getImageFromPageAndWrite(lst[i], img);
             }
         } else {
             util.debug("no scans found for next chapter...");

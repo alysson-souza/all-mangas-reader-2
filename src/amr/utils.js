@@ -139,20 +139,27 @@ const afterHostURL = function(url) {
  * Calculate manga key for a url (just host name, without subdomain followed by url of manga)
  * @param {*} url 
  */
-export function mangaKey(url) {
+export function mangaKey(url, forcedmirror) {
     if (!url) {
         console.error("A manga key has been requested for undefined url, it will be melted in your database with other mangas with same issue, check the implementation of the mirror where your read this manga.")
         return "_no_key_"; // should not happen !
     }
-    let rootdomain = extractRootDomain(url);
-    // look for mirror implementation matching this root domain
-    let mirror = store.state.mirrors.all.find(
-        mir => mir.webSites.findIndex(
-            ws => ws.indexOf(rootdomain) >= 0
-        ) !== -1
-    );
+
     let mstr = "unknown" // should never be unknown. Old domains need to be kept in webSites description in the implementations
-    if (mirror) mstr = this.formatMgName(mirror.mirrorName).toLowerCase()
+
+    if (forcedmirror !== undefined) {
+        mstr = this.formatMgName(forcedmirror).toLowerCase()
+    } else {
+        let rootdomain = extractRootDomain(url);
+        // look for mirror implementation matching this root domain
+        let mirror = store.state.mirrors.all.find(
+            mir => mir.webSites.findIndex(
+                ws => ws.indexOf(rootdomain) >= 0
+            ) !== -1
+        );
+        if (mirror) mstr = this.formatMgName(mirror.mirrorName).toLowerCase()
+    }
+    
     return mstr + "/" + afterHostURL(url);
 }
 /**
