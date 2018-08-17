@@ -13,8 +13,8 @@ class MirrorsImpl {
          * This function is called when an implementation is loaded
          */
         (function (mirrorsImpl) {
-            window["registerMangaObject"] = function (mirrorName, object) {
-                mirrorsImpl.implementations[mirrorName] = object;
+            window["registerMangaObject"] = function (object) {
+                mirrorsImpl.implementations[object.mirrorName] = object;
             }
         })(this);
     }

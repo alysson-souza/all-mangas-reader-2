@@ -30,7 +30,10 @@ class Navigation {
             this.callbackListChaps(alreadyLoadedListChaps, selectIns)
         } else {
             // Change currentMangaURL so no conflict in http over https
-            mirrorImpl.get().getListChaps(util.removeProtocol(pageData.currentMangaURL), pageData.name, selectIns, this.callbackListChaps.bind(this));
+            let list = await mirrorImpl.get().getListChaps(
+                util.removeProtocol(pageData.currentMangaURL)
+            )
+            this.callbackListChaps(list, selectIns)
         }
     }
 
@@ -43,11 +46,10 @@ class Navigation {
         let hasSelected = false;
         for (let j = 0; j < list.length; j++) {
             let optTmp = $("<option value=\"" + list[j][1] + "\">" + list[j][0] + "</option>");
-            if ($(select).data("mangaCurUrl").indexOf(list[j][1]) != - 1 && !hasSelected) {
+            if (util.matchChapUrl($(select).data("mangaCurUrl"), list[j][1]) && !hasSelected) {
                 optTmp.attr("selected", true);
-                if ($(select).data("mangaCurUrl") == list[j][1]) {
-                    hasSelected = true;
-                }
+                pageData.currentChapter = list[j][0];
+                hasSelected = true;
             }
             optTmp.appendTo($(select));
         }
@@ -415,18 +417,16 @@ class Navigation {
                 imgstop.hide();
             }
             imgstop.appendTo($w);
-            imgstop.data("mangainfo", pageData);
-
             imgstop.click(function () {
                 let ret = confirm(i18n("content_nav_mark_read_confirm"));
                 if (ret) {
                     let obj = {
                         "action": "setMangaChapter",
-                        "url": $(this).data("mangainfo").currentMangaURL,
+                        "url": pageData.currentMangaURL,
                         "mirror": mirrorImpl.get().mirrorName,
-                        "lastChapterReadName": $(this).data("mangainfo").currentChapter,
-                        "lastChapterReadURL": $(this).data("mangainfo").currentChapterURL,
-                        "name": $(this).data("mangainfo").name
+                        "lastChapterReadName": pageData.currentChapter,
+                        "lastChapterReadURL": pageData.currentChapterURL,
+                        "name": pageData.name
                     };
                     util.sendExtRequest(obj, $(this), function () { }, true);
                 }
@@ -435,16 +435,14 @@ class Navigation {
             if (options.addauto === 0 && !mangaInfos) {
                 let imgadd = $("<img src='" + browser.extension.getURL("icons/add.png") + "' title='" + i18n("content_nav_add_list") + "' />");
                 imgadd.appendTo($w);
-                imgadd.data("mangainfo", pageData);
-
                 imgadd.click(function () {
                     let obj = {
                         "action": "readManga",
-                        "url": $(this).data("mangainfo").currentMangaURL,
+                        "url": pageData.currentMangaURL,
                         "mirror": mirrorImpl.get().mirrorName,
-                        "lastChapterReadName": $(this).data("mangainfo").currentChapter,
-                        "lastChapterReadURL": $(this).data("mangainfo").currentChapterURL,
-                        "name": $(this).data("mangainfo").name
+                        "lastChapterReadName": pageData.currentChapter,
+                        "lastChapterReadURL": pageData.currentChapterURL,
+                        "name": pageData.name
                     };
                     let _butadd = this;
                     util.sendExtRequest(obj, $(this), function () {

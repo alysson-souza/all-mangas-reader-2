@@ -153,9 +153,8 @@ const actions = {
             //New chapter is not in chapters list --> Reload chapter list
             if (impl) {
                 utils.debug("getMangaListOfChapters : implementation found, get list of chapters for manga " + manga.name + " key " + manga.key);
-                impl.getListChaps(manga.url, manga.name, manga, function (lst) {
-                    resolve(lst);
-                });
+                let lst = await impl.getListChaps(manga.url);
+                resolve(lst);
             } else {
                 reject();
             }

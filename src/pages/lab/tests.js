@@ -178,11 +178,12 @@ const tests = [
                         } else {
                             listresults.push([false, "Manga url retrieved does not match selected manga : url retrieved : <i>" + infos.currentMangaURL + "</i>, url must be <i>" + manga_url + "</i>. Fix the implementation method <strong>getInformationsFromCurrentPage</strong>"])
                         }
-                        if (chapter_name === infos.currentChapter) {
+                        // No more chapter name required, get it for chapters list results
+                        /*if (chapter_name === infos.currentChapter) {
                             listresults.push([true, "Chapter name retrieved match selected chapter"])
                         } else {
                             listresults.push([false, "Chapter name retrieved does not match selected chapter : name retrieved : <i>" + infos.currentChapter + "</i>, name must be <i>" + chapter_name + "</i>. Fix the implementation method <strong>getInformationsFromCurrentPage</strong>"])
-                        }
+                        }*/
                         if (chapter_url === infos.currentChapterURL) {
                             listresults.push([true, "Chapter url retrieved match selected chapter"])
                         } else {

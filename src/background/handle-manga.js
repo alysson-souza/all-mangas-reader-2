@@ -124,9 +124,8 @@ class HandleManga {
      */
     async searchListRemote(search, impl) {
         return new Promise(async (resolve, reject) => {
-            impl.getMangaList(search, function (mirrorName, res) {
-                resolve(res);
-            });
+            let res = await impl.getMangaList(search)
+            resolve(res);
         });
     }
     /**
@@ -184,7 +183,7 @@ class HandleManga {
                     ldoc.documentElement.innerHTML = resp.data;
                     let readyCall = async () => {
                         let impl = await mirrorsImpl.getImpl(message.mirrorName);
-                        var imagesUrl = impl.getListImages(document.getElementById(id).contentWindow.document, message.url);
+                        var imagesUrl = await impl.getListImages(document.getElementById(id).contentWindow.document, message.url);
                         resolve({
                             images: imagesUrl
                         });

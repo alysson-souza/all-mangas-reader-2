@@ -52,7 +52,7 @@ class HandleBookmarks {
             let img = new Image();
             img.onerror = (e) => reject(e);
             let impl = await mirrorsImpl.getImpl(message.mirror);
-            impl.getImageFromPageAndWrite(message.url, img);
+            await impl.getImageFromPageAndWrite(message.url, img);
             (function wait() {
                 if (img.src && img.src != "") {
                     resolve(img.src);

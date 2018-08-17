@@ -18,20 +18,12 @@ class HandleLab {
             try {
                 let impl = await mirrorsImpl.getImpl(message.mirror);
                 if (message.torun === "search") {
-                    impl.getMangaList(message.search, function (mirrorName, res) {
-                        if (mirrorName !== message.mirror) {
-                            reject("Mirror name returned is wrong !");
-                        } else {
-                            resolve(res);
-                        }
-                    });
+                    let res = await impl.getMangaList(message.search)
+                    resolve(res);
                 }
                 else if (message.torun === "chapters") {
-                    impl.getListChaps(message.url, /*Manga name*/null, /*Manga object*/null, 
-                        function (lst) {
-                            resolve(lst);
-                        }
-                    );
+                    let lst = await impl.getListChaps(message.url)
+                    resolve(lst);
                 }
                 else if (message.torun === "loadChapterAndDo") {
                     let res = this.loadChapterAndDo(message, impl);
@@ -61,25 +53,24 @@ class HandleLab {
                         // was $(document.getElementById(id).contentWindow.document).ready(...); but ready method was removed from jQuery 3.x --> do it the js way
                         let ldoc = document.getElementById(id).contentWindow.document;
                         ldoc.documentElement.innerHTML = resp.data;
-                        let readyCall = () => {
+                        let readyCall = async () => {
                             //once the iframe is ready
                             if (message.task === "containScans") {
                                 resolve(
                                     impl.isCurrentPageAChapterPage(document.getElementById(id).contentWindow.document, message.url)
                                 );
                             } else if (message.task === "informations") {
-                                impl.getInformationsFromCurrentPage(
-                                    document.getElementById(id).contentWindow.document, message.url,
-                                    function(infos) {
-                                        resolve(infos);
-                                    }
+                                let infos = await impl.getInformationsFromCurrentPage(
+                                    document.getElementById(id).contentWindow.document, 
+                                    message.url
                                 );
+                                resolve(infos);
                             } else if (message.task === "listScans") {
-                                let imagesUrl = impl.getListImages(document.getElementById(id).contentWindow.document, message.url);
+                                let imagesUrl = await impl.getListImages(document.getElementById(id).contentWindow.document, message.url);
                                 resolve(imagesUrl);
                             } else if (message.task === "getScanUrl") {
                                 let img = new Image();
-                                impl.getImageFromPageAndWrite(message.url, img);
+                                await impl.getImageFromPageAndWrite(message.url, img);
                                 (function wait() {
                                     if (img.src && img.src != "") {
                                         resolve(img.src);

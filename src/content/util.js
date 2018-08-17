@@ -81,5 +81,15 @@ class Util {
         }
         return imgScan;
     }
+    /**
+     * Return the path from a url (used for chapters url)
+     */
+    chapPath(chap_url) {
+        if (!chap_url) return chap_url;
+        return chap_url.split("/").slice(3).join("/")//new URL(chap_url).pathname
+    }
+    matchChapUrl(chap, tomatch) {
+        return (this.chapPath(chap) === this.chapPath(tomatch))
+    }
 }
 export default (new Util)
