@@ -18,6 +18,11 @@ IconHelper.setBlueIcon();
      */
     utils.debug("Initialize options");
     await store.dispatch('initOptions');
+
+    /**
+     * Initialize extension versioning --> after options because versionning update can affect options
+     */
+    await amrInit()
     
     /**
      * Initialize mirrors list in store from DB or repo
@@ -37,11 +42,6 @@ IconHelper.setBlueIcon();
     utils.debug("Initialize bookmarks");
     await store.dispatch('initBookmarksFromDB');
 
-    /**
-     * Initiliaze extension versioning
-     */
-    amrInit()
-    
     // set icon and badge
     amrUpdater.refreshBadgeAndIcon();
     /**

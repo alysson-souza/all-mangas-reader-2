@@ -21,24 +21,12 @@ export function formatMgName(name) {
 
 /**
  * Test if an url match an url pattern containing wildcards
- * @param {*} str 
+ * @param {*} str a domain name
  * @param {*} rule 
  */
-export function matchUrlWildCards(str, rule) {
-    let doMatch = new RegExp("^" + rule.replace(/\*/g, '.*') + "$").test(str);
-    // If pattern starts with http, try https too
-    if (!doMatch && rule.indexOf("http://") == 0) {
-        doMatch = new RegExp("^https://" + rule.substring(7).replace(/\*/g, '.*') + "$").test(str);
-    }
-    // If pattern starts with http, try // too
-    if (!doMatch && rule.indexOf("http://") == 0) {
-        doMatch = new RegExp("^" + rule.substring(5).replace(/\*/g, '.*') + "$").test(str);
-    }
-    // If pattern starts with https, try // too
-    if (!doMatch && rule.indexOf("https://") == 0) {
-        doMatch = new RegExp("^" + rule.substring(6).replace(/\*/g, '.*') + "$").test(str);
-    }
-    return doMatch;
+export function matchDomain(str, rule) {
+    let doMatch = new RegExp("^" + rule.replace(/\*/g, '.*') + "$").test(str)
+    return doMatch
 }
 
 /**
@@ -47,11 +35,12 @@ export function matchUrlWildCards(str, rule) {
  * @param {*} url of the current page
  */
 export function currentPageMatch(url) {
+    let host = extractHostname(url)
     for (let mir of store.state.mirrors.all) {
-        if (mir.activated && mir.webSites) {
-            let wss = (mir.webSites.length) ? mir.webSites : JSON.parse(mir.webSites);
+        if (mir.activated && mir.domains) {
+            let wss = mir.domains;
             for (let u of wss) {
-                if (matchUrlWildCards(url, u)) {
+                if (matchDomain(host, u)) {
                     return mir;
                 }
             }
@@ -80,7 +69,7 @@ export function serializeVuexObject(obj) {
  * Extract the full host name
  * @param {*} url 
  */
-const extractHostname = function(url) {
+export function extractHostname(url) {
     var hostname;
     //find & remove protocol (http, ftp, etc.) and get hostname
 
@@ -142,26 +131,27 @@ const afterHostURL = function(url) {
 export function mangaKey(url, forcedmirror) {
     if (!url) {
         console.error("A manga key has been requested for undefined url, it will be melted in your database with other mangas with same issue, check the implementation of the mirror where your read this manga.")
-        return "_no_key_"; // should not happen !
+        return "_no_key_" // should not happen !
     }
 
-    let mstr = "unknown" // should never be unknown. Old domains need to be kept in webSites description in the implementations
-
+    let mstr = "unknown" // should never be unknown. Old domains need to be kept in domains description in the implementations
+    let self = this
     if (forcedmirror !== undefined) {
         mstr = this.formatMgName(forcedmirror).toLowerCase()
     } else {
-        let rootdomain = extractRootDomain(url);
+        let host = extractHostname(url);
         // look for mirror implementation matching this root domain
         let mirror = store.state.mirrors.all.find(
-            mir => mir.webSites.findIndex(
-                ws => ws.indexOf(rootdomain) >= 0
+            mir => mir.domains.findIndex(
+                ws => self.matchDomain(host, ws)
             ) !== -1
-        );
+        )
         if (mirror) mstr = this.formatMgName(mirror.mirrorName).toLowerCase()
     }
     
-    return mstr + "/" + afterHostURL(url);
+    return mstr + "/" + afterHostURL(url)
 }
+
 /**
  * Tells in human language how much time has been spent since this ts
  * @param {*} ts 

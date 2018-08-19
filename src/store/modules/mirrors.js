@@ -64,7 +64,7 @@ const actions = {
      * @param {*} manga 
      */
     async updateMirror({ commit }, mirror) {
-        utils.debug("update description of " + mirror.mirrorName + " --> " + mirror.webSites + " in db");
+        utils.debug("update description of " + mirror.mirrorName + " in db");
         await storedb.storeWebsite(mirror);
     },
 

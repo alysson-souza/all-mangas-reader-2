@@ -32,10 +32,10 @@ const tests = [
                 }
             },
             function mirrorWebSites(mirror) {
-                if (mirror.webSites && mirror.webSites.length > 0) {
-                    return [true, "Websites on which this mirror will be loaded : " + mirror.webSites.join(", ")];
+                if (mirror.domains && mirror.domains.length > 0) {
+                    return [true, "Domains on which this mirror will be loaded : " + mirror.domains.join(", ")];
                 } else {
-                    return [false, "No websites to load this mirror on, check the webSites attribute of the implementation"];
+                    return [false, "No domains to load this mirror on, check the domains attribute of the implementation"];
                 }
             },
         ],
@@ -105,15 +105,16 @@ const tests = [
             {
                 input: ["chaptersList"],
                 test: function (mirror, list) {
-                    if (!mirror.webSites || mirror.webSites.length === 0) {
-                        return [false, "Can't run test because the webSites attribute is missing on implementation"]
+                    if (!mirror.domains || mirror.domains.length === 0) {
+                        return [false, "Can't run test because the domains attribute is missing on implementation"]
                     }
                     let nbok = 0;
                     let lstko = [];
                     for (let res of list) {
                         let found = false;
-                        for (let u of mirror.webSites) {
-                            if (utils.matchUrlWildCards(res.value, u)) {
+                        let host = utils.extractHostname(res.value)
+                        for (let u of mirror.domains) {
+                            if (utils.matchDomain(host, u)) {
                                 found = true;
                                 nbok++;
                                 break;
@@ -124,9 +125,9 @@ const tests = [
                         }
                     }
                     if (lstko.length === 0) {
-                        return [true, "All chapters url can be discovered by the mirror webSites entries."]
+                        return [true, "All chapters url can be discovered by the mirror domains entries."]
                     } else {
-                        return [false, "The following chapters urls do not match the mirror webSites entry : " + lstko.join(", ")]
+                        return [false, "The following chapters urls do not match the mirror domains entry : " + lstko.join(", ")]
                     }
                 }
             }

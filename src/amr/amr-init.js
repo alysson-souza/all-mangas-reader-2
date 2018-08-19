@@ -11,14 +11,18 @@ import store from '../store';
  * @param {*} ancVersion 
  * @param {*} curVersion 
  */
-let updateApp = function(ancVersion, curVersion) {
+let updateApp = async function(ancVersion, curVersion) {
     if (!versionAfter(ancVersion, "2.0.2.140")) { // if previous version is before 2.0.2.140
         // from this version, mirrors are hosted to mirrors.allmangasreader.com/v4
         // update localStorage to change stored url if necessary
-        store.dispatch("updateRepository", {
+        console.log("Update main repository url to v4")
+        await store.dispatch("updateRepository", {
             old_repo: "https://mirrors.allmangasreader.com/v3/", 
             new_repo: "https://mirrors.allmangasreader.com/v4/"
         })
+        console.log("Reinitialize mirrors entries")
+        // request an update of mirrors lists
+        store.dispatch("updateMirrorsLists")
     }
 }
 
@@ -44,7 +48,7 @@ export default async function () {
             statsEvents.trackInstall(curVersion, beta, browserdetect());
         } else {
             statsEvents.trackUpdate(curVersion, beta, browserdetect());
-            updateApp(ancVersion, curVersion);
+            await updateApp(ancVersion, curVersion);
         }
     }
     if (beta) {
