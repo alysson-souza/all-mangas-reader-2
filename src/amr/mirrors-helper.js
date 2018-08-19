@@ -97,8 +97,8 @@ class MirrorsHelper {
                 let res = undefined
                 $("script", doc).each(function(i) {
                     let sc = $(this).text()
-                    let rx = new RegExp("(var|let|const)\\s" + varname + "\\s=\\s(\\\"|\\\'|\\\{|\\\[)", "gmi")
-                    var match = rx.exec(sc)
+                    let rx = new RegExp("(var|let|const)\\s+" + varname + "\\s+=\\s+(\\\"|\\\'|\\\{|\\\[|JSON\\s*\\\.\\s*parse\\\()", "gmi")
+                    let match = rx.exec(sc)
                     if (match) {
                         let ind = match.index
                         let varchar = match[2]
@@ -116,16 +116,22 @@ class MirrorsHelper {
                                 prevbs = c === "\\"
                             }
                             res = sc.substring(start, curpos - 1)
-                        } else if (varchar === '[' || varchar === "{") { // var is object or array
-                            let curpos = start,
+                        } else { // if (varchar === '[' || varchar === "{" || varchar === 'JSON.parse(') { // var is object or array or parsable
+                            let curpos = start + varchar.length - 1,
                                 openings = 1,
-                                opposite = varchar === '[' ? ']' : '}'
-                            while (openings > 0) {
+                                opening = varchar === 'JSON.parse(' ? '(' : varchar,
+                                opposite = varchar === '[' ? ']' : (varchar === '{' ? '}' : ')')
+                            while (openings > 0 && curpos < sc.length) {
                                 let c = sc.charAt(curpos++)
-                                if (c === varchar) openings++
+                                if (c === opening) openings++
                                 if (c === opposite) openings--
                             }
-                            res = JSON.parse(sc.substring(start - 1, curpos))
+                            let toparse = sc.substring(start - 1 + varchar.length - 1, curpos)
+                            if (toparse.match(/atob\s*\(/g)) { // if data to parse is encoded using btoa
+                                let m = /(?:'|").*(?:'|")/g.exec(toparse)
+                                toparse = atob(m[0].substring(1, m[0].length - 1))
+                            }
+                            res = JSON.parse(toparse)
                         }
                     }
                 })
