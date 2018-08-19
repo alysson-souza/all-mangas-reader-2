@@ -169,6 +169,7 @@ class MirrorsImpl {
                     found = true
                     break
                 } catch (e) {
+                    console.error("Error while loading abstract implementation " + name + " from " + repo)
                     console.error(e)
                     // ignore repo and go to next
                 }

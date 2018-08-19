@@ -56,6 +56,8 @@ const actions = {
         } else {
             // set mirrors list in store
             commit('setMirrors', websites);
+            // set abstract mirrors list in store
+            commit('setAbstractMirrors', websites);
         }
     },
     /**
@@ -121,6 +123,8 @@ const actions = {
         } else {
             // set mirrors list in store
             commit('setMirrors', websites);
+            // set abstract mirrors list in store
+            commit('setAbstractMirrors', websites);
         }
         
         // remove deleted mirrors
@@ -164,8 +168,17 @@ const mutations = {
      */
     setMirrors(state, mirrors) {
         state.all = []
-        state.abstracts = []
         state.all.push(...mirrors.filter(mirror => mirror.type !== 'abstract'))
+    },
+    /**
+     * Set the list of abstract mirrors in the store
+     * Only call this commit with a mirror list coming from db, not from another 
+     * thread mirror list because it does not contains the abstract mirrors
+     * @param {*} state 
+     * @param {*} mirrors 
+     */
+    setAbstractMirrors(state, mirrors) {
+        state.abstracts = []
         state.abstracts.push(...mirrors.filter(mirror => mirror.type === 'abstract'))
     },
 
