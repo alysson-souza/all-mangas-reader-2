@@ -12,7 +12,11 @@ const state = {
     /**
      * List of mirrors
      */
-    all: []
+    all: [],
+    /**
+     * List of abstract implementations
+     */
+    abstracts: []
 }
 
 // getters
@@ -160,7 +164,9 @@ const mutations = {
      */
     setMirrors(state, mirrors) {
         state.all = []
-        state.all.push(...mirrors)
+        state.abstracts = []
+        state.all.push(...mirrors.filter(mirror => mirror.type !== 'abstract'))
+        state.abstracts.push(...mirrors.filter(mirror => mirror.type === 'abstract'))
     },
 
     /**

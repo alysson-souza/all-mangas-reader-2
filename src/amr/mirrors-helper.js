@@ -89,6 +89,48 @@ class MirrorsHelper {
                     $.ajax(ajaxObj)
                 });
             }
+            /**
+             * Get a variable value from a script tag, parse it manually
+             * @param {*} varname 
+             */
+            amr.getVariable = function(varname, doc) {
+                let res = undefined
+                $("script", doc).each(function(i) {
+                    let sc = $(this).text()
+                    let rx = new RegExp("(var|let|const)\\s" + varname + "\\s=\\s(\\\"|\\\'|\\\{|\\\[)", "gmi")
+                    var match = rx.exec(sc)
+                    if (match) {
+                        let ind = match.index
+                        let varchar = match[2]
+                        let start = sc.indexOf(varchar, ind) + 1
+                        if (varchar === '"' || varchar === "'") { // var is a string
+                            let found = false,
+                                curpos = start,
+                                prevbs = false;
+                            while (!found) {
+                                let c = sc.charAt(curpos++)
+                                if (c === varchar && !prevbs) {
+                                    found = true
+                                    break
+                                }
+                                prevbs = c === "\\"
+                            }
+                            res = sc.substring(start, curpos - 1)
+                        } else if (varchar === '[' || varchar === "{") { // var is object or array
+                            let curpos = start,
+                                openings = 1,
+                                opposite = varchar === '[' ? ']' : '}'
+                            while (openings > 0) {
+                                let c = sc.charAt(curpos++)
+                                if (c === varchar) openings++
+                                if (c === opposite) openings--
+                            }
+                            res = JSON.parse(sc.substring(start - 1, curpos))
+                        }
+                    }
+                })
+                return res
+            }
         })(this);
     }
 }

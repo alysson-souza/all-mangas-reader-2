@@ -66,6 +66,13 @@ window["registerMangaObject"] = async function (object) {
     // TODO stats perso --> v2.0.3
 }
 
+/**
+ * This function is called when an abstraction is loaded
+ */
+window["registerAbstractImplementation"] = function (mirrorName) {
+    // do nothing there, the abstract object is loaded on the window and referenced by its name
+}
+
 /** Function called through executeScript when context menu button invoked */
 window["clickOnBM"] = function(src) {
     let imgScan = util.getScan(src);
