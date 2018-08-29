@@ -193,6 +193,10 @@ const actions = {
                          * for different languages
                          */
                         if (listChaps !== undefined && !Array.isArray(listChaps)) {
+                            if (mg.language === undefined) {
+                                // should not happen there (the case is handled for new mangas but not here when manga already exists)
+                                reject()
+                            }
                             if (listChaps[mg.language] && listChaps[mg.language].length > 0) {
                                 // update list of existing languages
                                 let listLangs = Object.keys(listChaps).join(",")
@@ -238,7 +242,7 @@ const actions = {
      * @param {*} vuex object 
      * @param {*} message message contains info on a manga
      */
-    async refreshLastChapters({ dispatch, commit, getters }, message) {
+    async refreshLastChapters({ dispatch, commit, getters, rootState }, message) {
         let key = utils.mangaKey(message.url, message.mirror, message.language),
             mg = state.all.find(manga => manga.key === key);
         if (mg.update === 1) {
@@ -258,6 +262,31 @@ const actions = {
                      * for different languages
                      */
                     if (listChaps !== undefined && !Array.isArray(listChaps)) {
+                        if (mg.language === undefined) {
+                            // Returned list contains different languages and language has not been set, this can be the case if manga is added from search list on a website supporting multiple languages
+                            // Pick languages to read (select from readable languages, if none, select first language)
+                            let alllangs = Object.keys(listChaps)
+                            let readable = rootState.options.readlanguages
+                            let toadd = alllangs.filter(l => readable.includes(l))
+                            if (toadd.length === 0) {
+                                toadd.push(alllangs[0])
+                            }
+                            // add a manga entry for all readable languages
+                            for (let l of toadd) {
+                                dispatch("readManga", {
+                                    url: mg.url,
+                                    mirror: mg.mirror,
+                                    language: l,
+                                    name: mg.name
+                                })
+                            }
+
+                            // Remove the manga --> will always fail because no language specified
+                            dispatch("deleteManga", mg)
+
+                            // Fail for current (deleted) manga
+                            reject()
+                        }
                         utils.debug("chapters in multiple languages found for " + mg.name + " on " + mg.mirror + " --> select language " + mg.language)
                         if (listChaps[mg.language] && listChaps[mg.language].length > 0) {
                             // update list of existing languages

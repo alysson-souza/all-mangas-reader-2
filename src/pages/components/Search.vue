@@ -124,7 +124,7 @@ export default {
          * True if manga is in reading list
          */
         isInList(mg) {
-            return this.$store.state.mangas.all.findIndex(m => m.key === utils.mangaKey(mg.url, mg.mirror, mg.language)) !== -1
+            return this.$store.state.mangas.all.findIndex(m => m.key.indexOf(utils.mangaKey(mg.url, mg.mirror, mg.language)) === 0) !== -1
         }
     },
     name: "Search",
