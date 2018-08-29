@@ -1,11 +1,21 @@
 import browser from "webextension-polyfill";
 import statsEvents from './stats-events';
 import store from '../store';
+import * as utils from './utils';
 
 /**
  * This file defines a function called on extension init which initialize version and check informations
  */
 
+ /**
+ * Do things when app is installed
+ * @param {*} ancVersion 
+ * @param {*} curVersion 
+ */
+let installApp = async function(curVersion) {
+    // check if user language is in readable list of languages add it if not
+    checkLangSet()
+}
 /**
  * Do things when version is updated
  * @param {*} ancVersion 
@@ -23,6 +33,25 @@ let updateApp = async function(ancVersion, curVersion) {
         console.log("Reinitialize mirrors entries")
         // request an update of mirrors lists
         store.dispatch("updateMirrorsLists")
+    }
+    if (!versionAfter(ancVersion, "2.0.2.150")) { // if previous version is before 2.0.2.150
+        // check if user language is in readable list of languages add it if not
+        checkLangSet()
+    }
+}
+
+let checkLangSet = function() {
+    let curlang = navigator.language.slice(0,2);
+    // is language supported ? --> pb, sometimes, language code does not match amr code... let it be
+    if (utils.languages.reduce((arr, el) => {
+            Array.isArray(el) ? arr.push(...el) : arr.push(el)
+            return arr
+        }, []).includes(curlang)) {
+        let readLangs = store.state.options.readlanguages;
+        if (!readLangs.includes(curlang)) {
+            console.log("Add language " + curlang + " to readable list of languages")
+            store.dispatch("addReadLanguage", curlang) // add the language
+        }
     }
 }
 
@@ -46,9 +75,10 @@ export default async function () {
         localStorage.version = curVersion;
         if (!ancVersion) {
             statsEvents.trackInstall(curVersion, beta, browserdetect());
+            await installApp(curVersion)
         } else {
             statsEvents.trackUpdate(curVersion, beta, browserdetect());
-            await updateApp(ancVersion, curVersion);
+            await updateApp(ancVersion, curVersion)
         }
     }
     if (beta) {
