@@ -66,7 +66,7 @@ class HandleBookmarks {
      * @param {*} obj 
      */
     findBookmark(obj) {
-        let key = utils.mangaKey(obj.chapUrl) + (obj.scanUrl ? "_" + utils.mangaKey(obj.scanUrl, obj.mirror): "")
+        let key = utils.mangaKey(obj.chapUrl, obj.mirror) + (obj.scanUrl ? "_" + utils.mangaKey(obj.scanUrl, obj.mirror): "")
         return store.state.bookmarks.all.find(bookmark => bookmark.key === key)
     }
     /**

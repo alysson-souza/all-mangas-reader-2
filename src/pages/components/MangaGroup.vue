@@ -123,7 +123,7 @@ export default {
     // bookmarks for this group
     bookmarks: function() {
       return this.$store.state.bookmarks.all.filter(
-        bm => this.mangas.findIndex(mg => mg.key === amrutils.mangaKey(bm.url)) !== -1
+        bm => this.mangas.findIndex(mg => mg.key.indexOf(amrutils.mangaKey(bm.url)) >= 0) !== -1
       )
     },
     /**

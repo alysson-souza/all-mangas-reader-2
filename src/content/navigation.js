@@ -24,7 +24,8 @@ class Navigation {
         // try to get list chap from background (already loaded in local db)
         let alreadyLoadedListChaps = await browser.runtime.sendMessage({
             action: "getListChaps",
-            url: pageData.currentMangaURL
+            url: pageData.currentMangaURL, 
+            language: pageData.language 
         });
         if (alreadyLoadedListChaps && alreadyLoadedListChaps.length > 0) {
             this.callbackListChaps(alreadyLoadedListChaps, selectIns)
@@ -270,7 +271,8 @@ class Navigation {
         //Get specific read and display option for currentManga
         let mangaInfos = await browser.runtime.sendMessage({
             action: "mangaInfos",
-            url: pageData.currentMangaURL
+            url: pageData.currentMangaURL, 
+            language: pageData.language 
         });
 
         let navigation = this;
@@ -348,15 +350,15 @@ class Navigation {
                 imgread.hide();
             }
             imgread.appendTo($w);
-            imgread.data("mangaurl", pageData.currentMangaURL);
 
             imgread.click(function () {
                 let curRead = ($(this).attr("src") == browser.extension.getURL("icons/read_play.png"));
                 let obj = {
                     action: "markReadTop",
-                    url: $(this).data("mangaurl"),
+                    url: pageData.currentMangaURL,
                     read: (curRead ? 0 : 1),
-                    updatesamemangas: true
+                    updatesamemangas: true, 
+                    language: pageData.language
                 };
 
                 let _but = this;
@@ -386,14 +388,14 @@ class Navigation {
             let imgmode = $("<img src='" + browser.extension.getURL("icons/" + ((curmode == 1) ? "ontop.png" : ((curmode == 2) ? "righttoleft.png" : "lefttoright.png"))) + "' title='" + ((curmode == 1) ? i18n("content_nav_chapmode_1") : ((curmode == 2) ? i18n("content_nav_chapmode_2") : i18n("content_nav_chapmode_3"))) + "' />");
             imgmode.appendTo($w);
             imgmode.data("curmode", curmode);
-            imgmode.data("mangaurl", pageData.currentMangaURL);
             imgmode.click(function () {
                 let md = $(this).data("curmode");
                 let mdnext = (md % 3) + 1;
                 let obj = {
                     action: "setDisplayMode",
-                    url: $(this).data("mangaurl"),
-                    display: mdnext
+                    url: pageData.currentMangaURL,
+                    display: mdnext, 
+                    language: pageData.language
                 };
                 let _butMode = this;
                 util.sendExtRequest(obj, $(this), function () {
@@ -421,12 +423,13 @@ class Navigation {
                 let ret = confirm(i18n("content_nav_mark_read_confirm"));
                 if (ret) {
                     let obj = {
-                        "action": "setMangaChapter",
-                        "url": pageData.currentMangaURL,
-                        "mirror": mirrorImpl.get().mirrorName,
-                        "lastChapterReadName": pageData.currentChapter,
-                        "lastChapterReadURL": pageData.currentChapterURL,
-                        "name": pageData.name
+                        action: "setMangaChapter",
+                        url: pageData.currentMangaURL,
+                        mirror: mirrorImpl.get().mirrorName,
+                        lastChapterReadName: pageData.currentChapter,
+                        lastChapterReadURL: pageData.currentChapterURL,
+                        name: pageData.name, 
+                        language: pageData.language
                     };
                     util.sendExtRequest(obj, $(this), function () { }, true);
                 }
@@ -437,12 +440,13 @@ class Navigation {
                 imgadd.appendTo($w);
                 imgadd.click(function () {
                     let obj = {
-                        "action": "readManga",
-                        "url": pageData.currentMangaURL,
-                        "mirror": mirrorImpl.get().mirrorName,
-                        "lastChapterReadName": pageData.currentChapter,
-                        "lastChapterReadURL": pageData.currentChapterURL,
-                        "name": pageData.name
+                        action: "readManga",
+                        url: pageData.currentMangaURL,
+                        mirror: mirrorImpl.get().mirrorName,
+                        lastChapterReadName: pageData.currentChapter,
+                        lastChapterReadURL: pageData.currentChapterURL,
+                        name: pageData.name,
+                        language: pageData.language
                     };
                     let _butadd = this;
                     util.sendExtRequest(obj, $(this), function () {

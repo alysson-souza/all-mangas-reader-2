@@ -58,6 +58,10 @@ const default_options = {
     shownotifications: 1, //display notifications on new chapter
     notificationtimer: 0, //time to clear notification auto
 
+    /** Language options */
+    readlanguages: ["en", "gb"], // default language is english. On install, the user language is added to this list
+    deactivateunreadable: false, // deactivate automatically mirrors in languages that do not match readable languages
+
     /**
      * Categories states, each custom category is stored in localStorage in this array
      * states are 
@@ -80,7 +84,7 @@ const default_options = {
 
 }
 
-const jsonOptions = ["categoriesStates", "impl_repositories"];
+const jsonOptions = ["categoriesStates", "impl_repositories", "readlanguages"];
 const stringOptions = ["colornew", "colorread", "colornotfollow"];
 
 /**
@@ -202,6 +206,24 @@ const actions = {
         commit('addRepository', repourl);
         localStorage["o.impl_repositories"] = JSON.stringify(state.impl_repositories);
     },
+    /**
+     * Add a language to readable languages list
+     * @param {*} param0 
+     * @param {*} lang 
+     */
+    addReadLanguage({ commit, state }, lang) {
+        commit('addReadLanguage', lang);
+        localStorage["o.readlanguages"] = JSON.stringify(state.readlanguages);
+    },
+    /**
+     * Remove a language from readable languages list
+     * @param {*} param0 
+     * @param {*} lang 
+     */
+    removeReadLanguage({ commit, state }, lang) {
+        commit('removeReadLanguage', lang);
+        localStorage["o.readlanguages"] = JSON.stringify(state.readlanguages);
+    },
 }
 
 /**
@@ -310,6 +332,23 @@ const mutations = {
      */
     addRepository(state, repourl) {
         state.impl_repositories.unshift(repourl);
+    },
+    /**
+     * Adds a readable language to the list
+     * @param {*} state 
+     * @param {*} lang 
+     */
+    addReadLanguage(state, lang) {
+        state.readlanguages.push(lang);
+    },
+    /**
+     * Removes a readable language from the list
+     * @param {*} state 
+     * @param {*} lang 
+     */
+    removeReadLanguage(state, lang) {
+        let index = state.readlanguages.indexOf(lang);
+        if (index >= 0) state.readlanguages.splice(index, 1);
     },
 }
 

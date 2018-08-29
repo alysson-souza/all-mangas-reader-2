@@ -84,13 +84,32 @@ const tests = [
                         url: manga_url,
                         mirror: mirror.mirrorName
                     });
-                    if (result && result.length > 0) {
-                        return [true, "<strong>" + result.length + " chapters found</strong> for manga url : <i>" + manga_url + "</i>", result.map(arr => {
-                            return {
-                                value: arr[1],
-                                text: arr[0]
+                    if (result !== undefined) {
+                        if (result.length > 0) {
+                            return [true, "<strong>" + result.length + " chapters found</strong> for manga url : <i>" + manga_url + "</i>", result.map(arr => {
+                                return {
+                                    value: arr[1],
+                                    text: arr[0]
+                                }
+                            })];
+                        } else {
+                            let nb = 0, listlangs = [], picked
+                            for (let lang in result) {
+                                if (!picked && result[lang].length > 0) picked = lang
+                                nb += result[lang].length
+                                listlangs.push(lang)
                             }
-                        })];
+                            if (nb > 0) {
+                                return [true, "<strong>" + nb + " chapters found</strong> for manga url : <i>" + manga_url + "</i> in " + listlangs.length + " different languages (" + listlangs.join(", ") + "), pick language " + picked + " for test, containing " + result[picked].length + " chapters", result[picked].map(arr => {
+                                    return {
+                                        value: arr[1],
+                                        text: arr[0]
+                                    }
+                                })];
+                            } else {
+                                return [false, "No chapters found for manga url : <i>" + manga_url + "</i>. Fix the implementation method <strong>getListChaps</strong>"];
+                            }
+                        }
                     } else {
                         return [false, "No chapters found for manga url : <i>" + manga_url + "</i>. Fix the implementation method <strong>getListChaps</strong>"];
                     }

@@ -212,6 +212,23 @@
             </v-tab-item>
             <v-tab-item id="supported">
                 <v-container fluid>
+                <!-- Languages -->
+                <div class="headline">{{ i18n("options_sup_languages") }}</div>
+                <div class="subtitle">{{i18n('options_sup_languages_desc')}}</div>
+                <Flag 
+                    v-for="lang in alllangs" 
+                    :key="lang.flag" 
+                    :value="lang.flag" 
+                    @click.native="clickReadLanguage(lang.languages)"
+                    big
+                    :class="'flag-list ' + (isReadable(lang.flag) ? '' : 'flag-disabled')" />
+                <!-- Deactivate unreadable websites-->
+                <div class="subtitle">{{i18n('options_sup_deactivate_unreadable_desc')}}</div>
+                <v-checkbox v-model="deactivateunreadable" @change="setOption('deactivateunreadable')"
+                        :label="i18n('options_sup_deactivate_unreadable')"></v-checkbox>
+
+                <!-- Supported websites -->
+                <div class="headline">{{ i18n("options_supported") }}</div>
                 <div class="subtitle">{{i18n('options_sup_desc')}}</div>
                 <!-- Filters -->
                 <v-layout flex class="mt-2">
@@ -252,7 +269,7 @@
                         </td>
                         <td class="text-xs-right">
                             <span v-for="(lang, key) in props.item.languages.split(',')" :key="key">
-                                {{ getLang(lang) }}
+                                <Flag :value="lang" />
                             </span>
                         </td>
                         <td class="text-xs-right">
@@ -320,7 +337,8 @@
 import i18n from "../../amr/i18n";
 import browser from "webextension-polyfill";
 import amrUpdater from "../../amr/amr-updater";
-import languages from "../languages";
+import Flag from "./Flag";
+import * as amrutils from "../../amr/utils";
 
 /**
  * Converters to format options in db and in page (ex : booleans are store as 0:1 in db)
@@ -351,7 +369,8 @@ const converters = {
       "displayzero",
       "nocount",
       "shownotifications",
-      "stopupdateforaweek"
+      "stopupdateforaweek",
+      "deactivateunreadable"
     ]
   }
 };
@@ -430,6 +449,7 @@ export default {
     });
     return res;
   },
+  components: {Flag},
   computed: {
       supportedWebsites() {
           return this.$store.state.mirrors.all
@@ -443,6 +463,15 @@ export default {
           }, []);
           dis.push(...dislangs.map(lang => {return {value: lang, text: this.getLang(lang)}}));
           return dis;
+      },
+      /** Return list of all languages supported in AMR */
+      alllangs() {
+          return amrutils.languages.map(el => {
+              return {
+                  flag: Array.isArray(el) ? el[0]: el,
+                  languages: el
+              }
+          })
       }
   },
   watch: {
@@ -478,7 +507,33 @@ export default {
         }
       });
       this.$store.dispatch("setOption", { key: optstr, value: val });
+      // do post treatment for some options
+      if (optstr === "deactivateunreadable" && val === 1) { // deactivate all unreadable mirrors if option is checked
+          this.deactivateUnreadable();
+      }
     },
+    /**
+     * Deactivate all unreadable mirrors when option is checked
+     */
+    async deactivateUnreadable() {
+        let _self = this;
+        this.$store.state.mirrors.all.forEach(mir => {
+            if (!_self.filterReadableLanguage(mir) && _self.nbMangas(mir.mirrorName) === 0) {
+                mir.activated = false;
+                _self.changeActivation(mir);
+            }
+        })
+    },
+    /**
+     * Determine if a mirror is displayed depending on the language filter
+     */
+    filterReadableLanguage(mirror) {
+        let res = false
+        for (let lang of this.readlanguages) {
+            res = res || mirror.languages.split(",").includes(lang);
+        }
+        return res
+    }, 
     /**
      * Updates chapters lists
      */
@@ -500,7 +555,7 @@ export default {
      * Return language name from code
      */
     getLang(code) {
-        return languages.get(code);
+        return i18n("language_" + code);
     },
     /**
      * Move a repo up in list
@@ -580,6 +635,28 @@ export default {
      */
     goLab() {
         browser.runtime.sendMessage({ action: "opentab", url: "/pages/lab/lab.html" });
+    },
+    /**
+     * Click a flag in readable list
+     */
+    clickReadLanguage(language) {
+        if (Array.isArray(language)) {
+            for (let lang of language) {
+                this.clickReadLanguage(lang)
+            }
+        } else {
+            if (this.isReadable(language)) {
+                this.$store.dispatch("removeReadLanguage", language)
+            } else {
+                this.$store.dispatch("addReadLanguage", language)
+            }
+        }
+    },
+    /**
+     * Is a lang readable
+     */
+    isReadable(lang) {
+        return this.readlanguages.includes(lang)
     }
   }
 };
@@ -628,6 +705,13 @@ export default {
     width: auto;
     padding:2px 5px;
     margin-left: 5px;
+}
+.flag-list {
+    margin: 2px 4px;
+    cursor: pointer;
+}
+.flag-disabled {
+    opacity: 0.4;
 }
 </style>
 
