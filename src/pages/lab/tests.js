@@ -16,7 +16,20 @@ const tests = [
                 if (mirror.languages && mirror.languages.length > 0) {
                     let spl = mirror.languages.split(",");
                     if (spl.length > 0) {
-                        return [true, spl.length + " languages found : " + spl.join(", ")]
+                        let notfound = [], alllangs = utils.languages.reduce((arr, el) => {
+                            Array.isArray(el) ? arr.push(...el) : arr.push(el)
+                            return arr
+                        }, [])
+                        for (let lang of spl) {
+                            if (!alllangs.includes(lang)) {
+                                notfound.push(lang)
+                            }
+                        }
+                        if (notfound.length > 0) {
+                            return [false, "Languages " + notfound.join(", ") + " are not supported in AMR"]
+                        } else {
+                            return [true, spl.length + " languages found : " + spl.join(", ")]
+                        }
                     } else {
                         return [false, "Languages string is malformed, must be languages separated by commas"]
                     }
@@ -45,9 +58,9 @@ const tests = [
         name: "search mangas",
         tests: [
             {
-                output: "searchList",
-                display: "select",
-                buttons: ["gotourl", "reloadtestforvalue"],
+                output: ["searchList"],
+                display: ["select"],
+                buttons: [["gotourl", "reloadtestforvalue"]],
                 test: async function searchMangas(mirror) {
                     let result = await browser.runtime.sendMessage({
                         action: "lab",
@@ -74,9 +87,9 @@ const tests = [
         tests: [
             {
                 input: ["oneof searchList"],
-                output: "chaptersList",
-                display: "select",
-                buttons: ["gotourl", "reloadtestforvalue"],
+                output: ["chaptersList", "pickedLanguage"],
+                display: ["select", "text"],
+                buttons: [["gotourl", "reloadtestforvalue"]],
                 test: async function loadChapters(mirror, manga_url) {
                     let result = await browser.runtime.sendMessage({
                         action: "lab",
@@ -105,7 +118,7 @@ const tests = [
                                         value: arr[1],
                                         text: arr[0]
                                     }
-                                })];
+                                }), picked];
                             } else {
                                 return [false, "No chapters found for manga url : <i>" + manga_url + "</i>. Fix the implementation method <strong>getListChaps</strong>"];
                             }
@@ -174,10 +187,10 @@ const tests = [
                 }
             },
             {
-                input: ["valueof chaptersList", "textof chaptersList", "valueof searchList", "textof searchList"],
-                output: "chapterInformations",
-                display: "object",
-                test: async function getInformations(mirror, chapter_url, chapter_name, manga_url, manga_name) {
+                input: ["valueof chaptersList", "textof chaptersList", "valueof searchList", "textof searchList", "optional:pickedLanguage"],
+                output: ["chapterInformations"],
+                display: ["object"],
+                test: async function getInformations(mirror, chapter_url, chapter_name, manga_url, manga_name, pickedLanguage) {
                     let infos = await browser.runtime.sendMessage({
                         action: "lab",
                         torun: "loadChapterAndDo",
@@ -208,6 +221,11 @@ const tests = [
                             listresults.push([true, "Chapter url retrieved match selected chapter"])
                         } else {
                             listresults.push([false, "Chapter url retrieved does not match selected chapter : url retrieved : <i>" + infos.currentChapterURL + "</i>, url must be <i>" + chapter_url + "</i>. Fix the implementation method <strong>getInformationsFromCurrentPage</strong>"])
+                        }
+                        if (pickedLanguage !== undefined && pickedLanguage === infos.language) {
+                            listresults.push([true, "Selected language match language returned"])
+                        } else if (pickedLanguage !== undefined) {
+                            listresults.push([false, "Selected language does not match language returned : language retrieved : <i>" + infos.language + "</i>, language must be <i>" + pickedLanguage + "</i>. Fix the implementation method <strong>getInformationsFromCurrentPage</strong>"])
                         }
                         return listresults;
                     } else {
@@ -244,9 +262,9 @@ const tests = [
         tests: [
             {
                 input: ["valueof chaptersList"],
-                output: "listScans",
-                display: "select",
-                buttons: ["gotourl", "reloadtestforvalue"],
+                output: ["listScans"],
+                display: ["select"],
+                buttons: [["gotourl", "reloadtestforvalue"]],
                 test: async function getListScans(mirror, chapter_url) {
                     let result = await browser.runtime.sendMessage({
                         action: "lab",
@@ -271,8 +289,8 @@ const tests = [
         tests: [
             {
                 input: ["oneof listScans"],
-                output: "scanUrl",
-                display: "image",
+                output: ["scanUrl"],
+                display: ["image"],
                 test: async function loadImage(mirror, scan_url) {
                     let url = await browser.runtime.sendMessage({
                         action: "lab",
