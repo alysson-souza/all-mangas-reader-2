@@ -22,7 +22,7 @@ const contentCss = [
 class HandleManga {
     handle(message, sender) {
         let key;
-        if (message.url) key = utils.mangaKey(message.url);
+        if (message.url) key = utils.mangaKey(message.url, message.mirror, message.language);
         switch (message.action) {
             case "mangaInfos":
                 let mg = store.state.mangas.all.find(manga => manga.key === key)

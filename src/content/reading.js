@@ -10,12 +10,13 @@ import mirrorHelper from '../amr/mirrors-helper';
 class Reading {
     consultManga() {
         browser.runtime.sendMessage({
-            "action": "readManga",
-            "url": pageData.currentMangaURL,
-            "mirror": mirrorImpl.get().mirrorName,
-            "lastChapterReadName": pageData.currentChapter,
-            "lastChapterReadURL": pageData.currentChapterURL,
-            "name": pageData.name
+            action: "readManga",
+            url: pageData.currentMangaURL,
+            mirror: mirrorImpl.get().mirrorName,
+            lastChapterReadName: pageData.currentChapter,
+            lastChapterReadURL: pageData.currentChapterURL,
+            name: pageData.name,
+            language: pageData.language
         });
     }
 
@@ -25,7 +26,11 @@ class Reading {
             pageData.whereScans = where;
             //Get specific mode for currentManga
             let curmode = -1;
-            let specific = await browser.runtime.sendMessage({ action: "mangaInfos", url: pageData.currentMangaURL });
+            let specific = await browser.runtime.sendMessage({ 
+                action: "mangaInfos", 
+                url: pageData.currentMangaURL, 
+                language: pageData.language 
+            });
             if (specific && specific.display) {
                 curmode = specific.display;
             }
@@ -499,7 +504,8 @@ class Reading {
             let resp = await browser.runtime.sendMessage({
                 action: "getNextChapterImages",
                 url: urlNext,
-                mirrorName: mirrorImpl.get().mirrorName
+                mirrorName: mirrorImpl.get().mirrorName, 
+                language: pageData.language 
             });
             let lst = resp.images;
             if (lst !== null) {

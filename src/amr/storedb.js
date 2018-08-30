@@ -321,7 +321,7 @@ class StoreDB {
 
                     let objectStore = transaction.objectStore("bookmarks");
                     if (!bm.key) {
-                        bm.key = utils.mangaKey(bm.chapUrl) + (bm.scanUrl ? "_" + utils.mangaKey(bm.scanUrl, bm.mirror) : "")
+                        bm.key = utils.mangaKey(bm.chapUrl, bm.mirror) + (bm.scanUrl ? "_" + utils.mangaKey(bm.scanUrl, bm.mirror) : "")
                     }
                     let request = objectStore.put(bm);
                     request.onsuccess = function (event) {

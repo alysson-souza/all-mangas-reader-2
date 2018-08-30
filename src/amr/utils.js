@@ -128,7 +128,7 @@ const afterHostURL = function(url) {
  * Calculate manga key for a url (just host name, without subdomain followed by url of manga)
  * @param {*} url 
  */
-export function mangaKey(url, forcedmirror) {
+export function mangaKey(url, forcedmirror, toconcat) {
     if (!url) {
         console.error("A manga key has been requested for undefined url, it will be melted in your database with other mangas with same issue, check the implementation of the mirror where your read this manga.")
         return "_no_key_" // should not happen !
@@ -149,7 +149,7 @@ export function mangaKey(url, forcedmirror) {
         if (mirror) mstr = this.formatMgName(mirror.mirrorName).toLowerCase()
     }
     
-    return mstr + "/" + afterHostURL(url)
+    return mstr + "/" + afterHostURL(url) + (toconcat !== undefined ? "_" + toconcat : "")
 }
 
 /**
@@ -223,4 +223,32 @@ export function findProbableChapter(lastReadURL, list) {
     }
     if (lstMax.length === 1) return lstMax[0];
     return;
+}
+/**
+ * List of supported languages in AMR, some are not traditional language codes
+ * Multiple codes can match a same language, in this case, the entry is a list of 
+ * codes matching a language
+ * Each code must have a css rule in flags.css to display the right flag for the language code
+ * and a message code to display the language name
+ */
+export const languages = [
+    ["ar", "sa"], "bd", "bg", "ct", "cn", "hk", "cz", "dk", "nl", ["en", "gb"], "ph", "fi", "fr", "de", "gr", "hu", "id", "it", "jp", "kr", "my", "mn", "ir", "pl", "br", "pt", "ro", "ru", "rs", "es", "mx", "se", "th", "tr", "ua", "vn"
+]
+
+export function getUnifiedLang(lang) {
+    if (languages.includes(lang)) return lang
+    for (let l of languages) {
+        if (Array.isArray(l) && l.includes(lang)) return l[0]
+    }
+    return undefined
+}
+
+export function readLanguage(manga) {
+    if (manga.language !== undefined) return getUnifiedLang(manga.language)
+    let langs = store.state.mirrors.all.find(mir => mir.mirrorName === manga.mirror).languages
+    if (langs.split(",").length > 1) {
+        return "aa" // code for multiple languages possible
+    } else {
+        return getUnifiedLang(langs)
+    }
 }

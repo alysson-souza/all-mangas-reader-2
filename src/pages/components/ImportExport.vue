@@ -181,13 +181,16 @@ export default {
           if (mg.update !== 1) res.p = mg.update;
           if (mg.display !== 0) res.d = mg.display;
           if (mg.cats.length > 0) res.c = mg.cats;
+          if (mg.language !== undefined) res.g = mg.language;
           return res;
         } else {
-          return {
+          let res = {
             m: mg.mirror,
             n: mg.name,
             u: mg.url
-          };
+          }
+          if (mg.language !== undefined) res.g = mg.language;
+          return res
         }
       });
       let exp = { mangas: mgs };
@@ -197,7 +200,7 @@ export default {
         let bms = this.$store.state.bookmarks.all;
         if (this.viewable) {
           bms = bms.filter(bm => {
-              let mgbm = this.$store.state.mangas.all.find(mg => mg.key === mgutils.mangaKey(bm.url)); // find manga associated with bookmark
+              let mgbm = this.$store.state.mangas.all.find(mg => mg.key.indexOf(mgutils.mangaKey(bm.url)) >= 0); // find manga associated with bookmark
               if (mgbm !== undefined) {
                 return mgutils.displayFilterCats( // check if manga is viewable
                   mgbm,
@@ -285,6 +288,7 @@ export default {
           if (mg.p) readmg.update = mg.p;
           if (mg.d) readmg.display = mg.d;
           if (mg.c) readmg.cats = mg.c;
+          if (mg.g) readmg.language = mg.g;
           // add default category if specified
           if (this.importcat !== "") {
             if (readmg.cats && readmg.cats.length > 0)

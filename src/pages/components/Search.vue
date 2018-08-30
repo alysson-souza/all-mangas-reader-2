@@ -16,22 +16,48 @@
         <!-- results area -->
         <v-layout row class="search-results">
             <v-container fluid>
-                <v-layout row v-for="(lst, key) in results" :key="key">
-                    <!-- name of the manga -->
-                    <v-flex xs4><strong>{{lst[0].name}}</strong></v-flex>
-                    <!-- mirror icons buttons to add to list -->
-                    <v-flex xs8>
-                        <v-tooltip top content-class="icon-ttip" v-for="(mg, key) in lst" :key="key">
-                            <div class="mirror-result-cont" slot="activator">
-                                <img @click="addToList(mg)" :src="getIcon(mg.mirror)" :class="'mirror-icon ' + (isInList(mg) || mg.adding ? 'added' : '')" /> 
-                                <v-icon v-if="isInList(mg)" color="green">mdi-check</v-icon>
-                                <v-progress-circular indeterminate size="18" v-if="mg.adding" color="grey darken-4"></v-progress-circular>
-                            </div>
-                            <span v-if="isInList(mg)">{{i18n("search_result_inlist", mg.name, mg.mirror)}}</span>
-                            <span v-else>{{i18n("search_result_add", mg.name, mg.mirror)}}</span>
-                        </v-tooltip>
-                    </v-flex>
-                </v-layout>
+                <v-tabs
+                    v-model="langtabs"
+                    fixed-tabs
+                    color="transparent"
+                >
+                    <v-tabs-slider></v-tabs-slider>
+                    <v-tab 
+                        v-for="lang in langs" 
+                        :key="lang" 
+                        :href="'#langtab-' + lang" 
+                        class="primary--text">
+                        <Flag v-if="lang != 'aa'" :value="lang" big />
+                        <span v-else>{{ i18n("search_multilang") }}</span>
+                    </v-tab>
+                </v-tabs>
+                <v-tabs-items 
+                    v-for="(res, lang) in results" 
+                    :key="lang" 
+                    v-model="langtabs" >
+                    <v-tab-item :id="'langtab-' + lang">
+                        <v-container fluid>
+                            <v-layout row v-for="fmtkey in res['__SORTEDKEYS__']" :key="fmtkey">
+                                <!-- name of the manga -->
+                                <v-flex xs4><strong>
+                                    {{res[fmtkey] === undefined ? "" : res[fmtkey][0].name}}
+                                </strong></v-flex>
+                                <!-- mirror icons buttons to add to list -->
+                                <v-flex xs8>
+                                    <v-tooltip top content-class="icon-ttip" v-for="(mg, key) in res[fmtkey]" :key="key">
+                                        <div class="mirror-result-cont" slot="activator">
+                                            <img @click="addToList(mg)" :src="getIcon(mg.mirror)" :class="'mirror-icon ' + (isInList(mg) || mg.adding ? 'added' : '')" /> 
+                                            <v-icon v-if="isInList(mg)" color="green">mdi-check</v-icon>
+                                            <v-progress-circular indeterminate size="18" v-if="mg.adding" color="grey darken-4"></v-progress-circular>
+                                        </div>
+                                        <span v-if="isInList(mg)">{{i18n("search_result_inlist", mg.name, mg.mirror)}}</span>
+                                        <span v-else>{{i18n("search_result_add", mg.name, mg.mirror)}}</span>
+                                    </v-tooltip>
+                                </v-flex>
+                            </v-layout>
+                        </v-container>
+                    </v-tab-item>
+                </v-tabs-items>
             </v-container>
         </v-layout>
     </v-container>
@@ -42,13 +68,16 @@ import i18n from "../../amr/i18n";
 import browser from "webextension-polyfill";
 import SearchMirror from "./SearchMirror";
 import * as utils from "../../amr/utils";
+import Flag from "./Flag";
 
 export default {
     data() {
         return {
             searchwrite: "",
             search: "",
-            results: []
+            results: {},
+            langs: [],
+            langtabs: null
         };
     },
     props: [
@@ -77,32 +106,61 @@ export default {
          */
         launchSearch() {
             if (this.search === this.searchwrite) return
-            this.results = []
+            this.results = {}
             this.search = this.searchwrite
         },
         /**
          * Add mangas to results
          */
-        addMangas(mgs, searchphrase) {
+        addMangas(mgs, searchphrase, languages) {
             if (searchphrase !== this.search) return;
-            // rebuild list grouped by reduced mg name
-            let resGrouped = {}
-            this.results.forEach(lst => resGrouped[utils.formatMgName(lst[0].name)] = lst)
+            // Set current lang of the implementation, multi if multiple is supported
+            let curmirlang = "aa" // contains manga in multiple languages (aa to be first in list)
+            if (languages.split(",").length === 1) curmirlang = utils.getUnifiedLang(languages) // use unified lang so if a manga lang is 'gb' and another 'en', both will be under 'en'
+
             // add new mangas to grouped list
-            mgs.forEach(function(mg) {
-                mg.adding = false; // is currently be added to list (display progress)
-                let mgst = utils.formatMgName(mg.name)
-                if (resGrouped[mgst]) {
-                    resGrouped[mgst].push(mg)
-                 } else {
-                     resGrouped[mgst] = [mg]
-                 }
-            }.bind(this))
-            let lsts = []
-            Object.keys(resGrouped).forEach(key => lsts.push(resGrouped[key]))
-            // sort list of lists by length and alphabetically inside
-            lsts.sort((a, b) => a.length === b.length ? a[0].name.localeCompare(b[0].name) : b.length - a.length)
-            this.results = lsts
+            let addMgs = (mgs, lang) => {
+                for (let mg of mgs) {
+                    mg.adding = false; // is currently be added to list (display progress)
+                    let mgst = utils.formatMgName(mg.name)
+                    if (!this.results[lang]) this.results[lang] = {}
+                    if (this.results[lang][mgst] !== undefined) {
+                        this.results[lang][mgst].push(mg)
+                    } else {
+                        this.results[lang][mgst] = [mg]
+                    }
+                }
+            }
+            
+            if (Array.isArray(mgs)) { // normal use case, implementation returns list of mangas
+                addMgs(mgs, curmirlang)
+            } else { 
+                // implementation returns object which keys are languages : {"en" : [[]], "fr": [[]]}
+                for (let l in mgs) {
+                    addMgs(mgs[l], utils.getUnifiedLang(l))
+                }
+            }
+
+            let lsts = {}
+            for (let l in this.results) {
+                // build sorted list of keys
+                let tmplst = []
+                Object.keys(this.results[l]).forEach(key => tmplst.push(this.results[l][key]))
+                // sort list of lists by length and alphabetically inside
+                tmplst.sort(
+                    (a, b) => 
+                        a.length === b.length ? 
+                            a[0].name.localeCompare(b[0].name) : 
+                            b.length - a.length
+                )
+                //add a property to sort entries in object
+                this.results[l]["__SORTEDKEYS__"] = tmplst.map(lst => utils.formatMgName(lst[0].name))
+            }
+
+            this.langs = Object.keys(this.results).sort()
+            if (this.langtabs === null && this.langs[0] !== undefined) {
+                this.langtabs = "langtab-" + this.langs[0] // select first tab if none selected
+            }
         },
         /**
          * Adds a manga to reading list
@@ -124,11 +182,11 @@ export default {
          * True if manga is in reading list
          */
         isInList(mg) {
-            return this.$store.state.mangas.all.findIndex(m => m.key === utils.mangaKey(mg.url)) !== -1
+            return this.$store.state.mangas.all.findIndex(m => m.key.indexOf(utils.mangaKey(mg.url, mg.mirror, mg.language)) === 0) !== -1
         }
     },
     name: "Search",
-    components: { SearchMirror }
+    components: { SearchMirror, Flag }
 }
 </script>
 <style>

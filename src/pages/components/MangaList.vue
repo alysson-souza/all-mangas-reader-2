@@ -98,6 +98,17 @@ import browser from "webextension-polyfill";
 import * as utilsamr from '../../amr/utils';
 import * as utils from '../utils';
 
+const default_sort = (a, b) => {
+    let af = utilsamr.formatMgName(a.name), bf = utilsamr.formatMgName(b.name)
+    let res = af.localeCompare(bf)
+    if (res === 0) {
+        res = a.mirror.localeCompare(b.mirror)
+    }
+    if (res === 0) {
+        res = a.language.localeCompare(b.language)
+    }
+    return res
+}
 export default {
   data() {
     return {
@@ -140,15 +151,13 @@ export default {
     sortedMangas: function() {
         var cmp;
         if (this.sort === "az") {
-            cmp = function(a, b) {
-                return a.name < b.name ? -1 : (a.name === b.name ? 0 : 1);
-            };
+            cmp = default_sort
         } else /*if (sort === "updates")*/ {
             cmp = function(a, b) {
                 let ha = utils.hasNew(a),
                     hb = utils.hasNew(b);
                 // primary sort on manga has new chapter, secondary on alphabetical
-                return (ha === hb ? (a.name < b.name ? -1 : (a.name === b.name ? 0 : 1)) : (ha && !hb ? -1 : 1));
+                return (ha === hb ? default_sort(a, b) : (ha && !hb ? -1 : 1));
             };
         };
         return this.visMangas.sort(cmp);
@@ -187,7 +196,8 @@ export default {
                     mirror: mg.mirror,
                     lastChapterReadName: mg.listChaps[0][0],
                     lastChapterReadURL: mg.listChaps[0][1],
-                    name: mg.name
+                    name: mg.name,
+                    language: mg.language
                 })
             })
         }

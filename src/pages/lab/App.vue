@@ -80,6 +80,7 @@
                                 </v-select>
                                 <div v-if="out.display === 'select'">Selected value : <i>{{ out.currentValue }}</i></div>
                                 <span v-if="out.display === 'object'">{{JSON.stringify(out.value, null, 4)}}</span>
+                                <span v-if="out.display === 'text'">{{out.value}}</span>
                                 <div v-if="out.display === 'image'" :ref='out.name' class="dom-elt">
                                     <img :src="out.value" />
                                 </div>
@@ -229,20 +230,39 @@ export default {
                         for (let inp of unit.input) {
                             let spl = inp.split(" ");
                             if (spl.length > 1) {
-                            if (!this.outputs[spl[1]])
-                                throw({message:"the required input " + spl[1] + " is missing."});
-                            if (spl[0] === "oneof") {
-                                // select one entry in previous output
-                                inputs.push(this.selectEntryRandomly(spl[1]));
-                            } else if (spl[0] === "valueof") {
-                                inputs.push(this.getEntryValue(spl[1]));
-                            } else if (spl[0] === "textof") {
-                                inputs.push(this.getEntryText(spl[1]));
-                            }
+                                let outname = spl[1];
+                                let optional = false;
+                                if (outname.indexOf("optional:") === 0) {
+                                    optional = true;
+                                    outname = outname.substr(9)
+                                }
+                                if (!optional && !this.outputs[outname])
+                                    throw({message:"the required input " + outname + " is missing."});
+                                if (this.outputs[outname]) {
+                                    if (spl[0] === "oneof") {
+                                        // select one entry in previous output
+                                        inputs.push(this.selectEntryRandomly(outname));
+                                    } else if (spl[0] === "valueof") {
+                                        inputs.push(this.getEntryValue(outname));
+                                    } else if (spl[0] === "textof") {
+                                        inputs.push(this.getEntryText(outname));
+                                    }
+                                } else {
+                                    inputs.push(undefined)
+                                }
                             } else {
-                            if (!this.outputs[inp])
-                                throw({message:"the required input " + inp + " is missing."});
-                            inputs.push(this.outputs[inp]);
+                                let optional = false;
+                                if (inp.indexOf("optional:") === 0) {
+                                    optional = true;
+                                    inp = inp.substr(9)
+                                }
+                                if (!optional && !this.outputs[inp])
+                                    throw({message:"the required input " + inp + " is missing."});
+                                if (this.outputs[inp]) {
+                                    inputs.push(this.outputs[inp]);
+                                } else {
+                                    inputs.push(undefined)
+                                }
                             }
                         }
                     }
@@ -260,16 +280,21 @@ export default {
                     } else {
                         allres.push(...ress);
                     }
-                    for ([isok, text, output] of allres) { // for all results of unit test
-                        if (unit.output && output) {
-                            this.outputs[unit.output] = output; // save the output
-                            testouts.push({
-                                name: unit.output,
-                                value: output,
-                                display: unit.display,
-                                currentValue: undefined, 
-                                buttons: unit.buttons
-                            });
+                    let cur_outputs = []
+                    for ([isok, text, ...cur_outputs] of allres) { // for all results of unit test
+                        if (unit.output !== undefined && unit.output.length > 0 && cur_outputs.length > 0) {
+                            for (let o = 0; o < cur_outputs.length; o++) {
+                                let output = cur_outputs[o]
+                                let name = unit.output[o]
+                                this.outputs[name] = output; // save the output
+                                testouts.push({
+                                    name: name,
+                                    value: output,
+                                    display: unit.display !== undefined && unit.display.length >= o+1 ? unit.display[o] : undefined,
+                                    currentValue: undefined, 
+                                    buttons: unit.buttons !== undefined && unit.buttons.length >= o+1 ? unit.buttons[o] : undefined
+                                });
+                            }
                         }
                         passed &= isok; // check if test passed
                         if (!isok) {

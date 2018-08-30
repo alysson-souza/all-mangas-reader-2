@@ -1,6 +1,7 @@
 <template>
+<div v-if="!isInGroup || (isFirst || groupExpanded)">
     <!-- manga line, containing title, list of chapters and actions-->
-    <v-layout row v-if="!isInGroup || (isFirst || groupExpanded)">
+    <v-layout row>
       <!-- Title and icon -->
       <v-flex xs3 class="amr-list-elt">
       <v-card dark tile flat :color="color(3)" class="back-card">
@@ -44,6 +45,9 @@
           <img :src="mirror.mirrorIcon" class="mirror-icon grouped" slot="activator" /> 
           <span>{{mirror.mirrorName}}</span>
         </v-tooltip>
+        <!-- Flag of the language of chapters if multiple languages available -->
+        <Flag v-if="manga.language" :value="manga.language" @click.native="displayLangs = !displayLangs"/>
+        <!-- List of chapters -->
         <div v-if="manga.listChaps.length" class="amr-prog-cont">
           <div class="amr-select-wrapper">
             <select :value="selValue" v-on:input="selChapter = urlFromValue($event.target.value)" :class="color(2) + ' amr-chap-sel'" @change="playChap()">
@@ -122,8 +126,20 @@
           </v-card>
           </template>
         </v-card>
-      </v-flex>      
+      </v-flex>
     </v-layout>
+    <!-- List of available languages if set -->
+    <v-layout row v-if="displayLangs">
+      <v-flex xs3><v-card dark tile flat class="back-card" :color="color(3)"></v-card></v-flex>
+      <v-flex xs6>
+        <v-card dark tile flat class="back-card" :color="color(3)">
+          <p class="mb-0">{{i18n("popup_language_pick")}} :</p>
+          <Flag v-for="lang in languages" :key="lang" :value="lang" big @click.native="readMangaInLang(lang)"/>
+        </v-card>
+      </v-flex>
+      <v-flex xs3><v-card dark tile flat class="back-card" :color="color(3)"></v-card></v-flex>
+    </v-layout>
+</div>
 </template>
 
 <script>
@@ -132,6 +148,7 @@ import { mapGetters } from "vuex";
 import browser from "webextension-polyfill";
 import * as utils from "../utils";
 import * as amrutils from "../../amr/utils";
+import Flag from "./Flag"
 
 export default {
   data() {
@@ -142,6 +159,8 @@ export default {
       expanded: false, 
       // delete manga popup state
       deleteManga: false,
+      // list of languages state
+      displayLangs: false,
     };
   },
   // property to load the component with --> the manga it represents
@@ -163,9 +182,6 @@ export default {
     // AMR options
     options: function() {
       return this.$store.state.options;
-    },
-    categories: function() {
-      return this.options.categoriesStates;
     },
     // determine if this manga has new published chapters
     hasNew: function() {
@@ -201,6 +217,16 @@ export default {
     timeUpdated() {
       let nbdays = Math.floor((Date.now() - this.manga.upts) / (1000 * 60 * 60 * 24));
       return nbdays;
+    },
+    // list of languages
+    languages() {
+      let alllangs = this.manga.languages === undefined ? [] : this.manga.languages.split(",")
+      return alllangs.filter(lang => {
+        let keylang = amrutils.mangaKey(this.manga.url, this.manga.mirror, lang)
+        return this.$store.state.mangas.all.findIndex(
+          m => m.key === keylang
+        ) === -1
+      })
     }
   },
   methods: {
@@ -240,7 +266,8 @@ export default {
         mirror: this.manga.mirror,
         lastChapterReadName: this.manga.listChaps[0][0],
         lastChapterReadURL: this.manga.listChaps[0][1],
-        name: this.manga.name
+        name: this.manga.name,
+        language: this.manga.language
       });
     },
     /**
@@ -273,10 +300,21 @@ export default {
       this.$store.dispatch("deleteManga", {
         key: this.manga.key
       });
+    },
+    /** Read a manga in another language */
+    async readMangaInLang(lang) {
+      await browser.runtime.sendMessage({
+        action: "readManga",
+        url: this.manga.url,
+        mirror: this.manga.mirror,
+        name: this.manga.name,
+        language: lang
+      });
     }
   },
   // Name of the component
-  name: "Manga"
+  name: "Manga",
+  components: {Flag}
 };
 </script>
 
@@ -374,17 +412,29 @@ select.amr-chap-sel {
   width: 20px;
   height: 20px;
 }
+.flag-container {
+  float: left;
+  margin: 0px 2px;
+  cursor: pointer;
+}
 .amr-prog-cont {
   margin-left: 0px;
 }
 .tip-icon-grouped + .amr-prog-cont {
   margin-left: 25px;
 }
+.tip-icon-grouped + .flag-container + .amr-prog-cont {
+  margin-left: 45px;
+}
 .amr-manga-waiting {
   margin-top: 7px;
 }
 .tip-icon-grouped + .amr-manga-waiting {
   margin-left: 25px;
+  width: auto;
+}
+.tip-icon-grouped + .flag-container + .amr-manga-waiting {
+  margin-left: 45px;
   width: auto;
 }
 .amr-calendar-badge, .amr-timeroff-badge {

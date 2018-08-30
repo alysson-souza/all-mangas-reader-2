@@ -10,17 +10,18 @@
           <span>{{i18n("list_cat_donotcare_all")}}</span>
       </v-tooltip>
       <!-- Display all categories -->
-      <div v-for="(cat, key) in categories" 
+      <div v-for="(cat, key) in sortedCategories" 
         :class="'cat-chip ' + (staticCats ? 'include' : cat.state)"
         :key="key"
         @click="switchState(cat)">
         <!-- Category name and tooltip -->
-        <v-tooltip v-if="!staticCats" top content-class="icon-ttip" class="cat-name">
-          <span class="cat-name" slot="activator">{{cat.name}}</span>
-          <span v-if="cat.state==='include'" v-html='i18n("list_cat_include", cat.name)'></span>
-          <span v-if="cat.state==='exclude'" v-html='i18n("list_cat_exclude", cat.name)'></span>
-          <span v-if="!cat.state" v-html='i18n("list_cat_no", cat.name)'></span>
+        <v-tooltip v-if="!staticCats && cat.type !== 'language'" top content-class="icon-ttip" class="cat-name">
+          <span class="cat-name" slot="activator">{{cat.type === 'native' ? i18n(cat.name) : cat.name}}</span>
+          <span v-if="cat.state==='include'" v-html='i18n("list_cat_include", cat.type === "native" ? i18n(cat.name) : cat.name)'></span>
+          <span v-if="cat.state==='exclude'" v-html='i18n("list_cat_exclude", cat.type === "native" ? i18n(cat.name) : cat.name)'></span>
+          <span v-if="!cat.state" v-html='i18n("list_cat_no", cat.type === "native" ? i18n(cat.name) : cat.name)'></span>
         </v-tooltip>
+        <Flag v-if="!staticCats && cat.type === 'language'" :value='cat.name' />
         <span v-if="staticCats" class="cat-name">{{cat}}</span>
         <!-- Icon only me -->
         <v-tooltip v-if="!staticCats" top content-class="icon-ttip">
@@ -29,7 +30,7 @@
         </v-tooltip>
         <!-- Trash icon -->
         <v-tooltip top content-class="icon-ttip">
-            <v-icon v-if="cat.type !== 'native'" class="cat-act" @click.stop="deleteCat(cat)" slot="activator">mdi-close</v-icon>
+            <v-icon v-if="cat.type !== 'native' && cat.type !== 'language'" class="cat-act" @click.stop="deleteCat(cat)" slot="activator">mdi-close</v-icon>
             <span>{{i18n("list_cat_delete")}}</span>
         </v-tooltip>
         <!-- badge nb mangas -->
@@ -52,8 +53,11 @@
   </div>
 </template>
 <script>
-import i18n from "../../amr/i18n";
-import * as utils from "../utils";
+import i18n from "../../amr/i18n"
+import * as utils from "../utils"
+import Flag from './Flag'
+
+const types_order = ["native", "language", undefined] // order of displayed categories types
 
 export default {
   data() {
@@ -76,6 +80,13 @@ export default {
       return this.categories.reduce(
         (nb, cat) => cat.state === "include" ? nb + 1 : nb
       , 0) === this.categories.length;
+    },
+    sortedCategories: function() {
+      return this.categories.sort((a, b) => {
+        let at = types_order.findIndex(t => t === a.type), 
+            bt = types_order.findIndex(t => t === b.type)
+        return at === bt ? a.name.localeCompare(b.name) : at - bt
+      })
     }
   },
   methods: {
@@ -137,7 +148,8 @@ export default {
       }
     }
   },
-  name: "Categories"
+  name: "Categories",
+  components: {Flag}
 };
 </script>
 <style>

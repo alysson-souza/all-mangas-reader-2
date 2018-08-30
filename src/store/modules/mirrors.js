@@ -105,6 +105,18 @@ const actions = {
                 for (let w of ws.data) {
                     // get activated property in db, do not overright it
                     let act = true;
+                    // languages is undefined for abstract implementations --> always activated
+                    if (w.languages !== undefined && rootState.options["deactivateunreadable"]) {
+                        let langs = w.languages.split(",")
+                        let hasReadable = false;
+                        for (let l of langs) {
+                            if (rootState.options["readlanguages"].includes(l)) {
+                                hasReadable = true
+                                break
+                            }
+                        }
+                        if (!hasReadable) act = false // default activation to false for a new implementation that does not match a readable language if option is checked
+                    }
                     let wdb = websitesdb.find(m => m.mirrorName === w.mirrorName);
                     if (wdb != undefined) act = wdb.activated;
                     w.activated = act;

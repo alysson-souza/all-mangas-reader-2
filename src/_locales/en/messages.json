@@ -871,6 +871,167 @@
   "list_cat_add": {
     "message": "Add category",
     "description": "Placeholder of input to add a category in categories list"
+  },
+
+
+  "popup_language_pick": {
+    "message": "Choose a language to follow for this manga",
+    "description": "In the popup, if a manga is available in multiple languages, the label before the flags to select new language to follow"
+  },
+
+  "options_sup_languages": {
+    "message": "Languages",
+    "description": "Title of the languages section in options page"
+  },
+  "options_sup_languages_desc": {
+    "message": "Select languages in which you can read mangas",
+    "description": "Description of the languages section in options page, how to select readable languages"
+  },
+  "options_sup_deactivate_unreadable": {
+    "message": "Deactivate unreadable websites",
+    "description": "Title of the option to deactivate mirrors containing only unreadable languages"
+  },
+  "options_sup_deactivate_unreadable_desc": {
+    "message": "Deactivate websites proposing only languages in which you can't read",
+    "description": "Description of the option to deactivate mirrors containing only unreadable languages"
+  },
+  "search_multilang": {
+    "message": "Multi",
+    "description": "Title of a multilingual tab result in search panel"
+  },
+
+  "language_sa": {
+    "message": "Arabic"
+  },
+  "language_ar": {
+    "message": "Arabic"
+  },
+  "language_bd": {
+    "message": "Bengali"
+  },
+  "language_bg": {
+    "message": "Bulgarian"
+  },
+  "language_mm": {
+    "message": "Burmese"
+  },
+  "language_ct": {
+    "message": "Catalan"
+  },
+  "language_cn": {
+    "message": "Chinese (Simp)"
+  },
+  "language_hk": {
+    "message": "Chinese (Trad)"
+  },
+  "language_cz": {
+    "message": "Czech"
+  },
+  "language_dk": {
+    "message": "Danish"
+  },
+  "language_nl": {
+    "message": "Dutch"
+  },
+  "language_gb": {
+    "message": "English"
+  },
+  "language_en": {
+    "message": "English"
+  },
+  "language_ph": {
+    "message": "Filipino"
+  },
+  "language_fi": {
+    "message": "Finnish"
+  },
+  "language_fr": {
+    "message": "French"
+  },
+  "language_de": {
+    "message": "German"
+  },
+  "language_gr": {
+    "message": "Greek"
+  },
+  "language_hu": {
+    "message": "Hungarian"
+  },
+  "language_id": {
+    "message": "Indonesian"
+  },
+  "language_it": {
+    "message": "Italian"
+  },
+  "language_jp": {
+    "message": "Japanese"
+  },
+  "language_kr": {
+    "message": "Korean"
+  },
+  "language_my": {
+    "message": "Malay"
+  },
+  "language_mn": {
+    "message": "Mongolian"
+  },
+  "language_ir": {
+    "message": "Persian"
+  },
+  "language_pl": {
+    "message": "Polish"
+  },
+  "language_br": {
+    "message": "Portuguese (Br)"
+  },
+  "language_pt": {
+    "message": "Portuguese (Pt)"
+  },
+  "language_ro": {
+    "message": "Romanian"
+  },
+  "language_ru": {
+    "message": "Russian"
+  },
+  "language_rs": {
+    "message": "Serbo-Croatian"
+  },
+  "language_es": {
+    "message": "Spanish (Es)"
+  },
+  "language_mx": {
+    "message": "Spanish (LATAM)"
+  },
+  "language_se": {
+    "message": "Swedish"
+  },
+  "language_th": {
+    "message": "Thai"
+  },
+  "language_tr": {
+    "message": "Turkish"
+  },
+  "language_ua": {
+    "message": "Ukrainian"
+  },
+  "language_vn": {
+    "message": "Vietnamese"
+  },
+
+  "category_new": {
+    "message": "New",
+    "description": "Label of the native category for mangas containing new chapters"
+  },
+  "category_read": {
+    "message": "Read",
+    "description": "Label of the native category for read mangas"
+  },
+  "category_unread": {
+    "message": "Unread",
+    "description": "Label of the native category for mangas containing unread chapters"
+  },
+  "category_oneshots": {
+    "message": "One shots",
+    "description": "Label of the native category for mangas which are one shots"
   }
-  
 }
