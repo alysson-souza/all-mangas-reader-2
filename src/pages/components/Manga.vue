@@ -291,15 +291,16 @@ export default {
      * Opens a chapter from select
      */
     playChap() {
-      browser.runtime.sendMessage({ action: "opentab", url: this.selChapter });
+      browser.runtime.sendMessage({ action: "opentab", url: this.selChapter })
     },
     /**
      * Deletes a manga
      */
     trash() {
+      this.deleteManga = false
       this.$store.dispatch("deleteManga", {
         key: this.manga.key
-      });
+      })
     },
     /** Read a manga in another language */
     async readMangaInLang(lang) {
