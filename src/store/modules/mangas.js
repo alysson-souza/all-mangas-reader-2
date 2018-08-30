@@ -544,10 +544,17 @@ const actions = {
                 dispatch("removeLanguageCategory", cat.name)
             }
         } else if (langs.length > 1) {
+            // add new ones
             for (let l of langs) {
                 if (catsLang.findIndex(cat => cat.name === l) === -1) {
                     // add language category l
                     dispatch("addLanguageCategory", l)
+                }
+            }
+            // remove deleted ones
+            for (let cat of catsLang) {
+                if (!langs.includes(cat.name)) {
+                    dispatch("removeLanguageCategory", cat.name)
                 }
             }
         }
