@@ -267,7 +267,7 @@
                                 {{ i18n('options_gen_mirrornbmangas', nbMangas(props.item.mirrorName)) }}
                             </v-card>
                         </td>
-                        <td class="text-xs-right">
+                        <td class="text-xs-right td-langs">
                             <span v-for="(lang, key) in props.item.languages.split(',')" :key="key">
                                 <Flag :value="lang" />
                             </span>
@@ -705,6 +705,9 @@ export default {
     width: auto;
     padding:2px 5px;
     margin-left: 5px;
+}
+.td-langs {
+    max-width: 200px;
 }
 .flag-list {
     margin: 2px 4px;
