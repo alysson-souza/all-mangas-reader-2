@@ -116,7 +116,7 @@ export default {
             if (searchphrase !== this.search) return;
             // Set current lang of the implementation, multi if multiple is supported
             let curmirlang = "aa" // contains manga in multiple languages (aa to be first in list)
-            if (languages.split(",").length === 1) curmirlang = languages
+            if (languages.split(",").length === 1) curmirlang = utils.getUnifiedLang(languages) // use unified lang so if a manga lang is 'gb' and another 'en', both will be under 'en'
 
             // add new mangas to grouped list
             let addMgs = (mgs, lang) => {
@@ -137,7 +137,7 @@ export default {
             } else { 
                 // implementation returns object which keys are languages : {"en" : [[]], "fr": [[]]}
                 for (let l in mgs) {
-                    addMgs(mgs[l], l)
+                    addMgs(mgs[l], utils.getUnifiedLang(l))
                 }
             }
 
