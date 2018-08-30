@@ -899,7 +899,7 @@
     "message": "Multi",
     "description": "Title of a multilingual tab result in search panel"
   },
-  
+
   "language_sa": {
     "message": "Arabic"
   },
@@ -1016,5 +1016,22 @@
   },
   "language_vn": {
     "message": "Vietnamese"
+  },
+
+  "category_new": {
+    "message": "New",
+    "description": "Label of the native category for mangas containing new chapters"
+  },
+  "category_read": {
+    "message": "Read",
+    "description": "Label of the native category for read mangas"
+  },
+  "category_unread": {
+    "message": "Unread",
+    "description": "Label of the native category for mangas containing unread chapters"
+  },
+  "category_oneshots": {
+    "message": "One shots",
+    "description": "Label of the native category for mangas which are one shots"
   }
 }

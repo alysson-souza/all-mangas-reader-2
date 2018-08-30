@@ -234,3 +234,21 @@ export function findProbableChapter(lastReadURL, list) {
 export const languages = [
     ["ar", "sa"], "bd", "bg", "ct", "cn", "hk", "cz", "dk", "nl", ["en", "gb"], "ph", "fi", "fr", "de", "gr", "hu", "id", "it", "jp", "kr", "my", "mn", "ir", "pl", "br", "pt", "ro", "ru", "rs", "es", "mx", "se", "th", "tr", "ua", "vn"
 ]
+
+export function getUnifiedLang(lang) {
+    if (languages.includes(lang)) return lang
+    for (let l of languages) {
+        if (Array.isArray(l) && l.includes(lang)) return l[0]
+    }
+    return undefined
+}
+
+export function readLanguage(manga) {
+    if (manga.language !== undefined) return getUnifiedLang(manga.language)
+    let langs = store.state.mirrors.all.find(mir => mir.mirrorName === manga.mirror).languages
+    if (langs.split(",").length > 1) {
+        return "aa" // code for multiple languages possible
+    } else {
+        return getUnifiedLang(langs)
+    }
+}

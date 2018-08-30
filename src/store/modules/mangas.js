@@ -131,6 +131,8 @@ const actions = {
             } catch (e) { console.error(e) } // ignore error if manga list can not be loaded --> save the manga
             utils.debug("saving new manga to database");
             dispatch('updateManga', mg);
+            // update native language categories
+            dispatch("updateLanguageCategories")
         } else {
             try {
                 await dispatch("consultManga", message);
@@ -489,6 +491,8 @@ const actions = {
         }
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();
+        // update native language categories
+        dispatch("updateLanguageCategories")
     },
     /**
      * Import sample mangas on user request
@@ -521,6 +525,33 @@ const actions = {
         commit("removeCategoryFromManga", obj);
         dispatch('updateManga', mg);
     },
+
+    /**
+     * Updates categories to add language categories if there is mangas in more 
+     * than one different language
+     * @param {*} param0 
+     */
+    updateLanguageCategories({ commit, dispatch, rootState }) {
+        let catsLang = rootState.options.categoriesStates.filter(cat => cat.type === 'language')
+        let langs = []
+        for (let mg of state.all) {
+            let l = utils.readLanguage(mg)
+            if (l !== "aa" && !langs.includes(l)) langs.push(l) // do not create a category for aa which corresponds to multiple languages possible 
+        }
+        if (catsLang.length > 0 && langs.length <= 1) { 
+            // remove language categories, only one language
+            for (let cat of catsLang) {
+                dispatch("removeLanguageCategory", cat.name)
+            }
+        } else if (langs.length > 1) {
+            for (let l of langs) {
+                if (catsLang.findIndex(cat => cat.name === l) === -1) {
+                    // add language category l
+                    dispatch("addLanguageCategory", l)
+                }
+            }
+        }
+    }
 }
 
 /**

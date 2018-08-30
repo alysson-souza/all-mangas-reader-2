@@ -33,7 +33,7 @@
                 <select dark v-model="newCat" @change="addCategory()" :class="color(2)">
                   <option value="">{{i18n("list_details_cats_select")}}</option>
                   <option v-for="(cat, key) of options.categoriesStates" 
-                          v-if="cat.type !== 'native'" 
+                          v-if="cat.type !== 'native' && cat.type != 'language'" 
                           :key="key" 
                           :value="cat.name">
                       {{cat.name}}

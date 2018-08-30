@@ -183,9 +183,6 @@ export default {
     options: function() {
       return this.$store.state.options;
     },
-    categories: function() {
-      return this.options.categoriesStates;
-    },
     // determine if this manga has new published chapters
     hasNew: function() {
       return utils.hasNew(this.manga);

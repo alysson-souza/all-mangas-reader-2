@@ -15,6 +15,7 @@ import * as utils from './utils';
 let installApp = async function(curVersion) {
     // check if user language is in readable list of languages add it if not
     checkLangSet()
+    return () => {}
 }
 /**
  * Do things when version is updated
@@ -22,6 +23,7 @@ let installApp = async function(curVersion) {
  * @param {*} curVersion 
  */
 let updateApp = async function(ancVersion, curVersion) {
+    let afterCalls = []
     if (!versionAfter(ancVersion, "2.0.2.140")) { // if previous version is before 2.0.2.140
         // from this version, mirrors are hosted to mirrors.allmangasreader.com/v4
         // update localStorage to change stored url if necessary
@@ -37,6 +39,21 @@ let updateApp = async function(ancVersion, curVersion) {
     if (!versionAfter(ancVersion, "2.0.2.150")) { // if previous version is before 2.0.2.150
         // check if user language is in readable list of languages add it if not
         checkLangSet()
+        // change category names New, Read, Unread and One Shots to the new ones (codes to be internationalized)
+        await store.dispatch("updateCategoryName", {oldname: "New", newname: "category_new"})
+        await store.dispatch("updateCategoryName", {oldname: "Read", newname: "category_read"})
+        await store.dispatch("updateCategoryName", {oldname: "Unread", newname: "category_unread"})
+        await store.dispatch("updateCategoryName", {oldname: "One Shots", newname: "category_oneshots"})
+        // create languages categories
+        afterCalls.push(async () => {await store.dispatch("updateLanguageCategories")})
+    }
+    /**
+     * Return a function wrapping all functions to call once all db is initialized
+     */
+    return async () => {
+        for (let func of afterCalls) {
+            await func()
+        }
     }
 }
 
@@ -67,6 +84,8 @@ export default async function () {
     let url = manifest.homepage_url;
     let beta = false;
     
+    let afterLoading = () => {}
+
     if (manifest.name.indexOf("Beta") > 0) {
         beta = true;
     }
@@ -75,10 +94,10 @@ export default async function () {
         localStorage.version = curVersion;
         if (!ancVersion) {
             statsEvents.trackInstall(curVersion, beta, browserdetect());
-            await installApp(curVersion)
+            afterLoading = await installApp(curVersion)
         } else {
             statsEvents.trackUpdate(curVersion, beta, browserdetect());
-            await updateApp(ancVersion, curVersion)
+            afterLoading = await updateApp(ancVersion, curVersion)
         }
     }
     if (beta) {
@@ -90,6 +109,7 @@ export default async function () {
             title: "All Mangas Reader " + curVersion
         });
     }
+    return afterLoading
 }
 
 

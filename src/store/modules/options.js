@@ -70,10 +70,10 @@ const default_options = {
      *  - <empty> (does not care of this cat)
      */
     categoriesStates: [
-        { name: "New", state: "include", type: "native" },
-        { name: "Read", state: "include", type: "native" },
-        { name: "Unread", state: "include", type: "native" },
-        { name: "One Shots", state: "include", type: "native" }
+        { name: "category_new", state: "include", type: "native" },
+        { name: "category_read", state: "include", type: "native" },
+        { name: "category_unread", state: "include", type: "native" },
+        { name: "category_oneshots", state: "include", type: "native" }
     ],
 
     /** Internal timestamps and state booleans */
@@ -153,12 +153,39 @@ const actions = {
         }
     },
     /**
+     * Adds a language category in categories states and save
+     * @param {*} param0 
+     * @param {*} name 
+     */
+    addLanguageCategory({ commit, dispatch, state }, name) {
+        commit('addLanguageCategory', name);
+        localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates);
+    },
+    /**
+     * Remove a language category from categories states and save
+     * @param {*} param0 
+     * @param {*} name 
+     */
+    removeLanguageCategory({ commit, dispatch, state, rootState }, name) {
+        commit('removeLanguageCategory', name);
+        localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates);
+    },
+    /**
      * Updates a categories state and save
      * @param {*} param0 
      * @param {*} catObj 
      */
     updateCategory({ commit, dispatch, state }, catObj) {
         commit('updateCategory', catObj);
+        localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates);
+    },
+    /**
+     * Updates a categories name and save, use to upgrade native categories names for i18n
+     * @param {*} param0 
+     * @param {*} catObj 
+     */
+    updateCategoryName({ commit, dispatch, state }, oldnew) {
+        commit('updateCategoryName', oldnew);
         localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates);
     },
     /**
@@ -269,7 +296,29 @@ const mutations = {
      * @param {*} name 
      */
     removeCategory(state, name) {
-        let index = state.categoriesStates.findIndex(cat => cat.type !== "native" && cat.name === name);
+        let index = state.categoriesStates.findIndex(cat => cat.type !== "native" && cat.type !== "language" && cat.name === name);
+        if (index >= 0) state.categoriesStates.splice(index, 1);
+    },
+    /**
+     * Adds a language category in categories states
+     * @param {*} state 
+     * @param {*} name 
+     */
+    addLanguageCategory(state, name) {
+        let toadd = {
+            name: name,
+            type: "language",
+            state: "include"
+        }
+        state.categoriesStates.push(toadd);
+    },
+    /**
+     * Remove a language category from categories states
+     * @param {*} state 
+     * @param {*} name 
+     */
+    removeLanguageCategory(state, name) {
+        let index = state.categoriesStates.findIndex(cat => cat.type === "language" && cat.name === name);
         if (index >= 0) state.categoriesStates.splice(index, 1);
     },
     /**
@@ -280,6 +329,15 @@ const mutations = {
     updateCategory(state, { name, catstate }) {
         let cat = state.categoriesStates.find(cat => cat.name === name);
         cat.state = catstate;
+    },
+    /**
+     * Updates a categories name
+     * @param {*} state 
+     * @param {*} param1 
+     */
+    updateCategoryName(state, { oldname, newname }) {
+        let cat = state.categoriesStates.find(cat => cat.name === oldname);
+        if (cat !== undefined) cat.name = newname;
     },
     /**
      * Move a repository up in the list
