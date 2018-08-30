@@ -68,15 +68,39 @@ const tests = [
                         search: this.search,
                         mirror: mirror.mirrorName
                     });
-                    if (result && result.length > 0) {
-                        return [true, "<strong>" + result.length + " mangas found</strong> for the search phrase : <i>" + this.search + "</i>", result.map(arr => {
-                            return {
-                                value: arr[1],
-                                text: arr[0]
+                    if (result) {
+                        if (!Array.isArray(result)) {
+                            let nb = 0, listlangs = [], pickable = []
+                            for (let lang in result) {
+                                if (result[lang].length > 0) pickable.push(lang)
+                                nb += result[lang].length
+                                listlangs.push(lang)
                             }
-                        })];
+                            let picked = pickable[Math.floor(Math.random() * pickable.length)]
+                            if (nb > 0) {
+                                return [true, "<strong>" + nb + " mangas found</strong> for the search phrase : <i>" + this.search + "</i> in " + listlangs.length + " different languages (" + listlangs.join(", ") + "), pick language " + picked + " for test, containing " + result[picked].length + " mangas", result[picked].map(arr => {
+                                    return {
+                                        value: arr[1],
+                                        text: arr[0]
+                                    }
+                                }), picked];
+                            } else {
+                                return [false, "Return value is an object, supposed to contain list of results for different languages but no mangas found in these lists for the search phrase : <i>" + this.search + "</i>. Fix the implementation method <strong>getMangaList</strong>"];
+                            }
+                        } else {
+                            if (result.length > 0) {
+                                return [true, "<strong>" + result.length + " mangas found</strong> for the search phrase : <i>" + this.search + "</i>", result.map(arr => {
+                                    return {
+                                        value: arr[1],
+                                        text: arr[0]
+                                    }
+                                })];
+                            } else {
+                                return [false, "No mangas found for the search phrase : " + this.search + ". Change the search phrase or fix the implementation method <strong>getMangaList</strong>"];
+                            }
+                        }
                     } else {
-                        return [false, "No mangas found for the search phrase : " + this.search + ". Change the search phrase or fix the implementation method <strong>getMangaList</strong>"];
+                        return [false, "No object returned by the imlementation. Fix the implementation method <strong>getMangaList</strong>"];
                     }
                 }
             }
@@ -106,12 +130,13 @@ const tests = [
                                 }
                             })];
                         } else {
-                            let nb = 0, listlangs = [], picked
+                            let nb = 0, listlangs = [], pickable = []
                             for (let lang in result) {
-                                if (!picked && result[lang].length > 0) picked = lang
+                                if (result[lang].length > 0) pickable.push(lang)
                                 nb += result[lang].length
                                 listlangs.push(lang)
                             }
+                            let picked = pickable[Math.floor(Math.random() * pickable.length)]
                             if (nb > 0) {
                                 return [true, "<strong>" + nb + " chapters found</strong> for manga url : <i>" + manga_url + "</i> in " + listlangs.length + " different languages (" + listlangs.join(", ") + "), pick language " + picked + " for test, containing " + result[picked].length + " chapters", result[picked].map(arr => {
                                     return {
