@@ -14,24 +14,24 @@
           <!-- + / - icon if group of mangas  -->
           <v-icon v-if="isInGroup && isFirst && !expanded" @click="emitExpand()">mdi-plus</v-icon>
           <v-icon v-if="isInGroup && isFirst && expanded" @click="emitExpand()">mdi-minus</v-icon>
+          <template v-if="seen">
+            <!-- Display a calendar with last update -->
+            <v-tooltip v-if="options.displastup === 1 && manga.upts != 0 && timeUpdated < 50" top content-class="icon-ttip">
+              <v-card dark :class="color(-2) + ' amr-calendar-badge'" slot="activator">
+                <v-icon>mdi-calendar-clock</v-icon>
+                <span v-if="timeUpdated > 0">{{ timeUpdated }}</span>
+              </v-card>
+              <span v-if="timeUpdated === 0">{{i18n("list_calendar_today")}}</span>
+              <span v-else>{{i18n("list_calendar_days_found", timeUpdated)}}</span>
+            </v-tooltip>
+            <!-- Display a timer off if the manga is not updating anymore -->
+            <v-tooltip v-if="manga.update === 0" top content-class="icon-ttip">
+              <v-icon class="amr-timeroff-badge" slot="activator">mdi-timer-off</v-icon>
+              <span>{{i18n("list_stopped_updating")}}</span>
+            </v-tooltip>
+          </template>
           <!-- Manga name -->
           <strong>{{ manga.name }}</strong>
-          <template v-if="seen">
-          <!-- Display a calendar with last update -->
-          <v-tooltip v-if="options.displastup === 1 && manga.upts != 0 && timeUpdated < 50" top content-class="icon-ttip">
-            <v-card dark :class="color(-2) + ' amr-calendar-badge'" slot="activator">
-              <v-icon>mdi-calendar-clock</v-icon>
-              <span v-if="timeUpdated > 0">{{ timeUpdated }}</span>
-            </v-card>
-            <span v-if="timeUpdated === 0">{{i18n("list_calendar_today")}}</span>
-            <span v-else>{{i18n("list_calendar_days_found", timeUpdated)}}</span>
-          </v-tooltip>
-          <!-- Display a timer off if the manga is not updating anymore -->
-          <v-tooltip v-if="manga.update === 0" top content-class="icon-ttip">
-            <v-icon class="amr-timeroff-badge" slot="activator">mdi-timer-off</v-icon>
-            <span>{{i18n("list_stopped_updating")}}</span>
-          </v-tooltip>
-          </template>
         </v-card>
       </v-card>
       </v-flex>
