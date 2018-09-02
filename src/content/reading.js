@@ -1,4 +1,3 @@
-import 'regenerator-runtime/runtime';
 import browser from "webextension-polyfill";
 import options from './options';
 import mirrorImpl from './mirrorimpl'
@@ -494,7 +493,11 @@ class Reading {
         }
 
         $("table", where).remove();
+        $(".amr-lastchap", where).remove();
         tableRes.appendTo(where);
+        if ($("#nChapBtn0").length === 0) {
+            $("<div style=\"width:100%; background-color:white; border-radius:5px;margin-top:15px;margin-bottom:15px;\" class='amr-lastchap'><img src=\"" + browser.extension.getURL("icons/warn.png") + "\" style=\"vertical-align:middle;margin-right:10px;\"/><span style=\"font-weight:bold;font-size:12pt;color:black;vertical-align:middle;\">" + i18n("content_nav_last_chap") + "</span></div>").appendTo(where);
+        }
     }
 
     loadNextChapter(urlNext) {

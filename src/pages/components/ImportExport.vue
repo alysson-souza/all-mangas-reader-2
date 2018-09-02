@@ -200,7 +200,7 @@ export default {
         let bms = this.$store.state.bookmarks.all;
         if (this.viewable) {
           bms = bms.filter(bm => {
-              let mgbm = this.$store.state.mangas.all.find(mg => mg.key.indexOf(mgutils.mangaKey(bm.url)) >= 0); // find manga associated with bookmark
+              let mgbm = this.$store.state.mangas.all.find(mg => mg.key.indexOf(utils.mangaKey(bm.url)) >= 0); // find manga associated with bookmark
               if (mgbm !== undefined) {
                 return mgutils.displayFilterCats( // check if manga is viewable
                   mgbm,

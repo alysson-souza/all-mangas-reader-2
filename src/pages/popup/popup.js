@@ -1,7 +1,6 @@
 import 'vuetify/dist/vuetify.min.css';
 import './popup.css';
 
-import 'regenerator-runtime/runtime';
 import browser from "webextension-polyfill";
 import Vue from 'vue';
 import Vuetify from 'vuetify';
@@ -30,6 +29,8 @@ import theme from '../theme';
   }
   if (popup) {
     document.body.classList.add("popup");
+  } else {
+    document.documentElement.style["overflow-y"] = "auto"
   }
   // Load vue
   Vue.config.productionTip = false

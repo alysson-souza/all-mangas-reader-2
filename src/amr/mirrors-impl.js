@@ -1,4 +1,3 @@
-import 'regenerator-runtime/runtime';
 import store from '../store';
 import * as utils from './utils';
 

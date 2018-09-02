@@ -126,13 +126,19 @@ const actions = {
             utils.debug("readManga of an unlisted manga --> create it");
             commit('createManga', message);
             mg = state.all.find(manga => manga.key === key);
+            let code
             try {
                 await dispatch("refreshLastChapters", message);
-            } catch (e) { console.error(e) } // ignore error if manga list can not be loaded --> save the manga
-            utils.debug("saving new manga to database");
-            dispatch('updateManga', mg);
-            // update native language categories
-            dispatch("updateLanguageCategories")
+            } catch (e) { 
+                code = e
+                if (code !== "abstract_manga") console.error(e) // ignore error if manga list can not be loaded --> save the manga
+            }
+            if (code !== "abstract_manga") { // do not save mangas added from search panel on websites proposing multiple language --> in this case, the first attempt does not contains the required language field
+                utils.debug("saving new manga to database");
+                dispatch('updateManga', mg);
+                // update native language categories
+                dispatch("updateLanguageCategories")
+            }
         } else {
             try {
                 await dispatch("consultManga", message);
@@ -287,7 +293,7 @@ const actions = {
                             dispatch("deleteManga", mg)
 
                             // Fail for current (deleted) manga
-                            reject()
+                            reject("abstract_manga")
                         }
                         utils.debug("chapters in multiple languages found for " + mg.name + " on " + mg.mirror + " --> select language " + mg.language)
                         if (listChaps[mg.language] && listChaps[mg.language].length > 0) {
@@ -544,10 +550,17 @@ const actions = {
                 dispatch("removeLanguageCategory", cat.name)
             }
         } else if (langs.length > 1) {
+            // add new ones
             for (let l of langs) {
                 if (catsLang.findIndex(cat => cat.name === l) === -1) {
                     // add language category l
                     dispatch("addLanguageCategory", l)
+                }
+            }
+            // remove deleted ones
+            for (let cat of catsLang) {
+                if (!langs.includes(cat.name)) {
+                    dispatch("removeLanguageCategory", cat.name)
                 }
             }
         }

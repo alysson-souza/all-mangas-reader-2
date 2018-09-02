@@ -314,3 +314,7 @@ a.buttonAMR:active {
 .jquery-modal.blocker {
   z-index: 10000001;
 }
+
+.AMRtable td {
+  text-align: center!important;
+}

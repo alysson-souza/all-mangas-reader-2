@@ -1,14 +1,15 @@
 const webpack = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin')
 const WebpackShellPlugin = require('webpack-shell-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const ChromeExtensionReloader = require('webpack-chrome-extension-reloader')
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
-const normalize = function(path) {
-  return path.replace(/\\/g, "/");
-}
 const config = {
+  devtool: '#cheap-module-source-map', /* In Webpack 4, defaults devtool outputs an eval() for speeding compil but this obvioulsy fail in chrome extension due to CSP */
   context: __dirname + '/src',
+  mode: "development",
   entry: {
     'background/background': './background/background.js',
     'content/back': './content/back.js',
@@ -23,37 +24,20 @@ const config = {
     filename: '[name].js'
   },
   resolve: {
-    extensions: ['.js', '.vue'],
+    alias: {
+      vue$: 'vue/dist/vue.runtime.esm.js',
+    },
+    extensions: ['*', '.js', '.vue', '.json']
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.vue$/,
-        loaders: 'vue-loader',
-        options: {
-          loaders: {
-            scss: ExtractTextPlugin.extract({
-              use: 'css-loader!sass-loader',
-              fallback: 'vue-style-loader'
-            }),
-            sass: ExtractTextPlugin.extract({
-              use: 'css-loader!sass-loader?indentedSyntax',
-              fallback: 'vue-style-loader'
-            }),
-          }
-        }
-      },
-      {
-        test: /\.js$/,
-        loader: 'babel-loader',
-        exclude: /node_modules/
+        loader: 'vue-loader'
       },
       {
         test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-          use: 'css-loader',
-          fallback: 'vue-loader',
-        })
+        use: ['style-loader', 'css-loader']
       },
       {
         test: /\.(png|jp(e*)g|gif|svg|ico)$/,
@@ -66,9 +50,7 @@ const config = {
     ],
   },
   plugins: [
-    new ExtractTextPlugin({
-      filename: '[name].css'
-    }),
+    new VueLoaderPlugin(),
     new CopyWebpackPlugin([
       {from: 'icons', to: 'icons', ignore: ['icon.xcf']},
       {from: 'background/background.html', to: 'background/background.html'},
@@ -92,24 +74,36 @@ const config = {
 };
 
 if (process.env.NODE_ENV === 'production') {
-  config.devtool = '#cheap-module-source-map';
+  config.devtool = '';
+  config.mode = "production";
 
   config.plugins = (config.plugins || []).concat([
+    new CleanWebpackPlugin(['./dist/', './dist-zip/']),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: '"production"'
       }
     }),
     new UglifyJsPlugin({
-      sourceMap: true/*,
-      compress: {
-        warnings: false
-      }*/
+      sourceMap: true
     }),
     new webpack.LoaderOptionsPlugin({
       minimize: true
     })
   ]);
+} else {
+  if (process.env["--watch"]) {
+    config.plugins = (config.plugins || []).concat([
+      new webpack.HotModuleReplacementPlugin(),
+      new ChromeExtensionReloader({
+        entries: {
+          background: 'background/background',
+          options: 'pages/options/options',
+          popup: 'pages/popup/popup'
+        },
+      }),
+    ])
+  }
 }
 
 module.exports = config;

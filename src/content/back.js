@@ -2,7 +2,6 @@
  * All Mangas Reader V2
  * Content script included in every website matching a manga site
  */
-import 'regenerator-runtime/runtime';
 import browser from "webextension-polyfill";
 import reading from './reading';
 import navigation from './navigation';

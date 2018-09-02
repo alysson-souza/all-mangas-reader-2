@@ -1,5 +1,5 @@
 <template>
-<div v-if="!isInGroup || (isFirst || groupExpanded)">
+<div v-if="!isInGroup || (isFirst || groupExpanded)" class="amr-line-container">
     <!-- manga line, containing title, list of chapters and actions-->
     <v-layout row>
       <!-- Title and icon -->
@@ -14,24 +14,24 @@
           <!-- + / - icon if group of mangas  -->
           <v-icon v-if="isInGroup && isFirst && !expanded" @click="emitExpand()">mdi-plus</v-icon>
           <v-icon v-if="isInGroup && isFirst && expanded" @click="emitExpand()">mdi-minus</v-icon>
+          <template v-if="seen">
+            <!-- Display a calendar with last update -->
+            <v-tooltip v-if="options.displastup === 1 && manga.upts != 0 && timeUpdated < 50" top content-class="icon-ttip">
+              <v-card dark :class="color(-2) + ' amr-calendar-badge'" slot="activator">
+                <v-icon>mdi-calendar-clock</v-icon>
+                <span v-if="timeUpdated > 0">{{ timeUpdated }}</span>
+              </v-card>
+              <span v-if="timeUpdated === 0">{{i18n("list_calendar_today")}}</span>
+              <span v-else>{{i18n("list_calendar_days_found", timeUpdated)}}</span>
+            </v-tooltip>
+            <!-- Display a timer off if the manga is not updating anymore -->
+            <v-tooltip v-if="manga.update === 0" top content-class="icon-ttip">
+              <v-icon class="amr-timeroff-badge" slot="activator">mdi-timer-off</v-icon>
+              <span>{{i18n("list_stopped_updating")}}</span>
+            </v-tooltip>
+          </template>
           <!-- Manga name -->
           <strong>{{ manga.name }}</strong>
-          <template v-if="seen">
-          <!-- Display a calendar with last update -->
-          <v-tooltip v-if="options.displastup === 1 && manga.upts != 0 && timeUpdated < 50" top content-class="icon-ttip">
-            <v-card dark :class="color(-2) + ' amr-calendar-badge'" slot="activator">
-              <v-icon>mdi-calendar-clock</v-icon>
-              <span v-if="timeUpdated > 0">{{ timeUpdated }}</span>
-            </v-card>
-            <span v-if="timeUpdated === 0">{{i18n("list_calendar_today")}}</span>
-            <span v-else>{{i18n("list_calendar_days_found", timeUpdated)}}</span>
-          </v-tooltip>
-          <!-- Display a timer off if the manga is not updating anymore -->
-          <v-tooltip v-if="manga.update === 0" top content-class="icon-ttip">
-            <v-icon class="amr-timeroff-badge" slot="activator">mdi-timer-off</v-icon>
-            <span>{{i18n("list_stopped_updating")}}</span>
-          </v-tooltip>
-          </template>
         </v-card>
       </v-card>
       </v-flex>
@@ -291,15 +291,16 @@ export default {
      * Opens a chapter from select
      */
     playChap() {
-      browser.runtime.sendMessage({ action: "opentab", url: this.selChapter });
+      browser.runtime.sendMessage({ action: "opentab", url: this.selChapter })
     },
     /**
      * Deletes a manga
      */
     trash() {
+      this.deleteManga = false
       this.$store.dispatch("deleteManga", {
         key: this.manga.key
-      });
+      })
     },
     /** Read a manga in another language */
     async readMangaInLang(lang) {
@@ -322,16 +323,16 @@ export default {
 * {
   font-size: 10pt;
 }
-.container.amr-list-line:first-child .row:first-child .flex:first-child > .v-card {
+.container.amr-list-line:first-child .amr-line-container:first-child .flex:first-child > .v-card {
   border-top-left-radius: 5px;
 }
-.container.amr-list-line:first-child .row:first-child .flex:last-child > .v-card {
+.container.amr-list-line:first-child .amr-line-container:first-child .flex:last-child > .v-card {
   border-top-right-radius: 5px;
 }
-.container.amr-list-line:last-child .row:last-child .flex:first-child > .v-card {
+.container.amr-list-line:last-child .amr-line-container:last-child .flex:first-child > .v-card {
   border-bottom-left-radius: 5px;
 }
-.container.amr-list-line:last-child .row:last-child .flex:last-child > .v-card {
+.container.amr-list-line:last-child .amr-line-container:last-child .flex:last-child > .v-card {
   border-bottom-right-radius: 5px;
 }
 .container.amr-list-line .amr-list-elt > .v-card {
