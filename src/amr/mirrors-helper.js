@@ -24,11 +24,10 @@ class MirrorsHelper {
             amr.loadPage = function(url, options) {
                 return new Promise((resolve, reject) => {
                     let ajaxObj = {url : url}
+                    let headers = {}
                     if (options && options.nocache) {
-                        ajaxObj.beforeSend = function (xhr) {
-                            xhr.setRequestHeader("Cache-Control", "no-cache");
-                            xhr.setRequestHeader("Pragma", "no-cache");
-                        }
+                        headers["Cache-Control"] = "no-cache"
+                        headers["Pragma"] = "no-cache"
                     }
                     if (options && options.post) {
                         ajaxObj.method = 'POST'
@@ -38,6 +37,14 @@ class MirrorsHelper {
                     }
                     if (options && options.data !== undefined) {
                         ajaxObj.data = options.data
+                    }
+                    if (options && options.headers !== undefined) {
+                        Object.assign(headers, options.headers)
+                    }
+                    ajaxObj.beforeSend = function (xhr) {
+                        for (let dt in headers) {
+                            xhr.setRequestHeader(dt, headers[dt]);
+                        }
                     }
                     ajaxObj.error = (jqXhr, error, e) => reject(error)
                     ajaxObj.success = (data) => {
@@ -65,6 +72,7 @@ class MirrorsHelper {
             amr.loadJson = function(url, options) {
                 return new Promise((resolve, reject) => {
                     let ajaxObj = {url : url}
+                    let headers = {}
                     if (options && options.post) {
                         ajaxObj.method = 'POST'
                     }
@@ -76,6 +84,14 @@ class MirrorsHelper {
                     }
                     if (options && options.data !== undefined) {
                         ajaxObj.data = options.data
+                    }
+                    if (options && options.headers !== undefined) {
+                        Object.assign(headers, options.headers)
+                    }
+                    ajaxObj.beforeSend = function (xhr) {
+                        for (let dt in headers) {
+                            xhr.setRequestHeader(dt, headers[dt]);
+                        }
                     }
                     ajaxObj.contentType = "application/json";
                     ajaxObj.error = (jqXhr, error, e) => reject(error)
