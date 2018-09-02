@@ -1,0 +1,42 @@
+### V2.0.3
+Websites implementation improvements (A lot of implementations have been added thanks to these improvements) : 
+ - Abstract implementation for mirrors (A lot of websites are based on CMS like FoolSlide). Implement once for multiple websites
+ - Add a global helper accessible from implementation to reduce implementation code and improve readability
+ - Update the interface of websites implementation to be more modern (Promises and ES6 code)
+ 
+Languages support, handle multi lingual mangas :
+ - in search results, language is taken into account to display results (an implementation can return mangas in different languages on search request)
+ - in manga list, some implementations manage manga chapters in different languages, in this case, a flag next to the manga is displayed and allow the user to add other languages for the same manga
+ - option with readable languages list and auto deactivation of unreadable implementations
+ - language categories : if mangas are read in more than one language, native categories are added to filter by language
+
+Misc
+ - Improve the way chapters lists are displayed
+ - Improve Import functionnality to avoid errors (unknown websites, last chapter read url has been changed, try to guess the best one)
+ - Improve bookmarks display by using built in implementation function (allow issues for displaying scans from some websites)
+ - Add link in popup to open popup in new tab
+ - Upgrade webpack to version 4
+ - add a build mode build:dev-watch to hot reload extension in chrome while developing
+ - Remove babel and regenerator runtime as browser now supports native ES6
+ 
+Fixes : 
+ - load implementation scripts multiple times and do not free them from memory
+ - Force table to be displayed correctly from content script (on some mirrors, scans were forced to the left)
+ - Delete unused language categories if needed
+ - Add last chapter published label at the end of the chapter if it is the last one while reading (this label disappeared between V1 and V2)
+ - popup does not disappear when removing a manga from a group
+ - empty manga added from search panel if multiple languages proposed
+ - css when displaying a "last time updated badge" on a manga
+ - Firefox scrollbar in popup (keep it in detached popup, ie new tab popup)
+ - border top radius of manga list if first item is a grouped manga
+ 
+### V2.0.2
+First released stable version of All Mangas Reader V2.
+This version aims to implement almost all functionnalities from V1.
+Missing functionnalities : 
+ - Synchronization
+ - Personal statistics
+
+Improvements from V1 : 
+ - Websites implementation loading is more stable
+ 
