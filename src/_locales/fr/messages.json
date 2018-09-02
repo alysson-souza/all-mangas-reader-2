@@ -873,7 +873,9 @@
     "description": "Placeholder of input to add a category in categories list"
   },
   
-  "__V2_0_3__": "Just a filler to separate new labels from old ones",
+  "__V2_0_3__": {
+    "message": "Just a filler to separate new labels from old ones"
+  },
   "popup_language_pick": {
     "message": "Choisir une langue dans laquelle suivre ce manga",
     "description": "In the popup, if a manga is available in multiple languages, the label before the flags to select new language to follow"

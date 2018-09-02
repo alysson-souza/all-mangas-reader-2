@@ -29,6 +29,8 @@ import theme from '../theme';
   }
   if (popup) {
     document.body.classList.add("popup");
+  } else {
+    document.documentElement.style["overflow-y"] = "auto"
   }
   // Load vue
   Vue.config.productionTip = false

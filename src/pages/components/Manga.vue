@@ -1,5 +1,5 @@
 <template>
-<div v-if="!isInGroup || (isFirst || groupExpanded)">
+<div v-if="!isInGroup || (isFirst || groupExpanded)" class="amr-line-container">
     <!-- manga line, containing title, list of chapters and actions-->
     <v-layout row>
       <!-- Title and icon -->
@@ -323,16 +323,16 @@ export default {
 * {
   font-size: 10pt;
 }
-.container.amr-list-line:first-child .row:first-child .flex:first-child > .v-card {
+.container.amr-list-line:first-child .amr-line-container:first-child .flex:first-child > .v-card {
   border-top-left-radius: 5px;
 }
-.container.amr-list-line:first-child .row:first-child .flex:last-child > .v-card {
+.container.amr-list-line:first-child .amr-line-container:first-child .flex:last-child > .v-card {
   border-top-right-radius: 5px;
 }
-.container.amr-list-line:last-child .row:last-child .flex:first-child > .v-card {
+.container.amr-list-line:last-child .amr-line-container:last-child .flex:first-child > .v-card {
   border-bottom-left-radius: 5px;
 }
-.container.amr-list-line:last-child .row:last-child .flex:last-child > .v-card {
+.container.amr-list-line:last-child .amr-line-container:last-child .flex:last-child > .v-card {
   border-bottom-right-radius: 5px;
 }
 .container.amr-list-line .amr-list-elt > .v-card {
