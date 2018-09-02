@@ -17,7 +17,6 @@
     "jquery": "^3.3.1",
     "jquery-modal": "^0.9.1",
     "jquery.scrollto": "^2.1.2",
-    "regenerator-runtime": "^0.11.1",
     "vue": "^2.5.17",
     "vue-gallery": "^1.4.0",
     "vuetify": "^1.2.1",
@@ -26,10 +25,6 @@
     "webextension-polyfill": "^0.2.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0-beta.39",
-    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.42",
-    "@babel/preset-env": "^7.0.0-beta.39",
-    "babel-loader": "^8.0.0-beta.0",
     "clean-webpack-plugin": "^0.1.19",
     "copy-webpack-plugin": "^4.5.2",
     "cross-env": "^5.0.5",

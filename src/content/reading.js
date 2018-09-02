@@ -1,4 +1,3 @@
-import 'regenerator-runtime/runtime';
 import browser from "webextension-polyfill";
 import options from './options';
 import mirrorImpl from './mirrorimpl'

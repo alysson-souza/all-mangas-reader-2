@@ -7,7 +7,7 @@ const ChromeExtensionReloader = require('webpack-chrome-extension-reloader')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 const config = {
-  devtool: 'source-map', /* In Webpack 4, defaults devtool outputs an eval() for speeding compil but this obvioulsy fail in chrome extension due to CSP */
+  devtool: '#cheap-module-source-map', /* In Webpack 4, defaults devtool outputs an eval() for speeding compil but this obvioulsy fail in chrome extension due to CSP */
   context: __dirname + '/src',
   mode: "development",
   entry: {
@@ -36,11 +36,6 @@ const config = {
         loader: 'vue-loader'
       },
       {
-        test: /\.js$/,
-        loader: 'babel-loader',
-        exclude: /node_modules/
-      },
-      {
         test: /\.css$/,
         use: ['style-loader', 'css-loader']
       },
@@ -56,7 +51,6 @@ const config = {
   },
   plugins: [
     new VueLoaderPlugin(),
-    new CleanWebpackPlugin(['./dist/', './dist-zip/']),
     new CopyWebpackPlugin([
       {from: 'icons', to: 'icons', ignore: ['icon.xcf']},
       {from: 'background/background.html', to: 'background/background.html'},
@@ -80,10 +74,11 @@ const config = {
 };
 
 if (process.env.NODE_ENV === 'production') {
-  config.devtool = '#cheap-module-source-map';
+  config.devtool = '';
   config.mode = "production";
 
   config.plugins = (config.plugins || []).concat([
+    new CleanWebpackPlugin(['./dist/', './dist-zip/']),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: '"production"'
@@ -97,16 +92,18 @@ if (process.env.NODE_ENV === 'production') {
     })
   ]);
 } else {
-  config.plugins = (config.plugins || []).concat([
-    new webpack.HotModuleReplacementPlugin(),
-    new ChromeExtensionReloader({
-      entries: {
-        background: 'background/background',
-        options: 'pages/options/options',
-        popup: 'pages/popup/popup'
-      },
-    }),
-  ])
+  if (process.env["--watch"]) {
+    config.plugins = (config.plugins || []).concat([
+      new webpack.HotModuleReplacementPlugin(),
+      new ChromeExtensionReloader({
+        entries: {
+          background: 'background/background',
+          options: 'pages/options/options',
+          popup: 'pages/popup/popup'
+        },
+      }),
+    ])
+  }
 }
 
 module.exports = config;

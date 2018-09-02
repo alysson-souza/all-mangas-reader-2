@@ -1,4 +1,3 @@
-import 'regenerator-runtime/runtime';
 import Axios from 'axios';
 import browser from "webextension-polyfill";
 import mirrorsImpl from '../amr/mirrors-impl';
