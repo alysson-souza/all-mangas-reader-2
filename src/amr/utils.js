@@ -135,18 +135,17 @@ export function mangaKey(url, forcedmirror, toconcat) {
     }
 
     let mstr = "unknown" // should never be unknown. Old domains need to be kept in domains description in the implementations
-    let self = this
     if (forcedmirror !== undefined) {
-        mstr = this.formatMgName(forcedmirror).toLowerCase()
+        mstr = formatMgName(forcedmirror).toLowerCase()
     } else {
         let host = extractHostname(url);
         // look for mirror implementation matching this root domain
         let mirror = store.state.mirrors.all.find(
             mir => mir.domains.findIndex(
-                ws => self.matchDomain(host, ws)
+                ws => matchDomain(host, ws)
             ) !== -1
         )
-        if (mirror) mstr = this.formatMgName(mirror.mirrorName).toLowerCase()
+        if (mirror) mstr = formatMgName(mirror.mirrorName).toLowerCase()
     }
     
     return mstr + "/" + afterHostURL(url) + (toconcat !== undefined ? "_" + toconcat : "")
