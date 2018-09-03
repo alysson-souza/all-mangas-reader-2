@@ -93,11 +93,19 @@ class MirrorsHelper {
                             xhr.setRequestHeader(dt, headers[dt]);
                         }
                     }
-                    ajaxObj.contentType = "application/json";
+                    let contenttype = true
+                    if (options && options.nocontenttype) {
+                        contenttype = false
+                    }
+                    if (contenttype) ajaxObj.contentType = "application/json";
                     ajaxObj.error = (jqXhr, error, e) => reject(error)
                     ajaxObj.success = (data) => {
                         if (typeof data === "string") {
-                            resolve(JSON.parse(data));
+                            try {
+                                resolve(JSON.parse(data));
+                            } catch (e) {
+                                resolve(data);
+                            }
                         } else {
                             resolve(data);
                         }
@@ -112,49 +120,58 @@ class MirrorsHelper {
             amr.getVariable = function(varname, doc) {
                 let res = undefined
                 $("script", doc).each(function(i) {
-                    let sc = $(this).text()
-                    let rx = new RegExp("(var|let|const)\\s+" + varname + "\\s*=\\s*([0-9]+|\\\"|\\\'|\\\{|\\\[|JSON\\s*\\\.\\s*parse\\\()", "gmi")
-                    let match = rx.exec(sc)
-                    if (match) {
-                        let ind = match.index
-                        let varchar = match[2]
-                        let start = sc.indexOf(varchar, ind) + 1
-                        if (varchar.match(/[0-9]+/)) {
-                            res = Number(varchar)
-                        } else {
-                            if (varchar === '"' || varchar === "'") { // var is a string
-                                let found = false,
-                                    curpos = start,
-                                    prevbs = false;
-                                while (!found) {
-                                    let c = sc.charAt(curpos++)
-                                    if (c === varchar && !prevbs) {
-                                        found = true
-                                        break
-                                    }
-                                    prevbs = c === "\\"
+                    res = amr.getVariableFromScript(varname, $(this).text())
+                    if (res !== undefined) return false
+                })
+                return res
+            }
+
+            /**
+             * Get a variable value from a snippet
+             */
+            amr.getVariableFromScript = function(varname, sc) {
+                let res = undefined
+                let rx = new RegExp("(var|let|const)\\s+" + varname + "\\s*=\\s*([0-9]+|\\\"|\\\'|\\\{|\\\[|JSON\\s*\\\.\\s*parse\\\()", "gmi")
+                let match = rx.exec(sc)
+                if (match) {
+                    let ind = match.index
+                    let varchar = match[2]
+                    let start = sc.indexOf(varchar, ind) + 1
+                    if (varchar.match(/[0-9]+/)) {
+                        res = Number(varchar)
+                    } else {
+                        if (varchar === '"' || varchar === "'") { // var is a string
+                            let found = false,
+                                curpos = start,
+                                prevbs = false;
+                            while (!found) {
+                                let c = sc.charAt(curpos++)
+                                if (c === varchar && !prevbs) {
+                                    found = true
+                                    break
                                 }
-                                res = sc.substring(start, curpos - 1)
-                            } else { // if (varchar === '[' || varchar === "{" || varchar === 'JSON.parse(') { // var is object or array or parsable
-                                let curpos = start + varchar.length - 1,
-                                    openings = 1,
-                                    opening = varchar === 'JSON.parse(' ? '(' : varchar,
-                                    opposite = varchar === '[' ? ']' : (varchar === '{' ? '}' : ')')
-                                while (openings > 0 && curpos < sc.length) {
-                                    let c = sc.charAt(curpos++)
-                                    if (c === opening) openings++
-                                    if (c === opposite) openings--
-                                }
-                                let toparse = sc.substring(start - 1 + varchar.length - 1, curpos)
-                                if (toparse.match(/atob\s*\(/g)) { // if data to parse is encoded using btoa
-                                    let m = /(?:'|").*(?:'|")/g.exec(toparse)
-                                    toparse = atob(m[0].substring(1, m[0].length - 1))
-                                }
-                                res = JSON.parse(toparse)
+                                prevbs = c === "\\"
                             }
+                            res = sc.substring(start, curpos - 1)
+                        } else { // if (varchar === '[' || varchar === "{" || varchar === 'JSON.parse(') { // var is object or array or parsable
+                            let curpos = start + varchar.length - 1,
+                                openings = 1,
+                                opening = varchar === 'JSON.parse(' ? '(' : varchar,
+                                opposite = varchar === '[' ? ']' : (varchar === '{' ? '}' : ')')
+                            while (openings > 0 && curpos < sc.length) {
+                                let c = sc.charAt(curpos++)
+                                if (c === opening) openings++
+                                if (c === opposite) openings--
+                            }
+                            let toparse = sc.substring(start - 1 + varchar.length - 1, curpos)
+                            if (toparse.match(/atob\s*\(/g)) { // if data to parse is encoded using btoa
+                                let m = /(?:'|").*(?:'|")/g.exec(toparse)
+                                toparse = atob(m[0].substring(1, m[0].length - 1))
+                            }
+                            res = JSON.parse(toparse)
                         }
                     }
-                })
+                }
                 return res
             }
         })(this);
