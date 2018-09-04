@@ -18,8 +18,8 @@
             <v-container fluid>
                 <v-tabs
                     v-model="langtabs"
-                    fixed-tabs
                     color="transparent"
+                    show-arrows
                 >
                     <v-tabs-slider></v-tabs-slider>
                     <v-tab 
