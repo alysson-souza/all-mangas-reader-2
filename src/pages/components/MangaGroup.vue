@@ -33,7 +33,7 @@
                 <select dark v-model="newCat" @change="addCategory()" :class="color(2)">
                   <option value="">{{i18n("list_details_cats_select")}}</option>
                   <option v-for="(cat, key) of options.categoriesStates" 
-                          v-if="cat.type !== 'native'" 
+                          v-if="cat.type !== 'native' && cat.type != 'language'" 
                           :key="key" 
                           :value="cat.name">
                       {{cat.name}}
@@ -123,7 +123,7 @@ export default {
     // bookmarks for this group
     bookmarks: function() {
       return this.$store.state.bookmarks.all.filter(
-        bm => this.mangas.findIndex(mg => mg.key === amrutils.mangaKey(bm.url)) !== -1
+        bm => this.mangas.findIndex(mg => mg.key.indexOf(amrutils.mangaKey(bm.url)) >= 0) !== -1
       )
     },
     /**
@@ -161,10 +161,7 @@ export default {
           ? ""
           : light < 0 ? " darken-" + -light : " lighten-" + light;
       if (this.first.read !== 0) return this.options.colornotfollow + lstr;
-      else if (
-        this.first.listChaps.length &&
-        this.first.lastChapterReadURL !== this.first.listChaps[0][1]
-      ) {
+      else if (utils.hasNew(this.first)) {
         return this.options.colornew + lstr;
       } else {
         return this.options.colorread + lstr;

@@ -1,20 +1,21 @@
-import 'regenerator-runtime/runtime';
 import browser from "webextension-polyfill";
 import options from './options';
 import mirrorImpl from './mirrorimpl'
 import pageData from './pagedata'
 import util from './util';
 import i18n from '../amr/i18n';
+import mirrorHelper from '../amr/mirrors-helper';
 
 class Reading {
     consultManga() {
         browser.runtime.sendMessage({
-            "action": "readManga",
-            "url": pageData.currentMangaURL,
-            "mirror": mirrorImpl.get().mirrorName,
-            "lastChapterReadName": pageData.currentChapter,
-            "lastChapterReadURL": pageData.currentChapterURL,
-            "name": pageData.name
+            action: "readManga",
+            url: pageData.currentMangaURL,
+            mirror: mirrorImpl.get().mirrorName,
+            lastChapterReadName: pageData.currentChapter,
+            lastChapterReadURL: pageData.currentChapterURL,
+            name: pageData.name,
+            language: pageData.language
         });
     }
 
@@ -24,7 +25,11 @@ class Reading {
             pageData.whereScans = where;
             //Get specific mode for currentManga
             let curmode = -1;
-            let specific = await browser.runtime.sendMessage({ action: "mangaInfos", url: pageData.currentMangaURL });
+            let specific = await browser.runtime.sendMessage({ 
+                action: "mangaInfos", 
+                url: pageData.currentMangaURL, 
+                language: pageData.language 
+            });
             if (specific && specific.display) {
                 curmode = specific.display;
             }
@@ -56,11 +61,12 @@ class Reading {
             td.css("text-align", "center");
             td.appendTo(tr);
 
-            let spanner = $("<div class='spanForImg'></div>");
+            let spanner = $("<a class='spanForImg' href='" + list[i] + "'></div>");
             $(spanner).css("vertical-align", "middle");
             $(spanner).css("text-align", "center");
             $(spanner).data("order", i);
             spanner.appendTo(td);
+            spanner.click((e) => e.preventDefault());
 
             let div = $("<div id='loader" + i + "' class='divLoading'></div>");
             div.css("background", "url(" + browser.extension.getURL("icons/loading.gif") + ") no-repeat center center");
@@ -95,7 +101,7 @@ class Reading {
         }
 
         //Create contextual menu to bookmark image
-        let url = $(img).attr("src");
+        let url = $(img).data("urlToLoad");
         if (url.indexOf("//") === 0) {
             url = location.protocol + url;
         }
@@ -110,7 +116,7 @@ class Reading {
             url: pageData.currentMangaURL,
             chapUrl: pageData.currentChapterURL,
             type: "scan",
-            scanUrl: $(img).attr("src"),
+            scanUrl: $(img).data("urlToLoad"),
             scanName: $(img).data("idScan")
         };
         let result = await browser.runtime.sendMessage(objBM);
@@ -131,7 +137,7 @@ class Reading {
                         chapUrl: pageData.currentChapterURL,
                         type: "scan"
                     };
-                    obj.scanUrl = $(img).attr("src");
+                    obj.scanUrl = $(img).data("urlToLoad");
 
                     $(img).css("border-top-color", "white");
                     $(img).css("border-right-color", "white");
@@ -152,7 +158,7 @@ class Reading {
                         name: pageData.name,
                         chapName: pageData.currentChapter
                     };
-                    obj.scanUrl = $(img).attr("src");
+                    obj.scanUrl = $(img).data("urlToLoad");
                     if (obj.scanUrl.indexOf("//") === 0) obj.scanUrl = location.protocol + obj.scanUrl;
                     obj.scanName = $(img).data("idScan");
                     obj.note = "";
@@ -190,7 +196,7 @@ class Reading {
                 butReco.css("margin-left", "auto");
                 butReco.css("margin-right", "auto");
                 $(img).after(butReco);
-                butReco.click(function () {
+                butReco.click(async function () {
                     let imgAnc = $(this).prev();
                     let url = $(imgAnc).data("urlToLoad");
                     let divLoadId = $(imgAnc).data("divLoad");
@@ -204,7 +210,7 @@ class Reading {
                     $(nimg).css("border", "5px solid white");
                     $(nimg).on("load", () => reading.onLoadImage(nimg));
                     $(nimg).on("error", () => reading.onErrorImage(nimg));
-                    mirrorImpl.get().getImageFromPageAndWrite(util.removeProtocol(url), nimg, document, window.location.href);
+                    (async () => await mirrorImpl.get().getImageFromPageAndWrite(util.removeProtocol(url), nimg))()
 
                     $(nimg).appendTo(spanner);
 
@@ -236,7 +242,7 @@ class Reading {
                 $(imgSave).addClass("imageAMR");
                 $(imgSave).on("load", () => reading.onLoadImage(imgSave));
                 $(imgSave).on("error", () => reading.onErrorImage(imgSave));
-                mirrorImpl.get().getImageFromPageAndWrite($(img).data("urlToLoad"), imgSave, document, window.location.href);
+                (async () => await mirrorImpl.get().getImageFromPageAndWrite($(img).data("urlToLoad"), imgSave))()
 
                 $(img).after($(imgSave));
                 $(img).remove();
@@ -260,7 +266,7 @@ class Reading {
 
         if (options.imgorder == 1) {
             if (this.nbLoaded(where) == pos) {
-                mirrorImpl.get().getImageFromPageAndWrite(util.removeProtocol(url), img, document, window.location.href);
+                (async () => await mirrorImpl.get().getImageFromPageAndWrite(util.removeProtocol(url), img))()
             } else {
                 var _self = this;
                 setTimeout(function () {
@@ -268,7 +274,9 @@ class Reading {
                 }, 100);
             }
         } else {
-            mirrorImpl.get().getImageFromPageAndWrite(util.removeProtocol(url), img, document, window.location.href);
+            (async () => {
+                await mirrorImpl.get().getImageFromPageAndWrite(util.removeProtocol(url), img)
+            })()
         }
     }
 
@@ -485,34 +493,41 @@ class Reading {
         }
 
         $("table", where).remove();
+        $(".amr-lastchap", where).remove();
         tableRes.appendTo(where);
+        if ($("#nChapBtn0").length === 0) {
+            $("<div style=\"width:100%; background-color:white; border-radius:5px;margin-top:15px;margin-bottom:15px;\" class='amr-lastchap'><img src=\"" + browser.extension.getURL("icons/warn.png") + "\" style=\"vertical-align:middle;margin-right:10px;\"/><span style=\"font-weight:bold;font-size:12pt;color:black;vertical-align:middle;\">" + i18n("content_nav_last_chap") + "</span></div>").appendTo(where);
+        }
     }
 
-    async loadNextChapter(urlNext) {
-        util.debug("Loading next chapter...");
-        // load an iframe with urlNext and get list of images
-        let resp = await browser.runtime.sendMessage({
-            action: "getNextChapterImages",
-            url: urlNext,
-            mirrorName: mirrorImpl.get().mirrorName
-        });
-        let lst = resp.images;
-        if (lst !== null) {
-            util.debug(lst.length + "... scans to load");
-            for (let i = 0; i < lst.length; i++) {
-                let img = new Image();
-                $(img).data("attempts", 0);
-                $(img).data("id", i);
-                $(img).data("urltoload", lst[i]);
-                $(img).data("urlnext", urlNext);
-                $(img).data("total", lst.length);
-                $(img).on("load", () => this.onLoadNextImage());
-                $(img).on("error", () => this.onErrorNextImage());
-                mirrorImpl.get().getImageFromPageAndWrite(lst[i], img, document, urlNext);
+    loadNextChapter(urlNext) {
+        (async () => {
+            util.debug("Loading next chapter...");
+            // load an iframe with urlNext and get list of images
+            let resp = await browser.runtime.sendMessage({
+                action: "getNextChapterImages",
+                url: urlNext,
+                mirrorName: mirrorImpl.get().mirrorName, 
+                language: pageData.language 
+            });
+            let lst = resp.images;
+            if (lst !== null) {
+                util.debug(lst.length + "... scans to load");
+                for (let i = 0; i < lst.length; i++) {
+                    let img = new Image();
+                    $(img).data("attempts", 0);
+                    $(img).data("id", i);
+                    $(img).data("urltoload", lst[i]);
+                    $(img).data("urlnext", urlNext);
+                    $(img).data("total", lst.length);
+                    $(img).on("load", () => this.onLoadNextImage());
+                    $(img).on("error", () => this.onErrorNextImage());
+                    (async () => await mirrorImpl.get().getImageFromPageAndWrite(lst[i], img))()
+                }
+            } else {
+                util.debug("no scans found for next chapter...");
             }
-        } else {
-            util.debug("no scans found for next chapter...");
-        }
+        })()
     }
 
     onLoadNextImage() {

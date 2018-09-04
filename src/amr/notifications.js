@@ -27,10 +27,12 @@ class Notification {
         }, notificationCloseCallback = function (id) {
             if (_self.notifications[id] !== undefined) delete _self.notifications[id];
         }
-        // Add the callback to ALL notifications opened by AMR.
-        browser.notifications.onClicked.addListener(notificationClickCallback);
-        // To prevent the notification array from growing
-        browser.notifications.onClosed.addListener(notificationCloseCallback);
+        if (browser.notifications) {
+            // Add the callback to ALL notifications opened by AMR.
+            browser.notifications.onClicked.addListener(notificationClickCallback);
+            // To prevent the notification array from growing
+            browser.notifications.onClosed.addListener(notificationCloseCallback);
+        }
     }
     /**
      * Create a notification when a new chapter is released on a manga

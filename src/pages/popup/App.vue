@@ -78,19 +78,24 @@
 			<v-layout row>
 				<v-flex xs6>
 					<v-layout row>
-				<v-flex xs4>
+				<v-flex xs3>
 					<v-btn flat icon color="red darken-2" @click="opentab('https://allmangasreader.com')">
 						<img src="/icons/icon_32.png" width="24" alt="All Mangas Reader">
 					</v-btn>
 				</v-flex>
-				<v-flex xs4>
+				<v-flex xs3>
 					<v-btn flat icon color="yellow" @click="opentab('/pages/bookmarks/bookmarks.html')">
 						<v-icon>mdi-star</v-icon>
 					</v-btn>
 				</v-flex>
-				<v-flex xs4>
+				<v-flex xs3>
 					<v-btn flat icon color="blue" @click="opentab('https://gitlab.com/all-mangas-reader/all-mangas-reader-2/wikis/home')">
 						<v-icon>mdi-help</v-icon>
+					</v-btn>
+				</v-flex>
+				<v-flex xs3>
+					<v-btn flat icon color="blue lighten-2" @click="opentab('/pages/popup/popup.html?mode=tab')">
+						<v-icon>mdi-open-in-new</v-icon>
 					</v-btn>
 				</v-flex>
 					</v-layout>

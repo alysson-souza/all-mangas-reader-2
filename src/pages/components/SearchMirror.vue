@@ -35,7 +35,7 @@ export default {
                 mirror: this.mirror.mirrorName,
                 search: searchinit
             });
-            this.$emit("add-mangas", mgs, searchinit);
+            this.$emit("add-mangas", mgs, searchinit, this.mirror.languages);
             this.searching = false;
         }
     },

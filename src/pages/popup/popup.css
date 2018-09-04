@@ -1,18 +1,17 @@
-html, body{
+html, body {
     margin: 0;
     height: 100%;
+}
+body.popup {
     min-width:700px;
-    /*min-height: 200px;*/
     max-height: 500px;
     overflow: hidden;
 }
-html {
-    overflow-y: hidden;
+@-moz-document url-prefix() { /* Hack for firefox only CSS */
+    html {
+        overflow: hidden
+    }
 }
-/** Added here because this class is added on detached tooltip box which is outside component scope */
-/*.icon-ttip {*/
-    /*margin-top: -15px;*/ /* Has been fixed in Vuetify V1.1.9 */
-/*}*/
 body {
     font-size:11px;
 }

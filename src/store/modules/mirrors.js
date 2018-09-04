@@ -12,7 +12,11 @@ const state = {
     /**
      * List of mirrors
      */
-    all: []
+    all: [],
+    /**
+     * List of abstract implementations
+     */
+    abstracts: []
 }
 
 // getters
@@ -52,6 +56,8 @@ const actions = {
         } else {
             // set mirrors list in store
             commit('setMirrors', websites);
+            // set abstract mirrors list in store
+            commit('setAbstractMirrors', websites);
         }
     },
     /**
@@ -60,7 +66,7 @@ const actions = {
      * @param {*} manga 
      */
     async updateMirror({ commit }, mirror) {
-        utils.debug("update description of " + mirror.mirrorName + " --> " + mirror.webSites + " in db");
+        utils.debug("update description of " + mirror.mirrorName + " in db");
         await storedb.storeWebsite(mirror);
     },
 
@@ -68,6 +74,9 @@ const actions = {
     async updateMirrorsLists({ commit, dispatch, rootState }) {
         // set the blue badge
         iconHelper.setBlueIcon();
+
+        // reset implementations
+        commit('resetImplementations');
 
         // update last update ts
         dispatch("setOption", {key: "lastMirrorsUpdate", value: Date.now()});
@@ -96,6 +105,18 @@ const actions = {
                 for (let w of ws.data) {
                     // get activated property in db, do not overright it
                     let act = true;
+                    // languages is undefined for abstract implementations --> always activated
+                    if (w.languages !== undefined && rootState.options["deactivateunreadable"]) {
+                        let langs = w.languages.split(",")
+                        let hasReadable = false;
+                        for (let l of langs) {
+                            if (rootState.options["readlanguages"].includes(l)) {
+                                hasReadable = true
+                                break
+                            }
+                        }
+                        if (!hasReadable) act = false // default activation to false for a new implementation that does not match a readable language if option is checked
+                    }
                     let wdb = websitesdb.find(m => m.mirrorName === w.mirrorName);
                     if (wdb != undefined) act = wdb.activated;
                     w.activated = act;
@@ -114,6 +135,8 @@ const actions = {
         } else {
             // set mirrors list in store
             commit('setMirrors', websites);
+            // set abstract mirrors list in store
+            commit('setAbstractMirrors', websites);
         }
         
         // remove deleted mirrors
@@ -157,12 +180,29 @@ const mutations = {
      */
     setMirrors(state, mirrors) {
         state.all = []
-        state.all.push(...mirrors)
+        state.all.push(...mirrors.filter(mirror => mirror.type !== 'abstract'))
+    },
+    /**
+     * Set the list of abstract mirrors in the store
+     * Only call this commit with a mirror list coming from db, not from another 
+     * thread mirror list because it does not contains the abstract mirrors
+     * @param {*} state 
+     * @param {*} mirrors 
+     */
+    setAbstractMirrors(state, mirrors) {
+        state.abstracts = []
+        state.abstracts.push(...mirrors.filter(mirror => mirror.type === 'abstract'))
+    },
 
-        // reset implementations
-        // we do that in the mutation to affect all instances
+    /**
+     * Reset implementations is called in a mutation to affect all js instances (background, lab)
+     * @param {*} state 
+     * @param {*} mirrors 
+     */
+    resetImplementations(state, mirrors) {
         mirrorsImpl.resetImplementations();
     },
+
     /**
      * Set the activated / deactivated flag on a mirror
      * @param {*} state 

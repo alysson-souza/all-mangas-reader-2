@@ -36,8 +36,7 @@ const getters = {
     hasNewMangas: (state) => {
         for (let mg of state.all) {
             if (mg.listChaps.length > 0) {
-                var lastUrl = mg.listChaps[0][1];
-                if (lastUrl != mg.lastChapterReadURL && mg.read == 0) {
+                if (utils.chapPath(mg.listChaps[0][1]) != utils.chapPath(mg.lastChapterReadURL) && mg.read == 0) {
                     return true;
                 }
             }
@@ -51,8 +50,7 @@ const getters = {
         let nb = 0;
         for (let mg of state.all) {
             if (mg.listChaps.length > 0) {
-                var lastUrl = mg.listChaps[0][1];
-                if (lastUrl != mg.lastChapterReadURL && mg.read == 0) {
+                if (utils.chapPath(mg.listChaps[0][1]) != utils.chapPath(mg.lastChapterReadURL) && mg.read == 0) {
                     nb++;
                 }
             }
@@ -94,7 +92,7 @@ const actions = {
      * @param {*} message containing url of the manga and new display mode
      */
     async setMangaDisplayMode({ dispatch, commit, getters }, message) {
-        let key = utils.mangaKey(message.url);
+        let key = utils.mangaKey(message.url, message.mirror, message.language);
         commit('setMangaDisplayMode', message);
         dispatch('updateManga', state.all.find(manga => manga.key === key));
     },
@@ -104,11 +102,10 @@ const actions = {
      * @param {*} message containing url of the manga
      */
     async resetManga({ dispatch, commit, getters }, message) {
-        let key = utils.mangaKey(message.url);
+        let key = utils.mangaKey(message.url, message.mirror, message.language);
         commit('resetManga', message);
         let mg = state.all.find(manga => manga.key === key);
         dispatch('updateManga', mg);
-        statsEvents.trackResetManga(mg);
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();
     },
@@ -118,25 +115,36 @@ const actions = {
      * @param {*} message containing infos about the manga read
      */
     async readManga({ dispatch, commit, getters }, message) {
-        let key = utils.mangaKey(message.url);
+        let key = utils.mangaKey(message.url, message.mirror, message.language);
+        if (key.indexOf("unknown") === 0) {
+            console.error("Impossible to import manga because mirror can't be found. Perhaps has it been deleted...");
+            console.error(message);
+            return;
+        }
         let mg = state.all.find(manga => manga.key === key);
         if (mg === undefined) {
             utils.debug("readManga of an unlisted manga --> create it");
             commit('createManga', message);
             mg = state.all.find(manga => manga.key === key);
+            let code
             try {
                 await dispatch("refreshLastChapters", message);
-            } catch (e) { console.error(e) } // ignore error if manga list can not be loaded --> save the manga
-            utils.debug("saving new manga to database");
-            dispatch('updateManga', mg);
-            if (!message.auto) statsEvents.trackAddManga(mg);
+            } catch (e) { 
+                code = e
+                if (code !== "abstract_manga") console.error(e) // ignore error if manga list can not be loaded --> save the manga
+            }
+            if (code !== "abstract_manga") { // do not save mangas added from search panel on websites proposing multiple language --> in this case, the first attempt does not contains the required language field
+                utils.debug("saving new manga to database");
+                dispatch('updateManga', mg);
+                // update native language categories
+                dispatch("updateLanguageCategories")
+            }
         } else {
             try {
                 await dispatch("consultManga", message);
             } catch (e) { console.error(e) } // ignore error if manga list can't be updated
             dispatch('updateManga', mg);
             statsEvents.trackReadManga(mg);
-            statsEvents.trackReadMangaChapter(mg);
         }
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();
@@ -153,9 +161,8 @@ const actions = {
             //New chapter is not in chapters list --> Reload chapter list
             if (impl) {
                 utils.debug("getMangaListOfChapters : implementation found, get list of chapters for manga " + manga.name + " key " + manga.key);
-                impl.getListChaps(manga.url, manga.name, manga, function (lst) {
-                    resolve(lst);
-                });
+                let lst = await impl.getListChaps(manga.url);
+                resolve(lst);
             } else {
                 reject();
             }
@@ -169,15 +176,17 @@ const actions = {
      * @param {*} message message contains info on a manga and flag fromSite
      */
     async consultManga({ dispatch, commit, getters }, message) {
-        let key = utils.mangaKey(message.url),
+        let key = utils.mangaKey(message.url, message.mirror, message.language),
             posOld = -1,
             posNew = -1,
             isNew = false,
             mg = state.all.find(manga => manga.key === key);
 
+        let mgchap = utils.chapPath(mg.lastChapterReadURL), 
+            messchap = utils.chapPath(message.lastChapterReadURL);
         for (let i = 0; i < mg.listChaps.length; i++) {
-            if (mg.listChaps[i][1] === mg.lastChapterReadURL) posOld = i;
-            if (mg.listChaps[i][1] === message.lastChapterReadURL) posNew = i;
+            if (utils.chapPath(mg.listChaps[i][1]) === mgchap) posOld = i;
+            if (utils.chapPath(mg.listChaps[i][1]) === messchap) posNew = i;
         }
 
         commit('updateMangaEntryWithInfos', { key: mg.key, obj: message });
@@ -187,11 +196,32 @@ const actions = {
                 if (mg.update === 1) {
                     try {
                         let listChaps = await dispatch("getMangaListOfChapters", mg)
+                        /**
+                         * Manage the case in which the returned list contains multiple chapters list 
+                         * for different languages
+                         */
+                        if (listChaps !== undefined && !Array.isArray(listChaps)) {
+                            if (mg.language === undefined) {
+                                // should not happen there (the case is handled for new mangas but not here when manga already exists)
+                                reject()
+                            }
+                            if (listChaps[mg.language] && listChaps[mg.language].length > 0) {
+                                // update list of existing languages
+                                let listLangs = Object.keys(listChaps).join(",")
+                                commit('updateMangaListLangs', { key: mg.key, langs: listLangs });
+                                // set current list chaps to the right one
+                                listChaps = listChaps[mg.language]
+                            } else {
+                                utils.debug("required language " + mg.language + " does not exist in resulting list of chapters for manga " + mg.name + " on " + mg.mirror + ". Existing languages are : " + Object.keys(listChaps).join(","))
+                            }
+                        }
                         if (listChaps.length > 0) {
                             commit('updateMangaListChaps', { key: mg.key, listChaps: listChaps });
+                            let mgchap = utils.chapPath(mg.lastChapterReadURL), 
+                                messchap = utils.chapPath(message.lastChapterReadURL);
                             for (let i = 0; i < listChaps.length; i++) {
-                                if (listChaps[i][1] === mg.lastChapterReadURL) posOld = i;
-                                if (listChaps[i][1] === message.lastChapterReadURL) posNew = i;
+                                if (utils.chapPath(listChaps[i][1]) === mgchap) posOld = i;
+                                if (utils.chapPath(listChaps[i][1]) === messchap) posNew = i;
                             }
                             if (posNew !== -1 && (message.fromSite || (posNew < posOld || posOld === -1))) {
                                 commit('updateMangaLastChapter', { key: mg.key, obj: message });
@@ -220,8 +250,8 @@ const actions = {
      * @param {*} vuex object 
      * @param {*} message message contains info on a manga
      */
-    async refreshLastChapters({ dispatch, commit, getters }, message) {
-        let key = utils.mangaKey(message.url),
+    async refreshLastChapters({ dispatch, commit, getters, rootState }, message) {
+        let key = utils.mangaKey(message.url, message.mirror, message.language),
             mg = state.all.find(manga => manga.key === key);
         if (mg.update === 1) {
             return new Promise(async (resolve, reject) => {
@@ -234,9 +264,50 @@ const actions = {
                 try {
                     utils.debug("waiting for manga list of chapters for " + mg.name + " on " + mg.mirror)
                     let listChaps = await dispatch("getMangaListOfChapters", mg)
-                    utils.debug(listChaps.length + " chapters found for " + mg.name + " on " + mg.mirror)
                     clearTimeout(timeOutRefresh);
+                    /**
+                     * Manage the case in which the returned list contains multiple chapters list 
+                     * for different languages
+                     */
+                    if (listChaps !== undefined && !Array.isArray(listChaps)) {
+                        if (mg.language === undefined) {
+                            // Returned list contains different languages and language has not been set, this can be the case if manga is added from search list on a website supporting multiple languages
+                            // Pick languages to read (select from readable languages, if none, select first language)
+                            let alllangs = Object.keys(listChaps)
+                            let readable = rootState.options.readlanguages
+                            let toadd = alllangs.filter(l => readable.includes(l))
+                            if (toadd.length === 0) {
+                                toadd.push(alllangs[0])
+                            }
+                            // add a manga entry for all readable languages
+                            for (let l of toadd) {
+                                dispatch("readManga", {
+                                    url: mg.url,
+                                    mirror: mg.mirror,
+                                    language: l,
+                                    name: mg.name
+                                })
+                            }
+
+                            // Remove the manga --> will always fail because no language specified
+                            dispatch("deleteManga", mg)
+
+                            // Fail for current (deleted) manga
+                            reject("abstract_manga")
+                        }
+                        utils.debug("chapters in multiple languages found for " + mg.name + " on " + mg.mirror + " --> select language " + mg.language)
+                        if (listChaps[mg.language] && listChaps[mg.language].length > 0) {
+                            // update list of existing languages
+                            let listLangs = Object.keys(listChaps).join(",")
+                            commit('updateMangaListLangs', { key: mg.key, langs: listLangs });
+                            // set current list chaps to the selected one
+                            listChaps = listChaps[mg.language]
+                        } else {
+                            utils.debug("required language " + mg.language + " does not exist in resulting list of chapters. Existing languages are : " + Object.keys(listChaps).join(","))
+                        }
+                    }
                     if (listChaps.length > 0) {
+                        utils.debug(listChaps.length + " chapters found for " + mg.name + " on " + mg.mirror)
                         let oldLastChap = (typeof mg.listChaps[0] === 'object' ? mg.listChaps[0][1] : undefined),
                             newLastChap;
                         commit('updateMangaListChaps', { key: mg.key, listChaps: listChaps });
@@ -252,6 +323,29 @@ const actions = {
                                 lastChapterReadName: listChaps[listChaps.length - 1][0],
                                 fromSite: false
                             }});
+                        } else {
+                            // test if lastChapterRead is consistent (exists)
+                            let lastReadPath = utils.chapPath(mg.lastChapterReadURL)
+                            let lastRead = mg.listChaps.find(arr => utils.chapPath(arr[1]) === lastReadPath)
+                            if (!lastRead) {
+                                console.error("Manga " + mg.name + " on " + mg.mirror + " has a lastChapterReadURL set to " + mg.lastChapterReadURL + " but this url can no more be found in the chapters list. First url in list is " + mg.listChaps[0][1] + ". " );
+                                let probable = utils.findProbableChapter(mg.lastChapterReadURL, mg.listChaps);
+                                if (probable !== undefined) {
+                                    console.log("Found probable chapter : " + probable[0] + " : " + probable[1])
+                                    commit('updateMangaLastChapter', {key: mg.key, obj : {
+                                        lastChapterReadURL: probable[1],
+                                        lastChapterReadName: probable[0],
+                                        fromSite: false
+                                    }});
+                                } else {
+                                    console.log("No list entry or multiple list entries match the known last chapter. Reset to first chapter");
+                                    commit('updateMangaLastChapter', {key: mg.key, obj : {
+                                        lastChapterReadURL: listChaps[listChaps.length - 1][1],
+                                        lastChapterReadName: listChaps[listChaps.length - 1][0],
+                                        fromSite: false
+                                    }});
+                                }
+                            }
                         }
                     }
 
@@ -309,7 +403,7 @@ const actions = {
             if (force || doupdate) {
                 // we catch the reject from the promise to prevent the Promise.all to fail due to a rejected promise. Thanks to that, Promise.all will wait that each manga is refreshed, even if it does not work
                 let mgupdate = Promise.resolve(
-                    dispatch("refreshLastChapters", {url: mg.url})
+                    dispatch("refreshLastChapters", mg)
                         .then(() => {
                             //save updated manga do not wait
                             dispatch('updateManga', mg);
@@ -340,7 +434,7 @@ const actions = {
      * @param {*} message message contains info on a manga
      */
     async markMangaReadTop({ dispatch, commit, getters, rootState }, message) {
-        let key = utils.mangaKey(message.url),
+        let key = utils.mangaKey(message.url, message.mirror, message.language),
             mg = state.all.find(manga => manga.key === key);
         if (mg !== undefined) {
             commit('setMangaReadTop', message);
@@ -349,7 +443,12 @@ const actions = {
                 let titMg = utils.formatMgName(mg.name);
                 let smgs = state.all.filter(manga => utils.formatMgName(manga.name) === titMg)
                 for (let smg of smgs) {
-                    commit('setMangaReadTop', { url: smg.url, read: message.read });
+                    commit('setMangaReadTop', { 
+                        url: smg.url, 
+                        read: message.read,
+                        mirror: message.mirror,
+                        language: message.language
+                    });
                     dispatch('updateManga', smg);
                 }
             }
@@ -363,7 +462,7 @@ const actions = {
      * @param {*} message message contains info on a manga
      */
     async markMangaUpdateTop({ dispatch, commit, getters, rootState }, message) {
-        let key = utils.mangaKey(message.url),
+        let key = utils.mangaKey(message.url, message.mirror, message.language),
             mg = state.all.find(manga => manga.key === key);
         if (mg !== undefined) {
             commit('setMangaUpdateTop', message);
@@ -372,7 +471,12 @@ const actions = {
                 let titMg = utils.formatMgName(mg.name);
                 let smgs = state.all.filter(manga => utils.formatMgName(manga.name) === titMg)
                 for (let smg of smgs) {
-                    commit('setMangaUpdateTop', { url: smg.url, update: message.update });
+                    commit('setMangaUpdateTop', { 
+                        url: smg.url, 
+                        update: message.update,
+                        mirror: message.mirror,
+                        language: message.language
+                    });
                     dispatch('updateManga', smg);
                 }
             }
@@ -390,10 +494,11 @@ const actions = {
         if (mg !== undefined) {
             commit('deleteManga', message.key);
             storedb.deleteManga(message.key);
-            statsEvents.trackDeleteManga(mg);
         }
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();
+        // update native language categories
+        dispatch("updateLanguageCategories")
     },
     /**
      * Import sample mangas on user request
@@ -426,6 +531,40 @@ const actions = {
         commit("removeCategoryFromManga", obj);
         dispatch('updateManga', mg);
     },
+
+    /**
+     * Updates categories to add language categories if there is mangas in more 
+     * than one different language
+     * @param {*} param0 
+     */
+    updateLanguageCategories({ commit, dispatch, rootState }) {
+        let catsLang = rootState.options.categoriesStates.filter(cat => cat.type === 'language')
+        let langs = []
+        for (let mg of state.all) {
+            let l = utils.readLanguage(mg)
+            if (l !== "aa" && !langs.includes(l)) langs.push(l) // do not create a category for aa which corresponds to multiple languages possible 
+        }
+        if (catsLang.length > 0 && langs.length <= 1) { 
+            // remove language categories, only one language
+            for (let cat of catsLang) {
+                dispatch("removeLanguageCategory", cat.name)
+            }
+        } else if (langs.length > 1) {
+            // add new ones
+            for (let l of langs) {
+                if (catsLang.findIndex(cat => cat.name === l) === -1) {
+                    // add language category l
+                    dispatch("addLanguageCategory", l)
+                }
+            }
+            // remove deleted ones
+            for (let cat of catsLang) {
+                if (!langs.includes(cat.name)) {
+                    dispatch("removeLanguageCategory", cat.name)
+                }
+            }
+        }
+    }
 }
 
 /**
@@ -449,8 +588,8 @@ const mutations = {
      * @param {*} state 
      * @param {*} param1 url of the manga and display mode
      */
-    setMangaDisplayMode(state, { url, display }) {
-        let key = utils.mangaKey(url);
+    setMangaDisplayMode(state, { url, mirror, language, display }) {
+        let key = utils.mangaKey(url, mirror, language);
         let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) mg.display = display;
     },
@@ -459,8 +598,8 @@ const mutations = {
      * @param {*} state 
      * @param {*} param1 url of the manga and read top
      */
-    setMangaReadTop(state, { url, read }) {
-        let key = utils.mangaKey(url),
+    setMangaReadTop(state, { url, read, mirror, language }) {
+        let key = utils.mangaKey(url, mirror, language),
             mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) mg.read = read;
     },
@@ -469,8 +608,8 @@ const mutations = {
      * @param {*} state 
      * @param {*} param1 url of the manga and update top
      */
-    setMangaUpdateTop(state, { url, update }) {
-        let key = utils.mangaKey(url),
+    setMangaUpdateTop(state, { url, update, mirror, language }) {
+        let key = utils.mangaKey(url, mirror, language),
             mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) mg.update = update;
     },
@@ -491,6 +630,15 @@ const mutations = {
     updateMangaListChaps(state, { key, listChaps }) {
         let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) mg.listChaps = listChaps;
+    },
+    /**
+     * Update the list of languages supported of a manga
+     * @param {*} state 
+     * @param {*} param1 
+     */
+    updateMangaListLangs(state, { key, langs }) {
+        let mg = state.all.find(manga => manga.key === key)
+        if (mg !== undefined) mg.languages = langs;
     },
     /**
      * Update the last read chapter of a manga
@@ -548,8 +696,8 @@ const mutations = {
      * @param {*} state 
      * @param {*} param1 url of the manga
      */
-    resetManga(state, { url }) {
-        let key = utils.mangaKey(url);
+    resetManga(state, { url, mirror, language }) {
+        let key = utils.mangaKey(url, mirror, language);
         let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             if (mg.listChaps.length > 0) {

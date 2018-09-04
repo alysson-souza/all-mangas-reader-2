@@ -7,6 +7,7 @@ import store from '../store';
 class StatsEvents {
     constructor() {
         window['_paq'] = window['_paq'] || [];
+        _paq.push(['setCustomUrl', this.getAdaptedUrl()]);
         _paq.push(['trackPageView', this.getCurPage()]);
         (function() {
             var u="https://matomo.allmangasreader.com/";
@@ -18,7 +19,10 @@ class StatsEvents {
     }
     getCurPage() {
         let lp = window.location.href.lastIndexOf("/");
-        return window.location.href.substring(lp);
+        return window.location.href.substring(lp + 1);
+    }
+    getAdaptedUrl() {
+        return 'https://ext.allmangasreader.com/' + this.getCurPage();
     }
     trackEvent(category, action, label) {
         try {
@@ -30,29 +34,15 @@ class StatsEvents {
             }
         }
     }
-    trackResetManga(mg) {
-        this.trackEvent('ResetManga', mg.mirror, mg.name);
-    }
-    trackAddManga(mg) {
-        this.trackEvent('AddManga', mg.mirror, mg.name);
-    }
-    trackDeleteManga(mg) {
-        this.trackEvent('DeleteManga', mg.mirror, mg.name);
-    }
     trackReadManga(mg) {
         this.trackEvent('ReadManga', mg.mirror, mg.name);
     }
-    trackReadMangaChapter(mg) {
-        this.trackEvent('ReadMangaChapter', mg.name, mg.lastChapterReadName);
+    trackInstall(version, isbeta, navigator) {
+        this.trackEvent('Install', version, navigator);
     }
-    trackBeta(version) {
-        this.trackEvent('Install', 'Beta Channel', version);
+    trackUpdate(version, isbeta, navigator) {
+        this.trackEvent('Update', version, navigator);
     }
-    trackInstall(version) {
-        this.trackEvent('Install', version);
-    }
-    trackActive(granularity, datestr) {
-        this.trackEvent('Active', granularity, datestr);
-    }
+    
 }
 export default (new StatsEvents)

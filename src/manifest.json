@@ -2,7 +2,7 @@
   "name": "All Mangas Reader",
   "description": "__MSG_description__",
   "author": "",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "manifest_version": 2,
   "default_locale": "en",
   "icons": {
@@ -27,7 +27,8 @@
     "unlimitedStorage",
     "contextMenus",
     "notifications",
-    "downloads"
+    "downloads",
+    "cookies"
   ],
   "content_security_policy": "script-src 'self' https://localhost:8080/ https://matomo.allmangasreader.com/ https://mirrors.allmangasreader.com/ ; object-src 'self'",
   "web_accessible_resources": [

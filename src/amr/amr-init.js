@@ -1,81 +1,81 @@
 import browser from "webextension-polyfill";
 import statsEvents from './stats-events';
+import store from '../store';
+import * as utils from './utils';
 
 /**
  * This file defines a function called on extension init which initialize version and check informations
  */
 
-/**
- * Returns the week number for this date.  dowOffset is the day of week the week
- * "starts" on for your locale - it can be from 0 to 6. If dowOffset is 1 (Monday),
- * the week returned is the ISO 8601 week number.
- * @param int dowOffset
- * @return int
+ /**
+ * Do things when app is installed
+ * @param {*} ancVersion 
+ * @param {*} curVersion 
  */
-Date.prototype.getWeek = function (dowOffset) {
-    /*getWeek() was developed by Nick Baicoianu at MeanFreePath: http://www.meanfreepath.com */
-
-    dowOffset = typeof (dowOffset) == 'int' ? dowOffset : 0; //default dowOffset to zero
-    var newYear = new Date(this.getFullYear(), 0, 1);
-    var day = newYear.getDay() - dowOffset; //the day of week the year begins on
-    day = (day >= 0 ? day : day + 7);
-    var daynum = Math.floor((this.getTime() - newYear.getTime() -
-        (this.getTimezoneOffset() - newYear.getTimezoneOffset()) * 60000) / 86400000) + 1;
-    var weeknum;
-    //if the year starts before the middle of a week
-    if (day < 4) {
-        weeknum = Math.floor((daynum + day - 1) / 7) + 1;
-        if (weeknum > 52) {
-            nYear = new Date(this.getFullYear() + 1, 0, 1);
-            nday = nYear.getDay() - dowOffset;
-            nday = nday >= 0 ? nday : nday + 7;
-            /*if the next year starts before the middle of
-            the week, it is week #1 of that year*/
-            weeknum = nday < 4 ? 1 : 53;
+let installApp = async function(curVersion) {
+    // check if user language is in readable list of languages add it if not
+    checkLangSet()
+    return () => {}
+}
+/**
+ * Do things when version is updated
+ * @param {*} ancVersion 
+ * @param {*} curVersion 
+ */
+let updateApp = async function(ancVersion, curVersion) {
+    let afterCalls = []
+    if (!versionAfter(ancVersion, "2.0.2.140")) { // if previous version is before 2.0.2.140
+        // from this version, mirrors are hosted to mirrors.allmangasreader.com/v4
+        // update localStorage to change stored url if necessary
+        console.log("Update main repository url to v4")
+        await store.dispatch("updateRepository", {
+            old_repo: "https://mirrors.allmangasreader.com/v3/", 
+            new_repo: "https://mirrors.allmangasreader.com/v4/"
+        })
+        console.log("Reinitialize mirrors entries")
+        // request an update of mirrors lists
+        store.dispatch("updateMirrorsLists")
+    }
+    if (!versionAfter(ancVersion, "2.0.2.150")) { // if previous version is before 2.0.2.150
+        // check if user language is in readable list of languages add it if not
+        checkLangSet()
+        // change category names New, Read, Unread and One Shots to the new ones (codes to be internationalized)
+        await store.dispatch("updateCategoryName", {oldname: "New", newname: "category_new"})
+        await store.dispatch("updateCategoryName", {oldname: "Read", newname: "category_read"})
+        await store.dispatch("updateCategoryName", {oldname: "Unread", newname: "category_unread"})
+        await store.dispatch("updateCategoryName", {oldname: "One Shots", newname: "category_oneshots"})
+        // create languages categories
+        afterCalls.push(async () => {await store.dispatch("updateLanguageCategories")})
+    }
+    /**
+     * Return a function wrapping all functions to call once all db is initialized
+     */
+    return async () => {
+        for (let func of afterCalls) {
+            await func()
         }
-    } else {
-        weeknum = Math.floor((daynum + day - 1) / 7);
     }
-    return weeknum;
 }
 
-const getDailyStr = function () {
-    var d = new Date();
-    var m = d.getMonth() + 1;
-    var mstr = "" + m;
-    if (m < 10) {
-        mstr = "0" + mstr;
+let checkLangSet = function() {
+    let curlang = navigator.language.slice(0,2);
+    // is language supported ? --> pb, sometimes, language code does not match amr code... let it be
+    if (utils.languages.reduce((arr, el) => {
+            Array.isArray(el) ? arr.push(...el) : arr.push(el)
+            return arr
+        }, []).includes(curlang)) {
+        let readLangs = store.state.options.readlanguages;
+        if (!readLangs.includes(curlang)) {
+            console.log("Add language " + curlang + " to readable list of languages")
+            store.dispatch("addReadLanguage", curlang) // add the language
+        }
     }
-    var j = d.getDate();
-    var jstr = "" + j;
-    if (j < 10) {
-        jstr = "0" + jstr;
-    }
-    return d.getFullYear() + "/" + mstr + "/" + jstr;
-}
-const getWeeklyStr = function () {
-    var d = new Date();
-    var w = d.getWeek();
-    var wstr = "" + w;
-    if (w < 10) {
-        wstr = "0" + wstr;
-    }
-    return d.getFullYear() + "/" + wstr;
-}
-const getMonthlyStr = function () {
-    var d = new Date();
-    var m = d.getMonth() + 1;
-    var mstr = "" + m;
-    if (m < 10) {
-        mstr = "0" + mstr;
-    }
-    return d.getFullYear() + "/" + mstr;
 }
 
 /**
  * Initialize AMR version and track version changes
  */
-export default function () {
+export default async function () {
     let manifest = browser.runtime.getManifest();
 
     let ancVersion = localStorage["version"];
@@ -84,16 +84,20 @@ export default function () {
     let url = manifest.homepage_url;
     let beta = false;
     
+    let afterLoading = () => {}
+
     if (manifest.name.indexOf("Beta") > 0) {
         beta = true;
     }
 
     if (!ancVersion || curVersion !== ancVersion) {
         localStorage.version = curVersion;
-        if (beta) {
-            statsEvents.trackBeta(curVersion);
+        if (!ancVersion) {
+            statsEvents.trackInstall(curVersion, beta, browserdetect());
+            afterLoading = await installApp(curVersion)
         } else {
-            statsEvents.trackInstall(curVersion);
+            statsEvents.trackUpdate(curVersion, beta, browserdetect());
+            afterLoading = await updateApp(ancVersion, curVersion)
         }
     }
     if (beta) {
@@ -105,19 +109,88 @@ export default function () {
             title: "All Mangas Reader " + curVersion
         });
     }
-    let dailyStr = getDailyStr();
-    let weeklyStr = getWeeklyStr();
-    let monthlyStr = getMonthlyStr();
-    if (!localStorage["dailyStr"] || localStorage["dailyStr"] != dailyStr) {
-        statsEvents.trackActive('Day', dailyStr);
-        localStorage["dailyStr"] = dailyStr;
+    return afterLoading
+}
+
+
+ /**
+ * Gets the browser name
+ *
+ * @returns {string}
+ */
+let browserdetect = function() {
+    var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+    var isFirefox = typeof InstallTrigger !== 'undefined';
+    return isOpera ? "Opera" :
+            isFirefox ? "Firefox" :
+            "Chrome"; // no good way to detect chrome browser in an extension
+}
+
+let isPositiveInteger = function(x) {
+    // http://stackoverflow.com/a/1019526/11236
+    return /^\d+$/.test(x);
+}
+
+/**
+ * Compare two software version numbers (e.g. 1.7.1)
+ * Returns:
+ *
+ *  0 if they're identical
+ *  negative if v1 < v2
+ *  positive if v1 > v2
+ *  Nan if they in the wrong format
+ *
+ *  E.g.:
+ *
+ *  assert(version_number_compare("1.7.1", "1.6.10") > 0);
+ *  assert(version_number_compare("1.7.1", "1.7.10") < 0);
+ *
+ *  "Unit tests": http://jsfiddle.net/ripper234/Xv9WL/28/
+ *
+ *  Taken from http://stackoverflow.com/a/6832721/11236
+ */
+let compareVersionNumbers = function(v1, v2){
+    var v1parts = v1.split('.');
+    var v2parts = v2.split('.');
+
+    // First, validate both numbers are true version numbers
+    function validateParts(parts) {
+        for (var i = 0; i < parts.length; ++i) {
+            if (!isPositiveInteger(parts[i])) {
+                return false;
+            }
+        }
+        return true;
     }
-    if (!localStorage["weeklyStr"] || localStorage["weeklyStr"] != weeklyStr) {
-        statsEvents.trackActive('Week', weeklyStr);
-        localStorage["weeklyStr"] = weeklyStr;
+    if (!validateParts(v1parts) || !validateParts(v2parts)) {
+        return NaN;
     }
-    if (!localStorage["monthlyStr"] || localStorage["monthlyStr"] != monthlyStr) {
-        statsEvents.trackActive('Month', monthlyStr);
-        localStorage["monthlyStr"] = monthlyStr;
+
+    for (var i = 0; i < v1parts.length; ++i) {
+        if (v2parts.length === i) {
+            return 1;
+        }
+
+        if (v1parts[i] === v2parts[i]) {
+            continue;
+        }
+        if (v1parts[i] > v2parts[i]) {
+            return 1;
+        }
+        return -1;
     }
+
+    if (v1parts.length != v2parts.length) {
+        return -1;
+    }
+
+    return 0;
+}
+
+/**
+ * Test if a version is after another
+ * return true if version > totest
+ */
+let versionAfter = function(version, totest) {
+    return compareVersionNumbers(version, totest) > 0
 }

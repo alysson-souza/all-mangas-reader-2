@@ -871,6 +871,169 @@
   "list_cat_add": {
     "message": "Ajouter une categorie",
     "description": "Placeholder of input to add a category in categories list"
-  }
+  },
   
+  "__V2_0_3__": {
+    "message": "Just a filler to separate new labels from old ones"
+  },
+  "popup_language_pick": {
+    "message": "Choisir une langue dans laquelle suivre ce manga",
+    "description": "In the popup, if a manga is available in multiple languages, the label before the flags to select new language to follow"
+  },
+
+  "options_sup_languages": {
+    "message": "Langues",
+    "description": "Title of the languages section in options page"
+  },
+  "options_sup_languages_desc": {
+    "message": "Choisissez les langues dans lesquelles vous pouvez lire des manga",
+    "description": "Description of the languages section in options page, how to select readable languages"
+  },
+  "options_sup_deactivate_unreadable": {
+    "message": "Desactiver les sites que vous ne pouvez lire",
+    "description": "Title of the option to deactivate mirrors containing only unreadable languages"
+  },
+  "options_sup_deactivate_unreadable_desc": {
+    "message": "Désactiver les sites ne proposant des manga que dans des langues que vous ne pouvez lire",
+    "description": "Description of the option to deactivate mirrors containing only unreadable languages"
+  },
+  "search_multilang": {
+    "message": "Multi",
+    "description": "Title of a multilingual tab result in search panel"
+  },
+
+  "language_sa": {
+    "message": "Arabe"
+  },
+  "language_ar": {
+    "message": "Arabe"
+  },
+  "language_bd": {
+    "message": "Bengali"
+  },
+  "language_bg": {
+    "message": "Bulgare"
+  },
+  "language_mm": {
+    "message": "Birman"
+  },
+  "language_ct": {
+    "message": "Catalan"
+  },
+  "language_cn": {
+    "message": "Chinois (Simp)"
+  },
+  "language_hk": {
+    "message": "Chinois (Trad)"
+  },
+  "language_cz": {
+    "message": "Tchèque"
+  },
+  "language_dk": {
+    "message": "Danois"
+  },
+  "language_nl": {
+    "message": "Néerlandais"
+  },
+  "language_gb": {
+    "message": "Anglais"
+  },
+  "language_en": {
+    "message": "Anglais"
+  },
+  "language_ph": {
+    "message": "Philippin"
+  },
+  "language_fi": {
+    "message": "Finnois"
+  },
+  "language_fr": {
+    "message": "Français"
+  },
+  "language_de": {
+    "message": "Allemand"
+  },
+  "language_gr": {
+    "message": "Grec"
+  },
+  "language_hu": {
+    "message": "Hongrois"
+  },
+  "language_id": {
+    "message": "Indonésien"
+  },
+  "language_it": {
+    "message": "Italien"
+  },
+  "language_jp": {
+    "message": "Japonais"
+  },
+  "language_kr": {
+    "message": "Coréen"
+  },
+  "language_my": {
+    "message": "Malais"
+  },
+  "language_mn": {
+    "message": "Mongol"
+  },
+  "language_ir": {
+    "message": "Persan"
+  },
+  "language_pl": {
+    "message": "Polonais"
+  },
+  "language_br": {
+    "message": "Portugais (Br)"
+  },
+  "language_pt": {
+    "message": "Portugais (Pt)"
+  },
+  "language_ro": {
+    "message": "Roumain"
+  },
+  "language_ru": {
+    "message": "Russe"
+  },
+  "language_rs": {
+    "message": "Serbo-Croate"
+  },
+  "language_es": {
+    "message": "Espagnol (Es)"
+  },
+  "language_mx": {
+    "message": "Espagnol (LATAM)"
+  },
+  "language_se": {
+    "message": "Suedois"
+  },
+  "language_th": {
+    "message": "Thai"
+  },
+  "language_tr": {
+    "message": "Turc"
+  },
+  "language_ua": {
+    "message": "Ukrainien"
+  },
+  "language_vn": {
+    "message": "Vietnamien"
+  },
+
+  "category_new": {
+    "message": "Nouveau",
+    "description": "Label of the native category for mangas containing new chapters"
+  },
+  "category_read": {
+    "message": "Lu",
+    "description": "Label of the native category for read mangas"
+  },
+  "category_unread": {
+    "message": "Non lu",
+    "description": "Label of the native category for mangas containing unread chapters"
+  },
+  "category_oneshots": {
+    "message": "One shots",
+    "description": "Label of the native category for mangas which are one shots"
+  }
 }

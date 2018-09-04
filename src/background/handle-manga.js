@@ -1,4 +1,3 @@
-import 'regenerator-runtime/runtime';
 import Axios from 'axios';
 import browser from "webextension-polyfill";
 import mirrorsImpl from '../amr/mirrors-impl';
@@ -22,7 +21,7 @@ const contentCss = [
 class HandleManga {
     handle(message, sender) {
         let key;
-        if (message.url) key = utils.mangaKey(message.url);
+        if (message.url) key = utils.mangaKey(message.url, message.mirror, message.language);
         switch (message.action) {
             case "mangaInfos":
                 let mg = store.state.mangas.all.find(manga => manga.key === key)
@@ -124,10 +123,31 @@ class HandleManga {
      */
     async searchListRemote(search, impl) {
         return new Promise(async (resolve, reject) => {
-            impl.getMangaList(search, function (mirrorName, res) {
-                resolve(res);
-            });
+            let res = await impl.getMangaList(search)
+            resolve(res);
         });
+    }
+
+    async getImplementation(mir) {
+        let impl;
+        let abstract;
+        // Load mirror implementation from repo (try next repo if previous fail)
+        for (let repo of store.state.options["impl_repositories"]) {
+            let url = repo + mir.jsFile;
+            if (url.indexOf("localhost") > 0) url += "?ts=" + Date.now();
+            impl = await Axios.get(url).catch(() => { }); // ignore error, jump to next repo
+            if (impl) {
+                // test if abstract
+                if (mir.abstract !== undefined) {
+                    let abs = store.state.mirrors.abstracts.find(abs => abs.mirrorName === mir.abstract)
+                    url = repo + abs.jsFile;
+                    if (url.indexOf("localhost") > 0) url += "?ts=" + Date.now();
+                    abstract = await Axios.get(url).catch(() => { }); // ignore error, jump to next repo
+                }
+                break;
+            }
+        }
+        return abstract !== undefined ? abstract.data + impl.data : impl.data
     }
     /**
      * Test if the url matches a mirror implementation. 
@@ -136,16 +156,10 @@ class HandleManga {
      * @param {*} tabId 
      */
     async matchUrlAndLoadScripts(url, tabId) {
-        const mir = utils.currentPageMatch(url);
-        if (mir === null) return Promise.resolve(null);
-        let impl;
-        // Load mirror implementation from repo (try next repo if previous fail)
-        for (let repo of store.state.options["impl_repositories"]) {
-            let url = repo + mir.jsFile;
-            if (url.indexOf("localhost") > 0) url += "?ts=" + Date.now();
-            impl = await Axios.get(url).catch(() => { }); // ignore error, jump to next repo
-            if (impl) break;
-        }
+        const mir = utils.currentPageMatch(url)
+        if (mir === null) return Promise.resolve(null)
+
+        let impl = await this.getImplementation(mir)
         if (impl) {
             // Inject css in matched tab
             for (let css of contentCss) {
@@ -156,7 +170,7 @@ class HandleManga {
                 await browser.tabs.executeScript(tabId, { file: script });
             }
             // Inject mirror implementation (through a function called in the implementation and existing in back.js)
-            await browser.tabs.executeScript(tabId, { code: impl.data });
+            await browser.tabs.executeScript(tabId, { code: impl });
         }
         return Promise.resolve(utils.serializeVuexObject(mir)); // doing that because content script is not vue aware, the reactive vuex object needs to be converted to POJSO
     }
@@ -184,7 +198,7 @@ class HandleManga {
                     ldoc.documentElement.innerHTML = resp.data;
                     let readyCall = async () => {
                         let impl = await mirrorsImpl.getImpl(message.mirrorName);
-                        var imagesUrl = impl.getListImages(document.getElementById(id).contentWindow.document, message.url);
+                        var imagesUrl = await impl.getListImages(document.getElementById(id).contentWindow.document, message.url);
                         resolve({
                             images: imagesUrl
                         });

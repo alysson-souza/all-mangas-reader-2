@@ -1,4 +1,3 @@
-import 'regenerator-runtime/runtime';
 import browser from "webextension-polyfill";
 import options from './options';
 import mirrorImpl from './mirrorimpl';
@@ -24,13 +23,17 @@ class Navigation {
         // try to get list chap from background (already loaded in local db)
         let alreadyLoadedListChaps = await browser.runtime.sendMessage({
             action: "getListChaps",
-            url: pageData.currentMangaURL
+            url: pageData.currentMangaURL, 
+            language: pageData.language 
         });
         if (alreadyLoadedListChaps && alreadyLoadedListChaps.length > 0) {
             this.callbackListChaps(alreadyLoadedListChaps, selectIns)
         } else {
             // Change currentMangaURL so no conflict in http over https
-            mirrorImpl.get().getListChaps(util.removeProtocol(pageData.currentMangaURL), pageData.name, selectIns, this.callbackListChaps.bind(this));
+            let list = await mirrorImpl.get().getListChaps(
+                util.removeProtocol(pageData.currentMangaURL)
+            )
+            this.callbackListChaps(list, selectIns)
         }
     }
 
@@ -43,11 +46,10 @@ class Navigation {
         let hasSelected = false;
         for (let j = 0; j < list.length; j++) {
             let optTmp = $("<option value=\"" + list[j][1] + "\">" + list[j][0] + "</option>");
-            if ($(select).data("mangaCurUrl").indexOf(list[j][1]) != - 1 && !hasSelected) {
+            if (util.matchChapUrl($(select).data("mangaCurUrl"), list[j][1]) && !hasSelected) {
                 optTmp.attr("selected", true);
-                if ($(select).data("mangaCurUrl") == list[j][1]) {
-                    hasSelected = true;
-                }
+                pageData.currentChapter = list[j][0];
+                hasSelected = true;
             }
             optTmp.appendTo($(select));
         }
@@ -200,7 +202,6 @@ class Navigation {
             $(".bookAMR").attr("src", browser.extension.getURL("icons/bookmarkred.png"));
             pageData.curbookmark.chapbooked = true;
         }
-
         await browser.runtime.sendMessage(obj);
         $.modal.close();
     }
@@ -269,7 +270,8 @@ class Navigation {
         //Get specific read and display option for currentManga
         let mangaInfos = await browser.runtime.sendMessage({
             action: "mangaInfos",
-            url: pageData.currentMangaURL
+            url: pageData.currentMangaURL, 
+            language: pageData.language 
         });
 
         let navigation = this;
@@ -347,15 +349,15 @@ class Navigation {
                 imgread.hide();
             }
             imgread.appendTo($w);
-            imgread.data("mangaurl", pageData.currentMangaURL);
 
             imgread.click(function () {
                 let curRead = ($(this).attr("src") == browser.extension.getURL("icons/read_play.png"));
                 let obj = {
                     action: "markReadTop",
-                    url: $(this).data("mangaurl"),
+                    url: pageData.currentMangaURL,
                     read: (curRead ? 0 : 1),
-                    updatesamemangas: true
+                    updatesamemangas: true, 
+                    language: pageData.language
                 };
 
                 let _but = this;
@@ -385,14 +387,14 @@ class Navigation {
             let imgmode = $("<img src='" + browser.extension.getURL("icons/" + ((curmode == 1) ? "ontop.png" : ((curmode == 2) ? "righttoleft.png" : "lefttoright.png"))) + "' title='" + ((curmode == 1) ? i18n("content_nav_chapmode_1") : ((curmode == 2) ? i18n("content_nav_chapmode_2") : i18n("content_nav_chapmode_3"))) + "' />");
             imgmode.appendTo($w);
             imgmode.data("curmode", curmode);
-            imgmode.data("mangaurl", pageData.currentMangaURL);
             imgmode.click(function () {
                 let md = $(this).data("curmode");
                 let mdnext = (md % 3) + 1;
                 let obj = {
                     action: "setDisplayMode",
-                    url: $(this).data("mangaurl"),
-                    display: mdnext
+                    url: pageData.currentMangaURL,
+                    display: mdnext, 
+                    language: pageData.language
                 };
                 let _butMode = this;
                 util.sendExtRequest(obj, $(this), function () {
@@ -416,18 +418,17 @@ class Navigation {
                 imgstop.hide();
             }
             imgstop.appendTo($w);
-            imgstop.data("mangainfo", pageData);
-
             imgstop.click(function () {
                 let ret = confirm(i18n("content_nav_mark_read_confirm"));
                 if (ret) {
                     let obj = {
-                        "action": "setMangaChapter",
-                        "url": $(this).data("mangainfo").currentMangaURL,
-                        "mirror": mirrorImpl.get().mirrorName,
-                        "lastChapterReadName": $(this).data("mangainfo").currentChapter,
-                        "lastChapterReadURL": $(this).data("mangainfo").currentChapterURL,
-                        "name": $(this).data("mangainfo").name
+                        action: "setMangaChapter",
+                        url: pageData.currentMangaURL,
+                        mirror: mirrorImpl.get().mirrorName,
+                        lastChapterReadName: pageData.currentChapter,
+                        lastChapterReadURL: pageData.currentChapterURL,
+                        name: pageData.name, 
+                        language: pageData.language
                     };
                     util.sendExtRequest(obj, $(this), function () { }, true);
                 }
@@ -436,16 +437,15 @@ class Navigation {
             if (options.addauto === 0 && !mangaInfos) {
                 let imgadd = $("<img src='" + browser.extension.getURL("icons/add.png") + "' title='" + i18n("content_nav_add_list") + "' />");
                 imgadd.appendTo($w);
-                imgadd.data("mangainfo", pageData);
-
                 imgadd.click(function () {
                     let obj = {
-                        "action": "readManga",
-                        "url": $(this).data("mangainfo").currentMangaURL,
-                        "mirror": mirrorImpl.get().mirrorName,
-                        "lastChapterReadName": $(this).data("mangainfo").currentChapter,
-                        "lastChapterReadURL": $(this).data("mangainfo").currentChapterURL,
-                        "name": $(this).data("mangainfo").name
+                        action: "readManga",
+                        url: pageData.currentMangaURL,
+                        mirror: mirrorImpl.get().mirrorName,
+                        lastChapterReadName: pageData.currentChapter,
+                        lastChapterReadURL: pageData.currentChapterURL,
+                        name: pageData.name,
+                        language: pageData.language
                     };
                     let _butadd = this;
                     util.sendExtRequest(obj, $(this), function () {
@@ -458,12 +458,6 @@ class Navigation {
 
             $w.addClass("amrbarlayout");
         });
-    }
-
-    addTrailingLastChap(where) {
-        if ($("#nChapBtn0").length === 0) {
-            $("<div style=\"width:100%; background-color:white; border-radius:5px;margin-top:15px;margin-bottom:15px;\"><img src=\"" + browser.extension.getURL("icons/warn.png") + "\" style=\"vertical-align:middle;margin-right:10px;\"/><span style=\"font-weight:bold;font-size:12pt;color:black;vertical-align:middle;\">" + i18n("content_nav_last_chap") + "</span></div>").appendTo(where);
-        }
     }
 
     /**

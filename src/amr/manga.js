@@ -9,7 +9,8 @@ export default class {
      * @param {*} obj 
      */
     constructor(obj) {
-        this.key = utils.mangaKey(obj.url);
+        /** key of the manga */
+        this.key = utils.mangaKey(obj.url, obj.mirror, obj.language);
         this.mirror = obj.mirror;
         this.name = obj.name;
         this.url = obj.url;
@@ -33,5 +34,11 @@ export default class {
         }
         this.ts = obj.ts || Math.round(Date.now() / 1000);
         this.upts = obj.upts || 0;
+
+        /* listChaps can contain an object with multiple lists for each lang
+        this value is the lang of the followed manga */
+        this.language = obj.language;
+        /* all other possible values for this manga langs */
+        this.languages = obj.languages;
     }
 }

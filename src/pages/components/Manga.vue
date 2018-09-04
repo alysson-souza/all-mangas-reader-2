@@ -1,6 +1,7 @@
 <template>
+<div v-if="!isInGroup || (isFirst || groupExpanded)" class="amr-line-container">
     <!-- manga line, containing title, list of chapters and actions-->
-    <v-layout row v-if="!isInGroup || (isFirst || groupExpanded)">
+    <v-layout row>
       <!-- Title and icon -->
       <v-flex xs3 class="amr-list-elt">
       <v-card dark tile flat :color="color(3)" class="back-card">
@@ -13,24 +14,24 @@
           <!-- + / - icon if group of mangas  -->
           <v-icon v-if="isInGroup && isFirst && !expanded" @click="emitExpand()">mdi-plus</v-icon>
           <v-icon v-if="isInGroup && isFirst && expanded" @click="emitExpand()">mdi-minus</v-icon>
+          <template v-if="seen">
+            <!-- Display a calendar with last update -->
+            <v-tooltip v-if="options.displastup === 1 && manga.upts != 0 && timeUpdated < 50" top content-class="icon-ttip">
+              <v-card dark :class="color(-2) + ' amr-calendar-badge'" slot="activator">
+                <v-icon>mdi-calendar-clock</v-icon>
+                <span v-if="timeUpdated > 0">{{ timeUpdated }}</span>
+              </v-card>
+              <span v-if="timeUpdated === 0">{{i18n("list_calendar_today")}}</span>
+              <span v-else>{{i18n("list_calendar_days_found", timeUpdated)}}</span>
+            </v-tooltip>
+            <!-- Display a timer off if the manga is not updating anymore -->
+            <v-tooltip v-if="manga.update === 0" top content-class="icon-ttip">
+              <v-icon class="amr-timeroff-badge" slot="activator">mdi-timer-off</v-icon>
+              <span>{{i18n("list_stopped_updating")}}</span>
+            </v-tooltip>
+          </template>
           <!-- Manga name -->
           <strong>{{ manga.name }}</strong>
-          <template v-if="seen">
-          <!-- Display a calendar with last update -->
-          <v-tooltip v-if="options.displastup === 1 && manga.upts != 0 && timeUpdated < 50" top content-class="icon-ttip">
-            <v-card dark :class="color(-2) + ' amr-calendar-badge'" slot="activator">
-              <v-icon>mdi-calendar-clock</v-icon>
-              <span v-if="timeUpdated > 0">{{ timeUpdated }}</span>
-            </v-card>
-            <span v-if="timeUpdated === 0">{{i18n("list_calendar_today")}}</span>
-            <span v-else>{{i18n("list_calendar_days_found", timeUpdated)}}</span>
-          </v-tooltip>
-          <!-- Display a timer off if the manga is not updating anymore -->
-          <v-tooltip v-if="manga.update === 0" top content-class="icon-ttip">
-            <v-icon class="amr-timeroff-badge" slot="activator">mdi-timer-off</v-icon>
-            <span>{{i18n("list_stopped_updating")}}</span>
-          </v-tooltip>
-          </template>
         </v-card>
       </v-card>
       </v-flex>
@@ -44,9 +45,12 @@
           <img :src="mirror.mirrorIcon" class="mirror-icon grouped" slot="activator" /> 
           <span>{{mirror.mirrorName}}</span>
         </v-tooltip>
+        <!-- Flag of the language of chapters if multiple languages available -->
+        <Flag v-if="manga.language" :value="manga.language" @click.native="displayLangs = !displayLangs"/>
+        <!-- List of chapters -->
         <div v-if="manga.listChaps.length" class="amr-prog-cont">
           <div class="amr-select-wrapper">
-            <select :value="manga.lastChapterReadURL" v-on:input="selChapter = $event.target.value" :class="color(2) + ' amr-chap-sel'" @change="playChap()">
+            <select :value="selValue" v-on:input="selChapter = urlFromValue($event.target.value)" :class="color(2) + ' amr-chap-sel'" @change="playChap()">
               <option v-for="chap in chapsForSelect" :key="chap.value" :value="chap.value">{{chap.text}}</option>
             </select>
           </div>
@@ -122,8 +126,20 @@
           </v-card>
           </template>
         </v-card>
-      </v-flex>      
+      </v-flex>
     </v-layout>
+    <!-- List of available languages if set -->
+    <v-layout row v-if="displayLangs">
+      <v-flex xs3><v-card dark tile flat class="back-card" :color="color(3)"></v-card></v-flex>
+      <v-flex xs6>
+        <v-card dark tile flat class="back-card" :color="color(3)">
+          <p class="mb-0">{{i18n("popup_language_pick")}} :</p>
+          <Flag v-for="lang in languages" :key="lang" :value="lang" big @click.native="readMangaInLang(lang)"/>
+        </v-card>
+      </v-flex>
+      <v-flex xs3><v-card dark tile flat class="back-card" :color="color(3)"></v-card></v-flex>
+    </v-layout>
+</div>
 </template>
 
 <script>
@@ -131,16 +147,20 @@ import i18n from "../../amr/i18n";
 import { mapGetters } from "vuex";
 import browser from "webextension-polyfill";
 import * as utils from "../utils";
+import * as amrutils from "../../amr/utils";
+import Flag from "./Flag"
 
 export default {
   data() {
     return {
-      // current selected chapter
+      // current selected chapter in the select, used to handle click in select list
       selChapter: this.manga.lastChapterReadURL,
       // current state of other grouped mangas panel
       expanded: false, 
       // delete manga popup state
       deleteManga: false,
+      // list of languages state
+      displayLangs: false,
     };
   },
   // property to load the component with --> the manga it represents
@@ -157,12 +177,11 @@ export default {
     "seen",
   ],
   computed: {
+    // current selected value
+    selValue: function() {return amrutils.chapPath(this.manga.lastChapterReadURL)},
     // AMR options
     options: function() {
       return this.$store.state.options;
-    },
-    categories: function() {
-      return this.options.categoriesStates;
     },
     // determine if this manga has new published chapters
     hasNew: function() {
@@ -181,7 +200,7 @@ export default {
     // format chapters list to be displayed
     chapsForSelect: function() {
       return this.manga.listChaps.map(arr => {
-        return { value: arr[1], text: arr[0] };
+        return { value: amrutils.chapPath(arr[1]), text: arr[0], url: arr[1] };
       });
     },
     // calculate reading progress
@@ -190,14 +209,24 @@ export default {
     },
     // position of current chapter in chapters list
     posInChapList() {
-      return this.manga.listChaps.findIndex(
-        arr => arr[1] === this.manga.lastChapterReadURL
+      return this.chapsForSelect.findIndex(
+        el => el.value === this.selValue
       );
     }, 
     // number of days since last chapter has been published
     timeUpdated() {
       let nbdays = Math.floor((Date.now() - this.manga.upts) / (1000 * 60 * 60 * 24));
       return nbdays;
+    },
+    // list of languages
+    languages() {
+      let alllangs = this.manga.languages === undefined ? [] : this.manga.languages.split(",")
+      return alllangs.filter(lang => {
+        let keylang = amrutils.mangaKey(this.manga.url, this.manga.mirror, lang)
+        return this.$store.state.mangas.all.findIndex(
+          m => m.key === keylang
+        ) === -1
+      })
     }
   },
   methods: {
@@ -211,14 +240,15 @@ export default {
           ? ""
           : light < 0 ? " darken-" + -light : " lighten-" + light;
       if (this.manga.read !== 0) return this.options.colornotfollow + lstr;
-      else if (
-        this.manga.listChaps.length &&
-        this.manga.lastChapterReadURL !== this.manga.listChaps[0][1]
-      ) {
+      else if (utils.hasNew(this.manga)) {
         return this.options.colornew + lstr;
       } else {
         return this.options.colorread + lstr;
       }
+    },
+    /** get the real url from the value (url path used in select) in the manga list */
+    urlFromValue: function(val) {
+      return this.manga.listChaps.find(arr => amrutils.chapPath(arr[1]) === val)[1];
     },
     /**
      * Click on + / - to expand reduce similar mangas
@@ -236,7 +266,8 @@ export default {
         mirror: this.manga.mirror,
         lastChapterReadName: this.manga.listChaps[0][0],
         lastChapterReadURL: this.manga.listChaps[0][1],
-        name: this.manga.name
+        name: this.manga.name,
+        language: this.manga.language
       });
     },
     /**
@@ -260,19 +291,31 @@ export default {
      * Opens a chapter from select
      */
     playChap() {
-      browser.runtime.sendMessage({ action: "opentab", url: this.selChapter });
+      browser.runtime.sendMessage({ action: "opentab", url: this.selChapter })
     },
     /**
      * Deletes a manga
      */
     trash() {
+      this.deleteManga = false
       this.$store.dispatch("deleteManga", {
         key: this.manga.key
+      })
+    },
+    /** Read a manga in another language */
+    async readMangaInLang(lang) {
+      await browser.runtime.sendMessage({
+        action: "readManga",
+        url: this.manga.url,
+        mirror: this.manga.mirror,
+        name: this.manga.name,
+        language: lang
       });
     }
   },
   // Name of the component
-  name: "Manga"
+  name: "Manga",
+  components: {Flag}
 };
 </script>
 
@@ -280,16 +323,16 @@ export default {
 * {
   font-size: 10pt;
 }
-.container.amr-list-line:first-child .row:first-child .flex:first-child > .v-card {
+.container.amr-list-line:first-child .amr-line-container:first-child .flex:first-child > .v-card {
   border-top-left-radius: 5px;
 }
-.container.amr-list-line:first-child .row:first-child .flex:last-child > .v-card {
+.container.amr-list-line:first-child .amr-line-container:first-child .flex:last-child > .v-card {
   border-top-right-radius: 5px;
 }
-.container.amr-list-line:last-child .row:last-child .flex:first-child > .v-card {
+.container.amr-list-line:last-child .amr-line-container:last-child .flex:first-child > .v-card {
   border-bottom-left-radius: 5px;
 }
-.container.amr-list-line:last-child .row:last-child .flex:last-child > .v-card {
+.container.amr-list-line:last-child .amr-line-container:last-child .flex:last-child > .v-card {
   border-bottom-right-radius: 5px;
 }
 .container.amr-list-line .amr-list-elt > .v-card {
@@ -370,17 +413,29 @@ select.amr-chap-sel {
   width: 20px;
   height: 20px;
 }
+.flag-container {
+  float: left;
+  margin: 0px 2px;
+  cursor: pointer;
+}
 .amr-prog-cont {
   margin-left: 0px;
 }
 .tip-icon-grouped + .amr-prog-cont {
   margin-left: 25px;
 }
+.tip-icon-grouped + .flag-container + .amr-prog-cont {
+  margin-left: 45px;
+}
 .amr-manga-waiting {
   margin-top: 7px;
 }
 .tip-icon-grouped + .amr-manga-waiting {
   margin-left: 25px;
+  width: auto;
+}
+.tip-icon-grouped + .flag-container + .amr-manga-waiting {
+  margin-left: 45px;
   width: auto;
 }
 .amr-calendar-badge, .amr-timeroff-badge {

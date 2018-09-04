@@ -6,6 +6,7 @@ import amrUpdater from '../amr/amr-updater';
 import amrInit from '../amr/amr-init';
 import browser from "webextension-polyfill";
 import HandleManga from './handle-manga';
+import mirrorsHelper from '../amr/mirrors-helper';
 
 // Blue icon while loading
 IconHelper.setBlueIcon();
@@ -17,6 +18,11 @@ IconHelper.setBlueIcon();
      */
     utils.debug("Initialize options");
     await store.dispatch('initOptions');
+
+    /**
+     * Initialize extension versioning --> after options because versionning update can affect options
+     */
+    let afterLoadingCall = await amrInit()
     
     /**
      * Initialize mirrors list in store from DB or repo
@@ -37,10 +43,10 @@ IconHelper.setBlueIcon();
     await store.dispatch('initBookmarksFromDB');
 
     /**
-     * Initiliaze extension versioning
+     * Call function if there is anything to do after mirrors and mangas loading
      */
-    amrInit()
-    
+    if (typeof afterLoadingCall === 'function') await afterLoadingCall()
+
     // set icon and badge
     amrUpdater.refreshBadgeAndIcon();
     /**

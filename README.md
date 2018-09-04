@@ -17,7 +17,7 @@ All Mangas Reader V2 is supported by **Firefox, Chrom(ium/e), Opera**, and Edge 
 
  - The code was really difficult to maintain because of really long and unreadable files full of jQuery code without comments
 
-**All Mangas Reader has been fully rewritten with modern standards (ES6 (Babel), Webpack, VueJS) and is well documented**
+**All Mangas Reader has been fully rewritten with modern standards (ES6, Webpack, VueJS) and is well documented**
 
 
 ## Installation
@@ -80,10 +80,9 @@ You can also work on the [wiki](https://gitlab.com/all-mangas-reader/all-mangas-
  - webextension-polyfill : web extension API has been normalize and is implemented in Chrome, Firefox, Edge, ... but with still a few differences, thanks to this polyfill, the code works everywhere
  - axios : for xhr
  - jQuery : jQuery is still there, to manipulate DOM, it's still the best. Mirrors implementations are based on jQuery and the content script uses it as well.
- - regenerator-runtime : the original Facebook plugin to execute ES6 async / await code. When Babel compiles async / await code, it generates references to this plugin. This one is way much lighter than the babel-polyfill which can do the same (and more) and is the reference implementation for babel as well.
 
 ## Dev dependencies
-All Mangas Reader V2 is based on Webpack to compile the code. It uses Babel to compile EcmaScript 6 syntax, which is much more readable.
+All Mangas Reader V2 is based on Webpack to compile the code.
 
 ## Release version
 **For repository admins only**
