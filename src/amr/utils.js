@@ -16,7 +16,8 @@ export function isFirefox() {
 export function formatMgName(name) {
     if (name == undefined || name == null || name == "null")
         return "";
-    return name.trim().replace(/[^0-9A-Za-z]/g, '').toUpperCase();
+    return name.trim()/*.replace(/[^0-9A-Za-z]/g, '') // DO NOT Replace non alpha char so UTF8 works*/
+               .toLocaleLowerCase();
 }
 
 /**
