@@ -27,7 +27,8 @@
     "unlimitedStorage",
     "contextMenus",
     "notifications",
-    "downloads"
+    "downloads",
+    "cookies"
   ],
   "content_security_policy": "script-src 'self' https://localhost:8080/ https://matomo.allmangasreader.com/ https://mirrors.allmangasreader.com/ ; object-src 'self'",
   "web_accessible_resources": [

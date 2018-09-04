@@ -1,3 +1,5 @@
+import browser from "webextension-polyfill";
+
 /**
  * Mirrors implementation helper
  */
@@ -40,6 +42,9 @@ class MirrorsHelper {
                     }
                     if (options && options.headers !== undefined) {
                         Object.assign(headers, options.headers)
+                    }
+                    if (options && options.crossdomain) {
+                        ajaxObj.crossDomain = true
                     }
                     ajaxObj.beforeSend = function (xhr) {
                         for (let dt in headers) {
@@ -173,6 +178,12 @@ class MirrorsHelper {
                     }
                 }
                 return res
+            }
+            /**
+             * Set a cookie on a domain
+             */
+            amr.setCookie = async function(setCookieObj) {
+                await browser.cookies.set(setCookieObj)
             }
         })(this);
     }
