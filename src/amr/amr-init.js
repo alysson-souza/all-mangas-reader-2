@@ -2,6 +2,7 @@ import browser from "webextension-polyfill";
 import statsEvents from './stats-events';
 import store from '../store';
 import * as utils from './utils';
+import storedb from './storedb';
 
 /**
  * This file defines a function called on extension init which initialize version and check informations
@@ -46,6 +47,24 @@ let updateApp = async function(ancVersion, curVersion) {
         await store.dispatch("updateCategoryName", {oldname: "One Shots", newname: "category_oneshots"})
         // create languages categories
         afterCalls.push(async () => {await store.dispatch("updateLanguageCategories")})
+    }
+    if (!versionAfter(ancVersion, "2.0.4")) { // if previous version is before 2.0.3
+        afterCalls.push(async () => {
+            let todel = []
+            let mgs = await storedb.getMangaList()
+            for (let mg of mgs) {
+                let sl = mg.key.indexOf("/")
+                let mirrorpart = mg.key.substring(0, sl)
+                console.log(mirrorpart + " --> " + mirrorpart.match(/^[a-z]+$/))
+                if (!mirrorpart.match(/^[a-z]+$/)) {
+                    todel.push(mg.key)
+                }
+            }
+            for (let td of todel) {
+                console.log("deleting manga key " + td + " from db due to 2.0.3 issue")
+                storedb.deleteManga(td)
+            }
+        })
     }
     /**
      * Return a function wrapping all functions to call once all db is initialized
