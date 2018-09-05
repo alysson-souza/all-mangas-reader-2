@@ -100,12 +100,12 @@ import * as utils from '../utils';
 
 const default_sort = (a, b) => {
     let af = utilsamr.formatMgName(a.name), bf = utilsamr.formatMgName(b.name)
-    let res = af.localeCompare(bf)
+    let res = af === undefined ? -1 : af.localeCompare(bf)
     if (res === 0) {
-        res = a.mirror.localeCompare(b.mirror)
+        res = a.mirror === undefined ? -1 : a.mirror.localeCompare(b.mirror)
     }
     if (res === 0) {
-        res = a.language.localeCompare(b.language)
+        res = a.language === undefined ? -1 : a.language.localeCompare(b.language)
     }
     return res
 }
