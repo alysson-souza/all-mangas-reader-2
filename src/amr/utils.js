@@ -16,7 +16,7 @@ export function isFirefox() {
 export function formatMgName(name) {
     if (name == undefined || name == null || name == "null")
         return "";
-    return name.trim()/*.replace(/[^0-9A-Za-z]/g, '') // DO NOT Replace non alpha char so UTF8 works*/
+    return name.trim().replace(/\s/g, "")/*.replace(/[^0-9A-Za-z]/g, '') // DO NOT Replace non alpha char so UTF8 works*/
                .toLocaleLowerCase();
 }
 
@@ -137,7 +137,7 @@ export function mangaKey(url, forcedmirror, toconcat) {
 
     let mstr = "unknown" // should never be unknown. Old domains need to be kept in domains description in the implementations
     if (forcedmirror !== undefined) {
-        mstr = formatMgName(forcedmirror).toLowerCase()
+        mstr = safename(forcedmirror)
     } else {
         let host = extractHostname(url);
         // look for mirror implementation matching this root domain
@@ -146,12 +146,17 @@ export function mangaKey(url, forcedmirror, toconcat) {
                 ws => matchDomain(host, ws)
             ) !== -1
         )
-        if (mirror) mstr = formatMgName(mirror.mirrorName).toLowerCase()
+        if (mirror) mstr = safename(mirror.mirrorName)
     }
     
     return mstr + "/" + afterHostURL(url) + (toconcat !== undefined ? "_" + toconcat : "")
 }
 
+function safename(name) {
+    if (name == undefined || name == null || name == "null")
+        return "";
+    return name.trim().replace(/[^0-9A-Za-z]/g, '').toLowerCase();
+}
 /**
  * Tells in human language how much time has been spent since this ts
  * @param {*} ts 
