@@ -91,7 +91,6 @@ Beta channel is automatically updated on each commit.
 
 Process to release a stable version : 
  - commit version change with message 'Update version to x.y.z before tag NO-CI' : CI will run on gitlab but webhook (which generates xpi and crx server side) will not consider artefacts as a version because of the 'NO-CI' in commit message, do not forget NO-CI, if not, beta Vx.y.z.157 will be generated and will prevent next commits to create valid versions because after the version is tagged, beta version will start at 1 after the first commit after tag
- - tag version on develop (will generate beta for Vx.y.z.0)
  - merge develop into master
  - tag version on master (will generate release Vx.y.z when the tag CI runs on master)
 
