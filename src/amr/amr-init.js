@@ -55,8 +55,7 @@ let updateApp = async function(ancVersion, curVersion) {
             for (let mg of mgs) {
                 let sl = mg.key.indexOf("/")
                 let mirrorpart = mg.key.substring(0, sl)
-                console.log(mirrorpart + " --> " + mirrorpart.match(/^[a-z]+$/))
-                if (!mirrorpart.match(/^[a-z]+$/)) {
+                if (!mirrorpart.match(/^[0-9a-z]+$/)) {
                     todel.push(mg.key)
                 }
             }
@@ -64,6 +63,9 @@ let updateApp = async function(ancVersion, curVersion) {
                 console.log("deleting manga key " + td + " from db due to 2.0.3 issue")
                 storedb.deleteManga(td)
             }
+            // reloads mangas
+            console.log("Reloading mangas after running db update")
+            await store.dispatch('initMangasFromDB');
         })
     }
     /**
