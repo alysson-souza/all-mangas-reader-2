@@ -421,7 +421,7 @@ select.amr-chap-sel {
 .amr-prog-cont {
   margin-left: 0px;
 }
-.tip-icon-grouped + .amr-prog-cont {
+.tip-icon-grouped + .amr-prog-cont, .flag-container + .amr-prog-cont {
   margin-left: 25px;
 }
 .tip-icon-grouped + .flag-container + .amr-prog-cont {
