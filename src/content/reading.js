@@ -21,7 +21,7 @@ class Reading {
 
     async createBook(imagesUrl) {
         if (options.displayChapters == 1) { // display as a book
-            let where = mirrorImpl.get().whereDoIWriteScans(document, window.location.href);
+            let where = await mirrorImpl.get().whereDoIWriteScans(document, window.location.href);
             pageData.whereScans = where;
             //Get specific mode for currentManga
             let curmode = -1;

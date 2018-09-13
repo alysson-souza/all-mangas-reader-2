@@ -80,7 +80,7 @@ class HandleLab {
                                 resolve(imagesUrl);
                             } else if (message.task === "wherenav") {
                                 impl.doSomethingBeforeWritingScans(document.getElementById(id).contentWindow.document, message.url);
-                                let where = impl.whereDoIWriteScans(document.getElementById(id).contentWindow.document, message.url);
+                                let where = await impl.whereDoIWriteScans(document.getElementById(id).contentWindow.document, message.url);
                                 resolve(where.length);
                             }
                             $("#" + id).remove();
