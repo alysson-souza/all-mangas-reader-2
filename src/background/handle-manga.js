@@ -23,6 +23,10 @@ class HandleManga {
         let key;
         if (message.url) key = utils.mangaKey(message.url, message.mirror, message.language);
         switch (message.action) {
+            case "mangaExists":
+                return Promise.resolve(
+                    store.state.mangas.all.find(manga => manga.key === key) !== undefined
+                );
             case "mangaInfos":
                 let mg = store.state.mangas.all.find(manga => manga.key === key)
                 if (mg !== undefined) {

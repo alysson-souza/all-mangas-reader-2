@@ -56,7 +56,7 @@ if (window["__backamr__"] === undefined) { // avoid loading script twice
         reading.createBook(imagesUrl);
 
         // mark manga as read
-        if (options.markwhendownload === 0 && options.addauto == 1) {
+        if (options.markwhendownload === 0) {
             reading.consultManga();
         }
 
