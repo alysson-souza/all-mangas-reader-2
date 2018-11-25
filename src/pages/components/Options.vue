@@ -103,17 +103,17 @@
                 <!-- Mangas with new chapters color -->
                 <div class="subtitle">{{ i18n("options_gen_colors_new") }}</div>
                 <v-radio-group v-model="colornew" @change="setOption('colornew')" row class="colored-radio">
-                    <v-radio v-for="c in colors" :key="c" :value="c" :color="c" :class="c + '--text'" ></v-radio>
+                    <v-radio v-for="c in colors" :key="c" :value="c" :color="getColor(c)" :class="getTextColor(c)" ></v-radio>
                 </v-radio-group>
                 <!-- Mangas with read chapters color -->
                 <div class="subtitle">{{ i18n("options_gen_colors_read") }}</div>
                 <v-radio-group v-model="colorread" @change="setOption('colorread')" row class="colored-radio">
-                    <v-radio v-for="c in colors" :key="c" :value="c" :color="c" :class="c + '--text'" ></v-radio>
+                    <v-radio v-for="c in colors" :key="c" :value="c" :color="getColor(c)" :class="getTextColor(c)" ></v-radio>
                 </v-radio-group>
                 <!-- Mangas with notfollow chapters color -->
                 <div class="subtitle">{{ i18n("options_gen_colors_notfollow") }}</div>
                 <v-radio-group v-model="colornotfollow" @change="setOption('colornotfollow')" row class="colored-radio">
-                    <v-radio v-for="c in colors" :key="c" :value="c" :color="c" :class="c + '--text'" ></v-radio>
+                    <v-radio v-for="c in colors" :key="c" :value="c" :color="getColor(c)" :class="getTextColor(c)" ></v-radio>
                 </v-radio-group>
 
                 <!-- Updates -->
@@ -339,6 +339,7 @@ import browser from "webextension-polyfill";
 import amrUpdater from "../../amr/amr-updater";
 import Flag from "./Flag";
 import * as amrutils from "../../amr/utils";
+import * as utils from "../utils";
 
 /**
  * Converters to format options in db and in page (ex : booleans are store as 0:1 in db)
@@ -381,25 +382,63 @@ export default {
     let res = {
       tabs: null,
       colors: [
+        "red#l3",
         "red",
+        "red#d3",
+        "pink#l3",
         "pink",
+        "pink#d3",
+        "purple#l3",
         "purple",
+        "purple#d3",
+        "deep-purple#l3",
         "deep-purple",
+        "deep-purple#d3",
+        "indigo#l3",
         "indigo",
+        "indigo#d3",
+        "blue#l3",
         "blue",
+        "blue#d3",
+        "light-blue#l3",
         "light-blue",
+        "light-blue#d3",
+        "cyan#l3",
         "cyan",
+        "cyan#d3",
+        "teal#l3",
         "teal",
+        "teal#d3",
+        "green#l3",
         "green",
+        "green#d3",
+        "light-green#l3",
         "light-green",
+        "light-green#d3",
+        "lime#l3",
         "lime",
+        "lime#d3",
+        "yellow#l3",
         "yellow",
+        "yellow#d3",
+        "amber#l3",
         "amber",
+        "amber#d3",
+        "orange#l3",
         "orange",
+        "orange#d3",
+        "deep-orange#l3",
         "deep-orange",
+        "deep-orange#d3",
+        "brown#l3",
         "brown",
+        "brown#d3",
+        "blue-grey#l3",
         "blue-grey",
-        "grey"
+        "blue-grey#d3",
+        "grey#l3",
+        "grey",
+        "grey#d3"
       ],
       update_chap_values: [
         { value: 5 * 60 * 1000, text: i18n("options_minutes", 5) },
@@ -657,6 +696,20 @@ export default {
      */
     isReadable(lang) {
         return this.readlanguages.includes(lang)
+    },
+    /**
+     * Compute special color (like colorname#d|lx d for darken, l for lighten and x vuetify lighten scale)
+     */
+    getColor(c) {
+        return utils.computeColorLight(c, 0)
+    },
+    /**
+     * Compute special color for text (like colorname#d|lx d for darken, l for lighten and x vuetify lighten scale)
+     */
+    getTextColor(c) {
+        let col = utils.computeColorLight(c, 0)
+        let sp = col.split(" ")
+        return sp[0] + "--text" + (sp.length > 1 ? " text--" + sp[1] : "")
     }
   }
 };

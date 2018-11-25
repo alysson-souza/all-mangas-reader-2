@@ -1,5 +1,5 @@
 <template>
-<div v-if="!isInGroup || (isFirst || groupExpanded)" class="amr-line-container">
+<div v-if="!isInGroup || (isFirst || groupExpanded)" class="amr-line-container" :class="{'dark-text': isDarkText}">
     <!-- manga line, containing title, list of chapters and actions-->
     <v-layout row>
       <!-- Title and icon -->
@@ -148,7 +148,7 @@ import { mapGetters } from "vuex";
 import browser from "webextension-polyfill";
 import * as utils from "../utils";
 import * as amrutils from "../../amr/utils";
-import Flag from "./Flag"
+import Flag from "./Flag";
 
 export default {
   data() {
@@ -156,11 +156,11 @@ export default {
       // current selected chapter in the select, used to handle click in select list
       selChapter: this.manga.lastChapterReadURL,
       // current state of other grouped mangas panel
-      expanded: false, 
+      expanded: false,
       // delete manga popup state
       deleteManga: false,
       // list of languages state
-      displayLangs: false,
+      displayLangs: false
     };
   },
   // property to load the component with --> the manga it represents
@@ -174,11 +174,13 @@ export default {
     // is the group currently expanded
     "groupExpanded",
     // has the group been in the viewport at least once
-    "seen",
+    "seen"
   ],
   computed: {
     // current selected value
-    selValue: function() {return amrutils.chapPath(this.manga.lastChapterReadURL)},
+    selValue: function() {
+      return amrutils.chapPath(this.manga.lastChapterReadURL);
+    },
     // AMR options
     options: function() {
       return this.$store.state.options;
@@ -209,25 +211,35 @@ export default {
     },
     // position of current chapter in chapters list
     posInChapList() {
-      return this.chapsForSelect.findIndex(
-        el => el.value === this.selValue
-      );
-    }, 
+      return this.chapsForSelect.findIndex(el => el.value === this.selValue);
+    },
     // number of days since last chapter has been published
     timeUpdated() {
-      let nbdays = Math.floor((Date.now() - this.manga.upts) / (1000 * 60 * 60 * 24));
+      let nbdays = Math.floor(
+        (Date.now() - this.manga.upts) / (1000 * 60 * 60 * 24)
+      );
       return nbdays;
     },
     // list of languages
     languages() {
-      let alllangs = this.manga.languages === undefined ? [] : this.manga.languages.split(",")
+      let alllangs =
+        this.manga.languages === undefined
+          ? []
+          : this.manga.languages.split(",");
       return alllangs.filter(lang => {
-        let keylang = amrutils.mangaKey(this.manga.url, this.manga.mirror, lang)
-        return this.$store.state.mangas.all.findIndex(
-          m => m.key === keylang
-        ) === -1
-      })
-    }
+        let keylang = amrutils.mangaKey(
+          this.manga.url,
+          this.manga.mirror,
+          lang
+        );
+        return (
+          this.$store.state.mangas.all.findIndex(m => m.key === keylang) === -1
+        );
+      });
+    },
+    isDarkText: function() {
+      return utils.darkText(this.manga, this.options)
+    },
   },
   methods: {
     i18n: (message, ...args) => i18n(message, ...args),
@@ -235,20 +247,13 @@ export default {
      * Return the right color for this manga, depending if it updates (you can stop following udates for a manga), if it has unread chapters or not
      */
     color: function(light) {
-      let lstr =
-        light === 0
-          ? ""
-          : light < 0 ? " darken-" + -light : " lighten-" + light;
-      if (this.manga.read !== 0) return this.options.colornotfollow + lstr;
-      else if (utils.hasNew(this.manga)) {
-        return this.options.colornew + lstr;
-      } else {
-        return this.options.colorread + lstr;
-      }
+      return utils.getColor(this.manga, this.options, light);
     },
     /** get the real url from the value (url path used in select) in the manga list */
     urlFromValue: function(val) {
-      return this.manga.listChaps.find(arr => amrutils.chapPath(arr[1]) === val)[1];
+      return this.manga.listChaps.find(
+        arr => amrutils.chapPath(arr[1]) === val
+      )[1];
     },
     /**
      * Click on + / - to expand reduce similar mangas
@@ -291,16 +296,16 @@ export default {
      * Opens a chapter from select
      */
     playChap() {
-      browser.runtime.sendMessage({ action: "opentab", url: this.selChapter })
+      browser.runtime.sendMessage({ action: "opentab", url: this.selChapter });
     },
     /**
      * Deletes a manga
      */
     trash() {
-      this.deleteManga = false
+      this.deleteManga = false;
       this.$store.dispatch("deleteManga", {
         key: this.manga.key
-      })
+      });
     },
     /** Read a manga in another language */
     async readMangaInLang(lang) {
@@ -315,7 +320,7 @@ export default {
   },
   // Name of the component
   name: "Manga",
-  components: {Flag}
+  components: { Flag }
 };
 </script>
 
@@ -323,16 +328,31 @@ export default {
 * {
   font-size: 10pt;
 }
-.container.amr-list-line:first-child .amr-line-container:first-child .flex:first-child > .v-card {
+.dark-text * {
+  color: #424242!important;
+}
+.container.amr-list-line:first-child
+  .amr-line-container:first-child
+  .flex:first-child
+  > .v-card {
   border-top-left-radius: 5px;
 }
-.container.amr-list-line:first-child .amr-line-container:first-child .flex:last-child > .v-card {
+.container.amr-list-line:first-child
+  .amr-line-container:first-child
+  .flex:last-child
+  > .v-card {
   border-top-right-radius: 5px;
 }
-.container.amr-list-line:last-child .amr-line-container:last-child .flex:first-child > .v-card {
+.container.amr-list-line:last-child
+  .amr-line-container:last-child
+  .flex:first-child
+  > .v-card {
   border-bottom-left-radius: 5px;
 }
-.container.amr-list-line:last-child .amr-line-container:last-child .flex:last-child > .v-card {
+.container.amr-list-line:last-child
+  .amr-line-container:last-child
+  .flex:last-child
+  > .v-card {
   border-bottom-right-radius: 5px;
 }
 .container.amr-list-line .amr-list-elt > .v-card {
@@ -421,7 +441,8 @@ select.amr-chap-sel {
 .amr-prog-cont {
   margin-left: 0px;
 }
-.tip-icon-grouped + .amr-prog-cont, .flag-container + .amr-prog-cont {
+.tip-icon-grouped + .amr-prog-cont,
+.flag-container + .amr-prog-cont {
   margin-left: 25px;
 }
 .tip-icon-grouped + .flag-container + .amr-prog-cont {
@@ -438,12 +459,12 @@ select.amr-chap-sel {
   margin-left: 45px;
   width: auto;
 }
-.amr-calendar-badge, .amr-timeroff-badge {
+.amr-calendar-badge,
+.amr-timeroff-badge {
   float: right;
   padding: 0px 4px;
 }
 .amr-timeroff-badge {
-    margin-top: 2px;
+  margin-top: 2px;
 }
-
 </style>

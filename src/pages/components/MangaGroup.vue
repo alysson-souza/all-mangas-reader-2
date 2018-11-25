@@ -1,6 +1,6 @@
 <!-- The prop "mangas" used to initialize this component is a list of manga objects with the same name : a manga read on multiple sites -->
 <template>
-  <v-container fluid :class="'amr-list-line ' + (updating ? '' : 'noupdates')" v-if="nbDisplayed > 0">
+  <v-container fluid  :class="{'dark-text': isDarkText, 'noupdates': !updating}" class="amr-list-line" v-if="nbDisplayed > 0">
     <!-- Manga line-->
     <Manga
       v-for="(manga, key) in mangas" 
@@ -148,7 +148,10 @@ export default {
     // AMR options
     options: function() {
       return this.$store.state.options;
-    }
+    },
+    isDarkText: function() {
+      return utils.darkText(this.first, this.options)
+    },
   },
   methods: {
     i18n: (message, ...args) => i18n(message, ...args),
@@ -156,16 +159,7 @@ export default {
      * Return the right color for this manga, depending if it updates (you can stop following udates for a manga), if it has unread chapters or not
      */
     color: function(light) {
-      let lstr =
-        light === 0
-          ? ""
-          : light < 0 ? " darken-" + -light : " lighten-" + light;
-      if (this.first.read !== 0) return this.options.colornotfollow + lstr;
-      else if (utils.hasNew(this.first)) {
-        return this.options.colornew + lstr;
-      } else {
-        return this.options.colorread + lstr;
-      }
+      return utils.getColor(this.first, this.options, light)
     },
     /**
      * Reset manga reading to first chapter for the group of mangas
@@ -259,6 +253,9 @@ export default {
 </script>
 
 <style lang="css" scoped>
+.dark-text * {
+  color: #424242!important;
+}
 .container.amr-list-line {
   padding: 0px 10px;
 }
