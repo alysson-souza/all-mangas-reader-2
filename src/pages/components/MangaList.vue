@@ -8,7 +8,7 @@
         <div v-if="loaded">
             <div v-if="allMangas.length" class="amr-mangas">
                 <div class="amr-filters-container">
-                    <v-card v-if="visMangas.length" color="grey lighten-4" class="hover-card">
+                    <v-card v-if="visMangas.length" class="hover-card">
                         <v-tooltip v-if="visNewMangas.length" top content-class="icon-ttip">
                             <v-icon slot="activator" @click="markAllAsRead()">mdi-eye</v-icon>
                             <span>{{i18n("list_global_read")}}</span>
@@ -18,7 +18,7 @@
                             <span>{{i18n("list_global_delete")}}</span>
                         </v-tooltip>
                     </v-card>
-                    <v-card v-if="visMangas.length" color="grey lighten-2" class="hover-card">
+                    <v-card v-if="visMangas.length" class="hover-card">
                         <v-icon class="filters-icon">mdi-filter</v-icon>
                         <v-tooltip top content-class="icon-ttip">
                             <v-icon slot="activator" @click="sort = 'az'" :class="['amr-filter', {activated: sort === 'az'}]">mdi-sort-alphabetical</v-icon>
@@ -299,13 +299,13 @@ body.popup .amr-mangas {
 .amr-filter {
     color:grey;
 }
-.theme--dark .icon.amr-filter {
+.theme--dark .amr-filter {
     color:grey;
 }
 .amr-filter.activated {
     color: black;
 }
-.theme--dark .icon.amr-filter.activated {
+.theme--dark .amr-filter.activated {
     color: white;
 }
 .flip-list-move {
@@ -315,6 +315,10 @@ body.popup .amr-mangas {
     margin: 0px 2px;
     padding: 0px 2px;
     display: inline-block;
+    background-color: #f5f5f5;
+}
+.theme--dark .hover-card {
+    background-color: #424242;
 }
 .hover-card i {
     font-size: 18px;
