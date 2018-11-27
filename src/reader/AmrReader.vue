@@ -13,7 +13,10 @@
         <!-- Manga Title -->
         <v-card-title class="white--text amr-manga-title">
           <div>
-            <div class="headline white--text"><img :src="mirror.mirrorIcon" /><a :href="manga.currentMangaURL" target="_blank">{{manga.name}}</a></div>
+            <div class="headline white--text">
+              <img v-if="mirrorDesc !== null" :src="mirrorDesc.mirrorIcon" ma-1 />
+              <a :href="manga.currentMangaURL" target="_blank">{{manga.name}}</a>
+            </div>
           </div>
         </v-card-title>
         <!-- Chapters navigation -->
@@ -109,9 +112,12 @@
     <v-content>
       <v-container fluid fill-height grid-list-md text-xs-center pa-0 class="p-a-0">
         <!-- Button to open side bar -->
-        <v-btn color="red darken-2" dark small fixed top right fab @click.stop="drawer = !drawer">
-          <v-icon>mdi-add</v-icon>
-        </v-btn>
+        <v-hover>
+          <v-btn slot-scope="{ hover }" :class="`elevation-${hover ? 12 : 2} opacity-${hover || drawer ? 'full':'transparent'}`"
+            color="red darken-2" dark small fixed top right fab @click.stop="drawer = !drawer">
+            <v-icon>mdi-menu</v-icon>
+          </v-btn>
+        </v-hover>
         <!-- Scans -->
         <v-layout row wrap>
           <Page v-for="(scans, i) in pages" :key="i" 
@@ -138,10 +144,11 @@
 
   export default {
     data: () => ({
-      drawer: null, /* Display the side drawer or not */
+      drawer: false, /* Display the side drawer or not */
 
       chapters: [], /* List of chapters */
       selchap: null, /* Current chapter */
+      mirrorDesc: null, /* Current mirror description */
 
       direction: 'ltr', /* Reading from left to right or right to left */
       book: true, /* Do we display side by side pages */
@@ -159,6 +166,8 @@
     mounted() {
       /* Load chapters list */
       this.loadChapters()
+      /* Load mirror */
+      this.loadMirror()
     },
     computed: {
       // Current manga informations retrieved from implementation
@@ -181,6 +190,13 @@
     },
     components: { Page },
     methods: {
+      /** Load mirror description (containing icon and home page) */
+      async loadMirror() {
+        this.mirrorDesc = await browser.runtime.sendMessage({
+            action: "mirrorInfos",
+            name: this.mirror.mirrorName
+        });
+      },
       /** Called when a scan has been loaded */
       loadedScan() {
         // Count how many scans have been loaded
@@ -273,9 +289,13 @@
  margin-left: auto;
  margin-right: auto;
 }
+.amr-manga-title img {
+  vertical-align: middle;
+}
 .amr-manga-title a { 
   color: white;
   text-decoration: none;
+  vertical-align: middle;
 }
 /** To prevent select to be too small due to large padding */
 .v-toolbar.pa-0 .v-toolbar__content {
@@ -295,4 +315,10 @@
     margin-left: 0px;
 }
 */
+.opacity-full {
+  opacity: 1;
+}
+.opacity-transparent {
+  opacity: 0.7;
+}
 </style>

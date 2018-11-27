@@ -1,4 +1,5 @@
 import browser from "webextension-polyfill";
+import store from '../store';
 
 class HandleMisc {
     handle(message, sender) {
@@ -9,6 +10,9 @@ class HandleMisc {
                     "url": message.url
                 });
                 return Promise.resolve();
+            case "mirrorInfos":
+                let mirror = store.state.mirrors.all.find(mir => mir.mirrorName === message.name)
+                return Promise.resolve(mirror);
         }
     }
 }
