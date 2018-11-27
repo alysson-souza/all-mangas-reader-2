@@ -13,6 +13,7 @@ const config = {
   entry: {
     'background/background': './background/background.js',
     'content/back': './content/back.js',
+    'reader/init-reading': './reader/init-reading.js',
     'pages/popup/popup': './pages/popup/popup.js', 
     'pages/lab/lab': './pages/lab/lab.js',
     'pages/options/options': './pages/options/options.js',

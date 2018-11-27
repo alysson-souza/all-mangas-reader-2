@@ -18,6 +18,12 @@ const contentCss = [
     '/lib/jquery.modal.min.css'
 ];
 
+/** Scripts to inject in pages containing mangas for new reader */
+const contentScriptsV2 = [
+    '/lib/jquery.min.js',
+    '/reader/init-reading.js'
+];
+
 class HandleManga {
     handle(message, sender) {
         let key;
@@ -165,13 +171,20 @@ class HandleManga {
 
         let impl = await this.getImplementation(mir)
         if (impl) {
-            // Inject css in matched tab
-            for (let css of contentCss) {
-                await browser.tabs.insertCSS(tabId, { file: css });
-            }
-            // Inject content scripts in matched tab
-            for (let script of contentScripts) {
-                await browser.tabs.executeScript(tabId, { file: script });
+            if (false) {
+                // Inject css in matched tab
+                for (let css of contentCss) {
+                    await browser.tabs.insertCSS(tabId, { file: css });
+                }
+                // Inject content scripts in matched tab
+                for (let script of contentScripts) {
+                    await browser.tabs.executeScript(tabId, { file: script });
+                }
+            } else {
+                // Inject content scripts in matched tab
+                for (let script of contentScriptsV2) {
+                    await browser.tabs.executeScript(tabId, { file: script });
+                }
             }
             // Inject mirror implementation (through a function called in the implementation and existing in back.js)
             await browser.tabs.executeScript(tabId, { code: impl });
