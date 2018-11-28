@@ -1,5 +1,7 @@
 import browser from "webextension-polyfill";
 import options from "../content/options";
+import mirrorImpl from '../content/mirrorimpl';
+import pageData from '../content/pagedata';
 
 class Util {
     removeProtocol(url) {
@@ -19,6 +21,38 @@ class Util {
     }
     matchChapUrl(chap, tomatch) {
         return (this.chapPath(chap) === this.chapPath(tomatch))
+    }
+    /**
+     * Returns true if manga is in reading list
+     */
+    async mangaExists() {
+        return await browser.runtime.sendMessage({
+            action: "mangaExists", 
+            url: pageData.currentMangaURL,
+            mirror: mirrorImpl.get().mirrorName,
+            language: pageData.language
+        })
+    }
+    /**
+     * Consult manga, update reading list state to take the current chapter into account
+     * Can add the manga to the list if addauto options or update reading status
+     */
+    async consultManga() {
+        if (options.addauto !== 1) { // check if option "Automatically add manga to list" is unchecked
+            // check if manga is already in list
+            let exists = await this.mangaExists()
+            // if not, we do not add the manga to the list (else, we continue, so reading progress is updated)
+            if (!exists) return;
+        }
+        browser.runtime.sendMessage({
+            action: "readManga",
+            url: pageData.currentMangaURL,
+            mirror: mirrorImpl.get().mirrorName,
+            lastChapterReadName: pageData.currentChapter,
+            lastChapterReadURL: pageData.currentChapterURL,
+            name: pageData.name,
+            language: pageData.language
+        });
     }
 }
 export default (new Util)

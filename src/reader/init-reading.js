@@ -49,19 +49,11 @@ if (window["__armreader__"] === undefined) { // avoid loading script twice
         // Initialize pageData state
         pageData.load(data);
 
-        let imagesUrl = [];
-        if (options.displayChapters == 1) { // if display book
-            // retrieve images to load (before doSomethingBeforeWritingScans because it can harm the source of data)
-            imagesUrl = await mirrorImpl.get().getListImages(document, window.location.href);
-            console.log(imagesUrl.length + " images to load");
-        }
+        // retrieve images to load (before doSomethingBeforeWritingScans because it can harm the source of data)
+        let imagesUrl = await mirrorImpl.get().getListImages(document, window.location.href);
+        console.log(imagesUrl.length + " images to load");
 
         initReader(imagesUrl)
-
-        // mark manga as read
-        if (options.markwhendownload === 0) {
-            reading.consultManga()
-        }
     }
 
     /**

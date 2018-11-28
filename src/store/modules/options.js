@@ -8,8 +8,17 @@ import Vue from 'vue';
 const default_options = {
     debug: 1, // display debug traces in content script, background, popup, ...
 
+
     /**
-     * Options used in content scripts (included in mangas pages)
+     * New reader layout options (specific layout value for a manga is displayBook * 1000 + readingDirection + 100 + displayFullChapter * 10 + resizeMode (ex : 1110))
+     */
+    displayBook: 1, /* Display pages side by side */
+    readingDirection: 1, /* ltr (0) for left to right or rtl (1) */
+    displayFullChapter: 1, /* Display full chapter long strip or current scan (doucle scan) */
+    resizeMode: 0, /* How to resize scans width (0), height (1) (only if displayFullChapter = 0), container (2) or none (3) */
+
+    /**
+     * Options used in content scripts (included in mangas pages) // DEPRECATED WITH NEW READER
      */
     displayChapters: 1, // display scans as a book
     /**
@@ -17,9 +26,9 @@ const default_options = {
      * mode = 2 --> images are displayed two by two occidental reading mode
      * mode = 3 --> images are displayed two by two japanese reading mode
      */
-    displayMode: 3,
+    displayMode: 3,  // DEPRECATED WITH NEW READER
     addauto: 1, // automatically mark chapters as read while reading
-    resize: 1, // resize scans to fit in viewport
+    resize: 1, // resize scans to fit in viewport  // DEPRECATED WITH NEW READER
     autobm: 1, // bookmark automatically the scans when dlbclicked in page
     markwhendownload: 0, // mark mangas as read when all images downloaded
     prefetch: 1, // load next chapter in background while reading 

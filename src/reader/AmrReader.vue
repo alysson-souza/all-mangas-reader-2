@@ -16,6 +16,12 @@
           </v-btn>
           <span>Go to next chapter</span>
         </v-tooltip>
+        <v-tooltip left v-show="lastChapter">
+          <v-btn slot="activator" small fab v-show="hover && !drawer" color="orange--text">
+            <v-icon>mdi-alert</v-icon>
+          </v-btn>
+          <span>This is the latest published chapter !</span>
+        </v-tooltip>
         <!-- Quick button to add a manga to reading list -->
         <v-tooltip left>
           <v-btn slot="activator" small fab v-show="hover && !drawer" color="green--text">
@@ -61,6 +67,7 @@
                   item-value="url"
                   solo dense single-line class="amr-chapter-select" 
                   loading="chapters.length === 0 ? 'primary' : false"
+                  @change="goToChapter"
                 ></v-select>
                 <v-spacer></v-spacer>
                 <v-btn icon v-show="!lastChapter" @click.stop="goNextChapter">
@@ -167,6 +174,8 @@
 
   import Page from "./Page";
 
+const resize_values = ['width', 'height', 'container', 'none']
+
   export default {
     data: () => ({
       drawer: false, /* Display the side drawer or not */
@@ -191,13 +200,44 @@
       images: Array /* List of scans to display, not necessarily pictures but urls that the implementation can handle to render a scan */
     },
     created() {
+      /** Initialize key handlers */
       this.handlekeys()
+      /** Load current layout mode */
+      this.loadLayoutMode()
     },
     mounted() {
       /* Load chapters list */
       this.loadChapters()
       /* Load mirror */
       this.loadMirror()
+      
+      // mark manga as read
+      if (options.markwhendownload === 0) {
+          util.consultManga()
+      }
+    },
+    watch: {
+      /**
+       * Update the specific layout value for the current manga
+       */
+      async layoutValue(nVal, oVal) {
+        // check if nVal <> options val ; if not reset layout to undefined
+        let optVal = options.displayBook * 1000 + options.readingDirection * 100 + options.displayFullChapter * 10 + options.resizeMode
+        if (optVal === nVal) {
+          nVal = undefined
+        }
+        // Update current value only if manga is in reading list
+        let exists = await util.mangaExists()
+        if (exists) {
+          browser.runtime.sendMessage({
+              action: "setLayoutMode",
+              url: pageData.currentMangaURL,
+              layout: nVal, 
+              language: pageData.language,
+              mirror: this.mirror.mirrorName
+          })
+        }
+      }
     },
     computed: {
       // Current manga informations retrieved from implementation
@@ -220,16 +260,53 @@
       /** True if latest published chapter */
       lastChapter() {
         if (this.selchap === null || this.chapters.length === 0) return true
-        return this.chapters.findIndex(el => el.url === this.selchap.url) === 0
+        return this.chapters.findIndex(el => el.url === this.selchap) === 0
       },
       /** True if first published chapter */
       firstChapter() {
         if (this.selchap === null || this.chapters.length === 0) return true
-        return this.chapters.findIndex(el => el.url === this.selchap.url) === this.chapters.length - 1
+        return this.chapters.findIndex(el => el.url === this.selchap) === this.chapters.length - 1
+      },
+      layoutValue() {
+        let cbook = this.book ? 1 : 0, 
+            cdirection = this.direction === 'ltr' ? 0 : 1,
+            cfullchapter = this.fullchapter ? 1 : 0,
+            cresize = resize_values.findIndex(r => r === this.resize)
+        
+        return 1000 * cbook + 100 * cdirection + 10 * cfullchapter + cresize
       }
     },
     components: { Page },
     methods: {
+      async loadLayoutMode() {
+        //Get specific mode for currentManga
+        let cbook = -1, cdirection = -1, cfullchapter = -1, cresize = -1
+        let specific = await browser.runtime.sendMessage({ 
+            action: "mangaInfos", 
+            url: pageData.currentMangaURL, 
+            language: pageData.language 
+        });
+        if (specific && specific.layout) {
+            let l = specific.layout;
+            cbook = Math.floor(l / 1000)
+            l -= 1000 * cbook
+            cdirection = Math.floor(l / 100)
+            l -= 100 * cdirection
+            cfullchapter = Math.floor(l / 10)
+            l -= 10 * cfullchapter
+            cresize = l
+        }
+        //If not use default options mode
+        if (cbook === -1) cbook = options.displayBook
+        if (cdirection === -1) cdirection = options.readingDirection
+        if (cfullchapter === -1) cfullchapter = options.displayFullChapter
+        if (cresize === -1) cresize = options.resizeMode
+        
+        this.book = cbook === 1
+        this.direction = cdirection === 0 ? 'ltr': 'rtl'
+        this.fullchapter = cfullchapter === 1
+        this.resize = resize_values[cresize]
+      },
       /** 
        * Determine if a page should be shown.
        * Always true if fullChapter mode, just current page if not
@@ -298,6 +375,12 @@
           this.regroupablePages.push(...regrouped)
           this.chaploaded = true
           document.title = this.originalTitle
+          if (options.prefetch == 1) {
+              this.preloadNextChapter();
+          }
+          if (options.markwhendownload === 1) {
+              util.consultManga();
+          }
         }
       },
       async loadChapters() {
@@ -318,23 +401,31 @@
         }
         this.chapters.forEach(chap => {
           if (util.matchChapUrl(pageData.currentChapterURL, chap.url)) {
-              this.selchap = chap
+              this.selchap = chap.url
               pageData.currentChapter = chap.title;
               return false
           }
         })
       },
+      goToChapter() {
+        if (this.selchap === null) return
+        let cur = this.chapters.findIndex(el => el.url === this.selchap)
+        window.location.href = this.chapters[cur].url
+      },
       goNextChapter() {
         if (this.selchap === null) return
         if (this.lastChapter) return
-        let cur = this.chapters.findIndex(el => el.url === this.selchap.url)
+        let cur = this.chapters.findIndex(el => el.url === this.selchap)
         window.location.href = this.chapters[cur - 1].url
       },
       goPreviousChapter() {
         if (this.selchap === null) return false
         if (this.firstChapter) return
-        let cur = this.chapters.findIndex(el => el.url === this.selchap.url)
+        let cur = this.chapters.findIndex(el => el.url === this.selchap)
         window.location.href = this.chapters[cur + 1].url
+      },
+      preloadNextChapter() {
+        //TODO
       },
       goNextScan() {
         let cur = this.currentPage, n = cur

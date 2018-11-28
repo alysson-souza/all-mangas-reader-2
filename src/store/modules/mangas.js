@@ -97,6 +97,16 @@ const actions = {
         dispatch('updateManga', state.all.find(manga => manga.key === key));
     },
     /**
+     * Change manga reader layout mode
+     * @param {*} vuex object 
+     * @param {*} message containing url of the manga and new layout mode
+     */
+    async setMangaLayoutMode({ dispatch, commit, getters }, message) {
+        let key = utils.mangaKey(message.url, message.mirror, message.language);
+        commit('setMangaLayoutMode', message);
+        dispatch('updateManga', state.all.find(manga => manga.key === key));
+    },
+    /**
      * Reset manga reading for a manga to first chapter
      * @param {*} vuex object 
      * @param {*} message containing url of the manga
@@ -594,6 +604,16 @@ const mutations = {
         if (mg !== undefined) mg.display = display;
     },
     /**
+     * Change manga reader layout mode
+     * @param {*} state 
+     * @param {*} param1 url of the manga and layout mode
+     */
+    setMangaLayoutMode(state, { url, mirror, language, layout }) {
+        let key = utils.mangaKey(url, mirror, language);
+        let mg = state.all.find(manga => manga.key === key)
+        if (mg !== undefined) mg.layout = layout;
+    },
+    /**
      * Change manga read top
      * @param {*} state 
      * @param {*} param1 url of the manga and read top
@@ -672,6 +692,9 @@ const mutations = {
             //if obj.display, obj.read, obj.cats, MAJ this....
             if (obj.display) {
                 mg.display = obj.display;
+            }
+            if (obj.layout) {
+                mg.layout = obj.layout;
             }
             if (obj.read) {
                 mg.read = obj.read;

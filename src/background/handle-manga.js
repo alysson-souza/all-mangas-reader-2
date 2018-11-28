@@ -38,7 +38,8 @@ class HandleManga {
                 if (mg !== undefined) {
                     return Promise.resolve({
                         read: mg.read,
-                        display: mg.display
+                        display: mg.display,
+                        layout: mg.layout
                     });
                 } else {
                     return Promise.resolve();
@@ -52,6 +53,8 @@ class HandleManga {
                 return store.dispatch('markMangaReadTop', message);
             case "setDisplayMode":
                 return store.dispatch('setMangaDisplayMode', message);
+            case "setLayoutMode":
+                return store.dispatch('setMangaLayoutMode', message);
             case "setMangaChapter":
                 return store.dispatch('resetManga', message) // reset reading to first chapter
                     .then(() => store.dispatch('readManga', message)); // set reading to current chapter
