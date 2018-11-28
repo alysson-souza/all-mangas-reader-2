@@ -23,8 +23,8 @@
           <span>This is the latest published chapter !</span>
         </v-tooltip>
         <!-- Quick button to add a manga to reading list -->
-        <v-tooltip left>
-          <v-btn slot="activator" small fab v-show="hover && !drawer" color="green--text">
+        <v-tooltip left v-show="!mangaExists && options.addauto === 0">
+          <v-btn slot="activator" small fab v-show="hover && !drawer" color="green--text" @click.stop="addManga">
             <v-icon>mdi-plus</v-icon>
           </v-btn>
           <span>Add this manga to your reading list</span>
@@ -83,7 +83,7 @@
               <v-btn icon color="orange--text">
                   <v-icon>mdi-page-last</v-icon>
               </v-btn>
-              <v-btn icon color="green--text">
+              <v-btn icon color="green--text" v-show="!mangaExists && options.addauto === 0" @click.stop="addManga">
                   <v-icon>mdi-plus</v-icon>
               </v-btn>
               <v-btn icon color="blue--text">
@@ -195,11 +195,14 @@ const resize_values = ['width', 'height', 'container', 'none']
       currentPage: 0, 
 
       originalTitle: document.title,
+      mangaExists: null
     }),
     props: {
       images: Array /* List of scans to display, not necessarily pictures but urls that the implementation can handle to render a scan */
     },
     created() {
+      /** Check if manga exists */
+      this.checkExists()
       /** Initialize key handlers */
       this.handlekeys()
       /** Load current layout mode */
@@ -229,19 +232,18 @@ const resize_values = ['width', 'height', 'container', 'none']
       /**
        * Update the specific layout value for the current manga
        */
-      async layoutValue(nVal, oVal) {
+      layoutValue(nVal, oVal) {
         // check if nVal <> options val ; if not reset layout to undefined
         let optVal = options.displayBook * 1000 + options.readingDirection * 100 + options.displayFullChapter * 10 + options.resizeMode
         if (optVal === nVal) {
           nVal = undefined
         }
         // Update current value only if manga is in reading list
-        let exists = await util.mangaExists()
-        if (exists) {
+        if (this.mangaExists) {
           browser.runtime.sendMessage({
               action: "setLayoutMode",
               url: pageData.currentMangaURL,
-              layout: nVal, 
+              layout: nVal,
               language: pageData.language,
               mirror: this.mirror.mirrorName
           })
@@ -249,6 +251,9 @@ const resize_values = ['width', 'height', 'container', 'none']
       }
     },
     computed: {
+      options() {
+        return options
+      },
       // Current manga informations retrieved from implementation
       manga() {
         return pageData
@@ -287,6 +292,9 @@ const resize_values = ['width', 'height', 'container', 'none']
     },
     components: { Page },
     methods: {
+      async checkExists() {
+        this.mangaExists = await util.mangaExists()
+      },
       async loadBarState() {
         let barState = await browser.runtime.sendMessage({action: "barState"})
         if (barState) {
@@ -421,6 +429,10 @@ const resize_values = ['width', 'height', 'container', 'none']
               return false
           }
         })
+      },
+      async addManga() {
+        await util.consultManga(true)
+        this.mangaExists = true
       },
       goToChapter() {
         if (this.selchap === null) return

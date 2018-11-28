@@ -37,14 +37,14 @@ class Util {
      * Consult manga, update reading list state to take the current chapter into account
      * Can add the manga to the list if addauto options or update reading status
      */
-    async consultManga() {
-        if (options.addauto !== 1) { // check if option "Automatically add manga to list" is unchecked
+    async consultManga(force = false) {
+        if (!force && options.addauto !== 1) { // check if option "Automatically add manga to list" is unchecked
             // check if manga is already in list
             let exists = await this.mangaExists()
             // if not, we do not add the manga to the list (else, we continue, so reading progress is updated)
             if (!exists) return;
         }
-        browser.runtime.sendMessage({
+        await browser.runtime.sendMessage({
             action: "readManga",
             url: pageData.currentMangaURL,
             mirror: mirrorImpl.get().mirrorName,
