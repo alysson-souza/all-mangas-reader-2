@@ -94,7 +94,7 @@
         </v-card-actions>
       </v-card>
       <!-- Display options -->
-      <v-card color="grey darken-2" class="white--text">
+      <v-card color="grey darken-3" class="white--text">
         <v-card-title>
           <v-layout row wrap>
             <v-flex xs12>
@@ -204,6 +204,8 @@ const resize_values = ['width', 'height', 'container', 'none']
       this.handlekeys()
       /** Load current layout mode */
       this.loadLayoutMode()
+      /** Load current bar state (drawer visible or not) */
+      this.loadBarState()
     },
     mounted() {
       /* Load chapters list */
@@ -217,6 +219,13 @@ const resize_values = ['width', 'height', 'container', 'none']
       }
     },
     watch: {
+      /** Keep drawer state */
+      drawer(nVal, oVal) {
+        browser.runtime.sendMessage({
+            action: "setBarState",
+            barstate: nVal ? 1 : 0
+        })
+      },
       /**
        * Update the specific layout value for the current manga
        */
@@ -278,6 +287,12 @@ const resize_values = ['width', 'height', 'container', 'none']
     },
     components: { Page },
     methods: {
+      async loadBarState() {
+        let barState = await browser.runtime.sendMessage({action: "barState"})
+        if (barState) {
+          this.drawer = parseInt(barState.barVis) === 1
+        }
+      },
       async loadLayoutMode() {
         //Get specific mode for currentManga
         let cbook = -1, cdirection = -1, cfullchapter = -1, cresize = -1
