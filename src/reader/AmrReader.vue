@@ -10,8 +10,8 @@
           <v-icon>mdi-menu</v-icon>
         </v-btn>
         <!-- Quick button to go to next chapter -->
-        <v-tooltip left>
-          <v-btn slot="activator" small fab v-show="hover && !drawer">
+        <v-tooltip left v-show="!lastChapter">
+          <v-btn slot="activator" small fab v-show="hover && !drawer" @click.stop="goNextChapter">
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
           <span>Go to next chapter</span>
@@ -51,7 +51,7 @@
           <v-layout row wrap>
             <v-flex xs12>
               <v-toolbar flat class="pa-0" my-1>
-                <v-btn icon>
+                <v-btn icon v-show="!firstChapter" @click.stop="goPreviousChapter">
                   <v-icon>mdi-chevron-left</v-icon>
                 </v-btn>
                 <v-select
@@ -63,7 +63,7 @@
                   loading="chapters.length === 0 ? 'primary' : false"
                 ></v-select>
                 <v-spacer></v-spacer>
-                <v-btn icon>
+                <v-btn icon v-show="!lastChapter" @click.stop="goNextChapter">
                   <v-icon>mdi-chevron-right</v-icon>
                 </v-btn>
               </v-toolbar>
@@ -217,6 +217,16 @@
           return this.regroupablePages
         }
       }, 
+      /** True if latest published chapter */
+      lastChapter() {
+        if (this.selchap === null || this.chapters.length === 0) return true
+        return this.chapters.findIndex(el => el.url === this.selchap.url) === 0
+      },
+      /** True if first published chapter */
+      firstChapter() {
+        if (this.selchap === null || this.chapters.length === 0) return true
+        return this.chapters.findIndex(el => el.url === this.selchap.url) === this.chapters.length - 1
+      }
     },
     components: { Page },
     methods: {
@@ -315,10 +325,16 @@
         })
       },
       goNextChapter() {
-
+        if (this.selchap === null) return
+        if (this.lastChapter) return
+        let cur = this.chapters.findIndex(el => el.url === this.selchap.url)
+        window.location.href = this.chapters[cur - 1].url
       },
       goPreviousChapter() {
-
+        if (this.selchap === null) return false
+        if (this.firstChapter) return
+        let cur = this.chapters.findIndex(el => el.url === this.selchap.url)
+        window.location.href = this.chapters[cur + 1].url
       },
       goNextScan() {
         let cur = this.currentPage, n = cur
