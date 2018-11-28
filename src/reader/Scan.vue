@@ -1,5 +1,5 @@
 <template>
-    <v-flex :class="{xs6: !full, xs12: full}" class='scanContainer'>
+    <v-flex :class="{xs6: !full, xs12: full, 'res-w': resizeW(), 'res-h': resizeH()}" class='scanContainer'>
         <v-progress-circular
             indeterminate
             color="red"
@@ -27,7 +27,8 @@ export default {
         full: {
             type: Boolean,
             default: false
-        }
+        },
+        resize: String
     },
     watch: {
         src: 'loadScan'
@@ -36,6 +37,12 @@ export default {
         this.loadScan()
     },
     methods: {
+        resizeW() {
+            return ["width", "container"].includes(this.resize)
+        },
+        resizeH() {
+            return ["height", "container"].includes(this.resize)
+        },
         loadScan() {
             this.loading = true
             this.$refs.scan.onload = () => {
@@ -55,7 +62,10 @@ export default {
 </script>
 
 <style>
-.scanContainer img {
+.scanContainer.res-w img {
     max-width: 100%;
+}
+.scanContainer.res-h img {
+    max-height: 100vh;
 }
 </style>

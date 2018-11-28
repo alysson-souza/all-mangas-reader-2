@@ -38,6 +38,8 @@ if (window["__armreader__"] === undefined) { // avoid loading script twice
         // Test if current page is a chapter page (according to mirror implementation)
         if (!mirrorImpl.get().isCurrentPageAChapterPage(document, window.location.href)) {
             console.log("Current page is not recognize as a chapter page by mirror implementation");
+            let cover = document.getElementById("amr-loading-cover")
+            cover.parentNode.removeChild(cover)
             return;
         }
         // Retrieve informations relative to current chapter / manga read

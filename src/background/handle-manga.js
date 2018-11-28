@@ -169,6 +169,26 @@ class HandleManga {
         const mir = utils.currentPageMatch(url)
         if (mir === null) return Promise.resolve(null)
 
+        // Load amr preload
+        let ts = Date.now()
+        
+        let loading = []
+        loading.push(browser.tabs.insertCSS(tabId, { file: "/reader/pre-loader.css" }))
+        loading.push(browser.tabs.executeScript(
+            tabId, 
+            { code: `
+                let amr_icon_url = '${browser.extension.getURL('/icons/icon_128.png')}';
+                let cover = document.createElement("div")
+                cover.id = "amr-loading-cover"
+
+                let img = document.createElement("img")
+                img.src = amr_icon_url;
+                cover.appendChild(img)
+
+                document.body.appendChild(cover)
+            `}))
+        Promise.all(loading).then(() => console.log("Execute preload done in " + (Date.now() - ts) + "ms"))
+
         let impl = await this.getImplementation(mir)
         if (impl) {
             if (false) {

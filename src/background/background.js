@@ -64,11 +64,14 @@ IconHelper.setBlueIcon();
     amrUpdater.load();
 
     // content script included, test if a mirror match the page and load AMR in tab
-    browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
+    /*browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
         if (changeInfo.status === "loading") { // just load scripts once, when the tab is loading
             HandleManga.matchUrlAndLoadScripts(tabInfo.url, tabId)
         }
-    });
+    });*/
+    browser.webNavigation.onCommitted.addListener(({tabId, url}) => {
+        HandleManga.matchUrlAndLoadScripts(url, tabId)
+    })
 
     /**
      * The function below increments the reading of each manga in the list from a chapter each 2 seconds

@@ -1,5 +1,30 @@
 <template>
   <v-app id="inspire" dark>
+    <!-- Global always visible buttons -->
+    <v-hover>
+      <v-layout column class="fab-container" slot-scope="{ hover }">
+        <!-- Button to open side drawer -->
+        <v-btn 
+          :class="`elevation-${hover ? 12 : 2} opacity-${hover || drawer ? 'full':'transparent'}`"
+          color="red darken-2" dark small fab @click.stop="drawer = !drawer">
+          <v-icon>mdi-menu</v-icon>
+        </v-btn>
+        <!-- Quick button to go to next chapter -->
+        <v-tooltip left>
+          <v-btn slot="activator" small fab v-show="hover && !drawer">
+            <v-icon>mdi-chevron-right</v-icon>
+          </v-btn>
+          <span>Go to next chapter</span>
+        </v-tooltip>
+        <!-- Quick button to add a manga to reading list -->
+        <v-tooltip left>
+          <v-btn slot="activator" small fab v-show="hover && !drawer" color="green--text">
+            <v-icon>mdi-plus</v-icon>
+          </v-btn>
+          <span>Add this manga to your reading list</span>
+        </v-tooltip>
+      </v-layout>
+    </v-hover>
     <!-- AMR Reader side bar -->
     <v-navigation-drawer
       v-model="drawer"
@@ -14,7 +39,9 @@
         <v-card-title class="white--text amr-manga-title">
           <div>
             <div class="headline white--text">
-              <img v-if="mirrorDesc !== null" :src="mirrorDesc.mirrorIcon" ma-1 />
+              <a :href="mirrorDesc.home" v-if="mirrorDesc !== null" target="_blank">
+                <img :src="mirrorDesc.mirrorIcon" ma-1 />
+              </a>
               <a :href="manga.currentMangaURL" target="_blank">{{manga.name}}</a>
             </div>
           </div>
@@ -41,6 +68,7 @@
                 </v-btn>
               </v-toolbar>
             </v-flex>
+            <!-- Action buttons -->
             <v-flex xs12 text-xs-center pa-2>
               <v-btn icon color="yellow--text">
                   <v-icon>mdi-star</v-icon>
@@ -58,6 +86,7 @@
           </v-layout>
         </v-card-actions>
       </v-card>
+      <!-- Display options -->
       <v-card color="grey darken-2" class="white--text">
         <v-card-title>
           <v-layout row wrap>
@@ -65,11 +94,12 @@
               <!-- Display book checkbox -->
               <v-switch v-model="book" label="Display as a book (side by side scans)"></v-switch>
             </v-flex>
-            <v-flex xs6 align-self-center>
+            <!-- Reading direction -->
+            <v-flex xs6 align-self-center v-show="book">
               <div class="subheading">Reading direction</div>
             </v-flex>
-            <v-flex xs6>
-              <v-btn-toggle v-model="direction" v-show="book">
+            <v-flex xs6 v-show="book">
+              <v-btn-toggle v-model="direction">
                 <v-btn flat value="ltr">
                   <!--<span>Left to right</span>-->
                   <v-icon>mdi-arrow-right</v-icon>
@@ -84,11 +114,11 @@
               <!-- Display full chapter checkbox -->
               <v-switch v-model="fullchapter" label="Display full chapter (if unchecked, display current page)"></v-switch>
             </v-flex>
-            <v-flex xs6 align-self-center>
+            <v-flex xs6 align-self-center v-show="!fullchapter">
               <!-- Resize mode -->
               <div class="subheading">Resize scans</div>
             </v-flex>
-            <v-flex xs6>
+            <v-flex xs6 v-show="!fullchapter">
               <v-btn-toggle v-model="resize">
                 <v-btn flat value="width">
                   <!--<span>Width</span>-->
@@ -110,21 +140,16 @@
     </v-navigation-drawer>
     <!-- End AMR Reader Side bar -->
     <v-content>
-      <v-container fluid fill-height grid-list-md text-xs-center pa-0 class="p-a-0">
-        <!-- Button to open side bar -->
-        <v-hover>
-          <v-btn slot-scope="{ hover }" :class="`elevation-${hover ? 12 : 2} opacity-${hover || drawer ? 'full':'transparent'}`"
-            color="red darken-2" dark small fixed top right fab @click.stop="drawer = !drawer">
-            <v-icon>mdi-menu</v-icon>
-          </v-btn>
-        </v-hover>
+      <v-container fluid fill-height grid-list-md text-xs-center pa-0 
+        :class="{'no-full-chapter': !fullchapter}">
         <!-- Scans -->
         <v-layout row wrap>
           <Page v-for="(scans, i) in pages" :key="i" 
               :scans="scans" 
               @loaded-scan="loadedScan" 
               :direction="direction"
-              ref="page" />
+              :resize="resize"
+              ref="page" v-show="isVisible(i)" />
         </v-layout>
       </v-container>
     </v-content>
@@ -157,11 +182,16 @@
 
       chaploaded: false, /* True if all scans have been loaded */
       regroupablePages: [], /* How to regroup pages to make a book */
-      visible: [], /* List of indexes of visible pages, used when not fullchapter, one one in list except for transitions */
-      originalTitle: document.title
+      visible: [0], /* List of indexes of visible pages, used when not fullchapter, one one in list except for transitions */
+      currentPage: 0, 
+
+      originalTitle: document.title,
     }),
     props: {
       images: Array /* List of scans to display, not necessarily pictures but urls that the implementation can handle to render a scan */
+    },
+    created() {
+      this.handlekeys()
     },
     mounted() {
       /* Load chapters list */
@@ -190,6 +220,13 @@
     },
     components: { Page },
     methods: {
+      /** 
+       * Determine if a page should be shown.
+       * Always true if fullChapter mode, just current page if not
+       */
+      isVisible(page_index) {
+        return this.fullchapter || this.visible.includes(page_index)
+      },
       /** Load mirror description (containing icon and home page) */
       async loadMirror() {
         this.mirrorDesc = await browser.runtime.sendMessage({
@@ -276,6 +313,83 @@
               return false
           }
         })
+      },
+      goNextChapter() {
+
+      },
+      goPreviousChapter() {
+
+      },
+      goNextScan() {
+        let cur = this.currentPage, n = cur
+        if (cur + 1 < this.pages.length) n = cur + 1
+        if (cur === n) return
+
+        this.currentPage = n
+        this.visible = [n]
+      },
+      goPreviousScan() {
+        let cur = this.currentPage, n = cur
+        if (cur - 1 >= 0) n = cur - 1
+        if (cur === n) return
+
+        this.currentPage = n
+        this.visible = [n]
+      },
+      handlekeys() {
+        let self = this;
+        let registerKeys = (e) => {
+            e = e || window.event;
+            let t = e.target || e.srcElement;
+            if (!((t.type && t.type == "text") || t.nodeName.toLowerCase() == "textarea")) {
+                if (e.which == 87) { //W
+                    window.scrollBy(0, -40);
+                }
+                if (e.which == 83) { //S
+                    window.scrollBy(0, 40);
+                }
+                if (e.which == 107 || e.which == 187) { //+
+                    //this.zoomin();
+                }
+                if (e.which == 109 || e.which == 189) { //-
+                    //this.zoomout();
+                }
+                if (e.which == 66) { //b
+                    // previous chapter
+                    this.goPreviousChapter()
+                }
+                if (e.which == 78) { //n
+                    // next chapter
+                    this.goNextChapter()
+                }
+                if (options.lrkeys == 1) {
+                    //Left key or A
+                    if ((e.which == 37) || (e.which == 65)) {
+                        // go to previous scan
+                        this.goPreviousScan()
+                        e.preventDefault()
+                        e.stopPropagation()
+                        e.stopImmediatePropagation()
+                    }
+                    //Right key or D
+                    if ((e.which == 39) || (e.which == 68)) {
+                        // go to next scan
+                        this.goNextScan()
+                        e.preventDefault()
+                        e.stopPropagation()
+                        e.stopImmediatePropagation()
+                    }
+                }
+            }
+        }
+        window.addEventListener('keydown', registerKeys, true);
+
+        //disable default websites shortcuts
+        let stopProp = (e) => e.stopImmediatePropagation();
+        if (options.lrkeys == 1) {
+            window.addEventListener('keyup', stopProp, true);
+            window.addEventListener('keypress', stopProp, true);
+        }
       }
     }
   }
@@ -320,5 +434,17 @@
 }
 .opacity-transparent {
   opacity: 0.7;
+}
+.fab-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 4;
+}
+.container.grid-list-md .layout .flex {
+    padding: 4px;
+}
+.container.grid-list-md.no-full-chapter .layout .flex {
+    padding: 0px 4px;
 }
 </style>

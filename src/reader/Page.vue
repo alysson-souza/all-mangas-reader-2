@@ -1,9 +1,9 @@
 <template>
-    <Scan :full="true" :src="scans[0]" @loaded-scan="loadedScan" v-if="scans.length === 1" ref="solo" />
+    <Scan :full="true" :src="scans[0]" :resize="resize" @loaded-scan="loadedScan" v-if="scans.length === 1" ref="solo" />
     <v-flex xs12 v-else>
         <v-layout row wrap>
-            <Scan :full="false" :src="scans[direction === 'ltr' ? 0 : 1]" @loaded-scan="loadedScan" />
-            <Scan :full="false" :src="scans[direction === 'ltr' ? 1 : 0]" @loaded-scan="loadedScan" />
+            <Scan :full="false" :src="scans[direction === 'ltr' ? 0 : 1]" :resize="resize" @loaded-scan="loadedScan" class="amr-left-page" />
+            <Scan :full="false" :src="scans[direction === 'ltr' ? 1 : 0]" :resize="resize" @loaded-scan="loadedScan" class="amr-right-page" />
         </v-layout>
     </v-flex>
 </template>
@@ -17,7 +17,8 @@ export default {
         direction: {
             type: String,
             default: "ltr"
-        }
+        },
+        resize: String
     },
     name: "Page",
     components: { Scan },
@@ -36,5 +37,10 @@ export default {
 </script>
 
 <style>
-
+.amr-right-page {
+    text-align: left
+}
+.amr-left-page {
+    text-align: right
+}
 </style>
