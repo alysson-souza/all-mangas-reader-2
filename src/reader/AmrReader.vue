@@ -184,17 +184,17 @@
     </v-navigation-drawer>
     <!-- End AMR Reader Side bar -->
     <v-content>
-      <v-container fluid fill-height grid-list-md text-xs-center pa-0 
+      <v-container fluid text-xs-center pa-0 
         :class="{'no-full-chapter': !fullchapter}">
         <!-- Scans -->
-        <v-layout row wrap>
+        <table class="amr-scan-container" border="0" cellspacing="0" cellpadding="0">
           <Page v-for="(scans, i) in pages" :key="i" 
               :scans="scans" 
               @loaded-scan="loadedScan" 
               :direction="direction"
               :resize="resize"
               ref="page" v-show="isVisible(i)" />
-        </v-layout>
+        </table>
       </v-container>
     </v-content>
   </v-app>
@@ -704,22 +704,18 @@
 .opacity-transparent {
   opacity: 0.7;
 }
+/** Floating buttons */
 .fab-container {
   position: fixed;
   top: 10px;
   right: 10px;
   z-index: 4;
 }
-.container.grid-list-md .layout .flex {
-    padding: 4px;
-}
-.container.grid-list-md.no-full-chapter .layout .flex {
-    padding: 0px 4px;
-}
 .fab-container .amr-floting-progress {
   margin-top: 6px;
   margin-left: 6px;
 }
+/** Progress bars for next chapter loading */
 .amr-floting-progress .v-btn {
   width: 36px;
   height: 36px;
@@ -729,5 +725,23 @@
 }
 .amr-chapter-progress-cont .v-progress-linear {
   margin: 0px;
+}
+/** Scans container table */
+.amr-scan-container {
+  margin-left: auto;
+  margin-right: auto;
+  min-height: 100vh;
+}
+.amr-scan-container td {
+  padding-bottom: 4px;
+  padding-top: 4px;
+}
+.no-full-chapter .amr-scan-container td {
+  padding-bottom: 0px;
+  padding-top: 0px;
+}
+.amr-scan-container td {
+  text-align: center;
+  vertical-align: middle;
 }
 </style>

@@ -1,12 +1,12 @@
 <template>
-    <v-flex :class="{xs6: !full, xs12: full, 'res-w': resizeW(), 'res-h': resizeH()}" class='scanContainer'>
+    <td :class="{xs6: !full, xs12: full, 'res-w': resizeW(), 'res-h': resizeH()}" class='scanContainer' :colspan="full ? 2 : 1">
         <v-progress-circular
             indeterminate
             color="red"
             v-if="loading"
             ></v-progress-circular>
         <img :src="src" ref="scan" v-show="!loading" />
-    </v-flex>
+    </td>
 </template>
 
 <script>
@@ -62,6 +62,12 @@ export default {
 </script>
 
 <style>
+td.xs6 {
+    width: 50%;
+}
+td.xs12 {
+    width: 100%;
+}
 .scanContainer.res-w img {
     max-width: 100%;
 }

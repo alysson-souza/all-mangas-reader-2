@@ -1,11 +1,10 @@
 <template>
-    <Scan :full="true" :src="scans[0]" :resize="resize" @loaded-scan="loadedScan" v-if="scans.length === 1" ref="solo" />
-    <v-flex xs12 v-else>
-        <v-layout row wrap>
-            <Scan :full="false" :src="scans[direction === 'ltr' ? 0 : 1]" :resize="resize" @loaded-scan="loadedScan" class="amr-left-page" />
-            <Scan :full="false" :src="scans[direction === 'ltr' ? 1 : 0]" :resize="resize" @loaded-scan="loadedScan" class="amr-right-page" />
-        </v-layout>
-    </v-flex>
+    <tr>
+        <Scan :full="true" :src="scans[0]" :resize="resize" @loaded-scan="loadedScan" ref="solo"  v-if="scans.length === 1" />
+
+        <Scan :full="false" :src="scans[direction === 'ltr' ? 0 : 1]" :resize="resize" @loaded-scan="loadedScan" class="amr-left-page" v-if="scans.length === 2" />
+        <Scan :full="false" :src="scans[direction === 'ltr' ? 1 : 0]" :resize="resize" @loaded-scan="loadedScan" class="amr-right-page" v-if="scans.length === 2" />
+    </tr>
 </template>
 
 <script>
@@ -38,9 +37,11 @@ export default {
 
 <style>
 .amr-right-page {
-    text-align: left
+    text-align: left;
+    padding-left: 4px;
 }
 .amr-left-page {
-    text-align: right
+    text-align: right;
+    padding-right: 4px;
 }
 </style>
