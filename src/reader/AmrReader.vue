@@ -13,10 +13,22 @@
         </v-btn>
         <!-- Quick button to go to next chapter -->
         <v-tooltip left v-show="!lastChapter">
-          <v-btn slot="activator" small fab v-show="hover && !drawer" @click.stop="goNextChapter">
+          <v-progress-circular slot="activator" class="amr-floting-progress"
+            :rotate="90"
+            :size="42"
+            :width="3"
+            :value="nextchapProgress"
+            color="red darken-2"
+            v-show="nextchapLoading && hover && !drawer"
+          >
+            <v-btn small fab @click.stop="goNextChapter">
+              <v-icon>mdi-chevron-right</v-icon>
+            </v-btn>
+          </v-progress-circular>
+          <v-btn slot="activator" small fab v-show="!nextchapLoading && hover && !drawer" @click.stop="goNextChapter">
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
-          <span>Go to next chapter</span>
+          <span>Go to next chapter{{nextchapLoading ? " (" + Math.floor(nextchapProgress) + "% loaded)" : ""}}</span>
         </v-tooltip>
         <v-tooltip left v-show="lastChapter">
           <v-btn slot="activator" small fab v-show="hover && !drawer" color="orange--text">
@@ -73,10 +85,23 @@
                   @change="goToChapter"
                 ></v-select>
                 <v-spacer></v-spacer>
-                <v-btn icon v-show="!lastChapter" @click.stop="goNextChapter">
-                  <v-icon>mdi-chevron-right</v-icon>
-                </v-btn>
+                <v-tooltip bottom v-show="!lastChapter">
+                  <v-btn slot="activator" icon @click.stop="goNextChapter">
+                    <v-icon>mdi-chevron-right</v-icon>
+                  </v-btn>
+                  <span>Go to next chapter{{nextchapLoading ? " (" + Math.floor(nextchapProgress) + "% loaded)" : ""}}</span>
+                </v-tooltip>
               </v-toolbar>
+            </v-flex>
+            <v-flex xs12 v-show="nextchapLoading" class="amr-chapter-progress-cont">
+              <v-tooltip bottom>
+                <v-progress-linear slot="activator" class="amr-floting-progress"
+                  :height="3"
+                  :value="nextchapProgress"
+                  color="red darken-2"
+                ></v-progress-linear>
+                <span>Next chapter ({{Math.floor(nextchapProgress)}}% loaded)</span>
+              </v-tooltip>
             </v-flex>
             <!-- Action buttons -->
             <v-flex xs12 text-xs-center pa-2>
@@ -210,7 +235,10 @@
 
       originalTitle: document.title, /* Original title of the page */
       mangaExists: null, /* Does manga exists in reading list */
-      mangaInfos: null /* specific manga information (layout state, read top, latest read chapter) */
+      mangaInfos: null, /* specific manga information (layout state, read top, latest read chapter) */
+
+      nextchapLoading: false, /* Is next chapter prefetching */
+      nextchapProgress: 0, /* Progress of next chap loading */
     }),
     props: {
       images: Array /* List of scans to display, not necessarily pictures but urls that the implementation can handle to render a scan */
@@ -291,6 +319,13 @@
       lastChapter() {
         if (this.selchap === null || this.chapters.length === 0) return true
         return this.chapters.findIndex(el => el.url === this.selchap) === 0
+      },
+      /** Next chapter url */
+      nextChapter() {
+        if (this.selchap === null) return
+        if (this.lastChapter) return
+        let cur = this.chapters.findIndex(el => el.url === this.selchap)
+        return this.chapters[cur - 1].url
       },
       /** True if first published chapter */
       firstChapter() {
@@ -509,10 +544,8 @@
       },
       /** Go to next chapter */
       goNextChapter() {
-        if (this.selchap === null) return
-        if (this.lastChapter) return
-        let cur = this.chapters.findIndex(el => el.url === this.selchap)
-        window.location.href = this.chapters[cur - 1].url
+        if (!this.nextChapter) return
+        window.location.href = this.nextChapter
       },
       /** Go to previous chapter */
       goPreviousChapter() {
@@ -522,8 +555,34 @@
         window.location.href = this.chapters[cur + 1].url
       },
       /** Preloads the next chapter scans */
-      preloadNextChapter() {
-        //TODO
+      async preloadNextChapter() {
+          if (!this.nextChapter) return
+          util.debug("Loading next chapter...");
+          // load an iframe with urlNext and get list of images
+          let resp = await browser.runtime.sendMessage({
+              action: "getNextChapterImages",
+              url: this.nextChapter,
+              mirrorName: mirrorImpl.get().mirrorName, 
+              language: pageData.language 
+          });
+          let lst = resp.images
+          if (lst !== null) {
+              let nbloaded = 0
+              let nextChapterImageLoaded = (e) => {
+                nbloaded++
+                this.nextchapProgress = nbloaded / lst.length * 100
+              }
+              this.nextchapLoading = true
+              util.debug(lst.length + "... scans to load");
+              for (let i = 0; i < lst.length; i++) {
+                  let img = new Image();
+                  img.addEventListener('load', nextChapterImageLoaded, false);
+                  img.addEventListener('error', nextChapterImageLoaded, false);
+                  (async () => await mirrorImpl.get().getImageFromPageAndWrite(lst[i], img))()
+              }
+          } else {
+              util.debug("no scans found for next chapter...");
+          }
       },
       /** Go to next scan */
       goNextScan() {
@@ -656,5 +715,19 @@
 }
 .container.grid-list-md.no-full-chapter .layout .flex {
     padding: 0px 4px;
+}
+.fab-container .amr-floting-progress {
+  margin-top: 6px;
+  margin-left: 6px;
+}
+.amr-floting-progress .v-btn {
+  width: 36px;
+  height: 36px;
+}
+.amr-chapter-progress-cont {
+  height: 3px;
+}
+.amr-chapter-progress-cont .v-progress-linear {
+  margin: 0px;
 }
 </style>
