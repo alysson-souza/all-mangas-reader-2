@@ -37,9 +37,10 @@ class HandleManga {
                 let mg = store.state.mangas.all.find(manga => manga.key === key)
                 if (mg !== undefined) {
                     return Promise.resolve({
-                        read: mg.read,
-                        display: mg.display,
-                        layout: mg.layout
+                        read: mg.read, /* Read top */
+                        display: mg.display, /* Display mode of the old reader */
+                        layout: mg.layout, /* Layout for the new reader */
+                        lastchapter: mg.lastChapterReadURL
                     });
                 } else {
                     return Promise.resolve();

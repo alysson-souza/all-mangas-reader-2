@@ -1,5 +1,7 @@
 <template>
   <v-app id="inspire" dark>
+    <!-- Global component to show confirmation dialogs -->
+    <confirm ref="confirm"></confirm>
     <!-- Global always visible buttons -->
     <v-hover>
       <v-layout column class="fab-container" slot-scope="{ hover }">
@@ -65,7 +67,8 @@
                   :items="chapters"
                   item-text="title"
                   item-value="url"
-                  solo dense single-line class="amr-chapter-select" 
+                  menu-props="auto"
+                  solo dense single-line hide-details class="amr-chapter-select"
                   loading="chapters.length === 0 ? 'primary' : false"
                   @change="goToChapter"
                 ></v-select>
@@ -80,7 +83,7 @@
               <v-btn icon color="yellow--text">
                   <v-icon>mdi-star</v-icon>
               </v-btn>
-              <v-btn icon color="orange--text">
+              <v-btn icon color="orange--text" v-show="showLatestRead" @click.stop="markAsLatest">
                   <v-icon>mdi-page-last</v-icon>
               </v-btn>
               <v-btn icon color="green--text" v-show="!mangaExists && options.addauto === 0" @click.stop="addManga">
@@ -166,6 +169,7 @@
 <script>
   import Vue from "vue"
   import browser from "webextension-polyfill";
+  import i18n from "../amr/i18n";
 
   import mirrorImpl from '../content/mirrorimpl';
   import pageData from '../content/pagedata';
@@ -173,8 +177,9 @@
   import util from "./util";
 
   import Page from "./Page";
+  import Confirm from "./Confirm";
 
-const resize_values = ['width', 'height', 'container', 'none']
+  const resize_values = ['width', 'height', 'container', 'none']
 
   export default {
     data: () => ({
@@ -192,10 +197,11 @@ const resize_values = ['width', 'height', 'container', 'none']
       chaploaded: false, /* True if all scans have been loaded */
       regroupablePages: [], /* How to regroup pages to make a book */
       visible: [0], /* List of indexes of visible pages, used when not fullchapter, one one in list except for transitions */
-      currentPage: 0, 
+      currentPage: 0, /* Current displayed page */
 
-      originalTitle: document.title,
-      mangaExists: null
+      originalTitle: document.title, /* Original title of the page */
+      mangaExists: null, /* Does manga exists in reading list */
+      mangaInfos: null /* specific manga information (layout state, read top, latest read chapter) */
     }),
     props: {
       images: Array /* List of scans to display, not necessarily pictures but urls that the implementation can handle to render a scan */
@@ -205,8 +211,8 @@ const resize_values = ['width', 'height', 'container', 'none']
       this.checkExists()
       /** Initialize key handlers */
       this.handlekeys()
-      /** Load current layout mode */
-      this.loadLayoutMode()
+      /** Load current manga informations */
+      this.loadMangaInformations()
       /** Load current bar state (drawer visible or not) */
       this.loadBarState()
     },
@@ -218,7 +224,7 @@ const resize_values = ['width', 'height', 'container', 'none']
       
       // mark manga as read
       if (options.markwhendownload === 0) {
-          util.consultManga()
+          this.consultManga()
       }
     },
     watch: {
@@ -251,6 +257,7 @@ const resize_values = ['width', 'height', 'container', 'none']
       }
     },
     computed: {
+      /** Options made accessible in dom */
       options() {
         return options
       },
@@ -281,6 +288,7 @@ const resize_values = ['width', 'height', 'container', 'none']
         if (this.selchap === null || this.chapters.length === 0) return true
         return this.chapters.findIndex(el => el.url === this.selchap) === this.chapters.length - 1
       },
+      /** The layout value for this manga, a value containing all specific reading options */
       layoutValue() {
         let cbook = this.book ? 1 : 0, 
             cdirection = this.direction === 'ltr' ? 0 : 1,
@@ -288,28 +296,45 @@ const resize_values = ['width', 'height', 'container', 'none']
             cresize = resize_values.findIndex(r => r === this.resize)
         
         return 1000 * cbook + 100 * cdirection + 10 * cfullchapter + cresize
+      },
+      /** can you mark this chapter as latest read */
+      showLatestRead() {
+        return this.mangaExists && (this.mangaInfos && !util.matchChapUrl(this.mangaInfos.lastchapter, pageData.currentChapterURL))
       }
     },
-    components: { Page },
+    components: { Page, Confirm },
     methods: {
+      /** Make i18n accessible from dom */
+      i18n: (message, ...args) => i18n(message, ...args),
+      /** Inform background that current chapter has been read (will update reading state and eventually add manga to list) */
+      async consultManga(force) {
+        await util.consultManga(force)
+        await this.loadMangaInformations() // reload last chapter read
+      },
+      /** Check if current manga is in reading list */
       async checkExists() {
         this.mangaExists = await util.mangaExists()
       },
+      /** Load the state of the side bar (hidden / shown) */
       async loadBarState() {
         let barState = await browser.runtime.sendMessage({action: "barState"})
         if (barState) {
           this.drawer = parseInt(barState.barVis) === 1
         }
       },
-      async loadLayoutMode() {
-        //Get specific mode for currentManga
+      /** Load current manga preferences (layout mode, read top, latest read chapter) */
+      async loadMangaInformations() {
+        //Get specific informations for currentManga (layout mode, reading mode, lastest read chapter)
         let cbook = -1, cdirection = -1, cfullchapter = -1, cresize = -1
         let specific = await browser.runtime.sendMessage({ 
             action: "mangaInfos", 
             url: pageData.currentMangaURL, 
             language: pageData.language 
         });
-        if (specific && specific.layout) {
+        // Save returned manga informations in state
+        this.mangaInfos = specific
+        // Compute current layout
+        if (specific && specific.layout) { // check specific layout for the current manga
             let l = specific.layout;
             cbook = Math.floor(l / 1000)
             l -= 1000 * cbook
@@ -324,7 +349,7 @@ const resize_values = ['width', 'height', 'container', 'none']
         if (cdirection === -1) cdirection = options.readingDirection
         if (cfullchapter === -1) cfullchapter = options.displayFullChapter
         if (cresize === -1) cresize = options.resizeMode
-        
+        // Set current layout
         this.book = cbook === 1
         this.direction = cdirection === 0 ? 'ltr': 'rtl'
         this.fullchapter = cfullchapter === 1
@@ -381,6 +406,7 @@ const resize_values = ['width', 'height', 'container', 'none']
             // Set last page full width because alone
             scans[this.images.length - 1].full = true
           }
+          // Calculates how to regroup pages
           let curPage = 0
           let regrouped = []
           for (let sc of scans) {
@@ -393,19 +419,24 @@ const resize_values = ['width', 'height', 'container', 'none']
               curPage++
             }
           }
-
           this.regroupablePages.length = 0;
           this.regroupablePages.push(...regrouped)
+
+          // Set loaded top
           this.chaploaded = true
+          // Reset document title
           document.title = this.originalTitle
+          // Preload next chapter
           if (options.prefetch == 1) {
               this.preloadNextChapter();
           }
+          // Mark current chapter as read if option mark as read when dowloaded checked
           if (options.markwhendownload === 1) {
-              util.consultManga();
+              this.consultManga()
           }
         }
       },
+      /** Load chapters list for current manga */
       async loadChapters() {
         // try to get list chap from background (already loaded in local db)
         let alreadyLoadedListChaps = await browser.runtime.sendMessage({
@@ -430,30 +461,51 @@ const resize_values = ['width', 'height', 'container', 'none']
           }
         })
       },
+      /** Mark current chapter as latest read in reading list */
+      async markAsLatest() {
+        if (await this.$refs.confirm.open(i18n("content_nav_mark_read"), i18n("content_nav_mark_read_confirm"), { color: 'orange' })) {
+          await browser.runtime.sendMessage({
+            action: "setMangaChapter",
+            url: pageData.currentMangaURL,
+            mirror: mirrorImpl.get().mirrorName,
+            lastChapterReadName: pageData.currentChapter,
+            lastChapterReadURL: pageData.currentChapterURL,
+            name: pageData.name, 
+            language: pageData.language
+          })
+          this.loadMangaInformations()
+        }
+      },
+      /** Add the current manga to reading list */
       async addManga() {
-        await util.consultManga(true)
+        await this.consultManga(true)
         this.mangaExists = true
       },
+      /** Go read a specific chapter */
       goToChapter() {
         if (this.selchap === null) return
         let cur = this.chapters.findIndex(el => el.url === this.selchap)
         window.location.href = this.chapters[cur].url
       },
+      /** Go to next chapter */
       goNextChapter() {
         if (this.selchap === null) return
         if (this.lastChapter) return
         let cur = this.chapters.findIndex(el => el.url === this.selchap)
         window.location.href = this.chapters[cur - 1].url
       },
+      /** Go to previous chapter */
       goPreviousChapter() {
         if (this.selchap === null) return false
         if (this.firstChapter) return
         let cur = this.chapters.findIndex(el => el.url === this.selchap)
         window.location.href = this.chapters[cur + 1].url
       },
+      /** Preloads the next chapter scans */
       preloadNextChapter() {
         //TODO
       },
+      /** Go to next scan */
       goNextScan() {
         let cur = this.currentPage, n = cur
         if (cur + 1 < this.pages.length) n = cur + 1
@@ -462,6 +514,7 @@ const resize_values = ['width', 'height', 'container', 'none']
         this.currentPage = n
         this.visible = [n]
       },
+      /** Go to previous scan */
       goPreviousScan() {
         let cur = this.currentPage, n = cur
         if (cur - 1 >= 0) n = cur - 1
@@ -470,6 +523,7 @@ const resize_values = ['width', 'height', 'container', 'none']
         this.currentPage = n
         this.visible = [n]
       },
+      /** Handle key shortcuts */
       handlekeys() {
         let self = this;
         let registerKeys = (e) => {

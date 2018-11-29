@@ -99,11 +99,7 @@ function removeStyles() {
     for(i in stylesheets) {
         if (stylesheets.hasOwnProperty(i)) {
             sheet = stylesheets[i];
-            console.log(sheet)
-            console.log(sheet.getAttribute("rel"))
-            console.log(sheet.getAttribute("type"))
             if((sheet.getAttribute("rel") && sheet.getAttribute("rel") == "stylesheet") || (sheet.getAttribute('type') && sheet.getAttribute('type').toLowerCase() == 'text/css')) {
-                console.log("-->remove")
                 sheet.parentNode.removeChild(sheet);
             }
         }
