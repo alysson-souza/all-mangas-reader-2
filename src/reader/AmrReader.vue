@@ -89,9 +89,18 @@
               <v-btn icon color="green--text" v-show="!mangaExists && options.addauto === 0" @click.stop="addManga">
                   <v-icon>mdi-plus</v-icon>
               </v-btn>
-              <v-btn icon color="blue--text">
-                  <v-icon>mdi-pause</v-icon>
-              </v-btn>
+              <v-tooltip bottom v-show="mangaExists && mangaInfos && mangaInfos.read === 0">
+                <v-btn slot="activator" icon color="blue--text" @click.stop="markReadTop(1)">
+                    <v-icon>mdi-pause</v-icon>
+                </v-btn>
+                <span>{{i18n("content_nav_stopfollow")}}</span>
+              </v-tooltip>
+              <v-tooltip bottom v-show="mangaExists && mangaInfos && mangaInfos.read === 1">
+                <v-btn slot="activator" icon color="blue--text" @click.stop="markReadTop(0)">
+                    <v-icon>mdi-play</v-icon>
+                </v-btn>
+                <span>{{i18n("content_nav_follow")}}</span>
+              </v-tooltip>
             </v-flex>
           </v-layout>
         </v-card-actions>
@@ -460,6 +469,17 @@
               return false
           }
         })
+      },
+      /** Change updating mode for this manga (1 : stop updating, 0 : check updates) */
+      async markReadTop(nTop) {
+        await browser.runtime.sendMessage({
+            action: "markReadTop",
+            url: pageData.currentMangaURL,
+            read: nTop,
+            updatesamemangas: true, 
+            language: pageData.language
+        })
+        this.loadMangaInformations()
       },
       /** Mark current chapter as latest read in reading list */
       async markAsLatest() {
