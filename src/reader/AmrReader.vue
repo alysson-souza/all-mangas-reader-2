@@ -93,8 +93,8 @@
                 </v-tooltip>
               </v-toolbar>
             </v-flex>
-            <v-flex xs12 v-show="nextchapLoading" class="amr-chapter-progress-cont">
-              <v-tooltip bottom>
+            <v-flex xs12 class="amr-chapter-progress-cont">
+              <v-tooltip bottom v-show="nextchapLoading">
                 <v-progress-linear slot="activator" class="amr-floting-progress"
                   :height="3"
                   :value="nextchapProgress"
