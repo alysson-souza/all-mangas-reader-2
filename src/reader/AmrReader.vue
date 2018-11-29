@@ -590,6 +590,7 @@
 .amr-manga-title div {
  margin-left: auto;
  margin-right: auto;
+ text-align: center;
 }
 .amr-manga-title img {
   vertical-align: middle;
@@ -598,6 +599,7 @@
   color: white;
   text-decoration: none;
   vertical-align: middle;
+  word-break: break-word;
 }
 /** To prevent select to be too small due to large padding */
 .v-toolbar.pa-0 .v-toolbar__content {
@@ -625,8 +627,8 @@
 }
 .fab-container {
   position: fixed;
-  top: 24px;
-  right: 24px;
+  top: 10px;
+  right: 10px;
   z-index: 4;
 }
 .container.grid-list-md .layout .flex {
