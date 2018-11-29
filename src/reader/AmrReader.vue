@@ -139,10 +139,7 @@
               <v-switch v-model="book" label="Display as a book (side by side scans)"></v-switch>
             </v-flex>
             <!-- Reading direction -->
-            <v-flex xs6 align-self-center v-show="book">
-              <div class="subheading">Reading direction</div>
-            </v-flex>
-            <v-flex xs6 v-show="book">
+            <v-flex xs12 v-show="book" text-xs-center>
               <v-btn-toggle v-model="direction">
                 <v-btn flat value="ltr">
                   <!--<span>Left to right</span>-->
@@ -158,23 +155,24 @@
               <!-- Display full chapter checkbox -->
               <v-switch v-model="fullchapter" label="Display full chapter (if unchecked, display current page)"></v-switch>
             </v-flex>
-            <v-flex xs6 align-self-center v-show="!fullchapter">
-              <!-- Resize mode -->
-              <div class="subheading">Resize scans</div>
-            </v-flex>
-            <v-flex xs6 v-show="!fullchapter">
+            <!-- Resize mode -->
+            <v-flex xs12 text-xs-center>
               <v-btn-toggle v-model="resize">
                 <v-btn flat value="width">
                   <!--<span>Width</span>-->
                   <v-icon>mdi-arrow-expand-horizontal</v-icon>
                 </v-btn>
-                <v-btn flat value="height">
+                <v-btn flat value="height" v-show="!fullchapter">
                   <!--<span>Height</span>-->
                   <v-icon>mdi-arrow-expand-vertical</v-icon>
                 </v-btn>
-                <v-btn flat value="container">
+                <v-btn flat value="container" v-show="!fullchapter">
                   <!--<span>Container</span>-->
                   <v-icon>mdi-arrow-expand-all</v-icon>
+                </v-btn>
+                <v-btn flat value="none">
+                  <!--<span>None</span>-->
+                  <v-icon>mdi-border-none-variant</v-icon>
                 </v-btn>
               </v-btn-toggle>
             </v-flex>
@@ -265,6 +263,12 @@
       }
     },
     watch: {
+      /** Change resize value if passing from !fullchapter to fullchapter (height and container are no more available) */
+      fullchapter(nVal, oVal) {
+        if (nVal && !oVal && ['height', 'container'].includes(this.resize)) {
+          this.resize = "width"
+        }
+      },
       /** Keep drawer state */
       drawer(nVal, oVal) {
         browser.runtime.sendMessage({
@@ -743,5 +747,10 @@
 .amr-scan-container td {
   text-align: center;
   vertical-align: middle;
+}
+/** Create an horizontal scrollbar overflowing the side drawer when necessary (resize=none) */
+html {
+  max-height:100vh;
+  overflow: auto;
 }
 </style>
