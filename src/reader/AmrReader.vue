@@ -247,6 +247,7 @@
       lastKeyPressTime: 0, /* Last time a key was pressed (to detect double tap) */
       lastKeyPress: 0, /* Last key pressed */
       doubleTapDuration: 250, /* Laps of time between two events to be considered as doubletap */
+      scrollRatio: 0, /* Keep the scroll ratio (scrollY / total) to restore position when resizing display zone */
     }),
     props: {
       images: Array /* List of scans to display, not necessarily pictures but urls that the implementation can handle to render a scan */
@@ -260,6 +261,10 @@
       this.loadMangaInformations()
       /** Load current bar state (drawer visible or not) */
       this.loadBarState()
+      /** Keep scroll ratio */
+      window.addEventListener('scroll', () => {
+        this.scrollRatio = window.pageYOffset / document.documentElement.scrollHeight
+      });
     },
     mounted() {
       /* Load chapters list */
@@ -280,7 +285,7 @@
             this.resize = "width"
           }
           this.$nextTick(() => {
-            this.$scrollTo(this.$refs.page[this.currentPage].$el, -1)
+            this.$scrollTo(this.$refs.page[this.currentPage].$el, -1) /* use -1 cause 0 not taken into account */
           })
         } else {
           window.scroll(0, 0)
@@ -288,10 +293,20 @@
       },
       /** Keep drawer state */
       drawer(nVal, oVal) {
+        this.keepScrollPos() // keep the scrolling ratio when opening / closing drawer !
         browser.runtime.sendMessage({
             action: "setBarState",
             barstate: nVal ? 1 : 0
         })
+      },
+      resize(nVal, oVal) {
+        this.keepScrollPos(100) // keep the scrolling ratio when changing resize mode
+        if (nVal !== 'none') {
+          this.$refs.scantable.style.zoom = 1
+        }
+      },
+      book(nVal, oVal) { // keep the scrolling ratio when changing book mode / not really relevant but better than nothing...
+        this.keepScrollPos(100)
       },
       /**
        * Update the specific layout value for the current manga
@@ -669,6 +684,17 @@
           }
         }
       },
+      keepScrollPos(duration = 500) {
+        let ratio = this.scrollRatio
+        let start = Date.now()
+        let keepScrollPosAnime = () => {
+          window.scroll(0, document.documentElement.scrollHeight * ratio)
+          if (Date.now() - start < duration) {
+            requestAnimationFrame(keepScrollPosAnime)
+          }
+        }
+        keepScrollPosAnime()
+      },
       /** Called when a page becomes the new current page (more than half of the viewport) */
       becomeCurrent({index}) {
         this.currentPage = index
@@ -697,6 +723,8 @@
               window.scrollBy(0, this.scrollStepWithKeys);
             }
             if (e.which === 107 || e.which === 187) { //+
+              // keep the scrolling ratio when zooming in
+              this.keepScrollPos(100)
               this.resize = "none"
               if (!this.$refs.scantable.style.zoom || this.$refs.scantable.style.zoom === 0) {
                 this.$refs.scantable.style.zoom = 1
@@ -705,6 +733,8 @@
               }
             }
             if (e.which === 109 || e.which === 189) { //-
+              // keep the scrolling ratio when zooming out
+              this.keepScrollPos(100)
               this.resize = "none"
               if (!this.$refs.scantable.style.zoom || this.$refs.scantable.style.zoom === 0) {
                 this.$refs.scantable.style.zoom = 1
