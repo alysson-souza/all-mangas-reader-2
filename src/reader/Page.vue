@@ -11,25 +11,82 @@
 import Scan from "./Scan"
 
 export default {
+    data() {
+        return {
+            inViewport: false, // true if page or part of page is visible in viewport
+            topInViewport: false, // true if top border of page is visible in viewport
+            atTop: false, // true if top border is sticked on top of viewport
+            bottomInViewport: false, // true if bottom border of page is visible in viewport
+            atBottom: false, // true if bottom border is sticked on bottom of viewport
+            visibleProportion: 0 // total height in viewport
+        }
+    },
     props: {
-        scans: Array,
-        direction: {
+        index: Number, /* Index of the page */
+        scans: Array, /* List of scans to display */
+        direction: { /* Direction of reading */
             type: String,
             default: "ltr"
         },
-        resize: String
+        resize: String /* Resize mode */
     },
     name: "Page",
     components: { Scan },
+    created() {
+        /* Listen for scroll event to check if page is in viewport */
+        window.addEventListener('scroll', () => {
+            this.checkInViewPort()
+        });
+    },
+    mounted() {
+        // first set in viewport values
+        this.$nextTick(() => this.checkInViewPort())
+    },
     methods: {
+        /* Emit an event to main app when a scan has been loaded */
         loadedScan() {
             this.$emit("loaded-scan")
         },
+        /* Return true if the only scan in the page is double */
         isSoloDoublePage() {
             return this.$refs.solo && this.$refs.solo.doublepage
         },
+        /* Return true if the only scan in the page is loading */
         isSoloLoading() {
             return this.$refs.solo && this.$refs.solo.loading
+        },
+        /* Check which part of the page is in viewport (in height) */
+        checkInViewPort() {
+            let el = this.$el
+            let top = el.offsetTop
+            let height = el.offsetHeight
+
+            while (el.offsetParent) {
+                el = el.offsetParent
+                top += el.offsetTop
+            }
+            top += el.offsetTop
+
+            this.inViewport = (
+                top < (window.pageYOffset + window.innerHeight) &&
+                (top + height) > window.pageYOffset
+            )
+            this.bottomInViewport = ((top + height) <= window.pageYOffset + window.innerHeight)
+            this.atBottom = (Math.floor(top + height) === Math.floor(window.pageYOffset + window.innerHeight))
+            this.topInViewport = (top >= window.pageYOffset)
+            this.atTop = (Math.floor(top) === Math.floor(window.pageYOffset))
+
+            /* Compute visible proportion */
+            if (this.bottomInViewport && this.topInViewport) this.visibleProportion = height
+            else if (!this.bottomInViewport && this.topInViewport) 
+                this.visibleProportion = window.pageYOffset + window.innerHeight - top
+            else if (this.bottomInViewport && !this.topInViewport) 
+                this.visibleProportion = top + height - window.pageYOffset
+            else this.visibleProportion = window.innerHeight
+
+            if (this.visibleProportion > window.innerHeight / 2) {
+                this.$emit("become-current", {index: this.index})
+            }
         }
     }
 }

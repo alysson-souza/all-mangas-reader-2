@@ -7,6 +7,7 @@ import Vue from "vue"
 import 'vuetify/dist/vuetify.min.css';
 import Vuetify from 'vuetify';
 import theme from '../pages/theme';
+import VueScrollTo from "vue-scrollto";
 
 import AmrReader from './AmrReader.vue';
 
@@ -91,6 +92,7 @@ function initReader(images) {
     // Load vue
     Vue.config.productionTip = false
     Vue.use(Vuetify, { theme: theme, iconfont: 'mdi' })
+    Vue.use(VueScrollTo)
     new Vue({
         el: amrdiv,
         render: h => h(AmrReader, { props: {images: images} })

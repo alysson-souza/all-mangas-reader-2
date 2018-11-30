@@ -186,12 +186,15 @@
         :class="{'no-full-chapter': !fullchapter}">
         <!-- Scans -->
         <table class="amr-scan-container" border="0" cellspacing="0" cellpadding="0">
-          <Page v-for="(scans, i) in pages" :key="i" 
+          <Page v-for="(scans, i) in pages" :key="i"
+              :index="i" 
               :scans="scans" 
               @loaded-scan="loadedScan" 
               :direction="direction"
               :resize="resize"
-              ref="page" v-show="isVisible(i)" />
+              ref="page" 
+              v-show="isVisible(i)"
+              @become-current="becomeCurrent" />
         </table>
       </v-container>
     </v-content>
@@ -237,6 +240,8 @@
 
       nextchapLoading: false, /* Is next chapter prefetching */
       nextchapProgress: 0, /* Progress of next chap loading */
+
+      animationDuration: 250, /* Duration of scrolls animation when navigating with keys */
     }),
     props: {
       images: Array /* List of scans to display, not necessarily pictures but urls that the implementation can handle to render a scan */
@@ -592,19 +597,58 @@
       goNextScan() {
         let cur = this.currentPage, n = cur
         if (cur + 1 < this.pages.length) n = cur + 1
-        if (cur === n) return
 
-        this.currentPage = n
-        this.visible = [n]
+        if (!this.fullchapter) {
+          // just change the visibility of current page and next page
+          if (cur === n) return
+
+          this.currentPage = n
+          this.visible = [n]
+        } else {
+          // if current page top is visible, go to top of the page, if not and bottom not visible, go to bottom, else and if there is a next page go to top of next page
+          let curpage = this.$refs.page[this.currentPage]
+          if (curpage.topInViewport && !curpage.atTop) { // go to top of the current page
+            this.$scrollTo(curpage.$el, this.animationDuration)
+          } else if (!curpage.bottomInViewport) { // go to bottom of the current page
+            this.$scrollTo(curpage.$el, this.animationDuration, {
+              offset: curpage.$el.offsetHeight - window.innerHeight
+            })
+          } else if (n !== cur) { // go to top of the next page
+            this.$scrollTo(this.$refs.page[n].$el, this.animationDuration)
+          }
+        }
       },
       /** Go to previous scan */
       goPreviousScan() {
         let cur = this.currentPage, n = cur
         if (cur - 1 >= 0) n = cur - 1
-        if (cur === n) return
 
-        this.currentPage = n
-        this.visible = [n]
+        if (!this.fullchapter) {
+          // just change the visibility of current page and previous page
+          if (cur === n) return
+
+          this.currentPage = n
+          this.visible = [n]
+        } else {
+          // if current page bottom is visible, go to bottom of the current page, if not and top not visible, go to top, else and if there is a previous page go to bottom of previous page
+          let curpage = this.$refs.page[this.currentPage]
+          if (curpage.bottomInViewport && !curpage.atBottom) { // go to top of the current page
+            this.$scrollTo(curpage.$el, this.animationDuration, {
+              offset: curpage.$el.offsetHeight - window.innerHeight
+            })
+          } else if (!curpage.topInViewport) { // go to bottom of the current page
+            this.$scrollTo(curpage.$el, this.animationDuration)
+          } else if (n !== cur) { // go to top of the next page
+            this.$scrollTo(this.$refs.page[n].$el, this.animationDuration, {
+              offset: this.$refs.page[n].$el.offsetHeight - window.innerHeight
+            })
+          }
+        }
+      },
+      /** Called when a page becomes the new current page (more than half of the viewport) */
+      becomeCurrent({index}) {
+        this.currentPage = index
+        this.visible = [index]
       },
       /** Handle key shortcuts */
       handlekeys() {
@@ -633,11 +677,13 @@
                     // next chapter
                     this.goNextChapter()
                 }
-                if (options.lrkeys == 1) {
+                //if (options.lrkeys == 1) {
                     //Left key or A
                     if ((e.which == 37) || (e.which == 65)) {
                         // go to previous scan
-                        this.goPreviousScan()
+                        try {
+                          this.goPreviousScan()
+                        } catch (e) {} // prevent default in any case
                         e.preventDefault()
                         e.stopPropagation()
                         e.stopImmediatePropagation()
@@ -645,12 +691,14 @@
                     //Right key or D
                     if ((e.which == 39) || (e.which == 68)) {
                         // go to next scan
-                        this.goNextScan()
+                        try {
+                          this.goNextScan()
+                        } catch (e) {} // prevent default in any case
                         e.preventDefault()
                         e.stopPropagation()
                         e.stopImmediatePropagation()
                     }
-                }
+                //}
             }
         }
         window.addEventListener('keydown', registerKeys, true);
