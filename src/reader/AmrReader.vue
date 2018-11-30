@@ -275,8 +275,15 @@
     watch: {
       /** Change resize value if passing from !fullchapter to fullchapter (height and container are no more available) */
       fullchapter(nVal, oVal) {
-        if (nVal && !oVal && ['height', 'container'].includes(this.resize)) {
-          this.resize = "width"
+        if (nVal && !oVal) {
+          if (['height', 'container'].includes(this.resize)) {
+            this.resize = "width"
+          }
+          this.$nextTick(() => {
+            this.$scrollTo(this.$refs.page[this.currentPage].$el, -1)
+          })
+        } else {
+          window.scroll(0, 0)
         }
       },
       /** Keep drawer state */
@@ -670,108 +677,108 @@
       /** Handle key shortcuts */
       handlekeys() {
         let registerKeys = (e) => {
-            e = e || window.event;
-            let t = e.target || e.srcElement;
+          e = e || window.event;
+          let t = e.target || e.srcElement;
 
-            if (!((t.type && t.type === "text") || t.nodeName.toLowerCase() === "textarea")) {
-                // Handle double tap events
-                let doubletap = false
-                if (this.lastKeyPress === e.which && 
-                  Date.now() - this.lastKeyPressTime <= this.doubleTapDuration) {
-                    doubletap = true
-                }
-                this.lastKeyPress = e.which
-                this.lastKeyPressTime = Date.now()
-
-                if (e.which === 87) { //W
-                    window.scrollBy(0, -this.scrollStepWithKeys);
-                }
-                if (e.which === 83) { //S
-                    window.scrollBy(0, this.scrollStepWithKeys);
-                }
-                if (e.which === 107 || e.which === 187) { //+
-                  this.resize = "none"
-                  if (!this.$refs.scantable.style.zoom || this.$refs.scantable.style.zoom === 0) {
-                    this.$refs.scantable.style.zoom = 1
-                  } else {
-                    this.$refs.scantable.style.zoom = this.$refs.scantable.style.zoom * 1.1
-                  }
-                }
-                if (e.which === 109 || e.which === 189) { //-
-                  this.resize = "none"
-                  if (!this.$refs.scantable.style.zoom || this.$refs.scantable.style.zoom === 0) {
-                    this.$refs.scantable.style.zoom = 1
-                  } else {
-                    this.$refs.scantable.style.zoom = this.$refs.scantable.style.zoom * 0.9
-                  }
-                }
-                if (e.which === 66) { //b
-                    // previous chapter
-                    this.goPreviousChapter()
-                }
-                if (e.which === 78) { //n
-                    // next chapter
-                    this.goNextChapter()
-                }
-                //if (options.lrkeys == 1) {
-                    //Left key or A
-                    if ((e.which === 37) || (e.which === 65)) {
-                        if (window.pageXOffset > 0) {
-                          window.scrollBy(-this.scrollStepWithKeys, 0);
-                        } else {
-                          // go to previous scan
-                          try {
-                            this.goPreviousScan(doubletap)
-                          } catch (e) {} // prevent default in any case
-                        }
-
-                        e.preventDefault()
-                        e.stopPropagation()
-                        e.stopImmediatePropagation()
-                    }
-                    //Right key or D
-                    if ((e.which === 39) || (e.which === 68)) {
-                        // go to next scan
-                        if ((window.innerWidth + window.pageXOffset) < this.$refs.scantable.offsetWidth) {
-                          window.scrollBy(this.scrollStepWithKeys, 0);
-                        } else {
-                          try {
-                            this.goNextScan(doubletap)
-                          } catch (e) {} // prevent default in any case
-                        }
-                        
-                        e.preventDefault()
-                        e.stopPropagation()
-                        e.stopImmediatePropagation()
-                    }
-                //}
+          if (!((t.type && t.type === "text") || t.nodeName.toLowerCase() === "textarea")) {
+            // Handle double tap events
+            let doubletap = false
+            if (this.lastKeyPress === e.which && 
+              Date.now() - this.lastKeyPressTime <= this.doubleTapDuration) {
+                doubletap = true
             }
+            this.lastKeyPress = e.which
+            this.lastKeyPressTime = Date.now()
+
+            if (e.which === 87) { //W
+              window.scrollBy(0, -this.scrollStepWithKeys);
+            }
+            if (e.which === 83) { //S
+              window.scrollBy(0, this.scrollStepWithKeys);
+            }
+            if (e.which === 107 || e.which === 187) { //+
+              this.resize = "none"
+              if (!this.$refs.scantable.style.zoom || this.$refs.scantable.style.zoom === 0) {
+                this.$refs.scantable.style.zoom = 1
+              } else {
+                this.$refs.scantable.style.zoom = this.$refs.scantable.style.zoom * 1.1
+              }
+            }
+            if (e.which === 109 || e.which === 189) { //-
+              this.resize = "none"
+              if (!this.$refs.scantable.style.zoom || this.$refs.scantable.style.zoom === 0) {
+                this.$refs.scantable.style.zoom = 1
+              } else {
+                this.$refs.scantable.style.zoom = this.$refs.scantable.style.zoom * 0.9
+              }
+            }
+            if (e.which === 66) { //b
+              // previous chapter
+              this.goPreviousChapter()
+            }
+            if (e.which === 78) { //n
+              // next chapter
+              this.goNextChapter()
+            }
+            //Left key or A
+            if ((e.which === 37) || (e.which === 65)) {
+              if (window.pageXOffset > 0) {
+                window.scrollBy(-this.scrollStepWithKeys, 0);
+              } else {
+                // go to previous scan
+                try {
+                  this.goPreviousScan(doubletap)
+                } catch (e) {} // prevent default in any case
+              }
+
+              e.preventDefault()
+              e.stopPropagation()
+              e.stopImmediatePropagation()
+            }
+            //Right key or D
+            if ((e.which === 39) || (e.which === 68)) {
+              // go to next scan
+              if ((window.innerWidth + window.pageXOffset) < this.$refs.scantable.offsetWidth) {
+                window.scrollBy(this.scrollStepWithKeys, 0);
+              } else {
+                try {
+                  this.goNextScan(doubletap)
+                } catch (e) {} // prevent default in any case
+              }
+              
+              e.preventDefault()
+              e.stopPropagation()
+              e.stopImmediatePropagation()
+            }
+          }
         }
         window.addEventListener('keydown', registerKeys, true);
 
         //disable default websites shortcuts
         let stopProp = (e) => e.stopImmediatePropagation();
-        //if (options.lrkeys === 1) {
-            window.addEventListener('keyup', stopProp, true);
-            window.addEventListener('keypress', stopProp, true);
-        //}
+        window.addEventListener('keyup', stopProp, true);
+        window.addEventListener('keypress', stopProp, true);
       }
     }
   }
 </script>
 
 <style>
+/** Drawer content below menu button */
 .amr-drawer {
   padding-top:36px;
 }
+/** Center manga title */
 .amr-manga-title div {
  margin-left: auto;
  margin-right: auto;
  text-align: center;
 }
+/** Align mirror icon */
 .amr-manga-title img {
   vertical-align: middle;
 }
+/** Manga title link */
 .amr-manga-title a { 
   color: white;
   text-decoration: none;
@@ -782,20 +789,6 @@
 .v-toolbar.pa-0 .v-toolbar__content {
   padding: 0px 5px;
 }
-/** To prevent select to be multiline and overflow the manga title */
-/*.amr-chapter-select {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-.amr-chapter-select .v-select__slot {
-  overflow: hidden;
-}*/
-/*
-.v-card__actions .v-btn-toggle .v-btn+.v-btn {
-    margin-left: 0px;
-}
-*/
 .opacity-full {
   opacity: 1;
 }
