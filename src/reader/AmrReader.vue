@@ -185,7 +185,7 @@
       <v-container fluid text-xs-center pa-0 
         :class="{'no-full-chapter': !fullchapter}">
         <!-- Scans -->
-        <table class="amr-scan-container" border="0" cellspacing="0" cellpadding="0">
+        <table ref="scantable" class="amr-scan-container" border="0" cellspacing="0" cellpadding="0">
           <Page v-for="(scans, i) in pages" :key="i"
               :index="i" 
               :scans="scans" 
@@ -242,6 +242,7 @@
       nextchapProgress: 0, /* Progress of next chap loading */
 
       animationDuration: 250, /* Duration of scrolls animation when navigating with keys */
+      scrollStepWithKeys: 50, /* Scroll step with keys when need to scroll by steps */
     }),
     props: {
       images: Array /* List of scans to display, not necessarily pictures but urls that the implementation can handle to render a scan */
@@ -658,10 +659,10 @@
             let t = e.target || e.srcElement;
             if (!((t.type && t.type == "text") || t.nodeName.toLowerCase() == "textarea")) {
                 if (e.which == 87) { //W
-                    window.scrollBy(0, -40);
+                    window.scrollBy(0, -this.scrollStepWithKeys);
                 }
                 if (e.which == 83) { //S
-                    window.scrollBy(0, 40);
+                    window.scrollBy(0, this.scrollStepWithKeys);
                 }
                 if (e.which == 107 || e.which == 187) { //+
                     //this.zoomin();
@@ -680,10 +681,15 @@
                 //if (options.lrkeys == 1) {
                     //Left key or A
                     if ((e.which == 37) || (e.which == 65)) {
-                        // go to previous scan
-                        try {
-                          this.goPreviousScan()
-                        } catch (e) {} // prevent default in any case
+                        if (window.pageXOffset > 0) {
+                          window.scrollBy(-this.scrollStepWithKeys, 0);
+                        } else {
+                          // go to previous scan
+                          try {
+                            this.goPreviousScan()
+                          } catch (e) {} // prevent default in any case
+                        }
+
                         e.preventDefault()
                         e.stopPropagation()
                         e.stopImmediatePropagation()
@@ -691,9 +697,14 @@
                     //Right key or D
                     if ((e.which == 39) || (e.which == 68)) {
                         // go to next scan
-                        try {
-                          this.goNextScan()
-                        } catch (e) {} // prevent default in any case
+                        if ((window.innerWidth + window.pageXOffset) < this.$refs.scantable.offsetWidth) {
+                          window.scrollBy(this.scrollStepWithKeys, 0);
+                        } else {
+                          try {
+                            this.goNextScan()
+                          } catch (e) {} // prevent default in any case
+                        }
+                        
                         e.preventDefault()
                         e.stopPropagation()
                         e.stopImmediatePropagation()
