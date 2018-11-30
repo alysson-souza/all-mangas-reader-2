@@ -442,7 +442,7 @@
             let full = false
             if (this.$refs.page[i].isSoloDoublePage()) {
               full = true
-              if ((i - lastfull > 1 || lastfull === 0) && (i - lastfull) % 2 !== 0) {
+              if ((i - lastfull) % 2 !== 0)  {
                 // Change display of scan which is after the previous double page scan
                 scans[lastfull].full = true
               }
@@ -739,6 +739,7 @@
 .amr-scan-container td {
   padding-bottom: 4px;
   padding-top: 4px;
+  line-height: normal;
 }
 .no-full-chapter .amr-scan-container td {
   padding-bottom: 0px;

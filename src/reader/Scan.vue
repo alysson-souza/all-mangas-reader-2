@@ -47,7 +47,7 @@ export default {
             this.loading = true
             this.$refs.scan.onload = () => {
                 let img = this.$refs.scan
-                if (img.width >= img.height) {
+                if (img.width > img.height) {
                     this.doublepage = true
                 }
                 this.loading = false

@@ -36,11 +36,11 @@ export default {
 </script>
 
 <style>
-.amr-right-page {
+.amr-scan-container td.amr-right-page {
     text-align: left;
     padding-left: 4px;
 }
-.amr-left-page {
+.amr-scan-container td.amr-left-page {
     text-align: right;
     padding-right: 4px;
 }
