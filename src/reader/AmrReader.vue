@@ -614,6 +614,7 @@
 
           this.currentPage = n
           this.visible = [n]
+          window.scroll(0, 0)
         } else {
           // if current page top is visible, go to top of the page, if not and bottom not visible, go to bottom, else and if there is a next page go to top of next page
           let curpage = this.$refs.page[this.currentPage]
@@ -644,6 +645,7 @@
 
           this.currentPage = n
           this.visible = [n]
+          window.scroll(0, 0)
         } else {
           // if current page bottom is visible, go to bottom of the current page, if not and top not visible, go to top, else and if there is a previous page go to bottom of previous page
           let curpage = this.$refs.page[this.currentPage]
