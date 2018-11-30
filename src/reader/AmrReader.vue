@@ -243,6 +243,9 @@
 
       animationDuration: 250, /* Duration of scrolls animation when navigating with keys */
       scrollStepWithKeys: 50, /* Scroll step with keys when need to scroll by steps */
+      lastKeyPressTime: 0, /* Last time a key was pressed (to detect double tap) */
+      lastKeyPress: 0, /* Last key pressed */
+      doubleTapDuration: 250, /* Laps of time between two events to be considered as doubletap */
     }),
     props: {
       images: Array /* List of scans to display, not necessarily pictures but urls that the implementation can handle to render a scan */
@@ -595,10 +598,15 @@
           }
       },
       /** Go to next scan */
-      goNextScan() {
+      goNextScan(doubletap) {
         let cur = this.currentPage, n = cur
         if (cur + 1 < this.pages.length) n = cur + 1
 
+        if (doubletap && n === cur) {
+          this.goNextChapter()
+          return
+        }
+        
         if (!this.fullchapter) {
           // just change the visibility of current page and next page
           if (cur === n) return
@@ -620,9 +628,14 @@
         }
       },
       /** Go to previous scan */
-      goPreviousScan() {
+      goPreviousScan(doubletap) {
         let cur = this.currentPage, n = cur
         if (cur - 1 >= 0) n = cur - 1
+
+        if (doubletap && n === cur) {
+          this.goPreviousChapter()
+          return
+        }
 
         if (!this.fullchapter) {
           // just change the visibility of current page and previous page
@@ -653,11 +666,20 @@
       },
       /** Handle key shortcuts */
       handlekeys() {
-        let self = this;
         let registerKeys = (e) => {
             e = e || window.event;
             let t = e.target || e.srcElement;
+
             if (!((t.type && t.type == "text") || t.nodeName.toLowerCase() == "textarea")) {
+                // Handle double tap events
+                let doubletap = false
+                if (this.lastKeyPress === e.which && 
+                  Date.now() - this.lastKeyPressTime <= this.doubleTapDuration) {
+                    doubletap = true
+                }
+                this.lastKeyPress = e.which
+                this.lastKeyPressTime = Date.now()
+
                 if (e.which == 87) { //W
                     window.scrollBy(0, -this.scrollStepWithKeys);
                 }
@@ -665,10 +687,10 @@
                     window.scrollBy(0, this.scrollStepWithKeys);
                 }
                 if (e.which == 107 || e.which == 187) { //+
-                    //this.zoomin();
+                    this.$refs.scantable.style.zoom = this.$refs.scantable.style.zoom * 1.1
                 }
                 if (e.which == 109 || e.which == 189) { //-
-                    //this.zoomout();
+                    this.$refs.scantable.style.zoom = this.$refs.scantable.style.zoom * 0.9
                 }
                 if (e.which == 66) { //b
                     // previous chapter
@@ -686,7 +708,7 @@
                         } else {
                           // go to previous scan
                           try {
-                            this.goPreviousScan()
+                            this.goPreviousScan(doubletap)
                           } catch (e) {} // prevent default in any case
                         }
 
@@ -701,7 +723,7 @@
                           window.scrollBy(this.scrollStepWithKeys, 0);
                         } else {
                           try {
-                            this.goNextScan()
+                            this.goNextScan(doubletap)
                           } catch (e) {} // prevent default in any case
                         }
                         
