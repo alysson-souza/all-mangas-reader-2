@@ -214,6 +214,7 @@
   import Page from "./Page";
   import Confirm from "./Confirm";
 
+  /** Possible values for resize (readable), the stored value is the corresponding index */
   const resize_values = ['width', 'height', 'container', 'none']
 
   export default {
@@ -670,7 +671,7 @@
             e = e || window.event;
             let t = e.target || e.srcElement;
 
-            if (!((t.type && t.type == "text") || t.nodeName.toLowerCase() == "textarea")) {
+            if (!((t.type && t.type === "text") || t.nodeName.toLowerCase() === "textarea")) {
                 // Handle double tap events
                 let doubletap = false
                 if (this.lastKeyPress === e.which && 
@@ -680,29 +681,39 @@
                 this.lastKeyPress = e.which
                 this.lastKeyPressTime = Date.now()
 
-                if (e.which == 87) { //W
+                if (e.which === 87) { //W
                     window.scrollBy(0, -this.scrollStepWithKeys);
                 }
-                if (e.which == 83) { //S
+                if (e.which === 83) { //S
                     window.scrollBy(0, this.scrollStepWithKeys);
                 }
-                if (e.which == 107 || e.which == 187) { //+
+                if (e.which === 107 || e.which === 187) { //+
+                  this.resize = "none"
+                  if (!this.$refs.scantable.style.zoom || this.$refs.scantable.style.zoom === 0) {
+                    this.$refs.scantable.style.zoom = 1
+                  } else {
                     this.$refs.scantable.style.zoom = this.$refs.scantable.style.zoom * 1.1
+                  }
                 }
-                if (e.which == 109 || e.which == 189) { //-
+                if (e.which === 109 || e.which === 189) { //-
+                  this.resize = "none"
+                  if (!this.$refs.scantable.style.zoom || this.$refs.scantable.style.zoom === 0) {
+                    this.$refs.scantable.style.zoom = 1
+                  } else {
                     this.$refs.scantable.style.zoom = this.$refs.scantable.style.zoom * 0.9
+                  }
                 }
-                if (e.which == 66) { //b
+                if (e.which === 66) { //b
                     // previous chapter
                     this.goPreviousChapter()
                 }
-                if (e.which == 78) { //n
+                if (e.which === 78) { //n
                     // next chapter
                     this.goNextChapter()
                 }
                 //if (options.lrkeys == 1) {
                     //Left key or A
-                    if ((e.which == 37) || (e.which == 65)) {
+                    if ((e.which === 37) || (e.which === 65)) {
                         if (window.pageXOffset > 0) {
                           window.scrollBy(-this.scrollStepWithKeys, 0);
                         } else {
@@ -717,7 +728,7 @@
                         e.stopImmediatePropagation()
                     }
                     //Right key or D
-                    if ((e.which == 39) || (e.which == 68)) {
+                    if ((e.which === 39) || (e.which === 68)) {
                         // go to next scan
                         if ((window.innerWidth + window.pageXOffset) < this.$refs.scantable.offsetWidth) {
                           window.scrollBy(this.scrollStepWithKeys, 0);
@@ -738,10 +749,10 @@
 
         //disable default websites shortcuts
         let stopProp = (e) => e.stopImmediatePropagation();
-        if (options.lrkeys == 1) {
+        //if (options.lrkeys === 1) {
             window.addEventListener('keyup', stopProp, true);
             window.addEventListener('keypress', stopProp, true);
-        }
+        //}
       }
     }
   }
