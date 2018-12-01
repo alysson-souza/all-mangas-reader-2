@@ -198,21 +198,20 @@
         </table>
         <!-- Pages navigator -->
         <v-hover>
-          <div class="amr-pages-nav" v-if="chaploaded" 
+          <div class="amr-pages-nav" v-show="chaploaded" 
             :class="{display: hover, 'shrink-draw': drawer}"
             slot-scope="{ hover }">
-            <table><tr>
-              <td v-for="(scans, i) in pages" :key="i">
-                <table class="amr-pages-page-cont" 
-                  :class="{current: i === currentPage}" 
-                  @click.stop="goScan(i)">
-                  <Page :index="i" 
-                    :scans="scans" 
-                    :direction="direction"
-                    resize="container" />
-                </table>
-              </td>
-            </tr></table>
+            <div class="amr-thumbs-scrollable" ref="thumbs-scrollable">
+              <table class="amr-pages-page-cont"  v-for="(scans, i) in pages" :key="i" 
+                :class="{current: i === currentPage}" 
+                @click.stop="goScan(i)">
+                <Page :index="i" 
+                  :scans="scans" 
+                  :direction="direction"
+                  resize="container" 
+                  ref="thumb" />
+              </table>
+            </div>
           </div>
         </v-hover>
       </v-container>
@@ -222,6 +221,8 @@
 
 <script>
   import Vue from "vue"
+  import {scroller} from 'vue-scrollto/src/scrollTo'
+
   import browser from "webextension-polyfill";
   import i18n from "../amr/i18n";
 
@@ -235,6 +236,9 @@
 
   /** Possible values for resize (readable), the stored value is the corresponding index */
   const resize_values = ['width', 'height', 'container', 'none']
+  /** Create a custom scroller (alias of $scrollTo method) to enable multiple scrollings (thumbs scroll simultaneously page scroll) */
+  const thumbsScroller = scroller()
+  let currentlyThumbsScrolling = false
 
   export default {
     data: () => ({
@@ -301,6 +305,19 @@
       }
     },
     watch: {
+      /** Adjust the scroll in the thumbnails bar to have at most the currentPage centered and at least visible */
+      currentPage(nVal, oVal) {
+        // while scrolling main page to go to selected page, currentPage is updated multiple times, do not rescroll if currently scrolling
+        if (currentlyThumbsScrolling) return
+        currentlyThumbsScrolling = true
+        thumbsScroller(this.$refs.thumb[nVal].$el, this.animationDuration, {
+          container: this.$refs["thumbs-scrollable"],
+          offset: (-(window.innerWidth - (this.drawer ? 300 : 0 )) + this.$refs.thumb[nVal].$el.clientWidth) / 2,
+          x: true,
+          y: false,
+          onDone: () => {currentlyThumbsScrolling = false}
+        })
+      },
       /** Change resize value if passing from !fullchapter to fullchapter (height and container are no more available) */
       fullchapter(nVal, oVal) {
         if (nVal && !oVal) {
@@ -653,6 +670,9 @@
           this.visible = [index]
           window.scroll(0, 0)
         } else {
+          /* We set currentScan first so the horizontal Scroller in thumbs bar will go to the right scan. It is not necessary cause scrolling will update currentScan on it's own but if we don't, scrolling in thumbs bar is glitchy... */
+          this.currentPage = index
+          this.visible = [index]
           this.$scrollTo(this.$refs.page[index].$el, this.animationDuration)
         }
       },
@@ -913,20 +933,19 @@ html {
   position: fixed;
   bottom: 0;
   width: 100%;
-  margin-bottom: 5px;
+  padding-bottom: 5px;
+  padding-top: 5px;
   opacity: 0;
 }
 .amr-pages-nav.shrink-draw {
-  width: calc(100% - 300px);
+  width: calc(100% - 300px); /* Adjust size of navigator if drawer is opened */
 }
 .amr-pages-nav.display {
-  opacity: 1;
+  opacity: 1; /* display navigator when hovered */
 }
-.amr-pages-nav > table {
-  margin: 0px auto;
-}
-.amr-pages-nav > table > tr > td {
-  height: 100px;
+.amr-thumbs-scrollable { /* navigator container is horizontally scrollable for long chapters */
+  overflow-x: auto;
+  white-space: nowrap;
 }
 .amr-pages-nav, .amr-pages-nav * {
   transition: all 0.2s;
@@ -938,6 +957,7 @@ html {
   border-radius: 2px;
   opacity: 0.9;
   cursor: pointer;
+  vertical-align: middle;
 }
 .amr-pages-page-cont td {
   vertical-align: middle;
