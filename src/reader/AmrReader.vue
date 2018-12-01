@@ -196,6 +196,25 @@
               v-show="isVisible(i)"
               @become-current="becomeCurrent" />
         </table>
+        <!-- Pages navigator -->
+        <v-hover>
+          <div class="amr-pages-nav" v-if="chaploaded" 
+            :class="{display: hover, 'shrink-draw': drawer}"
+            slot-scope="{ hover }">
+            <table><tr>
+              <td v-for="(scans, i) in pages" :key="i">
+                <table class="amr-pages-page-cont" 
+                  :class="{current: i === currentPage}" 
+                  @click.stop="goScan(i)">
+                  <Page :index="i" 
+                    :scans="scans" 
+                    :direction="direction"
+                    resize="container" />
+                </table>
+              </td>
+            </tr></table>
+          </div>
+        </v-hover>
       </v-container>
     </v-content>
   </v-app>
@@ -624,6 +643,19 @@
               util.debug("no scans found for next chapter...");
           }
       },
+      /** Go to scan */
+      goScan(index) {
+        if (!this.fullchapter) {
+          // just change the visibility of current page and next page
+          if (index === this.currentPage) return
+
+          this.currentPage = index
+          this.visible = [index]
+          window.scroll(0, 0)
+        } else {
+          this.$scrollTo(this.$refs.page[index].$el, this.animationDuration)
+        }
+      },
       /** Go to next scan */
       goNextScan(doubletap) {
         let cur = this.currentPage, n = cur
@@ -874,5 +906,56 @@
 html {
   max-height:100vh;
   overflow: auto;
+}
+/** Pages navigator */
+.amr-pages-nav {
+  height: 110px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  margin-bottom: 5px;
+  opacity: 0;
+}
+.amr-pages-nav.shrink-draw {
+  width: calc(100% - 300px);
+}
+.amr-pages-nav.display {
+  opacity: 1;
+}
+.amr-pages-nav > table {
+  margin: 0px auto;
+}
+.amr-pages-nav > table > tr > td {
+  height: 100px;
+}
+.amr-pages-nav, .amr-pages-nav * {
+  transition: all 0.2s;
+}
+.amr-pages-page-cont {
+  margin: 0px 5px;
+  display: inline-block;
+  background-color: #424242;
+  border-radius: 2px;
+  opacity: 0.9;
+  cursor: pointer;
+}
+.amr-pages-page-cont td {
+  vertical-align: middle;
+}
+.amr-pages-page-cont td img {
+  max-height: 80px!important;
+}
+.amr-pages-page-cont:hover {
+  background-color: #ef5350;
+}
+.amr-pages-page-cont:hover td img {
+  max-height: 90px!important;
+}
+.amr-pages-page-cont.current {
+  margin-top:0px;
+  background-color: #d32f2f;
+}
+.amr-pages-page-cont.current td img {
+  max-height: 100px!important;
 }
 </style>
