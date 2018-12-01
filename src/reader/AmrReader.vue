@@ -265,6 +265,10 @@
       window.addEventListener('scroll', () => {
         this.scrollRatio = window.pageYOffset / document.documentElement.scrollHeight
       });
+      /** Keep scroll ratio when resizing */
+      window.addEventListener('resize', () => {
+        this.keepScrollPos(10)
+      });
     },
     mounted() {
       /* Load chapters list */
