@@ -244,7 +244,7 @@
   export default {
     data: () => ({
       drawer: false, /* Display the side drawer or not */
-
+      
       chapters: [], /* List of chapters */
       selchap: null, /* Current chapter */
       mirrorDesc: null, /* Current mirror description */
@@ -924,7 +924,7 @@
 .amr-scan-container td {
   padding-bottom: 4px;
   padding-top: 4px;
-  line-height: normal;
+  line-height: 0;
 }
 .no-full-chapter .amr-scan-container td {
   padding-bottom: 0px;
@@ -961,6 +961,7 @@ html {
 }
 .amr-pages-nav, .amr-pages-nav * {
   transition: all 0.2s;
+  line-height: 0;
 }
 .amr-pages-page-cont {
   margin: 0px 5px;
