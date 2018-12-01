@@ -244,7 +244,7 @@
   export default {
     data: () => ({
       drawer: false, /* Display the side drawer or not */
-      
+
       chapters: [], /* List of chapters */
       selchap: null, /* Current chapter */
       mirrorDesc: null, /* Current mirror description */
@@ -956,7 +956,7 @@ html {
   opacity: 1; /* display navigator when hovered */
 }
 .amr-thumbs-scrollable { /* navigator container is horizontally scrollable for long chapters */
-  overflow-x: auto;
+  overflow: hidden;
   white-space: nowrap;
 }
 .amr-pages-nav, .amr-pages-nav * {
