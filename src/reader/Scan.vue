@@ -28,13 +28,19 @@ export default {
             type: Boolean,
             default: false
         },
-        resize: String
+        resize: String,
+        autoLoad: {
+            type: Boolean,
+            default: true
+        }
     },
     watch: {
         src: 'loadScan'
     },
     mounted() {
-        this.loadScan()
+        if (this.autoLoad) {
+            this.loadScan()
+        }
     },
     methods: {
         resizeW() {
@@ -44,18 +50,21 @@ export default {
             return ["height", "container"].includes(this.resize)
         },
         loadScan() {
-            this.loading = true
-            this.$refs.scan.onload = () => {
-                let img = this.$refs.scan
-                if (img.width > img.height) {
-                    this.doublepage = true
+            return new Promise((resolve, reject) => {
+                this.loading = true
+                this.$refs.scan.onload = () => {
+                    let img = this.$refs.scan
+                    if (img.width > img.height) {
+                        this.doublepage = true
+                    }
+                    this.loading = false
+                    this.$emit("loaded-scan")
+                    resolve()
                 }
-                this.loading = false
-                this.$emit("loaded-scan")
-            }
-            (async () => await mirrorImpl.get().getImageFromPageAndWrite(
-                this.src.replace(/(^\w+:|^)/, ''),
-                this.$refs.scan))()
+                (async () => await mirrorImpl.get().getImageFromPageAndWrite(
+                    this.src.replace(/(^\w+:|^)/, ''),
+                    this.$refs.scan))()
+            })
         }
     }
 }

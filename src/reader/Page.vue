@@ -1,6 +1,6 @@
 <template>
     <tr>
-        <Scan :full="true" :src="scans[0]" :resize="resize" @loaded-scan="loadedScan" ref="solo"  v-if="scans.length === 1" />
+        <Scan :full="true" :src="scans[0]" :resize="resize" @loaded-scan="loadedScan" ref="solo"  v-if="scans.length === 1" :autoLoad="autoLoad" />
 
         <Scan :full="false" :src="scans[direction === 'ltr' ? 0 : 1]" :resize="resize" @loaded-scan="loadedScan" class="amr-left-page" v-if="scans.length === 2" />
         <Scan :full="false" :src="scans[direction === 'ltr' ? 1 : 0]" :resize="resize" @loaded-scan="loadedScan" class="amr-right-page" v-if="scans.length === 2" />
@@ -28,7 +28,11 @@ export default {
             type: String,
             default: "ltr"
         },
-        resize: String /* Resize mode */
+        resize: String, /* Resize mode */
+        autoLoad: { /* Automatically start loading scans, if not, we need to call loadScan */
+            type: Boolean,
+            default: true
+        }
     },
     name: "Page",
     components: { Scan },
@@ -87,6 +91,10 @@ export default {
             if (this.visibleProportion > window.innerHeight / 2) {
                 this.$emit("become-current", {index: this.index})
             }
+        },
+        /** Loads the solo scan in case autoLoad is not set */
+        loadScan() {
+            return this.$refs.solo.loadScan()
         }
     }
 }

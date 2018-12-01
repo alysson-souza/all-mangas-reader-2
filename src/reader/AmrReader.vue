@@ -192,6 +192,7 @@
               @loaded-scan="loadedScan" 
               :direction="direction"
               :resize="resize"
+              :autoLoad="options.imgorder === 0"
               ref="page" 
               v-show="isVisible(i)"
               @become-current="becomeCurrent" />
@@ -299,6 +300,11 @@
       /* Load mirror */
       this.loadMirror()
       
+      /* Load scans in order if option is set */
+      if (options.imgorder === 1) {
+        this.loadScansInOrder()
+      }
+
       // mark manga as read
       if (options.markwhendownload === 0) {
           this.consultManga()
@@ -488,6 +494,12 @@
             action: "mirrorInfos",
             name: this.mirror.mirrorName
         });
+      },
+      /** Load scans in their natural order (slower) */
+      async loadScansInOrder() {
+        for (let i = 0; i < this.$refs.page.length; i++) {
+          await this.$refs.page[i].loadScan()
+        }
       },
       /** Called when a scan has been loaded */
       loadedScan() {
