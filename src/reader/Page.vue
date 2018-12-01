@@ -1,9 +1,11 @@
 <template>
     <tr>
-        <Scan :full="true" :src="scans[0]" :resize="resize" @loaded-scan="loadedScan" ref="solo"  v-if="scans.length === 1" :autoLoad="autoLoad" />
+        <!-- Displayed when one scan in page -->
+        <Scan :full="true" :src="scans[0]" :resize="resize" @loaded-scan="loadedScan" ref="solo"  v-if="scans.length === 1" :autoLoad="autoLoad" :class="{'amr-animate-once': inViewport}" />
 
-        <Scan :full="false" :src="scans[direction === 'ltr' ? 0 : 1]" :resize="resize" @loaded-scan="loadedScan" class="amr-left-page" v-if="scans.length === 2" />
-        <Scan :full="false" :src="scans[direction === 'ltr' ? 1 : 0]" :resize="resize" @loaded-scan="loadedScan" class="amr-right-page" v-if="scans.length === 2" />
+        <!-- Displayed when two scans in page -->
+        <Scan :full="false" :src="scans[direction === 'ltr' ? 0 : 1]" :resize="resize" @loaded-scan="loadedScan" class="amr-left-page" v-if="scans.length === 2" :class="{'amr-animate-once': inViewport}" />
+        <Scan :full="false" :src="scans[direction === 'ltr' ? 1 : 0]" :resize="resize" @loaded-scan="loadedScan" class="amr-right-page" v-if="scans.length === 2" :class="{'amr-animate-once': inViewport}" />
     </tr>
 </template>
 

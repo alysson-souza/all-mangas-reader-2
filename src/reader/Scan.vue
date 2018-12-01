@@ -123,4 +123,34 @@ td.scanContainer.xs12 {
 .scanContainer.res-h img {
     max-height: 100vh;
 }
+.scanContainer.amr-animate-once.bookmarked {
+    animation: amr-heartbeat 1s
+}
+@keyframes amr-heartbeat
+{
+  0%
+  {
+    transform: scale( .9 );
+  }
+  20%
+  {
+    transform: scale( 1 );
+  }
+  40%
+  {
+    transform: scale( .9 );
+  }
+  60%
+  {
+    transform: scale( 1 );
+  }
+  80%
+  {
+    transform: scale( .9 );
+  }
+  100%
+  {
+    transform: scale( .9 );
+  }
+}
 </style>
