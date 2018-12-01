@@ -14,7 +14,7 @@
         <!-- The Scan ! -->
         <img :src="src" ref="scan" v-show="!loading && !error" />
         <!-- Error try to reload button -->
-        <v-container fill-height text-xs-center v-show="error && !loading">
+        <v-container fill-height text-xs-center v-if="error && !loading">
             <v-layout>
                 <v-flex xs12>
                     <v-tooltip bottom>
