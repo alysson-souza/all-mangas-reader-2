@@ -12,7 +12,32 @@
             </v-layout>
         </v-container>
         <!-- The Scan ! -->
-        <img :src="src" ref="scan" v-show="!loading && !error" />
+        <div class="amr-scan" v-show="!loading && !error" 
+            @click="showBookmarkButton = !showBookmarkButton" @dblclick.stop="toggleBookmark">
+            <!-- Top right triangle to show scan is bookmarked -->
+            <v-tooltip class="amr-triangle-tooltip-cont">
+                <div slot="activator" class="amr-triangle" v-if="scanbooked" />
+                <span>Scan bookmarked{{note === null ? '' : ' with note : ' + note}}</span>
+            </v-tooltip>
+            <!-- The scan itself... -->
+            <img :src="src" ref="scan" />
+            <!-- The cover below the bookmark button -->
+            <div v-if="bookmark" class="amr-scan-cover" :class="{'covered': showBookmarkButton}"></div>
+            <!-- a div hover to bookmark the scan -->
+            <div class="amr-scan-toolbar" v-show="showBookmarkButton" v-if="bookmark">
+                <BookmarkPopup 
+                    ref="book" 
+                    :scanName="name" 
+                    :scanUrl="src" 
+                    @toggle-booked="scanbooked = !scanbooked"
+                    @change-note="changeNote">
+                    <v-btn large slot="activator" icon 
+                        :color="scanbooked ? 'yellow--text' : 'yellow--text text--lighten-4'">
+                        <v-icon>mdi-star</v-icon>
+                    </v-btn>
+                </BookmarkPopup>
+            </div>
+        </div>
         <!-- Error try to reload button -->
         <v-container fill-height text-xs-center v-if="error && !loading">
             <v-layout>
@@ -35,16 +60,23 @@ import mirrorImpl from '../content/mirrorimpl';
 import pageData from '../content/pagedata';
 import options from '../content/options';
 
+import BookmarkPopup from "./BookmarkPopup";
+
 export default {
     data() {
         return {
-            loading: true,
-            error: false,
-            doublepage: false
+            loading: true, /* is currently loading */
+            error: false, /* is the scan rendering error */
+            doublepage: false, /* is the scan a double page */
+            scanbooked: false, /* is the scan bookmarked ? */
+            note: null, /* the bookmark note */
+            showBookmarkButton: false, /* do we show the button to bookmark */
+            timeoutShowButton: -1, /* the timeout to hide button */
         }
     },
     props: {
         src: String, /* source url of the scan */
+        name: String, /* name of the scan (it's 1-based index) */
         full: { /* is the scan displayed full page or half */
             type: Boolean,
             default: false
@@ -53,11 +85,25 @@ export default {
         autoLoad: { /* Does the scan starts loading image automatically */
             type: Boolean,
             default: true
+        },
+        bookmark: { /* Allow bookmarking */
+            type: Boolean,
+            default: true
         }
     },
     watch: {
-        src: 'loadScan' /* reload scan if src changes */
+        src: 'loadScan', /* reload scan if src changes */
+        showBookmarkButton(nVal, oVal) {
+            if (nVal) {
+                this.timeoutShowButton = setTimeout(() => this.showBookmarkButton = false, 2000)
+            } else {
+                if (this.timeoutShowButton != -1) {
+                    clearTimeout(this.timeoutShowButton)
+                }
+            }
+        }
     },
+    components: { BookmarkPopup },
     mounted() {
         if (this.autoLoad) { /* load scan if auto on mounted */
             this.loadScan()
@@ -80,6 +126,7 @@ export default {
             return new Promise(async (resolve, reject) => {
                 this.$refs.scan.onload = () => {
                     let img = this.$refs.scan
+                    if (!img) return
                     if (img.width > img.height) {
                         this.doublepage = true
                     }
@@ -105,6 +152,18 @@ export default {
                     manageError()
                 }
             })
+        },
+        /** Delete the bookmark if bookmarked / create a bookmark if not */
+        toggleBookmark() {
+            if (this.scanbooked) {
+                this.$refs.book.deleteBookmark()
+            } else {
+                this.$refs.book.saveBookmark()
+            }
+        },
+        /** Change the bookmark note */
+        changeNote(note) {
+            this.note = note
         }
     }
 }
@@ -123,9 +182,55 @@ td.scanContainer.xs12 {
 .scanContainer.res-h img {
     max-height: 100vh;
 }
-.scanContainer.amr-animate-once.bookmarked {
-    animation: amr-heartbeat 1s
+/* Positioning bookmark button */
+.amr-scan {
+    position: relative;
+    text-align: center;
+    transition: all 0.2s;
 }
+.amr-scan-toolbar {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 60px;
+    height: 60px;
+    margin-top: -30px; /* Half the height */
+    margin-left: -30px; /* Half the width */
+    animation: amr-heartbeat 1s infinite;
+    z-index: 3;
+}
+.amr-scan-toolbar .v-icon {
+    font-size: 32px;
+}
+.amr-scan-cover.covered {
+    background-color: grey;
+    top: 50%;
+    left: 50%;
+    width: 120px;
+    height: 120px;
+    margin-top: -60px; /* Half the height */
+    margin-left: -60px; /* Half the width */
+    opacity: 0.8;
+    border-radius: 60px;
+    z-index: 2;
+    position: absolute;
+}
+.amr-triangle {
+    border-left: 100px solid transparent;
+    border-right: 100px solid #ffeb3b;
+    border-bottom: 100px solid transparent;
+    height: 0;
+    width: 0;
+    position: absolute;
+    right: 0px;
+    z-index: 2;
+    opacity: 0.5;
+}
+.amr-triangle-tooltip-cont {
+    position: absolute;
+    right: 0;
+}
+
 @keyframes amr-heartbeat
 {
   0%

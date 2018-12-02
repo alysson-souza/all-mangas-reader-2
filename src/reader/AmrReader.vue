@@ -226,7 +226,8 @@
                   :scans="scans" 
                   :direction="direction"
                   resize="container" 
-                  ref="thumb" />
+                  ref="thumb" 
+                  :bookmark="false" />
               </table>
             </div>
           </div>
@@ -411,7 +412,7 @@
       pages() {
         /* First, list of pages is single scan pages with all the chapter's scans */
         if (!this.chaploaded || !this.book) {
-          return this.images.map(img => [img])
+          return this.images.map((img, i) => [{src: img, name: '' + (i + 1)}])
         } else {
           return this.regroupablePages
         }
@@ -560,15 +561,18 @@
           // Calculates how to regroup pages
           let curPage = 0
           let regrouped = []
+          let curScan = 0;
           for (let sc of scans) {
+            let toadd = {src: sc.url, name: '' + (curScan + 1)}
             if (!regrouped[curPage]) {
-              regrouped[curPage] = [sc.url]
+              regrouped[curPage] = [toadd]
             } else {
-              regrouped[curPage].push(sc.url)
+              regrouped[curPage].push(toadd)
             }
             if (sc.full || regrouped[curPage].length === 2) {
               curPage++
             }
+            curScan++
           }
           this.regroupablePages.length = 0;
           this.regroupablePages.push(...regrouped)

@@ -10,7 +10,7 @@
         </v-card-title>
         <v-card-text>
             {{
-              scanName === null ? 
+              !scanName ? 
                 i18n("bookmark_chapter_text", 
                   chapterName, 
                   mangaName, 
@@ -58,13 +58,14 @@ export default {
             dialog: false, /* state of the popup : opened / closed */
 
             alreadyBookmarked: false, /* Flag to tell if bookmark is already saved */
-
-            scanUrl: null, /* The url of the scan. If null, bookmark the chapter */
-            scanName: null, /* The name of the scan to bookmark. */
             note: "", /* The note to add to the bookmark */
 
             pageData: pageData, /* Set pageDate in state so it's reactive */
         }
+    },
+    props: {
+      scanUrl: String, /* The url of the scan. If null, bookmark the chapter */
+      scanName: String /* The name of the scan to bookmark. */
     },
     created() {
       /* Check existence of the bookmark */
@@ -90,6 +91,9 @@ export default {
         if (nVal !== oVal) {
           this.$emit("toggle-booked")
         }
+      },
+      note(nVal, oVal) {
+        this.$emit("change-note", nVal)
       }
     },
     methods: {
@@ -104,7 +108,7 @@ export default {
           chapName: pageData.currentChapter,
           note: this.note
         }
-        if (this.scanUrl === null) {
+        if (!this.scanUrl) {
           obj.type = "chapter"
         } else {
           obj.type = "scan"
@@ -123,7 +127,7 @@ export default {
             url: pageData.currentMangaURL,
             chapUrl: pageData.currentChapterURL
         }
-        if (this.scanUrl === null) {
+        if (!this.scanUrl) {
           obj.type = "chapter"
         } else {
           obj.type = "scan"
@@ -142,7 +146,7 @@ export default {
           url: pageData.currentMangaURL,
           chapUrl: pageData.currentChapterURL,
         };
-        if (this.scanUrl === null) {
+        if (!this.scanUrl) {
           obj.type = "chapter"
         } else {
           obj.type = "scan"
