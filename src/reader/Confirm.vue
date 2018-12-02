@@ -53,7 +53,7 @@
       title: null,
       options: {
         color: 'primary',
-        width: 290,
+        width: 500,
         zIndex: 200
       }
     }),
