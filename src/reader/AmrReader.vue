@@ -136,7 +136,7 @@
                       No bookmarked scans in this chapter
                     </div>
                     <!-- List of bookmarked scans -->
-                    <v-container pa-0 grid-list-md v-else :style="{'max-width': '400px'}">
+                    <v-container pa-0 grid-list-md v-else class="amr-bookmarked-scans-cont">
                       <v-layout row wrap>
                         <v-flex xs4 v-for="(scan, i) in bookedScans" :key="i" @click.stop="goScan(scan.page)" class="amr-bookmarked-scan">
                           <v-tooltip bottom v-if="scan.note">
@@ -1068,5 +1068,12 @@ html {
 }
 .amr-bookmarked-scan {
   cursor: pointer;
+}
+.amr-bookmarked-scans-cont {
+  max-width: 400px;
+}
+.amr-bookmarked-scans-cont > .layout {
+  align-items: center;
+  justify-content: center;
 }
 </style>
