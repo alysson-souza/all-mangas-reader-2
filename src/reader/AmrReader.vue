@@ -105,9 +105,25 @@
             </v-flex>
             <!-- Action buttons -->
             <v-flex xs12 text-xs-center pa-2>
-              <v-btn icon color="yellow--text">
-                  <v-icon>mdi-star</v-icon>
-              </v-btn>
+              <v-menu offset-y>
+                <v-btn slot="activator" icon 
+                  :color="chapbooked ? 'yellow--text' : 'yellow--text text--lighten-4'">
+                    <v-icon>mdi-star</v-icon>
+                </v-btn>
+                <v-list>
+                  <BookmarkPopup @toggle-booked="chapbooked = !chapbooked">
+                    <v-list-tile slot="activator">
+                      <v-list-tile-title>Bookmark this chapter</v-list-tile-title>
+                    </v-list-tile>
+                  </BookmarkPopup>
+                  <v-list-tile>
+                    <v-list-tile-title>View bookmarked scans in this chapter</v-list-tile-title>
+                  </v-list-tile>
+                  <v-list-tile>
+                    <v-list-tile-title>View all bookmarks</v-list-tile-title>
+                  </v-list-tile>
+                </v-list>
+              </v-menu>
               <v-btn icon color="orange--text" v-show="showLatestRead" @click.stop="markAsLatest">
                   <v-icon>mdi-page-last</v-icon>
               </v-btn>
@@ -234,6 +250,7 @@
 
   import Page from "./Page";
   import Confirm from "./Confirm";
+  import BookmarkPopup from "./BookmarkPopup";
 
   /** Possible values for resize (readable), the stored value is the corresponding index */
   const resize_values = ['width', 'height', 'container', 'none']
@@ -272,6 +289,8 @@
       lastKeyPress: 0, /* Last key pressed */
       doubleTapDuration: 250, /* Laps of time between two events to be considered as doubletap */
       scrollRatio: 0, /* Keep the scroll ratio (scrollY / total) to restore position when resizing display zone */
+
+      chapbooked: false, /* is the chapter bookmarked */
     }),
     props: {
       images: Array /* List of scans to display, not necessarily pictures but urls that the implementation can handle to render a scan */
@@ -426,9 +445,9 @@
       /** can you mark this chapter as latest read */
       showLatestRead() {
         return this.mangaExists && (this.mangaInfos && !util.matchChapUrl(this.mangaInfos.lastchapter, pageData.currentChapterURL))
-      }
+      },
     },
-    components: { Page, Confirm },
+    components: { Page, Confirm, BookmarkPopup },
     methods: {
       /** Make i18n accessible from dom */
       i18n: (message, ...args) => i18n(message, ...args),
@@ -588,7 +607,7 @@
         this.chapters.forEach(chap => {
           if (util.matchChapUrl(pageData.currentChapterURL, chap.url)) {
               this.selchap = chap.url
-              pageData.currentChapter = chap.title;
+              pageData.add("currentChapter", chap.title);
               return false
           }
         })
