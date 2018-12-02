@@ -9,7 +9,6 @@
             ref="solo"  
             v-if="scans.length === 1" 
             :autoLoad="autoLoad" 
-            :class="{'amr-animate-once': inViewport}" 
             :bookmark="bookmark" />
 
         <!-- Displayed when two scans in page -->
@@ -20,7 +19,6 @@
             @loaded-scan="loadedScan" 
             class="amr-left-page" 
             v-if="scans.length === 2" 
-            :class="{'amr-animate-once': inViewport}" 
             :bookmark="bookmark" />
         <Scan :full="false" 
             :src="scans[direction === 'ltr' ? 1 : 0].src" 
@@ -28,8 +26,7 @@
             :resize="resize" 
             @loaded-scan="loadedScan" 
             class="amr-right-page" 
-            v-if="scans.length === 2" 
-            :class="{'amr-animate-once': inViewport}" 
+            v-if="scans.length === 2"  
             :bookmark="bookmark" />
     </tr>
 </template>

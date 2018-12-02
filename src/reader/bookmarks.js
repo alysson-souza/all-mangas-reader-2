@@ -22,6 +22,7 @@ export default {
         this.state.scans.push(
             ...scansUrl.map((url, i) => { 
                 return {
+                    index: i,
                     url: url, 
                     name: "" + (i + 1), 
                     booked: false,

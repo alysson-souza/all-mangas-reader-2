@@ -17,7 +17,7 @@
         <div class="amr-scan" v-show="!loading && !error" 
             @click="showBookmarkButton = !showBookmarkButton" @dblclick.stop="toggleBookmark">
             <!-- Top right triangle to show scan is bookmarked -->
-            <v-tooltip v-if="bookmark && scanbooked" class="amr-triangle-tooltip-cont">
+            <v-tooltip left v-if="bookmark && scanbooked" class="amr-triangle-tooltip-cont">
                 <div slot="activator" class="amr-triangle" />
                 <span>Scan bookmarked{{!note ? '' : ' with note : ' + note}}</span>
             </v-tooltip>
@@ -166,6 +166,7 @@ export default {
         },
         /** Delete the bookmark if bookmarked / create a bookmark if not */
         toggleBookmark() {
+            if (!this.bookmark) return;
             if (this.scanbooked) {
                 bookmarks.deleteBookmark({scanUrl: this.src})
             } else {

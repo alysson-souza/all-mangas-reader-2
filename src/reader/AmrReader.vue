@@ -107,21 +107,54 @@
             <!-- Action buttons -->
             <v-flex xs12 text-xs-center pa-2>
               <v-menu offset-y>
+                <!-- Bookmarks button -->
                 <v-btn slot="activator" icon 
                   :color="bookstate.booked ? 'yellow--text' : 'yellow--text text--lighten-4'">
                     <v-icon>mdi-star</v-icon>
                 </v-btn>
-                <v-list>
-                  <v-list-tile>
-                    <v-btn @click="bookmarkChapter">Bookmark this chapter</v-btn>
-                  </v-list-tile>
-                  <v-list-tile>
-                    <v-list-tile-title>View bookmarked scans in this chapter</v-list-tile-title>
-                  </v-list-tile>
-                  <v-list-tile>
-                    <v-list-tile-title>View all bookmarks</v-list-tile-title>
-                  </v-list-tile>
-                </v-list>
+                <!-- Menu displayed when bookmarks button activate -->
+                <v-card>
+                  <!-- Bookmark note of the chapter -->
+                  <v-card-title v-if="bookstate.note">
+                    Chapter is boorkmarked with note : {{bookstate.note}}
+                  </v-card-title>
+                  <v-card-actions>
+                    <!-- Action to update / delete bookmark for chapter > open popup -->
+                    <v-btn @click="bookmarkChapter" 
+                      :color="bookstate.booked ? 'yellow--text' : 'yellow--text text--lighten-4'">
+                      <v-icon>mdi-star</v-icon>&nbsp;
+                      {{bookstate.booked ? 'Update bookmark' : 'Bookmark chapter'}}
+                    </v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn icon @click="openBookmarksTab" color="blue">
+                      <v-icon>mdi-open-in-new</v-icon>
+                    </v-btn>
+                  </v-card-actions>
+                  <v-card-text>
+                    <!-- No bookmarked scans in chapter -->
+                    <div v-if="bookedScans.length === 0">
+                      No bookmarked scans in this chapter
+                    </div>
+                    <!-- List of bookmarked scans -->
+                    <v-container pa-0 grid-list-md v-else :style="{'max-width': '400px'}">
+                      <v-layout row wrap>
+                        <v-flex xs4 v-for="(scan, i) in bookedScans" :key="i" @click.stop="goScan(scan.page)" class="amr-bookmarked-scan">
+                          <v-tooltip bottom v-if="scan.note">
+                            <Scan slot="activator" :full="false" 
+                              :src="scan.url"
+                              resize="container"
+                              :bookmark="false" />
+                              <span>{{scan.note}}</span>
+                          </v-tooltip>
+                          <Scan v-else slot="activator" :full="false" 
+                              :src="scan.url"
+                              resize="container"
+                              :bookmark="false" />
+                        </v-flex>
+                      </v-layout>
+                    </v-container>
+                  </v-card-text>
+                </v-card>
               </v-menu>
               <v-btn icon color="orange--text" v-show="showLatestRead" @click.stop="markAsLatest">
                   <v-icon>mdi-page-last</v-icon>
@@ -249,6 +282,7 @@
   import util from "./util";
 
   import Page from "./Page";
+  import Scan from "./Scan";
   import Confirm from "./Confirm";
   import BookmarkPopup from "./BookmarkPopup";
   import bookmarks from "./bookmarks";
@@ -447,8 +481,15 @@
       showLatestRead() {
         return this.mangaExists && (this.mangaInfos && !util.matchChapUrl(this.mangaInfos.lastchapter, pageData.currentChapterURL))
       },
+      /** list of bookmarked scans urls */
+      bookedScans() {
+        return this.bookstate.scans.filter(sc => sc.booked).map(sc => {
+          sc.page = this.pages.findIndex(scans => scans.find(s => s.src === sc.url))
+          return sc
+        })
+      }
     },
-    components: { Page, Confirm, BookmarkPopup },
+    components: { Page, Scan, Confirm, BookmarkPopup },
     methods: {
       /** Make i18n accessible from dom */
       i18n: (message, ...args) => i18n(message, ...args),
@@ -697,6 +738,7 @@
       },
       /** Go to scan */
       goScan(index) {
+        console.log(index)
         if (!this.fullchapter) {
           // just change the visibility of current page and next page
           if (index === this.currentPage) return
@@ -880,8 +922,16 @@
         window.addEventListener('keyup', stopProp, true);
         window.addEventListener('keypress', stopProp, true);
       },
+      /** Open popup to bookmark chapter with note */
       bookmarkChapter() {
         this.$refs.book.open()
+      },
+      /** Open AMR bookmarks in a new tab */
+      openBookmarksTab() {
+        browser.runtime.sendMessage({
+            action: "opentab",
+            url: "/pages/bookmarks/bookmarks.html"
+        });
       }
     }
   }
@@ -1016,5 +1066,8 @@ html {
 }
 .amr-pages-page-cont.current td img {
   max-height: 100px!important;
+}
+.amr-bookmarked-scan {
+  cursor: pointer;
 }
 </style>
