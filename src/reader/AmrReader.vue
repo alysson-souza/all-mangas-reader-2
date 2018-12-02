@@ -738,7 +738,6 @@
       },
       /** Go to scan */
       goScan(index) {
-        console.log(index)
         if (!this.fullchapter) {
           // just change the visibility of current page and next page
           if (index === this.currentPage) return
