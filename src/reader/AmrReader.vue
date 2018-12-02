@@ -2,6 +2,7 @@
   <v-app id="inspire" dark>
     <!-- Global component to show confirmation dialogs -->
     <confirm ref="confirm"></confirm>
+    <BookmarkPopup ref="book"></BookmarkPopup>
     <!-- Global always visible buttons -->
     <v-hover>
       <v-layout column class="fab-container" slot-scope="{ hover }">
@@ -107,15 +108,13 @@
             <v-flex xs12 text-xs-center pa-2>
               <v-menu offset-y>
                 <v-btn slot="activator" icon 
-                  :color="chapbooked ? 'yellow--text' : 'yellow--text text--lighten-4'">
+                  :color="bookstate.booked ? 'yellow--text' : 'yellow--text text--lighten-4'">
                     <v-icon>mdi-star</v-icon>
                 </v-btn>
                 <v-list>
-                  <BookmarkPopup @toggle-booked="chapbooked = !chapbooked">
-                    <v-list-tile slot="activator">
-                      <v-list-tile-title>Bookmark this chapter</v-list-tile-title>
-                    </v-list-tile>
-                  </BookmarkPopup>
+                  <v-list-tile>
+                    <v-btn @click="bookmarkChapter">Bookmark this chapter</v-btn>
+                  </v-list-tile>
                   <v-list-tile>
                     <v-list-tile-title>View bookmarked scans in this chapter</v-list-tile-title>
                   </v-list-tile>
@@ -252,6 +251,7 @@
   import Page from "./Page";
   import Confirm from "./Confirm";
   import BookmarkPopup from "./BookmarkPopup";
+  import bookmarks from "./bookmarks";
 
   /** Possible values for resize (readable), the stored value is the corresponding index */
   const resize_values = ['width', 'height', 'container', 'none']
@@ -291,7 +291,7 @@
       doubleTapDuration: 250, /* Laps of time between two events to be considered as doubletap */
       scrollRatio: 0, /* Keep the scroll ratio (scrollY / total) to restore position when resizing display zone */
 
-      chapbooked: false, /* is the chapter bookmarked */
+      bookstate: bookmarks.state, /* bookmarks state */
     }),
     props: {
       images: Array /* List of scans to display, not necessarily pictures but urls that the implementation can handle to render a scan */
@@ -879,6 +879,9 @@
         let stopProp = (e) => e.stopImmediatePropagation();
         window.addEventListener('keyup', stopProp, true);
         window.addEventListener('keypress', stopProp, true);
+      },
+      bookmarkChapter() {
+        this.$refs.book.open()
       }
     }
   }

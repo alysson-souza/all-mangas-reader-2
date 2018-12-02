@@ -1,9 +1,7 @@
 <template>
-    <v-dialog v-model="dialog" max-width="600px">
+    <v-dialog v-model="dialog" max-width="500px">
       <slot name="activator" 
-            slot="activator"
-            :bookmarked="alreadyBookmarked"
-            @auto-bookmark="alreadyBookmarked ? deleteBookmark() : saveBookmark()"></slot>
+            slot="activator"></slot>
       <v-card>
         <v-card-title>
           <span class="headline">{{i18n("bookmark_popup_title")}}</span>
@@ -36,7 +34,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="grey darken-1" flat @click="dialog = false">Close</v-btn>
+          <v-btn color="grey darken-1" flat @click="cancel">Close</v-btn>
           <v-btn color="primary darken-1" flat @click="deleteBookmark" v-show="alreadyBookmarked">Delete</v-btn>
           <v-btn color="primary darken-1" flat @click="saveBookmark">Save</v-btn>
         </v-card-actions>
@@ -50,26 +48,23 @@ import browser from "webextension-polyfill";
 
 import mirrorImpl from '../content/mirrorimpl';
 import pageData from '../content/pagedata';
+import bookmarks from './bookmarks';
 
 export default {
     mixins: [i18n],
     data() {
         return {
+            resolve: null,
+            reject: null,
             dialog: false, /* state of the popup : opened / closed */
 
-            alreadyBookmarked: false, /* Flag to tell if bookmark is already saved */
+            alreadyBookmarked: false, /* true if object already bookmarked */
             note: "", /* The note to add to the bookmark */
+            scanUrl: String, /* The url of the scan. If null, bookmark the chapter */
+            scanName: String, /* The name of the scan. */
 
             pageData: pageData, /* Set pageDate in state so it's reactive */
         }
-    },
-    props: {
-      scanUrl: String, /* The url of the scan. If null, bookmark the chapter */
-      scanName: String /* The name of the scan to bookmark. */
-    },
-    created() {
-      /* Check existence of the bookmark */
-      this.loadBookmark()
     },
     computed: {
       /** Return the current mirror name */
@@ -83,79 +78,49 @@ export default {
       /** Return the current manga name */
       mangaName() {
         return this.pageData.name
-      }
-    },
-    watch: {
-      /** emit event to toggle booked state when changed */
-      alreadyBookmarked(nVal, oVal) {
-        if (nVal !== oVal) {
-          this.$emit("toggle-booked")
-        }
       },
-      note(nVal, oVal) {
-        this.$emit("change-note", nVal)
-      }
     },
     methods: {
-      /** Save the bookmark */
+      /** Open the bookmark dialog with options (default chapter, with scanUrl : corresponding scan) */
+      open({ scanUrl } = {}) {
+        this.dialog = true
+        this.scanUrl = scanUrl
+        if (scanUrl) {
+          let sc = bookmarks.getScan(scanUrl)
+          this.note = sc.note
+          this.scanName = sc.name
+          this.alreadyBookmarked = sc.booked
+        } else {
+          this.note = bookmarks.state.note
+          this.alreadyBookmarked = bookmarks.state.booked
+          this.scanName = undefined
+        }
+        return new Promise((resolve, reject) => {
+          this.resolve = resolve
+          this.reject = reject
+        })
+      },
       async saveBookmark() {
-        let obj = {
-          action: "addUpdateBookmark",
-          mirror: mirrorImpl.get().mirrorName,
-          url: pageData.currentMangaURL,
-          chapUrl: pageData.currentChapterURL,
-          name: pageData.name,
-          chapName: pageData.currentChapter,
-          note: this.note
-        }
-        if (!this.scanUrl) {
-          obj.type = "chapter"
-        } else {
-          obj.type = "scan"
-          obj.scanUrl = this.scanUrl
-          obj.scanName = this.scanName
-        }
-        await browser.runtime.sendMessage(obj)
-        this.alreadyBookmarked = true
-        if (this.dialog) this.dialog = false
+        await bookmarks.saveBookmark({
+          note: this.note,
+          scanName: this.scanName,
+          scanUrl: this.scanUrl
+        })
+        this.agree()
       },
-      /** Delete the bookmark */
       async deleteBookmark() {
-        let obj = {
-            action: "deleteBookmark",
-            mirror: mirrorImpl.get().mirrorName,
-            url: pageData.currentMangaURL,
-            chapUrl: pageData.currentChapterURL
-        }
-        if (!this.scanUrl) {
-          obj.type = "chapter"
-        } else {
-          obj.type = "scan"
-          obj.scanUrl = this.scanUrl
-        }
-        await browser.runtime.sendMessage(obj)
-        this.alreadyBookmarked = false
-        this.note = null
-        if (this.dialog) this.dialog = false
+        await bookmarks.deleteBookmark({
+          scanUrl: this.scanUrl
+        })
+        this.agree()
       },
-      /** Check data for this bookmark from server */
-      async loadBookmark() {
-        let obj = {
-          action: "getBookmarkNote",
-          mirror: mirrorImpl.get().mirrorName,
-          url: pageData.currentMangaURL,
-          chapUrl: pageData.currentChapterURL,
-        };
-        if (!this.scanUrl) {
-          obj.type = "chapter"
-        } else {
-          obj.type = "scan"
-          obj.scanUrl = this.scanUrl
-          obj.scanName = this.scanName
-        }
-        let result = await browser.runtime.sendMessage(obj);
-        this.alreadyBookmarked = result.isBooked
-        this.note = result.note
+      agree() {
+        this.resolve(true)
+        this.dialog = false
+      },
+      cancel() {
+        this.resolve(false)
+        this.dialog = false
       }
     }
 }

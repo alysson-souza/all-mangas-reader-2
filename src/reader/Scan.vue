@@ -1,5 +1,7 @@
 <template>
     <td :class="{xs6: !full, xs12: full, 'res-w': resizeW(), 'res-h': resizeH()}" class='scanContainer' :colspan="full ? 2 : 1">
+        <!-- Global bookmark popup -->
+        <BookmarkPopup ref="book"></BookmarkPopup>
         <!-- Progress while loading -->
         <v-container fill-height text-xs-center v-show="loading">
             <v-layout>
@@ -15,9 +17,9 @@
         <div class="amr-scan" v-show="!loading && !error" 
             @click="showBookmarkButton = !showBookmarkButton" @dblclick.stop="toggleBookmark">
             <!-- Top right triangle to show scan is bookmarked -->
-            <v-tooltip class="amr-triangle-tooltip-cont">
-                <div slot="activator" class="amr-triangle" v-if="scanbooked" />
-                <span>Scan bookmarked{{note === null ? '' : ' with note : ' + note}}</span>
+            <v-tooltip v-if="bookmark && scanbooked" class="amr-triangle-tooltip-cont">
+                <div slot="activator" class="amr-triangle" />
+                <span>Scan bookmarked{{!note ? '' : ' with note : ' + note}}</span>
             </v-tooltip>
             <!-- The scan itself... -->
             <img :src="src" ref="scan" />
@@ -25,17 +27,10 @@
             <div v-if="bookmark" class="amr-scan-cover" :class="{'covered': showBookmarkButton}"></div>
             <!-- a div hover to bookmark the scan -->
             <div class="amr-scan-toolbar" v-show="showBookmarkButton" v-if="bookmark">
-                <BookmarkPopup 
-                    ref="book" 
-                    :scanName="name" 
-                    :scanUrl="src" 
-                    @toggle-booked="scanbooked = !scanbooked"
-                    @change-note="changeNote">
-                    <v-btn large slot="activator" icon 
-                        :color="scanbooked ? 'yellow--text' : 'yellow--text text--lighten-4'">
-                        <v-icon>mdi-star</v-icon>
-                    </v-btn>
-                </BookmarkPopup>
+                <v-btn large icon @click="bookmarkScan"
+                    :color="scanbooked ? 'yellow--text' : 'yellow--text text--lighten-4'">
+                    <v-icon>mdi-star</v-icon>
+                </v-btn>
             </div>
         </div>
         <!-- Error try to reload button -->
@@ -61,6 +56,7 @@ import pageData from '../content/pagedata';
 import options from '../content/options';
 
 import BookmarkPopup from "./BookmarkPopup";
+import bookmarks from "./bookmarks";
 
 export default {
     data() {
@@ -68,10 +64,10 @@ export default {
             loading: true, /* is currently loading */
             error: false, /* is the scan rendering error */
             doublepage: false, /* is the scan a double page */
-            scanbooked: false, /* is the scan bookmarked ? */
-            note: null, /* the bookmark note */
             showBookmarkButton: false, /* do we show the button to bookmark */
             timeoutShowButton: -1, /* the timeout to hide button */
+
+            bookstate: bookmarks.state, /* bookmarks state */
         }
     },
     props: {
@@ -90,6 +86,20 @@ export default {
             type: Boolean,
             default: true
         }
+    },
+    computed: {
+        /* is the scan bookmarked ? */
+        scanbooked() {
+            let sc = this.bookstate.scans.find(sc => sc.url === this.src)
+            if (sc) return sc.booked
+            return false
+        }, 
+        /* the bookmark note */
+        note() {
+            let sc = this.bookstate.scans.find(sc => sc.url === this.src)
+            if (sc) return sc.note
+            return undefined
+        },
     },
     watch: {
         src: 'loadScan', /* reload scan if src changes */
@@ -156,14 +166,14 @@ export default {
         /** Delete the bookmark if bookmarked / create a bookmark if not */
         toggleBookmark() {
             if (this.scanbooked) {
-                this.$refs.book.deleteBookmark()
+                bookmarks.deleteBookmark({scanUrl: this.src})
             } else {
-                this.$refs.book.saveBookmark()
+                bookmarks.saveBookmark({scanUrl: this.src, scanName: this.name})
             }
         },
-        /** Change the bookmark note */
-        changeNote(note) {
-            this.note = note
+        /** Open bookmarks dialog */
+        bookmarkScan() {
+            this.$refs.book.open({scanUrl: this.src})
         }
     }
 }

@@ -15,6 +15,7 @@ import browser from "webextension-polyfill";
 import mirrorImpl from '../content/mirrorimpl';
 import pageData from '../content/pagedata';
 import options from '../content/options';
+import bookmarks from './bookmarks';
 
 import mirrorHelper from '../amr/mirrors-helper';
 
@@ -54,6 +55,7 @@ if (window["__armreader__"] === undefined) { // avoid loading script twice
         let imagesUrl = await mirrorImpl.get().getListImages(document, window.location.href);
         console.log(imagesUrl.length + " images to load");
 
+        bookmarks.init(imagesUrl)
         initReader(imagesUrl)
     }
 
