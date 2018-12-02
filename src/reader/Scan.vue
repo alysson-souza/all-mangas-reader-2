@@ -57,6 +57,7 @@ import options from '../content/options';
 
 import BookmarkPopup from "./BookmarkPopup";
 import bookmarks from "./bookmarks";
+import util from "./util";
 
 export default {
     data() {
@@ -170,6 +171,7 @@ export default {
             } else {
                 bookmarks.saveBookmark({scanUrl: this.src, scanName: this.name})
             }
+            util.clearSelection()
         },
         /** Open bookmarks dialog */
         bookmarkScan() {
