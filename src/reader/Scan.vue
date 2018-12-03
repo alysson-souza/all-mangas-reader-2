@@ -59,10 +59,10 @@ import options from '../content/options';
 import bookmarks from "./bookmarks";
 import util from "./util";
 import EventBus from "./EventBus";
-import i18n from "../mixins/i18n-mixin";
+import {i18nmixin} from "../mixins/i18n-mixin";
 
 export default {
-    mixins: [i18n],
+    mixins: [i18nmixin],
     data() {
         return {
             loading: true, /* is currently loading */
@@ -140,8 +140,12 @@ export default {
                 this.$refs.scan.onload = () => {
                     let img = this.$refs.scan
                     if (!img) return
+                    /** Check if scan is double page */
                     if (img.width > img.height) {
                         this.doublepage = true
+                    }
+                    if (img.height >= 3 * img.width) { // super thin scan, raise an event
+                        EventBus.$emit("thin-scan")
                     }
                     this.loading = false
                     this.$emit("loaded-scan")
@@ -157,6 +161,7 @@ export default {
                     manageError()
                 }
                 try {
+                    // Load the scan using implementation method
                     await mirrorImpl.get().getImageFromPageAndWrite(
                         this.src.replace(/(^\w+:|^)/, ''),
                         this.$refs.scan)

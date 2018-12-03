@@ -1127,5 +1127,13 @@
   "button_delete": {
     "message": "Delete",
     "description": "Delete button label"
+  },
+  "reader_thinscan_title": {
+    "message": "Thin long scans detected",
+    "description": "Title of the popup displayed if thin scans detected (height >= 3 * width)"
+  },
+  "reader_thinscan_description": {
+    "message": "This chapter contains thin long scans (their height exceeds three times their width). Current layout options won't offer you the best possible reading. We can automatically adjust the way this manga is displayed (prefer not reading it with side by side scans and avoid scaling scans in height). Do you want to adjust these parameters ?",
+    "description": "Description of the popup displayed if thin scans detected (height >= 3 * width)"
   }
 }

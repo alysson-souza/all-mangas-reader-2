@@ -19,11 +19,12 @@
                   mangaName,
                   mirrorName)
             }}
-          <v-container grid-list-md>
+          <v-container grid-list-md pb-0>
             <v-layout wrap>
               <v-flex xs12>
                 <v-textarea
                   box
+                  hide-details
                   name="input-7-4"
                   :label="i18n('bookmark_popup_note')"
                   v-model="note"
@@ -43,7 +44,7 @@
 </template>
 
 <script>
-import i18n from "../mixins/i18n-mixin"
+import {i18nmixin} from "../mixins/i18n-mixin"
 import browser from "webextension-polyfill";
 
 import mirrorImpl from '../content/mirrorimpl';
@@ -51,7 +52,7 @@ import pageData from '../content/pagedata';
 import bookmarks from './bookmarks';
 
 export default {
-    mixins: [i18n],
+    mixins: [i18nmixin],
     data() {
         return {
             resolve: null,

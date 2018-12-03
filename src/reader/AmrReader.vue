@@ -1,7 +1,7 @@
 <template>
   <v-app id="inspire" dark>
-    <!-- Global component to show confirmation dialogs -->
-    <confirm ref="confirm"></confirm>
+    <!-- Global component to show confirmation dialogs, alert dialogs / other -->
+    <WizDialog ref="wizdialog"></WizDialog>
     <!-- Global component to show bookmarks dialog -->
     <BookmarkPopup ref="book"></BookmarkPopup>
     <!-- Global always visible buttons -->
@@ -337,7 +337,7 @@
   import {scroller} from 'vue-scrollto/src/scrollTo'
 
   import browser from "webextension-polyfill";
-  import i18n from "../mixins/i18n-mixin"
+  import {i18nmixin} from "../mixins/i18n-mixin"
 
   import mirrorImpl from '../content/mirrorimpl';
   import pageData from '../content/pagedata';
@@ -346,7 +346,7 @@
 
   import Page from "./Page";
   import Scan from "./Scan";
-  import Confirm from "./Confirm";
+  import WizDialog from "./WizDialog";
   import BookmarkPopup from "./BookmarkPopup";
   import bookmarks from "./bookmarks";
   import EventBus from "./EventBus";
@@ -358,7 +358,7 @@
   let currentlyThumbsScrolling = false
 
   export default {
-    mixins: [i18n],
+    mixins: [i18nmixin],
     data: () => ({
       drawer: false, /* Display the side drawer or not */
 
@@ -391,6 +391,7 @@
       scrollRatio: 0, /* Keep the scroll ratio (scrollY / total) to restore position when resizing display zone */
 
       bookstate: bookmarks.state, /* bookmarks state */
+      thinscan: false, /* top telling that the chapter is containing thin scans (height >= 3 * width) */
     }),
     props: {
       images: Array /* List of scans to display, not necessarily pictures but urls that the implementation can handle to render a scan */
@@ -413,8 +414,11 @@
         this.keepScrollPos(10)
       });
       /** Listen to global bus events */
-      EventBus.$on('open-bookmarks', (obj) => {
+      EventBus.$on('open-bookmarks', (obj) => { // request to open bookmarks popup
         this.$refs.book.open(obj)
+      })
+      EventBus.$on('thin-scan', (obj) => { // a thin scan (height >= 3 * width) has been detected
+        this.handleThinScan()
       })
     },
     mounted() {
@@ -558,7 +562,7 @@
         })
       }
     },
-    components: { Page, Scan, Confirm, BookmarkPopup },
+    components: { Page, Scan, WizDialog, BookmarkPopup },
     methods: {
       /** Inform background that current chapter has been read (will update reading state and eventually add manga to list) */
       async consultManga(force) {
@@ -746,7 +750,9 @@
       },
       /** Mark current chapter as latest read in reading list */
       async markAsLatest() {
-        if (await this.$refs.confirm.open(this.i18n("content_nav_mark_read"), this.i18n("content_nav_mark_read_confirm"), { color: 'orange' })) {
+        if (await this.$refs.wizdialog.confirm(
+            this.i18n("content_nav_mark_read"), 
+            this.i18n("content_nav_mark_read_confirm"))) {
           await browser.runtime.sendMessage({
             action: "setMangaChapter",
             url: pageData.currentMangaURL,
@@ -766,7 +772,9 @@
       },
       /** Remove the current manga from reading list */
       async deleteManga() {
-        if (await this.$refs.confirm.open(this.i18n("list_mg_act_delete"), this.i18n("list_mg_delete_question", pageData.name, mirrorImpl.get().mirrorName), { color: 'orange' })) {
+        if (await this.$refs.wizdialog.confirm(
+          this.i18n("list_mg_act_delete"), 
+          this.i18n("list_mg_delete_question", pageData.name, mirrorImpl.get().mirrorName))) {
           await browser.runtime.sendMessage({
             action: "deleteManga", 
             url: pageData.currentMangaURL,
@@ -1021,6 +1029,20 @@
             action: "opentab",
             url: "/pages/bookmarks/bookmarks.html"
         });
+      },
+      /** Called when a thin scan (height >= 3 * width) is detected */
+      async handleThinScan() {
+        if (this.thinscan) return // already handled
+        this.thinscan = true
+        if (!this.book && !["height", "container"].includes(this.resize)) return // parameters are already adapted for thin scans
+        if (await this.$refs.wizdialog.yesno(
+          this.i18n("reader_thinscan_title"), 
+          this.i18n("reader_thinscan_description"))) {
+            this.book = false
+            if (["height", "container"].includes(this.resize)) {
+              this.resize = "width"
+            }
+        }
       }
     }
   }
