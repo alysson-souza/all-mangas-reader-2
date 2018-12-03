@@ -30,20 +30,20 @@
           <v-btn slot="activator" small fab v-show="!nextchapLoading && hover && !drawer" @click.stop="goNextChapter">
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
-          <span>Go to next chapter{{nextchapLoading ? " (" + Math.floor(nextchapProgress) + "% loaded)" : ""}}</span>
+          <span>{{i18n("list_mg_act_next")}} {{nextchapLoading ? i18n("reader_loading", Math.floor(nextchapProgress)) : ""}}</span>
         </v-tooltip>
         <v-tooltip left v-show="lastChapter">
           <v-btn slot="activator" small fab v-show="hover && !drawer" color="orange--text">
             <v-icon>mdi-alert</v-icon>
           </v-btn>
-          <span>This is the latest published chapter !</span>
+          <span>{{i18n("content_nav_last_chap")}}</span>
         </v-tooltip>
         <!-- Quick button to add a manga to reading list -->
         <v-tooltip left v-show="!mangaExists && options.addauto === 0">
           <v-btn slot="activator" small fab v-show="hover && !drawer" color="green--text" @click.stop="addManga">
             <v-icon>mdi-plus</v-icon>
           </v-btn>
-          <span>Add this manga to your reading list</span>
+          <span>{{i18n("content_nav_add_list")}}</span>
         </v-tooltip>
       </v-layout>
     </v-hover>
@@ -61,10 +61,16 @@
         <v-card-title class="white--text amr-manga-title">
           <div>
             <div class="headline white--text">
-              <a :href="mirrorDesc.home" v-if="mirrorDesc !== null" target="_blank">
-                <img :src="mirrorDesc.mirrorIcon" ma-1 />
-              </a>
-              <a :href="manga.currentMangaURL" target="_blank">{{manga.name}}</a>
+              <v-tooltip bottom>
+                <a slot="activator" :href="mirrorDesc.home" v-if="mirrorDesc !== null" target="_blank">
+                  <img :src="mirrorDesc.mirrorIcon" ma-1 />
+                </a>
+                <span>{{i18n("reader_click_go_mirror")}}</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <a slot="activator" :href="manga.currentMangaURL" target="_blank">{{manga.name}}</a>
+                <span>{{i18n("reader_click_go_manga")}}</span>
+              </v-tooltip>
             </div>
           </div>
         </v-card-title>
@@ -74,9 +80,12 @@
             <v-flex xs12>
               <v-toolbar flat class="pa-0" my-1>
                 <!-- Previous chapter button -->
-                <v-btn icon v-show="!firstChapter" @click.stop="goPreviousChapter">
-                  <v-icon>mdi-chevron-left</v-icon>
-                </v-btn>
+                <v-tooltip bottom>
+                  <v-btn slot="activator" icon v-show="!firstChapter" @click.stop="goPreviousChapter">
+                    <v-icon>mdi-chevron-left</v-icon>
+                  </v-btn>
+                  <span>{{i18n("list_mg_act_prev")}}</span>
+                </v-tooltip>
                 <!-- List of chapters -->
                 <v-select
                   v-model="selchap"
@@ -94,7 +103,7 @@
                   <v-btn slot="activator" icon @click.stop="goNextChapter">
                     <v-icon>mdi-chevron-right</v-icon>
                   </v-btn>
-                  <span>Go to next chapter{{nextchapLoading ? " (" + Math.floor(nextchapProgress) + "% loaded)" : ""}}</span>
+                  <span>{{i18n("list_mg_act_next")}} {{nextchapLoading ? i18n("reader_loading", Math.floor(nextchapProgress)) : ""}}</span>
                 </v-tooltip>
               </v-toolbar>
             </v-flex>
@@ -106,39 +115,47 @@
                   :value="nextchapProgress"
                   color="red darken-2"
                 ></v-progress-linear>
-                <span>Next chapter ({{Math.floor(nextchapProgress)}}% loaded)</span>
+                <span>{{i18n("reader_next_chap", Math.floor(nextchapProgress))}}</span>
               </v-tooltip>
             </v-flex>
             <!-- Action buttons -->
             <v-flex xs12 text-xs-center pa-2>
               <v-menu offset-y>
                 <!-- Bookmarks button -->
-                <v-btn slot="activator" icon 
-                  :color="bookstate.booked ? 'yellow--text' : 'yellow--text text--lighten-4'">
-                    <v-icon>mdi-star</v-icon>
-                </v-btn>
+                <v-tooltip bottom slot="activator" class="ml-1">
+                  <v-btn slot="activator" icon 
+                    :color="bookstate.booked ? 'yellow--text' : 'yellow--text text--lighten-4'">
+                      <v-icon>mdi-star</v-icon>
+                  </v-btn>
+                  <span>{{i18n("content_nav_click_bm")}}</span>
+                </v-tooltip>
                 <!-- Menu displayed when bookmarks button activate -->
                 <v-card>
                   <!-- Bookmark note of the chapter -->
                   <v-card-title v-if="bookstate.note">
-                    Chapter is boorkmarked with note : {{bookstate.note}}
+                    {{i18n("reader_bookmarked_note", bookstate.note)}}
                   </v-card-title>
                   <v-card-actions>
                     <!-- Action to update / delete bookmark for chapter > open popup -->
                     <v-btn @click="bookmarkChapter" 
                       :color="bookstate.booked ? 'yellow--text' : 'yellow--text text--lighten-4'">
                       <v-icon>mdi-star</v-icon>&nbsp;
-                      {{bookstate.booked ? 'Update bookmark' : 'Bookmark chapter'}}
+                      {{ bookstate.booked ? 
+                        i18n("reader_bookmark_update") :  
+                        i18n("reader_bookmark_create") }}
                     </v-btn>
                     <v-spacer></v-spacer>
-                    <v-btn icon @click="openBookmarksTab" color="blue">
-                      <v-icon>mdi-open-in-new</v-icon>
-                    </v-btn>
+                    <v-tooltip bottom>
+                      <v-btn slot="activator" icon @click="openBookmarksTab" color="blue">
+                        <v-icon>mdi-open-in-new</v-icon>
+                      </v-btn>
+                      <span>{{i18n("reader_open_bookmarks_tab")}}</span>
+                    </v-tooltip>
                   </v-card-actions>
                   <v-card-text>
                     <!-- No bookmarked scans in chapter -->
                     <div v-if="bookedScans.length === 0">
-                      No bookmarked scans in this chapter
+                      {{i18n("reader_no_bookmarked_scans")}}
                     </div>
                     <!-- List of bookmarked scans -->
                     <v-container pa-0 grid-list-md v-else class="amr-bookmarked-scans-cont">
@@ -161,27 +178,39 @@
                   </v-card-text>
                 </v-card>
               </v-menu>
-              <!-- Mark as latest chapter read button --> 
-              <v-btn icon color="orange--text" v-show="showLatestRead" @click.stop="markAsLatest">
-                  <v-icon>mdi-page-last</v-icon>
-              </v-btn>
+              <!-- Mark as latest chapter read button -->
+              <v-tooltip bottom class="ml-1">
+                <v-btn slot="activator" icon color="orange--text" 
+                  v-show="showLatestRead" @click.stop="markAsLatest">
+                    <v-icon>mdi-page-last</v-icon>
+                </v-btn>
+                <span>{{i18n("content_nav_mark_read")}}</span>
+              </v-tooltip>
               <!-- Add to reading list button -->
-              <v-btn icon color="green--text" v-show="!mangaExists && options.addauto === 0" @click.stop="addManga">
-                  <v-icon>mdi-plus</v-icon>
-              </v-btn>
+              <v-tooltip bottom class="ml-1">
+                <v-btn slot="activator" icon color="green--text" 
+                  v-show="!mangaExists && options.addauto === 0" @click.stop="addManga">
+                    <v-icon>mdi-plus</v-icon>
+                </v-btn>
+                <span>{{i18n("content_nav_add_list")}}</span>
+              </v-tooltip>
               <!-- Remove from reading list button -->
-              <v-btn icon color="red--text" v-show="mangaExists" @click.stop="deleteManga">
-                  <v-icon>mdi-delete</v-icon>
-              </v-btn>
-              <!-- Pause updated on manga -->
+              <v-tooltip bottom class="ml-1">
+                <v-btn slot="activator" icon color="red--text" 
+                  v-show="mangaExists" @click.stop="deleteManga">
+                    <v-icon>mdi-delete</v-icon>
+                </v-btn>
+                <span>{{i18n("reader_delete_manga")}}</span>
+              </v-tooltip>
+              <!-- Pause following updates on manga -->
               <v-tooltip bottom v-show="mangaExists && mangaInfos && mangaInfos.read === 0" class="ml-1">
                 <v-btn slot="activator" icon color="blue--text" @click.stop="markReadTop(1)">
                     <v-icon>mdi-pause</v-icon>
                 </v-btn>
                 <span>{{i18n("content_nav_stopfollow")}}</span>
               </v-tooltip>
-              <!-- Release updates on manga -->
-              <v-tooltip bottom v-show="mangaExists && mangaInfos && mangaInfos.read === 1">
+              <!-- Follow updates on manga -->
+              <v-tooltip bottom v-show="mangaExists && mangaInfos && mangaInfos.read === 1" class="ml-1">
                 <v-btn slot="activator" icon color="blue--text" @click.stop="markReadTop(0)">
                     <v-icon>mdi-play</v-icon>
                 </v-btn>
@@ -197,44 +226,62 @@
           <v-layout row wrap>
             <v-flex xs12>
               <!-- Display book checkbox -->
-              <v-switch v-model="book" label="Display as a book (side by side scans)"></v-switch>
+              <v-switch v-model="book" :label="i18n('option_read_book')"></v-switch>
             </v-flex>
             <!-- Reading direction -->
             <v-flex xs12 v-show="book" text-xs-center>
               <v-btn-toggle v-model="direction">
-                <v-btn flat value="ltr">
-                  <!--<span>Left to right</span>-->
-                  <v-icon>mdi-arrow-right</v-icon>
-                </v-btn>
-                <v-btn flat value="rtl">
-                  <!--<span>Right to left</span>-->
-                  <v-icon>mdi-arrow-left</v-icon>
-                </v-btn>
+                <v-tooltip bottom>
+                  <v-btn slot="activator" flat value="ltr">
+                    <!--<span>Left to right</span>-->
+                    <v-icon>mdi-arrow-right</v-icon>
+                  </v-btn>
+                  <span>{{i18n("option_read_book_ltr")}}</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                  <v-btn flat slot="activator" value="rtl">
+                    <!--<span>Right to left</span>-->
+                    <v-icon>mdi-arrow-left</v-icon>
+                  </v-btn>
+                  <span>{{i18n("option_read_book_rtl")}}</span>
+                </v-tooltip>
               </v-btn-toggle>
             </v-flex>
             <v-flex xs12>
               <!-- Display full chapter checkbox -->
-              <v-switch v-model="fullchapter" label="Display full chapter (if unchecked, display current page)"></v-switch>
+              <v-switch v-model="fullchapter" :label="i18n('option_read_fullchapter')"></v-switch>
             </v-flex>
             <!-- Resize mode -->
             <v-flex xs12 text-xs-center>
               <v-btn-toggle v-model="resize">
-                <v-btn flat value="width">
-                  <!--<span>Width</span>-->
-                  <v-icon>mdi-arrow-expand-horizontal</v-icon>
-                </v-btn>
-                <v-btn flat value="height" v-show="!fullchapter">
-                  <!--<span>Height</span>-->
-                  <v-icon>mdi-arrow-expand-vertical</v-icon>
-                </v-btn>
-                <v-btn flat value="container" v-show="!fullchapter">
-                  <!--<span>Container</span>-->
-                  <v-icon>mdi-arrow-expand-all</v-icon>
-                </v-btn>
-                <v-btn flat value="none">
-                  <!--<span>None</span>-->
-                  <v-icon>mdi-border-none-variant</v-icon>
-                </v-btn>
+                <v-tooltip bottom>
+                  <v-btn slot="activator" flat value="width">
+                    <!--<span>Width</span>-->
+                    <v-icon>mdi-arrow-expand-horizontal</v-icon>
+                  </v-btn>
+                  <span>{{i18n("option_read_resize_w")}}</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                  <v-btn slot="activator" flat value="height" v-show="!fullchapter">
+                    <!--<span>Height</span>-->
+                    <v-icon>mdi-arrow-expand-vertical</v-icon>
+                  </v-btn>
+                  <span>{{i18n("option_read_resize_h")}}</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                  <v-btn slot="activator" flat value="container" v-show="!fullchapter">
+                    <!--<span>Container</span>-->
+                    <v-icon>mdi-arrow-expand-all</v-icon>
+                  </v-btn>
+                  <span>{{i18n("option_read_resize_c")}}</span>
+                </v-tooltip>
+                <v-tooltip bottom>
+                  <v-btn slot="activator" flat value="none">
+                    <!--<span>None</span>-->
+                    <v-icon>mdi-border-none-variant</v-icon>
+                  </v-btn>
+                  <span>{{i18n("option_read_resize_n")}}</span>
+                </v-tooltip>
               </v-btn-toggle>
             </v-flex>
           </v-layout>
@@ -264,16 +311,19 @@
             :class="{display: hover, 'shrink-draw': drawer}"
             slot-scope="{ hover }">
             <div class="amr-thumbs-scrollable" ref="thumbs-scrollable">
-              <table class="amr-pages-page-cont"  v-for="(scans, i) in pages" :key="i" 
-                :class="{current: i === currentPage}" 
-                @click.stop="goScan(i)">
-                <Page :index="i" 
-                  :scans="scans" 
-                  :direction="direction"
-                  resize="container" 
-                  ref="thumb" 
-                  :bookmark="false" />
-              </table>
+              <v-tooltip top v-for="(scans, i) in pages" :key="i">
+                <table slot="activator" class="amr-pages-page-cont"  
+                  :class="{current: i === currentPage}" 
+                  @click.stop="goScan(i)">
+                  <Page :index="i" 
+                    :scans="scans" 
+                    :direction="direction"
+                    resize="container" 
+                    ref="thumb" 
+                    :bookmark="false" />
+                </table>
+                <span>{{displayPageScansIndexes(i)}}</span>
+              </v-tooltip>
             </div>
           </div>
         </v-hover>
@@ -287,7 +337,7 @@
   import {scroller} from 'vue-scrollto/src/scrollTo'
 
   import browser from "webextension-polyfill";
-  import i18n from "../amr/i18n";
+  import i18n from "../mixins/i18n-mixin"
 
   import mirrorImpl from '../content/mirrorimpl';
   import pageData from '../content/pagedata';
@@ -308,6 +358,7 @@
   let currentlyThumbsScrolling = false
 
   export default {
+    mixins: [i18n],
     data: () => ({
       drawer: false, /* Display the side drawer or not */
 
@@ -509,8 +560,6 @@
     },
     components: { Page, Scan, Confirm, BookmarkPopup },
     methods: {
-      /** Make i18n accessible from dom */
-      i18n: (message, ...args) => i18n(message, ...args),
       /** Inform background that current chapter has been read (will update reading state and eventually add manga to list) */
       async consultManga(force) {
         await util.consultManga(force)
@@ -675,6 +724,15 @@
           }
         })
       },
+      /** Return a string containing the scan indexes (1-based) contained in the page of index page_index in the right order (using direction ltr or rtl) */
+      displayPageScansIndexes(page_index) {
+        let scs = this.pages[page_index]
+        if (scs.length === 1) return scs[0].name
+        else {
+          if (this.direction === 'ltr') return scs[0].name + " - " + scs[1].name
+          else return scs[1].name + " - " + scs[0].name
+        }
+      },
       /** Change updating mode for this manga (1 : stop updating, 0 : check updates) */
       async markReadTop(nTop) {
         await browser.runtime.sendMessage({
@@ -688,7 +746,7 @@
       },
       /** Mark current chapter as latest read in reading list */
       async markAsLatest() {
-        if (await this.$refs.confirm.open(i18n("content_nav_mark_read"), i18n("content_nav_mark_read_confirm"), { color: 'orange' })) {
+        if (await this.$refs.confirm.open(this.i18n("content_nav_mark_read"), this.i18n("content_nav_mark_read_confirm"), { color: 'orange' })) {
           await browser.runtime.sendMessage({
             action: "setMangaChapter",
             url: pageData.currentMangaURL,
@@ -708,7 +766,7 @@
       },
       /** Remove the current manga from reading list */
       async deleteManga() {
-        if (await this.$refs.confirm.open(i18n("list_mg_act_delete"), i18n("list_mg_delete_question", pageData.name, mirrorImpl.get().mirrorName), { color: 'orange' })) {
+        if (await this.$refs.confirm.open(this.i18n("list_mg_act_delete"), this.i18n("list_mg_delete_question", pageData.name, mirrorImpl.get().mirrorName), { color: 'orange' })) {
           await browser.runtime.sendMessage({
             action: "deleteManga", 
             url: pageData.currentMangaURL,

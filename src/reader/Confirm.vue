@@ -8,14 +8,16 @@
       <v-card-text v-show="!!message">{{ message }}</v-card-text>
       <v-card-actions class="pt-0">
         <v-spacer></v-spacer>
-        <v-btn color="primary darken-1" flat="flat" @click.native="agree">Yes</v-btn>
-        <v-btn color="grey" flat="flat" @click.native="cancel">Cancel</v-btn>
+        <v-btn color="primary darken-1" flat="flat" @click.native="agree">{{i18n("button_yes")}}</v-btn>
+        <v-btn color="grey" flat="flat" @click.native="cancel">{{i18n("button_cancel")}}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
+  import i18n from "../mixins/i18n-mixin";
+
   /**
    * Vuetify Confirm Dialog component
    *
@@ -45,6 +47,7 @@
    * }
    */
   export default {
+    mixins: [i18n],
     data: () => ({
       dialog: false,
       resolve: null,

@@ -563,7 +563,7 @@
     "description": "Tooltip to show AMR bar when icon clicked and bar hidden"
   },  
   "content_nav_click_bm": {
-    "message": "Cliquer opur ajouter ce chapitre aux signets",
+    "message": "Ajouter ce chapitre aux signets",
     "description": "Tooltip on button to bookmark a chapter"
   },  
   "content_nav_note_bm": {
@@ -636,11 +636,11 @@
     "description": "Panel at bottom of page to tell that the chapter is the latest published"
   }, 
   "bookmark_chapter_text": {
-    "message": "Ajouter le chapitre '$1' de '$2' sur '$3' aux signets. Ajoutez une note ci dessous qui sera associée au signet.",
+    "message": "Ajouter le chapitre $1 de $2 sur $3 aux signets. La note ci dessous sera associée au signet.",
     "description": "Text in the bookmark popup to bookmark current chapter. $1 is chapter name, $2 manga name and $3 website name"
   }, 
   "bookmark_chapter_scan": {
-    "message": "Ajouter le scan '$1' du chapitre '$2' de '$3' sur '$4' aux signets. Ajoutez une note ci dessous qui sera associée au signet.",
+    "message": "Ajouter le scan $1 du chapitre $2 de $3 sur $4 aux signets. La note ci dessous sera associée au signet.",
     "description": "Text in the bookmark popup to bookmark a scan. $1 is scan name/id, $2 is chapter name, $3 manga name and $4 website name"
   }, 
   "content_read_reload": {
@@ -809,7 +809,7 @@
     "description": "Size of the bookmarks in list : small"
   },
   "bookmarks_no_bookmarks": {
-    "message": "Pas encore de signets. Pour ajouter un scan aux signets, double cliquer sur le scan lors de la lecture. Les scans ajoutés aux signets ont un tour gris. <br /> Pour ajouter un chapitre aux signets, cliquez sur l'étoile dans la barrede navigation lors de la lecture.",
+    "message": "Pas encore de signets. Pour ajouter un scan aux signets, double cliquer sur le scan lors de la lecture. Les scans ajoutés aux signets ont un bandeau jaune en haut à droite. <br /> Pour ajouter un chapitre aux signets, cliquez sur l'étoile dans le menu lors de la lecture.",
     "description": "Label when no bookmarks. Help about how to bookmark a scan and chapter"
   },
   "bookmarks_no_bookmarks_filter": {

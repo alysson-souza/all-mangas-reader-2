@@ -15,9 +15,9 @@
         <div class="amr-scan" v-show="!loading && !error" 
             @click="showBookmarkButton = !showBookmarkButton" @dblclick.stop="toggleBookmark">
             <!-- Top right triangle to show scan is bookmarked -->
-            <v-tooltip left v-if="bookmark && scanbooked" class="amr-triangle-tooltip-cont">
+            <v-tooltip right v-if="bookmark && scanbooked" class="amr-triangle-tooltip-cont">
                 <div slot="activator" class="amr-triangle" />
-                <span>Scan bookmarked{{!note ? '' : ' with note : ' + note}}</span>
+                <span>{{note ? i18n("reader_bookmarked_scan_note", note) : i18n("reader_bookmarked_scan")}}</span>
             </v-tooltip>
             <!-- The scan itself... -->
             <img :src="src" ref="scan" />
@@ -25,10 +25,13 @@
             <div v-if="bookmark" class="amr-scan-cover" :class="{'covered': showBookmarkButton}"></div>
             <!-- a div hover to bookmark the scan -->
             <div class="amr-scan-toolbar" v-show="showBookmarkButton" v-if="bookmark">
-                <v-btn large icon @click="bookmarkScan"
-                    :color="scanbooked ? 'yellow--text' : 'yellow--text text--lighten-4'">
-                    <v-icon>mdi-star</v-icon>
-                </v-btn>
+                <v-tooltip bottom>
+                    <v-btn slot="activator" large icon @click="bookmarkScan"
+                        :color="scanbooked ? 'yellow--text' : 'yellow--text text--lighten-4'">
+                        <v-icon>mdi-star</v-icon>
+                    </v-btn>
+                    <span>{{i18n("reader_bookmark_scan_help")}}</span>
+                </v-tooltip>
             </div>
         </div>
         <!-- Error try to reload button -->
@@ -56,8 +59,10 @@ import options from '../content/options';
 import bookmarks from "./bookmarks";
 import util from "./util";
 import EventBus from "./EventBus";
+import i18n from "../mixins/i18n-mixin";
 
 export default {
+    mixins: [i18n],
     data() {
         return {
             loading: true, /* is currently loading */
