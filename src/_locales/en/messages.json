@@ -1135,5 +1135,17 @@
   "reader_thinscan_description": {
     "message": "This chapter contains thin long scans (their height exceeds three times their width). Current layout options won't offer you the best possible reading. We can automatically adjust the way this manga is displayed (prefer not reading it with side by side scans and avoid scaling scans in height). Do you want to adjust these parameters ?",
     "description": "Description of the popup displayed if thin scans detected (height >= 3 * width)"
+  },
+  "reader_alert_lastscan": {
+    "message": "This is the latest scan of the chapter. Double tap right key to read next chapter !",
+    "description": "Alert displayed if trying to go to next scan and last scan"
+  },
+  "reader_alert_firstscan": {
+    "message": "This is the first scan of the chapter. Double tap left key to read previous chapter !",
+    "description": "Alert displayed if trying to go to previous scan and first scan"
+  },
+  "reader_alert_firstchapter": {
+    "message": "This is the first published chapter.",
+    "description": "Alert displayed if trying to go to previous chapter and first chapter"
   }
 }

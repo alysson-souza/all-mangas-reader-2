@@ -855,13 +855,20 @@
         if (cur + 1 < this.pages.length) n = cur + 1
 
         if (doubletap && n === cur) {
+          if (this.lastChapter) { // display an alert because there is no next chapter
+            this.$refs.wizdialog.temporary(this.i18n("content_nav_last_chap"))
+          }
           this.goNextChapter()
           return
         }
         
         if (!this.fullchapter) {
           // just change the visibility of current page and next page
-          if (cur === n) return
+          if (cur === n) {
+            // this is latest scan of the chapter
+            this.$refs.wizdialog.temporary(this.i18n("reader_alert_lastscan"), 2000)
+            return
+          }
 
           this.currentPage = n
           this.visible = [n]
@@ -886,13 +893,20 @@
         if (cur - 1 >= 0) n = cur - 1
 
         if (doubletap && n === cur) {
+          if (this.firstChapter) { // display an alert because there is no previous chapter
+            this.$refs.wizdialog.temporary(this.i18n("reader_alert_firstchapter"))
+          }
           this.goPreviousChapter()
           return
         }
 
         if (!this.fullchapter) {
           // just change the visibility of current page and previous page
-          if (cur === n) return
+          if (cur === n) {
+            // this is first scan of the chapter
+            this.$refs.wizdialog.temporary(this.i18n("reader_alert_firstscan"), 2000)
+            return
+          }
 
           this.currentPage = n
           this.visible = [n]
