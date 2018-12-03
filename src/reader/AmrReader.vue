@@ -2,6 +2,7 @@
   <v-app id="inspire" dark>
     <!-- Global component to show confirmation dialogs -->
     <confirm ref="confirm"></confirm>
+    <!-- Global component to show bookmarks dialog -->
     <BookmarkPopup ref="book"></BookmarkPopup>
     <!-- Global always visible buttons -->
     <v-hover>
@@ -298,6 +299,7 @@
   import Confirm from "./Confirm";
   import BookmarkPopup from "./BookmarkPopup";
   import bookmarks from "./bookmarks";
+  import EventBus from "./EventBus";
 
   /** Possible values for resize (readable), the stored value is the corresponding index */
   const resize_values = ['width', 'height', 'container', 'none']
@@ -359,6 +361,10 @@
       window.addEventListener('resize', () => {
         this.keepScrollPos(10)
       });
+      /** Listen to global bus events */
+      EventBus.$on('open-bookmarks', (obj) => {
+        this.$refs.book.open(obj)
+      })
     },
     mounted() {
       /* Load chapters list */

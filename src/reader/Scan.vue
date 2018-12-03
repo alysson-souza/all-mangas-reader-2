@@ -1,7 +1,5 @@
 <template>
     <td :class="{xs6: !full, xs12: full, 'res-w': resizeW(), 'res-h': resizeH()}" class='scanContainer' :colspan="full ? 2 : 1">
-        <!-- Global bookmark popup -->
-        <BookmarkPopup ref="book"></BookmarkPopup>
         <!-- Progress while loading -->
         <v-container fill-height text-xs-center v-show="loading">
             <v-layout>
@@ -55,9 +53,9 @@ import mirrorImpl from '../content/mirrorimpl';
 import pageData from '../content/pagedata';
 import options from '../content/options';
 
-import BookmarkPopup from "./BookmarkPopup";
 import bookmarks from "./bookmarks";
 import util from "./util";
+import EventBus from "./EventBus";
 
 export default {
     data() {
@@ -114,7 +112,6 @@ export default {
             }
         }
     },
-    components: { BookmarkPopup },
     mounted() {
         if (this.autoLoad) { /* load scan if auto on mounted */
             this.loadScan()
@@ -176,7 +173,7 @@ export default {
         },
         /** Open bookmarks dialog */
         bookmarkScan() {
-            this.$refs.book.open({scanUrl: this.src})
+            EventBus.$emit('open-bookmarks', {scanUrl: this.src})
         }
     }
 }
