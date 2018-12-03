@@ -48,6 +48,9 @@ class HandleManga {
             case "readManga":
                 utils.debug("Read manga " + message.url);
                 return store.dispatch('readManga', message);
+            case "deleteManga":
+                utils.debug("Delete manga key " + key);
+                return store.dispatch('deleteManga', {key: key});
             case "getNextChapterImages": //returns list of images for prefetch of next chapter in content script
                 return this.getChapterImages(message);
             case "markReadTop":

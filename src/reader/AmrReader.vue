@@ -72,9 +72,11 @@
           <v-layout row wrap>
             <v-flex xs12>
               <v-toolbar flat class="pa-0" my-1>
+                <!-- Previous chapter button -->
                 <v-btn icon v-show="!firstChapter" @click.stop="goPreviousChapter">
                   <v-icon>mdi-chevron-left</v-icon>
                 </v-btn>
+                <!-- List of chapters -->
                 <v-select
                   v-model="selchap"
                   :items="chapters"
@@ -87,6 +89,7 @@
                 ></v-select>
                 <v-spacer></v-spacer>
                 <v-tooltip bottom v-show="!lastChapter">
+                  <!-- Next chapter button -->
                   <v-btn slot="activator" icon @click.stop="goNextChapter">
                     <v-icon>mdi-chevron-right</v-icon>
                   </v-btn>
@@ -94,6 +97,7 @@
                 </v-tooltip>
               </v-toolbar>
             </v-flex>
+            <!-- Next chapter preloading progression bar -->
             <v-flex xs12 class="amr-chapter-progress-cont">
               <v-tooltip bottom v-show="nextchapLoading">
                 <v-progress-linear slot="activator" class="amr-floting-progress"
@@ -156,18 +160,26 @@
                   </v-card-text>
                 </v-card>
               </v-menu>
+              <!-- Mark as latest chapter read button --> 
               <v-btn icon color="orange--text" v-show="showLatestRead" @click.stop="markAsLatest">
                   <v-icon>mdi-page-last</v-icon>
               </v-btn>
+              <!-- Add to reading list button -->
               <v-btn icon color="green--text" v-show="!mangaExists && options.addauto === 0" @click.stop="addManga">
                   <v-icon>mdi-plus</v-icon>
               </v-btn>
-              <v-tooltip bottom v-show="mangaExists && mangaInfos && mangaInfos.read === 0">
+              <!-- Remove from reading list button -->
+              <v-btn icon color="red--text" v-show="mangaExists" @click.stop="deleteManga">
+                  <v-icon>mdi-delete</v-icon>
+              </v-btn>
+              <!-- Pause updated on manga -->
+              <v-tooltip bottom v-show="mangaExists && mangaInfos && mangaInfos.read === 0" class="ml-1">
                 <v-btn slot="activator" icon color="blue--text" @click.stop="markReadTop(1)">
                     <v-icon>mdi-pause</v-icon>
                 </v-btn>
                 <span>{{i18n("content_nav_stopfollow")}}</span>
               </v-tooltip>
+              <!-- Release updates on manga -->
               <v-tooltip bottom v-show="mangaExists && mangaInfos && mangaInfos.read === 1">
                 <v-btn slot="activator" icon color="blue--text" @click.stop="markReadTop(0)">
                     <v-icon>mdi-play</v-icon>
@@ -688,6 +700,19 @@
         await this.consultManga(true)
         this.mangaExists = true
       },
+      /** Remove the current manga from reading list */
+      async deleteManga() {
+        if (await this.$refs.confirm.open(i18n("list_mg_act_delete"), i18n("list_mg_delete_question", pageData.name, mirrorImpl.get().mirrorName), { color: 'orange' })) {
+          await browser.runtime.sendMessage({
+            action: "deleteManga", 
+            url: pageData.currentMangaURL,
+            mirror: mirrorImpl.get().mirrorName,
+            language: pageData.language
+          })
+          this.mangaExists = false
+        }
+      },
+      
       /** Go read a specific chapter */
       goToChapter() {
         if (this.selchap === null) return
@@ -816,6 +841,7 @@
           }
         }
       },
+      /** Keep the scroll ratio in vertical scrollbar while resizing scans (open drawer, resize window, change layout options...) */
       keepScrollPos(duration = 500) {
         let ratio = this.scrollRatio
         let start = Date.now()
