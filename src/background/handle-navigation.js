@@ -20,6 +20,13 @@ class HandleNavigation {
                 return Promise.resolve({
                     barVis: localStorage.isBarVisible === undefined ? 1 : localStorage.isBarVisible
                 });
+            // get a value from localStorage
+            case "get_storage":
+                return Promise.resolve(localStorage[message.key]);
+            // set a Value in localStorage
+            case "set_storage": 
+                localStorage[message.key] = message.value;
+                return Promise.resolve();
         }
     }
 }

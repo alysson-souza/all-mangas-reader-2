@@ -420,6 +420,8 @@
       EventBus.$on('thin-scan', (obj) => { // a thin scan (height >= 3 * width) has been detected
         this.handleThinScan()
       })
+      /** Handle first time reader is opened */
+      this.handleFirstTime()
     },
     mounted() {
       /* Load chapters list */
@@ -1043,6 +1045,42 @@
             action: "opentab",
             url: "/pages/bookmarks/bookmarks.html"
         });
+      },
+      /** Called on reader's creation, display a welcome message first time reader is opened */
+      async handleFirstTime() {
+        let isfirst = await browser.runtime.sendMessage({action: "get_storage", key: "reader_firsttime"})
+        if (!isfirst) { // localStorage values are Strings...
+          // Button to set default layout with preferde choice : long strip 
+          let butlongstrip = {
+            title: this.i18n("reader_firsttime_but_longstrip"),
+            color: "primary",
+            click: ({ agree }) => {
+              this.fullchapter = true
+              this.resize = "width"
+              this.book = window.innerWidth >= 1200 // display as a book is screen is wide enough
+              agree()
+            }
+          }
+          // Button to set default layout with preferde choice : single page
+          let butsingle = {
+            title: this.i18n("reader_firsttime_but_single"),
+            color: "primary",
+            click: ({ agree }) => {
+              this.fullchapter = false
+              this.resize = window.innerHeight >= 800 ? "container" : "width" // resize container if screen is tall enough
+              this.book = window.innerWidth >= 1200 // display as a book is screen is wide enough
+              agree()
+            }
+          }
+          await this.$refs.wizdialog.open(
+            this.i18n("reader_firsttime_title"), 
+            this.i18n("reader_firsttime_description"), { 
+              cancel: false, 
+              buttons: [butlongstrip, butsingle],
+              important: true
+            })
+          await browser.runtime.sendMessage({action: "set_storage", key: "reader_firsttime", value: "true"})
+        }
       },
       /** Called when a thin scan (height >= 3 * width) is detected */
       async handleThinScan() {

@@ -1147,5 +1147,21 @@
   "reader_alert_firstchapter": {
     "message": "This is the first published chapter.",
     "description": "Alert displayed if trying to go to previous chapter and first chapter"
+  },
+  "reader_firsttime_title": {
+    "message": "Welcome to the new reader !",
+    "description": "Title of the popup displayed first time reader is shown"
+  },
+  "reader_firsttime_description": {
+    "message": "All Mangas Reader's reader has many features to offer you the best possible reading experience. Before we let you read your manga and discover all these features, please choose between these two options (you can change it when you want) : \n* do you want the **whole chapter to be displayed as a long strip**\n* or just **one page at a time** (could be one page with two scans on it) ?\nIn both cases, the whole chapter is loaded in the background and you can navigate smoothly between pages with your keyboard",
+    "description": "Description of the popup displayed first time reader is shown"
+  },
+  "reader_firsttime_but_longstrip": {
+    "message": "I want a long strip",
+    "description": "First time, a popup is shown with two choices, button to choose a long strip"
+  },
+  "reader_firsttime_but_single": {
+    "message": "I want one page",
+    "description": "First time, a popup is shown with two choices, button to choose a one page"
   }
 }
