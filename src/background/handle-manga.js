@@ -176,32 +176,32 @@ class HandleManga {
         const mir = utils.currentPageMatch(url)
         if (mir === null) return Promise.resolve(null)
 
-        // Load amr preload
-        let ts = Date.now()
-        
-        let loading = []
-        loading.push(browser.tabs.insertCSS(tabId, { file: "/reader/pre-loader.css" }))
-        let bgcolor = "#424242"
-        if (store.state.options.darkreader === 0) bgcolor = "white"
-        loading.push(browser.tabs.executeScript(
-            tabId, 
-            { code: `
-                let amr_icon_url = '${browser.extension.getURL('/icons/icon_128.png')}';
-                let cover = document.createElement("div")
-                cover.id = "amr-loading-cover"
-                cover.style.backgroundColor = "${bgcolor}"
+        if (!localStorage["oldreader"]) {
+            // Load amr preload
+            let loading = []
+            loading.push(browser.tabs.insertCSS(tabId, { file: "/reader/pre-loader.css" }))
+            let bgcolor = "#424242"
+            if (store.state.options.darkreader === 0) bgcolor = "white"
+            loading.push(browser.tabs.executeScript(
+                tabId, 
+                { code: `
+                    let amr_icon_url = '${browser.extension.getURL('/icons/icon_128.png')}';
+                    let cover = document.createElement("div")
+                    cover.id = "amr-loading-cover"
+                    cover.style.backgroundColor = "${bgcolor}"
 
-                let img = document.createElement("img")
-                img.src = amr_icon_url;
-                cover.appendChild(img)
+                    let img = document.createElement("img")
+                    img.src = amr_icon_url;
+                    cover.appendChild(img)
 
-                document.body.appendChild(cover)
-            `}))
-        Promise.all(loading).then(() => console.log("Execute preload done in " + (Date.now() - ts) + "ms"))
+                    document.body.appendChild(cover)
+                `}))
+            Promise.all(loading)
+        }
 
         let impl = await this.getImplementation(mir)
         if (impl) {
-            if (false) {
+            if (localStorage["oldreader"]) {
                 // Inject css in matched tab
                 for (let css of contentCss) {
                     await browser.tabs.insertCSS(tabId, { file: css });
