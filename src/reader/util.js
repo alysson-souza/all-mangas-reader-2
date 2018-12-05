@@ -54,6 +54,43 @@ class Util {
             language: pageData.language
         });
     }
+    /**
+     * Mark current chapter as latest read in reading list
+     */
+    async markAsLatest() {
+        return await browser.runtime.sendMessage({
+            action: "setMangaChapter",
+            url: pageData.currentMangaURL,
+            mirror: mirrorImpl.get().mirrorName,
+            lastChapterReadName: pageData.currentChapter,
+            lastChapterReadURL: pageData.currentChapterURL,
+            name: pageData.name, 
+            language: pageData.language
+        })
+    }
+    /** 
+     * Change updating mode for this manga (1 : stop updating, 0 : check updates) 
+     */
+    async markReadTop(nTop) {
+        return await browser.runtime.sendMessage({
+            action: "markReadTop",
+            url: pageData.currentMangaURL,
+            read: nTop,
+            updatesamemangas: true, 
+            language: pageData.language
+        })
+    }
+    /** 
+     * Remove the current manga from reading list 
+     */
+    async deleteManga() {
+        return await browser.runtime.sendMessage({
+            action: "deleteManga", 
+            url: pageData.currentMangaURL,
+            mirror: mirrorImpl.get().mirrorName,
+            language: pageData.language
+        })
+    }
     /** Clear current document selection */
     clearSelection() {
         if (document.selection && document.selection.empty) {
