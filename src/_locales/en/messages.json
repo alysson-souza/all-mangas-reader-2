@@ -1283,5 +1283,13 @@
   "action_done": {
     "message": "Done",
     "description": "Confirmation message when action has been done"
+  },
+  "reader_button_fullscreen": {
+    "message": "Full screen",
+    "description": "Tooltip of the full screen button"
+  },
+  "reader_button_exit_fullscreen": {
+    "message": "Exit full screen",
+    "description": "Tooltip of the exit full screen button"
   }
 }

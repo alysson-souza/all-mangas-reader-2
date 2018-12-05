@@ -286,25 +286,31 @@
             </v-flex>
             <v-flex xs12 text-xs-center mt-2>
               <v-tooltip bottom>
-                <v-btn slot="activator" icon @click="saveOptionsAsDefault" color="primary--text" v-show="layoutDiffFromOptions">
+                <v-btn slot="activator" icon @click="saveOptionsAsDefault" color="primary--text" v-show="layoutDiffFromOptions" class="ma-0">
                   <v-icon>mdi-content-save</v-icon>
                 </v-btn>
                 <span>{{i18n("reader_button_saveoptions")}}</span>
               </v-tooltip>
               <v-tooltip bottom>
-                <v-btn slot="activator" icon @click="resetOptionsToDefault" color="primary--text" v-show="layoutDiffFromOptions">
+                <v-btn slot="activator" icon @click="resetOptionsToDefault" color="primary--text" v-show="layoutDiffFromOptions" class="ma-0">
                   <v-icon>mdi-reload</v-icon>
                 </v-btn>
                 <span>{{i18n("reader_button_resetoptions")}}</span>
               </v-tooltip>
               <v-tooltip bottom>
-                <v-btn slot="activator" icon @click="toggleDark" :color="darkreader ? 'white--text' : 'black--text'">
+                <v-btn slot="activator" icon @click="toggleDark" :color="darkreader ? 'white--text' : 'black--text'" class="ma-0">
                   <v-icon>mdi-brightness-6</v-icon>
                 </v-btn>
                 <span>{{!darkreader ? i18n("reader_button_dark") : i18n("reader_button_light")}}</span>
               </v-tooltip>
               <v-tooltip bottom>
-                <v-btn slot="activator" icon @click="displayTips" color="blue--text">
+                <v-btn slot="activator" icon @click="toggleFullScreen" class="ma-0">
+                  <v-icon>{{fullscreen ? 'mdi-fullscreen-exit' : 'mdi-fullscreen'}}</v-icon>
+                </v-btn>
+                <span>{{!fullscreen ? i18n("reader_button_fullscreen") : i18n("reader_button_exit_fullscreen")}}</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <v-btn slot="activator" icon @click="displayTips" color="blue--text" class="ma-0">
                   <v-icon>mdi-lightbulb-on</v-icon>
                 </v-btn>
                 <span>{{i18n("reader_button_tips")}}</span>
@@ -373,6 +379,7 @@
 
       darkreader: options.darkreader === 1, /* Top for using dark background */
       options: options, /* Make it reactive so update to local options object will be reflected in computed properties */
+      fullscreen: window.fullScreen, /* fullscreen window state */
     }),
     props: {
       images: Array /* List of scans to display, not necessarily pictures but urls that the implementation can handle to render a scan */
@@ -516,7 +523,7 @@
         if (this.fullchapter !== (this.options.displayFullChapter === 1)) return true
         if (this.resize !== (resize_values[this.options.resizeMode])) return true
         return false
-      }
+      },
     },
     components: { Reader, Scan, WizDialog, BookmarkPopup },
     methods: {
@@ -748,6 +755,28 @@
       /** Display tips popup */
       displayTips() {
         this.handleTips(true)
+      },
+      /** Toggle full screen mode */
+      toggleFullScreen() {
+        if (this.fullscreen) { /** Exit full screen mode */
+          if (document.exitFullscreen) {
+            document.exitFullscreen();
+          } else if (document.mozCancelFullScreen) { /* Firefox */
+            document.mozCancelFullScreen();
+          } else if (document.webkitExitFullscreen) { /* Chrome, and Opera */
+            document.webkitExitFullscreen();
+          }
+        } else { /** Request full screen mode */
+          let elem = document.documentElement
+          if (elem.requestFullscreen) {
+            elem.requestFullscreen()
+          } else if (elem.mozRequestFullScreen) { /* Firefox */
+            elem.mozRequestFullScreen()
+          } else if (elem.webkitRequestFullscreen) { /* Chrome, and Opera */
+            elem.webkitRequestFullscreen()
+          }
+        }
+        this.fullscreen = ! this.fullscreen        
       },
       /** 
        * Display tips
