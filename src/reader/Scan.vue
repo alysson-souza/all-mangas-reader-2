@@ -16,7 +16,7 @@
             @click="showBookmarkButton = !showBookmarkButton" @dblclick.stop="toggleBookmark">
             <!-- Top right triangle to show scan is bookmarked -->
             <v-tooltip right v-if="bookmark && scanbooked" class="amr-triangle-tooltip-cont">
-                <div slot="activator" class="amr-triangle" />
+                <div slot="activator" class="amr-triangle" @click="bookmarkScan" />
                 <span>{{note ? i18n("reader_bookmarked_scan_note", note) : i18n("reader_bookmarked_scan")}}</span>
             </v-tooltip>
             <!-- The scan itself... -->
@@ -245,6 +245,7 @@ td.scanContainer.xs12 {
     right: 0px;
     z-index: 2;
     opacity: 0.5;
+    cursor: pointer;
 }
 .amr-triangle-tooltip-cont {
     position: absolute;
