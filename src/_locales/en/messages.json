@@ -1247,5 +1247,41 @@
   "options_web_chapter_darkreader_opt": {
     "message": "Dark background",
     "description": "In the options page, label of the dark reader option"
+  },
+  "reader_button_saveoptions": {
+    "message": "Save current options as default",
+    "description": "Tooltip on the save current options as default button in the reader"
+  },
+  "reader_button_resetoptions": {
+    "message": "Reset current manga display options to default",
+    "description": "Tooltip on the reset current manga display options to default button in the reader"
+  },
+  "reader_button_dark": {
+    "message": "Switch to dark background reader",
+    "description": "Tooltip on the switch to dark background button in the reader"
+  },
+  "reader_button_light": {
+    "message": "Switch to light background reader",
+    "description": "Tooltip on the switch to light background button in the reader"
+  },
+  "reader_button_tips": {
+    "message": "Click to view some tips to use AMR's reader",
+    "description": "Tooltip on the display tips button in the reader"
+  },
+  "button_close": {
+    "message": "Close",
+    "description": "Generic close button label"
+  },
+  "reader_save_options_title": {
+    "message": "Save current display mode",
+    "description": "Title of the dialog before saving current diaply options as default"
+  },
+  "reader_save_options_confirm": {
+    "message": "This action will replace your default display options by the current ones. Are you sure that you want to do that ?",
+    "description": "Confirmation question of the dialog before saving current diaply options as default"
+  },
+  "action_done": {
+    "message": "Done",
+    "description": "Confirmation message when action has been done"
   }
 }

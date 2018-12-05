@@ -71,5 +71,9 @@ class Util {
     async setStorage(key, value) {
         return await browser.runtime.sendMessage({action: "set_storage", key: key, value: value})
     }
+    /** Set an option value */
+    async saveOption(key, value) {
+        return await browser.runtime.sendMessage({action: "save_option", key: key, value: value})
+    }
 }
 export default (new Util)

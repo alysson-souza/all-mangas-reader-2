@@ -1,5 +1,5 @@
 <template>
-  <v-app id="inspire" :dark="options.darkreader === 1">
+  <v-app id="inspire" :dark="darkreader">
     <!-- Global component to show confirmation dialogs, alert dialogs / other -->
     <WizDialog ref="wizdialog"></WizDialog>
     <!-- Global component to show bookmarks dialog -->
@@ -124,7 +124,7 @@
                 <!-- Bookmarks button -->
                 <v-tooltip bottom slot="activator" class="ml-1">
                   <v-btn slot="activator" icon 
-                    :color="(options.darkreader === 0 ? 'grey ' : '') + (bookstate.booked ? 'yellow--text' : 'yellow--text text--lighten-4')">
+                    :color="(!darkreader ? 'grey ' : '') + (bookstate.booked ? 'yellow--text' : 'yellow--text text--lighten-4')">
                       <v-icon>mdi-star</v-icon>
                   </v-btn>
                   <span>{{i18n("content_nav_click_bm")}}</span>
@@ -138,7 +138,7 @@
                   <v-card-actions>
                     <!-- Action to update / delete bookmark for chapter > open popup -->
                     <v-btn @click="bookmarkChapter" 
-                      :color="options.darkreader === 0 ? (bookstate.booked ? 'yellow grey--text text--darken-3' : 'yellow grey--text') : (bookstate.booked ? 'yellow--text' : 'yellow--text text--lighten-4')">
+                      :color="!darkreader ? (bookstate.booked ? 'yellow grey--text text--darken-3' : 'yellow grey--text') : (bookstate.booked ? 'yellow--text' : 'yellow--text text--lighten-4')">
                       <v-icon>mdi-star</v-icon>&nbsp;
                       {{ bookstate.booked ? 
                         i18n("reader_bookmark_update") :  
@@ -284,6 +284,32 @@
                 </v-tooltip>
               </v-btn-toggle>
             </v-flex>
+            <v-flex xs12 text-xs-center mt-2>
+              <v-tooltip bottom>
+                <v-btn slot="activator" icon @click="saveOptionsAsDefault" color="primary--text" v-show="layoutDiffFromOptions">
+                  <v-icon>mdi-content-save</v-icon>
+                </v-btn>
+                <span>{{i18n("reader_button_saveoptions")}}</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <v-btn slot="activator" icon @click="resetOptionsToDefault" color="primary--text" v-show="layoutDiffFromOptions">
+                  <v-icon>mdi-reload</v-icon>
+                </v-btn>
+                <span>{{i18n("reader_button_resetoptions")}}</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <v-btn slot="activator" icon @click="toggleDark" :color="darkreader ? 'white--text' : 'black--text'">
+                  <v-icon>mdi-brightness-6</v-icon>
+                </v-btn>
+                <span>{{!darkreader ? i18n("reader_button_dark") : i18n("reader_button_light")}}</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <v-btn slot="activator" icon @click="displayTips" color="blue--text">
+                  <v-icon>mdi-lightbulb-on</v-icon>
+                </v-btn>
+                <span>{{i18n("reader_button_tips")}}</span>
+              </v-tooltip>
+            </v-flex>
           </v-layout>
         </v-card-title>
       </v-card>
@@ -392,6 +418,9 @@
 
       bookstate: bookmarks.state, /* bookmarks state */
       thinscan: false, /* top telling that the chapter is containing thin scans (height >= 3 * width) */
+
+      darkreader: options.darkreader === 1, /* Top for using dark background */
+      options: options, /* Make it reactive so update to local options object will be reflected in computed properties */
     }),
     props: {
       images: Array /* List of scans to display, not necessarily pictures but urls that the implementation can handle to render a scan */
@@ -490,7 +519,7 @@
        */
       layoutValue(nVal, oVal) {
         // check if nVal <> options val ; if not reset layout to undefined
-        let optVal = options.displayBook * 1000 + options.readingDirection * 100 + options.displayFullChapter * 10 + options.resizeMode
+        let optVal = this.options.displayBook * 1000 + this.options.readingDirection * 100 + this.options.displayFullChapter * 10 + this.options.resizeMode
         if (optVal === nVal) {
           nVal = undefined
         }
@@ -507,10 +536,6 @@
       }
     },
     computed: {
-      /** Options made accessible in dom */
-      options() {
-        return options
-      },
       // Current manga informations retrieved from implementation
       manga() {
         return pageData
@@ -565,12 +590,19 @@
           return sc
         })
       },
+      layoutDiffFromOptions() {
+        if (this.book !== (this.options.displayBook === 1)) return true
+        if (this.direction !== (this.options.readingDirection === 0 ? 'ltr' : 'rtl')) return true
+        if (this.fullchapter !== (this.options.displayFullChapter === 1)) return true
+        if (this.resize !== (resize_values[this.options.resizeMode])) return true
+        return false
+      }
     },
     components: { Page, Scan, WizDialog, BookmarkPopup },
     methods: {
       /** Return drawer background color taking a light into account and the dark or not back */
       backcolor(light = 0) {
-        return "grey " + (options.darkreader === 0 ? 'lighten-' + (4 - light) : 'darken-' + (4 - light))
+        return "grey " + (!this.darkreader ? 'lighten-' + (4 - light) : 'darken-' + (4 - light))
       },
       /** Inform background that current chapter has been read (will update reading state and eventually add manga to list) */
       async consultManga(force) {
@@ -611,10 +643,10 @@
             cresize = l
         }
         //If not use default options mode
-        if (cbook === -1) cbook = options.displayBook
-        if (cdirection === -1) cdirection = options.readingDirection
-        if (cfullchapter === -1) cfullchapter = options.displayFullChapter
-        if (cresize === -1) cresize = options.resizeMode
+        if (cbook === -1) cbook = this.options.displayBook
+        if (cdirection === -1) cdirection = this.options.readingDirection
+        if (cfullchapter === -1) cfullchapter = this.options.displayFullChapter
+        if (cresize === -1) cresize = this.options.resizeMode
         // Set current layout
         this.book = cbook === 1
         this.direction = cdirection === 0 ? 'ltr': 'rtl'
@@ -1052,6 +1084,39 @@
             url: "/pages/bookmarks/bookmarks.html"
         });
       },
+      /** Save current layout options as the default ones */
+      async saveOptionsAsDefault(force) {
+        if (force || await this.$refs.wizdialog.confirm(
+            this.i18n("reader_save_options_title"), 
+            this.i18n("reader_save_options_confirm"))) {
+              this.options.displayBook = this.book ? 1 : 0
+              this.options.readingDirection = this.direction === "ltr" ? 0 : 1
+              this.options.displayFullChapter = this.fullchapter ? 1 : 0
+              this.options.resizeMode = resize_values.findIndex(val => val === this.resize)
+              util.saveOption("displayBook", this.options.displayBook)
+              util.saveOption("readingDirection", this.options.readingDirection)
+              util.saveOption("displayFullChapter", this.options.displayFullChapter)
+              util.saveOption("resizeMode", this.options.resizeMode)
+              if (!force) this.$refs.wizdialog.temporary(this.i18n("action_done"))
+        }
+      },
+      /** Reset current layout options to the default ones */
+      resetOptionsToDefault() {
+        this.book = this.options.displayBook === 1
+        this.direction = this.options.readingDirection === 0 ? 'ltr' : 'rtl'
+        this.fullchapter = this.options.displayFullChapter === 1
+        this.resize = resize_values[this.options.resizeMode]
+        this.$refs.wizdialog.temporary(this.i18n("action_done"))
+      },
+      /** Toggle dark / light theme and save option */
+      toggleDark() {
+        this.darkreader = !this.darkreader
+        util.saveOption("darkreader", this.darkreader ? 1 : 0)
+      },
+      /** Display tips popup */
+      displayTips() {
+        this.handleTips(true)
+      },
       /** 
        * Display tips
        *  - user can choose to display tips once a day or to stop it
@@ -1108,11 +1173,18 @@
               agree()
             }
           }
+          let butclose = {
+            title: this.i18n("button_close"),
+            color: "grey",
+            click: ({ agree }) => {
+              agree()
+            }
+          }
           await this.$refs.wizdialog.open(
             this.i18n("reader_tips_title"), 
             await nextTip(), { 
               cancel: false, 
-              buttons: [butstop, butnexttip, butnexttomorrow]
+              buttons: force ? [butclose, butnexttip] : [butstop, butnexttip, butnexttomorrow]
             })
           await util.setStorage("reader_tips_ts", "" + Date.now())
         }
@@ -1129,6 +1201,7 @@
               this.fullchapter = true
               this.resize = "width"
               this.book = window.innerWidth >= 1200 // display as a book is screen is wide enough
+              this.saveOptionsAsDefault(true)
               agree()
             }
           }
@@ -1140,6 +1213,7 @@
               this.fullchapter = false
               this.resize = window.innerHeight >= 800 ? "container" : "width" // resize container if screen is tall enough
               this.book = window.innerWidth >= 1200 // display as a book is screen is wide enough
+              this.saveOptionsAsDefault(true)
               agree()
             }
           }

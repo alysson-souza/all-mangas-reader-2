@@ -46,8 +46,8 @@
                 <div class="subtitle">{{ i18n("options_web_chapter_resize_mode_opt") }}</div>
                 <v-radio-group v-model="resizeMode" @change="setOption('resizeMode')" column>
                     <v-radio :label="i18n('option_read_resize_w')" :value="0" ></v-radio>
-                    <v-radio :label="i18n('option_read_resize_h')" :value="1" v-show="displayFullChapter" ></v-radio>
-                    <v-radio :label="i18n('option_read_resize_c')" :value="2" v-show="displayFullChapter" ></v-radio>
+                    <v-radio :label="i18n('option_read_resize_h')" :value="1" v-show="!displayFullChapter" ></v-radio>
+                    <v-radio :label="i18n('option_read_resize_c')" :value="2" v-show="!displayFullChapter" ></v-radio>
                     <v-radio :label="i18n('option_read_resize_n')" :value="3" ></v-radio>
                 </v-radio-group>
 
