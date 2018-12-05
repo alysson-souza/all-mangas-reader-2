@@ -33,7 +33,6 @@ export default {
         for (let scUrl of scansUrl) {
             this.loadBookmark({scanUrl: scUrl})
         }
-        console.log(this.state.scans)
     },
 
     /** retrieve a scan from state */
