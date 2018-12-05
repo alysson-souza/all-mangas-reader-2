@@ -86,7 +86,8 @@ function initReader(images) {
 
     document.body.style.padding = "0px"
     document.body.style.margin = "0px"
-    document.body.style.backgroundColor = "#303030"
+    if (options.darkreader === 1) document.body.style.backgroundColor = "#303030"
+    else document.body.style.backgroundColor = "white"
 
     loadCss("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700")
     loadCss("https://cdn.materialdesignicons.com/3.0.39/css/materialdesignicons.min.css")

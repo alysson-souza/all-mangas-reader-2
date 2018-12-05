@@ -21,25 +21,41 @@
               <v-container fluid>
                 <!-- Display options -->
                 <div class="headline">{{ i18n("options_web_chapter_display_mode") }}</div>
-                <!-- Display chapter mode (chapter) -->
-                <div class="subtitle">{{i18n('options_web_chapter_display_chapter_desc')}}</div>
-                <v-checkbox v-model="displayChapters" @change="setOption('displayChapters')"
-                        :label="i18n('options_web_chapter_display_chapter_opt')"></v-checkbox>
+                <div class="subtitle mb-3">{{i18n('options_web_chapter_desc')}}</div>
                 
-                <!-- Display chapter mode -->
-                <div v-if="displayChapters">
-                    <div class="subtitle">{{ i18n("options_web_chapter_display_mode_opt") }}</div>
-                    <v-radio-group v-model="displayMode" @change="setOption('displayMode')" column>
-                        <v-radio :label="i18n('options_web_chapter_display_mode_1')" :value="1" ></v-radio>
-                        <v-radio :label="i18n('options_web_chapter_display_mode_2')" :value="2"></v-radio>
-                        <v-radio :label="i18n('options_web_chapter_display_mode_3')" :value="3"></v-radio>
+                <!-- Display as a book option -->
+                <div class="subtitle">{{i18n('option_read_book')}}</div>
+                <v-checkbox v-model="displayBook" @change="setOption('displayBook')"
+                        :label="i18n('options_web_chapter_display_book_opt')"></v-checkbox>
+                
+                <!-- Reading direction -->
+                <div v-if="displayBook">
+                    <div class="subtitle">{{ i18n("options_web_chapter_reading_direction_opt") }}</div>
+                    <v-radio-group v-model="readingDirection" @change="setOption('readingDirection')" column>
+                        <v-radio :label="i18n('option_read_book_ltr')" :value="0" ></v-radio>
+                        <v-radio :label="i18n('option_read_book_rtl')" :value="1"></v-radio>
                     </v-radio-group>
                 </div>
-                <!-- Resize scans -->
-                <div class="subtitle">{{i18n('options_web_resize_desc')}}</div>
-                <v-checkbox v-model="resize" @change="setOption('resize')"
-                        :label="i18n('options_web_resize_opt')"></v-checkbox>
 
+                <!-- Display full chapter option -->
+                <div class="subtitle">{{i18n('option_read_fullchapter')}}</div>
+                <v-checkbox v-model="displayFullChapter" @change="setOption('displayFullChapter')"
+                        :label="i18n('options_web_chapter_display_full_chapter_opt')"></v-checkbox>
+                
+                <!-- Scaling mode -->
+                <div class="subtitle">{{ i18n("options_web_chapter_resize_mode_opt") }}</div>
+                <v-radio-group v-model="resizeMode" @change="setOption('resizeMode')" column>
+                    <v-radio :label="i18n('option_read_resize_w')" :value="0" ></v-radio>
+                    <v-radio :label="i18n('option_read_resize_h')" :value="1" v-show="displayFullChapter" ></v-radio>
+                    <v-radio :label="i18n('option_read_resize_c')" :value="2" v-show="displayFullChapter" ></v-radio>
+                    <v-radio :label="i18n('option_read_resize_n')" :value="3" ></v-radio>
+                </v-radio-group>
+
+                <!-- Display dark reader option -->
+                <div class="subtitle">{{i18n('options_web_chapter_darkreader_desc')}}</div>
+                <v-checkbox v-model="darkreader" @change="setOption('darkreader')"
+                        :label="i18n('options_web_chapter_darkreader_opt')"></v-checkbox>
+                
                 <!-- Loading options -->
                 <div class="headline">{{ i18n("options_web_loading") }}</div>
                 <!-- Loading progression -->
@@ -58,25 +74,10 @@
                 <div class="subtitle">{{i18n('options_web_markwhendownload_desc')}}</div>
                 <v-checkbox v-model="markwhendownload" @change="setOption('markwhendownload')"
                         :label="i18n('options_web_markwhendownload_opt')"></v-checkbox>
-                
-                <!-- Facilities -->
-                <div class="headline">{{ i18n("options_web_facilities") }}</div>
                 <!-- Automatically add manga to updates list -->
                 <div class="subtitle">{{i18n('options_web_addauto_desc')}}</div>
                 <v-checkbox v-model="addauto" @change="setOption('addauto')"
                         :label="i18n('options_web_addauto_opt')"></v-checkbox>
-                <!-- Use right / left keys while reading for prev / next scans -->
-                <div class="subtitle">{{i18n('options_web_lrkeys_desc')}}</div>
-                <v-checkbox v-model="lrkeys" @change="setOption('lrkeys')"
-                        :label="i18n('options_web_lrkeys_opt')"></v-checkbox>
-                <!-- Bookmark scans when dblclicked -->
-                <div class="subtitle">{{i18n('options_web_autobm_desc')}}</div>
-                <v-checkbox v-model="autobm" @change="setOption('autobm')"
-                        :label="i18n('options_web_autobm_opt')"></v-checkbox>
-                <!-- Right key to next chapter -->
-                <div class="subtitle">{{i18n('options_web_rightnext_desc')}}</div>
-                <v-checkbox v-model="rightnext" @change="setOption('rightnext')"
-                        :label="i18n('options_web_rightnext_opt')"></v-checkbox>
               </v-container>
             </v-tab-item>
             <v-tab-item id="general">
@@ -371,7 +372,10 @@ const converters = {
       "nocount",
       "shownotifications",
       "stopupdateforaweek",
-      "deactivateunreadable"
+      "deactivateunreadable",
+      "displayBook",
+      "displayFullChapter",
+      "darkreader"
     ]
   }
 };
@@ -529,6 +533,12 @@ export default {
     },
     nocount: function() {
       amrUpdater.refreshBadgeAndIcon();
+    },
+    /** If switch from single page to fullchapter and resize mode is height or container, set it to width */
+    displayFullChapter(nVal, oVal) {
+        if (nVal && [1, 2].includes(this.resizeMode)) {
+            this.resizeMode = 0
+        }
     }
   },
   methods: {

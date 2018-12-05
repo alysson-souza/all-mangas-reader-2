@@ -181,12 +181,15 @@ class HandleManga {
         
         let loading = []
         loading.push(browser.tabs.insertCSS(tabId, { file: "/reader/pre-loader.css" }))
+        let bgcolor = "#424242"
+        if (store.state.options.darkreader === 0) bgcolor = "white"
         loading.push(browser.tabs.executeScript(
             tabId, 
             { code: `
                 let amr_icon_url = '${browser.extension.getURL('/icons/icon_128.png')}';
                 let cover = document.createElement("div")
                 cover.id = "amr-loading-cover"
+                cover.style.backgroundColor = "${bgcolor}"
 
                 let img = document.createElement("img")
                 img.src = amr_icon_url;

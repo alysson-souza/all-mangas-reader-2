@@ -64,7 +64,7 @@
     "description": "This is the header of the options page tab about supported websites"
   },
   "options_web_chapter_display_mode": {
-    "message": "Mode daffichage des chapitres",
+    "message": "Mode d'affichage des chapitres",
     "description": "This is the title of the options page section chapter display mode"
   },
   "options_web_chapter_display_chapter_opt": {

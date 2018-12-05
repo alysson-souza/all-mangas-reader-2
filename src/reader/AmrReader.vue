@@ -1,5 +1,5 @@
 <template>
-  <v-app id="inspire" dark>
+  <v-app id="inspire" :dark="options.darkreader === 1">
     <!-- Global component to show confirmation dialogs, alert dialogs / other -->
     <WizDialog ref="wizdialog"></WizDialog>
     <!-- Global component to show bookmarks dialog -->
@@ -54,13 +54,13 @@
       right
       fixed
       app
-      class="amr-drawer grey darken-4"
+      :class="'amr-drawer ' + backcolor()"
     >
-      <v-card color="grey darken-4" class="white--text">
+      <v-card :color="backcolor()" class="white--text">
         <!-- Manga Title -->
         <v-card-title class="white--text amr-manga-title">
           <div>
-            <div class="headline white--text">
+            <div class="headline">
               <v-tooltip bottom>
                 <a slot="activator" :href="mirrorDesc.home" v-if="mirrorDesc !== null" target="_blank">
                   <img :src="mirrorDesc.mirrorIcon" ma-1 />
@@ -124,7 +124,7 @@
                 <!-- Bookmarks button -->
                 <v-tooltip bottom slot="activator" class="ml-1">
                   <v-btn slot="activator" icon 
-                    :color="bookstate.booked ? 'yellow--text' : 'yellow--text text--lighten-4'">
+                    :color="(options.darkreader === 0 ? 'grey ' : '') + (bookstate.booked ? 'yellow--text' : 'yellow--text text--lighten-4')">
                       <v-icon>mdi-star</v-icon>
                   </v-btn>
                   <span>{{i18n("content_nav_click_bm")}}</span>
@@ -138,7 +138,7 @@
                   <v-card-actions>
                     <!-- Action to update / delete bookmark for chapter > open popup -->
                     <v-btn @click="bookmarkChapter" 
-                      :color="bookstate.booked ? 'yellow--text' : 'yellow--text text--lighten-4'">
+                      :color="options.darkreader === 0 ? (bookstate.booked ? 'yellow grey--text text--darken-3' : 'yellow grey--text') : (bookstate.booked ? 'yellow--text' : 'yellow--text text--lighten-4')">
                       <v-icon>mdi-star</v-icon>&nbsp;
                       {{ bookstate.booked ? 
                         i18n("reader_bookmark_update") :  
@@ -221,7 +221,7 @@
         </v-card-actions>
       </v-card>
       <!-- Display options -->
-      <v-card color="grey darken-3" class="white--text">
+      <v-card :color="backcolor(1)" class="white--text">
         <v-card-title>
           <v-layout row wrap>
             <v-flex xs12>
@@ -564,10 +564,14 @@
           sc.page = this.pages.findIndex(scans => scans.find(s => s.src === sc.url))
           return sc
         })
-      }
+      },
     },
     components: { Page, Scan, WizDialog, BookmarkPopup },
     methods: {
+      /** Return drawer background color taking a light into account and the dark or not back */
+      backcolor(light = 0) {
+        return "grey " + (options.darkreader === 0 ? 'lighten-' + (4 - light) : 'darken-' + (4 - light))
+      },
       /** Inform background that current chapter has been read (will update reading state and eventually add manga to list) */
       async consultManga(force) {
         await util.consultManga(force)
@@ -1184,10 +1188,14 @@
 }
 /** Manga title link */
 .amr-manga-title a { 
-  color: white;
+  color: #424242;
   text-decoration: none;
   vertical-align: middle;
   word-break: break-word;
+  font-weight: bold;
+}
+.theme--dark .amr-manga-title a {
+  color: white;
 }
 /** To prevent select to be too small due to large padding */
 .v-toolbar.pa-0 .v-toolbar__content {

@@ -205,7 +205,7 @@
     "description": "Option Dark popup"
   },
   "options_gen_dark_desc": {
-    "message": "Use a dark background in All Mangas Reader pages",
+    "message": "Display a dark background in All Mangas Reader pages",
     "description": "Option Dark popup description"
   }, 
   "options_gen_colors_new": {
@@ -1219,5 +1219,33 @@
   "reader_tips_next_tomorrow": {
     "message": "Show me tips later",
     "description": "Tips popup, button to close for now but open next tip tomorrow"
+  },
+  "options_web_chapter_display_book_opt": {
+    "message": "Display as a book",
+    "description": "Label of the option Display as a book in the options page"
+  },
+  "options_web_chapter_reading_direction_opt": {
+    "message": "Reading direction",
+    "description": "In the options page, label above options to choose reading direction"
+  },
+  "options_web_chapter_display_full_chapter_opt": {
+    "message": "Display full chapter",
+    "description": "Label of the option Display full chapter in the options page"
+  },
+  "options_web_chapter_resize_mode_opt": {
+    "message": "Scaling mode",
+    "description": "In the options page, label above options to choose scaling mode"
+  },
+  "options_web_chapter_desc": {
+    "message": "The options below are the global default options to display mangas. While reading, you can change these same options in the side menu. When changing display while reading, your reading preference will only be applied to the current manga.",
+    "description": "In the options page, text explaining that display options can be overriden while reading"
+  },
+  "options_web_chapter_darkreader_desc": {
+    "message": "Display a dark background while reading manga",
+    "description": "In the options page, description of the dark reader option"
+  },
+  "options_web_chapter_darkreader_opt": {
+    "message": "Dark background",
+    "description": "In the options page, label of the dark reader option"
   }
 }
