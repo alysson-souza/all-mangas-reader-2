@@ -111,6 +111,8 @@ export default {
             if (nVal !== 'none') {
                 this.$refs.scantable.style.zoom = 1
             }
+            /* Check if page can scroll vertically */
+            this.checkResizeOverflow()
         },
         book(nVal, oVal) { // keep the scrolling ratio when changing book mode / not really relevant but better than nothing...
             this.keepScrollPos(100)
@@ -128,9 +130,13 @@ export default {
             } else {
                 window.scroll(0, 0)
             }
+            /* Check if page can scroll vertically */
+            this.checkResizeOverflow()
         },
     },
     mounted() {
+        /* Check if page can scroll vertically */
+        this.checkResizeOverflow()
         /* Load scans in order if option is set */
         if (options.imgorder === 1) {
             this.loadScansInOrder()
@@ -426,6 +432,15 @@ export default {
             window.addEventListener('keyup', stopProp, true);
             window.addEventListener('keypress', stopProp, true);
         },
+        /** add overflow:hidden on body if resize in [height, container] and !fullchapter */
+        checkResizeOverflow() {
+            if (["height", "container"].includes(this.resize) && !fullchapter) {
+                document.documentElement.style.overflow = "hidden"
+                window.scroll(0, 0)
+            } else {
+                document.documentElement.style.overflow = "auto"
+            }
+        }
     }
 }
 </script>
