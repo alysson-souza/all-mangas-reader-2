@@ -116,6 +116,17 @@ export default {
         },
         book(nVal, oVal) { // keep the scrolling ratio when changing book mode / not really relevant but better than nothing...
             this.keepScrollPos(100)
+            let furl // url of the first viewable scan on currentpage
+            if (nVal) {
+                furl = this.images[this.currentPage] // retrieve it from images cause old book value was false, so one page per image
+            } else {
+                furl = this.regroupablePages[this.currentPage][0].src // retrieve it from rearrange pages cause old book value was true 
+            }
+            // calculate new currentPage and go to it after new arrangement has been calculated
+            this.$nextTick(() => {
+                let ncur = this.getPageIndexFromScanUrl(furl)
+                this.goScan(ncur)
+            })
         },
         /** Keep drawer state */
         drawer(nVal, oVal) {
@@ -432,9 +443,13 @@ export default {
             window.addEventListener('keyup', stopProp, true);
             window.addEventListener('keypress', stopProp, true);
         },
+        /** Return page index from scan url */
+        getPageIndexFromScanUrl(url) {
+            return this.pages.findIndex(scans => scans.find(s => s.src === url))
+        },
         /** add overflow:hidden on body if resize in [height, container] and !fullchapter */
         checkResizeOverflow() {
-            if (["height", "container"].includes(this.resize) && !fullchapter) {
+            if (["height", "container"].includes(this.resize) && !this.fullchapter) {
                 document.documentElement.style.overflow = "hidden"
                 window.scroll(0, 0)
             } else {

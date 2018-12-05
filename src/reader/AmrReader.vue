@@ -506,7 +506,7 @@
       /** list of bookmarked scans urls */
       bookedScans() {
         return this.bookstate.scans.filter(sc => sc.booked).map(sc => {
-          sc.page = this.$refs.reader.pages.findIndex(scans => scans.find(s => s.src === sc.url))
+          sc.page = this.$refs.reader.getPageIndexFromScanUrl(sc.url)
           return sc
         })
       },
