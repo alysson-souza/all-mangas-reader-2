@@ -156,7 +156,7 @@
       /** Open a dialog, no options buttons --> alert */
       open(title, message, options) {
         if (this.dialog) {
-          if (this.important) return new Promise.resolve() // do not close current if important
+          if (this.options.important) return new Promise.resolve() // do not close current if important
           this.cancel()
         }
         this.dialog = true

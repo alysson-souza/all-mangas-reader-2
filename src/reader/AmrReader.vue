@@ -1108,8 +1108,7 @@
             this.i18n("reader_tips_title"), 
             await nextTip(), { 
               cancel: false, 
-              buttons: [butstop, butnexttip, butnexttomorrow],
-              important: true
+              buttons: [butstop, butnexttip, butnexttomorrow]
             })
           await util.setStorage("reader_tips_ts", "" + Date.now())
         }
