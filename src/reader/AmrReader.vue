@@ -422,6 +422,8 @@
       })
       /** Handle first time reader is opened */
       this.handleFirstTime()
+      /** Handle tips */
+      this.handleTips()
     },
     mounted() {
       /* Load chapters list */
@@ -1046,10 +1048,76 @@
             url: "/pages/bookmarks/bookmarks.html"
         });
       },
+      /** 
+       * Display tips
+       *  - user can choose to display tips once a day or to stop it
+       *  - button next go to next tip
+       *  - saves previous tip and user preferences
+       *  - force : force to display the popup (called on tips action button)
+       * All the tips are retrieved from i18n starting by reader_tips_ followed with numbers starting from 1. Numbers must be consecutive
+       */
+      async handleTips(force = false) {
+        let display = true
+        if (!force) {
+          let lasttime = await util.getStorage("reader_tips_ts")
+          let stopped = await util.getStorage("reader_tips_stop")
+          if (stopped) display = false
+          if (lasttime && Date.now() - parseInt(lasttime) < 24 * 60 * 60 * 1000) {
+            display = false
+          }
+        }
+        if (force) display = true
+        if (display) {
+          let lasttip = await util.getStorage("reader_tips_last")
+          if (lasttip !== null) lasttip = parseInt(lasttip)
+          let tips = [], tip
+          while (tip = this.i18n("reader_tips_" + (tips.length + 1))) {
+            tips.push(tip)
+          }
+          let nextTip = async () => {
+            if (lasttip === null || lasttip + 1 >= tips.length) lasttip = -1
+            let nxttip = lasttip + 1
+            await util.setStorage("reader_tips_last", ""+nxttip)
+            lasttip = nxttip
+            return tips[nxttip]
+          }
+          // Button to stop displaying tips
+          let butstop = {
+            title: this.i18n("reader_tips_stop"),
+            color: "grey",
+            click: async ({ agree }) => {
+              await util.setStorage("reader_tips_stop", "true")
+              agree()
+            }
+          }
+          let butnexttip = {
+            title: this.i18n("reader_tips_next"),
+            color: "primary",
+            click: async ({ changeMessage }) => {
+              changeMessage(await nextTip())
+            }
+          }
+          let butnexttomorrow = {
+            title: this.i18n("reader_tips_next_tomorrow"),
+            color: "primary",
+            click: ({ agree }) => {
+              agree()
+            }
+          }
+          await this.$refs.wizdialog.open(
+            this.i18n("reader_tips_title"), 
+            await nextTip(), { 
+              cancel: false, 
+              buttons: [butstop, butnexttip, butnexttomorrow],
+              important: true
+            })
+          await util.setStorage("reader_tips_ts", "" + Date.now())
+        }
+      },
       /** Called on reader's creation, display a welcome message first time reader is opened */
       async handleFirstTime() {
-        let isfirst = await browser.runtime.sendMessage({action: "get_storage", key: "reader_firsttime"})
-        if (!isfirst) { // localStorage values are Strings...
+        let isfirst = await util.getStorage("reader_firsttime")
+        if (!isfirst) {
           // Button to set default layout with preferde choice : long strip 
           let butlongstrip = {
             title: this.i18n("reader_firsttime_but_longstrip"),
@@ -1079,7 +1147,7 @@
               buttons: [butlongstrip, butsingle],
               important: true
             })
-          await browser.runtime.sendMessage({action: "set_storage", key: "reader_firsttime", value: "true"})
+          await util.setStorage("reader_firsttime", "true")
         }
       },
       /** Called when a thin scan (height >= 3 * width) is detected */

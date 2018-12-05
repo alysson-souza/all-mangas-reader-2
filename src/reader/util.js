@@ -54,6 +54,7 @@ class Util {
             language: pageData.language
         });
     }
+    /** Clear current document selection */
     clearSelection() {
         if (document.selection && document.selection.empty) {
             document.selection.empty();
@@ -61,6 +62,14 @@ class Util {
             var sel = window.getSelection();
             sel.removeAllRanges();
         }
+    }
+    /** Get a value from localStorage */
+    async getStorage(key) {
+        return await browser.runtime.sendMessage({action: "get_storage", key: key})
+    }
+    /** Set a value in localStorage */
+    async setStorage(key, value) {
+        return await browser.runtime.sendMessage({action: "set_storage", key: key, value: value})
     }
 }
 export default (new Util)

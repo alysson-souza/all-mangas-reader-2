@@ -69,7 +69,7 @@
         let formatText = txt => {
           let boldify = (text => {
               var bold = /\*\*(\S(.*?\S)?)\*\*/gm;
-              var html = text.replace(bold, '<strong>$1</strong>');            
+              var html = text.replace(bold, '<strong>$1</strong>');     
               return html;
           })
           let italicify = (text => { 
@@ -84,7 +84,7 @@
         let res = "", ulopened = false
         for (let i = 0; i < lines.length; i++) {
           let line = lines[i]
-          if (line.indexOf("* ") === 0) { // list item
+          if (line.trim().indexOf("* ") === 0) { // list item
             if (!ulopened) {
               res += "<p><ul>"
               ulopened = true
