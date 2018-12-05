@@ -1173,39 +1173,39 @@
     "description": "Tips popup, tip n°1"
   },
   "reader_tips_2": {
-    "message": "Use your keyboard to read smoothly : \n* Right / left arrows shows you next / previous scan\n* Double tap at the end / start of a chapter goes to next / previous chapter \n You can find all key shortcuts with the F4 key",
+    "message": "Use your keyboard to read smoothly : \n* Right / left arrows shows you next / previous scan\n* Double tap at the end / start of a chapter goes to next / previous chapter \n You can find all key shortcuts with the _F4_ key",
     "description": "Tips popup, tip n°2"
   },
   "reader_tips_3": {
-    "message": "You loved this chapter and want a way to find it back later ?\n Click on the star in the side menu and then on the **Bookmark chapter** button. You can even add a note to find it easily. \nTo consult all your bookmarks, go to All Mangas Reader's bookmarks page (from the popup click on vertical dots and then click on the star)",
+    "message": "You loved this chapter and want a way to **find it back later** ?\n Click on the star in the side menu and then on the _Bookmark chapter_ button. You can even add a note to find it easily. \nTo consult all your bookmarks, go to All Mangas Reader's bookmarks page (from the popup click on vertical dots and then click on the star)",
     "description": "Tips popup, tip n°3"
   },
   "reader_tips_4": {
-    "message": "The next chapter is loaded while you are reading the current one so you don't have to wait to read what you are passionate about.\n If you don't want to preload next chapter, go check the options.\n You can see a progression bar indicating how much of the next chapter is loaded below the chapters list in the side bar or around the next button when the side bar is closed and you hover the menu button.",
+    "message": "The **next chapter is loading while you are reading** the current one so you don't have to wait to read what you are passionate about.\n If you don't want to preload next chapter, go check the options.\n You can see a progression bar indicating how much of the next chapter is loaded below the chapters list in the side bar or around the next button when the side bar is closed and you hover the menu button.",
     "description": "Tips popup, tip n°4"
   },
   "reader_tips_5": {
-    "message": "All mangas you read are added to your reading list automatically. If you don't want to add them automatically, go to the options page and uncheck the 'Automatically add manga to my reading list' option.\n Then, a green plus will appear in the side menu to let you add a manga to your reading list. This button is even quickly available directly below the menu button if the side bar is closed !",
+    "message": "All the mangas you read are **added to your reading list automatically**. If you don't want to add them automatically, go to the options page and uncheck the _Automatically add manga to my reading list_ option.\n Then, a green plus will appear in the side menu to let you add a manga to your reading list. This button is even quickly available directly below the menu button if the side bar is closed !",
     "description": "Tips popup, tip n°5"
   },
   "reader_tips_6": {
-    "message": "This scan is so cool that you want a way to find it back quickly ? Double click on it, it will be added to your bookmarks !\n A bookmarked scan has a yellow banner in the top right hand corner. Click on it to add a note linked to the scan. \n You can also click on a scan and then click on the appearing star to bookmark a scan. \n You can view all the bookmarked scans in a chapter by clicking on the star in the side menu. Click on a scan and access it directly in the chapter !\nTo consult all your bookmarks, go to All Mangas Reader's bookmarks page (from the popup click on vertical dots and then click on the star)",
+    "message": "This scan is so cool that you want a way to find it back quickly ? Double click on it, it will be **added to your bookmarks !**\n A bookmarked scan has a yellow banner in the top right hand corner. Click on it to add a note linked to the scan. \n You can also click on a scan and then click on the appearing star to bookmark a scan. \n You can view all the bookmarked scans in a chapter by clicking on the star in the side menu. Click on a scan and access it directly in the chapter !\nTo consult all your bookmarks, go to All Mangas Reader's bookmarks page (from the popup click on vertical dots and then click on the star)",
     "description": "Tips popup, tip n°6"
   }, 
   "reader_tips_7": {
-    "message": "You can change the scale of your scans from the side menu ! Choose between : \n* Width : your scans fit in width in the screen (a vertical scrollbar can appear)\n* Height : your scans fit in height in the screen (an horizontal scrollbar can appear). This option is only available if full chapter is disabled\n* Container : your whole scans fit in the screen (no scrollbars). This option is only available if full chapter is disabled\n* None : no resize (both scrollbars can appear)\nUse your keyboard to swith modes : Ctrl + w for width, Ctrl + h for height and Ctrl + e for container. Use + and - keys to resize your scans if none is selected.",
+    "message": "You can **change the scale of your scans** from the side menu ! Choose between : \n* Width : your scans fit in width in the screen (a vertical scrollbar can appear)\n* Height : your scans fit in height in the screen (an horizontal scrollbar can appear). This option is only available if full chapter is disabled\n* Container : **your whole scans fit in the screen** (no scrollbars). This option is only available if full chapter is disabled\n* None : no resize (both scrollbars can appear)\nUse your keyboard to swith modes : _Ctrl + w_ for width, _Ctrl + h_ for height and _Ctrl + e_ for container. Use _+ and - keys_ to resize your scans if none is selected.",
     "description": "Tips popup, tip n°7"
   }, 
   "reader_tips_8": {
-    "message": "You are reading a manga with many chapters and you don't want notifications to annoy you. \n Click on the pause button in the side menu. Click on the play buttton to have your notifications back.",
+    "message": "You are reading a manga with many chapters and you **don't want notifications** to annoy you. \n Click on the _pause_ button in the side menu. Click on the _play_ buttton to have your notifications back.",
     "description": "Tips popup, tip n°8"
   },
   "reader_tips_9": {
-    "message": "You want to view two pages of your chapter at the same time ?\n Click on the **Display as a book** option. You can then choose to read your manga from left to right or from right to left.",
+    "message": "You want to **view two pages of your chapter at the same time** ?\n Click on the _Display as a book_ option. You can then choose to read your manga from left to right or from right to left.",
     "description": "Tips popup, tip n°9"
   },
   "reader_tips_10": {
-    "message": "Want to access the home page of the online reader which is hosting this manga ? \nClick on the website's icon next to the manga title in the side menu.\nClick on the manga title to view the page detailing this manga on the website.",
+    "message": "Want to access the **home page of the online reader** which is hosting this manga ? \nClick on the website's icon next to the manga title in the side menu.\nClick on the manga title to view the page detailing this manga on the website.",
     "description": "Tips popup, tip n°10"
   },
   "reader_tips_stop": {
