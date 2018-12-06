@@ -20,7 +20,7 @@
                 <span>{{note ? i18n("reader_bookmarked_scan_note", note) : i18n("reader_bookmarked_scan")}}</span>
             </v-tooltip>
             <!-- The scan itself... -->
-            <img :src="defaultImage" ref="scan" />
+            <img ref="scan" />
             <!-- The cover below the bookmark button -->
             <div v-if="bookmark" class="amr-scan-cover" :class="{'covered': showBookmarkButton}"></div>
             <!-- a div hover to bookmark the scan -->
@@ -72,7 +72,6 @@ export default {
             timeoutShowButton: -1, /* the timeout to hide button */
 
             bookstate: bookmarks.state, /* bookmarks state */
-            defaultImage: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg==" /* 1 pixel transparent image for default image because we need a default image and it must be valid. If not, firefox raise an error in the event handler event if it is attached later... */
         }
     },
     props: {

@@ -208,7 +208,7 @@ export default {
                     let full = false
                     if (this.$refs.page[i].isSoloDoublePage()) {
                         full = true
-                        if ((i - lastfull) % 2 !== 0)  {
+                        if ((i - lastfull) % 2 !== 0) {
                             // Change display of scan which is after the previous double page scan
                             scans[lastfull].full = true
                         }
@@ -442,7 +442,7 @@ export default {
                         // Display current state in the chapter
                         if (e.which === 83) { // alt + s
                             if (this.pages.length > 0) {
-                                EventBus.$emit('temporary-dialog', { message: this.currentPage + " / " + this.pages.length + "\n**" + Math.floor(this.currentPage / this.pages.length * 100) + "%**"})
+                                EventBus.$emit('temporary-dialog', { message: (this.currentPage + 1) + " / " + this.pages.length + "\n**" + Math.floor((this.currentPage + 1) / this.pages.length * 100) + "%**"})
                             }
                             prevent()
                         }
@@ -503,6 +503,9 @@ export default {
 .no-full-chapter .amr-scan-container td {
   padding-bottom: 0px;
   padding-top: 0px;
+}
+.no-full-chapter, .no-full-chapter > table {
+    height: 100%
 }
 .amr-scan-container td {
   text-align: center;
@@ -574,5 +577,9 @@ html {
 .amr-bookmarked-scans-cont > .layout {
   align-items: center;
   justify-content: center;
+}
+/* do not force 50% width on thumbs so we don't have vast spaces with background if scans are not the same width */
+.amr-pages-nav td.scanContainer.xs6 {
+    width: auto;
 }
 </style>

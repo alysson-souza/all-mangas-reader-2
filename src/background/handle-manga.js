@@ -195,6 +195,9 @@ class HandleManga {
                     cover.appendChild(img)
 
                     document.body.appendChild(cover)
+                    setTimeout(() => {
+                        try {cover.parentNode.remove(cover)} catch(e) {}
+                    }, 5000)
                 `}))
             Promise.all(loading)
         }

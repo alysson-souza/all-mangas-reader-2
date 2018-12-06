@@ -133,8 +133,14 @@ export default {
     text-align: left;
     padding-left: 4px;
 }
+td.amr-right-page .amr-scan {
+    text-align: left;
+}
 .amr-scan-container td.amr-left-page {
     text-align: right;
     padding-right: 4px;
+}
+td.amr-left-page .amr-scan {
+    text-align: right;
 }
 </style>
