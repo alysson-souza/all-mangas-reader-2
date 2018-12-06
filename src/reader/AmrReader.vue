@@ -945,17 +945,19 @@
         if (force) display = true
         if (display) {
           let lasttip = await util.getStorage("reader_tips_last")
-          if (lasttip !== null) lasttip = parseInt(lasttip)
+          if (lasttip) lasttip = parseInt(lasttip)
+          // load tips in i18n
           let tips = [], tip
           while (tip = this.i18n("reader_tips_" + (tips.length + 1))) {
             tips.push(tip)
           }
+          // get the next tip
           let nextTip = async () => {
-            if (lasttip === null || lasttip + 1 >= tips.length) lasttip = -1
+            if (!lasttip || lasttip + 1 > tips.length) lasttip = 0
             let nxttip = lasttip + 1
             await util.setStorage("reader_tips_last", ""+nxttip)
             lasttip = nxttip
-            return tips[nxttip]
+            return tips[nxttip - 1] // lasttip is 1-based, tips array is 0-based
           }
           // Button to stop displaying tips
           let butstop = {
@@ -987,9 +989,10 @@
               agree()
             }
           }
+          let ntip = await nextTip()
           await this.$refs.wizdialog.open(
             this.i18n("reader_tips_title"), 
-            await nextTip(), { 
+            ntip, { 
               cancel: false, 
               buttons: force ? [butclose, butnexttip] : [butstop, butnexttip, butnexttomorrow]
             })
