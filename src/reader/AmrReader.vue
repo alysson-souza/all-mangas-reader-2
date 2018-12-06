@@ -798,6 +798,18 @@
               }
             }
             if (e.shiftKey && e.altKey) {
+              // Jump to last chapter
+              if ((e.which === 39) || (e.which === 68)) { // alt + shift + d or alt + shift + right arrow
+                  this.selchap = this.chapters[0].url
+                  this.goToChapter()
+                  prevent()
+              }
+              // Jump to first chapter
+              if ((e.which === 37) || (e.which === 65)) { // alt + shift + a or alt + shift + left arrow
+                  this.selchap = this.chapters[this.chapters.length - 1].url
+                  this.goToChapter()
+                  prevent()
+              }
               // Go to random chapter
               if (e.which === 82) { // alt + shift + r
                   this.selchap = this.chapters[Math.floor(Math.random() * this.chapters.length)].url
