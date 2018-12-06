@@ -1173,7 +1173,7 @@
     "description": "Tips popup, tip n°1"
   },
   "reader_tips_2": {
-    "message": "Use your keyboard to read smoothly : \n* Right / left arrows shows you next / previous scan\n* Double tap at the end / start of a chapter goes to next / previous chapter \n You can find all key shortcuts with the _F4_ key",
+    "message": "Use your keyboard to read smoothly : \n* Right / left arrows shows you next / previous scan\n* Double tap at the end / start of a chapter goes to next / previous chapter \n You can find all key shortcuts with the _F1_ key",
     "description": "Tips popup, tip n°2"
   },
   "reader_tips_3": {
@@ -1307,5 +1307,102 @@
   "reader_display_chap_progression": {
     "message": "Progression in the manga : $1 / $2 - **$3%**",
     "description": "Display progression in the manga $1 is current chapter position, $2 is total number of chapters, $3 progression"
+  },
+  "reader_shortcut_arrows": {
+    "message": "Scroll the screen and turn pages",
+    "description": "Description of the shortcut for arrow keys and wsad"
+  },
+  "reader_shortcut_zoom": {
+    "message": "Zoom in out on scans. This will switch automatically to scale mode 'none'",
+    "description": "Description of the shortcut for zooming in and out on scans"
+  },
+  "reader_shortcut_info_scan": {
+    "message": "Display current page position in chapter and progression",
+    "description": "Description of the shortcut for displaying info about scan"
+  },
+  "reader_shortcut_first_last_scan": {
+    "message": "Go to last page / first page",
+    "description": "Description of the shortcut for going to last scan / first scan"
+  },
+  "reader_shortcut_random_scan": {
+    "message": "Display a random page from the chapter",
+    "description": "Description of the shortcut for displaying a random page from the chapter"
+  },
+  "reader_shortcut_chapters_nextprevious": {
+    "message": "Go to previous / next chapter",
+    "description": "Description of the shortcut for previous / next chapters"
+  },
+  "reader_shortcut_info_chapter": {
+    "message": "Display current chapter position in manga and progression",
+    "description": "Description of the shortcut for displaying info about chapter"
+  },
+  "reader_shortcut_first_last_chapter": {
+    "message": "Go to last chapter / first chapter",
+    "description": "Description of the shortcut for going to last chapter / first chapter"
+  },
+  "reader_shortcut_random_chapter": {
+    "message": "Display a random chapter from the manga",
+    "description": "Description of the shortcut for displaying a random chapter from the manga"
+  },
+  "reader_shortcut_layout_drawer": {
+    "message": "Toggle side menu",
+    "description": "Description of the shortcut to toggle side menu"
+  },
+  "reader_shortcut_layout_resize": {
+    "message": "Choose resize mode (w for width, h for height and c for container)",
+    "description": "Description of the shortcut to switch resize mode"
+  },
+  "reader_shortcut_layout_fullchapter": {
+    "message": "Switch between full chapter as a long strip and single page mode (a single page can contain two scans)",
+    "description": "Description of the shortcut to toggle switch full chapter"
+  },
+  "reader_shortcut_layout_book": {
+    "message": "Switch between single scan and double page (side by side scans) layout",
+    "description": "Description of the shortcut to toggle book mode"
+  },
+  "reader_shortcut_layout_direction": {
+    "message": "Toggle direction between left to right and right to left in double page mode",
+    "description": "Description of the shortcut to toggle direction"
+  },
+  "reader_shortcut_action_add": {
+    "message": "Add current manga to reading list",
+    "description": "Description of the shortcut to add current manga to reading list"
+  },
+  "reader_shortcut_action_remove": {
+    "message": "Remove current manga from reading list",
+    "description": "Description of the shortcut to remove current manga from reading list"
+  },
+  "reader_shortcut_action_play_pause": {
+    "message": "Switch between follow publications / do not follow publications for this manga",
+    "description": "Description of the shortcut to switch publications following"
+  },
+  "reader_shortcut_action_mark_latest": {
+    "message": "Mark current chapter as latest read for this manga",
+    "description": "Description of the shortcut to mark current chapter as latest read for this manga"
+  },
+  "reader_shortcuts_title": {
+    "message": "Shortcuts",
+    "description": "Title of the shortcuts popup"
+  },
+  "reader_shortcuts_tooltip": {
+    "message": "Display all shortcuts (F1)",
+    "description": "Tooltip of the button to display shortcuts popup"
+  },
+  "reader_shortcuts_section_chapters": {
+    "message": "Navigate pages in the chapter",
+    "description": "Title of the shortcuts chapter section"
+  },
+  "reader_shortcuts_section_manga": {
+    "message": "Navigate chapters in the manga",
+    "description": "Title of the shortcuts manga section"
+  },
+  "reader_shortcuts_section_layout": {
+    "message": "Change the chapter layout",
+    "description": "Title of the shortcuts layout section"
+  },
+  "reader_shortcuts_section_actions": {
+    "message": "Take actions on the manga",
+    "description": "Title of the shortcuts actions section"
   }
+  
 }

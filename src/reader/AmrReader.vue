@@ -4,6 +4,8 @@
     <WizDialog ref="wizdialog"></WizDialog>
     <!-- Global component to show bookmarks dialog -->
     <BookmarkPopup ref="book"></BookmarkPopup>
+    <!-- Popup displaying shortcuts -->
+    <ShortcutsPopup ref="shortcuts"></ShortcutsPopup>
     <!-- Global always visible buttons -->
     <v-hover>
       <v-layout column class="fab-container" slot-scope="{ hover }">
@@ -285,35 +287,41 @@
               </v-btn-toggle>
             </v-flex>
             <v-flex xs12 text-xs-center mt-2>
-              <v-tooltip bottom>
+              <v-tooltip top>
                 <v-btn slot="activator" icon @click="saveOptionsAsDefault" color="primary--text" v-show="layoutDiffFromOptions" class="ma-0">
                   <v-icon>mdi-content-save</v-icon>
                 </v-btn>
                 <span>{{i18n("reader_button_saveoptions")}}</span>
               </v-tooltip>
-              <v-tooltip bottom>
+              <v-tooltip top>
                 <v-btn slot="activator" icon @click="resetOptionsToDefault" color="primary--text" v-show="layoutDiffFromOptions" class="ma-0">
                   <v-icon>mdi-reload</v-icon>
                 </v-btn>
                 <span>{{i18n("reader_button_resetoptions")}}</span>
               </v-tooltip>
-              <v-tooltip bottom>
+              <v-tooltip top>
                 <v-btn slot="activator" icon @click="toggleDark" :color="darkreader ? 'white--text' : 'black--text'" class="ma-0">
                   <v-icon>mdi-brightness-6</v-icon>
                 </v-btn>
                 <span>{{!darkreader ? i18n("reader_button_dark") : i18n("reader_button_light")}}</span>
               </v-tooltip>
-              <v-tooltip bottom>
+              <v-tooltip top>
                 <v-btn slot="activator" icon @click="toggleFullScreen" class="ma-0">
                   <v-icon>{{fullscreen ? 'mdi-fullscreen-exit' : 'mdi-fullscreen'}}</v-icon>
                 </v-btn>
                 <span>{{!fullscreen ? i18n("reader_button_fullscreen") : i18n("reader_button_exit_fullscreen")}}</span>
               </v-tooltip>
-              <v-tooltip bottom>
+              <v-tooltip top>
                 <v-btn slot="activator" icon @click="displayTips" color="blue--text" class="ma-0">
                   <v-icon>mdi-lightbulb-on</v-icon>
                 </v-btn>
                 <span>{{i18n("reader_button_tips")}}</span>
+              </v-tooltip>
+              <v-tooltip top>
+                <v-btn slot="activator" icon @click="openShortcuts" color="grey--text" class="ma-0">
+                  <v-icon>mdi-keyboard</v-icon>
+                </v-btn>
+                <span>{{i18n("reader_shortcuts_tooltip")}}</span>
               </v-tooltip>
             </v-flex>
           </v-layout>
@@ -348,6 +356,7 @@
   import Scan from "./Scan";
   import WizDialog from "./WizDialog";
   import BookmarkPopup from "./BookmarkPopup";
+  import ShortcutsPopup from "./ShortcutsPopup";
   import bookmarks from "./bookmarks";
   import EventBus from "./EventBus";
 
@@ -527,7 +536,7 @@
         return false
       },
     },
-    components: { Reader, Scan, WizDialog, BookmarkPopup },
+    components: { Reader, Scan, WizDialog, BookmarkPopup, ShortcutsPopup },
     methods: {
       /** Return drawer background color taking a light into account and the dark or not back */
       backcolor(light = 0) {
@@ -709,14 +718,18 @@
           if (!((t.type && t.type === "text") || t.nodeName.toLowerCase() === "textarea")) {
             if (!e.shiftKey && !e.altKey) {
               if (e.which === 66) { //b
-                  // previous chapter
-                  this.goPreviousChapter()
-                  prevent()
+                // previous chapter
+                this.goPreviousChapter()
+                prevent()
               }
               if (e.which === 78) { //n
-                  // next chapter
-                  this.goNextChapter()
-                  prevent()
+                // next chapter
+                this.goNextChapter()
+                prevent()
+              }
+              if (e.which === 112) { //F1
+                this.openShortcuts()
+                prevent()
               }
             }
             if (e.shiftKey && !e.altKey) {
@@ -769,7 +782,7 @@
                 prevent()
               }
               // Remove manga from reading list
-              if (e.which === 82) { // shift + r
+              if (e.which === 109 || e.which === 54) { // shift + '-'
                 if (this.mangaExists) this.deleteManga()
                 prevent()
               }
@@ -780,6 +793,11 @@
                   else this.markReadTop(1)
                   prevent()
                 }
+              }
+              // Mark current chapter as latest read
+              if (e.which === 76) { // shift + l
+                if (this.showLatestRead) this.markAsLatest()
+                prevent()
               }
             }
             if (e.altKey) {
@@ -835,6 +853,10 @@
         let stopProp = (e) => e.stopImmediatePropagation();
         window.addEventListener('keyup', stopProp, true);
         window.addEventListener('keypress', stopProp, true);
+      },
+      /** Open shortcuts popup */
+      openShortcuts() {
+        this.$refs.shortcuts.open()
       },
       /** Open popup to bookmark chapter with note */
       bookmarkChapter() {
