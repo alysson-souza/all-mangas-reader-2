@@ -116,8 +116,15 @@ export default {
         },
         book(nVal, oVal) { // keep the scrolling ratio when changing book mode / not really relevant but better than nothing...
             this.keepScrollPos(100)
+        },
+        /** 
+         * When pages change (from not fully loaded to loaded and booked or when book property is changed),
+         * try to keep the old visible scan still visible.  
+         */
+        pages(nVal, oVal) {
+            if (nVal.length === oVal.length) return // pages disn't change that much :)
             let furl // url of the first viewable scan on currentpage
-            if (nVal) {
+            if (nVal.length < oVal.length) {
                 furl = this.images[this.currentPage] // retrieve it from images cause old book value was false, so one page per image
             } else {
                 if (this.regroupablePages[this.currentPage] && this.regroupablePages[this.currentPage].length > 0) {
