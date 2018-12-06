@@ -648,13 +648,19 @@
       },
       /** Go to next chapter */
       goNextChapter() {
+        if (this.lastChapter) { // display an alert because there is no next chapter
+            this.$refs.wizdialog.temporary(this.i18n("content_nav_last_chap"))
+        }
         if (!this.nextChapter) return
         window.location.href = this.nextChapter
       },
       /** Go to previous chapter */
       goPreviousChapter() {
         if (this.selchap === null) return false
-        if (this.firstChapter) return
+        if (this.firstChapter) { // display an alert because there is no previous chapter
+          this.$refs.wizdialog.temporary(this.i18n("reader_alert_firstchapter"))
+          return
+        }
         let cur = this.chapters.findIndex(el => el.url === this.selchap)
         window.location.href = this.chapters[cur + 1].url
       },

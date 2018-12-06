@@ -273,9 +273,6 @@ export default {
             if (cur + 1 < this.pages.length) n = cur + 1
 
             if (doubletap && n === cur) {
-                if (this.lastChapter) { // display an alert because there is no next chapter
-                    this.$refs.wizdialog.temporary(this.i18n("content_nav_last_chap"))
-                }
                 EventBus.$emit('go-next-chapter')
                 return
             }
@@ -311,9 +308,6 @@ export default {
             if (cur - 1 >= 0) n = cur - 1
 
             if (doubletap && n === cur) {
-                if (this.firstChapter) { // display an alert because there is no previous chapter
-                    this.$refs.wizdialog.temporary(this.i18n("reader_alert_firstchapter"))
-                }
                 EventBus.$emit('go-previous-chapter')
                 return
             }
@@ -406,7 +400,8 @@ export default {
                     }
                     //Left key or A
                     if ((e.which === 37) || (e.which === 65)) {
-                        if (window.pageXOffset > 0) {
+                        if (window.pageXOffset > 0) { 
+                            // scroll horizontally if it is possible
                             window.scrollBy(-this.scrollStepWithKeys, 0);
                         } else {
                             // go to previous scan
@@ -422,7 +417,8 @@ export default {
                     //Right key or D
                     if ((e.which === 39) || (e.which === 68)) {
                         // go to next scan
-                        if ((window.innerWidth + window.pageXOffset) < this.$refs.scantable.offsetWidth) {
+                        if ((window.innerWidth + window.pageXOffset) < this.$refs.scantable.offsetWidth) { 
+                            // scroll horizontally if it is possible
                             window.scrollBy(this.scrollStepWithKeys, 0);
                         } else {
                             try {
