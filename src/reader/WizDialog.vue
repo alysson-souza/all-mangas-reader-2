@@ -6,7 +6,7 @@
 
 <template>
   <v-dialog :persistent="options.persistent" v-model="dialog" 
-    :max-width="options.width" @keydown.esc="options.cancel ? cancel() : () => {}" 
+    :max-width="options.width" @keydown.esc="options.persistent ? () => {} : cancel()" 
     v-bind:style="{ zIndex: options.zIndex }">
     <v-card>
       <v-toolbar dark :color="options.color" dense flat v-show="!!title">
