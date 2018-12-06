@@ -720,6 +720,16 @@
               }
             }
             if (e.shiftKey && !e.altKey) {
+              // Go to next chapter
+              if ((e.which === 39) || (e.which === 68)) { // shift + d or shift + right arrow
+                  this.goNextChapter()
+                  prevent()
+              }
+              // Go to previous chapter
+              if ((e.which === 37) || (e.which === 65)) { // shift + a or shift + left arrow
+                  this.goPreviousChapter()
+                  prevent()
+              }
               // Toggle drawer
               if (e.which === 77) { // shift + m
                 this.drawer = !this.drawer
@@ -754,7 +764,7 @@
                 prevent()
               }
               // Add manga to reading list
-              if (e.which === 65) { // shift + a
+              if (e.which === 107 || e.which === 187) { // shift + '+'
                 if (!this.mangaExists && this.options.addauto === 0) this.addManga()
                 prevent()
               }
