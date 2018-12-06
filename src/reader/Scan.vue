@@ -20,7 +20,7 @@
                 <span>{{note ? i18n("reader_bookmarked_scan_note", note) : i18n("reader_bookmarked_scan")}}</span>
             </v-tooltip>
             <!-- The scan itself... -->
-            <img :src="src" ref="scan" />
+            <img :src="defaultImage" ref="scan" />
             <!-- The cover below the bookmark button -->
             <div v-if="bookmark" class="amr-scan-cover" :class="{'covered': showBookmarkButton}"></div>
             <!-- a div hover to bookmark the scan -->
@@ -72,6 +72,7 @@ export default {
             timeoutShowButton: -1, /* the timeout to hide button */
 
             bookstate: bookmarks.state, /* bookmarks state */
+            defaultImage: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+P+/HgAFhAJ/wlseKgAAAABJRU5ErkJggg==" /* 1 pixel transparent image for default image because we need a default image and it must be valid. If not, firefox raise an error in the event handler event if it is attached later... */
         }
     },
     props: {
@@ -137,7 +138,7 @@ export default {
             this.error = false
 
             return new Promise(async (resolve, reject) => {
-                this.$refs.scan.onload = () => {
+                this.$refs.scan.addEventListener('load', () => {
                     let img = this.$refs.scan
                     if (!img) return
                     /** Check if scan is double page */
@@ -148,18 +149,21 @@ export default {
                         EventBus.$emit("thin-scan")
                     }
                     this.loading = false
+                    this.error = false
                     this.$emit("loaded-scan")
                     resolve()
-                }
-                let manageError = () => {
+                })
+                let manageError = (e) => {
+                    console.error("An error occurred while loading an image")
+                    console.error(e)
                     this.loading = false
                     this.error = true
                     this.$emit("loaded-scan")
                     resolve()
                 }
-                this.$refs.scan.onerror = () => {
-                    manageError()
-                }
+                this.$refs.scan.addEventListener('error', (e) => {
+                    manageError(e)
+                })
                 try {
                     // Load the scan using implementation method
                     await mirrorImpl.get().getImageFromPageAndWrite(
@@ -167,7 +171,7 @@ export default {
                         this.$refs.scan)
                 } catch(e) {
                     console.error(e)
-                    manageError()
+                    manageError(e)
                 }
             })
         },
