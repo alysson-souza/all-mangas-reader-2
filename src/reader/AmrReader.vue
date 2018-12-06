@@ -288,7 +288,7 @@
             </v-flex>
             <v-flex xs12 text-xs-center mt-2>
               <v-tooltip top>
-                <v-btn slot="activator" icon @click="saveOptionsAsDefault" color="primary--text" v-show="layoutDiffFromOptions" class="ma-0">
+                <v-btn slot="activator" icon @click="saveOptionsAsDefault(false)" color="primary--text" v-show="layoutDiffFromOptions" class="ma-0">
                   <v-icon>mdi-content-save</v-icon>
                 </v-btn>
                 <span>{{i18n("reader_button_saveoptions")}}</span>
@@ -870,20 +870,23 @@
         });
       },
       /** Save current layout options as the default ones */
-      async saveOptionsAsDefault(force) {
-        if (force || await this.$refs.wizdialog.confirm(
+      async saveOptionsAsDefault(force = false) {
+        if (!force) {
+          if (!await this.$refs.wizdialog.confirm(
             this.i18n("reader_save_options_title"), 
             this.i18n("reader_save_options_confirm"))) {
-              this.options.displayBook = this.book ? 1 : 0
-              this.options.readingDirection = this.direction === "ltr" ? 0 : 1
-              this.options.displayFullChapter = this.fullchapter ? 1 : 0
-              this.options.resizeMode = resize_values.findIndex(val => val === this.resize)
-              util.saveOption("displayBook", this.options.displayBook)
-              util.saveOption("readingDirection", this.options.readingDirection)
-              util.saveOption("displayFullChapter", this.options.displayFullChapter)
-              util.saveOption("resizeMode", this.options.resizeMode)
-              if (!force) this.$refs.wizdialog.temporary(this.i18n("action_done"))
+              return
+          }
         }
+        this.options.displayBook = this.book ? 1 : 0
+        this.options.readingDirection = this.direction === "ltr" ? 0 : 1
+        this.options.displayFullChapter = this.fullchapter ? 1 : 0
+        this.options.resizeMode = resize_values.findIndex(val => val === this.resize)
+        util.saveOption("displayBook", this.options.displayBook)
+        util.saveOption("readingDirection", this.options.readingDirection)
+        util.saveOption("displayFullChapter", this.options.displayFullChapter)
+        util.saveOption("resizeMode", this.options.resizeMode)
+        if (!force) this.$refs.wizdialog.temporary(this.i18n("action_done"))
       },
       /** Reset current layout options to the default ones */
       resetOptionsToDefault() {
