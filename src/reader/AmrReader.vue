@@ -312,16 +312,16 @@
                 <span>{{!fullscreen ? i18n("reader_button_fullscreen") : i18n("reader_button_exit_fullscreen")}}</span>
               </v-tooltip>
               <v-tooltip top>
+                <v-btn slot="activator" icon @click="openShortcuts" class="ma-0">
+                  <v-icon>mdi-keyboard</v-icon>
+                </v-btn>
+                <span>{{i18n("reader_shortcuts_tooltip")}}</span>
+              </v-tooltip>
+              <v-tooltip top>
                 <v-btn slot="activator" icon @click="displayTips" color="blue--text" class="ma-0">
                   <v-icon>mdi-lightbulb-on</v-icon>
                 </v-btn>
                 <span>{{i18n("reader_button_tips")}}</span>
-              </v-tooltip>
-              <v-tooltip top>
-                <v-btn slot="activator" icon @click="openShortcuts" color="grey--text" class="ma-0">
-                  <v-icon>mdi-keyboard</v-icon>
-                </v-btn>
-                <span>{{i18n("reader_shortcuts_tooltip")}}</span>
               </v-tooltip>
             </v-flex>
           </v-layout>
