@@ -1321,7 +1321,7 @@
     "description": "Description of the shortcut for displaying info about scan"
   },
   "reader_shortcut_first_last_scan": {
-    "message": "Go to last page / first page",
+    "message": "Go to first page / last page",
     "description": "Description of the shortcut for going to last scan / first scan"
   },
   "reader_shortcut_random_scan": {
@@ -1337,7 +1337,7 @@
     "description": "Description of the shortcut for displaying info about chapter"
   },
   "reader_shortcut_first_last_chapter": {
-    "message": "Go to last chapter / first chapter",
+    "message": "Go to first chapter / last chapter",
     "description": "Description of the shortcut for going to last chapter / first chapter"
   },
   "reader_shortcut_random_chapter": {
