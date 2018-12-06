@@ -438,7 +438,7 @@ export default {
                             prevent()
                         }
                     }
-                    if (e.altKey) {
+                    if (e.altKey && !e.shiftKey) {
                         // Display current state in the chapter
                         if (e.which === 83) { // alt + s
                             if (this.pages.length > 0) {

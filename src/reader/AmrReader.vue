@@ -487,13 +487,6 @@
         if (this.selchap === null || this.chapters.length === 0) return true
         return this.chapters.findIndex(el => el.url === this.selchap) === 0
       },
-      /** Return current chapter name */
-      chapterName() {
-        if (this.selchap === null || this.chapters.length === 0) return ""
-        let chap = this.chapters.find(el => el.url === this.selchap)
-        if (!chap) return ""
-        return chap.title
-      },
       /** Next chapter url */
       nextChapter() {
         if (this.selchap === null) return
@@ -726,7 +719,7 @@
                   prevent()
               }
             }
-            if (e.shiftKey) {
+            if (e.shiftKey && !e.altKey) {
               // Toggle drawer
               if (e.which === 77) { // shift + m
                 this.drawer = !this.drawer
@@ -780,10 +773,36 @@
               }
             }
             if (e.altKey) {
-              // Display current chapter name
+              // Display current manga name, chapter name and progression in the manga
               if (e.which === 67) { // alt + c
-                this.$refs.wizdialog.temporary("**" + this.manga.name + "**\n" + (this.chapterName === "" ? this.i18n("reader_display_chapname_none") : this.chapterName), 2000)
+                let chapName = "", chapPos = 0
+                if (this.selchap !== null && this.chapters.length !== 0) {
+                  let chap = this.chapters.findIndex(el => el.url === this.selchap)
+                  if (chap >= 0) {
+                    chapName = this.chapters[chap].title
+                    chapPos = this.chapters.length - chap
+                  }
+                }
+
+                let str = "**" + this.manga.name + "**\n"
+                str += (chapName === "" ? this.i18n("reader_display_chapname_none") : chapName) + "\n"
+                if (this.chapters.length > 0) {
+                  str += this.i18n("reader_display_chap_progression", 
+                    chapPos, 
+                    this.chapters.length, 
+                    Math.floor(chapPos / this.chapters.length * 100))
+                }
+
+                this.$refs.wizdialog.temporary(str, 2000)
                 prevent()
+              }
+            }
+            if (e.shiftKey && e.altKey) {
+              // Go to random chapter
+              if (e.which === 82) { // alt + shift + r
+                  this.selchap = this.chapters[Math.floor(Math.random() * this.chapters.length)].url
+                  this.goToChapter()
+                  prevent()
               }
             }
           }

@@ -1303,5 +1303,9 @@
   "reader_display_chapname_none": {
     "message": "No chapter name",
     "description": "Temporary message telling that we can't find chapter's name"
+  },
+  "reader_display_chap_progression": {
+    "message": "Progression in the manga : $1 / $2 - **$3%**",
+    "description": "Display progression in the manga $1 is current chapter position, $2 is total number of chapters, $3 progression"
   }
 }
