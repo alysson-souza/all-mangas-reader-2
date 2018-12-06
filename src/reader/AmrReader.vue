@@ -970,4 +970,14 @@
 .amr-chapter-progress-cont .v-progress-linear {
   margin: 0px;
 }
+/** Scrollbars style (only works for chrome, firefox does not support that */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #ddd;
+}
+::-webkit-scrollbar-track {
+  background: #666;
+}
 </style>

@@ -1285,7 +1285,7 @@
     "description": "Confirmation message when action has been done"
   },
   "reader_button_fullscreen": {
-    "message": "Full screen",
+    "message": "Full screen (use your browser fullscreen key if you want to keep fullscreen while reading multiple chapters)",
     "description": "Tooltip of the full screen button"
   },
   "reader_button_exit_fullscreen": {
