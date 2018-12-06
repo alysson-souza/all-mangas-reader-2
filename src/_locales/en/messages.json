@@ -1208,6 +1208,14 @@
     "message": "Want to access the **home page of the online reader** which is hosting this manga ? \nClick on the website's icon next to the manga title in the side menu.\nClick on the manga title to view the page detailing this manga on the website.",
     "description": "Tips popup, tip n°10"
   },
+  "reader_tips_11": {
+    "message": "Want to know **where you are in the chapter** ?\nPress _Alt + s_ to view the current page number and your current progression !\n Want to know the chapter name and don't want to grab your mouse to open the side menu ?\n Press _Alt + c_ and it will be right under your nose !",
+    "description": "Tips popup, tip n°11"
+  },
+  "reader_tips_12": {
+    "message": "Want to **jump to last scan quickly ?** ?\nPress _Alt + d_ or _Alt + →_ to jump to the last scan !\n Want to jump to the first one ? Use _Alt + a_ or _Alt + ←_.\nWant to try a random scan ? Use _Alt + r_ !",
+    "description": "Tips popup, tip n°12"
+  },
   "reader_tips_stop": {
     "message": "Stop showing tips",
     "description": "Tips popup, button to stop showing tips"
@@ -1291,5 +1299,9 @@
   "reader_button_exit_fullscreen": {
     "message": "Exit full screen",
     "description": "Tooltip of the exit full screen button"
+  },
+  "reader_display_chapname_none": {
+    "message": "No chapter name",
+    "description": "Temporary message telling that we can't find chapter's name"
   }
 }

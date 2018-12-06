@@ -120,13 +120,17 @@ export default {
             if (nVal) {
                 furl = this.images[this.currentPage] // retrieve it from images cause old book value was false, so one page per image
             } else {
-                furl = this.regroupablePages[this.currentPage][0].src // retrieve it from rearrange pages cause old book value was true 
+                if (this.regroupablePages[this.currentPage] && this.regroupablePages[this.currentPage].length > 0) {
+                    furl = this.regroupablePages[this.currentPage][0].src // retrieve it from rearrange pages cause old book value was true 
+                }
             }
-            // calculate new currentPage and go to it after new arrangement has been calculated
-            this.$nextTick(() => {
-                let ncur = this.getPageIndexFromScanUrl(furl)
-                this.goScan(ncur)
-            })
+            if (furl) {
+                // calculate new currentPage and go to it after new arrangement has been calculated
+                this.$nextTick(() => {
+                    let ncur = this.getPageIndexFromScanUrl(furl)
+                    this.goScan(ncur)
+                })
+            }
         },
         /** Keep drawer state */
         drawer(nVal, oVal) {
@@ -361,74 +365,102 @@ export default {
             let registerKeys = (e) => {
                 e = e || window.event;
                 let t = e.target || e.srcElement;
-
+                let prevent = () => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    e.stopImmediatePropagation()
+                }
                 if (!((t.type && t.type === "text") || t.nodeName.toLowerCase() === "textarea")) {
-                    // Handle double tap events
-                    let doubletap = false
-                    if (this.lastKeyPress === e.which && 
-                    Date.now() - this.lastKeyPressTime <= this.doubleTapDuration) {
-                        doubletap = true
-                    }
-                    this.lastKeyPress = e.which
-                    this.lastKeyPressTime = Date.now()
+                    if (!e.shiftKey && !e.altKey) {
+                        // Handle double tap events
+                        let doubletap = false
+                        if (this.lastKeyPress === e.which && 
+                        Date.now() - this.lastKeyPressTime <= this.doubleTapDuration) {
+                            doubletap = true
+                        }
+                        this.lastKeyPress = e.which
+                        this.lastKeyPressTime = Date.now()
 
-                    if (e.which === 87) { //W
-                        window.scrollBy(0, -this.scrollStepWithKeys);
-                    }
-                    if (e.which === 83) { //S
-                        window.scrollBy(0, this.scrollStepWithKeys);
-                    }
-                    if (e.which === 107 || e.which === 187) { //+
-                        // keep the scrolling ratio when zooming in
-                        this.keepScrollPos(100)
-                        this.resize = "none"
-                        if (!this.$refs.scantable.style.zoom || this.$refs.scantable.style.zoom === 0) {
-                            this.$refs.scantable.style.zoom = 1
-                        } else {
-                            this.$refs.scantable.style.zoom = this.$refs.scantable.style.zoom * 1.1
+                        if (e.which === 87) { //W
+                            window.scrollBy(0, -this.scrollStepWithKeys)
+                            prevent()
+                        }
+                        if (e.which === 83) { //S
+                            window.scrollBy(0, this.scrollStepWithKeys)
+                            prevent()
+                        }
+                        if (e.which === 107 || e.which === 187) { //+
+                            // keep the scrolling ratio when zooming in
+                            this.keepScrollPos(100)
+                            this.resize = "none"
+                            if (!this.$refs.scantable.style.zoom || this.$refs.scantable.style.zoom === 0) {
+                                this.$refs.scantable.style.zoom = 1
+                            } else {
+                                this.$refs.scantable.style.zoom = this.$refs.scantable.style.zoom * 1.1
+                            }
+                            prevent()
+                        }
+                        if (e.which === 109 || e.which === 189) { //-
+                            // keep the scrolling ratio when zooming out
+                            this.keepScrollPos(100)
+                            this.resize = "none"
+                            if (!this.$refs.scantable.style.zoom || this.$refs.scantable.style.zoom === 0) {
+                                this.$refs.scantable.style.zoom = 1
+                            } else {
+                                this.$refs.scantable.style.zoom = this.$refs.scantable.style.zoom * 0.9
+                            }
+                            prevent()
+                        }
+                        //Left key or A
+                        if ((e.which === 37) || (e.which === 65)) {
+                            if (window.pageXOffset > 0) { 
+                                // scroll horizontally if it is possible
+                                window.scrollBy(-this.scrollStepWithKeys, 0);
+                            } else {
+                                // go to previous scan
+                                try {
+                                this.goPreviousScan(doubletap)
+                                } catch (e) {} // prevent default in any case
+                            }
+                            prevent()
+                        }
+                        //Right key or D
+                        if ((e.which === 39) || (e.which === 68)) {
+                            // go to next scan
+                            if ((window.innerWidth + window.pageXOffset) < this.$refs.scantable.offsetWidth) { 
+                                // scroll horizontally if it is possible
+                                window.scrollBy(this.scrollStepWithKeys, 0);
+                            } else {
+                                try {
+                                this.goNextScan(doubletap)
+                                } catch (e) {} // prevent default in any case
+                            }
+                            prevent()
                         }
                     }
-                    if (e.which === 109 || e.which === 189) { //-
-                        // keep the scrolling ratio when zooming out
-                        this.keepScrollPos(100)
-                        this.resize = "none"
-                        if (!this.$refs.scantable.style.zoom || this.$refs.scantable.style.zoom === 0) {
-                            this.$refs.scantable.style.zoom = 1
-                        } else {
-                            this.$refs.scantable.style.zoom = this.$refs.scantable.style.zoom * 0.9
+                    if (e.altKey) {
+                        // Display current state in the chapter
+                        if (e.which === 83) { // alt + s
+                            if (this.pages.length > 0) {
+                                EventBus.$emit('temporary-dialog', { message: this.currentPage + " / " + this.pages.length + "\n**" + Math.floor(this.currentPage / this.pages.length * 100) + "%**"})
+                            }
+                            prevent()
                         }
-                    }
-                    //Left key or A
-                    if ((e.which === 37) || (e.which === 65)) {
-                        if (window.pageXOffset > 0) { 
-                            // scroll horizontally if it is possible
-                            window.scrollBy(-this.scrollStepWithKeys, 0);
-                        } else {
-                            // go to previous scan
-                            try {
-                            this.goPreviousScan(doubletap)
-                            } catch (e) {} // prevent default in any case
+                        // Jump to last scan
+                        if ((e.which === 39) || (e.which === 68)) { // alt + d or alt + right arrow
+                            this.goScan(this.pages.length - 1)
+                            prevent()
                         }
-
-                        e.preventDefault()
-                        e.stopPropagation()
-                        e.stopImmediatePropagation()
-                    }
-                    //Right key or D
-                    if ((e.which === 39) || (e.which === 68)) {
-                        // go to next scan
-                        if ((window.innerWidth + window.pageXOffset) < this.$refs.scantable.offsetWidth) { 
-                            // scroll horizontally if it is possible
-                            window.scrollBy(this.scrollStepWithKeys, 0);
-                        } else {
-                            try {
-                            this.goNextScan(doubletap)
-                            } catch (e) {} // prevent default in any case
+                        // Jump to first scan
+                        if ((e.which === 37) || (e.which === 65)) { // alt + a or alt + left arrow
+                            this.goScan(0)
+                            prevent()
                         }
-                        
-                        e.preventDefault()
-                        e.stopPropagation()
-                        e.stopImmediatePropagation()
+                        // Jump to random page
+                        if (e.which === 82) { // alt + r
+                            this.goScan(Math.floor(Math.random() * this.pages.length))
+                            prevent()
+                        }
                     }
                 }
             }

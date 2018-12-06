@@ -385,6 +385,8 @@
       images: Array /* List of scans to display, not necessarily pictures but urls that the implementation can handle to render a scan */
     },
     created() {
+      /** Register keys */
+      this.handlekeys()
       /** Check if manga exists */
       this.checkExists()
       /** Load current manga informations */
@@ -484,6 +486,13 @@
       lastChapter() {
         if (this.selchap === null || this.chapters.length === 0) return true
         return this.chapters.findIndex(el => el.url === this.selchap) === 0
+      },
+      /** Return current chapter name */
+      chapterName() {
+        if (this.selchap === null || this.chapters.length === 0) return ""
+        let chap = this.chapters.find(el => el.url === this.selchap)
+        if (!chap) return ""
+        return chap.title
       },
       /** Next chapter url */
       nextChapter() {
@@ -635,7 +644,7 @@
       async deleteManga() {
         if (await this.$refs.wizdialog.confirm(
           this.i18n("list_mg_act_delete"), 
-          this.i18n("list_mg_delete_question", pageData.name, mirrorImpl.get().mirrorName))) {
+          this.i18n("list_mg_delete_question", this.manga.name, mirrorImpl.get().mirrorName))) {
           await util.deleteManga()
           this.mangaExists = false
         }
@@ -699,15 +708,83 @@
         let registerKeys = (e) => {
           e = e || window.event;
           let t = e.target || e.srcElement;
-
+          let prevent = () => {
+              e.preventDefault()
+              e.stopPropagation()
+              e.stopImmediatePropagation()
+          }
           if (!((t.type && t.type === "text") || t.nodeName.toLowerCase() === "textarea")) {
-            if (e.which === 66) { //b
-                // previous chapter
-                this.goPreviousChapter()
+            if (!e.shiftKey && !e.altKey) {
+              if (e.which === 66) { //b
+                  // previous chapter
+                  this.goPreviousChapter()
+                  prevent()
+              }
+              if (e.which === 78) { //n
+                  // next chapter
+                  this.goNextChapter()
+                  prevent()
+              }
             }
-            if (e.which === 78) { //n
-                // next chapter
-                this.goNextChapter()
+            if (e.shiftKey) {
+              // Toggle drawer
+              if (e.which === 77) { // shift + m
+                this.drawer = !this.drawer
+                prevent()
+              }
+              // Switch resizes mode
+              if (e.which === 67) { // shift + c
+                if (!this.fullchapter) this.resize = "container"
+                prevent()
+              }
+              if (e.which === 87) { // shift + w
+                this.resize = "width"
+                prevent()
+              }
+              if (e.which === 72) { // shift + h
+                if (!this.fullchapter) this.resize = "height"
+                prevent()
+              }
+              // Switch fullchapter
+              if (e.which === 70) { // shift + f
+                this.fullchapter = !this.fullchapter
+                prevent()
+              }
+              // Switch book
+              if (e.which === 66) { // shift + b
+                this.book = !this.book
+                prevent()
+              }
+              // Switch direction
+              if (e.which === 68) { // shift + d
+                this.direction = this.direction === 'ltr' ? 'rtl' : 'ltr'
+                prevent()
+              }
+              // Add manga to reading list
+              if (e.which === 65) { // shift + a
+                if (!this.mangaExists && this.options.addauto === 0) this.addManga()
+                prevent()
+              }
+              // Remove manga from reading list
+              if (e.which === 82) { // shift + r
+                if (this.mangaExists) this.deleteManga()
+                prevent()
+              }
+              // Pause / Play notifications on manga
+              if (e.which === 80) { // shift + p
+                if (this.mangaExists && this.mangaInfos) {
+                  if (this.mangaInfos.read === 1) this.markReadTop(0)
+                  else this.markReadTop(1)
+                  prevent()
+                }
+              }
+            }
+            if (e.altKey) {
+              // Display current chapter name
+              if (e.which === 67) { // alt + c
+                this.$refs.wizdialog.temporary("**" + this.manga.name + "**\n" + (this.chapterName === "" ? this.i18n("reader_display_chapname_none") : this.chapterName), 2000)
+                prevent()
+              }
             }
           }
         }
