@@ -113,7 +113,7 @@ const extractRootDomain = function(url) {
  * Extract the part of a url following the domain
  * @param {*} url 
  */
-const afterHostURL = function(url) {
+export function afterHostURL(url) {
     var after;
     //find & remove protocol (http, ftp, etc.) and get hostname
 

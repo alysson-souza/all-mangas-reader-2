@@ -183,7 +183,7 @@ class HandleManga {
             if (mir.chapter_url) {
                 var parts = /\/(.*)\/(.*)/.exec(mir.chapter_url);
                 var chaprx = new RegExp(parts[1], parts[2]);
-                if (chaprx.test(url)) dopreload = true
+                if (chaprx.test("/" + utils.afterHostURL(url))) dopreload = true
             }
             if (dopreload) {
                 // Load amr preload
