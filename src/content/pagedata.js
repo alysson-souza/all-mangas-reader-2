@@ -1,3 +1,5 @@
+import Vue from "vue";
+
 /**
  * Encapsulate data collected from mirror implementation to be retrieved everywhere
  */ 
@@ -14,7 +16,7 @@ class PageData {
         this.__data__ = object;
     }
     add(key, value) {
-        this[key] = value;
+        Vue.set(this, key, value) /* Properties added to pageData are reactive in Vue components */
     }
 }
 export default (new PageData)

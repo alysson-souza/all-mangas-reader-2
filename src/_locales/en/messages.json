@@ -205,7 +205,7 @@
     "description": "Option Dark popup"
   },
   "options_gen_dark_desc": {
-    "message": "Use a dark background in All Mangas Reader pages",
+    "message": "Display a dark background in All Mangas Reader pages",
     "description": "Option Dark popup description"
   }, 
   "options_gen_colors_new": {
@@ -563,7 +563,7 @@
     "description": "Tooltip to show AMR bar when icon clicked and bar hidden"
   },  
   "content_nav_click_bm": {
-    "message": "Click here to bookmark this chapter",
+    "message": "Bookmark this chapter",
     "description": "Tooltip on button to bookmark a chapter"
   },  
   "content_nav_note_bm": {
@@ -636,11 +636,11 @@
     "description": "Panel at bottom of page to tell that the chapter is the latest published"
   }, 
   "bookmark_chapter_text": {
-    "message": "Bookmark chapter '$1' of '$2' on '$3'. You can add notes below which will be associated with this bookmark.",
+    "message": "Bookmark chapter $1 of $2 on $3. The note below will be associated with this bookmark.",
     "description": "Text in the bookmark popup to bookmark current chapter. $1 is chapter name, $2 manga name and $3 website name"
   }, 
   "bookmark_chapter_scan": {
-    "message": "Bookmark scan '$1' of chapter '$2' of '$3' on '$4'. You can add notes below which will be associated with this bookmark.",
+    "message": "Bookmark scan $1 of chapter $2 of $3 on $4. The note below will be associated with this bookmark.",
     "description": "Text in the bookmark popup to bookmark a scan. $1 is scan name/id, $2 is chapter name, $3 manga name and $4 website name"
   }, 
   "content_read_reload": {
@@ -809,7 +809,7 @@
     "description": "Size of the bookmarks in list : small"
   },
   "bookmarks_no_bookmarks": {
-    "message": "No bookmarks yet. To bookmark a scan, double click on the scan while reading. Bookmarked scans have a grey border. <br /> To bookmark a chapter, click on the star in the top bar while reading.",
+    "message": "No bookmarks yet. To bookmark a scan, double click on the scan while reading. Bookmarked scans have a yellow banner in the top right hand corner. <br /> To bookmark a chapter, click on the star in the side menu while reading.",
     "description": "Label when no bookmarks. Help about how to bookmark a scan and chapter"
   },
   "bookmarks_no_bookmarks_filter": {
@@ -1035,5 +1035,374 @@
   "category_oneshots": {
     "message": "One shots",
     "description": "Label of the native category for mangas which are one shots"
+  },
+
+  "__V2_1_0__": {
+    "message": "Just a filler to separate new labels from old ones"
+  },
+  "reader_loading": {
+    "message": "($1% loaded)",
+    "description": "Percentage of the next chapter currently loaded between braces"
+  },
+  "reader_next_chap": {
+    "message": "Next chapter ($1% loaded)",
+    "description": "Label to display on progression bar in reader below chapters navigation (followed with progression percent)"
+  },
+  "reader_click_go_mirror": {
+    "message": "Click to visit website's home page",
+    "description": "Tooltip on online website's icon to go to home page"
+  },
+  "reader_click_go_manga": {
+    "message": "Click to view manga's chapters page",
+    "description": "Tooltip on manga name to go to manga's chapters page"
+  },
+  "reader_bookmarked_note": {
+    "message": "Chapter bookmarked with note : $1",
+    "description": "Title of the dropdown below bookmarks button in reader, announce chapter note"
+  },
+  "reader_bookmarked_scan_note": {
+    "message": "Scan bookmarked with note : $1",
+    "description": "Tooltip on banner on bookmarked scans, announce scan note"
+  },
+  "reader_bookmarked_scan": {
+    "message": "Scan bookmarked",
+    "description": "Tooltip on banner on bookmarked scans, without note"
+  },
+  "reader_bookmark_update": {
+    "message": "Update bookmark",
+    "description": "Button to open bookmarks popup if already bookmarked in the dropdown below bookmarks button in reader"
+  },
+  "reader_bookmark_create": {
+    "message": "Bookmark chapter",
+    "description": "Button to open bookmarks popup if not already bookmarked in the dropdown below bookmarks button in reader"
+  },
+  "reader_open_bookmarks_tab": {
+    "message": "Open all bookmarks in a new tab",
+    "description": "Tooltip on button to open amr's bookmarks page in a new tab"
+  },
+  "reader_no_bookmarked_scans": {
+    "message": "No bookmarked scans for this chapter",
+    "description": "Text in the dropdown below bookmarks button if no scans are bookmarked in current chapter"
+  },
+  "reader_bookmark_scan_help": {
+    "message": "Click to bookmark this scan and add note associated to the bookmark. To quickly bookmark a scan, double click on it.",
+    "description": "Tooltip on the star button displayed when clicking on a scan"
+  },
+  "reader_delete_manga": {
+    "message": "Remove this manga from your reading list",
+    "description": "Tooltip on the remove manga from this list button"
+  },
+  "option_read_book": {
+    "message": "Display chapter as in a book (side by side scans)",
+    "description": "Option to display the chapter pages side by side as in a book if possible"
+  },
+  "option_read_book_ltr": {
+    "message": "Read side by side pages from left to right",
+    "description": "Button to choose option to read side by side pages from left to right"
+  },
+  "option_read_book_rtl": {
+    "message": "Read side by side pages from right to left",
+    "description": "Button to choose option to read side by side pages from right to left"
+  },
+  "option_read_fullchapter": {
+    "message": "Display full chapter as a long strip (if not, display only current page)",
+    "description": "Option to display the the full chapter as a long strip (precise that if not, display only current page)"
+  },
+  "option_read_resize_w": {
+    "message": "Scale scans to fit width",
+    "description": "Button to choose option to scale scans to fit width"
+  },
+  "option_read_resize_h": {
+    "message": "Scale scans to fit height",
+    "description": "Button to choose option to scale scans to fit height"
+  },
+  "option_read_resize_c": {
+    "message": "Scale scans to fit the container (both in height and width)",
+    "description": "Button to choose option to scale scans to fit container (both in height and width)"
+  },
+  "option_read_resize_n": {
+    "message": "Do not scale scans",
+    "description": "Button to choose option to not scale scans"
+  },
+  "button_delete": {
+    "message": "Delete",
+    "description": "Delete button label"
+  },
+  "reader_thinscan_title": {
+    "message": "Thin long scans detected",
+    "description": "Title of the popup displayed if thin scans detected (height >= 3 * width)"
+  },
+  "reader_thinscan_description": {
+    "message": "This chapter contains thin long scans (their height exceeds three times their width).\n Current layout options won't offer you the best possible reading. We can automatically adjust the way this manga is displayed (prefer not reading it with side by side scans and avoid scaling scans in height). \nDo you want to adjust these parameters ?",
+    "description": "Description of the popup displayed if thin scans detected (height >= 3 * width)"
+  },
+  "reader_alert_lastscan": {
+    "message": "This is the latest scan of the chapter. Double tap right key to read next chapter !",
+    "description": "Alert displayed if trying to go to next scan and last scan"
+  },
+  "reader_alert_firstscan": {
+    "message": "This is the first scan of the chapter. Double tap left key to read previous chapter !",
+    "description": "Alert displayed if trying to go to previous scan and first scan"
+  },
+  "reader_alert_firstchapter": {
+    "message": "This is the first published chapter.",
+    "description": "Alert displayed if trying to go to previous chapter and first chapter"
+  },
+  "reader_firsttime_title": {
+    "message": "Welcome to the new reader !",
+    "description": "Title of the popup displayed first time reader is shown"
+  },
+  "reader_firsttime_description": {
+    "message": "All Mangas Reader's reader has many features to offer you the best possible reading experience. Before we let you read your manga and discover all these features, please choose between these two options (you can change it when you want) : \n* do you want the **whole chapter to be displayed as a long strip**\n* or just **one page at a time** (could be one page with two scans on it) ?\nIn both cases, the whole chapter is loaded in the background and you can navigate smoothly between pages with your keyboard",
+    "description": "Description of the popup displayed first time reader is shown"
+  },
+  "reader_firsttime_but_longstrip": {
+    "message": "I want a long strip",
+    "description": "First time, a popup is shown with two choices, button to choose a long strip"
+  },
+  "reader_firsttime_but_single": {
+    "message": "I want one page",
+    "description": "First time, a popup is shown with two choices, button to choose a one page"
+  },
+  "reader_tips_title": {
+    "message": "Reader tips",
+    "description": "Title of the tips popup"
+  },
+  "reader_tips_1": {
+    "message": "To navigate easily through chapter's pages, put your mouse at the bottom of the screen, **thumbnails of the whole chapters appear !**\n Click on the page you want to see and enjoy !",
+    "description": "Tips popup, tip n°1"
+  },
+  "reader_tips_2": {
+    "message": "Use your keyboard to read smoothly : \n* Right / left arrows shows you next / previous scan\n* Double tap at the end / start of a chapter goes to next / previous chapter \n You can find all key shortcuts with the _F1_ key",
+    "description": "Tips popup, tip n°2"
+  },
+  "reader_tips_3": {
+    "message": "You loved this chapter and want a way to **find it back later** ?\n Click on the star in the side menu and then on the _Bookmark chapter_ button. You can even add a note to find it easily. \nTo consult all your bookmarks, go to All Mangas Reader's bookmarks page (from the popup click on vertical dots and then click on the star)",
+    "description": "Tips popup, tip n°3"
+  },
+  "reader_tips_4": {
+    "message": "The **next chapter is loading while you are reading** the current one so you don't have to wait to read what you are passionate about.\n If you don't want to preload next chapter, go check the options.\n You can see a progression bar indicating how much of the next chapter is loaded below the chapters list in the side bar or around the next button when the side bar is closed and you hover the menu button.",
+    "description": "Tips popup, tip n°4"
+  },
+  "reader_tips_5": {
+    "message": "All the mangas you read are **added to your reading list automatically**. If you don't want to add them automatically, go to the options page and uncheck the _Automatically add manga to my reading list_ option.\n Then, a green plus will appear in the side menu to let you add a manga to your reading list. This button is even quickly available directly below the menu button if the side bar is closed !",
+    "description": "Tips popup, tip n°5"
+  },
+  "reader_tips_6": {
+    "message": "This scan is so cool that you want a way to find it back quickly ? Double click on it, it will be **added to your bookmarks !**\n A bookmarked scan has a yellow banner in the top right hand corner. Click on it to add a note linked to the scan. \n You can also click on a scan and then click on the appearing star to bookmark a scan. \n You can view all the bookmarked scans in a chapter by clicking on the star in the side menu. Click on a scan and access it directly in the chapter !\nTo consult all your bookmarks, go to All Mangas Reader's bookmarks page (from the popup click on vertical dots and then click on the star)",
+    "description": "Tips popup, tip n°6"
+  }, 
+  "reader_tips_7": {
+    "message": "You can **change the scale of your scans** from the side menu ! Choose between : \n* Width : your scans fit in width in the screen (a vertical scrollbar can appear)\n* Height : your scans fit in height in the screen (an horizontal scrollbar can appear). This option is only available if full chapter is disabled\n* Container : **your whole scans fit in the screen** (no scrollbars). This option is only available if full chapter is disabled\n* None : no resize (both scrollbars can appear)\nUse your keyboard to swith modes : _Ctrl + w_ for width, _Ctrl + h_ for height and _Ctrl + e_ for container. Use _+ and - keys_ to resize your scans if none is selected.",
+    "description": "Tips popup, tip n°7"
+  }, 
+  "reader_tips_8": {
+    "message": "You are reading a manga with many chapters and you **don't want notifications** to annoy you. \n Click on the _pause_ button in the side menu. Click on the _play_ buttton to have your notifications back.",
+    "description": "Tips popup, tip n°8"
+  },
+  "reader_tips_9": {
+    "message": "You want to **view two pages of your chapter at the same time** ?\n Click on the _Display as a book_ option. You can then choose to read your manga from left to right or from right to left.",
+    "description": "Tips popup, tip n°9"
+  },
+  "reader_tips_10": {
+    "message": "Want to access the **home page of the online reader** which is hosting this manga ? \nClick on the website's icon next to the manga title in the side menu.\nClick on the manga title to view the page detailing this manga on the website.",
+    "description": "Tips popup, tip n°10"
+  },
+  "reader_tips_11": {
+    "message": "Want to know **where you are in the chapter** ?\nPress _Alt + s_ to view the current page number and your current progression !\n Want to know the chapter name and don't want to grab your mouse to open the side menu ?\n Press _Alt + c_ and it will be right under your nose !",
+    "description": "Tips popup, tip n°11"
+  },
+  "reader_tips_12": {
+    "message": "Want to **jump to last scan quickly ?** ?\nPress _Alt + d_ or _Alt + →_ to jump to the last scan !\n Want to jump to the first one ? Use _Alt + a_ or _Alt + ←_.\nWant to try a random scan ? Use _Alt + r_ !",
+    "description": "Tips popup, tip n°12"
+  },
+  "reader_tips_stop": {
+    "message": "Stop showing tips",
+    "description": "Tips popup, button to stop showing tips"
+  },
+  "reader_tips_next": {
+    "message": "Next tip",
+    "description": "Tips popup, button to show next tip"
+  },
+  "reader_tips_next_tomorrow": {
+    "message": "Show me tips later",
+    "description": "Tips popup, button to close for now but open next tip tomorrow"
+  },
+  "options_web_chapter_display_book_opt": {
+    "message": "Display as a book",
+    "description": "Label of the option Display as a book in the options page"
+  },
+  "options_web_chapter_reading_direction_opt": {
+    "message": "Reading direction",
+    "description": "In the options page, label above options to choose reading direction"
+  },
+  "options_web_chapter_display_full_chapter_opt": {
+    "message": "Display full chapter",
+    "description": "Label of the option Display full chapter in the options page"
+  },
+  "options_web_chapter_resize_mode_opt": {
+    "message": "Scaling mode",
+    "description": "In the options page, label above options to choose scaling mode"
+  },
+  "options_web_chapter_desc": {
+    "message": "The options below are the global default options to display mangas. While reading, you can change these same options in the side menu. When changing display while reading, your reading preference will only be applied to the current manga.",
+    "description": "In the options page, text explaining that display options can be overriden while reading"
+  },
+  "options_web_chapter_darkreader_desc": {
+    "message": "Display a dark background while reading manga",
+    "description": "In the options page, description of the dark reader option"
+  },
+  "options_web_chapter_darkreader_opt": {
+    "message": "Dark background",
+    "description": "In the options page, label of the dark reader option"
+  },
+  "reader_button_saveoptions": {
+    "message": "Save current options as default",
+    "description": "Tooltip on the save current options as default button in the reader"
+  },
+  "reader_button_resetoptions": {
+    "message": "Reset current manga display options to default",
+    "description": "Tooltip on the reset current manga display options to default button in the reader"
+  },
+  "reader_button_dark": {
+    "message": "Switch to dark background reader",
+    "description": "Tooltip on the switch to dark background button in the reader"
+  },
+  "reader_button_light": {
+    "message": "Switch to light background reader",
+    "description": "Tooltip on the switch to light background button in the reader"
+  },
+  "reader_button_tips": {
+    "message": "Click to view some tips to use AMR's reader",
+    "description": "Tooltip on the display tips button in the reader"
+  },
+  "button_close": {
+    "message": "Close",
+    "description": "Generic close button label"
+  },
+  "reader_save_options_title": {
+    "message": "Save current display mode",
+    "description": "Title of the dialog before saving current diaply options as default"
+  },
+  "reader_save_options_confirm": {
+    "message": "This action will replace your default display options by the current ones. Are you sure that you want to do that ?",
+    "description": "Confirmation question of the dialog before saving current diaply options as default"
+  },
+  "action_done": {
+    "message": "Done",
+    "description": "Confirmation message when action has been done"
+  },
+  "reader_button_fullscreen": {
+    "message": "Full screen (use your browser fullscreen key if you want to keep fullscreen while reading multiple chapters)",
+    "description": "Tooltip of the full screen button"
+  },
+  "reader_button_exit_fullscreen": {
+    "message": "Exit full screen",
+    "description": "Tooltip of the exit full screen button"
+  },
+  "reader_display_chapname_none": {
+    "message": "No chapter name",
+    "description": "Temporary message telling that we can't find chapter's name"
+  },
+  "reader_display_chap_progression": {
+    "message": "Progression in the manga : $1 / $2 - **$3%**",
+    "description": "Display progression in the manga $1 is current chapter position, $2 is total number of chapters, $3 progression"
+  },
+  "reader_shortcut_arrows": {
+    "message": "Scroll the screen and turn pages",
+    "description": "Description of the shortcut for arrow keys and wsad"
+  },
+  "reader_shortcut_zoom": {
+    "message": "Zoom in out on scans. This will switch automatically to scale mode 'none'",
+    "description": "Description of the shortcut for zooming in and out on scans"
+  },
+  "reader_shortcut_info_scan": {
+    "message": "Display current page position in chapter and progression",
+    "description": "Description of the shortcut for displaying info about scan"
+  },
+  "reader_shortcut_first_last_scan": {
+    "message": "Go to first page / last page",
+    "description": "Description of the shortcut for going to last scan / first scan"
+  },
+  "reader_shortcut_random_scan": {
+    "message": "Display a random page from the chapter",
+    "description": "Description of the shortcut for displaying a random page from the chapter"
+  },
+  "reader_shortcut_chapters_nextprevious": {
+    "message": "Go to previous / next chapter",
+    "description": "Description of the shortcut for previous / next chapters"
+  },
+  "reader_shortcut_info_chapter": {
+    "message": "Display current chapter position in manga and progression",
+    "description": "Description of the shortcut for displaying info about chapter"
+  },
+  "reader_shortcut_first_last_chapter": {
+    "message": "Go to first chapter / last chapter",
+    "description": "Description of the shortcut for going to last chapter / first chapter"
+  },
+  "reader_shortcut_random_chapter": {
+    "message": "Display a random chapter from the manga",
+    "description": "Description of the shortcut for displaying a random chapter from the manga"
+  },
+  "reader_shortcut_layout_drawer": {
+    "message": "Toggle side menu",
+    "description": "Description of the shortcut to toggle side menu"
+  },
+  "reader_shortcut_layout_resize": {
+    "message": "Choose resize mode (w for width, h for height and c for container)",
+    "description": "Description of the shortcut to switch resize mode"
+  },
+  "reader_shortcut_layout_fullchapter": {
+    "message": "Switch between full chapter as a long strip and single page mode (a single page can contain two scans)",
+    "description": "Description of the shortcut to toggle switch full chapter"
+  },
+  "reader_shortcut_layout_book": {
+    "message": "Switch between single scan and double page (side by side scans) layout",
+    "description": "Description of the shortcut to toggle book mode"
+  },
+  "reader_shortcut_layout_direction": {
+    "message": "Toggle direction between left to right and right to left in double page mode",
+    "description": "Description of the shortcut to toggle direction"
+  },
+  "reader_shortcut_action_add": {
+    "message": "Add current manga to reading list",
+    "description": "Description of the shortcut to add current manga to reading list"
+  },
+  "reader_shortcut_action_remove": {
+    "message": "Remove current manga from reading list",
+    "description": "Description of the shortcut to remove current manga from reading list"
+  },
+  "reader_shortcut_action_play_pause": {
+    "message": "Switch between follow publications / do not follow publications for this manga",
+    "description": "Description of the shortcut to switch publications following"
+  },
+  "reader_shortcut_action_mark_latest": {
+    "message": "Mark current chapter as latest read for this manga",
+    "description": "Description of the shortcut to mark current chapter as latest read for this manga"
+  },
+  "reader_shortcuts_title": {
+    "message": "Shortcuts",
+    "description": "Title of the shortcuts popup"
+  },
+  "reader_shortcuts_tooltip": {
+    "message": "Display all shortcuts (F1)",
+    "description": "Tooltip of the button to display shortcuts popup"
+  },
+  "reader_shortcuts_section_chapters": {
+    "message": "Navigate pages in the chapter",
+    "description": "Title of the shortcuts chapter section"
+  },
+  "reader_shortcuts_section_manga": {
+    "message": "Navigate chapters in the manga",
+    "description": "Title of the shortcuts manga section"
+  },
+  "reader_shortcuts_section_layout": {
+    "message": "Change the chapter layout",
+    "description": "Title of the shortcuts layout section"
+  },
+  "reader_shortcuts_section_actions": {
+    "message": "Take actions on the manga",
+    "description": "Title of the shortcuts actions section"
   }
+  
 }

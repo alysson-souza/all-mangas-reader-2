@@ -28,11 +28,13 @@
     "contextMenus",
     "notifications",
     "downloads",
-    "cookies"
+    "cookies",
+    "webNavigation"
   ],
   "content_security_policy": "script-src 'self' https://localhost:8080/ https://matomo.allmangasreader.com/ https://mirrors.allmangasreader.com/ ; object-src 'self'",
   "web_accessible_resources": [
     "icons/icon_32.png",
+    "icons/icon_128.png",
     "icons/down.png",
     "icons/bookmark.png",
     "icons/read_stop.png",

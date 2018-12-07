@@ -1,0 +1,48 @@
+#amr-loading-cover {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    position: fixed;
+    opacity: 1;
+    z-index: 99999999;
+    text-align: center;
+    display: block;
+}
+#amr-loading-cover img {
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   width: 128px;
+   height: 128px;
+   margin-top: -64px; /* Half the height */
+   margin-left: -64px; /* Half the width */
+   animation: amr-heartbeat 1s infinite;
+}
+@keyframes amr-heartbeat
+{
+  0%
+  {
+    transform: scale( .9 );
+  }
+  20%
+  {
+    transform: scale( 1 );
+  }
+  40%
+  {
+    transform: scale( .9 );
+  }
+  60%
+  {
+    transform: scale( 1 );
+  }
+  80%
+  {
+    transform: scale( .9 );
+  }
+  100%
+  {
+    transform: scale( .9 );
+  }
+}

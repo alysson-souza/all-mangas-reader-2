@@ -13,6 +13,7 @@ const config = {
   entry: {
     'background/background': './background/background.js',
     'content/back': './content/back.js',
+    'reader/init-reading': './reader/init-reading.js',
     'pages/popup/popup': './pages/popup/popup.js', 
     'pages/lab/lab': './pages/lab/lab.js',
     'pages/options/options': './pages/options/options.js',
@@ -61,6 +62,7 @@ const config = {
       {from: 'pages/importexport/importexport.html', to: 'pages/importexport/importexport.html'},
       {from: 'manifest.json', to: 'manifest.json'},
       {from: 'content/*.css', to: '.'},
+      {from: 'reader/*.css', to: '.'},
       {from: '_locales/**/*', to: '.'},
       {from: '../node_modules/jquery/dist/jquery.min.js', to: 'lib/jquery.min.js'},
       {from: '../node_modules/jquery-modal/jquery.modal.min.js', to: 'lib/jquery.modal.min.js'}, 

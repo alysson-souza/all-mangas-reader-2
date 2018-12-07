@@ -18,6 +18,12 @@ const contentCss = [
     '/lib/jquery.modal.min.css'
 ];
 
+/** Scripts to inject in pages containing mangas for new reader */
+const contentScriptsV2 = [
+    '/lib/jquery.min.js',
+    '/reader/init-reading.js'
+];
+
 class HandleManga {
     handle(message, sender) {
         let key;
@@ -31,8 +37,10 @@ class HandleManga {
                 let mg = store.state.mangas.all.find(manga => manga.key === key)
                 if (mg !== undefined) {
                     return Promise.resolve({
-                        read: mg.read,
-                        display: mg.display
+                        read: mg.read, /* Read top */
+                        display: mg.display, /* Display mode of the old reader */
+                        layout: mg.layout, /* Layout for the new reader */
+                        lastchapter: mg.lastChapterReadURL
                     });
                 } else {
                     return Promise.resolve();
@@ -40,12 +48,17 @@ class HandleManga {
             case "readManga":
                 utils.debug("Read manga " + message.url);
                 return store.dispatch('readManga', message);
+            case "deleteManga":
+                utils.debug("Delete manga key " + key);
+                return store.dispatch('deleteManga', {key: key});
             case "getNextChapterImages": //returns list of images for prefetch of next chapter in content script
                 return this.getChapterImages(message);
             case "markReadTop":
                 return store.dispatch('markMangaReadTop', message);
             case "setDisplayMode":
                 return store.dispatch('setMangaDisplayMode', message);
+            case "setLayoutMode":
+                return store.dispatch('setMangaLayoutMode', message);
             case "setMangaChapter":
                 return store.dispatch('resetManga', message) // reset reading to first chapter
                     .then(() => store.dispatch('readManga', message)); // set reading to current chapter
@@ -163,15 +176,48 @@ class HandleManga {
         const mir = utils.currentPageMatch(url)
         if (mir === null) return Promise.resolve(null)
 
+        if (!localStorage["oldreader"]) {
+            // Load amr preload
+            let loading = []
+            loading.push(browser.tabs.insertCSS(tabId, { file: "/reader/pre-loader.css" }))
+            let bgcolor = "#424242"
+            if (store.state.options.darkreader === 0) bgcolor = "white"
+            loading.push(browser.tabs.executeScript(
+                tabId, 
+                { code: `
+                    let amr_icon_url = '${browser.extension.getURL('/icons/icon_128.png')}';
+                    let cover = document.createElement("div")
+                    cover.id = "amr-loading-cover"
+                    cover.style.backgroundColor = "${bgcolor}"
+
+                    let img = document.createElement("img")
+                    img.src = amr_icon_url;
+                    cover.appendChild(img)
+
+                    document.body.appendChild(cover)
+                    setTimeout(() => {
+                        try {cover.parentNode.remove(cover)} catch(e) {}
+                    }, 5000)
+                `}))
+            Promise.all(loading)
+        }
+
         let impl = await this.getImplementation(mir)
         if (impl) {
-            // Inject css in matched tab
-            for (let css of contentCss) {
-                await browser.tabs.insertCSS(tabId, { file: css });
-            }
-            // Inject content scripts in matched tab
-            for (let script of contentScripts) {
-                await browser.tabs.executeScript(tabId, { file: script });
+            if (localStorage["oldreader"]) {
+                // Inject css in matched tab
+                for (let css of contentCss) {
+                    await browser.tabs.insertCSS(tabId, { file: css });
+                }
+                // Inject content scripts in matched tab
+                for (let script of contentScripts) {
+                    await browser.tabs.executeScript(tabId, { file: script });
+                }
+            } else {
+                // Inject content scripts in matched tab
+                for (let script of contentScriptsV2) {
+                    await browser.tabs.executeScript(tabId, { file: script });
+                }
             }
             // Inject mirror implementation (through a function called in the implementation and existing in back.js)
             await browser.tabs.executeScript(tabId, { code: impl });
