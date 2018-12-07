@@ -177,29 +177,39 @@ class HandleManga {
         if (mir === null) return Promise.resolve(null)
 
         if (!localStorage["oldreader"]) {
-            // Load amr preload
-            let loading = []
-            loading.push(browser.tabs.insertCSS(tabId, { file: "/reader/pre-loader.css" }))
-            let bgcolor = "#424242"
-            if (store.state.options.darkreader === 0) bgcolor = "white"
-            loading.push(browser.tabs.executeScript(
-                tabId, 
-                { code: `
-                    let amr_icon_url = '${browser.extension.getURL('/icons/icon_128.png')}';
-                    let cover = document.createElement("div")
-                    cover.id = "amr-loading-cover"
-                    cover.style.backgroundColor = "${bgcolor}"
+            // check if we need to load preload (it could be annoying to have preload on each pages of the website)
+            // websites which provide a chapter_url regexp will have their chapters with a preload
+            let dopreload = false
+            if (mir.chapter_url) {
+                var parts = /\/(.*)\/(.*)/.exec(mir.chapter_url);
+                var chaprx = new RegExp(parts[1], parts[2]);
+                if (chaprx.test(url)) dopreload = true
+            }
+            if (dopreload) {
+                // Load amr preload
+                let loading = []
+                loading.push(browser.tabs.insertCSS(tabId, { file: "/reader/pre-loader.css" }))
+                let bgcolor = "#424242"
+                if (store.state.options.darkreader === 0) bgcolor = "white"
+                loading.push(browser.tabs.executeScript(
+                    tabId, 
+                    { code: `
+                        let amr_icon_url = '${browser.extension.getURL('/icons/icon_128.png')}';
+                        let cover = document.createElement("div")
+                        cover.id = "amr-loading-cover"
+                        cover.style.backgroundColor = "${bgcolor}"
 
-                    let img = document.createElement("img")
-                    img.src = amr_icon_url;
-                    cover.appendChild(img)
+                        let img = document.createElement("img")
+                        img.src = amr_icon_url;
+                        cover.appendChild(img)
 
-                    document.body.appendChild(cover)
-                    setTimeout(() => {
-                        try {cover.parentNode.remove(cover)} catch(e) {}
-                    }, 5000)
-                `}))
-            Promise.all(loading)
+                        document.body.appendChild(cover)
+                        setTimeout(() => {
+                            try {cover.parentNode.remove(cover)} catch(e) {}
+                        }, 5000)
+                    `}))
+                Promise.all(loading)
+            }
         }
 
         let impl = await this.getImplementation(mir)

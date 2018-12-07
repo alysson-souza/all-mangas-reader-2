@@ -43,6 +43,7 @@ if (window["__armreader__"] === undefined) { // avoid loading script twice
             restorePage()
             return;
         }
+        let imagesUrl
         try {
             // Retrieve informations relative to current chapter / manga read
             let data = await mirrorImpl.get().getInformationsFromCurrentPage(document, window.location.href)
@@ -52,8 +53,8 @@ if (window["__armreader__"] === undefined) { // avoid loading script twice
             pageData.load(data);
 
             // retrieve images to load (before doSomethingBeforeWritingScans because it can harm the source of data)
-            let imagesUrl = await mirrorImpl.get().getListImages(document, window.location.href);
-            if (imagesUrl.length === 0) {
+            imagesUrl = await mirrorImpl.get().getListImages(document, window.location.href);
+            if (!imagesUrl || imagesUrl.length === 0) {
                 // No images, do not load the loader
                 restorePage()
                 return;
@@ -142,12 +143,13 @@ function loadCss(file) {
  *  - we have to load the implementation in the page to know if the reader needs to be loaded. If we do that in a separate script, we will have to reload implementation another time and this will result in more loading time...
  */
 function restorePage() {
+    console.log("Restore page")
     let cover = document.getElementById("amr-loading-cover")
-    cover.parentNode.removeChild(cover)
+    if (cover) cover.parentNode.removeChild(cover)
 
     // remove included style
     let styles = document.getElementsByTagName('style'), st;
-    for(let i in styles) {
+    for (let i in styles) {
         if (styles.hasOwnProperty(i)) {
             st = styles[i];
             // remove our own styles...

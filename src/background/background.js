@@ -69,8 +69,9 @@ IconHelper.setBlueIcon();
             HandleManga.matchUrlAndLoadScripts(tabInfo.url, tabId)
         }
     });*/
-    browser.webNavigation.onCommitted.addListener(({tabId, url}) => {
-        HandleManga.matchUrlAndLoadScripts(url, tabId)
+    browser.webNavigation.onCommitted.addListener((args) => {
+        if ("auto_subframe" === args.transitionType) return; // do not reload amr on embedded iframes
+        HandleManga.matchUrlAndLoadScripts(args.url, args.tabId)
     })
 
     /**
