@@ -1,5 +1,5 @@
 <template>
-  <v-app id="inspire" :dark="darkreader">
+  <v-app id="amrapp" :dark="darkreader">
     <!-- Global component to show confirmation dialogs, alert dialogs / other -->
     <WizDialog ref="wizdialog"></WizDialog>
     <!-- Global component to show bookmarks dialog -->
@@ -613,7 +613,17 @@
             let list = await mirrorImpl.get().getListChaps(
                 pageData.currentMangaURL.replace(/(^\w+:|^)/, '')
             )
-            this.chapters = list.map(arr => { return { url: arr[1], title: arr[0] } })
+            if (list !== undefined && !Array.isArray(list)) { // case of returned list is an object keys are languages and values are list of mangas
+              if (list[this.manga.language] && list[this.manga.language].length > 0) {
+                  this.chapters = list[this.manga.language].map(arr => { return { url: arr[1], title: arr[0] } })
+              } else { // current language chapter does not exist in returned chapter list... shrödinger case...
+                this.chapters = []
+              }
+            } else if (list.length > 0) { // normal use case, one language
+              this.chapters = list.map(arr => { return { url: arr[1], title: arr[0] } })
+            } else { // no chapters
+              this.chapters = []
+            }
         }
         this.chapters.forEach(chap => {
           if (util.matchChapUrl(pageData.currentChapterURL, chap.url)) {
@@ -1059,6 +1069,9 @@
 </script>
 
 <style>
+#amrapp {
+  width: 100%;
+}
 /** Drawer content below menu button */
 .amr-drawer {
   padding-top:36px;
