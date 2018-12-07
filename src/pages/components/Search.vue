@@ -22,20 +22,18 @@
                     show-arrows
                 >
                     <v-tabs-slider></v-tabs-slider>
-                    <v-tab 
-                        v-for="lang in langs" 
+                    <v-tab v-for="lang in langs" 
                         :key="lang" 
-                        :href="'#langtab-' + lang" 
+                        :href="'#langtab-' + lang"
                         class="primary--text">
                         <Flag v-if="lang != 'aa'" :value="lang" big />
                         <span v-else>{{ i18n("search_multilang") }}</span>
                     </v-tab>
-                </v-tabs>
-                <v-tabs-items 
-                    v-for="(res, lang) in results" 
-                    :key="lang" 
-                    v-model="langtabs" >
-                    <v-tab-item :id="'langtab-' + lang">
+                
+                    <v-tab-item :id="'langtab-' + lang" 
+                            v-for="(res, lang) in results" 
+                            :key="lang" 
+                            v-model="langtabs">
                         <v-container fluid>
                             <v-layout row v-for="fmtkey in res['__SORTEDKEYS__']" :key="fmtkey">
                                 <!-- name of the manga -->
@@ -57,7 +55,7 @@
                             </v-layout>
                         </v-container>
                     </v-tab-item>
-                </v-tabs-items>
+                </v-tabs>
             </v-container>
         </v-layout>
     </v-container>
@@ -148,10 +146,12 @@ export default {
                 Object.keys(this.results[l]).forEach(key => tmplst.push(this.results[l][key]))
                 // sort list of lists by length and alphabetically inside
                 tmplst.sort(
-                    (a, b) => 
-                        a.length === b.length ? 
+                    (a, b) => {
+                        if (!a[0].name) return -1
+                        return a.length === b.length ? 
                             a[0].name.localeCompare(b[0].name) : 
                             b.length - a.length
+                    }
                 )
                 //add a property to sort entries in object
                 this.results[l]["__SORTEDKEYS__"] = tmplst.map(lst => utils.formatMgName(lst[0].name))

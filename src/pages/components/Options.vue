@@ -17,7 +17,7 @@
             </v-tab>
         </v-tabs>
         <v-tabs-items v-model="tabs" :class="(dark ? 'black' : 'white') + ' elevation-1'">
-            <v-tab-item id="onwebsites">
+            <v-tab-item value="onwebsites">
               <v-container fluid>
                 <!-- Display options -->
                 <div class="headline">{{ i18n("options_web_chapter_display_mode") }}</div>
@@ -80,7 +80,7 @@
                         :label="i18n('options_web_addauto_opt')"></v-checkbox>
               </v-container>
             </v-tab-item>
-            <v-tab-item id="general">
+            <v-tab-item value="general">
               <v-container fluid>
                 <!-- AMR aspect -->
                 <div class="headline">{{ i18n("options_gen_aspect") }}</div>
@@ -211,7 +211,7 @@
                 </div>
               </v-container>
             </v-tab-item>
-            <v-tab-item id="supported">
+            <v-tab-item value="supported">
                 <v-container fluid>
                 <!-- Languages -->
                 <div class="headline">{{ i18n("options_sup_languages") }}</div>

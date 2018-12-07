@@ -40,19 +40,32 @@ if (window["__armreader__"] === undefined) { // avoid loading script twice
         // Test if current page is a chapter page (according to mirror implementation)
         if (!mirrorImpl.get().isCurrentPageAChapterPage(document, window.location.href)) {
             console.log("Current page is not recognize as a chapter page by mirror implementation");
-            let cover = document.getElementById("amr-loading-cover")
-            cover.parentNode.removeChild(cover)
+            restorePage()
             return;
         }
-        // Retrieve informations relative to current chapter / manga read
-        let data = await mirrorImpl.get().getInformationsFromCurrentPage(document, window.location.href)
-        console.log("Informations for current page loaded : ");
-        console.log(data);
-        // Initialize pageData state
-        pageData.load(data);
+        let imagesUrl
+        try {
+            // Retrieve informations relative to current chapter / manga read
+            let data = await mirrorImpl.get().getInformationsFromCurrentPage(document, window.location.href)
+            console.log("Informations for current page loaded : ");
+            console.log(data);
+            // Initialize pageData state
+            pageData.load(data);
 
-        // retrieve images to load (before doSomethingBeforeWritingScans because it can harm the source of data)
-        let imagesUrl = await mirrorImpl.get().getListImages(document, window.location.href);
+            // retrieve images to load (before doSomethingBeforeWritingScans because it can harm the source of data)
+            imagesUrl = await mirrorImpl.get().getListImages(document, window.location.href);
+            if (!imagesUrl || imagesUrl.length === 0) {
+                // No images, do not load the loader
+                restorePage()
+                return;
+            }
+        } catch (e) {
+            console.error("Error while initializing AMR : ");
+            console.error(e)
+            // Error while getting informations or images
+            restorePage()
+            return;
+        }
         console.log(imagesUrl.length + " images to load");
 
         bookmarks.init(imagesUrl)
@@ -112,15 +125,6 @@ function removeStyles() {
             }
         }
     }
-
-    //let styles = document.getElementsByTagName('style'), st;
-    /*for(i in styles) {
-        if (stylesheets.hasOwnProperty(i)) {
-            st = styles[i];
-            console.log(st)
-            st.parentNode.removeChild(st);
-        }
-    }*/
 }
 function loadCss(file) {
     var link = document.createElement( "link" )
@@ -130,4 +134,28 @@ function loadCss(file) {
     link.media = "screen,print"
 
     document.getElementsByTagName( "head" )[0].appendChild( link )
+}
+
+/** 
+ * Restore the page as it was before we included our scripts tags and code 
+ * The best would be not to load it but : 
+ *  - this script is only included in manga websites pages
+ *  - we have to load the implementation in the page to know if the reader needs to be loaded. If we do that in a separate script, we will have to reload implementation another time and this will result in more loading time...
+ */
+function restorePage() {
+    console.log("Restore page")
+    let cover = document.getElementById("amr-loading-cover")
+    if (cover) cover.parentNode.removeChild(cover)
+
+    // remove included style
+    let styles = document.getElementsByTagName('style'), st;
+    for (let i in styles) {
+        if (styles.hasOwnProperty(i)) {
+            st = styles[i];
+            // remove our own styles...
+            if (st.innerHTML.indexOf(".amr-") >= 0 || st.innerHTML.indexOf("Vuetify") >= 0) {
+                st.parentNode.removeChild(st);
+            }
+        }
+    }
 }
