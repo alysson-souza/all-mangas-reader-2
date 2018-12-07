@@ -118,11 +118,11 @@
 			</v-layout>
 		</v-container>
 		<v-tabs-items v-model="tabs" :class="($store.state.options.dark === 1 ? 'black' : 'white')">
-				<v-tab-item id="refresh">
+				<v-tab-item value="refresh">
 					<!-- Refresh buttons -->
 					<Timers />
 				</v-tab-item>
-				<v-tab-item id="importexport">
+				<v-tab-item value="importexport">
 					<!-- Import export panels -->
 					<ImportExport />
 				</v-tab-item>

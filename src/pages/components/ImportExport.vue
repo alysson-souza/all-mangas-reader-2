@@ -15,7 +15,7 @@
         </v-tabs>
         <v-tabs-items v-model="tabs" :class="($store.state.options.dark === 1 ? 'black' : 'white')">
             <!-- Import tab -->
-            <v-tab-item id="import">
+            <v-tab-item value="import">
                 <v-container fluid>
                     <label class="file-select">
                         <v-btn @click.native="onFocus" color="primary">{{i18n("ie_import_pickfile")}}</v-btn>
@@ -55,7 +55,7 @@
                 </v-container>
             </v-tab-item>
             <!-- Export tab -->
-            <v-tab-item id="export">
+            <v-tab-item value="export">
                 <v-container fluid>
                     <!-- Export options -->
                     <div class="subtitle">{{ i18n("ie_export_mangas_viewable_desc") }}</div>
