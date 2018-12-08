@@ -1140,9 +1140,17 @@
     "message": "This is the latest scan of the chapter. Double tap right key to read next chapter !",
     "description": "Alert displayed if trying to go to next scan and last scan"
   },
+  "reader_alert_lastscan_clicked": {
+    "message": "This is the latest scan of the chapter. Double click on the left part of the screen to read next chapter !",
+    "description": "Alert displayed if trying to go to next scan and last scan while clicking"
+  },
   "reader_alert_firstscan": {
     "message": "This is the first scan of the chapter. Double tap left key to read previous chapter !",
     "description": "Alert displayed if trying to go to previous scan and first scan"
+  },
+  "reader_alert_firstscan_clicked": {
+    "message": "This is the first scan of the chapter. Double click on the left part of the screen to read previous chapter !",
+    "description": "Alert displayed if trying to go to previous scan and first scan while clicking"
   },
   "reader_alert_firstchapter": {
     "message": "This is the first published chapter.",

@@ -1140,9 +1140,17 @@
     "message": "C'est le dernier scan de ce chapitre. Appuyez deux fois rapidement sur la flèche droite pour passer au chapitre suivant !",
     "description": "Alert displayed if trying to go to next scan and last scan"
   },
+  "reader_alert_lastscan_clicked": {
+    "message": "C'est le dernier scan de ce chapitre. Double cliquez sur la partie gauche de l'écran pour passer au chapitre suivant !",
+    "description": "Alert displayed if trying to go to next scan and last scan while clicking"
+  },
   "reader_alert_firstscan": {
     "message": "C'est le premier scan de ce chapitre. Appuyez deux fois rapidement sur la flèche gauche pour passer au chapitre précédent !",
     "description": "Alert displayed if trying to go to previous scan and first scan"
+  },
+  "reader_alert_firstscan_clicked": {
+    "message": "C'est le premier scan de ce chapitre. Double cliquez sur la partie gauche de l'écran pour passer au chapitre précédent !",
+    "description": "Alert displayed if trying to go to previous scan and first scan while clicking"
   },
   "reader_alert_firstchapter": {
     "message": "C'est le premier chapitre publié.",

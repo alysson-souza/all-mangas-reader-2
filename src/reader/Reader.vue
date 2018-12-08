@@ -1,6 +1,6 @@
 <template>
     <v-container fluid text-xs-center pa-0 
-        :class="{'no-full-chapter': !fullchapter}" @click="pageChange" ref="scancontainer">
+        :class="{'no-full-chapter': !fullchapter}" @click="pageChange" @dblclick="tryChapterChange" ref="scancontainer">
         <!-- Scans -->
         <table ref="scantable" class="amr-scan-container" border="0" cellspacing="0" cellpadding="0">
           <Page v-for="(scans, i) in pages" :key="i"
@@ -46,6 +46,7 @@ import Page from "./Page";
 import EventBus from "./EventBus";
 import { i18nmixin } from "../mixins/i18n-mixin"
 import { scroller } from 'vue-scrollto/src/scrollTo'
+import util from "./util";
 
 /** Create a custom scroller (alias of $scrollTo method) to enable multiple scrollings (thumbs scroll simultaneously page scroll) */
 const thumbsScroller = scroller()
@@ -183,11 +184,46 @@ export default {
         pageChange(e) {
             if (this.fullchapter) return
 
+            let cur = this.currentPage, n = cur
             if (e.clientX >= this.$refs.scancontainer.clientWidth / 2) {
-                this.goNextScan()
+                if (cur + 1 < this.pages.length) n = cur + 1
+                if (n === cur) { // last scan, wait a little before trying to go next scan so if double click, it will be handled
+                    setTimeout(() => this.goNextScan(false, true), 250)
+                } else {
+                    this.goNextScan(false, true)
+                }
             } else {
-                this.goPreviousScan()
+                if (cur - 1 >= 0) n = cur - 1
+                if (n === cur) { // first scan, wait a little before trying to go next scan so if double click, it will be handled
+                    setTimeout(() => this.goPreviousScan(false, true), 250)
+                } else {
+                    this.goPreviousScan(false, true)
+                }
             }            
+        },
+        /** 
+         * Double click on the scans container : 
+         *  - if first scan and click left --> go to previous chapter
+         *  - if last scan and click right --> go to next chapter
+         */
+        tryChapterChange(e) {
+            util.clearSelection()
+            let cur = this.currentPage, n = cur
+            if (e.clientX >= this.$refs.scancontainer.clientWidth / 2) {
+                if (cur + 1 < this.pages.length) n = cur + 1
+
+                if (n === cur) {
+                    EventBus.$emit('go-next-chapter')
+                    return
+                }
+            } else {
+                if (cur - 1 >= 0) n = cur - 1
+
+                if (n === cur) {
+                    EventBus.$emit('go-previous-chapter')
+                    return
+                }
+            }
         },
         /** 
          * Determine if a page should be shown.
@@ -291,7 +327,7 @@ export default {
             }
         },
         /** Go to next scan */
-        goNextScan(doubletap) {
+        goNextScan(doubletap = false, clicked = false) {
             let cur = this.currentPage, n = cur
             if (cur + 1 < this.pages.length) n = cur + 1
 
@@ -304,7 +340,10 @@ export default {
                 // just change the visibility of current page and next page
                 if (cur === n) {
                     // this is latest scan of the chapter
-                    EventBus.$emit('temporary-dialog', { message: this.i18n("reader_alert_lastscan"), duration: 2000})
+                    EventBus.$emit('temporary-dialog', { 
+                        message: clicked ? this.i18n("reader_alert_lastscan_clicked") : 
+                                           this.i18n("reader_alert_lastscan"), 
+                        duration: 2000})
                     return
                 }
 
@@ -326,7 +365,7 @@ export default {
             }
         },
         /** Go to previous scan */
-        goPreviousScan(doubletap) {
+        goPreviousScan(doubletap = false, clicked = false) {
             let cur = this.currentPage, n = cur
             if (cur - 1 >= 0) n = cur - 1
 
@@ -339,7 +378,10 @@ export default {
                 // just change the visibility of current page and previous page
                 if (cur === n) {
                     // this is first scan of the chapter
-                    EventBus.$emit('temporary-dialog', { message: this.i18n("reader_alert_firstscan"), duration: 2000})
+                    EventBus.$emit('temporary-dialog', { 
+                        message: clicked ? this.i18n("reader_alert_firstscan_clicked") : 
+                                           this.i18n("reader_alert_firstscan"), 
+                        duration: 2000})
                     return
                 }
 
