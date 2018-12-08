@@ -1,6 +1,6 @@
 <template>
     <v-container fluid text-xs-center pa-0 
-        :class="{'no-full-chapter': !fullchapter}">
+        :class="{'no-full-chapter': !fullchapter}" @click="pageChange" ref="scancontainer">
         <!-- Scans -->
         <table ref="scantable" class="amr-scan-container" border="0" cellspacing="0" cellpadding="0">
           <Page v-for="(scans, i) in pages" :key="i"
@@ -177,6 +177,18 @@ export default {
     },
     components: { Page },
     methods: {
+        /**
+         * Click on the scans container, if single page mode, go to next or previous page
+         */
+        pageChange(e) {
+            if (this.fullchapter) return
+
+            if (e.clientX >= this.$refs.scancontainer.clientWidth / 2) {
+                this.goNextScan()
+            } else {
+                this.goPreviousScan()
+            }            
+        },
         /** 
          * Determine if a page should be shown.
          * Always true if fullChapter mode, just current page if not
