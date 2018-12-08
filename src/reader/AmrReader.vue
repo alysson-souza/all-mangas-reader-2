@@ -569,6 +569,7 @@
         let specific = await browser.runtime.sendMessage({ 
             action: "mangaInfos", 
             url: pageData.currentMangaURL, 
+            mirror: mirrorImpl.get().mirrorName,
             language: pageData.language 
         });
         // Save returned manga informations in state
