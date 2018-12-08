@@ -25,7 +25,7 @@
             color="red darken-2"
             v-if="nextchapLoading && hover && !drawer"
           >
-            <v-btn small fab @click.stop="goNextChapter">
+            <v-btn small fab @click.stop="goNextChapter" class="btn-huge">
               <v-icon>mdi-chevron-right</v-icon>
             </v-btn>
           </v-progress-circular>
@@ -83,7 +83,7 @@
               <v-toolbar flat class="pa-0" my-1>
                 <!-- Previous chapter button -->
                 <v-tooltip bottom>
-                  <v-btn slot="activator" icon v-show="!firstChapter" @click.stop="goPreviousChapter">
+                  <v-btn slot="activator" icon v-show="!firstChapter" @click.stop="goPreviousChapter" class="btn-huge">
                     <v-icon>mdi-chevron-left</v-icon>
                   </v-btn>
                   <span>{{i18n("list_mg_act_prev")}}</span>
@@ -102,7 +102,7 @@
                 <v-spacer></v-spacer>
                 <v-tooltip bottom v-show="!lastChapter">
                   <!-- Next chapter button -->
-                  <v-btn slot="activator" icon @click.stop="goNextChapter">
+                  <v-btn slot="activator" icon @click.stop="goNextChapter" class="btn-huge">
                     <v-icon>mdi-chevron-right</v-icon>
                   </v-btn>
                   <span>{{i18n("list_mg_act_next")}} {{nextchapLoading ? i18n("reader_loading", Math.floor(nextchapProgress)) : ""}}</span>
@@ -228,7 +228,7 @@
           <v-layout row wrap>
             <v-flex xs12>
               <!-- Display book checkbox -->
-              <v-switch v-model="book" :label="i18n('option_read_book')"></v-switch>
+              <v-switch v-model="book" :label="i18n('option_read_book')" hide-details class="pb-1"></v-switch>
             </v-flex>
             <!-- Reading direction -->
             <v-flex xs12 v-show="book" text-xs-center>
@@ -251,7 +251,7 @@
             </v-flex>
             <v-flex xs12>
               <!-- Display full chapter checkbox -->
-              <v-switch v-model="fullchapter" :label="i18n('option_read_fullchapter')"></v-switch>
+              <v-switch v-model="fullchapter" :label="i18n('option_read_fullchapter')" hide-details class="pb-1"></v-switch>
             </v-flex>
             <!-- Resize mode -->
             <v-flex xs12 text-xs-center>
@@ -1108,6 +1108,10 @@
 }
 .theme--dark .amr-manga-title a {
   color: white;
+}
+/** button font size bigger */
+.btn-huge .v-icon {
+  font-size: 250%!important;
 }
 /** To prevent select to be too small due to large padding */
 .v-toolbar.pa-0 .v-toolbar__content {
