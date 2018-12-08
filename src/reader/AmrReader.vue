@@ -65,11 +65,13 @@
             <div class="headline">
               <v-tooltip bottom>
                 <a slot="activator" :href="mirrorDesc.home" v-if="mirrorDesc !== null" target="_blank">
+                  <!-- Mirror icon -->
                   <img :src="mirrorDesc.mirrorIcon" ma-1 />
                 </a>
                 <span>{{i18n("reader_click_go_mirror")}}</span>
               </v-tooltip>
               <v-tooltip bottom>
+                <!-- Manga name -->
                 <a slot="activator" :href="manga.currentMangaURL" target="_blank">{{manga.name}}</a>
                 <span>{{i18n("reader_click_go_manga")}}</span>
               </v-tooltip>

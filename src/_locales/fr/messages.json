@@ -1165,7 +1165,7 @@
     "description": "Description of the popup displayed first time reader is shown"
   },
   "reader_firsttime_but_longstrip": {
-    "message": "Je veux voir tout le chapitre",
+    "message": "Voir tout le chapitre",
     "description": "First time, a popup is shown with two choices, button to choose a long strip"
   },
   "reader_firsttime_but_single": {
