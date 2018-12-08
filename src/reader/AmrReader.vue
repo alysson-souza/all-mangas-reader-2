@@ -330,6 +330,7 @@
         </v-card-title>
       </v-card>
     </v-navigation-drawer>
+    <SocialBar v-show="drawer" />
     <!-- End AMR Reader Side bar -->
     <v-content>
       <Reader ref="reader"
@@ -361,7 +362,8 @@
   import ShortcutsPopup from "./ShortcutsPopup";
   import bookmarks from "./bookmarks";
   import EventBus from "./EventBus";
-
+  import SocialBar from "./SocialBar";
+  
   /** Possible values for resize (readable), the stored value is the corresponding index */
   const resize_values = ['width', 'height', 'container', 'none']
 
@@ -542,7 +544,7 @@
         return false
       },
     },
-    components: { Reader, Scan, WizDialog, BookmarkPopup, ShortcutsPopup },
+    components: { Reader, Scan, WizDialog, BookmarkPopup, ShortcutsPopup, SocialBar },
     methods: {
       /** Return drawer background color taking a light into account and the dark or not back */
       backcolor(light = 0) {
@@ -1090,6 +1092,7 @@
 /** Drawer content below menu button */
 .amr-drawer {
   padding-top:36px;
+  padding-bottom:64px;
 }
 /** Center manga title */
 .amr-manga-title div {

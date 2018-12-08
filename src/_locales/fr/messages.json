@@ -1423,5 +1423,21 @@
   "reader_page_progression": {
     "message": "Page $1 / $2 - $3%",
     "description": "Display progression of reading in the chapter"
+  },
+  "reader_social_patreon": {
+    "message": "Aidez AMR ! Devenez un patron",
+    "description": "Tooltip of the patreon button"
+  },
+  "reader_social_facebook": {
+    "message": "All Mangas Reader sur Facebook",
+    "description": "Tooltip of the facebook button"
+  },
+  "reader_social_twitter": {
+    "message": "All Mangas Reader sur Twitter",
+    "description": "Tooltip of the twitter button"
+  },
+  "reader_social_discord": {
+    "message": "Rejoignez notre communauté sur Discord ! C'est l'endroit idéal si vous avez une question sur AMR.",
+    "description": "Tooltip of the discord button"
   }
 }
