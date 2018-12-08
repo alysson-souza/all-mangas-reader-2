@@ -40,7 +40,7 @@
             <v-toolbar-title>{{i18n("options_title")}}</v-toolbar-title>
           </v-toolbar>
 					<v-content>
-          	<Options />
+          	<Options v-if="options" />
 					</v-content>
         </v-card>
 	</v-dialog>
@@ -60,7 +60,7 @@
             <v-toolbar-title>{{i18n("search_title")}}</v-toolbar-title>
           </v-toolbar>
 					<v-content>
-          	<Search :to-search="toSearch" />
+          	<Search v-if="search" :to-search="toSearch" />
 					</v-content>
         </v-card>
 	</v-dialog>
@@ -74,7 +74,7 @@
 			width="500"
     >
 		<!-- Links in right panel -->
-		<v-container fluid class="pa-0" text-xs-center>
+		<v-container fluid class="pa-0" text-xs-center v-if="rpanel">
 			<v-layout row>
 				<v-flex xs6>
 					<v-layout row>
@@ -117,7 +117,7 @@
 				</v-flex>
 			</v-layout>
 		</v-container>
-		<v-tabs-items v-model="tabs" :class="($store.state.options.dark === 1 ? 'black' : 'white')">
+		<v-tabs-items v-model="tabs" :class="($store.state.options.dark === 1 ? 'black' : 'white')" v-if="rpanel">
 				<v-tab-item value="refresh">
 					<!-- Refresh buttons -->
 					<Timers />
