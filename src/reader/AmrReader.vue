@@ -23,13 +23,13 @@
             :width="3"
             :value="nextchapProgress"
             color="red darken-2"
-            v-show="nextchapLoading && hover && !drawer"
+            v-if="nextchapLoading && hover && !drawer"
           >
             <v-btn small fab @click.stop="goNextChapter">
               <v-icon>mdi-chevron-right</v-icon>
             </v-btn>
           </v-progress-circular>
-          <v-btn slot="activator" small fab v-show="!nextchapLoading && hover && !drawer" @click.stop="goNextChapter">
+          <v-btn slot="activator" small fab v-if="!nextchapLoading && hover && !drawer" @click.stop="goNextChapter">
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
           <span>{{i18n("list_mg_act_next")}} {{nextchapLoading ? i18n("reader_loading", Math.floor(nextchapProgress)) : ""}}</span>
@@ -380,6 +380,7 @@
       mangaExists: null, /* Does manga exists in reading list */
       mangaInfos: null, /* specific manga information (layout state, read top, latest read chapter) */
 
+      nextchapStarted: false, /* Top telling if we already tried loading next chapter */
       nextchapLoading: false, /* Is next chapter prefetching */
       nextchapProgress: 0, /* Progress of next chap loading */
 
@@ -389,6 +390,8 @@
       darkreader: options.darkreader === 1, /* Top for using dark background */
       options: options, /* Make it reactive so update to local options object will be reflected in computed properties */
       fullscreen: window.fullScreen, /* fullscreen window state */
+
+      chaploaded: false, /* Top telling if all scans have been loaded */
     }),
     props: {
       images: Array /* List of scans to display, not necessarily pictures but urls that the implementation can handle to render a scan */
@@ -419,6 +422,7 @@
         this.$refs.wizdialog.temporary(obj.message, obj.duration)
       })
       EventBus.$on('chapter-loaded', (obj) => { // consult current manga
+        this.chaploaded = true
         // Preload next chapter
         if (options.prefetch == 1) {
             this.preloadNextChapter();
@@ -632,6 +636,13 @@
               return false
           }
         })
+        if (!this.nextchapStarted && this.chaploaded) {
+          // chapters list loading took longer than scans loading... o_O but possible...
+          // Preload next chapter
+          if (options.prefetch == 1) {
+              this.preloadNextChapter();
+          }
+        }
       },
       /** Change updating mode for this manga (1 : stop updating, 0 : check updates) */
       async markReadTop(nTop) {
@@ -689,6 +700,7 @@
       async preloadNextChapter() {
           if (!this.nextChapter) return
           util.debug("Loading next chapter...");
+          this.nextchapStarted = true
           // load an iframe with urlNext and get list of images
           let resp = await browser.runtime.sendMessage({
               action: "getNextChapterImages",
