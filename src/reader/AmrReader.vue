@@ -681,7 +681,7 @@
       /** Go to next chapter */
       goNextChapter() {
         if (this.lastChapter) { // display an alert because there is no next chapter
-            this.$refs.wizdialog.temporary(this.i18n("content_nav_last_chap"), {important: true})
+            this.$refs.wizdialog.temporary(this.i18n("content_nav_last_chap"), 1000, {important: true})
         }
         if (!this.nextChapter) return
         window.location.href = this.nextChapter
@@ -690,7 +690,7 @@
       goPreviousChapter() {
         if (this.selchap === null) return false
         if (this.firstChapter) { // display an alert because there is no previous chapter
-          this.$refs.wizdialog.temporary(this.i18n("reader_alert_firstchapter"), {important: true})
+          this.$refs.wizdialog.temporary(this.i18n("reader_alert_firstchapter"), 1000, {important: true})
           return
         }
         let cur = this.chapters.findIndex(el => el.url === this.selchap)

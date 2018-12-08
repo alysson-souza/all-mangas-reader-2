@@ -182,6 +182,7 @@ export default {
          * Click on the scans container, if single page mode, go to next or previous page
          */
         pageChange(e) {
+            util.clearSelection()
             if (this.fullchapter) return
 
             let cur = this.currentPage, n = cur
