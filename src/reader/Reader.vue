@@ -1,6 +1,6 @@
 <template>
     <v-container fluid text-xs-center pa-0 
-        :class="{'no-full-chapter': !fullchapter}">
+        :class="{'no-full-chapter': !fullchapter}" @click="pageChange" @dblclick="tryChapterChange" ref="scancontainer">
         <!-- Scans -->
         <table ref="scantable" class="amr-scan-container" border="0" cellspacing="0" cellpadding="0">
           <Page v-for="(scans, i) in pages" :key="i"
@@ -16,10 +16,33 @@
         </table>
         <!-- Pages navigator -->
         <v-hover>
-          <div class="amr-pages-nav" v-show="chaploaded" 
+          <div class="amr-pages-nav"
             :class="{display: hover, 'shrink-draw': drawer}"
             slot-scope="{ hover }">
-            <div class="amr-thumbs-scrollable" ref="thumbs-scrollable">
+            <!-- Current page state + previous next buttons -->
+            <v-layout row wrap class="amr-page-next-prev">
+                <v-flex xs12 my-2>
+                    <v-toolbar flat>
+                        <!-- Previous scan button -->
+                        <v-tooltip bottom>
+                            <v-btn slot="activator" icon v-show="!firstScan" @click.stop="goPreviousScan" class="btn-huge">
+                                <v-icon>mdi-chevron-left</v-icon>
+                            </v-btn>
+                            <span>{{i18n("reader_go_previous_scan")}}</span>
+                        </v-tooltip>
+                        <!-- Current scan infos -->
+                        <div class="title">{{i18n("reader_page_progression", currentPage + 1, pages.length, pages.length > 0 ? Math.floor((currentPage + 1) / pages.length * 100) : 0)}}</div>
+                        <v-tooltip bottom v-show="!lastScan">
+                            <!-- Next scan button -->
+                            <v-btn slot="activator" icon @click.stop="goNextScan" class="btn-huge">
+                                <v-icon>mdi-chevron-right</v-icon>
+                            </v-btn>
+                            <span>{{i18n("reader_go_next_scan")}}</span>
+                        </v-tooltip>
+                    </v-toolbar>
+                </v-flex>
+            </v-layout>
+            <div class="amr-thumbs-scrollable" ref="thumbs-scrollable" v-show="chaploaded" >
               <v-tooltip top v-for="(scans, i) in pages" :key="i">
                 <table slot="activator" class="amr-pages-page-cont"  
                   :class="{current: i === currentPage}" 
@@ -46,6 +69,7 @@ import Page from "./Page";
 import EventBus from "./EventBus";
 import { i18nmixin } from "../mixins/i18n-mixin"
 import { scroller } from 'vue-scrollto/src/scrollTo'
+import util from "./util";
 
 /** Create a custom scroller (alias of $scrollTo method) to enable multiple scrollings (thumbs scroll simultaneously page scroll) */
 const thumbsScroller = scroller()
@@ -174,9 +198,59 @@ export default {
                 return this.regroupablePages
             }
         }, 
+        firstScan() {
+            let cur = this.currentPage, n = cur
+            if (cur - 1 >= 0) n = cur - 1
+            return n === cur
+        },
+        lastScan() {
+            let cur = this.currentPage, n = cur
+            if (cur + 1 < this.pages.length) n = cur + 1
+            return n === cur
+        }
     },
     components: { Page },
     methods: {
+        /**
+         * Click on the scans container, if single page mode, go to next or previous page
+         */
+        pageChange(e) {
+            util.clearSelection()
+            if (this.fullchapter) return
+
+            if (e.clientX >= this.$refs.scancontainer.clientWidth / 2) {
+                if (this.lastScan) { // last scan, wait a little before trying to go next scan so if double click, it will be handled
+                    setTimeout(() => this.goNextScan(false, true), 250)
+                } else {
+                    this.goNextScan(false, true)
+                }
+            } else {
+                if (this.firstScan) { // first scan, wait a little before trying to go next scan so if double click, it will be handled
+                    setTimeout(() => this.goPreviousScan(false, true), 250)
+                } else {
+                    this.goPreviousScan(false, true)
+                }
+            }            
+        },
+        /** 
+         * Double click on the scans container : 
+         *  - if first scan and click left --> go to previous chapter
+         *  - if last scan and click right --> go to next chapter
+         */
+        tryChapterChange(e) {
+            util.clearSelection()
+            if (e.clientX >= this.$refs.scancontainer.clientWidth / 2) {
+                if (this.lastScan) {
+                    EventBus.$emit('go-next-chapter')
+                    return
+                }
+            } else {
+                if (this.firstScan) {
+                    EventBus.$emit('go-previous-chapter')
+                    return
+                }
+            }
+        },
         /** 
          * Determine if a page should be shown.
          * Always true if fullChapter mode, just current page if not
@@ -279,7 +353,7 @@ export default {
             }
         },
         /** Go to next scan */
-        goNextScan(doubletap) {
+        goNextScan(doubletap = false, clicked = false) {
             let cur = this.currentPage, n = cur
             if (cur + 1 < this.pages.length) n = cur + 1
 
@@ -292,7 +366,10 @@ export default {
                 // just change the visibility of current page and next page
                 if (cur === n) {
                     // this is latest scan of the chapter
-                    EventBus.$emit('temporary-dialog', { message: this.i18n("reader_alert_lastscan"), duration: 2000})
+                    EventBus.$emit('temporary-dialog', { 
+                        message: clicked ? this.i18n("reader_alert_lastscan_clicked") : 
+                                           this.i18n("reader_alert_lastscan"), 
+                        duration: 2000})
                     return
                 }
 
@@ -314,7 +391,7 @@ export default {
             }
         },
         /** Go to previous scan */
-        goPreviousScan(doubletap) {
+        goPreviousScan(doubletap = false, clicked = false) {
             let cur = this.currentPage, n = cur
             if (cur - 1 >= 0) n = cur - 1
 
@@ -327,7 +404,10 @@ export default {
                 // just change the visibility of current page and previous page
                 if (cur === n) {
                     // this is first scan of the chapter
-                    EventBus.$emit('temporary-dialog', { message: this.i18n("reader_alert_firstscan"), duration: 2000})
+                    EventBus.$emit('temporary-dialog', { 
+                        message: clicked ? this.i18n("reader_alert_firstscan_clicked") : 
+                                           this.i18n("reader_alert_firstscan"), 
+                        duration: 2000})
                     return
                 }
 
@@ -524,8 +604,20 @@ html {
   overflow: auto;
 }
 /** Pages navigator */
+.amr-page-next-prev {
+    max-width: 400px;
+    margin: 0px auto;
+}
+.amr-page-next-prev .v-toolbar {
+    opacity: 0.8;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+.amr-page-next-prev .title {
+    margin: 0px auto;
+}
 .amr-pages-nav {
-  height: 110px;
+  min-height: 110px;
   position: fixed;
   bottom: 0;
   width: 100%;

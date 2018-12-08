@@ -12,28 +12,26 @@
             </v-layout>
         </v-container>
         <!-- The Scan ! -->
-        <div class="amr-scan" v-show="!loading && !error" 
-            @click="showBookmarkButton = !showBookmarkButton" @dblclick.stop="toggleBookmark">
-            <!-- Top right triangle to show scan is bookmarked -->
-            <v-tooltip right v-if="bookmark && scanbooked" class="amr-triangle-tooltip-cont">
-                <div slot="activator" class="amr-triangle" @click="bookmarkScan" />
-                <span>{{note ? i18n("reader_bookmarked_scan_note", note) : i18n("reader_bookmarked_scan")}}</span>
-            </v-tooltip>
-            <!-- The scan itself... -->
-            <img ref="scan" />
-            <!-- The cover below the bookmark button -->
-            <div v-if="bookmark" class="amr-scan-cover" :class="{'covered': showBookmarkButton}"></div>
-            <!-- a div hover to bookmark the scan -->
-            <div class="amr-scan-toolbar" v-show="showBookmarkButton" v-if="bookmark">
-                <v-tooltip bottom>
-                    <v-btn slot="activator" large icon @click="bookmarkScan"
-                        :color="scanbooked ? 'yellow--text' : 'yellow--text text--lighten-4'">
-                        <v-icon>mdi-star</v-icon>
-                    </v-btn>
-                    <span>{{i18n("reader_bookmark_scan_help")}}</span>
+        <v-hover>
+            <div class="amr-scan" v-show="!loading && !error" slot-scope="{ hover }"> 
+                <!-- @dblclick="toggleBookmark" -->
+                <!-- Top right triangle to show scan is bookmarked -->
+                <v-tooltip right v-if="bookmark" class="amr-triangle-tooltip-cont">
+                    <div slot="activator" 
+                        class="amr-triangle" 
+                        @click="bookmarkScan" 
+                        :class="{'not-bookmarked-hover': hover, 'bookmarked': scanbooked}" />
+                    <span>
+                        {{scanbooked ? (
+                                note ? i18n("reader_bookmarked_scan_note", note) : 
+                                       i18n("reader_bookmarked_scan")
+                            ) : i18n("reader_bookmark_scan_help")}}
+                    </span>
                 </v-tooltip>
+                <!-- The scan itself... -->
+                <img ref="scan" />
             </div>
-        </div>
+        </v-hover>
         <!-- Error try to reload button -->
         <v-container fill-height text-xs-center v-if="error && !loading">
             <v-layout>
@@ -68,8 +66,6 @@ export default {
             loading: true, /* is currently loading */
             error: false, /* is the scan rendering error */
             doublepage: false, /* is the scan a double page */
-            showBookmarkButton: false, /* do we show the button to bookmark */
-            timeoutShowButton: -1, /* the timeout to hide button */
 
             bookstate: bookmarks.state, /* bookmarks state */
         }
@@ -107,15 +103,6 @@ export default {
     },
     watch: {
         src: 'loadScan', /* reload scan if src changes */
-        showBookmarkButton(nVal, oVal) {
-            if (nVal) {
-                this.timeoutShowButton = setTimeout(() => this.showBookmarkButton = false, 2000)
-            } else {
-                if (this.timeoutShowButton != -1) {
-                    clearTimeout(this.timeoutShowButton)
-                }
-            }
-        }
     },
     mounted() {
         if (this.autoLoad) { /* load scan if auto on mounted */
@@ -185,8 +172,9 @@ export default {
             util.clearSelection()
         },
         /** Open bookmarks dialog */
-        bookmarkScan() {
+        bookmarkScan(e) {
             EventBus.$emit('open-bookmarks', {scanUrl: this.src})
+            e.stopPropagation()
         }
     }
 }
@@ -211,33 +199,6 @@ td.scanContainer.xs12 {
     text-align: center;
     transition: all 0.2s;
 }
-.amr-scan-toolbar {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 60px;
-    height: 60px;
-    margin-top: -30px; /* Half the height */
-    margin-left: -30px; /* Half the width */
-    animation: amr-heartbeat 1s infinite;
-    z-index: 3;
-}
-.amr-scan-toolbar .v-icon {
-    font-size: 32px;
-}
-.amr-scan-cover.covered {
-    background-color: grey;
-    top: 50%;
-    left: 50%;
-    width: 120px;
-    height: 120px;
-    margin-top: -60px; /* Half the height */
-    margin-left: -60px; /* Half the width */
-    opacity: 0.8;
-    border-radius: 60px;
-    z-index: 2;
-    position: absolute;
-}
 .amr-triangle {
     border-left: 100px solid transparent;
     border-right: 100px solid #ffeb3b;
@@ -247,39 +208,17 @@ td.scanContainer.xs12 {
     position: absolute;
     right: 0px;
     z-index: 2;
-    opacity: 0.5;
+    opacity: 0;
     cursor: pointer;
+}
+.amr-triangle.not-bookmarked-hover {
+    opacity: 0.2;
+}
+.amr-triangle.bookmarked {
+    opacity: 0.5;
 }
 .amr-triangle-tooltip-cont {
     position: absolute;
     right: 0;
-}
-
-@keyframes amr-heartbeat
-{
-  0%
-  {
-    transform: scale( .9 );
-  }
-  20%
-  {
-    transform: scale( 1 );
-  }
-  40%
-  {
-    transform: scale( .9 );
-  }
-  60%
-  {
-    transform: scale( 1 );
-  }
-  80%
-  {
-    transform: scale( .9 );
-  }
-  100%
-  {
-    transform: scale( .9 );
-  }
 }
 </style>

@@ -23,13 +23,13 @@
             :width="3"
             :value="nextchapProgress"
             color="red darken-2"
-            v-show="nextchapLoading && hover && !drawer"
+            v-if="nextchapLoading && hover && !drawer"
           >
-            <v-btn small fab @click.stop="goNextChapter">
+            <v-btn small fab @click.stop="goNextChapter" class="btn-huge">
               <v-icon>mdi-chevron-right</v-icon>
             </v-btn>
           </v-progress-circular>
-          <v-btn slot="activator" small fab v-show="!nextchapLoading && hover && !drawer" @click.stop="goNextChapter">
+          <v-btn slot="activator" small fab v-if="!nextchapLoading && hover && !drawer" @click.stop="goNextChapter">
             <v-icon>mdi-chevron-right</v-icon>
           </v-btn>
           <span>{{i18n("list_mg_act_next")}} {{nextchapLoading ? i18n("reader_loading", Math.floor(nextchapProgress)) : ""}}</span>
@@ -65,11 +65,13 @@
             <div class="headline">
               <v-tooltip bottom>
                 <a slot="activator" :href="mirrorDesc.home" v-if="mirrorDesc !== null" target="_blank">
+                  <!-- Mirror icon -->
                   <img :src="mirrorDesc.mirrorIcon" ma-1 />
                 </a>
                 <span>{{i18n("reader_click_go_mirror")}}</span>
               </v-tooltip>
               <v-tooltip bottom>
+                <!-- Manga name -->
                 <a slot="activator" :href="manga.currentMangaURL" target="_blank">{{manga.name}}</a>
                 <span>{{i18n("reader_click_go_manga")}}</span>
               </v-tooltip>
@@ -83,7 +85,7 @@
               <v-toolbar flat class="pa-0" my-1>
                 <!-- Previous chapter button -->
                 <v-tooltip bottom>
-                  <v-btn slot="activator" icon v-show="!firstChapter" @click.stop="goPreviousChapter">
+                  <v-btn slot="activator" icon v-show="!firstChapter" @click.stop="goPreviousChapter" class="btn-huge">
                     <v-icon>mdi-chevron-left</v-icon>
                   </v-btn>
                   <span>{{i18n("list_mg_act_prev")}}</span>
@@ -102,7 +104,7 @@
                 <v-spacer></v-spacer>
                 <v-tooltip bottom v-show="!lastChapter">
                   <!-- Next chapter button -->
-                  <v-btn slot="activator" icon @click.stop="goNextChapter">
+                  <v-btn slot="activator" icon @click.stop="goNextChapter" class="btn-huge">
                     <v-icon>mdi-chevron-right</v-icon>
                   </v-btn>
                   <span>{{i18n("list_mg_act_next")}} {{nextchapLoading ? i18n("reader_loading", Math.floor(nextchapProgress)) : ""}}</span>
@@ -228,7 +230,7 @@
           <v-layout row wrap>
             <v-flex xs12>
               <!-- Display book checkbox -->
-              <v-switch v-model="book" :label="i18n('option_read_book')"></v-switch>
+              <v-switch v-model="book" :label="i18n('option_read_book')" hide-details class="pb-1"></v-switch>
             </v-flex>
             <!-- Reading direction -->
             <v-flex xs12 v-show="book" text-xs-center>
@@ -251,7 +253,7 @@
             </v-flex>
             <v-flex xs12>
               <!-- Display full chapter checkbox -->
-              <v-switch v-model="fullchapter" :label="i18n('option_read_fullchapter')"></v-switch>
+              <v-switch v-model="fullchapter" :label="i18n('option_read_fullchapter')" hide-details class="pb-1"></v-switch>
             </v-flex>
             <!-- Resize mode -->
             <v-flex xs12 text-xs-center>
@@ -328,6 +330,7 @@
         </v-card-title>
       </v-card>
     </v-navigation-drawer>
+    <SocialBar v-show="drawer" />
     <!-- End AMR Reader Side bar -->
     <v-content>
       <Reader ref="reader"
@@ -359,7 +362,8 @@
   import ShortcutsPopup from "./ShortcutsPopup";
   import bookmarks from "./bookmarks";
   import EventBus from "./EventBus";
-
+  import SocialBar from "./SocialBar";
+  
   /** Possible values for resize (readable), the stored value is the corresponding index */
   const resize_values = ['width', 'height', 'container', 'none']
 
@@ -380,6 +384,7 @@
       mangaExists: null, /* Does manga exists in reading list */
       mangaInfos: null, /* specific manga information (layout state, read top, latest read chapter) */
 
+      nextchapStarted: false, /* Top telling if we already tried loading next chapter */
       nextchapLoading: false, /* Is next chapter prefetching */
       nextchapProgress: 0, /* Progress of next chap loading */
 
@@ -389,6 +394,8 @@
       darkreader: options.darkreader === 1, /* Top for using dark background */
       options: options, /* Make it reactive so update to local options object will be reflected in computed properties */
       fullscreen: window.fullScreen, /* fullscreen window state */
+
+      chaploaded: false, /* Top telling if all scans have been loaded */
     }),
     props: {
       images: Array /* List of scans to display, not necessarily pictures but urls that the implementation can handle to render a scan */
@@ -419,6 +426,7 @@
         this.$refs.wizdialog.temporary(obj.message, obj.duration)
       })
       EventBus.$on('chapter-loaded', (obj) => { // consult current manga
+        this.chaploaded = true
         // Preload next chapter
         if (options.prefetch == 1) {
             this.preloadNextChapter();
@@ -536,7 +544,7 @@
         return false
       },
     },
-    components: { Reader, Scan, WizDialog, BookmarkPopup, ShortcutsPopup },
+    components: { Reader, Scan, WizDialog, BookmarkPopup, ShortcutsPopup, SocialBar },
     methods: {
       /** Return drawer background color taking a light into account and the dark or not back */
       backcolor(light = 0) {
@@ -565,6 +573,7 @@
         let specific = await browser.runtime.sendMessage({ 
             action: "mangaInfos", 
             url: pageData.currentMangaURL, 
+            mirror: mirrorImpl.get().mirrorName,
             language: pageData.language 
         });
         // Save returned manga informations in state
@@ -632,6 +641,13 @@
               return false
           }
         })
+        if (!this.nextchapStarted && this.chaploaded) {
+          // chapters list loading took longer than scans loading... o_O but possible...
+          // Preload next chapter
+          if (options.prefetch == 1) {
+              this.preloadNextChapter();
+          }
+        }
       },
       /** Change updating mode for this manga (1 : stop updating, 0 : check updates) */
       async markReadTop(nTop) {
@@ -670,7 +686,7 @@
       /** Go to next chapter */
       goNextChapter() {
         if (this.lastChapter) { // display an alert because there is no next chapter
-            this.$refs.wizdialog.temporary(this.i18n("content_nav_last_chap"))
+            this.$refs.wizdialog.temporary(this.i18n("content_nav_last_chap"), 1000, {important: true})
         }
         if (!this.nextChapter) return
         window.location.href = this.nextChapter
@@ -679,7 +695,7 @@
       goPreviousChapter() {
         if (this.selchap === null) return false
         if (this.firstChapter) { // display an alert because there is no previous chapter
-          this.$refs.wizdialog.temporary(this.i18n("reader_alert_firstchapter"))
+          this.$refs.wizdialog.temporary(this.i18n("reader_alert_firstchapter"), 1000, {important: true})
           return
         }
         let cur = this.chapters.findIndex(el => el.url === this.selchap)
@@ -689,6 +705,7 @@
       async preloadNextChapter() {
           if (!this.nextChapter) return
           util.debug("Loading next chapter...");
+          this.nextchapStarted = true
           // load an iframe with urlNext and get list of images
           let resp = await browser.runtime.sendMessage({
               action: "getNextChapterImages",
@@ -1075,6 +1092,7 @@
 /** Drawer content below menu button */
 .amr-drawer {
   padding-top:36px;
+  padding-bottom:64px;
 }
 /** Center manga title */
 .amr-manga-title div {
@@ -1096,6 +1114,10 @@
 }
 .theme--dark .amr-manga-title a {
   color: white;
+}
+/** button font size bigger */
+.btn-huge .v-icon {
+  font-size: 250%!important;
 }
 /** To prevent select to be too small due to large padding */
 .v-toolbar.pa-0 .v-toolbar__content {

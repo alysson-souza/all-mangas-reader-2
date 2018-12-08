@@ -1085,7 +1085,7 @@
     "description": "Text in the dropdown below bookmarks button if no scans are bookmarked in current chapter"
   },
   "reader_bookmark_scan_help": {
-    "message": "Cliquer pour créer un signet pour ce scan et ajouter une note. Pour créer un signet rapidement, double cliquez dessus.",
+    "message": "Cliquer pour créer un signet pour ce scan et ajouter une note.",
     "description": "Tooltip on the star button displayed when clicking on a scan"
   },
   "reader_delete_manga": {
@@ -1140,9 +1140,17 @@
     "message": "C'est le dernier scan de ce chapitre. Appuyez deux fois rapidement sur la flèche droite pour passer au chapitre suivant !",
     "description": "Alert displayed if trying to go to next scan and last scan"
   },
+  "reader_alert_lastscan_clicked": {
+    "message": "C'est le dernier scan de ce chapitre. Double cliquez sur la partie droite de l'écran pour passer au chapitre suivant !",
+    "description": "Alert displayed if trying to go to next scan and last scan while clicking"
+  },
   "reader_alert_firstscan": {
     "message": "C'est le premier scan de ce chapitre. Appuyez deux fois rapidement sur la flèche gauche pour passer au chapitre précédent !",
     "description": "Alert displayed if trying to go to previous scan and first scan"
+  },
+  "reader_alert_firstscan_clicked": {
+    "message": "C'est le premier scan de ce chapitre. Double cliquez sur la partie gauche de l'écran pour passer au chapitre précédent !",
+    "description": "Alert displayed if trying to go to previous scan and first scan while clicking"
   },
   "reader_alert_firstchapter": {
     "message": "C'est le premier chapitre publié.",
@@ -1157,7 +1165,7 @@
     "description": "Description of the popup displayed first time reader is shown"
   },
   "reader_firsttime_but_longstrip": {
-    "message": "Je veux voir tout le chapitre",
+    "message": "Voir tout le chapitre",
     "description": "First time, a popup is shown with two choices, button to choose a long strip"
   },
   "reader_firsttime_but_single": {
@@ -1169,7 +1177,7 @@
     "description": "Title of the tips popup"
   },
   "reader_tips_1": {
-    "message": "Pour naviguer facilement dans les pages du chapitre, placez votre souris en bas de l'écran, **des aperçus de tous les scans du chapitre apparaissent !**\n Cliquez sur la page souhaitée et profitez !",
+    "message": "Pour naviguer facilement dans les pages du chapitre, placez votre souris en bas de l'écran, **des aperçus de tous les scans du chapitre apparaissent !**\n Cliquez sur la page souhaitée ou utilisez le navigateur de pages pour voir la page précédente / suivante et profitez !",
     "description": "Tips popup, tip n°1"
   },
   "reader_tips_2": {
@@ -1189,7 +1197,7 @@
     "description": "Tips popup, tip n°5"
   },
   "reader_tips_6": {
-    "message": "Ce scan est tellement cool que vous souhaitez pouvoir le retrouver rapidemment ? Double cliquez dessus, il sera **ajouté à vos signets !**\n Un scan ajouté aux signets a un bandeau jaune en haut à droite. Cliquez dessus pour éditer une note associée à ce scan. \n Pour créer un signet, vous pouvez également cliquer sur un scan puis cliquer sur l'étoile qui apparait. \n Vous pouvez voir tous les scans d'un chapitre en cliquant sur l'étoile dans le menu. Cliquez sur un scan pour le voir dans le chapitre !\nPour consulter tous vos signets, allez dans la page des signets de All Mangas Reader (depuis la popup, cliquer sur les points verticaux puis sur l'étoile)",
+    "message": "Ce scan est tellement cool que vous souhaitez pouvoir le retrouver rapidemment ? Cliquez sur le bandeau jaune pale en haut à droite et sauvegardez, le scan est **ajouté à vos signets !**\n Un scan ajouté aux signets a un bandeau jaune en haut à droite. Cliquez dessus pour ajouter / éditer une note associée à ce scan. \n Vous pouvez voir tous les scans d'un chapitre en cliquant sur l'étoile dans le menu. Cliquez sur un scan pour le voir dans le chapitre !\nPour consulter tous vos signets, allez dans la page des signets de All Mangas Reader (depuis la popup, cliquer sur les points verticaux puis sur l'étoile)",
     "description": "Tips popup, tip n°6"
   }, 
   "reader_tips_7": {
@@ -1403,5 +1411,33 @@
   "reader_shortcuts_section_actions": {
     "message": "Effectuer des actions sur le manga",
     "description": "Title of the shortcuts actions section"
+  },
+  "reader_go_previous_scan": {
+    "message": "Voir le scan précédent",
+    "description": "Tooltip on the go previous scan button"
+  },
+  "reader_go_next_scan": {
+    "message": "Voir le scan suivant",
+    "description": "Tooltip on the go next scan button"
+  },
+  "reader_page_progression": {
+    "message": "Page $1 / $2 - $3%",
+    "description": "Display progression of reading in the chapter"
+  },
+  "reader_social_patreon": {
+    "message": "Aidez AMR ! Devenez un patron",
+    "description": "Tooltip of the patreon button"
+  },
+  "reader_social_facebook": {
+    "message": "All Mangas Reader sur Facebook",
+    "description": "Tooltip of the facebook button"
+  },
+  "reader_social_twitter": {
+    "message": "All Mangas Reader sur Twitter",
+    "description": "Tooltip of the twitter button"
+  },
+  "reader_social_discord": {
+    "message": "Rejoignez notre communauté sur Discord ! C'est l'endroit idéal si vous avez une question sur AMR.",
+    "description": "Tooltip of the discord button"
   }
 }

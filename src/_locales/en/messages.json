@@ -1085,7 +1085,7 @@
     "description": "Text in the dropdown below bookmarks button if no scans are bookmarked in current chapter"
   },
   "reader_bookmark_scan_help": {
-    "message": "Click to bookmark this scan and add note associated to the bookmark. To quickly bookmark a scan, double click on it.",
+    "message": "Click to bookmark this scan and add note associated to the bookmark.",
     "description": "Tooltip on the star button displayed when clicking on a scan"
   },
   "reader_delete_manga": {
@@ -1140,9 +1140,17 @@
     "message": "This is the latest scan of the chapter. Double tap right key to read next chapter !",
     "description": "Alert displayed if trying to go to next scan and last scan"
   },
+  "reader_alert_lastscan_clicked": {
+    "message": "This is the latest scan of the chapter. Double click on the right part of the screen to read next chapter !",
+    "description": "Alert displayed if trying to go to next scan and last scan while clicking"
+  },
   "reader_alert_firstscan": {
     "message": "This is the first scan of the chapter. Double tap left key to read previous chapter !",
     "description": "Alert displayed if trying to go to previous scan and first scan"
+  },
+  "reader_alert_firstscan_clicked": {
+    "message": "This is the first scan of the chapter. Double click on the left part of the screen to read previous chapter !",
+    "description": "Alert displayed if trying to go to previous scan and first scan while clicking"
   },
   "reader_alert_firstchapter": {
     "message": "This is the first published chapter.",
@@ -1169,7 +1177,7 @@
     "description": "Title of the tips popup"
   },
   "reader_tips_1": {
-    "message": "To navigate easily through chapter's pages, put your mouse at the bottom of the screen, **thumbnails of the whole chapters appear !**\n Click on the page you want to see and enjoy !",
+    "message": "To navigate easily through chapter's pages, put your mouse at the bottom of the screen, **thumbnails of the whole chapters appear !**\n Click on the page you want to see or use the page navigator to view previous / next pages and enjoy !",
     "description": "Tips popup, tip n°1"
   },
   "reader_tips_2": {
@@ -1189,7 +1197,7 @@
     "description": "Tips popup, tip n°5"
   },
   "reader_tips_6": {
-    "message": "This scan is so cool that you want a way to find it back quickly ? Double click on it, it will be **added to your bookmarks !**\n A bookmarked scan has a yellow banner in the top right hand corner. Click on it to add a note linked to the scan. \n You can also click on a scan and then click on the appearing star to bookmark a scan. \n You can view all the bookmarked scans in a chapter by clicking on the star in the side menu. Click on a scan and access it directly in the chapter !\nTo consult all your bookmarks, go to All Mangas Reader's bookmarks page (from the popup click on vertical dots and then click on the star)",
+    "message": "This scan is so cool that you want a way to find it back quickly ? Click on the pale yellow banner in the top right hand corner and save, it will be **added to your bookmarks !**\n A bookmarked scan has a yellow banner in the top right hand corner. Click on it to add / edit a note linked to the scan. \n You can view all the bookmarked scans in a chapter by clicking on the star in the side menu. Click on a scan and access it directly in the chapter !\nTo consult all your bookmarks, go to All Mangas Reader's bookmarks page (from the popup click on vertical dots and then click on the star)",
     "description": "Tips popup, tip n°6"
   }, 
   "reader_tips_7": {
@@ -1403,6 +1411,37 @@
   "reader_shortcuts_section_actions": {
     "message": "Take actions on the manga",
     "description": "Title of the shortcuts actions section"
+  },
+  "reader_go_previous_scan": {
+    "message": "View previous scan",
+    "description": "Tooltip on the go previous scan button"
+  },
+  "reader_go_next_scan": {
+    "message": "View next scan",
+    "description": "Tooltip on the go next scan button"
+  },
+  "reader_page_progression": {
+    "message": "Page $1 / $2 - $3%",
+    "description": "Display progression of reading in the chapter"
+  },
+  "reader_social_all": {
+    "message": "All Mangas Reader on social networks",
+    "description": "Tooltip of the social button"
+  },
+  "reader_social_patreon": {
+    "message": "Help AMR ! Become a Patreon",
+    "description": "Tooltip of the patreon button"
+  },
+  "reader_social_facebook": {
+    "message": "All Mangas Reader on Facebook",
+    "description": "Tooltip of the facebook button"
+  },
+  "reader_social_twitter": {
+    "message": "All Mangas Reader on Twitter",
+    "description": "Tooltip of the twitter button"
+  },
+  "reader_social_discord": {
+    "message": "Join our community on Discord ! It's the right place for any question about AMR.",
+    "description": "Tooltip of the discord button"
   }
-  
 }

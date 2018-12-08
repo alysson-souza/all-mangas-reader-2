@@ -156,7 +156,7 @@
       /** Open a dialog, no options buttons --> alert */
       open(title, message, options) {
         if (this.dialog) {
-          if (this.options.important) return new Promise.resolve() // do not close current if important
+          if (this.options.important) return Promise.resolve() // do not close current if important
           this.cancel()
         }
         this.dialog = true
@@ -169,8 +169,10 @@
         })
       },
       /** Open a temporary dialog */
-      temporary(message, duration = 1000) {
-        let options = Object.assign(Object.assign({}, default_options), {center: true,buttons: []})
+      temporary(message, duration = 1000, options = {}) {
+        options = Object.assign(
+          Object.assign(Object.assign({}, default_options), options), 
+          {center: true, buttons: []})
         setTimeout(() => this.agree(), duration)
         return this.open(undefined, message, options)
       },
