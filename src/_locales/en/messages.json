@@ -1411,6 +1411,17 @@
   "reader_shortcuts_section_actions": {
     "message": "Take actions on the manga",
     "description": "Title of the shortcuts actions section"
+  },
+  "reader_go_previous_scan": {
+    "message": "View previous scan",
+    "description": "Tooltip on the go previous scan button"
+  },
+  "reader_go_next_scan": {
+    "message": "View next scan",
+    "description": "Tooltip on the go next scan button"
+  },
+  "reader_page_progression": {
+    "message": "Page $1 / $2 - $3%",
+    "description": "Display progression of reading in the chapter"
   }
-  
 }
