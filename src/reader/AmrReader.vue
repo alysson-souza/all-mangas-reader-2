@@ -1115,6 +1115,10 @@
 .theme--dark .amr-manga-title a {
   color: white;
 }
+/** Break work in chapter title */
+.amr-drawer v-select {
+  word-break: break-word;
+}
 /** button font size bigger */
 .btn-huge .v-icon {
   font-size: 250%!important;
