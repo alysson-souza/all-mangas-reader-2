@@ -210,6 +210,7 @@ td.scanContainer.xs12 {
     z-index: 2;
     opacity: 0;
     cursor: pointer;
+    transition: all 0.5s;
 }
 .amr-triangle.not-bookmarked-hover {
     opacity: 0.2;
