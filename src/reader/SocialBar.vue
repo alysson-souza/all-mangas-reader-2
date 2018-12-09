@@ -46,7 +46,7 @@ export default {
                 /*{ icon: "mdi-patreon", tooltip: "reader_social_patreon", 
                     url: "", color: "orange"},*/
                 { icon: "mdi-discord", tooltip: "reader_social_discord", 
-                    url: "https://discord.gg/bdzk9hR", color: "purple" }
+                    url: "https://discord.gg/bdzk9hR", color: "indigo--text text--lighten-2" }
             ],
             social_shared: [
                 { icon: "mdi-facebook", tooltip: "reader_social_facebook", 

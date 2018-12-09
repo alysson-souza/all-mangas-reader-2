@@ -57,6 +57,7 @@
       fixed
       app
       :class="'amr-drawer ' + backcolor()"
+      ref="navdrawer"
     >
       <v-card :color="backcolor()" class="white--text">
         <!-- Manga Title -->
@@ -82,7 +83,7 @@
         <v-card-actions>
           <v-layout row wrap>
             <v-flex xs12>
-              <v-toolbar flat class="pa-0" my-1>
+              <v-toolbar flat class="pa-0 amr-chapters-toolbar" my-1>
                 <!-- Previous chapter button -->
                 <v-tooltip bottom>
                   <v-btn slot="activator" icon v-show="!firstChapter" @click.stop="goPreviousChapter" class="btn-huge">
@@ -96,10 +97,11 @@
                   :items="chapters"
                   item-text="title"
                   item-value="url"
-                  menu-props="auto"
+                  :menu-props="{auto: true}"
                   solo dense single-line hide-details class="amr-chapter-select"
                   loading="chapters.length === 0 ? 'primary' : false"
                   @change="goToChapter"
+                  attach='.amr-chapter-select'
                 ></v-select>
                 <v-spacer></v-spacer>
                 <v-tooltip bottom v-show="!lastChapter">
@@ -578,6 +580,7 @@
         });
         // Save returned manga informations in state
         this.mangaInfos = specific
+        if (specific) this.mangaExists = true
         // Compute current layout
         if (specific && specific.layout) { // check specific layout for the current manga
             let l = specific.layout;
@@ -1115,6 +1118,11 @@
 .theme--dark .amr-manga-title a {
   color: white;
 }
+/** Break work in chapter title */
+.amr-drawer .v-select {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
 /** button font size bigger */
 .btn-huge .v-icon {
   font-size: 250%!important;
@@ -1122,6 +1130,10 @@
 /** To prevent select to be too small due to large padding */
 .v-toolbar.pa-0 .v-toolbar__content {
   padding: 0px 5px;
+}
+/** So the dropdown can hover the rest... */
+.amr-chapters-toolbar {
+  z-index: 8;
 }
 .opacity-full {
   opacity: 1;
