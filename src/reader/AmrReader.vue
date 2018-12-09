@@ -580,6 +580,7 @@
         });
         // Save returned manga informations in state
         this.mangaInfos = specific
+        if (specific) this.mangaExists = true
         // Compute current layout
         if (specific && specific.layout) { // check specific layout for the current manga
             let l = specific.layout;
