@@ -6,10 +6,8 @@
           <Page v-for="(scans, i) in pages" :key="i"
               :index="i" 
               :scans="scans" 
-              @loaded-scan="loadedScan" 
               :direction="direction"
               :resize="resize"
-              :autoLoad="options.imgorder === 0"
               ref="page" 
               v-show="isVisible(i)"
               @become-current="becomeCurrent" />
@@ -42,7 +40,7 @@
                     </v-toolbar>
                 </v-flex>
             </v-layout>
-            <div class="amr-thumbs-scrollable" ref="thumbs-scrollable" v-show="chaploaded" >
+            <div class="amr-thumbs-scrollable" ref="thumbs-scrollable" v-show="scansState.loaded" >
               <v-tooltip top v-for="(scans, i) in pages" :key="i">
                 <table slot="activator" class="amr-pages-page-cont"  
                   :class="{current: i === currentPage}" 
@@ -65,6 +63,7 @@
 <script>
 import options from '../content/options';
 
+import scansProvider from "./ScansProvider";
 import Page from "./Page";
 import EventBus from "./EventBus";
 import { i18nmixin } from "../mixins/i18n-mixin"
@@ -79,7 +78,6 @@ export default {
     mixins: [i18nmixin],
     data() {
         return {
-            chaploaded: false, /* True if all scans have been loaded */
             regroupablePages: [], /* How to regroup pages to make a book */
             visible: [0], /* List of indexes of visible pages, used when not fullchapter, one one in list except for transitions */
             currentPage: 0, /* Current displayed page */
@@ -94,10 +92,11 @@ export default {
             scrollRatio: 0, /* Keep the scroll ratio (scrollY / total) to restore position when resizing display zone */
 
             options: options, /* Make it reactive so update to local options object will be reflected in computed properties */
+
+            scansState: scansProvider.state, /** the provider of scan images */
         }
     },
     props: {
-        images: Array, /* List of scans to display, not necessarily pictures but urls that the implementation can handle to render a scan */
         direction: String, /* Reading from left to right or right to left */
         book: Boolean, /* Do we display side by side pages */
         resize: String, /* Mode of resize : width, height, container */
@@ -115,6 +114,10 @@ export default {
         window.addEventListener('resize', () => {
             this.keepScrollPos(10)
         });
+        /** Register loaded scans events */
+        EventBus.$on("loaded-scan", this.updateProgress)
+        /** Register loaded scans events */
+        EventBus.$on("chapter-loaded", this.loadedChapter)
     },
     watch: {
         /** Adjust the scroll in the thumbnails bar to have at most the currentPage centered and at least visible */
@@ -149,7 +152,7 @@ export default {
             if (nVal.length === oVal.length) return // pages disn't change that much :)
             let furl // url of the first viewable scan on currentpage
             if (nVal.length < oVal.length) {
-                furl = this.images[this.currentPage] // retrieve it from images cause old book value was false, so one page per image
+                furl = this.scansState.scans[this.currentPage].url // retrieve it from images cause old book value was false, so one page per image
             } else {
                 if (this.regroupablePages[this.currentPage] && this.regroupablePages[this.currentPage].length > 0) {
                     furl = this.regroupablePages[this.currentPage][0].src // retrieve it from rearrange pages cause old book value was true 
@@ -183,17 +186,13 @@ export default {
     mounted() {
         /* Check if page can scroll vertically */
         this.checkResizeOverflow()
-        /* Load scans in order if option is set */
-        if (options.imgorder === 1) {
-            this.loadScansInOrder()
-        }
     },
     computed: {
         /* Current displayed pages */
         pages() {
             /* First, list of pages is single scan pages with all the chapter's scans */
-            if (!this.chaploaded || !this.book) {
-                return this.images.map((img, i) => [{src: img, name: '' + (i + 1)}])
+            if (!this.scansState.loaded || !this.book) {
+                return this.scansState.scans.map((sc, i) => [{src: sc.url, name: '' + (i + 1)}])
             } else {
                 return this.regroupablePages
             }
@@ -258,74 +257,60 @@ export default {
         isVisible(page_index) {
             return this.fullchapter || this.visible.includes(page_index)
         },
-        /** Load scans in their natural order (slower) */
-        async loadScansInOrder() {
-            for (let i = 0; i < this.$refs.page.length; i++) {
-                await this.$refs.page[i].loadScan()
-            }
-        },
-        /** Called when a scan has been loaded */
-        loadedScan() {
-            // Count how many scans have been loaded
-            let nbloaded = 0
-            for (let sc of this.$refs.page) {
-                if (!sc.isSoloLoading()) nbloaded++
-            }
-            
+        /** Called when a scan has been loaded, update progression */
+        updateProgress() {
             // display progression
-            if (options.load == 1 && !this.chaploaded) {
-                if (this.images.length !== 0 && nbloaded !== this.images.length) {
-                    document.title = Math.floor(nbloaded / this.images.length * 100) + " % - " + this.originalTitle
+            if (options.load == 1 && !this.scansState.loaded) {
+                if (this.scansState.progress < 100) {
+                    document.title = this.scansState.progress + " % - " + this.originalTitle
                 } else {
                     document.title = this.originalTitle
                 }
             }
+        }, 
 
+        /** Called when all scans from chapter have been loaded */
+        loadedChapter() {
             // All scans loaded. Build the book (regroup scans that can be read side by side, depending on double page scans (width > height) position)
-            if (nbloaded === this.images.length && !this.chaploaded) {
-                let scans = []
-                let lastfull = 0
-                for (let i = 0; i < this.images.length; i++) {
-                    let full = false
-                    if (this.$refs.page[i].isSoloDoublePage()) {
-                        full = true
-                        if ((i - lastfull) % 2 !== 0) {
-                            // Change display of scan which is after the previous double page scan
-                            scans[lastfull].full = true
-                        }
-                        lastfull = i + 1
+            let scans = []
+            let lastfull = 0, nbscans = this.scansState.scans.length
+            for (let i = 0; i < nbscans; i++) {
+                let full = false
+                if (this.scansState.scans[i].doublepage) {
+                    full = true
+                    if ((i - lastfull) % 2 !== 0) {
+                        // Change display of scan which is after the previous double page scan
+                        scans[lastfull].full = true
                     }
-                    scans.push({url: this.images[i], full: full})
+                    lastfull = i + 1
                 }
-                if ((this.images.length - 1 - lastfull - 1) % 2 !== 0) {
-                    // Set last page full width because alone
-                    scans[this.images.length - 1].full = true
-                }
-                // Calculates how to regroup pages
-                let curPage = 0
-                let regrouped = []
-                let curScan = 0;
-                for (let sc of scans) {
-                    let toadd = {src: sc.url, name: '' + (curScan + 1)}
-                    if (!regrouped[curPage]) {
-                        regrouped[curPage] = [toadd]
-                    } else {
-                        regrouped[curPage].push(toadd)
-                    }
-                    if (sc.full || regrouped[curPage].length === 2) {
-                        curPage++
-                    }
-                    curScan++
-                }
-                this.regroupablePages.length = 0;
-                this.regroupablePages.push(...regrouped)
-
-                // Set loaded top
-                this.chaploaded = true
-                // Reset document title
-                document.title = this.originalTitle
-                EventBus.$emit("chapter-loaded")
+                scans.push({url: this.scansState.scans[i].url, full: full})
             }
+            if ((nbscans - 1 - lastfull - 1) % 2 !== 0) {
+                // Set last page full width because alone
+                scans[nbscans - 1].full = true
+            }
+            // Calculates how to regroup pages
+            let curPage = 0
+            let regrouped = []
+            let curScan = 0;
+            for (let sc of scans) {
+                let toadd = {src: sc.url, name: '' + (curScan + 1)}
+                if (!regrouped[curPage]) {
+                    regrouped[curPage] = [toadd]
+                } else {
+                    regrouped[curPage].push(toadd)
+                }
+                if (sc.full || regrouped[curPage].length === 2) {
+                    curPage++
+                }
+                curScan++
+            }
+            this.regroupablePages.length = 0;
+            this.regroupablePages.push(...regrouped)
+
+            // Reset document title
+            document.title = this.originalTitle
         },
         /** Return a string containing the scan indexes (1-based) contained in the page of index page_index in the right order (using direction ltr or rtl) */
         displayPageScansIndexes(page_index) {

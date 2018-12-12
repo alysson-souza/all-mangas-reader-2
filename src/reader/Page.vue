@@ -5,10 +5,7 @@
             :src="scans[0].src" 
             :name="scans[0].name" 
             :resize="resize" 
-            @loaded-scan="loadedScan" 
-            ref="solo"  
             v-if="scans.length === 1" 
-            :autoLoad="autoLoad" 
             :bookmark="bookmark" />
 
         <!-- Displayed when two scans in page -->
@@ -16,7 +13,6 @@
             :src="scans[direction === 'ltr' ? 0 : 1].src" 
             :name="scans[direction === 'ltr' ? 0 : 1].name" 
             :resize="resize" 
-            @loaded-scan="loadedScan" 
             class="amr-left-page" 
             v-if="scans.length === 2" 
             :bookmark="bookmark" />
@@ -24,7 +20,6 @@
             :src="scans[direction === 'ltr' ? 1 : 0].src" 
             :name="scans[direction === 'ltr' ? 1 : 0].name" 
             :resize="resize" 
-            @loaded-scan="loadedScan" 
             class="amr-right-page" 
             v-if="scans.length === 2"  
             :bookmark="bookmark" />
@@ -75,18 +70,6 @@ export default {
         this.$nextTick(() => this.checkInViewPort())
     },
     methods: {
-        /* Emit an event to main app when a scan has been loaded */
-        loadedScan() {
-            this.$emit("loaded-scan")
-        },
-        /* Return true if the only scan in the page is double */
-        isSoloDoublePage() {
-            return this.$refs.solo && this.$refs.solo.doublepage
-        },
-        /* Return true if the only scan in the page is loading */
-        isSoloLoading() {
-            return this.$refs.solo && this.$refs.solo.loading
-        },
         /* Check which part of the page is in viewport (in height) */
         checkInViewPort() {
             let el = this.$el
@@ -119,10 +102,6 @@ export default {
             if (this.visibleProportion > window.innerHeight / 2) {
                 this.$emit("become-current", {index: this.index})
             }
-        },
-        /** Loads the solo scan in case autoLoad is not set */
-        loadScan() {
-            return this.$refs.solo.loadScan()
         }
     }
 }

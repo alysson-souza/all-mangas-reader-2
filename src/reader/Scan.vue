@@ -11,9 +11,9 @@
                 </v-flex>
             </v-layout>
         </v-container>
-        <!-- The Scan ! -->
+        <!-- The Scan container ! -->
         <v-hover>
-            <div class="amr-scan" v-show="!loading && !error" slot-scope="{ hover }"> 
+            <div ref="scanDiv" class="amr-scan" v-show="!loading && !error" slot-scope="{ hover }"> 
                 <!-- @dblclick="toggleBookmark" -->
                 <!-- Top right triangle to show scan is bookmarked -->
                 <v-tooltip right v-if="bookmark" class="amr-triangle-tooltip-cont">
@@ -28,8 +28,6 @@
                             ) : i18n("reader_bookmark_scan_help")}}
                     </span>
                 </v-tooltip>
-                <!-- The scan itself... -->
-                <img ref="scan" />
             </div>
         </v-hover>
         <!-- Error try to reload button -->
@@ -37,7 +35,7 @@
             <v-layout>
                 <v-flex xs12>
                     <v-tooltip bottom>
-                        <v-btn slot="activator" icon large @click="loadScan" color="primary">
+                        <v-btn slot="activator" icon large @click="reloadScan" color="primary">
                             <v-icon>mdi-image-broken</v-icon>
                         </v-btn>
                         <span>Click to try reloading scan</span>
@@ -55,6 +53,7 @@ import pageData from '../content/pagedata';
 import options from '../content/options';
 
 import bookmarks from "./bookmarks";
+import scansProvider from "./ScansProvider";
 import util from "./util";
 import EventBus from "./EventBus";
 import {i18nmixin} from "../mixins/i18n-mixin";
@@ -63,11 +62,10 @@ export default {
     mixins: [i18nmixin],
     data() {
         return {
-            loading: true, /* is currently loading */
-            error: false, /* is the scan rendering error */
-            doublepage: false, /* is the scan a double page */
-
             bookstate: bookmarks.state, /* bookmarks state */
+            scansProvider: scansProvider.state, /* scans Provider, where the HTMLImage is loaded */
+
+            lastLoadedUrl: null, /* Last url of the scan image loaded in DOM */
         }
     },
     props: {
@@ -88,6 +86,24 @@ export default {
         }
     },
     computed: {
+        /* the scan (loaded through scansProvider) */
+        scan() {
+            return this.scansProvider.scans.find(sc => sc.url === this.src)
+        },
+        /* is currently loading */
+        loading() {
+            if (!this.scan) return true
+            return this.scan.loading
+        },
+        /* is the scan rendering error */
+        error() {
+            if (!this.scan) return false
+            return this.scan.error
+        },
+        /** we need to watch for loading, error and src and call the refreshing method once, so this property is here to detect changes for these three computed properties and call changes once */
+        mixed() {
+            return (this.loading ? "1" : "0") + (this.error ? "1" : "0") + this.src
+        },
         /* is the scan bookmarked ? */
         scanbooked() {
             let sc = this.bookstate.scans.find(sc => sc.url === this.src)
@@ -102,12 +118,12 @@ export default {
         },
     },
     watch: {
-        src: 'loadScan', /* reload scan if src changes */
-    },
-    mounted() {
-        if (this.autoLoad) { /* load scan if auto on mounted */
-            this.loadScan()
+        mixed() { /* watch if loading, error or src changed, reload image */
+            this.$nextTick(() => this.insertScanInDOM())
         }
+    },
+    mounted() { /* Display image if already loaded */
+        if (!this.loading) this.$nextTick(() => this.insertScanInDOM())
     },
     methods: {
         /* check if we need to fit width */
@@ -118,48 +134,24 @@ export default {
         resizeH() {
             return ["height", "container"].includes(this.resize)
         },
-        /* Loads the scan */
-        loadScan() {
-            this.loading = true
-            this.error = false
-
-            return new Promise(async (resolve, reject) => {
-                this.$refs.scan.addEventListener('load', () => {
-                    let img = this.$refs.scan
-                    if (!img) return
-                    /** Check if scan is double page */
-                    if (img.width > img.height) {
-                        this.doublepage = true
-                    }
-                    if (img.height >= 3 * img.width) { // super thin scan, raise an event
-                        EventBus.$emit("thin-scan")
-                    }
-                    this.loading = false
-                    this.error = false
-                    this.$emit("loaded-scan")
-                    resolve()
-                })
-                let manageError = (e) => {
-                    console.error("An error occurred while loading an image")
-                    console.error(e)
-                    this.loading = false
-                    this.error = true
-                    this.$emit("loaded-scan")
-                    resolve()
-                }
-                this.$refs.scan.addEventListener('error', (e) => {
-                    manageError(e)
-                })
-                try {
-                    // Load the scan using implementation method
-                    await mirrorImpl.get().getImageFromPageAndWrite(
-                        this.src.replace(/(^\w+:|^)/, ''),
-                        this.$refs.scan)
-                } catch(e) {
-                    console.error(e)
-                    manageError(e)
-                }
-            })
+        /** Tell scansProvider to retry scan */
+        reloadScan() {
+            //TODO
+        },
+        /* Loads the scan, only called on nexttick so all computed properties have been refreshed */
+        insertScanInDOM() {
+            /** Do not load image in DOM if image is still loading, is in error or if we already loaded the same. This method is called **too much times** on purpose, here is the gatekeeper */
+            if (this.loading || this.$data.lastLoadedUrl === this.src) return
+            this.$data.lastLoadedUrl = this.src
+            // remove existing image
+            let alreadyImg = this.$refs.scanDiv.getElementsByTagName('img')
+            if (alreadyImg && alreadyImg.length > 0) {
+                this.$refs.scanDiv.removeChild(alreadyImg[0])
+            }
+            if (this.error) return // remove image if error
+            // clone the HTMLImage element
+            let img = this.scan.scan.cloneNode(true)
+            this.$refs.scanDiv.appendChild(img)
         },
         /** Delete the bookmark if bookmarked / create a bookmark if not */
         toggleBookmark() {

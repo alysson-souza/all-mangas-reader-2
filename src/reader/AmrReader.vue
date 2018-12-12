@@ -336,7 +336,6 @@
     <!-- End AMR Reader Side bar -->
     <v-content>
       <Reader ref="reader"
-              :images="images" 
               :book="book" 
               :direction="direction" 
               :fullchapter="fullchapter" 
@@ -399,9 +398,6 @@
 
       chaploaded: false, /* Top telling if all scans have been loaded */
     }),
-    props: {
-      images: Array /* List of scans to display, not necessarily pictures but urls that the implementation can handle to render a scan */
-    },
     created() {
       /** Register keys */
       this.handlekeys()
