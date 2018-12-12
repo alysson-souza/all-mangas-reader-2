@@ -9,8 +9,8 @@
     "build:dev-watch": "cross-env NODE_ENV=development webpack --config webpack.config.js --progress --hide-modules --hot --watch",
     "build-zip": "node scripts/build-zip.js",
     "manifest:specify": "node scripts/update-manifest.js",
-    "watch": "npm run build -- --watch",
-    "watch:dev": "npm run build:dev -- --watch"
+    "watch": "yarn run build --watch",
+    "watch:dev": "yarn run build:dev --watch"
   },
   "dependencies": {
     "axios": "^0.16.2",
