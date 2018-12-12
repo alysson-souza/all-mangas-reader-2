@@ -16,6 +16,7 @@ import mirrorImpl from '../content/mirrorimpl';
 import pageData from '../content/pagedata';
 import options from '../content/options';
 import bookmarks from './bookmarks';
+import scansProvider from "./ScansProvider";
 
 import mirrorHelper from '../amr/mirrors-helper';
 
@@ -68,8 +69,10 @@ if (window["__armreader__"] === undefined) { // avoid loading script twice
         }
         console.log(imagesUrl.length + " images to load");
 
-        bookmarks.init(imagesUrl)
-        initReader(imagesUrl)
+        bookmarks.init(imagesUrl) // initialize scans bookmarks state
+        scansProvider.init(imagesUrl, options.imgorder === 1) // initialize scans loading
+
+        initReader() // create the reader
     }
 
     /**
@@ -89,7 +92,7 @@ if (window["__armreader__"] === undefined) { // avoid loading script twice
  *  - No more glitches depending on the online reader css
  *  - more options, resize fit height, width
  */
-function initReader(images) {
+function initReader() {
     document.body.innerHTML = ""; //empty the dom page
     let amrdiv = document.createElement("div")
     amrdiv.id = "app"
@@ -111,7 +114,7 @@ function initReader(images) {
     Vue.use(VueScrollTo)
     new Vue({
         el: amrdiv,
-        render: h => h(AmrReader, { props: {images: images} })
+        render: h => h(AmrReader)
     });
 }
 
