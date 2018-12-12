@@ -70,7 +70,7 @@ if (window["__armreader__"] === undefined) { // avoid loading script twice
         console.log(imagesUrl.length + " images to load");
 
         bookmarks.init(imagesUrl) // initialize scans bookmarks state
-        scansProvider.init(imagesUrl) // initialize scans loading
+        scansProvider.init(imagesUrl, options.imgorder === 1) // initialize scans loading
 
         initReader() // create the reader
     }

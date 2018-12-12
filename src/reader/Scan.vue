@@ -64,8 +64,6 @@ export default {
         return {
             bookstate: bookmarks.state, /* bookmarks state */
             scansProvider: scansProvider.state, /* scans Provider, where the HTMLImage is loaded */
-
-            lastLoadedUrl: null, /* Last url of the scan image loaded in DOM */
         }
     },
     props: {
@@ -136,13 +134,12 @@ export default {
         },
         /** Tell scansProvider to retry scan */
         reloadScan() {
-            //TODO
+            this.scan.load()
         },
         /* Loads the scan, only called on nexttick so all computed properties have been refreshed */
         insertScanInDOM() {
             /** Do not load image in DOM if image is still loading, is in error or if we already loaded the same. This method is called **too much times** on purpose, here is the gatekeeper */
-            if (this.loading || this.$data.lastLoadedUrl === this.src) return
-            this.$data.lastLoadedUrl = this.src
+            if (this.loading) return
             // remove existing image
             let alreadyImg = this.$refs.scanDiv.getElementsByTagName('img')
             if (alreadyImg && alreadyImg.length > 0) {

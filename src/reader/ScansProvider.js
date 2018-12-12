@@ -17,8 +17,8 @@ export default {
 
         // change progress when scan loads
         EventBus.$on("loaded-scan", () => {
-            let nbloaded = this.state.scans.reduce((acc, sc) => acc + sc.loading ? 0 : 1, 0)
-            this.state.progress = Math.floor(nbloaded / scansUrl.length)
+            let nbloaded = this.state.scans.reduce((acc, sc) => acc + (sc.loading ? 0 : 1), 0)
+            this.state.progress = Math.floor(nbloaded / scansUrl.length * 100)
         })
 
         // initialize scans
@@ -31,11 +31,12 @@ export default {
         let pload = this.state.scans.map(sc => sc.load())
         if (inorder) {
             await pload.reduce((promise, func) =>
-                promise.then(result => func().then(Array.prototype.concat.bind(result))),
+                promise.then(result => func.then(Array.prototype.concat.bind(result))),
                 Promise.resolve([]))
         } else {
             await Promise.all(pload)
         }
+        console.log("All scans loaded")
         this.state.loaded = true
         EventBus.$emit("chapter-loaded")
     },
@@ -62,6 +63,14 @@ class ScanLoader {
     load() {
         this.loading = true
         this.error = false
+
+        // The code below introduce a loading error for a quarter of the scans
+        // think about updating the this.url at the bottom of the function and replace it with just url
+        /*let url = this.url
+        if (Math.floor(Math.random() * 4) === 2) {
+            console.log("introduce error for scan url " + this.url)
+            url = 'https://www.mangareader.net/fakeimage.jpg' //introduce an error 25% of the time
+        }*/
 
         return new Promise(async (resolve, reject) => {
             this.scan.addEventListener('load', () => {
@@ -96,7 +105,6 @@ class ScanLoader {
                     this.url.replace(/(^\w+:|^)/, ''),
                     this.scan)
             } catch(e) {
-                console.error(e)
                 manageError(e)
             }
         })
