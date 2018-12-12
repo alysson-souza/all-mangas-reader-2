@@ -1425,7 +1425,7 @@
     "description": "Display progression of reading in the chapter"
   },
   "reader_social_patreon": {
-    "message": "Aidez AMR ! Devenez un patron",
+    "message": "Aidez nous à maintenir All Mangas Reader ! Devenez notre patron",
     "description": "Tooltip of the patreon button"
   },
   "reader_social_facebook": {
