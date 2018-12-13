@@ -46,7 +46,11 @@ class HandleManga {
                     return Promise.resolve();
                 }
             case "readManga":
+                //count number of chapters read
+                let nb = localStorage["nb_read"] ? parseInt(localStorage["nb_read"]) : 1
+                localStorage["nb_read"] = "" + (nb + 1);
                 utils.debug("Read manga " + message.url);
+                // call store method to update reading list appropriately
                 return store.dispatch('readManga', message);
             case "deleteManga":
                 utils.debug("Delete manga key " + key);

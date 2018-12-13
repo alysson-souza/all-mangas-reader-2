@@ -68,16 +68,21 @@
       
         let formatText = txt => {
           let boldify = (text => {
-              var bold = /\*\*(\S(.*?\S)?)\*\*/gm;
-              var html = text.replace(bold, '<strong>$1</strong>');     
-              return html;
+              let bold = /\*\*(\S(.*?\S)?)\*\*/gm
+              let html = text.replace(bold, '<strong>$1</strong>')
+              return html
           })
           let italicify = (text => { 
-              var italic = /_(\S(.*?\S)?)_/gm;
-              var html = text.replace(italic, '<i>$1</i>');            
-              return html;
+              let italic = /_(\S(.*?\S)?)_/gm
+              let html = text.replace(italic, '<i>$1</i>')        
+              return html
           })
-          return boldify(italicify(txt))
+          let linkify = (text => {
+            let link = /\[([^\[\]]+)\]\(([^)]+)\)/gm
+            let html = text.replace(link, '<a href="$2" target="_blank">$1</a>')
+            return html      
+          })
+          return boldify(italicify(linkify(txt)))
         }
 
         let lines = this.message.split("\n")
