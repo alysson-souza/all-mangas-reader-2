@@ -405,7 +405,13 @@
       /** Check if manga exists */
       this.checkExists()
       /** Load current manga informations */
-      this.loadMangaInformations()
+      this.loadMangaInformations().then(() => {
+        /* retrieve current page if current chapter was the last opened */
+        if (util.matchChapUrl(pageData.currentChapterURL, this.mangaInfos.currentChapter)) {
+          // set current page to last currentScanUrl
+          EventBus.$emit("go-to-scanurl", this.mangaInfos.currentScanUrl)
+        }
+      })
       /** Load current bar state (drawer visible or not) */
       this.loadBarState()
       /** Listen to global bus events */

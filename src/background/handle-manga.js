@@ -40,11 +40,15 @@ class HandleManga {
                         read: mg.read, /* Read top */
                         display: mg.display, /* Display mode of the old reader */
                         layout: mg.layout, /* Layout for the new reader */
-                        lastchapter: mg.lastChapterReadURL
+                        lastchapter: mg.lastChapterReadURL, /* last read chapter (the most advanced one) */
+                        currentChapter: mg.currentChapter, /* last read chapter, last chapter page opened */
+                        currentScanUrl: mg.currentScanUrl /* last viewed page in currentChapter */
                     });
                 } else {
                     return Promise.resolve();
                 }
+            case "saveCurrentState":
+                return store.dispatch('saveCurrentState', message);
             case "readManga":
                 //count number of chapters read
                 let nb = localStorage["nb_read"] ? parseInt(localStorage["nb_read"]) : 1

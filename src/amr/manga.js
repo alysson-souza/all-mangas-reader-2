@@ -41,5 +41,8 @@ export default class {
         this.language = obj.language;
         /* all other possible values for this manga langs */
         this.languages = obj.languages;
+        /** Currently reading chapter and page to restart from there if needed */
+        this.currentChapter = obj.currentChapter;
+        this.currentScanUrl = obj.currentScanUrl;
     }
 }

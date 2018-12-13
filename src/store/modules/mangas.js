@@ -120,6 +120,18 @@ const actions = {
         amrUpdater.refreshBadgeAndIcon();
     },
     /**
+     * Save the state of reading (currentChapter and currentScanUrl)
+     * If the same chapter is reopened next time, it goes to currentScanUrl
+     * @param {*} vuex object 
+     * @param {*} message containing url of the manga
+     */
+    async saveCurrentState({ dispatch, commit, getters }, message) {
+        let key = utils.mangaKey(message.url, message.mirror, message.language);
+        commit('saveCurrentState', message);
+        let mg = state.all.find(manga => manga.key === key);
+        dispatch('updateManga', mg);
+    },
+    /**
      * Read a manga : update latest read chapter if the current chapter is more recent than the previous one
      * @param {*} vuex object 
      * @param {*} message containing infos about the manga read
@@ -729,7 +741,19 @@ const mutations = {
             }
         }
     },
-
+    /**
+     * Save current state (currentChapter, currentScanUrl)
+     * @param {*} state 
+     * @param {*} param1 url of the manga
+     */
+    saveCurrentState(state, { url, mirror, language, currentChapter, currentScanUrl }) {
+        let key = utils.mangaKey(url, mirror, language);
+        let mg = state.all.find(manga => manga.key === key)
+        if (mg !== undefined) {
+            mg.currentChapter = currentChapter
+            mg.currentScanUrl = currentScanUrl
+        }
+    },
     /**
      * Create a new manga
      * @param {*} state 

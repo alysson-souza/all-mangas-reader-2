@@ -159,7 +159,7 @@ export const handleHelps = async function ($ref) {
     displayable_popups = displayable_popups.filter(pop => pop.importance === topimp) // keep top level popups
     // choose randomly among winners
     let to_display = displayable_popups[Math.floor(Math.random() * displayable_popups.length)]
-    console.log(to_display)
+
     // Button to stop displaying this message
     let butstop = {
         title: i18n("reader_help_stop"),

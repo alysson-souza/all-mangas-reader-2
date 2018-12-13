@@ -61,7 +61,10 @@
 </template>
 
 <script>
+import browser from "webextension-polyfill";
 import options from '../content/options';
+import pageData from '../content/pagedata';
+import mirrorImpl from '../content/mirrorimpl';
 
 import scansProvider from "./ScansProvider";
 import Page from "./Page";
@@ -116,6 +119,13 @@ export default {
         });
         /** Register loaded scans events */
         EventBus.$on("loaded-scan", this.updateProgress)
+        /** Listen for a request of going to specific scan url */
+        EventBus.$on("go-to-scanurl", (url) => {
+            util.debug("Restore previous last scan : " + url)
+            EventBus.$on("pages-loaded", () => { // wait for the pages to be fully loaded
+                setTimeout(() => this.goScanUrl(url), 0) // add additional wait so the scroll is correct enough, 0 is enough because we just need to do it after the nextTick (in nextTick, pages are rearranged and watcher on pages will reset currentPage, do it after that)
+            })
+        })
         /** Register loaded scans events */
         EventBus.$on("chapter-loaded", this.loadedChapter)
     },
@@ -131,6 +141,15 @@ export default {
                 x: true,
                 y: false,
                 onDone: () => {currentlyThumbsScrolling = false}
+            })
+            /** Save current page state */
+            browser.runtime.sendMessage({
+                action: "saveCurrentState",
+                url: pageData.currentMangaURL,
+                language: pageData.language,
+                mirror: mirrorImpl.get().mirrorName,
+                currentChapter: pageData.currentChapterURL,
+                currentScanUrl: this.getCurrentScanUrl()
             })
         },
         resize(nVal, oVal) {
@@ -161,8 +180,7 @@ export default {
             if (furl) {
                 // calculate new currentPage and go to it after new arrangement has been calculated
                 this.$nextTick(() => {
-                    let ncur = this.getPageIndexFromScanUrl(furl)
-                    this.goScan(ncur)
+                    this.goScanUrl(furl)
                 })
             }
         },
@@ -311,6 +329,9 @@ export default {
 
             // Reset document title
             document.title = this.originalTitle
+
+            // Pages are loaded
+            EventBus.$emit("pages-loaded")
         },
         /** Return a string containing the scan indexes (1-based) contained in the page of index page_index in the right order (using direction ltr or rtl) */
         displayPageScansIndexes(page_index) {
@@ -320,6 +341,22 @@ export default {
                 if (this.direction === 'ltr') return scs[0].name + " - " + scs[1].name
                 else return scs[1].name + " - " + scs[0].name
             }
+        },
+        getCurrentScanUrl() {
+            let furl // url of the first viewable scan on currentpage
+            if (!this.book) {
+                furl = this.scansState.scans[this.currentPage].url // retrieve it from images cause one scan at a time
+            } else {
+                if (this.regroupablePages[this.currentPage] && this.regroupablePages[this.currentPage].length > 0) {
+                    furl = this.regroupablePages[this.currentPage][0].src // retrieve it from rearrange pages cause book is displayed
+                }
+            }
+            return furl
+        },
+        /** Go to scan url */
+        goScanUrl(url) {
+            let ncur = this.getPageIndexFromScanUrl(url)
+            this.goScan(ncur)
         },
         /** Go to scan */
         goScan(index) {
