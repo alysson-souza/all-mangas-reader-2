@@ -32,9 +32,9 @@ Google Chrome disabled extensions which are not referenced in their store. All M
 If you really want to have it in Chrom(ium/e), you will have to either follow the developer installation or to unzip the crx file and follow the developer installation / chrome instructions. Note that as it will be for development purpose, you may loose your local database doing that...
 
 ## Developer installation
-First clone this repository locally and install it using `npm install` command or just `yarn` if you prefer (if you don't have npm, [install it](https://www.npmjs.com/get-npm), you will need it or [yarn](https://yarnpkg.com)).
+First clone this repository locally and install it using `yarn` (if you don't have yarn, [install it](https://yarnpkg.com)).
 
-Build the extension using npm (note that you will need to run this command when updating extension code) `npm run build:dev` or using yarn `yarn run build:dev`
+Build the extension using yarn (note that you will need to run this command when updating extension code) `yarn run build:dev`
 
 This will create the deployable extension in the `dist` folder.
 
@@ -48,7 +48,7 @@ Go to [about:debugging#addons](about:debugging#addons) and click on **Load tempo
 
 If you want to debug the extension while testing in Firefox, you will need web-ext. To install :
 ```
-    npm i -g web-ext
+    yarn global add web-ext
 ```
 To load firefox with All Mangas Reader in debug mode, execute the following command in the `dist` folder of your local repository :
 ```

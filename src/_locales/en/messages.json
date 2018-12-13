@@ -1429,7 +1429,7 @@
     "description": "Tooltip of the social button"
   },
   "reader_social_patreon": {
-    "message": "Help AMR ! Become a Patreon",
+    "message": "Help us maintain All Mangas Reader ! Become our patron",
     "description": "Tooltip of the patreon button"
   },
   "reader_social_facebook": {
@@ -1443,5 +1443,41 @@
   "reader_social_discord": {
     "message": "Join our community on Discord ! It's the right place for any question about AMR.",
     "description": "Tooltip of the discord button"
+  },
+  "reader_help_rate_title": {
+    "message": "Give us five stars !",
+    "description": "Title of the rate us dialog, appear once in a while, can stop receiving this dialog"
+  },
+  "reader_help_rate_message": {
+    "message": "You seem to **enjoy reading using All Mangas Reader** ! \n Maintaining and improving your All Mangas Reader experience takes us a lot of time and efforts. That would be nice if you could take a few seconds to give us feedback on **Firefox Addons**. Rate us and leave us a message, that will be really appreciated !\n Click on the _I give feedback now !_ button to go to Firefox Addons ! _(in another tab, we won't spoil your reading, don't worry :))_\n Remember that if you need help or if want to help, you can always join our community on [Discord](https://discord.gg/bdzk9hR) or [help us on Patreon](https://www.patreon.com/allmangasreader) !",
+    "description": "Message of the rate us dialog, appear once in a while, can stop receiving this dialog"
+  },
+  "reader_help_rate_action": {
+    "message": "I give feedback now !",
+    "description": "Action button label to go rate us on Firefox addons in the rate us dialog, appear once in a while, can stop receiving this dialog"
+  },
+  "reader_help_patreon_title": {
+    "message": "Help us building All Mangas Reader",
+    "description": "Title of the help us dialog, appear once in a while, can stop receiving this dialog"
+  },
+  "reader_help_patreon_message": {
+    "message": "You really seem to **enjoy reading using All Mangas Reader** ! \n Maintaining and developing new features to your favorite reader takes a considerable amount of time, and even if the project is open sourced, it is supported by mainly one contributor. We don't need a full time developer on that project but a week per month is a minimum to fix things and create awesome features.\n Click on the _Become a patron_ button to go to our Patreon, giving even little will be greatly appreciated, this helps us a lot ! _(we will open it in another tab, we won't spoil your reading, don't worry :))_\n Remember that if you need help or if want to help, you can always join us on [Discord](https://discord.gg/bdzk9hR) !",
+    "description": "Message of the help us dialog, appear once in a while, can stop receiving this dialog"
+  },
+  "reader_help_patreon_action": {
+    "message": "Become a patron",
+    "description": "Action button label to go patreon in the help us dialog, appear once in a while, can stop receiving this dialog"
+  },
+  "reader_help_1000_title": {
+    "message": "You read $1 manga chapters !",
+    "description": "Title of the help us dialog, appear once in a while, can stop receiving this dialog"
+  },
+  "reader_help_1000_message": {
+    "message": "Wow ! You really **read a lot using All Mangas Reader** ! Already **$1 chapters !** \n We hope that you enjoy this extension, if you do, you can help us by [rating us on Firefox](https://addons.mozilla.org/firefox/addon/all-mangas-reader/) or by [giving us on Patreon](https://www.patreon.com/allmangasreader), every little contributions is really appreciated !\n Remember that if you need help or if want to help, you can always join us on [Discord](https://discord.gg/bdzk9hR) !",
+    "description": "Message of the help us dialog, appear once in a while, can stop receiving this dialog"
+  },
+  "reader_help_stop": {
+    "message": "Stop showing that",
+    "description": "Action button label to stop showing help messages"
   }
 }

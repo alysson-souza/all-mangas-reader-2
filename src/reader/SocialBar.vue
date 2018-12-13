@@ -43,8 +43,8 @@ export default {
     data() {
         return {
             social_direct: [
-                /*{ icon: "mdi-patreon", tooltip: "reader_social_patreon", 
-                    url: "", color: "orange"},*/
+                { icon: "mdi-patreon", tooltip: "reader_social_patreon", 
+                    url: "https://www.patreon.com/allmangasreader", color: "deep-orange--text text--lighten-1"},
                 { icon: "mdi-discord", tooltip: "reader_social_discord", 
                     url: "https://discord.gg/bdzk9hR", color: "indigo--text text--lighten-2" }
             ],

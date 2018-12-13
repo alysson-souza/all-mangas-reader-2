@@ -638,6 +638,7 @@ html {
 }
 .amr-pages-page-cont td img {
   max-height: 80px!important;
+  max-width: 110px!important;
 }
 .amr-pages-page-cont:hover {
   background-color: #ef5350;
@@ -647,7 +648,7 @@ html {
 }
 .amr-pages-page-cont.current {
   margin-top:0px;
-  background-color: #d32f2f;
+  background-color: #413131;
 }
 .amr-pages-page-cont.current td img {
   max-height: 100px!important;
