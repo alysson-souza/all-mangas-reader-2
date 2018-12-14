@@ -356,6 +356,7 @@
   import options from '../content/options';
   import util from "./util";
   import * as dialogs from "./dialogs";
+  import ChapterLoader from "./ChapterLoader";
 
   import Reader from "./Reader";
   import Scan from "./Scan";
@@ -386,9 +387,8 @@
       mangaExists: null, /* Does manga exists in reading list */
       mangaInfos: null, /* specific manga information (layout state, read top, latest read chapter) */
 
-      nextchapStarted: false, /* Top telling if we already tried loading next chapter */
-      nextchapLoading: false, /* Is next chapter prefetching */
-      nextchapProgress: 0, /* Progress of next chap loading */
+      nextChapterLoader: null, /* A ChapterLoader object to preload next chapter scans */
+      nextchapProgress: 0, /* Progression of next chapter loading */
 
       bookstate: bookmarks.state, /* bookmarks state */
       thinscan: false, /* top telling that the chapter is containing thin scans (height >= 3 * width) */
@@ -407,7 +407,7 @@
       /** Load current manga informations */
       this.loadMangaInformations().then(() => {
         /* retrieve current page if current chapter was the last opened */
-        if (util.matchChapUrl(pageData.currentChapterURL, this.mangaInfos.currentChapter)) {
+        if (util.matchChapUrl(pageData.currentChapterURL, this.mangaInfos.currentChapter) && this.mangaInfos.currentScanUrl) {
           // set current page to last currentScanUrl
           EventBus.$emit("go-to-scanurl", this.mangaInfos.currentScanUrl)
         }
@@ -550,6 +550,10 @@
         if (this.resize !== (resize_values[this.options.resizeMode])) return true
         return false
       },
+      /* Top telling if we already tried loading next chapter */
+      nextchapLoading() {
+        return this.nextChapterLoader && this.nextChapterLoader.scansProvider
+      }
     },
     components: { Reader, Scan, WizDialog, BookmarkPopup, ShortcutsPopup, SocialBar },
     methods: {
@@ -649,7 +653,7 @@
               return false
           }
         })
-        if (!this.nextchapStarted && this.chaploaded) {
+        if (!this.nextchapLoading && this.chaploaded) {
           // chapters list loading took longer than scans loading... o_O but possible...
           // Preload next chapter
           if (options.prefetch == 1) {
@@ -685,11 +689,62 @@
           this.mangaExists = false
         }
       },
+      /**
+       * Switch the current loaded chapter in the reader to another one
+       *  - url : the url of the chapter to load
+       */
+      async loadChapterInReader(url) {
+        // TODO add a covering loader !
+        console.log("Change Reader chapter : load chapter " + url)
+        let chap = new ChapterLoader(url)
+        await chap.checkAndLoadInfos() // get is a chapter ?, infos (current manga, chapter) and scans urls 
+        this.loadChapterInReaderUsingChapterLoader(chap)
+      },
+      /**
+       * Switch the current loaded chapter in the reader to another one
+       *  - chapterloader : the chapterloader to load in reader
+       */
+      async loadChapterInReaderUsingChapterLoader(chapterloader) {
+        this.nextChapterLoader = null
+        this.nextchapProgress = 0
+        this.thinscan = false
+        this.chaploaded = false
+        // change current chapter --> do it now, if not, loadInReader will trigger nextChapterLoad and it will be the current one...
+        this.selchap = chapterloader.url
+
+        console.log(chapterloader)
+        let done = chapterloader.loadInReader(options)
+        if (!done) { // loading chapter failed
+            // reload chapter so it will be the first time and the restorePage will work properly
+            window.location.href = chapterloader.url
+        } else {
+          // that worked ! scans state and bookmarks state are correctly initialized with new chapter data, pageData with manga url, name and current chapter url too, we now need to tweak the ui
+          console.log("State has been loaded. Update UI")
+          // update window history so navigation bar has the right url
+          window.history.pushState({title: chapterloader.title}, chapterloader.title, chapterloader.url);
+
+          // reinitialize all $data props so everything goes well
+          this.loadMangaInformations()
+
+          // Reader 
+          let reader = this.$refs.reader
+          reader.originalTitle = chapterloader.title
+          reader.goScan(0)
+
+          /** Handle help us dialogs once in a while */
+          dialogs.handleHelps(this.$refs.wizdialog)
+
+          // mark manga as read
+          if (options.markwhendownload === 0) {
+              this.consultManga()
+          }
+        }
+      },
       /** Go read a specific chapter */
       goToChapter() {
         if (this.selchap === null) return
         let cur = this.chapters.findIndex(el => el.url === this.selchap)
-        window.location.href = this.chapters[cur].url
+        this.loadChapterInReader(this.chapters[cur].url)
       },
       /** Go to next chapter */
       goNextChapter() {
@@ -697,7 +752,11 @@
             this.$refs.wizdialog.temporary(this.i18n("content_nav_last_chap"), 1000, {important: true})
         }
         if (!this.nextChapter) return
-        window.location.href = this.nextChapter
+        if (this.nextchapLoading) {
+          this.loadChapterInReaderUsingChapterLoader(this.nextChapterLoader)
+        } else {
+          this.loadChapterInReader(this.nextChapter)
+        }
       },
       /** Go to previous chapter */
       goPreviousChapter() {
@@ -707,37 +766,25 @@
           return
         }
         let cur = this.chapters.findIndex(el => el.url === this.selchap)
-        window.location.href = this.chapters[cur + 1].url
+        this.loadChapterInReader(this.chapters[cur + 1].url)
       },
       /** Preloads the next chapter scans */
       async preloadNextChapter() {
           if (!this.nextChapter) return
           util.debug("Loading next chapter...");
-          this.nextchapStarted = true
-          // load an iframe with urlNext and get list of images
-          let resp = await browser.runtime.sendMessage({
-              action: "getNextChapterImages",
-              url: this.nextChapter,
-              mirrorName: mirrorImpl.get().mirrorName, 
-              language: pageData.language 
-          });
-          let lst = resp.images
-          if (lst !== null) {
-              let nbloaded = 0
-              let nextChapterImageLoaded = (e) => {
-                nbloaded++
-                this.nextchapProgress = nbloaded / lst.length * 100
-              }
-              this.nextchapLoading = true
-              util.debug(lst.length + "... scans to load");
-              for (let i = 0; i < lst.length; i++) {
-                  let img = new Image();
-                  img.addEventListener('load', nextChapterImageLoaded, false);
-                  img.addEventListener('error', nextChapterImageLoaded, false);
-                  (async () => await mirrorImpl.get().getImageFromPageAndWrite(lst[i], img))()
-              }
+          // instanciate a chapter loader for the next chapter
+          this.nextChapterLoader = new ChapterLoader(this.nextChapter)
+          await this.nextChapterLoader.checkAndLoadInfos() // get is a chapter ?, infos (current manga, chapter) and scans urls 
+          if (!this.nextChapterLoader.isAChapter) {
+            this.nextChapterLoader = null // next is not recognized as a chapter
           } else {
-              util.debug("no scans found for next chapter...");
+            // preload the scans
+            let scansProvider = this.nextChapterLoader.loadScans()
+            /** Compute scans loading progress when a scan is loaded */
+            scansProvider.onloadscan = () => {
+              let nbloaded = scansProvider.scans.reduce((acc, sc) => acc + (sc.loading ? 0 : 1), 0)
+              this.nextchapProgress = Math.floor(nbloaded / scansProvider.scans.length * 100)
+            }
           }
       },
       /** Handle key shortcuts */

@@ -53,7 +53,7 @@ import pageData from '../content/pagedata';
 import options from '../content/options';
 
 import bookmarks from "./bookmarks";
-import scansProvider from "./ScansProvider";
+import { scansProvider } from "./ScansProvider";
 import util from "./util";
 import EventBus from "./EventBus";
 import {i18nmixin} from "../mixins/i18n-mixin";

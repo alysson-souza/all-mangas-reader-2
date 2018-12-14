@@ -59,8 +59,8 @@ class HandleManga {
             case "deleteManga":
                 utils.debug("Delete manga key " + key);
                 return store.dispatch('deleteManga', {key: key});
-            case "getNextChapterImages": //returns list of images for prefetch of next chapter in content script
-                return this.getChapterImages(message);
+            case "getNextChapterImages", "getChapterData": //returns boolean telling if url is a chapter page, infos from page and list of images for prefetch of next chapter in content script
+                return this.getChapterData(message);
             case "markReadTop":
                 return store.dispatch('markMangaReadTop', message);
             case "setDisplayMode":
@@ -247,7 +247,7 @@ class HandleManga {
      * Return the list of images urls from a chapter
      * @param {*} message 
      */
-    async getChapterImages(message) {
+    async getChapterData(message) {
         return Axios.get(message.url)
             .then(resp => {
                 return new Promise((resolve, reject) => {
@@ -265,12 +265,38 @@ class HandleManga {
                     let ldoc = document.getElementById(id).contentWindow.document;
                     ldoc.documentElement.innerHTML = resp.data;
                     let readyCall = async () => {
+                        // loads the implementation code
                         let impl = await mirrorsImpl.getImpl(message.mirrorName);
-                        var imagesUrl = await impl.getListImages(document.getElementById(id).contentWindow.document, message.url);
-                        resolve({
-                            images: imagesUrl
-                        });
+
+                        // Check if this is a chapter page
+                        let isChapter = impl.isCurrentPageAChapterPage(
+                            document.getElementById(id).contentWindow.document, 
+                            message.url)
+                        let infos, imagesUrl = []
+                        if (isChapter) {
+                            try {
+                                // Retrieve informations relative to current chapter / manga read
+                                infos = await impl.getInformationsFromCurrentPage(
+                                    document.getElementById(id).contentWindow.document, 
+                                    message.url)
+                                    
+                                // retrieve images to load
+                                imagesUrl = await impl.getListImages(
+                                    document.getElementById(id).contentWindow.document, 
+                                    message.url);
+                            } catch (e) {
+                                console.error("Error while loading infos and images from url " + message.url)
+                                console.error(e)
+                            }
+                        }
+                        let title = document.getElementById(id).contentWindow.document.title
                         $("#" + id).remove();
+                        resolve({
+                            isChapter: isChapter,
+                            infos: infos,
+                            images: imagesUrl,
+                            title: title
+                        });
                     }
                     if (ldoc.readyState === "complete" ||
                         (ldoc.readyState !== "loading" && !ldoc.documentElement.doScroll)) {

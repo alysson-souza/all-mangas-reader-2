@@ -1,34 +1,74 @@
 import mirrorImpl from '../content/mirrorimpl';
 import EventBus from "./EventBus";
 
-export default {
+export const scansProvider = {
+    /** Current shared state of scans */
     state: {
         scans: [], // list of scans [{url, loading, error, doublepage, scan HTMLImage}]
         progress: 0, // percentage (0 - 100) loaded of the whole chapter
         loaded: false, // top indicating all scans are loaded
     },
 
+    /**
+     * Init current state with a ScansProvider
+     * @param {} scp the scans provider to load in current state
+     */
+    initWithProvider(scp) {
+        this.state.scans = scp.scans
+        // Listen to state change
+        scp.onloadchapter = () => EventBus.$emit("chapter-loaded")
+        scp.onloadscan = () => {
+            // change progress when scan loads
+            let nbloaded = this.state.scans.reduce((acc, sc) => acc + (sc.loading ? 0 : 1), 0)
+            this.state.progress = Math.floor(nbloaded / this.state.scans.length * 100)
+            this.state.loaded = nbloaded === this.state.scans.length
+            EventBus.$emit("loaded-scan")
+            if (this.state.scans.filter(sc => sc.thinscan).length > 0) {
+                EventBus.$emit("thin-scan")
+            }
+        }
+        // initailize state with provider values
+        this.state.scans = scp.scans
+        this.state.progress = scp.progress
+        this.state.loaded = scp.loaded
+        if (this.state.loaded) {
+            if (this.state.scans.filter(sc => sc.thinscan).length > 0) {
+                EventBus.$emit("thin-scan")
+            }
+            EventBus.$emit("chapter-loaded")
+        }
+    },
+
     /** Initialize state with a whole list of scans urls */
     init(scansUrl, inorder = false) {
         if (!scansUrl || scansUrl.length === 0) return
 
-        this.state.scans = []
-        this.state.progress = 0
-
-        // change progress when scan loads
-        EventBus.$on("loaded-scan", () => {
-            let nbloaded = this.state.scans.reduce((acc, sc) => acc + (sc.loading ? 0 : 1), 0)
-            this.state.progress = Math.floor(nbloaded / scansUrl.length * 100)
-        })
+        let scp = new ScansLoader(scansUrl)
+        this.initWithProvider(scp)
 
         // initialize scans
-        this.state.scans.push(...scansUrl.map(url => new ScanLoader(url)))
-        this.load(inorder)
+        scp.load(inorder)
     },
+}
+
+/**
+ * Create a ScansLoader, which loads scans in background 
+ */
+export const ScansLoader = class {
+    constructor(scansUrl) {
+        this.scans = [] // list of scans [{url, loading, error, doublepage, scan HTMLImage}]
+        this.loaded = false // top indicating all scans are loaded
+        this.onloadchapter = () => {} // function to call when chapter is fully loaded
+        this.onloadscan = () => {} // function to call when scan is loaded
+
+        // initialize scans
+        this.scans.push(...scansUrl.map(url => new ScanLoader(url)))
+    }
 
     /** Load all scans */
     async load(inorder = false) {
-        let pload = this.state.scans.map(sc => sc.load())
+        // the then after the promise should not be called here, should be different in both below cases
+        let pload = this.scans.map(sc => sc.load().then(() => this.onloadscan()))
         if (inorder) {
             await pload.reduce((promise, func) =>
                 promise.then(result => func.then(Array.prototype.concat.bind(result))),
@@ -36,14 +76,8 @@ export default {
         } else {
             await Promise.all(pload)
         }
-        console.log("All scans loaded")
-        this.state.loaded = true
-        EventBus.$emit("chapter-loaded")
-    },
-
-    /** Retrieve a scan */
-    getScan(url) {
-        return this.state.scans.find(sc => sc.url === url)
+        this.loaded = true
+        this.onloadchapter()
     }
 }
 
@@ -57,6 +91,7 @@ class ScanLoader {
         this.loading = true /* is currently loading */
         this.error = false /* is the scan rendering error */
         this.doublepage = false /* is the scan a double page */
+        this.thinscan = false /* is the scan super thin (height > 3 * width) */
         this.scan = document.createElement("img") /* Image containing the loaded scan, will be cloned to be displayed */
     }
     /** Loads the scan */
@@ -81,11 +116,10 @@ class ScanLoader {
                     this.doublepage = true
                 }
                 if (img.height >= 3 * img.width) { // super thin scan, raise an event
-                    EventBus.$emit("thin-scan")
+                    this.thinscan = true
                 }
                 this.loading = false
                 this.error = false
-                EventBus.$emit("loaded-scan")
                 resolve()
             })
             let manageError = (e) => {
@@ -93,7 +127,6 @@ class ScanLoader {
                 console.error(e)
                 this.loading = false
                 this.error = true
-                EventBus.$emit("loaded-scan")
                 resolve()
             }
             this.scan.addEventListener('error', (e) => {

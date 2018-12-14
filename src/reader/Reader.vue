@@ -66,7 +66,7 @@ import options from '../content/options';
 import pageData from '../content/pagedata';
 import mirrorImpl from '../content/mirrorimpl';
 
-import scansProvider from "./ScansProvider";
+import { scansProvider } from "./ScansProvider";
 import Page from "./Page";
 import EventBus from "./EventBus";
 import { i18nmixin } from "../mixins/i18n-mixin"
@@ -135,12 +135,14 @@ export default {
             // while scrolling main page to go to selected page, currentPage is updated multiple times, do not rescroll if currently scrolling
             if (currentlyThumbsScrolling) return
             currentlyThumbsScrolling = true
-            thumbsScroller(this.$refs.thumb[nVal].$el, this.animationDuration, {
-                container: this.$refs["thumbs-scrollable"],
-                offset: (-(window.innerWidth - (this.drawer ? 300 : 0 )) + this.$refs.thumb[nVal].$el.clientWidth) / 2,
-                x: true,
-                y: false,
-                onDone: () => {currentlyThumbsScrolling = false}
+            this.$nextTick(() => {
+                thumbsScroller(this.$refs.thumb[nVal].$el, this.animationDuration, {
+                    container: this.$refs["thumbs-scrollable"],
+                    offset: (-(window.innerWidth - (this.drawer ? 300 : 0 )) + this.$refs.thumb[nVal].$el.clientWidth) / 2,
+                    x: true,
+                    y: false,
+                    onDone: () => {currentlyThumbsScrolling = false}
+                })
             })
             /** Save current page state */
             browser.runtime.sendMessage({
@@ -360,6 +362,8 @@ export default {
         },
         /** Go to scan */
         goScan(index) {
+            console.log("goScan " + index)
+            if (index === undefined || index < 0 || index >= this.pages.length) return
             if (!this.fullchapter) {
                 // just change the visibility of current page and next page
                 if (index === this.currentPage) return
