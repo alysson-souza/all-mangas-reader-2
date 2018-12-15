@@ -48,7 +48,7 @@ import {i18nmixin} from "../mixins/i18n-mixin"
 import browser from "webextension-polyfill";
 
 import mirrorImpl from '../content/mirrorimpl';
-import pageData from '../content/pagedata';
+import pageData from './pagedata';
 import bookmarks from './bookmarks';
 
 export default {
@@ -64,7 +64,7 @@ export default {
             scanUrl: String, /* The url of the scan. If null, bookmark the chapter */
             scanName: String, /* The name of the scan. */
 
-            pageData: pageData, /* Set pageDate in state so it's reactive */
+            pageData: pageData.state, /* Set pageDate in state so it's reactive */
         }
     },
     computed: {

@@ -5,7 +5,7 @@
 import browser from "webextension-polyfill";
 
 import mirrorImpl from '../content/mirrorimpl';
-import pageData from '../content/pagedata';
+import pageData from './pagedata';
 
 export default {
     state: {
@@ -45,10 +45,10 @@ export default {
         let obj = {
             action: "addUpdateBookmark",
             mirror: mirrorImpl.get().mirrorName,
-            url: pageData.currentMangaURL,
-            chapUrl: pageData.currentChapterURL,
-            name: pageData.name,
-            chapName: pageData.currentChapter,
+            url: pageData.state.currentMangaURL,
+            chapUrl: pageData.state.currentChapterURL,
+            name: pageData.state.name,
+            chapName: pageData.state.currentChapter,
             note: note
         }
         if (!scanUrl) {
@@ -76,8 +76,8 @@ export default {
         let obj = {
             action: "deleteBookmark",
             mirror: mirrorImpl.get().mirrorName,
-            url: pageData.currentMangaURL,
-            chapUrl: pageData.currentChapterURL
+            url: pageData.state.currentMangaURL,
+            chapUrl: pageData.state.currentChapterURL
         }
         if (!scanUrl) {
             obj.type = "chapter"
@@ -104,8 +104,8 @@ export default {
         let obj = {
             action: "getBookmarkNote",
             mirror: mirrorImpl.get().mirrorName,
-            url: pageData.currentMangaURL,
-            chapUrl: pageData.currentChapterURL,
+            url: pageData.state.currentMangaURL,
+            chapUrl: pageData.state.currentChapterURL,
         };
         if (!scanUrl) {
             obj.type = "chapter"

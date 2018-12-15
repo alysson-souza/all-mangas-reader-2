@@ -49,7 +49,6 @@
 <script>
 import browser from "webextension-polyfill";
 import mirrorImpl from '../content/mirrorimpl';
-import pageData from '../content/pagedata';
 import options from '../content/options';
 
 import bookmarks from "./bookmarks";

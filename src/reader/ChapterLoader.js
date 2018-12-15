@@ -1,4 +1,4 @@
-import pageData from '../content/pagedata';
+import pageData from './pagedata';
 import bookmarks from './bookmarks';
 import { scansProvider, ScansLoader } from "./ScansProvider";
 import mirrorImpl from '../content/mirrorimpl';
@@ -30,7 +30,7 @@ export default class ChapterLoader {
                 action: "getChapterData", 
                 url: this.url,
                 mirrorName: mirrorImpl.get().mirrorName, // assuming we read on the same mirror (no other possibilities for now...)
-                language: pageData.language // and in the same language...
+                language: pageData.state.language // and in the same language...
             })
             this.isAChapter = data.isChapter
             this.infos = data.infos

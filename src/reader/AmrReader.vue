@@ -361,7 +361,7 @@
   import {i18nmixin} from "../mixins/i18n-mixin"
 
   import mirrorImpl from '../content/mirrorimpl';
-  import pageData from '../content/pagedata';
+  import pageData from './pagedata';
   import options from '../content/options';
   import util from "./util";
   import * as dialogs from "./dialogs";
@@ -408,6 +408,7 @@
       fullscreen: window.fullScreen, /* fullscreen window state */
 
       chaploaded: false, /* Top telling if all scans have been loaded */
+      pageData: pageData.state, /* reactive data from pageData */
     }),
     created() {
       /** Register keys */
@@ -417,7 +418,7 @@
       /** Load current manga informations */
       this.loadMangaInformations().then(() => {
         /* retrieve current page if current chapter was the last opened */
-        if (util.matchChapUrl(pageData.currentChapterURL, this.mangaInfos.currentChapter) && this.mangaInfos.currentScanUrl) {
+        if (util.matchChapUrl(this.pageData.currentChapterURL, this.mangaInfos.currentChapter) && this.mangaInfos.currentScanUrl) {
           // set current page to last currentScanUrl
           EventBus.$emit("go-to-scanurl", this.mangaInfos.currentScanUrl)
         }
@@ -499,9 +500,9 @@
         if (this.mangaExists) {
           browser.runtime.sendMessage({
               action: "setLayoutMode",
-              url: pageData.currentMangaURL,
+              url: this.pageData.currentMangaURL,
               layout: nVal,
-              language: pageData.language,
+              language: this.pageData.language,
               mirror: this.mirror.mirrorName
           })
         }
@@ -510,7 +511,7 @@
     computed: {
       // Current manga informations retrieved from implementation
       manga() {
-        return pageData
+        return this.pageData
       },
       // Current mirror implementation
       mirror() {
@@ -544,7 +545,7 @@
       },
       /** can you mark this chapter as latest read */
       showLatestRead() {
-        return this.mangaExists && (this.mangaInfos && !util.matchChapUrl(this.mangaInfos.lastchapter, pageData.currentChapterURL))
+        return this.mangaExists && (this.mangaInfos && !util.matchChapUrl(this.mangaInfos.lastchapter, this.pageData.currentChapterURL))
       },
       /** list of bookmarked scans urls */
       bookedScans() {
@@ -593,9 +594,9 @@
         let cbook = -1, cdirection = -1, cfullchapter = -1, cresize = -1
         let specific = await browser.runtime.sendMessage({ 
             action: "mangaInfos", 
-            url: pageData.currentMangaURL, 
+            url: this.pageData.currentMangaURL, 
             mirror: mirrorImpl.get().mirrorName,
-            language: pageData.language 
+            language: this.pageData.language 
         });
         // Save returned manga informations in state
         this.mangaInfos = specific
@@ -634,15 +635,15 @@
         // try to get list chap from background (already loaded in local db)
         let alreadyLoadedListChaps = await browser.runtime.sendMessage({
             action: "getListChaps",
-            url: pageData.currentMangaURL, 
-            language: pageData.language 
+            url: this.pageData.currentMangaURL, 
+            language: this.pageData.language 
         });
         if (alreadyLoadedListChaps && alreadyLoadedListChaps.length > 0) {
             this.chapters = alreadyLoadedListChaps.map(arr => { return { url: arr[1], title: arr[0] } })
         } else {
             // Change currentMangaURL so no conflict in http over https
             let list = await mirrorImpl.get().getListChaps(
-                pageData.currentMangaURL.replace(/(^\w+:|^)/, '')
+                this.pageData.currentMangaURL.replace(/(^\w+:|^)/, '')
             )
             if (list !== undefined && !Array.isArray(list)) { // case of returned list is an object keys are languages and values are list of mangas
               if (list[this.manga.language] && list[this.manga.language].length > 0) {
@@ -657,7 +658,7 @@
             }
         }
         this.chapters.forEach(chap => {
-          if (util.matchChapUrl(pageData.currentChapterURL, chap.url)) {
+          if (util.matchChapUrl(this.pageData.currentChapterURL, chap.url)) {
               this.selchap = chap.url
               pageData.add("currentChapter", chap.title);
               return false
@@ -723,6 +724,12 @@
         this.chaploaded = false
         // change current chapter --> do it now, if not, loadInReader will trigger nextChapterLoad and it will be the current one...
         this.selchap = chapterloader.url
+        this.chapters.forEach(chap => {
+          if (util.matchChapUrl(this.selchap, chap.url)) {
+              pageData.add("currentChapter", chap.title); // actualize chapter name in pageData from chapters list
+              return false
+          }
+        })
 
         let done = chapterloader.loadInReader(options)
         if (!done) { // loading chapter failed

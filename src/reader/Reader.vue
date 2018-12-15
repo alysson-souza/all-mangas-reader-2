@@ -63,7 +63,7 @@
 <script>
 import browser from "webextension-polyfill";
 import options from '../content/options';
-import pageData from '../content/pagedata';
+import pageData from './pagedata';
 import mirrorImpl from '../content/mirrorimpl';
 
 import { scansProvider } from "./ScansProvider";
@@ -97,6 +97,7 @@ export default {
             options: options, /* Make it reactive so update to local options object will be reflected in computed properties */
 
             scansState: scansProvider.state, /** the provider of scan images */
+            pageData: pageData.state, /* reactive pageData state (current manga chapter infos) */
         }
     },
     props: {
@@ -147,10 +148,10 @@ export default {
             /** Save current page state */
             browser.runtime.sendMessage({
                 action: "saveCurrentState",
-                url: pageData.currentMangaURL,
-                language: pageData.language,
+                url: this.pageData.currentMangaURL,
+                language: this.pageData.language,
                 mirror: mirrorImpl.get().mirrorName,
-                currentChapter: pageData.currentChapterURL,
+                currentChapter: this.pageData.currentChapterURL,
                 currentScanUrl: this.getCurrentScanUrl()
             })
         },
