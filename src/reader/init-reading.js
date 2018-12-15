@@ -45,6 +45,7 @@ if (window["__armreader__"] === undefined) { // avoid loading script twice
         } else {
             initReader() // create the reader if this is the first chapter loaded in this environment, else, the state mutation will be enough to load new chapter
         }
+        window["__current_chapterloader__"] = chap // keep a reference to delete it later
     }
     /**
      * This function is called when an abstraction is loaded

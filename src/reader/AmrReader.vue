@@ -700,6 +700,13 @@
           this.mangaExists = false
         }
       },
+      /** Try to delete a chapter loader scans from RAM. Will be effectively deleted later by garbage collector */
+      deleteChapterLoader(obj) { // encapsulate chaploader in object to be able to delete it in sctrict mode
+        if (obj.chaploader) {
+          if (obj.chaploader.scansLoader) delete obj.chaploader.scansLoader
+          delete obj.chaploader
+        }
+      },
       /**
        * Switch the current loaded chapter in the reader to another one
        *  - url : the url of the chapter to load
@@ -717,6 +724,18 @@
        *  - chapterloader : the chapterloader to load in reader
        */
       async loadChapterInReaderUsingChapterLoader(chapterloader) {
+        // delete references to the old chapter loader
+        if (window["__current_chapterloader__"] && window["__current_chapterloader__"].url !== chapterloader.url) {
+          this.deleteChapterLoader({chaploader: window["__current_chapterloader__"]})
+        }
+        if (this.nextChapterLoader && this.nextChapterLoader.url !== chapterloader.url) {
+          this.deleteChapterLoader({chaploader: this.nextChapterLoader}) // delete loaded next chapter reference if not navigating to this one
+        }
+
+        //keep a reference to the one loading
+        window["__current_chapterloader__"] = chapterloader
+
+        // reinitialize state of the reader
         this.loading = true
         this.nextChapterLoader = null
         this.nextchapProgress = 0
