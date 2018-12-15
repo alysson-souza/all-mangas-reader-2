@@ -1,5 +1,14 @@
 <template>
   <v-app id="amrapp" :dark="darkreader">
+    <!-- Global cover for loading when transition from a chapter to another one -->
+    <div v-show="loading" class="amr-transition-cover" :class="darkreader ? 'grey darken-4' : 'grey lighten-5'">
+      <v-progress-circular
+          indeterminate
+          color="primary"
+          :size="128"
+          :width="12"
+          ></v-progress-circular>
+    </div>
     <!-- Global component to show confirmation dialogs, alert dialogs / other -->
     <WizDialog ref="wizdialog"></WizDialog>
     <!-- Global component to show bookmarks dialog -->
@@ -374,6 +383,7 @@
     mixins: [i18nmixin],
     data: () => ({
       drawer: false, /* Display the side drawer or not */
+      loading: false, /* Display the loading cover */
 
       chapters: [], /* List of chapters */
       selchap: null, /* Current chapter */
@@ -694,7 +704,8 @@
        *  - url : the url of the chapter to load
        */
       async loadChapterInReader(url) {
-        // TODO add a covering loader !
+        // add a covering loader
+        this.loading = true
         console.log("Change Reader chapter : load chapter " + url)
         let chap = new ChapterLoader(url)
         await chap.checkAndLoadInfos() // get is a chapter ?, infos (current manga, chapter) and scans urls 
@@ -705,6 +716,7 @@
        *  - chapterloader : the chapterloader to load in reader
        */
       async loadChapterInReaderUsingChapterLoader(chapterloader) {
+        this.loading = true
         this.nextChapterLoader = null
         this.nextchapProgress = 0
         this.thinscan = false
@@ -712,7 +724,6 @@
         // change current chapter --> do it now, if not, loadInReader will trigger nextChapterLoad and it will be the current one...
         this.selchap = chapterloader.url
 
-        console.log(chapterloader)
         let done = chapterloader.loadInReader(options)
         if (!done) { // loading chapter failed
             // reload chapter so it will be the first time and the restorePage will work properly
@@ -729,6 +740,7 @@
           // Reader 
           let reader = this.$refs.reader
           reader.originalTitle = chapterloader.title
+          document.title = chapterloader.title
           reader.goScan(0)
 
           /** Handle help us dialogs once in a while */
@@ -739,6 +751,7 @@
               this.consultManga()
           }
         }
+        this.loading = false
       },
       /** Go read a specific chapter */
       goToChapter() {
@@ -1149,5 +1162,26 @@
 }
 ::-webkit-scrollbar-track {
   background: #666;
+}
+/** Loading cover */
+.amr-transition-cover {
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  position: fixed;
+  opacity: 0.8;
+  z-index: 42; /* Because when you search for a high z-index, 42 is always the right answer */
+  text-align: center;
+  display: block;
+}
+.amr-transition-cover .v-progress-circular {
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   width: 128px;
+   height: 128px;
+   margin-top: -64px; /* Half the height */
+   margin-left: -64px; /* Half the width */
 }
 </style>
