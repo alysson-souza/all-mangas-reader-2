@@ -1,7 +1,7 @@
 import browser from "webextension-polyfill";
-import options from "../content/options";
-import mirrorImpl from '../content/mirrorimpl';
-import pageData from '../content/pagedata';
+import options from "../state/options";
+import mirrorImpl from '../state/mirrorimpl';
+import pageData from '../state/pagedata';
 
 class Util {
     removeProtocol(url) {
@@ -28,9 +28,9 @@ class Util {
     async mangaExists() {
         return await browser.runtime.sendMessage({
             action: "mangaExists", 
-            url: pageData.currentMangaURL,
+            url: pageData.state.currentMangaURL,
             mirror: mirrorImpl.get().mirrorName,
-            language: pageData.language
+            language: pageData.state.language
         })
     }
     /**
@@ -46,12 +46,12 @@ class Util {
         }
         await browser.runtime.sendMessage({
             action: "readManga",
-            url: pageData.currentMangaURL,
+            url: pageData.state.currentMangaURL,
             mirror: mirrorImpl.get().mirrorName,
-            lastChapterReadName: pageData.currentChapter,
-            lastChapterReadURL: pageData.currentChapterURL,
-            name: pageData.name,
-            language: pageData.language
+            lastChapterReadName: pageData.state.currentChapter,
+            lastChapterReadURL: pageData.state.currentChapterURL,
+            name: pageData.state.name,
+            language: pageData.state.language
         });
     }
     /**
@@ -60,12 +60,12 @@ class Util {
     async markAsLatest() {
         return await browser.runtime.sendMessage({
             action: "setMangaChapter",
-            url: pageData.currentMangaURL,
+            url: pageData.state.currentMangaURL,
             mirror: mirrorImpl.get().mirrorName,
-            lastChapterReadName: pageData.currentChapter,
-            lastChapterReadURL: pageData.currentChapterURL,
-            name: pageData.name, 
-            language: pageData.language
+            lastChapterReadName: pageData.state.currentChapter,
+            lastChapterReadURL: pageData.state.currentChapterURL,
+            name: pageData.state.name, 
+            language: pageData.state.language
         })
     }
     /** 
@@ -74,10 +74,10 @@ class Util {
     async markReadTop(nTop) {
         return await browser.runtime.sendMessage({
             action: "markReadTop",
-            url: pageData.currentMangaURL,
+            url: pageData.state.currentMangaURL,
             read: nTop,
             updatesamemangas: true, 
-            language: pageData.language
+            language: pageData.state.language
         })
     }
     /** 
@@ -86,9 +86,9 @@ class Util {
     async deleteManga() {
         return await browser.runtime.sendMessage({
             action: "deleteManga", 
-            url: pageData.currentMangaURL,
+            url: pageData.state.currentMangaURL,
             mirror: mirrorImpl.get().mirrorName,
-            language: pageData.language
+            language: pageData.state.language
         })
     }
     /** Clear current document selection */

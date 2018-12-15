@@ -48,15 +48,16 @@
 
 <script>
 import browser from "webextension-polyfill";
-import mirrorImpl from '../content/mirrorimpl';
-import pageData from '../content/pagedata';
-import options from '../content/options';
 
-import bookmarks from "./bookmarks";
-import scansProvider from "./ScansProvider";
-import util from "./util";
-import EventBus from "./EventBus";
-import {i18nmixin} from "../mixins/i18n-mixin";
+import mirrorImpl from '../state/mirrorimpl';
+import options from '../state/options';
+import bookmarks from "../state/bookmarks";
+
+import { scansProvider } from "../helpers/ScansProvider";
+import util from "../helpers/util";
+import EventBus from "../helpers/EventBus";
+
+import {i18nmixin} from "../../mixins/i18n-mixin";
 
 export default {
     mixins: [i18nmixin],

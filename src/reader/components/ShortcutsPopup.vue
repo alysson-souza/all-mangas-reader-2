@@ -28,7 +28,7 @@
 
 <script>
 import Shortcuts from "./Shortcuts"
-import {i18nmixin} from "../mixins/i18n-mixin"
+import {i18nmixin} from "../../mixins/i18n-mixin"
 
 let alt = "Alt", shift = "Shift"
 export default {

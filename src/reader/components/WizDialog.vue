@@ -31,7 +31,7 @@
 </template>
 
 <script>
-  import {i18n, i18nmixin} from "../mixins/i18n-mixin";
+  import {i18n, i18nmixin} from "../../mixins/i18n-mixin";
 
   const default_options = {
           color: 'primary',
@@ -194,3 +194,8 @@
     }
   }
 </script>
+<style>
+a, a:link, a:visited {
+    color: #f44336;
+}
+</style>

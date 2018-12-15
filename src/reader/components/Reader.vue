@@ -61,17 +61,19 @@
 </template>
 
 <script>
-import browser from "webextension-polyfill";
-import options from '../content/options';
-import pageData from '../content/pagedata';
-import mirrorImpl from '../content/mirrorimpl';
-
-import scansProvider from "./ScansProvider";
-import Page from "./Page";
-import EventBus from "./EventBus";
-import { i18nmixin } from "../mixins/i18n-mixin"
+import { i18nmixin } from "../../mixins/i18n-mixin"
 import { scroller } from 'vue-scrollto/src/scrollTo'
-import util from "./util";
+import browser from "webextension-polyfill";
+
+import options from '../state/options';
+import pageData from '../state/pagedata';
+import mirrorImpl from '../state/mirrorimpl';
+
+import { scansProvider } from "../helpers/ScansProvider";
+import util from "../helpers/util";
+import EventBus from "../helpers/EventBus";
+
+import Page from "./Page";
 
 /** Create a custom scroller (alias of $scrollTo method) to enable multiple scrollings (thumbs scroll simultaneously page scroll) */
 const thumbsScroller = scroller()
@@ -97,6 +99,7 @@ export default {
             options: options, /* Make it reactive so update to local options object will be reflected in computed properties */
 
             scansState: scansProvider.state, /** the provider of scan images */
+            pageData: pageData.state, /* reactive pageData state (current manga chapter infos) */
         }
     },
     props: {
@@ -135,20 +138,22 @@ export default {
             // while scrolling main page to go to selected page, currentPage is updated multiple times, do not rescroll if currently scrolling
             if (currentlyThumbsScrolling) return
             currentlyThumbsScrolling = true
-            thumbsScroller(this.$refs.thumb[nVal].$el, this.animationDuration, {
-                container: this.$refs["thumbs-scrollable"],
-                offset: (-(window.innerWidth - (this.drawer ? 300 : 0 )) + this.$refs.thumb[nVal].$el.clientWidth) / 2,
-                x: true,
-                y: false,
-                onDone: () => {currentlyThumbsScrolling = false}
+            this.$nextTick(() => {
+                thumbsScroller(this.$refs.thumb[nVal].$el, this.animationDuration, {
+                    container: this.$refs["thumbs-scrollable"],
+                    offset: (-(window.innerWidth - (this.drawer ? 300 : 0 )) + this.$refs.thumb[nVal].$el.clientWidth) / 2,
+                    x: true,
+                    y: false,
+                    onDone: () => {currentlyThumbsScrolling = false}
+                })
             })
             /** Save current page state */
             browser.runtime.sendMessage({
                 action: "saveCurrentState",
-                url: pageData.currentMangaURL,
-                language: pageData.language,
+                url: this.pageData.currentMangaURL,
+                language: this.pageData.language,
                 mirror: mirrorImpl.get().mirrorName,
-                currentChapter: pageData.currentChapterURL,
+                currentChapter: this.pageData.currentChapterURL,
                 currentScanUrl: this.getCurrentScanUrl()
             })
         },
@@ -168,7 +173,7 @@ export default {
          * try to keep the old visible scan still visible.  
          */
         pages(nVal, oVal) {
-            if (nVal.length === oVal.length) return // pages disn't change that much :)
+            if (nVal.length === oVal.length) return // pages didn't change that much :)
             let furl // url of the first viewable scan on currentpage
             if (nVal.length < oVal.length) {
                 furl = this.scansState.scans[this.currentPage].url // retrieve it from images cause old book value was false, so one page per image
@@ -356,10 +361,11 @@ export default {
         /** Go to scan url */
         goScanUrl(url) {
             let ncur = this.getPageIndexFromScanUrl(url)
-            this.goScan(ncur)
+            if (ncur >= 0) this.goScan(ncur)
         },
         /** Go to scan */
         goScan(index) {
+            if (index === undefined || index < 0 || index >= this.pages.length) return
             if (!this.fullchapter) {
                 // just change the visibility of current page and next page
                 if (index === this.currentPage) return
@@ -685,7 +691,7 @@ html {
 }
 .amr-pages-page-cont.current {
   margin-top:0px;
-  background-color: #413131;
+  background-color: #d32f2f;
 }
 .amr-pages-page-cont.current td img {
   max-height: 100px!important;

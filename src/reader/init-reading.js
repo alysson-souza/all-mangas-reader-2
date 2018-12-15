@@ -12,12 +12,11 @@ import VueScrollTo from "vue-scrollto";
 import AmrReader from './AmrReader.vue';
 
 import browser from "webextension-polyfill";
-import mirrorImpl from '../content/mirrorimpl';
-import pageData from '../content/pagedata';
-import options from '../content/options';
-import bookmarks from './bookmarks';
-import scansProvider from "./ScansProvider";
+import mirrorImpl from './state/mirrorimpl';
+import options from './state/options';
+import ChapterLoader from "./helpers/ChapterLoader";
 
+/** DO NOT REMOVE, not used here but define a global object used in loaded implementation */
 import mirrorHelper from '../amr/mirrors-helper';
 
 if (window["__armreader__"] === undefined) { // avoid loading script twice
@@ -37,58 +36,28 @@ if (window["__armreader__"] === undefined) { // avoid loading script twice
         // initialize Mirror Implementation
         mirrorImpl.load(object);
 
-        // Initialize the page once the mirror implementation has been loaded
-        // Test if current page is a chapter page (according to mirror implementation)
-        if (!mirrorImpl.get().isCurrentPageAChapterPage(document, window.location.href)) {
-            console.log("Current page is not recognize as a chapter page by mirror implementation");
+        // initialize current chapter from data collected from current page
+        let chap = new ChapterLoader()
+        await chap.checkAndLoadInfos() // get is a chapter ?, infos (current manga, chapter) and scans urls 
+        let done = chap.loadInReader(options, true) // load chapter data in states
+        if (!done) {
             restorePage()
-            return;
+        } else {
+            initReader() // create the reader if this is the first chapter loaded in this environment, else, the state mutation will be enough to load new chapter
         }
-        let imagesUrl
-        try {
-            // Retrieve informations relative to current chapter / manga read
-            let data = await mirrorImpl.get().getInformationsFromCurrentPage(document, window.location.href)
-            console.log("Informations for current page loaded : ");
-            console.log(data);
-            // Initialize pageData state
-            pageData.load(data);
-
-            // retrieve images to load (before doSomethingBeforeWritingScans because it can harm the source of data)
-            imagesUrl = await mirrorImpl.get().getListImages(document, window.location.href);
-            if (!imagesUrl || imagesUrl.length === 0) {
-                // No images, do not load the loader
-                restorePage()
-                return;
-            }
-        } catch (e) {
-            console.error("Error while initializing AMR : ");
-            console.error(e)
-            // Error while getting informations or images
-            restorePage()
-            return;
-        }
-        console.log(imagesUrl.length + " images to load");
-
-        bookmarks.init(imagesUrl) // initialize scans bookmarks state
-        scansProvider.init(imagesUrl, options.imgorder === 1) // initialize scans loading
-
-        initReader() // create the reader
+        window["__current_chapterloader__"] = chap // keep a reference to delete it later
     }
-
     /**
      * This function is called when an abstraction is loaded
      */
     window["registerAbstractImplementation"] = function (mirrorName) {
         // do nothing there, the abstract object is loaded on the window and referenced by its name
     }
-
-    /** Function called through executeScript when context menu button invoked */
-    window["clickOnBM"] = function(src) {
-    }
 }
 
+
 /**
- * This class replaces the current page by a custom reader, AMR Reader
+ * This function replaces the current page by a custom reader, AMR Reader
  *  - No more glitches depending on the online reader css
  *  - more options, resize fit height, width
  */
@@ -118,6 +87,7 @@ function initReader() {
     });
 }
 
+/** Remove styles from original page to avoid interference with AMR reader */
 function removeStyles() {
     let stylesheets = document.getElementsByTagName('link'), i, sheet;
     for(i in stylesheets) {
@@ -129,6 +99,7 @@ function removeStyles() {
         }
     }
 }
+/** Load css in the page for AMR reader needs */
 function loadCss(file) {
     var link = document.createElement( "link" )
     link.href = file
@@ -138,7 +109,6 @@ function loadCss(file) {
 
     document.getElementsByTagName( "head" )[0].appendChild( link )
 }
-
 /** 
  * Restore the page as it was before we included our scripts tags and code 
  * The best would be not to load it but : 
