@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import {i18nmixin} from "../mixins/i18n-mixin"
+import {i18nmixin} from "../../mixins/i18n-mixin"
 import browser from "webextension-polyfill";
 
 export default {

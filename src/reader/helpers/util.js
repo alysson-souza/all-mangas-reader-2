@@ -1,7 +1,7 @@
 import browser from "webextension-polyfill";
-import options from "../content/options";
-import mirrorImpl from '../content/mirrorimpl';
-import pageData from './pagedata';
+import options from "../state/options";
+import mirrorImpl from '../state/mirrorimpl';
+import pageData from '../state/pagedata';
 
 class Util {
     removeProtocol(url) {

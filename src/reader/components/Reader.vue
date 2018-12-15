@@ -61,17 +61,19 @@
 </template>
 
 <script>
-import browser from "webextension-polyfill";
-import options from '../content/options';
-import pageData from './pagedata';
-import mirrorImpl from '../content/mirrorimpl';
-
-import { scansProvider } from "./ScansProvider";
-import Page from "./Page";
-import EventBus from "./EventBus";
-import { i18nmixin } from "../mixins/i18n-mixin"
+import { i18nmixin } from "../../mixins/i18n-mixin"
 import { scroller } from 'vue-scrollto/src/scrollTo'
-import util from "./util";
+import browser from "webextension-polyfill";
+
+import options from '../state/options';
+import pageData from '../state/pagedata';
+import mirrorImpl from '../state/mirrorimpl';
+
+import { scansProvider } from "../helpers/ScansProvider";
+import util from "../helpers/util";
+import EventBus from "../helpers/EventBus";
+
+import Page from "./Page";
 
 /** Create a custom scroller (alias of $scrollTo method) to enable multiple scrollings (thumbs scroll simultaneously page scroll) */
 const thumbsScroller = scroller()

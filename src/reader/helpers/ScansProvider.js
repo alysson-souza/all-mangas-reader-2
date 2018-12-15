@@ -1,4 +1,4 @@
-import mirrorImpl from '../content/mirrorimpl';
+import mirrorImpl from '../state/mirrorimpl';
 import EventBus from "./EventBus";
 
 /** 

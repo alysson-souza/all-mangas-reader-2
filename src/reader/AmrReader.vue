@@ -356,25 +356,25 @@
 
 <script>
   import Vue from "vue"
-
   import browser from "webextension-polyfill";
-  import {i18nmixin} from "../mixins/i18n-mixin"
+  import { i18nmixin } from "../mixins/i18n-mixin"
 
-  import mirrorImpl from '../content/mirrorimpl';
-  import pageData from './pagedata';
-  import options from '../content/options';
-  import util from "./util";
-  import * as dialogs from "./dialogs";
-  import ChapterLoader from "./ChapterLoader";
+  import mirrorImpl from './state/mirrorimpl';
+  import pageData from './state/pagedata';
+  import options from './state/options';
+  import bookmarks from "./state/bookmarks";
 
-  import Reader from "./Reader";
-  import Scan from "./Scan";
-  import WizDialog from "./WizDialog";
-  import BookmarkPopup from "./BookmarkPopup";
-  import ShortcutsPopup from "./ShortcutsPopup";
-  import bookmarks from "./bookmarks";
-  import EventBus from "./EventBus";
-  import SocialBar from "./SocialBar";
+  import util from "./helpers/util";
+  import * as dialogs from "./helpers/dialogs";
+  import ChapterLoader from "./helpers/ChapterLoader";
+  import EventBus from "./helpers/EventBus";
+
+  import Reader from "./components/Reader";
+  import Scan from "./components/Scan";
+  import WizDialog from "./components/WizDialog";
+  import BookmarkPopup from "./components/BookmarkPopup";
+  import ShortcutsPopup from "./components/ShortcutsPopup";
+  import SocialBar from "./components/SocialBar";
   
   /** Possible values for resize (readable), the stored value is the corresponding index */
   const resize_values = ['width', 'height', 'container', 'none']

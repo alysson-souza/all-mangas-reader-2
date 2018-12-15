@@ -1,7 +1,7 @@
-import pageData from './pagedata';
-import bookmarks from './bookmarks';
+import pageData from '../state/pagedata';
+import bookmarks from '../state/bookmarks';
 import { scansProvider, ScansLoader } from "./ScansProvider";
-import mirrorImpl from '../content/mirrorimpl';
+import mirrorImpl from '../state/mirrorimpl';
 import browser from "webextension-polyfill";
 
 /**

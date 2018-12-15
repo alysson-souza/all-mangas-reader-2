@@ -1,5 +1,5 @@
 import util from "./util";
-import { i18n } from "../mixins/i18n-mixin";
+import { i18n } from "../../mixins/i18n-mixin";
 import browser from "webextension-polyfill";
 
 /** 

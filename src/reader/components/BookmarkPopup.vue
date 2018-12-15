@@ -44,12 +44,12 @@
 </template>
 
 <script>
-import {i18nmixin} from "../mixins/i18n-mixin"
+import {i18nmixin} from "../../mixins/i18n-mixin"
 import browser from "webextension-polyfill";
 
-import mirrorImpl from '../content/mirrorimpl';
-import pageData from './pagedata';
-import bookmarks from './bookmarks';
+import mirrorImpl from '../state/mirrorimpl';
+import pageData from '../state/pagedata';
+import bookmarks from '../state/bookmarks';
 
 export default {
     mixins: [i18nmixin],

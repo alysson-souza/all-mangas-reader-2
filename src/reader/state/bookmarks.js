@@ -4,7 +4,7 @@
  */
 import browser from "webextension-polyfill";
 
-import mirrorImpl from '../content/mirrorimpl';
+import mirrorImpl from './mirrorimpl';
 import pageData from './pagedata';
 
 export default {

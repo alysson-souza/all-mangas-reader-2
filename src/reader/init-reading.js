@@ -12,9 +12,9 @@ import VueScrollTo from "vue-scrollto";
 import AmrReader from './AmrReader.vue';
 
 import browser from "webextension-polyfill";
-import mirrorImpl from '../content/mirrorimpl';
-import options from '../content/options';
-import ChapterLoader from "./ChapterLoader";
+import mirrorImpl from './state/mirrorimpl';
+import options from './state/options';
+import ChapterLoader from "./helpers/ChapterLoader";
 
 /** DO NOT REMOVE, not used here but define a global object used in loaded implementation */
 import mirrorHelper from '../amr/mirrors-helper';
