@@ -67,8 +67,12 @@ export const ScansLoader = class {
 
     /** Load all scans */
     async load(inorder = false) {
-        // the then after the promise should not be called here, should be different in both below cases
-        let pload = this.scans.map(sc => sc.load().then(() => this.onloadscan()))
+        // we create a new Promise to encapsulate the scan's load function because we need to call onloadscan after each load unitarily. We can't use then() to chain the load because that will trigger the load promise and we want to be able to call it in order OR all at the same time)
+        let pload = this.scans.map(sc => new Promise(async (resolve, reject) => { 
+            await sc.load()
+            this.onloadscan()
+            resolve()
+        }))
         if (inorder) {
             await pload.reduce((promise, func) =>
                 promise.then(result => func.then(Array.prototype.concat.bind(result))),
