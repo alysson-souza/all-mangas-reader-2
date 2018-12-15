@@ -171,7 +171,7 @@ export default {
          * try to keep the old visible scan still visible.  
          */
         pages(nVal, oVal) {
-            if (nVal.length === oVal.length) return // pages disn't change that much :)
+            if (nVal.length === oVal.length) return // pages didn't change that much :)
             let furl // url of the first viewable scan on currentpage
             if (nVal.length < oVal.length) {
                 furl = this.scansState.scans[this.currentPage].url // retrieve it from images cause old book value was false, so one page per image
@@ -359,11 +359,10 @@ export default {
         /** Go to scan url */
         goScanUrl(url) {
             let ncur = this.getPageIndexFromScanUrl(url)
-            this.goScan(ncur)
+            if (ncur >= 0) this.goScan(ncur)
         },
         /** Go to scan */
         goScan(index) {
-            console.log("goScan " + index)
             if (index === undefined || index < 0 || index >= this.pages.length) return
             if (!this.fullchapter) {
                 // just change the visibility of current page and next page
