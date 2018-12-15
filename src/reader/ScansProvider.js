@@ -87,6 +87,7 @@ export const ScansLoader = class {
             await Promise.all(pload)
         }
         this.loaded = true // done loading scans
+        console.log("All " + this.scans.length + " scans have been loaded")
         this.onloadchapter() // raise an event to notify that chapter has been loaded
     }
 }

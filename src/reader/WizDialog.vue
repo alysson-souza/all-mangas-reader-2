@@ -194,3 +194,8 @@
     }
   }
 </script>
+<style>
+a, a:link, a:visited {
+    color: #f44336;
+}
+</style>

@@ -756,7 +756,7 @@
             window.location.href = chapterloader.url
         } else {
           // that worked ! scans state and bookmarks state are correctly initialized with new chapter data, pageData with manga url, name and current chapter url too, we now need to tweak the ui
-          console.log("State has been loaded. Update UI")
+
           // update window history so navigation bar has the right url
           window.history.pushState({title: chapterloader.title}, chapterloader.title, chapterloader.url);
 
