@@ -689,7 +689,7 @@ html {
 }
 .amr-pages-page-cont.current {
   margin-top:0px;
-  background-color: #413131;
+  background-color: #d32f2f;
 }
 .amr-pages-page-cont.current td img {
   max-height: 100px!important;
