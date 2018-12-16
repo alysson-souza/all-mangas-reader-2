@@ -187,8 +187,12 @@ export default {
 		 */
 		openSearch(pstr = "") {
 			this.search = true;
-			if (pstr != "") this.toSearch = pstr;
 			PopupResizer.setHeightToMax();
+			if (pstr != "") {
+				this.$nextTick(() => { // set the search phrase in next tick so this.search change is effective, has Search is included on v-if, the component to handle it has to be created before we can set its props
+					this.toSearch = pstr;
+				})
+			}
 		}, 
 		closeSearch() {
 			this.search = false;
