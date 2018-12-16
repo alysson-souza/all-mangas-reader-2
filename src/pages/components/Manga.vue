@@ -410,7 +410,10 @@ select.amr-chap-sel {
   border-top-left-radius: 2px !important;
   border-top-right-radius: 2px !important;
   position: relative;
-  padding: 0px 4px;
+  padding-top: 0px;
+  padding-right: 20px;
+  padding-bottom: 0px;
+  padding-left: 4px;
 }
 .amr-select-wrapper:after {
   content: "▼";
