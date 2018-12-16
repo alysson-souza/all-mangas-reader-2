@@ -764,14 +764,10 @@ const mutations = {
         let titMg = utils.formatMgName(mg.name);
         let smgs = state.all.filter(manga => utils.formatMgName(manga.name) === titMg)
         for (let sim of smgs) {
-            if (sim.read == 1) {
-                mg.read = 1;
-                break;
-            }
-            if (sim.update == 0) {
-                mg.update = 0;
-                break;
-            }
+            mg.cats.push(...sim.cats)
+            mg.layout = sim.layout
+            if (sim.read === 1) mg.read = 1
+            if (sim.update === 0) mg.update = 0
         }
         state.all.push(mg);
     }, 
