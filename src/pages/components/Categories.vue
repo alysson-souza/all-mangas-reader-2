@@ -200,6 +200,19 @@ export default {
 .cat-chip.include:hover, .cat-chip.exclude:hover {
   background: #a0a0a0;
 }
+.theme--dark .cat-chip {
+  background: #424242;
+  color: white;
+}
+.theme--dark .cat-chip:hover {
+  background: #303030;
+}
+.theme--dark .cat-chip.include, .theme--dark .cat-chip.exclude {
+  background: #707070;
+}
+.theme--dark .cat-chip.include:hover, .theme--dark .cat-chip.exclude:hover {
+  background: #424242;
+}
 .cat-chip.exclude .cat-name {
   text-decoration: line-through;
 }

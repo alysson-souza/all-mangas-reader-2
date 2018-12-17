@@ -1,3 +1,13 @@
+/**
+ * DEPRECATED
+ * This code is part of the old version of the reader inherited from V1
+ * It still contains code using jQuery or importing code using jQuery
+ * The new reader can be found in the reader folder and is full VueJS
+ * 
+ * This code is kept for debugging reasons and "just in case"
+ * It will be removed from V2.5
+ */
+
 import browser from "webextension-polyfill";
 import options from './options';
 import mirrorImpl from './mirrorimpl'
@@ -7,7 +17,18 @@ import i18n from '../amr/i18n';
 import mirrorHelper from '../amr/mirrors-helper';
 
 class Reading {
-    consultManga() {
+    async consultManga() {
+        if (options.addauto !== 1) { // check if option "Automatically add manga to list" is unchecked
+            // check if manga is already in list
+            let exists = await browser.runtime.sendMessage({
+                action: "mangaExists", 
+                url: pageData.currentMangaURL,
+                mirror: mirrorImpl.get().mirrorName,
+                language: pageData.language
+            })
+            // if not, we do not add the manga to the list (else, we continue, so reading progress is updated)
+            if (!exists) return;
+        }
         browser.runtime.sendMessage({
             action: "readManga",
             url: pageData.currentMangaURL,
@@ -21,7 +42,7 @@ class Reading {
 
     async createBook(imagesUrl) {
         if (options.displayChapters == 1) { // display as a book
-            let where = mirrorImpl.get().whereDoIWriteScans(document, window.location.href);
+            let where = await mirrorImpl.get().whereDoIWriteScans(document, window.location.href);
             pageData.whereScans = where;
             //Get specific mode for currentManga
             let curmode = -1;
@@ -318,7 +339,7 @@ class Reading {
             if (pageData.nexturltoload && options.prefetch == 1) {
                 this.loadNextChapter(pageData.nexturltoload);
             }
-            if (options.markwhendownload === 1 && options.addauto === 1) {
+            if (options.markwhendownload === 1) {
                 this.consultManga();
             }
         } else {

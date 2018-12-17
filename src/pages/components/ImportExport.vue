@@ -15,7 +15,7 @@
         </v-tabs>
         <v-tabs-items v-model="tabs" :class="($store.state.options.dark === 1 ? 'black' : 'white')">
             <!-- Import tab -->
-            <v-tab-item id="import">
+            <v-tab-item value="import">
                 <v-container fluid>
                     <label class="file-select">
                         <v-btn @click.native="onFocus" color="primary">{{i18n("ie_import_pickfile")}}</v-btn>
@@ -55,7 +55,7 @@
                 </v-container>
             </v-tab-item>
             <!-- Export tab -->
-            <v-tab-item id="export">
+            <v-tab-item value="export">
                 <v-container fluid>
                     <!-- Export options -->
                     <div class="subtitle">{{ i18n("ie_export_mangas_viewable_desc") }}</div>
@@ -180,6 +180,7 @@ export default {
           if (mg.read !== 0) res.r = mg.read;
           if (mg.update !== 1) res.p = mg.update;
           if (mg.display !== 0) res.d = mg.display;
+          if (mg.layout !== 0) res.y = mg.layout;
           if (mg.cats.length > 0) res.c = mg.cats;
           if (mg.language !== undefined) res.g = mg.language;
           return res;
@@ -262,6 +263,7 @@ export default {
             r: mg.read,
             p: mg.update,
             d: mg.display,
+            y: mg.layout,
             c: mg.cats
           };
         });
@@ -287,6 +289,7 @@ export default {
           if (mg.r) readmg.read = mg.r;
           if (mg.p) readmg.update = mg.p;
           if (mg.d) readmg.display = mg.d;
+          if (mg.y) readmg.layout = mg.y;
           if (mg.c) readmg.cats = mg.c;
           if (mg.g) readmg.language = mg.g;
           // add default category if specified

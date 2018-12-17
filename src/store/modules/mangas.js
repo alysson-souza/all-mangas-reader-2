@@ -97,6 +97,16 @@ const actions = {
         dispatch('updateManga', state.all.find(manga => manga.key === key));
     },
     /**
+     * Change manga reader layout mode
+     * @param {*} vuex object 
+     * @param {*} message containing url of the manga and new layout mode
+     */
+    async setMangaLayoutMode({ dispatch, commit, getters }, message) {
+        let key = utils.mangaKey(message.url, message.mirror, message.language);
+        commit('setMangaLayoutMode', message);
+        dispatch('updateManga', state.all.find(manga => manga.key === key));
+    },
+    /**
      * Reset manga reading for a manga to first chapter
      * @param {*} vuex object 
      * @param {*} message containing url of the manga
@@ -108,6 +118,18 @@ const actions = {
         dispatch('updateManga', mg);
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();
+    },
+    /**
+     * Save the state of reading (currentChapter and currentScanUrl)
+     * If the same chapter is reopened next time, it goes to currentScanUrl
+     * @param {*} vuex object 
+     * @param {*} message containing url of the manga
+     */
+    async saveCurrentState({ dispatch, commit, getters }, message) {
+        let key = utils.mangaKey(message.url, message.mirror, message.language);
+        commit('saveCurrentState', message);
+        let mg = state.all.find(manga => manga.key === key);
+        dispatch('updateManga', mg);
     },
     /**
      * Read a manga : update latest read chapter if the current chapter is more recent than the previous one
@@ -594,6 +616,16 @@ const mutations = {
         if (mg !== undefined) mg.display = display;
     },
     /**
+     * Change manga reader layout mode
+     * @param {*} state 
+     * @param {*} param1 url of the manga and layout mode
+     */
+    setMangaLayoutMode(state, { url, mirror, language, layout }) {
+        let key = utils.mangaKey(url, mirror, language);
+        let mg = state.all.find(manga => manga.key === key)
+        if (mg !== undefined) mg.layout = layout;
+    },
+    /**
      * Change manga read top
      * @param {*} state 
      * @param {*} param1 url of the manga and read top
@@ -673,6 +705,9 @@ const mutations = {
             if (obj.display) {
                 mg.display = obj.display;
             }
+            if (obj.layout) {
+                mg.layout = obj.layout;
+            }
             if (obj.read) {
                 mg.read = obj.read;
             }
@@ -706,7 +741,19 @@ const mutations = {
             }
         }
     },
-
+    /**
+     * Save current state (currentChapter, currentScanUrl)
+     * @param {*} state 
+     * @param {*} param1 url of the manga
+     */
+    saveCurrentState(state, { url, mirror, language, currentChapter, currentScanUrl }) {
+        let key = utils.mangaKey(url, mirror, language);
+        let mg = state.all.find(manga => manga.key === key)
+        if (mg !== undefined) {
+            mg.currentChapter = currentChapter
+            mg.currentScanUrl = currentScanUrl
+        }
+    },
     /**
      * Create a new manga
      * @param {*} state 
@@ -717,14 +764,10 @@ const mutations = {
         let titMg = utils.formatMgName(mg.name);
         let smgs = state.all.filter(manga => utils.formatMgName(manga.name) === titMg)
         for (let sim of smgs) {
-            if (sim.read == 1) {
-                mg.read = 1;
-                break;
-            }
-            if (sim.update == 0) {
-                mg.update = 0;
-                break;
-            }
+            mg.cats.push(...sim.cats)
+            mg.layout = sim.layout
+            if (sim.read === 1) mg.read = 1
+            if (sim.update === 0) mg.update = 0
         }
         state.all.push(mg);
     }, 

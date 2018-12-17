@@ -13,11 +13,13 @@ const config = {
   entry: {
     'background/background': './background/background.js',
     'content/back': './content/back.js',
+    'reader/init-reading': './reader/init-reading.js',
     'pages/popup/popup': './pages/popup/popup.js', 
     'pages/lab/lab': './pages/lab/lab.js',
     'pages/options/options': './pages/options/options.js',
     'pages/bookmarks/bookmarks': './pages/bookmarks/bookmarks.js',
-    'pages/importexport/importexport': './pages/importexport/importexport.js'
+    'pages/importexport/importexport': './pages/importexport/importexport.js',
+    'backup/index': './backup/amr-backup.js',
   },
   output: {
     path: __dirname + '/dist',
@@ -61,7 +63,9 @@ const config = {
       {from: 'pages/importexport/importexport.html', to: 'pages/importexport/importexport.html'},
       {from: 'manifest.json', to: 'manifest.json'},
       {from: 'content/*.css', to: '.'},
+      {from: 'reader/*.css', to: '.'},
       {from: '_locales/**/*', to: '.'},
+      {from: 'backup/amr-backup.html', to: 'backup/index.html'},
       {from: '../node_modules/jquery/dist/jquery.min.js', to: 'lib/jquery.min.js'},
       {from: '../node_modules/jquery-modal/jquery.modal.min.js', to: 'lib/jquery.modal.min.js'}, 
       {from: '../node_modules/jquery-modal/jquery.modal.min.css', to: 'lib/jquery.modal.min.css'},

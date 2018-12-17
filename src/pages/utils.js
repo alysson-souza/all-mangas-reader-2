@@ -21,15 +21,15 @@ export function displayFilterCats(manga, categories) {
     }
     for (let cat of categories) {
         if (cat.type === "native") {
-            if (cat.name === "category_new" && hasNew(manga))[include, exclude] = incexc(cat, include, exclude);
-            if (cat.name === "category_read" && hasBeenRead(manga))[include, exclude] = incexc(cat, include, exclude);
-            if (cat.name === "category_unread" && !hasBeenRead(manga))[include, exclude] = incexc(cat, include, exclude);
-            if (cat.name === "category_oneshots" && manga.listChaps.length === 1)[include, exclude] = incexc(cat, include, exclude);
+            if (cat.name === "category_new" && hasNew(manga)) [include, exclude] = incexc(cat, include, exclude);
+            if (cat.name === "category_read" && hasBeenRead(manga)) [include, exclude] = incexc(cat, include, exclude);
+            if (cat.name === "category_unread" && !hasBeenRead(manga)) [include, exclude] = incexc(cat, include, exclude);
+            if (cat.name === "category_oneshots" && manga.listChaps.length === 1) [include, exclude] = incexc(cat, include, exclude);
         }
         if (cat.type === 'language') {
             if (cat.name === amrutils.readLanguage(manga)) [include, exclude] = incexc(cat, include, exclude);
         }
-        if (manga.cats && manga.cats.length && manga.cats.includes(cat.name))[include, exclude] = incexc(cat, include, exclude);
+        if (manga.cats && manga.cats.length && manga.cats.includes(cat.name)) [include, exclude] = incexc(cat, include, exclude);
         if (cat.state === "include") needInclude = true;
         if (cat.state === "exclude") needExclude = true;
     }
@@ -52,5 +52,55 @@ export function countUsed(category, mangas) {
 }
 /** replace string inside brackets by html tag for icon */
 export function convertIcons(input) {
-    return input.replace(/\[mdi-(.+)\]/g,'<i aria-hidden="true" class="v-icon mdi mdi-$1"></i>');
+    return input.replace(/\[mdi-(.+)\]/g, '<i aria-hidden="true" class="v-icon mdi mdi-$1"></i>');
+}
+
+/**
+ * Calculates color to colorize mangas entries in list depending on options and manga state
+ * @param {*} manga 
+ * @param {*} param1 
+ * @param {*} light a parameter indicating how much lighter the color must be
+ */
+export function getColor(manga, { colornotfollow, colornew, colorread }, light) {
+    if (manga.read !== 0) return computeColorLight(colornotfollow, light);
+    else if (hasNew(manga)) {
+        return computeColorLight(colornew, light);
+    } else {
+        return computeColorLight(colorread, light);
+    }
+}
+
+export function computeColorLight(color, light) {
+    let colorname = color
+    if (color.indexOf("#") > 0) {
+        let sp = color.split("#")
+        colorname = sp[0]
+        let isDark = sp[1].charAt(0) === 'd'
+        let nb = parseInt(sp[1].charAt(1))
+        if (isDark) light -= nb
+        else light += nb
+    }
+    if (light > 5) light = 5
+    if (light < -4) light = -4
+    return colorname + (light === 0
+        ? ""
+        : light < 0 ? " darken-" + -light : " lighten-" + light);
+}
+
+/**
+ * Return true if we need a dark text
+ * @param {} manga 
+ * @param {*} options 
+ */
+export function darkText(manga, { colornotfollow, colornew, colorread }) {
+    if (manga.read !== 0) return isLight(colornotfollow);
+    else if (hasNew(manga)) {
+        return isLight(colornew);
+    } else {
+        return isLight(colorread);
+    }
+}
+
+function isLight(colorname) {
+    return colorname.indexOf("#l") > 0 || ["lime", "yellow"].includes(colorname);
 }

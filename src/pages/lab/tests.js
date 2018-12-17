@@ -319,12 +319,11 @@ const tests = [
                 test: async function loadImage(mirror, scan_url) {
                     let url = await browser.runtime.sendMessage({
                         action: "lab",
-                        torun: "loadChapterAndDo",
-                        task: "getScanUrl",
+                        torun: "getScanUrl",
                         url: scan_url,
                         mirror: mirror.mirrorName
                     });
-                    return [true, "Scan is loading from url", url];
+                    return [true, "Scan loaded with url <i>" + url + "</i>.", url];
                 }
             }
         ],

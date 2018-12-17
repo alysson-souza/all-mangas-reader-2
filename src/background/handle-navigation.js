@@ -1,13 +1,15 @@
+import store from '../store';
+
 class HandleNavigation {
     handle(message, sender) {
         switch (message.action) {
+            // Set bar state
+            case "setBarState":
+                localStorage.isBarVisible = message.barstate;
+                return Promise.resolve({});
             // hide navigation bar --> keeps its state
             case "hideBar":
-                if (localStorage.isBarVisible == 1) {
-                    localStorage.isBarVisible = 0;
-                } else {
-                    localStorage.isBarVisible = 1;
-                }
+                localStorage.isBarVisible = (localStorage.isBarVisible + 1) % 2
                 return Promise.resolve({
                     res: localStorage.isBarVisible
                 });
@@ -17,15 +19,20 @@ class HandleNavigation {
                 return Promise.resolve({});
             // get current state of navigation bar
             case "barState":
-                if (localStorage.isBarVisible === undefined) {
-                    return Promise.resolve({
-                        barVis: 1
-                    });
-                } else {
-                    return Promise.resolve({
-                        barVis: localStorage.isBarVisible
-                    });
-                }
+                return Promise.resolve({
+                    barVis: localStorage.isBarVisible === undefined ? 1 : localStorage.isBarVisible
+                });
+            // get a value from localStorage
+            case "get_storage":
+                return Promise.resolve(localStorage[message.key]);
+            // set a Value in localStorage
+            case "set_storage": 
+                localStorage[message.key] = message.value;
+                return Promise.resolve();
+            // set a Value in localStorage
+            case "save_option": 
+                store.dispatch("setOption", { key: message.key, value: message.value });
+                return Promise.resolve();
         }
     }
 }

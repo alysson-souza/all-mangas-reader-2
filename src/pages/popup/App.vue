@@ -40,7 +40,7 @@
             <v-toolbar-title>{{i18n("options_title")}}</v-toolbar-title>
           </v-toolbar>
 					<v-content>
-          	<Options />
+          	<Options v-if="options" />
 					</v-content>
         </v-card>
 	</v-dialog>
@@ -60,7 +60,7 @@
             <v-toolbar-title>{{i18n("search_title")}}</v-toolbar-title>
           </v-toolbar>
 					<v-content>
-          	<Search :to-search="toSearch" />
+          	<Search v-if="search" :to-search="toSearch" />
 					</v-content>
         </v-card>
 	</v-dialog>
@@ -74,7 +74,7 @@
 			width="500"
     >
 		<!-- Links in right panel -->
-		<v-container fluid class="pa-0" text-xs-center>
+		<v-container fluid class="pa-0" text-xs-center v-if="rpanel">
 			<v-layout row>
 				<v-flex xs6>
 					<v-layout row>
@@ -117,12 +117,12 @@
 				</v-flex>
 			</v-layout>
 		</v-container>
-		<v-tabs-items v-model="tabs" :class="($store.state.options.dark === 1 ? 'black' : 'white')">
-				<v-tab-item id="refresh">
+		<v-tabs-items v-model="tabs" :class="($store.state.options.dark === 1 ? 'black' : 'white')" v-if="rpanel">
+				<v-tab-item value="refresh">
 					<!-- Refresh buttons -->
 					<Timers />
 				</v-tab-item>
-				<v-tab-item id="importexport">
+				<v-tab-item value="importexport">
 					<!-- Import export panels -->
 					<ImportExport />
 				</v-tab-item>
@@ -187,8 +187,12 @@ export default {
 		 */
 		openSearch(pstr = "") {
 			this.search = true;
-			if (pstr != "") this.toSearch = pstr;
 			PopupResizer.setHeightToMax();
+			if (pstr != "") {
+				this.$nextTick(() => { // set the search phrase in next tick so this.search change is effective, has Search is included on v-if, the component to handle it has to be created before we can set its props
+					this.toSearch = pstr;
+				})
+			}
 		}, 
 		closeSearch() {
 			this.search = false;

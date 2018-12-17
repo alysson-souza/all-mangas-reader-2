@@ -26,6 +26,7 @@ export default class {
         this.update = obj.update;
         if (this.update === undefined || this.update === null) this.update = 1;
         this.display = obj.display || 0;
+        this.layout = obj.layout || 0;
         this.cats = obj.cats || [];
         if (obj.cats && typeof obj.cats === "string") {
             this.cats = JSON.parse(obj.cats);
@@ -40,5 +41,8 @@ export default class {
         this.language = obj.language;
         /* all other possible values for this manga langs */
         this.languages = obj.languages;
+        /** Currently reading chapter and page to restart from there if needed */
+        this.currentChapter = obj.currentChapter;
+        this.currentScanUrl = obj.currentScanUrl;
     }
 }

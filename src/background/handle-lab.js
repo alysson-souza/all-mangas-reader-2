@@ -28,6 +28,16 @@ class HandleLab {
                 else if (message.torun === "loadChapterAndDo") {
                     let res = this.loadChapterAndDo(message, impl);
                     resolve(res);
+                } 
+                else if (message.torun === "getScanUrl") {
+                    let img = new Image();
+                    await impl.getImageFromPageAndWrite(message.url, img);
+                    (function wait() {
+                        if (img.src && img.src != "") {
+                            return resolve(img.src);
+                        }
+                        setTimeout(wait, 100);
+                    })()
                 }
             } catch (e) {
                 reject(e);
@@ -68,18 +78,9 @@ class HandleLab {
                             } else if (message.task === "listScans") {
                                 let imagesUrl = await impl.getListImages(document.getElementById(id).contentWindow.document, message.url);
                                 resolve(imagesUrl);
-                            } else if (message.task === "getScanUrl") {
-                                let img = new Image();
-                                await impl.getImageFromPageAndWrite(message.url, img);
-                                (function wait() {
-                                    if (img.src && img.src != "") {
-                                        resolve(img.src);
-                                    }
-                                    setTimeout(wait, 100);
-                                })()
                             } else if (message.task === "wherenav") {
                                 impl.doSomethingBeforeWritingScans(document.getElementById(id).contentWindow.document, message.url);
-                                let where = impl.whereDoIWriteScans(document.getElementById(id).contentWindow.document, message.url);
+                                let where = await impl.whereDoIWriteScans(document.getElementById(id).contentWindow.document, message.url);
                                 resolve(where.length);
                             }
                             $("#" + id).remove();

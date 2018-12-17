@@ -18,30 +18,55 @@ const contentCss = [
     '/lib/jquery.modal.min.css'
 ];
 
+/** Scripts to inject in pages containing mangas for new reader */
+const contentScriptsV2 = [
+    '/lib/jquery.min.js',
+    '/reader/init-reading.js'
+];
+
 class HandleManga {
     handle(message, sender) {
         let key;
         if (message.url) key = utils.mangaKey(message.url, message.mirror, message.language);
         switch (message.action) {
+            case "mangaExists":
+                return Promise.resolve(
+                    store.state.mangas.all.find(manga => manga.key === key) !== undefined
+                );
             case "mangaInfos":
                 let mg = store.state.mangas.all.find(manga => manga.key === key)
                 if (mg !== undefined) {
                     return Promise.resolve({
-                        read: mg.read,
-                        display: mg.display
+                        read: mg.read, /* Read top */
+                        display: mg.display, /* Display mode of the old reader */
+                        layout: mg.layout, /* Layout for the new reader */
+                        lastchapter: mg.lastChapterReadURL, /* last read chapter (the most advanced one) */
+                        currentChapter: mg.currentChapter, /* last read chapter, last chapter page opened */
+                        currentScanUrl: mg.currentScanUrl /* last viewed page in currentChapter */
                     });
                 } else {
                     return Promise.resolve();
                 }
+            case "saveCurrentState":
+                return store.dispatch('saveCurrentState', message);
             case "readManga":
+                //count number of chapters read
+                let nb = localStorage["nb_read"] ? parseInt(localStorage["nb_read"]) : 1
+                localStorage["nb_read"] = "" + (nb + 1);
                 utils.debug("Read manga " + message.url);
+                // call store method to update reading list appropriately
                 return store.dispatch('readManga', message);
-            case "getNextChapterImages": //returns list of images for prefetch of next chapter in content script
-                return this.getChapterImages(message);
+            case "deleteManga":
+                utils.debug("Delete manga key " + key);
+                return store.dispatch('deleteManga', {key: key});
+            case "getNextChapterImages", "getChapterData": //returns boolean telling if url is a chapter page, infos from page and list of images for prefetch of next chapter in content script
+                return this.getChapterData(message);
             case "markReadTop":
                 return store.dispatch('markMangaReadTop', message);
             case "setDisplayMode":
                 return store.dispatch('setMangaDisplayMode', message);
+            case "setLayoutMode":
+                return store.dispatch('setMangaLayoutMode', message);
             case "setMangaChapter":
                 return store.dispatch('resetManga', message) // reset reading to first chapter
                     .then(() => store.dispatch('readManga', message)); // set reading to current chapter
@@ -159,15 +184,58 @@ class HandleManga {
         const mir = utils.currentPageMatch(url)
         if (mir === null) return Promise.resolve(null)
 
+        if (!localStorage["oldreader"]) {
+            // check if we need to load preload (it could be annoying to have preload on each pages of the website)
+            // websites which provide a chapter_url regexp will have their chapters with a preload
+            let dopreload = false
+            if (mir.chapter_url) {
+                var parts = /\/(.*)\/(.*)/.exec(mir.chapter_url);
+                var chaprx = new RegExp(parts[1], parts[2]);
+                if (chaprx.test("/" + utils.afterHostURL(url))) dopreload = true
+            }
+            if (dopreload) {
+                // Load amr preload
+                let loading = []
+                loading.push(browser.tabs.insertCSS(tabId, { file: "/reader/pre-loader.css" }))
+                let bgcolor = "#424242"
+                if (store.state.options.darkreader === 0) bgcolor = "white"
+                loading.push(browser.tabs.executeScript(
+                    tabId, 
+                    { code: `
+                        let amr_icon_url = '${browser.extension.getURL('/icons/icon_128.png')}';
+                        let cover = document.createElement("div")
+                        cover.id = "amr-loading-cover"
+                        cover.style.backgroundColor = "${bgcolor}"
+
+                        let img = document.createElement("img")
+                        img.src = amr_icon_url;
+                        cover.appendChild(img)
+
+                        document.body.appendChild(cover)
+                        setTimeout(() => {
+                            try {cover.parentNode.remove(cover)} catch(e) {}
+                        }, 5000)
+                    `}))
+                Promise.all(loading)
+            }
+        }
+
         let impl = await this.getImplementation(mir)
         if (impl) {
-            // Inject css in matched tab
-            for (let css of contentCss) {
-                await browser.tabs.insertCSS(tabId, { file: css });
-            }
-            // Inject content scripts in matched tab
-            for (let script of contentScripts) {
-                await browser.tabs.executeScript(tabId, { file: script });
+            if (localStorage["oldreader"]) {
+                // Inject css in matched tab
+                for (let css of contentCss) {
+                    await browser.tabs.insertCSS(tabId, { file: css });
+                }
+                // Inject content scripts in matched tab
+                for (let script of contentScripts) {
+                    await browser.tabs.executeScript(tabId, { file: script });
+                }
+            } else {
+                // Inject content scripts in matched tab
+                for (let script of contentScriptsV2) {
+                    await browser.tabs.executeScript(tabId, { file: script });
+                }
             }
             // Inject mirror implementation (through a function called in the implementation and existing in back.js)
             await browser.tabs.executeScript(tabId, { code: impl });
@@ -179,7 +247,7 @@ class HandleManga {
      * Return the list of images urls from a chapter
      * @param {*} message 
      */
-    async getChapterImages(message) {
+    async getChapterData(message) {
         return Axios.get(message.url)
             .then(resp => {
                 return new Promise((resolve, reject) => {
@@ -197,12 +265,38 @@ class HandleManga {
                     let ldoc = document.getElementById(id).contentWindow.document;
                     ldoc.documentElement.innerHTML = resp.data;
                     let readyCall = async () => {
+                        // loads the implementation code
                         let impl = await mirrorsImpl.getImpl(message.mirrorName);
-                        var imagesUrl = await impl.getListImages(document.getElementById(id).contentWindow.document, message.url);
-                        resolve({
-                            images: imagesUrl
-                        });
+
+                        // Check if this is a chapter page
+                        let isChapter = impl.isCurrentPageAChapterPage(
+                            document.getElementById(id).contentWindow.document, 
+                            message.url)
+                        let infos, imagesUrl = []
+                        if (isChapter) {
+                            try {
+                                // Retrieve informations relative to current chapter / manga read
+                                infos = await impl.getInformationsFromCurrentPage(
+                                    document.getElementById(id).contentWindow.document, 
+                                    message.url)
+                                    
+                                // retrieve images to load
+                                imagesUrl = await impl.getListImages(
+                                    document.getElementById(id).contentWindow.document, 
+                                    message.url);
+                            } catch (e) {
+                                console.error("Error while loading infos and images from url " + message.url)
+                                console.error(e)
+                            }
+                        }
+                        let title = document.getElementById(id).contentWindow.document.title
                         $("#" + id).remove();
+                        resolve({
+                            isChapter: isChapter,
+                            infos: infos,
+                            images: imagesUrl,
+                            title: title
+                        });
                     }
                     if (ldoc.readyState === "complete" ||
                         (ldoc.readyState !== "loading" && !ldoc.documentElement.doScroll)) {
