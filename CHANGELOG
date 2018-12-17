@@ -1,3 +1,18 @@
+### V2.1.0
+New Reader :
+ - On the online reader, the whole page is removed and replaced with AMR reader
+ - more layout options (one page at a time, resize height / container )
+ - load chapters quickly and navigate "in the reader", the next preloaded chapter loads instantly
+ - display thumbs of the whole manga at the bottom
+ - Smooth navigation between pages
+ - better ergonomy / design
+ - lots of shortcuts
+ - improved bookmarks with preview
+ - save current page and reload at this position
+Fixes :
+ - Improve popup loading time
+ - Update Vuetify, fix a few css issues
+
 ### V2.0.3
 Websites implementation improvements (A lot of implementations have been added thanks to these improvements) : 
  - Abstract implementation for mirrors (A lot of websites are based on CMS like FoolSlide). Implement once for multiple websites
