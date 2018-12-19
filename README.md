@@ -61,7 +61,11 @@ Go to Menu > Extensions and click on **Load unpacked extension**. Select the `di
 ### Firefox for Android
 To test the extension while developing on Firefox for Android, install Firefox on your computer and adb, follow the steps in the [Set up your computer and Android emulator or device](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Developing_WebExtensions_for_Firefox_for_Android) to configure your debugging environment 
 
-Then, build the extension normally, add the firefox app id using `yarn run manifest:specify -firefox` then zip the `dist` folder using `yarn run build-zip`, rename the created file to an xpi file. Once done, push it to your phone or emulator using `adb push ./dist-zip/all-mangas-reader-v2.1.0.xpi /mnt/sdcard/`
+Then, build the extension using `yarn run adroid:dev`, this will : 
+* build the extension like usual, 
+* add the firefox app id
+* then zip the `dist` folder and rename the created file to an xpi file
+* finally push it to your phone or emulator (using `adb push ./dist-zip/all-mangas-reader-vXXX.xpi /mnt/sdcard/`)
 
 The extension is on your phone, in Firefox for Android, open `file:///mnt/sdcard/` and tap on the extension file, it will install it ! You can debug it using Firefox WebIDE and connect to your phone.
 
