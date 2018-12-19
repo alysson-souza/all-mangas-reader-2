@@ -58,6 +58,17 @@ To load firefox with All Mangas Reader in debug mode, execute the following comm
 ### Opera
 Go to Menu > Extensions and click on **Load unpacked extension**. Select the `dist` folder of your local repository. That's done !
 
+### Firefox for Android
+To test the extension while developing on Firefox for Android, install Firefox on your computer and adb, follow the steps in the [Set up your computer and Android emulator or device](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Developing_WebExtensions_for_Firefox_for_Android) to configure your debugging environment 
+
+Then, build the extension using `yarn run adroid:dev`, this will : 
+* build the extension like usual, 
+* add the firefox app id
+* then zip the `dist` folder and rename the created file to an xpi file
+* finally push it to your phone or emulator (using `adb push ./dist-zip/all-mangas-reader-vXXX.xpi /mnt/sdcard/`)
+
+The extension is on your phone, in Firefox for Android, open `file:///mnt/sdcard/` and tap on the extension file, it will install it ! You can debug it using Firefox WebIDE and connect to your phone.
+
 ## Contribute
 Before contributing to the project, please read [Contribution guide](CONTRIBUTING.md).
 

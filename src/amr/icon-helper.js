@@ -31,6 +31,7 @@ class IconHelper {
         this.spinning = false;
     }
     updateBadge(nb) {
+        if (utils.isFirefoxAndroid()) return
         browser.browserAction.setBadgeText({text: ""+nb});
         if (nb === 0) {
             //set grey background
@@ -41,33 +42,38 @@ class IconHelper {
         }
     }
     resetBadge() {
+        if (utils.isFirefoxAndroid()) return
         browser.browserAction.setBadgeText({text: ""});
     }
     /**
      * Set AMR icon to blue sharingan
      */
     setBlueIcon() {
-        if (this.spinning) return;
-        browser.browserAction.setIcon({ path: "/icons/icon_32_blue.png" });
+        if (this.spinning) return
+        if (utils.isFirefoxAndroid()) return
+        browser.browserAction.setIcon({ path: "/icons/icon_32_blue.png" })
     }
     /**
      * Set AMR icon to grayscale sharingan
      */
     setBWIcon() {
-        if (this.spinning) return;
-        browser.browserAction.setIcon({ path: "/icons/icon_32_bw.png" });
+        if (this.spinning) return
+        if (utils.isFirefoxAndroid()) return
+        browser.browserAction.setIcon({ path: "/icons/icon_32_bw.png" })
     }
     /**
      * Set AMR icon to default sharingan
      */
     resetIcon() {
-        if (this.spinning) return;
-        browser.browserAction.setIcon({ path: "/icons/icon_32.png" });
+        if (this.spinning) return
+        if (utils.isFirefoxAndroid()) return
+        browser.browserAction.setIcon({ path: "/icons/icon_32.png" })
     }
     /**
      * Set AMR icon to spinning sharingan (normal or grayscale depending on options)
      */
     spinIcon() {
+        if (utils.isFirefoxAndroid()) return
         // Let's do it the chrome way, it's smoother.
         //if (!utils.isFirefox()) {
             // chrome does not support animated svg as icon

@@ -7,6 +7,7 @@ import Vuetify from 'vuetify';
 import App from './App.vue';
 import store from '../../store';
 import theme from '../theme';
+import * as util from "../utils";
 
 (async function() {
   // Load options in store before everything
@@ -27,7 +28,7 @@ import theme from '../theme';
       url: "/pages/popup/popup.html?mode=tab"
     });
   }
-  if (popup) {
+  if (popup && !util.isSmallDevice()) {
     document.body.classList.add("popup");
   } else {
     document.documentElement.style["overflow-y"] = "auto"

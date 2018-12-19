@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const zipFolder = require('zip-dir');
+const exec = require("child_process").exec
 
 const DEST_DIR = path.join(__dirname, '../dist');
 const DEST_ZIP_DIR = path.join(__dirname, '../dist-zip'); 
@@ -38,13 +39,25 @@ const buildZip = (src, dist, zipFilename) => {
 
 const main = () => {
   const {name, version} = extractExtensionData();
-  const zipFilename = `${name}-v${version}.zip`;
+  let extension = ".zip"
+  if (process.argv.includes("-xpi")) {
+    extension = ".xpi"
+  }
+  const zipFilename = `${name}-v${version}${extension}`;
   
   makeDestZipDirIfNotExists();
 
   buildZip(DEST_DIR, DEST_ZIP_DIR, zipFilename)
     .then(() => console.info('OK'))
     .catch(console.err); 
+
+  if (process.argv.includes("-push")) {
+    console.log("Pushing to phone")
+    exec(`adb push ./dist-zip/${zipFilename} /mnt/sdcard/`, (error, stdout, stderr) => {
+      if (error) console.error(stderr)
+      else console.log(stdout)
+    })
+  }
 };
 
 main();
