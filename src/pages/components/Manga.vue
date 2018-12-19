@@ -1,9 +1,9 @@
 <template>
-<div v-if="!isInGroup || (isFirst || groupExpanded)" class="amr-line-container" :class="{'dark-text': isDarkText}">
+<div v-if="!isInGroup || (isFirst || groupExpanded)" class="amr-line-container" :class="{'dark-text': isDarkText, compact: smalldevice}">
     <!-- manga line, containing title, list of chapters and actions-->
-    <v-layout row>
+    <v-layout row wrap>
       <!-- Title and icon -->
-      <v-flex xs3 class="amr-list-elt">
+      <v-flex :xs3="!smalldevice" :xs12="smalldevice" class="amr-list-elt">
       <v-card dark tile flat :color="color(3)" class="back-card">
         <v-card v-if="!isInGroup || isFirst" dark :color="color(0)" class="amr-manga-title-cont">
           <!-- Icon of the mirror if not in group -->
@@ -66,7 +66,7 @@
       </v-card>
       </v-flex>
       <!-- Actions -->
-      <v-flex xs3 class="amr-list-elt" text-xs-center>
+      <v-flex :xs3="!smalldevice" :xs6="smalldevice" class="amr-list-elt" text-xs-center>
         <v-card  dark tile flat :color="color(3)" class="back-card">
           <template v-if="seen">
           <v-card dark :color="color(0)" class="amr-manga-actions-cont">
@@ -240,6 +240,9 @@ export default {
     isDarkText: function() {
       return utils.darkText(this.manga, this.options)
     },
+    smalldevice: function() {
+      return utils.isSmallDevice()
+    },
   },
   methods: {
     i18n: (message, ...args) => i18n(message, ...args),
@@ -351,6 +354,37 @@ export default {
 }
 .container.amr-list-line:last-child
   .amr-line-container:last-child
+  .flex:last-child
+  > .v-card {
+  border-bottom-right-radius: 5px;
+}
+.container.amr-list-line:first-child
+  .amr-line-container.compact:first-child
+  .flex:first-child
+  > .v-card {
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+.container.amr-list-line:first-child
+  .amr-line-container.compact:first-child
+  .flex:last-child
+  > .v-card {
+  border-top-right-radius: 0px;
+}
+.container.amr-list-line:last-child
+  .amr-line-container.compact:last-child
+  .flex:first-child
+  > .v-card {
+  border-bottom-left-radius: 0px;
+}
+.container.amr-list-line:last-child
+  .amr-line-container.compact:last-child
+  .flex:nth-last-child(2)
+  > .v-card {
+  border-bottom-left-radius: 5px;
+}
+.container.amr-list-line:last-child
+  .amr-line-container.compact:last-child
   .flex:last-child
   > .v-card {
   border-bottom-right-radius: 5px;
