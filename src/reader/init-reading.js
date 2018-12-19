@@ -78,7 +78,9 @@ function initReader() {
     // document is the only node we keep from the page, ensure it won't break our css : 
     document.body.style.padding = "0px"
     document.body.style.margin = "0px"
-    /*document.body.style.width = "100vw"*/
+    document.body.style.setProperty("max-width", "none", "important")
+    document.body.style.setProperty("min-width", "none", "important")
+    document.body.style.setProperty("width", "auto", "important")
     if (options.darkreader === 1) document.body.style.backgroundColor = "#303030"
     else document.body.style.backgroundColor = "white"
 
