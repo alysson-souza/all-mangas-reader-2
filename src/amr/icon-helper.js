@@ -31,18 +31,18 @@ class IconHelper {
         this.spinning = false;
     }
     updateBadge(nb) {
+        if (utils.isFirefoxAndroid()) return
         browser.browserAction.setBadgeText({text: ""+nb});
-        if (!utils.isFirefoxAndroid()) {
-            if (nb === 0) {
-                //set grey background
-                browser.browserAction.setBadgeBackgroundColor({color:"#aaaaaa"});
-            } else {
-                //set red background
-                browser.browserAction.setBadgeBackgroundColor({color:"red"});
-            }
+        if (nb === 0) {
+            //set grey background
+            browser.browserAction.setBadgeBackgroundColor({color:"#aaaaaa"});
+        } else {
+            //set red background
+            browser.browserAction.setBadgeBackgroundColor({color:"red"});
         }
     }
     resetBadge() {
+        if (utils.isFirefoxAndroid()) return
         browser.browserAction.setBadgeText({text: ""});
     }
     /**
