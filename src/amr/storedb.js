@@ -1,4 +1,6 @@
 import * as utils from './utils'
+import { createSync, SyncManager } from './sync-manager'
+import { objectMapToArray } from './utils'
 
 /**
  * Class helping to store data in IndexedDb
@@ -11,8 +13,13 @@ import * as utils from './utils'
  *  - bookmarked chapters and scans
  */
 class StoreDB {
-    constructor() {
+
+    /**
+     * @param {SyncManager} sync
+     */
+    constructor(sync) {
         this.status = 0; // Not initialized (1 : ready; 2 : error; 3 : initializing)
+        this.sync = sync;
     }
 
     /**
@@ -298,7 +305,16 @@ class StoreDB {
                             cursor.continue();
                         }
                         else {
-                            resolve(mangas);
+                            if (mangas.length === 0) {
+                                // Load from sync store
+                                store.sync.loadMangaList().then(resolve)
+                            } else {
+                                store.sync.saveAll(mangas.map(m => {
+                                    m.listChaps = [];
+                                    return m
+                                }))
+                                resolve(mangas);
+                            }
                         }
                     };
                 });
@@ -379,4 +395,4 @@ class StoreDB {
             });
     }
 }
-export default new StoreDB();
+export default new StoreDB(createSync());
