@@ -1,6 +1,5 @@
 import * as utils from './utils'
-import { createSync, SyncManager } from './sync-manager'
-import { objectMapToArray } from './utils'
+import { createSync, SyncManager } from './sync/sync-manager'
 
 /**
  * Class helping to store data in IndexedDb
@@ -289,6 +288,7 @@ class StoreDB {
     }
     /**
      * Return the stored list of manga (reading list)
+     * @return PromiseLike<*>
      */
     getMangaList() {
         let store = this;
@@ -305,18 +305,16 @@ class StoreDB {
                             cursor.continue();
                         }
                         else {
-                            if (mangas.length === 0) {
-                                // Load from sync store
-                                store.sync.loadMangaList().then(resolve)
-                            } else {
-                                store.sync.saveAll(mangas.map(m => {
-                                    m.listChaps = [];
-                                    return m
-                                }))
-                                resolve(mangas);
-                            }
+                            resolve(mangas)
                         }
                     };
+                }).then(mangas => {
+                    if (mangas.length === 0) {
+                        // Load from sync store
+                        return store.sync.loadMangaList()
+                    }
+
+                    return mangas;
                 });
             });
     }
