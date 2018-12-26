@@ -22,7 +22,11 @@ export default class {
         } else if (obj.listChaps) {
             this.listChaps = obj.listChaps;
         }
+
+        // start(0) / stop(1) following updates (unread chapters in manga list)
         this.read = obj.read || 0;
+
+        // start(1) / stop(0) updating (looking for new chapters) mangas
         this.update = obj.update;
         if (this.update === undefined || this.update === null) this.update = 1;
         this.display = obj.display || 0;
@@ -33,7 +37,11 @@ export default class {
         } else if (obj.cats) {
             this.cats = obj.cats;
         }
+
+        // Update the last read chapter of a manga (last updated?)
         this.ts = obj.ts || Math.round(Date.now() / 1000);
+
+        // last time we found a new chapter
         this.upts = obj.upts || 0;
 
         /* listChaps can contain an object with multiple lists for each lang

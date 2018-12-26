@@ -2,7 +2,12 @@ import { arrayToObject, debug, objectMapToArray } from './utils'
 import BrowserStorage from './storage/browser-storage'
 
 /**
+ *
  * TODO: Merge list when enabled on multiple devices
+ * Fetch all manga lists for keys that were updated,
+ * Reconcile what changed
+ *  - Based on last updated time? ({mangaKey:  timestamp})
+ *  - Send newer version of chapters to the server
  */
 export class SyncManager {
 
