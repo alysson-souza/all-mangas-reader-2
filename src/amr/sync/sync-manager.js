@@ -46,7 +46,7 @@ export class SyncManager {
 
         localList.forEach(manga => {
 
-            if (manga.key === syncUtils.FAIL_KEY) {
+            if (this.shouldSkipSync(manga)) {
                 return;
             }
 
@@ -73,7 +73,7 @@ export class SyncManager {
 
         remoteList.forEach(manga => {
 
-            if (manga.deleted === 1 || manga.key === FAIL_KEY) {
+            if (this.shouldSkipSync(manga)) {
                 return;
             }
 
@@ -92,6 +92,10 @@ export class SyncManager {
         this.log(`Syncing ${localUpdates.length} keys to local storage`)
         await this.localStorage.syncLocal(localUpdates);
         return localUpdates;
+    }
+
+    shouldSkipSync(manga) {
+        return manga.deleted === 1 || manga.key === syncUtils.FAIL_KEY
     }
 
     /**
