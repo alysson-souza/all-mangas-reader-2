@@ -1,7 +1,6 @@
 import { arrayToObject, debug, objectMapToArray } from '../utils'
 import BrowserStorage from '../storage/browser-storage'
-import StoreDB from '../storedb'
-import store from '../../store'
+import { createLocalStorage } from '../storage/local-storage'
 
 const FAIL_KEY = '_no_key_';
 
@@ -16,7 +15,7 @@ const FAIL_KEY = '_no_key_';
 export class SyncManager {
 
     /**
-     * @param {StoreDB} localStorage
+     * @param {LocalStorage} localStorage
      * @param {BrowserStorage} storage
      */
     constructor(localStorage, storage) {
@@ -30,7 +29,7 @@ export class SyncManager {
 
     async checkData() {
         this.log('Checking sync data');
-        const localList = await this.localStorage.getMangaList();
+        const localList = await this.localStorage.loadMangaList();
         const remoteList = await this.loadMangaList();
 
         this.log('Comparing local and remote list');
@@ -92,7 +91,7 @@ export class SyncManager {
         }
 
         this.log(`Syncing ${localUpdates.length} keys to local storage`)
-        await this.syncLocal(localUpdates);
+        await this.localStorage.syncLocal(localUpdates);
         return localUpdates;
     }
 
@@ -125,18 +124,6 @@ export class SyncManager {
             deleted: 1,
         }).then(this.log)
     }
-
-    syncLocal(mangaUpdates) {
-        const storeUpdates = mangaUpdates.map(manga => {
-            // fromSite 1 ensure ts and last chapters read are updated
-            if (manga.deleted === 1) {
-                return store.dispatch('deleteManga', { key: manga.key })
-            }
-            return store.dispatch('readManga', { ...manga, fromSite: 1 })
-        })
-
-        return Promise.all(storeUpdates);
-    }
 }
 
-export const createSync = () => new SyncManager(StoreDB, new BrowserStorage());
+export const createSync = () => new SyncManager(createLocalStorage(), new BrowserStorage());
