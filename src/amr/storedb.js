@@ -1,5 +1,4 @@
 import * as utils from './utils'
-import { createSync, SyncManager } from './sync/sync-manager'
 
 /**
  * Class helping to store data in IndexedDb
@@ -12,13 +11,8 @@ import { createSync, SyncManager } from './sync/sync-manager'
  *  - bookmarked chapters and scans
  */
 class StoreDB {
-
-    /**
-     * @param {SyncManager} sync
-     */
-    constructor(sync) {
+    constructor() {
         this.status = 0; // Not initialized (1 : ready; 2 : error; 3 : initializing)
-        this.sync = sync;
     }
 
     /**
@@ -288,7 +282,6 @@ class StoreDB {
     }
     /**
      * Return the stored list of manga (reading list)
-     * @return PromiseLike<*>
      */
     getMangaList() {
         let store = this;
@@ -308,13 +301,6 @@ class StoreDB {
                             resolve(mangas);
                         }
                     };
-                }).then(mangas => {
-                    if (mangas.length === 0) {
-                        // Load from sync store
-                        return store.sync.loadMangaList()
-                    }
-
-                    return mangas;
                 });
             });
     }
@@ -393,4 +379,4 @@ class StoreDB {
             });
     }
 }
-export default new StoreDB(createSync());
+export default new StoreDB();
