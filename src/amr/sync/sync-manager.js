@@ -3,6 +3,8 @@ import BrowserStorage from '../storage/browser-storage'
 import StoreDB from '../storedb'
 import store from '../../store'
 
+const FAIL_KEY = '_no_key_';
+
 /**
  *
  * TODO: Merge list when enabled on multiple devices
@@ -46,6 +48,10 @@ export class SyncManager {
 
         localList.forEach(manga => {
 
+            if (manga.key === FAIL_KEY) {
+                return;
+            }
+
             // Check if need to be sync to remote
             const remoteManga = remoteList.find(m => m.key === manga.key);
             if (!remoteManga || remoteManga.ts < manga.ts) {
@@ -69,7 +75,7 @@ export class SyncManager {
 
         remoteList.forEach(manga => {
 
-            if (manga.deleted === 1) {
+            if (manga.deleted === 1 || manga.key === FAIL_KEY) {
                 return;
             }
 
