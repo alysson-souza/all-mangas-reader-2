@@ -47,8 +47,6 @@ export class SyncManager {
 
             // Check if need to be sync to remote
             const remoteManga = remoteList.find(m => m.key === manga.key);
-
-            this.log({ remote: remoteManga.ts, local: manga.ts })
             if (!remoteManga || remoteManga.ts < manga.ts) {
                 remoteUpdates.push({ ...manga, listChaps: [] });
             }
@@ -72,7 +70,6 @@ export class SyncManager {
 
             // Check if need to be sync to remote
             const localManga = localList.find(m => m.key === manga.key);
-            this.log({ remote: manga.ts, local: localManga.ts })
             if (!localManga || localManga.ts < manga.ts) {
                 localUpdates.push({ ...manga, listChaps: [] });
             }
