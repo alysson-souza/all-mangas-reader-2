@@ -1,6 +1,8 @@
+import browser from 'webextension-polyfill'
 import { arrayToObject, debug, objectMapToArray } from '../utils'
 import BrowserStorage from '../storage/browser-storage'
 import StoreDB from '../storedb'
+import store from '../../store'
 
 /**
  *
@@ -71,7 +73,7 @@ export class SyncManager {
             // Check if need to be sync to remote
             const localManga = localList.find(m => m.key === manga.key);
             if (!localManga || localManga.ts < manga.ts) {
-                localUpdates.push({ ...manga, listChaps: [] });
+                localUpdates.push({ ...manga });
             }
         })
 
@@ -80,14 +82,9 @@ export class SyncManager {
             return localUpdates;
         }
 
-        this.log(`Syncing ${localUpdates.length} keys to remote storage`)
-        // @TODO save to local storage
-
+        this.log(`Syncing ${localUpdates.length} keys to local storage`)
+        await this.syncLocal(localUpdates);
         return localUpdates;
-    }
-
-    async save(key, value) {
-        return this.storage.save(key, value)
     }
 
     async saveAll(data) {
@@ -107,6 +104,14 @@ export class SyncManager {
         });
     }
 
+    syncLocal(mangaUpdates) {
+        const storeUpdates = mangaUpdates.map(manga => {
+            // fromSite 1 ensure ts and last chapters read are updated
+            return store.dispatch('readManga', {...manga, fromSite: 1 })
+        })
+
+        return Promise.all(storeUpdates);
+    }
 }
 
 export const createSync = () => new SyncManager(StoreDB, new BrowserStorage());
