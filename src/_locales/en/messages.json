@@ -333,6 +333,10 @@
     "message": "Synchronization",
     "description": "browser sync between different devices"
   },
+  "options_sync_title_warning": {
+    "message": "It's highly recommended to create manga list export, before you enabled sync for the first time!",
+    "description": "create manga list export before enabling it"
+  },
   "options_sync_manga_list_desc": {
     "message": "Allow users to sync manga list",
     "description": "browser sync between different devices"

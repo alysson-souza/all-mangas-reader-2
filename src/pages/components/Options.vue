@@ -213,6 +213,10 @@
                   <!-- Synchronization -->
                   <div class="headline">{{ i18n("options_sync_title") }}</div>
                   <div class="subtitle">{{i18n('options_sync_manga_list_desc')}}</div>
+                  <v-alert v-if="!syncEnabled"  :value="true" color="error" icon="mdi-alert-octagon" outline>
+                      {{i18n('options_sync_title_warning')}}
+                  </v-alert>
+
                   <v-checkbox v-model="syncEnabled" @change="setOption('syncEnabled')"
                               :label="i18n('options_sync_checkbox')"></v-checkbox>
               </v-container>
