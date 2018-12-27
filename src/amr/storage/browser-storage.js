@@ -1,5 +1,5 @@
 import browser from 'webextension-polyfill'
-import { batchProps } from '../utils'
+import { arrayToObject, batchProps, objectMapToArray } from '../utils'
 
 const LIMITS = {
     MAX_ITEMS: 512,
@@ -26,7 +26,9 @@ export default class BrowserStorage {
     }
 
     getAll() {
-        return this.storageSync.get();
+        return this.storageSync.get()
+        .then(result => objectMapToArray(result))
+        .then(data => data.filter(i => typeof i === 'object'));
     }
 
     save(key, value) {
@@ -49,6 +51,14 @@ export default class BrowserStorage {
 
     get(key) {
         return this.storageSync.get(key);
+    }
+
+    saveAll(data) {
+        if (Array.isArray(data)) {
+            data = arrayToObject(data, 'key');
+        }
+
+        return this.set(data);
     }
 
     clear() {

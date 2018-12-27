@@ -1,4 +1,4 @@
-import { arrayToObject, debug, objectMapToArray } from '../utils'
+import { debug } from '../utils'
 import BrowserStorage from '../storage/browser-storage'
 import { createLocalStorage } from '../storage/local-storage'
 
@@ -30,7 +30,7 @@ export class SyncManager {
     async checkData() {
         this.log('Checking sync data');
         const localList = await this.localStorage.loadMangaList();
-        const remoteList = await this.loadMangaList();
+        const remoteList = await this.storage.getAll();
 
         this.log('Comparing local and remote list');
         this.log({ localList, remoteList });
@@ -64,7 +64,7 @@ export class SyncManager {
         }
 
         this.log(`Syncing ${remoteUpdates.length} keys to remote storage`)
-        await this.saveAll(remoteUpdates);
+        await this.storage.saveAll(remoteUpdates);
 
         return remoteUpdates;
     }
@@ -93,23 +93,6 @@ export class SyncManager {
         this.log(`Syncing ${localUpdates.length} keys to local storage`)
         await this.localStorage.syncLocal(localUpdates);
         return localUpdates;
-    }
-
-    async saveAll(data) {
-        if (Array.isArray(data)) {
-            data = arrayToObject(data, 'key');
-        }
-
-        return this.storage.set(data).then(() => {
-            this.log(`Synchronized ${Object.keys(data).length} items to storage`)
-        });
-    }
-
-    async loadMangaList() {
-        return this.storage.getAll().then(result => {
-            this.log(result);
-            return objectMapToArray(result).filter(i => typeof i === 'object');
-        });
     }
 
     /**
