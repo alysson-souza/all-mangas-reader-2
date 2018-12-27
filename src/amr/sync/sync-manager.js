@@ -1,8 +1,7 @@
-import { debug } from '../utils'
-import BrowserStorage from '../storage/browser-storage'
-import { createLocalStorage } from '../storage/local-storage'
-
-const FAIL_KEY = '_no_key_';
+import { debug } from '../utils';
+import BrowserStorage from '../storage/browser-storage';
+import { createLocalStorage } from '../storage/local-storage';
+import * as syncUtils from './utils'
 
 /**
  *
@@ -47,7 +46,7 @@ export class SyncManager {
 
         localList.forEach(manga => {
 
-            if (manga.key === FAIL_KEY) {
+            if (manga.key === syncUtils.FAIL_KEY) {
                 return;
             }
 
@@ -104,7 +103,7 @@ export class SyncManager {
         return this.storage.save(key, {
             key,
             ts: Math.round(Date.now() / 1000),
-            deleted: 1,
+            deleted: syncUtils.DELETED,
         }).then(this.log)
     }
 }
