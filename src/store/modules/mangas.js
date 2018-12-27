@@ -7,6 +7,9 @@ import * as utils from "../../amr/utils";
 import samples from "../../amr/samples";
 import amrUpdater from '../../amr/amr-updater';
 import iconHelper from '../../amr/icon-helper';
+import { createSync } from '../../amr/sync/sync-manager'
+
+const syncManager = createSync();
 
 /**
  *  initial state of the mangas module
@@ -516,6 +519,7 @@ const actions = {
         if (mg !== undefined) {
             commit('deleteManga', message.key);
             storedb.deleteManga(message.key);
+            syncManager.deleteManga(message.key);
         }
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();

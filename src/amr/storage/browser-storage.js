@@ -21,8 +21,8 @@ export default class BrowserStorage {
         this.batchSize = 10;
     }
 
-    remove() {
-        this.storageSync.remove()
+    remove(keys) {
+        this.storageSync.remove(keys)
     }
 
     getAll() {

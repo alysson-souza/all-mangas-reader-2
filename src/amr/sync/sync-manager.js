@@ -1,4 +1,3 @@
-import browser from 'webextension-polyfill'
 import { arrayToObject, debug, objectMapToArray } from '../utils'
 import BrowserStorage from '../storage/browser-storage'
 import StoreDB from '../storedb'
@@ -104,10 +103,26 @@ export class SyncManager {
         });
     }
 
+    /**
+     * Cant actually delete it due to sync, need to mark it as deleted
+     * @param {string} key
+     * @return {Promise<*>}
+     */
+    async deleteManga(key) {
+        return this.storage.save(key, {
+            key,
+            ts: Math.round(Date.now() / 1000),
+            deleted: 1,
+        }).then(this.log)
+    }
+
     syncLocal(mangaUpdates) {
         const storeUpdates = mangaUpdates.map(manga => {
             // fromSite 1 ensure ts and last chapters read are updated
-            return store.dispatch('readManga', {...manga, fromSite: 1 })
+            if (manga.deleted === 1) {
+                return store.dispatch('deleteManga', { key: manga.key })
+            }
+            return store.dispatch('readManga', { ...manga, fromSite: 1 })
         })
 
         return Promise.all(storeUpdates);
