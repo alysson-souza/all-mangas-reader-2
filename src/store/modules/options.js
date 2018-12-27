@@ -72,7 +72,7 @@ const default_options = {
     notificationtimer: 0, //time to clear notification auto
 
     /** Sync options */
-    syncEnabled: 1,
+    syncEnabled: 0,
 
     /** Language options */
     readlanguages: ["en", "gb"], // default language is english. On install, the user language is added to this list
