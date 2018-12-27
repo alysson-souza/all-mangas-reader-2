@@ -11,7 +11,6 @@ import { getSyncSchedule } from '../amr/sync/sync-schedule'
 
 // Blue icon while loading
 IconHelper.setBlueIcon();
-const syncSchedule = getSyncSchedule();
 
 // Initialize store
 (async () => {
@@ -41,7 +40,9 @@ const syncSchedule = getSyncSchedule();
     /**
      * Start sync process between local and remote storage
      */
-    utils.debug("Starting sync process ");
+    const syncSchedule = getSyncSchedule({
+        syncEnabled: store.state.options.syncEnabled
+    });
     syncSchedule.start()
 
     /**

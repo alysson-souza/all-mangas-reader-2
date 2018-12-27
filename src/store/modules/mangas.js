@@ -519,7 +519,10 @@ const actions = {
         if (mg !== undefined) {
             commit('deleteManga', message.key);
             storedb.deleteManga(message.key);
-            syncManager.deleteManga(message.key);
+
+            if (rootState.options.syncEnabled) {
+                syncManager.deleteManga(message.key);
+            }
         }
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();

@@ -3,6 +3,7 @@ import { debug } from '../utils';
 
 const defaultConfig = {
     syncInterval: 30 * 1000,
+    syncEnabled: 0,
 }
 
 class SyncSchedule {
@@ -19,7 +20,8 @@ class SyncSchedule {
     }
 
     start() {
-        if (!this.syncInterval) {
+        if (this.config.syncEnabled && !this.syncInterval) {
+            debug("Starting sync process");
             this.triggerSync();
             this.syncInterval = setInterval(this.triggerSync.bind(this), this.config.syncInterval);
         }
@@ -35,9 +37,9 @@ class SyncSchedule {
 }
 
 let instance;
-export const getSyncSchedule = (syncManager, config) => {
+export const getSyncSchedule = (config) => {
     if (!instance) {
-        instance = new SyncSchedule(syncManager || createSync(), config);
+        instance = new SyncSchedule(createSync(config), config);
     }
     return instance
 }
