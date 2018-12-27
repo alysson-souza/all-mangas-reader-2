@@ -58,6 +58,29 @@ To load firefox with All Mangas Reader in debug mode, execute the following comm
 ### Opera
 Go to Menu > Extensions and click on **Load unpacked extension**. Select the `dist` folder of your local repository. That's done !
 
+### Synchronisation
+
+Sync can be enabled under `settings > general > Enable browser sync checkbox`
+
+Syncing data using `browser.storage.sync` across different devices require same extension id on both devices.
+
+extension id can be set in manifest.json
+* for chrome - "key" field
+* for firefox - "applications.gecko.id"
+
+The easiest way to build and set know id by simply running two yarn commands
+* `yarn build:dev && yarn manifest:specify -chrome`
+* `yarn build:dev && yarn manifest:specify -firefox`
+
+#### Caveats:
+
+The above approach does not work very well during development as normally `yarn watch:dev` command is run to track changes and compile code, however it can cause the manifest to be reset and the `yarn build:dev && yarn manifest:specify` would need to be executed again.
+
+As a temporary solution, the `manifest.json` file in src directly can be modified (BUT NOT COMMITTED) with either specific vendor changes.
+
+Right fields can be copied from `dist/manifest.json` to `src/manifest.json` after running `yarn manifest:specify` command`
+
+
 ## Contribute
 Before contributing to the project, please read [Contribution guide](CONTRIBUTING.md).
 
