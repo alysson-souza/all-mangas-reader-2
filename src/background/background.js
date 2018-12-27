@@ -6,6 +6,7 @@ import amrUpdater from '../amr/amr-updater';
 import amrInit from '../amr/amr-init';
 import browser from "webextension-polyfill";
 import HandleManga from './handle-manga';
+import mirrorsHelper from '../amr/mirrors-helper';
 import { getSyncSchedule } from '../amr/sync/sync-schedule'
 
 // Blue icon while loading

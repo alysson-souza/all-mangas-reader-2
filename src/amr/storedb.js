@@ -305,7 +305,7 @@ class StoreDB {
                             cursor.continue();
                         }
                         else {
-                            resolve(mangas)
+                            resolve(mangas);
                         }
                     };
                 }).then(mangas => {
