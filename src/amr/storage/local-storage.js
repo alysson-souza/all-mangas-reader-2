@@ -3,8 +3,13 @@ import storedb from '../storedb'
 
 class LocalStorage {
 
-    constructor(indexedDb) {
+    /**
+     * @param {StoreDB} indexedDb
+     * @param vuexStore
+     */
+    constructor(indexedDb, vuexStore) {
         this.indexedDb = indexedDb
+        this.vuexStore = vuexStore
     }
 
     async loadMangaList() {
@@ -13,17 +18,17 @@ class LocalStorage {
 
     syncLocal(mangaUpdates) {
         const storeUpdates = mangaUpdates.map(manga => {
-            // fromSite 1 ensure ts and last chapters read are updated
             if (manga.deleted === 1) {
-                return store.dispatch('deleteManga', { key: manga.key })
+                return this.vuexStore.dispatch('deleteManga', { key: manga.key })
             }
-            return store.dispatch('readManga', { ...manga, fromSite: 1 })
+
+            // fromSite 1 ensure ts and last chapters read are updated
+            return this.vuexStore.dispatch('readManga', { ...manga, fromSite: 1 })
         })
 
         return Promise.all(storeUpdates);
     }
 }
 
-
-export const createLocalStorage = () => new LocalStorage(storedb)
+export const createLocalStorage = () => new LocalStorage(storedb, store)
 
