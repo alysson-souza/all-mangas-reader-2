@@ -69,8 +69,18 @@ function initReader() {
     
     removeStyles()
 
+    // add this line for mobile : <meta name="viewport" content="width=device-width, initial-scale=1">
+    var metaview = document.createElement( "meta" )
+    metaview.name = "viewport"
+    metaview.content = "width=device-width, initial-scale=1"
+    document.getElementsByTagName( "head" )[0].appendChild( metaview )
+
+    // document is the only node we keep from the page, ensure it won't break our css : 
     document.body.style.padding = "0px"
     document.body.style.margin = "0px"
+    document.body.style.setProperty("max-width", "none", "important")
+    document.body.style.setProperty("min-width", "none", "important")
+    document.body.style.setProperty("width", "auto", "important")
     if (options.darkreader === 1) document.body.style.backgroundColor = "#303030"
     else document.body.style.backgroundColor = "white"
 

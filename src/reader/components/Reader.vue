@@ -496,11 +496,11 @@ export default {
                         this.lastKeyPress = e.which
                         this.lastKeyPressTime = Date.now()
 
-                        if (e.which === 87) { //W
+                        if (e.which === 87 || e.which === 38) { //W or up arrow
                             window.scrollBy(0, -this.scrollStepWithKeys)
                             prevent()
                         }
-                        if (e.which === 83) { //S
+                        if (e.which === 83 || e.which === 40) { //S or down arrow
                             window.scrollBy(0, this.scrollStepWithKeys)
                             prevent()
                         }

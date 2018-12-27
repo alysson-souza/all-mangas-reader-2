@@ -9,6 +9,14 @@ export function isFirefox() {
     // Firefox 1.0+ (tested on Firefox 45 - 53)
     return typeof InstallTrigger !== 'undefined';
 }
+
+/**
+ * Test if current browser is Firefox on Android
+ */
+export function isFirefoxAndroid() {
+    return isFirefox() && navigator.userAgent.indexOf("Android") > -1
+}
+
 /**
  * Format manga name to test similarities
  * @param {*} name 

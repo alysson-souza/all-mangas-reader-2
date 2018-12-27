@@ -104,3 +104,7 @@ export function darkText(manga, { colornotfollow, colornew, colorread }) {
 function isLight(colorname) {
     return colorname.indexOf("#l") > 0 || ["lime", "yellow"].includes(colorname);
 }
+
+export function isSmallDevice() {
+    return amrutils.isFirefoxAndroid() && window.innerWidth <= 700
+}
