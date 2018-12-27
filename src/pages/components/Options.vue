@@ -351,6 +351,7 @@ import amrUpdater from "../../amr/amr-updater";
 import Flag from "./Flag";
 import * as amrutils from "../../amr/utils";
 import * as utils from "../utils";
+import { getSyncSchedule } from '../../amr/sync/sync-schedule'
 
 /**
  * Converters to format options in db and in page (ex : booleans are store as 0:1 in db)
@@ -571,6 +572,10 @@ export default {
       if (optstr === "deactivateunreadable" && val === 1) { // deactivate all unreadable mirrors if option is checked
           this.deactivateUnreadable();
       }
+
+      if (optstr === "syncEnabled") {
+          this.updateSync(val);
+      }
     },
     /**
      * Deactivate all unreadable mirrors when option is checked
@@ -583,6 +588,9 @@ export default {
                 _self.changeActivation(mir);
             }
         })
+    },
+    async updateSync(value) {
+        await browser.runtime.sendMessage({ action: "sync_update", value });
     },
     /**
      * Determine if a mirror is displayed depending on the language filter

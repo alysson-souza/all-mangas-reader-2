@@ -34,6 +34,11 @@ class SyncSchedule {
     triggerSync() {
         this.syncManager.checkData().then(debug).catch(debug)
     }
+
+    updateSync(value) {
+        this.config.syncEnabled = value;
+        this.config.syncEnabled ? this.start() : this.stop();
+    }
 }
 
 let instance;
