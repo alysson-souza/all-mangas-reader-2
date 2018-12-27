@@ -69,6 +69,10 @@ export class SyncManager {
 
         remoteList.forEach(manga => {
 
+            if (manga.deleted === 1) {
+                return;
+            }
+
             // Check if need to be sync to remote
             const localManga = localList.find(m => m.key === manga.key);
             if (!localManga || localManga.ts < manga.ts) {
