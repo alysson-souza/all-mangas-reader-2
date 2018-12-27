@@ -209,6 +209,12 @@
                         </v-layout>
                     </v-container>
                 </div>
+
+                  <!-- Synchronization -->
+                  <div class="headline">{{ i18n("options_sync_title") }}</div>
+                  <div class="subtitle">{{i18n('options_sync_manga_list_desc')}}</div>
+                  <v-checkbox v-model="syncEnabled" @change="setOption('syncEnabled')"
+                              :label="i18n('options_sync_checkbox')"></v-checkbox>
               </v-container>
             </v-tab-item>
             <v-tab-item value="supported" v-if="tabs === 'supported'">
@@ -375,7 +381,8 @@ const converters = {
       "deactivateunreadable",
       "displayBook",
       "displayFullChapter",
-      "darkreader"
+      "darkreader",
+      "syncEnabled"
     ]
   }
 };

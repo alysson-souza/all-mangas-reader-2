@@ -329,6 +329,18 @@
     "message": "Fermé par action de l'utilisateur",
     "description": "Option closed by user action for option select time before notif closes"
   },
+  "options_sync_title": {
+    "message": "Synchronization",
+    "description": "browser sync between different devices"
+  },
+  "options_sync_manga_list_desc": {
+    "message": "Allow users to sync manga list",
+    "description": "browser sync between different devices"
+  },
+  "options_sync_checkbox": {
+    "message": "Enable browser sync",
+    "description": "browser sync between different devices"
+  },
   "options_sup_desc": {
     "message": "All Mangas Reader permet de lire sur de nombreux lecteurs en ligne. Vous pouvez désactiver les sites que vous n'utilisez pas. Seuls les sites pour lesquels vous ne lisez actuellement aucun manga peuvent être désactivés. Vous pouvez filtrer les sites proposant une langue spécifique pour vous aider. Cliquer sur une case à cocher dans la liste désactive le site correspondant.",
     "description": "Description of the supported websites tab"

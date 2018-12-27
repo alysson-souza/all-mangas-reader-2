@@ -71,6 +71,9 @@ const default_options = {
     shownotifications: 1, //display notifications on new chapter
     notificationtimer: 0, //time to clear notification auto
 
+    /** Sync options */
+    syncEnabled: 1,
+
     /** Language options */
     readlanguages: ["en", "gb"], // default language is english. On install, the user language is added to this list
     deactivateunreadable: false, // deactivate automatically mirrors in languages that do not match readable languages
