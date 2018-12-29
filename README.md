@@ -95,6 +95,18 @@ You can also work on the [wiki](https://gitlab.com/all-mangas-reader/all-mangas-
 ## Dev dependencies
 All Mangas Reader V2 is based on Webpack to compile the code.
 
+### Integration with Vue devtools
+Make sure "Allow access to file URLs" is enabled
+Install [Vue Remote tools](https://github.com/vuejs/vue-devtools/blob/master/shells/electron/README.md)
+
+if you installed vue-devtools globally, run it with `vue-devtools`
+Open AMR popup, vue-devtools should now be connected
+
+**Note**: Browser extension does not work due to security restrictions
+```
+Unchecked runtime.lastError while running tabs.executeScript: Cannot access a chrome-extension:// URL of different extension
+```
+
 ## Release version
 **For repository admins only**
 
