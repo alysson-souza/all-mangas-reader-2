@@ -124,6 +124,17 @@ if (process.env.NODE_ENV === 'production') {
       }),
     ])
   }
+
+  // Add manifest update after
+  if (process.argv.includes("--chrome")) {
+    config.plugins.push(
+        new WebpackShellPlugin({ onBuildEnd: ['node scripts/update-manifest.js -chrome'] }),
+    );
+  } else if (process.argv.includes("--firefox")) {
+    config.plugins.push(
+        new WebpackShellPlugin({ onBuildEnd: ['node scripts/update-manifest.js -firefox'] }),
+    );
+  }
 }
 
 function transformHtml(content) {
