@@ -25,6 +25,7 @@
     "https://*/*",
     "http://*/*",
     "unlimitedStorage",
+    "storage",
     "contextMenus",
     "notifications",
     "downloads",

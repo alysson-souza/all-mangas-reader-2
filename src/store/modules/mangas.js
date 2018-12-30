@@ -7,6 +7,9 @@ import * as utils from "../../amr/utils";
 import samples from "../../amr/samples";
 import amrUpdater from '../../amr/amr-updater';
 import iconHelper from '../../amr/icon-helper';
+import { createSync } from '../../amr/sync/sync-manager'
+
+const syncManager = createSync();
 
 /**
  *  initial state of the mangas module
@@ -166,7 +169,11 @@ const actions = {
                 await dispatch("consultManga", message);
             } catch (e) { console.error(e) } // ignore error if manga list can't be updated
             dispatch('updateManga', mg);
-            statsEvents.trackReadManga(mg);
+
+            // Ignore sync updates for stats
+            if (message.isSync !== 1) {
+                statsEvents.trackReadManga(mg);
+            }
         }
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();
@@ -516,6 +523,10 @@ const actions = {
         if (mg !== undefined) {
             commit('deleteManga', message.key);
             storedb.deleteManga(message.key);
+
+            if (rootState.options.syncEnabled) {
+                syncManager.deleteManga(message.key);
+            }
         }
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();

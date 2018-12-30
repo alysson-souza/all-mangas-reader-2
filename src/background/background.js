@@ -7,6 +7,7 @@ import amrInit from '../amr/amr-init';
 import browser from "webextension-polyfill";
 import HandleManga from './handle-manga';
 import mirrorsHelper from '../amr/mirrors-helper';
+import { getSyncSchedule } from '../amr/sync/sync-schedule'
 
 // Blue icon while loading
 IconHelper.setBlueIcon();
@@ -35,6 +36,14 @@ IconHelper.setBlueIcon();
      */
     utils.debug("Initialize mangas");
     await store.dispatch('initMangasFromDB');
+
+    /**
+     * Start sync process between local and remote storage
+     */
+    const syncSchedule = getSyncSchedule({
+        syncEnabled: store.state.options.syncEnabled
+    });
+    syncSchedule.start()
 
     /**
      * Initialize bookmarks list in store from DB

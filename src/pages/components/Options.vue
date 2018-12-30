@@ -209,6 +209,16 @@
                         </v-layout>
                     </v-container>
                 </div>
+
+                  <!-- Synchronization -->
+                  <div class="headline">{{ i18n("options_sync_title") }}</div>
+                  <div class="subtitle">{{i18n('options_sync_manga_list_desc')}}</div>
+                  <v-alert v-if="!syncEnabled"  :value="true" color="error" icon="mdi-alert-octagon" outline>
+                      {{i18n('options_sync_title_warning')}}
+                  </v-alert>
+
+                  <v-checkbox v-model="syncEnabled" @change="setOption('syncEnabled')"
+                              :label="i18n('options_sync_checkbox')"></v-checkbox>
               </v-container>
             </v-tab-item>
             <v-tab-item value="supported" v-if="tabs === 'supported'">
@@ -341,6 +351,7 @@ import amrUpdater from "../../amr/amr-updater";
 import Flag from "./Flag";
 import * as amrutils from "../../amr/utils";
 import * as utils from "../utils";
+import { getSyncSchedule } from '../../amr/sync/sync-schedule'
 
 /**
  * Converters to format options in db and in page (ex : booleans are store as 0:1 in db)
@@ -375,7 +386,8 @@ const converters = {
       "deactivateunreadable",
       "displayBook",
       "displayFullChapter",
-      "darkreader"
+      "darkreader",
+      "syncEnabled"
     ]
   }
 };
@@ -560,6 +572,10 @@ export default {
       if (optstr === "deactivateunreadable" && val === 1) { // deactivate all unreadable mirrors if option is checked
           this.deactivateUnreadable();
       }
+
+      if (optstr === "syncEnabled") {
+          this.updateSync(val);
+      }
     },
     /**
      * Deactivate all unreadable mirrors when option is checked
@@ -572,6 +588,9 @@ export default {
                 _self.changeActivation(mir);
             }
         })
+    },
+    async updateSync(value) {
+        await browser.runtime.sendMessage({ action: "sync_update", value });
     },
     /**
      * Determine if a mirror is displayed depending on the language filter
