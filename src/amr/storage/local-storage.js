@@ -23,7 +23,7 @@ class LocalStorage {
             }
 
             // fromSite 1 ensure ts and last chapters read are updated
-            return this.vuexStore.dispatch('readManga', { ...manga, fromSite: 1 })
+            return this.vuexStore.dispatch('readManga', { ...manga, fromSite: 1, isSync: 1 })
         })
 
         return Promise.all(storeUpdates);

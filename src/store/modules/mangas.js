@@ -169,7 +169,11 @@ const actions = {
                 await dispatch("consultManga", message);
             } catch (e) { console.error(e) } // ignore error if manga list can't be updated
             dispatch('updateManga', mg);
-            statsEvents.trackReadManga(mg);
+
+            // Ignore sync updates for stats
+            if (message.isSync !== 1) {
+                statsEvents.trackReadManga(mg);
+            }
         }
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();
