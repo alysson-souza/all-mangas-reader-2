@@ -329,22 +329,6 @@
     "message": "Closed by user action",
     "description": "Option closed by user action for option select time before notif closes"
   },
-  "options_sync_title": {
-    "message": "Synchronization",
-    "description": "browser sync between different devices"
-  },
-  "options_sync_title_warning": {
-    "message": "It's highly recommended to create manga list export, before you enabled sync for the first time!",
-    "description": "create manga list export before enabling it"
-  },
-  "options_sync_manga_list_desc": {
-    "message": "Allow users to sync manga list",
-    "description": "browser sync between different devices"
-  },
-  "options_sync_checkbox": {
-    "message": "Enable browser sync",
-    "description": "browser sync between different devices"
-  },
   "options_sup_desc": {
     "message": "AMR provides many supported Web Sites. You can deactivate web sites you don't use. Only web sites for which you don't have mangas in your reading list can be deactivated. You can filter the websites supporting specific language to help you. Clicking a checkbox in the table below deactivate the corresponding website.",
     "description": "Description of the supported websites tab"
@@ -1495,5 +1479,21 @@
   "reader_help_stop": {
     "message": "Stop showing that",
     "description": "Action button label to stop showing help messages"
+  },
+  "options_sync_title": {
+    "message": "Synchronization",
+    "description": "browser sync between different devices"
+  },
+  "options_sync_title_warning": {
+    "message": "It's highly recommended to create manga list export, before you enabled sync for the first time!",
+    "description": "create manga list export before enabling it"
+  },
+  "options_sync_manga_list_desc": {
+    "message": "Allow users to sync manga list",
+    "description": "browser sync between different devices"
+  },
+  "options_sync_checkbox": {
+    "message": "Enable browser sync",
+    "description": "browser sync between different devices"
   }
 }
