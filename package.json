@@ -11,7 +11,9 @@
     "manifest:specify": "node scripts/update-manifest.js",
     "watch": "yarn run build --watch",
     "watch:dev": "yarn run build:dev --watch",
-    "android:dev": "yarn run build:dev && yarn run manifest:specify -firefox && yarn run build-zip -xpi -push" 
+    "watch:dev:chrome": "yarn run watch:dev --chrome",
+    "watch:dev:firefox": "yarn run watch:dev --firefox",
+    "android:dev": "yarn run build:dev && yarn run manifest:specify -firefox && yarn run build-zip -xpi -push"
   },
   "dependencies": {
     "axios": "^0.16.2",
@@ -31,6 +33,7 @@
     "copy-webpack-plugin": "^4.5.2",
     "cross-env": "^5.0.5",
     "css-loader": "^1.0.0",
+    "ejs": "^2.6.1",
     "file-loader": "^0.11.2",
     "node-sass": "^4.5.3",
     "sass-loader": "^6.0.6",
