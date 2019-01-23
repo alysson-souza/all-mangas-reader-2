@@ -84,7 +84,7 @@ Right fields can be copied from `dist/manifest.json` to `src/manifest.json` afte
 ### Firefox for Android
 To test the extension while developing on Firefox for Android, install Firefox on your computer and adb, follow the steps in the [Set up your computer and Android emulator or device](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Developing_WebExtensions_for_Firefox_for_Android) to configure your debugging environment
 
-Then, build the extension using `yarn run adroid:dev`, this will :
+Then, build the extension using `yarn run android:dev`, this will :
 * build the extension like usual,
 * add the firefox app id
 * then zip the `dist` folder and rename the created file to an xpi file

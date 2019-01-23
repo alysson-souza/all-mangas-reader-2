@@ -100,6 +100,8 @@ export default {
 
             scansState: scansProvider.state, /** the provider of scan images */
             pageData: pageData.state, /* reactive pageData state (current manga chapter infos) */
+            
+            scanClickTimeout: -1, /* When clicking for next scan, if this is the last scan, wait for dblclick, this is the associated timeout, we need to clear it if going next chapter */
         }
     },
     props: {
@@ -242,13 +244,15 @@ export default {
 
             if (e.clientX >= this.$refs.scancontainer.clientWidth / 2) {
                 if (this.lastScan) { // last scan, wait a little before trying to go next scan so if double click, it will be handled
-                    setTimeout(() => this.goNextScan(false, true), 250)
+                    clearTimeout(this.scanClickTimeout)
+                    this.scanClickTimeout = setTimeout(() => this.goNextScan(false, true), 250)
                 } else {
                     this.goNextScan(false, true)
                 }
             } else {
                 if (this.firstScan) { // first scan, wait a little before trying to go next scan so if double click, it will be handled
-                    setTimeout(() => this.goPreviousScan(false, true), 250)
+                    clearTimeout(this.scanClickTimeout)
+                    this.scanClickTimeout = setTimeout(() => this.goPreviousScan(false, true), 250)
                 } else {
                     this.goPreviousScan(false, true)
                 }
@@ -263,11 +267,13 @@ export default {
             util.clearSelection()
             if (e.clientX >= this.$refs.scancontainer.clientWidth / 2) {
                 if (this.lastScan) {
+                    clearTimeout(this.scanClickTimeout)
                     EventBus.$emit('go-next-chapter')
                     return
                 }
             } else {
                 if (this.firstScan) {
+                    clearTimeout(this.scanClickTimeout)
                     EventBus.$emit('go-previous-chapter')
                     return
                 }
