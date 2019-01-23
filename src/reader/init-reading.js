@@ -79,7 +79,7 @@ function initReader() {
     document.body.style.padding = "0px"
     document.body.style.margin = "0px"
     document.body.style.setProperty("max-width", "none", "important")
-    document.body.style.setProperty("min-width", "none", "important")
+    document.body.style.setProperty("min-width", "auto", "important")
     document.body.style.setProperty("width", "auto", "important")
     if (options.darkreader === 1) document.body.style.backgroundColor = "#303030"
     else document.body.style.backgroundColor = "white"
