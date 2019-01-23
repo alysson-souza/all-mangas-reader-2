@@ -31,7 +31,7 @@
             </v-tooltip>
           </template>
           <!-- Manga name -->
-          <strong>{{ manga.name }}</strong>
+          <span class="amr-manga-title" @click="openManga">{{ manga.name }}</span>
         </v-card>
       </v-card>
       </v-flex>
@@ -302,6 +302,12 @@ export default {
       browser.runtime.sendMessage({ action: "opentab", url: this.selChapter });
     },
     /**
+     * Opens manga main page
+     */
+    openManga() {
+      browser.runtime.sendMessage({ action: "opentab", url: this.manga.url });
+    },
+    /**
      * Deletes a manga
      */
     trash() {
@@ -394,6 +400,10 @@ export default {
 }
 .container.amr-list-line .amr-list-elt .amr-chapter-list-cont {
   padding: 6px;
+}
+.amr-manga-title {
+  font-weight: bold;
+  cursor: pointer;
 }
 .amr-manga-title-cont,
 .amr-manga-actions-cont {
