@@ -65,7 +65,10 @@ const config = {
       {
         from: 'manifest.json',
         to: 'manifest.json',
-        transform(content) {
+        // THIS IS NOT WORKING PROPERLY ON FIREFOX
+        // adding a http domain to load script fails firefox csp rules and prevent the extension from working (csp are ignored and failed)
+        // uncomment to use devtools on chrome while developping, DO NOT COMMIT
+        /*transform(content) {
           if (config.mode !== 'development') {
             return content;
           }
@@ -76,7 +79,7 @@ const config = {
           ext.content_security_policy = `${scriptSource} ${extra}; ${rest.join(';')}`;
 
           return JSON.stringify(ext, null, 2);
-        },
+        },*/
       },
       {from: 'content/*.css', to: '.'},
       {from: 'reader/*.css', to: '.'},
