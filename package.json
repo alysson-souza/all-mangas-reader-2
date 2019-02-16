@@ -6,11 +6,11 @@
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack --config webpack.config.js --progress --hide-modules",
     "build:dev": "cross-env NODE_ENV=development webpack --config webpack.config.js --progress --hide-modules",
-    "build:dev-watch": "cross-env NODE_ENV=development webpack --config webpack.config.js --progress --hide-modules --hot --watch",
     "build-zip": "node scripts/build-zip.js",
     "manifest:specify": "node scripts/update-manifest.js",
     "watch": "yarn run build --watch",
     "watch:dev": "yarn run build:dev --watch",
+    "watch:dev:hot": "yarn run build:dev --watch --hot",
     "watch:dev:chrome": "yarn run watch:dev --chrome",
     "watch:dev:firefox": "yarn run watch:dev --firefox",
     "android:dev": "yarn run build:dev && yarn run manifest:specify -firefox && yarn run build-zip -xpi -push"
