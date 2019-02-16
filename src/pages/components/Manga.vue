@@ -3,7 +3,7 @@
     <!-- manga line, containing title, list of chapters and actions-->
     <v-layout row wrap>
       <!-- Title and icon -->
-      <v-flex :xs3="!smalldevice" :xs12="smalldevice" class="amr-list-elt">
+      <v-flex :xs4="!smalldevice" :xs12="smalldevice" class="amr-list-elt">
       <v-card dark tile flat :color="color(3)" class="back-card">
         <v-card v-if="!isInGroup || isFirst" dark :color="color(0)" class="amr-manga-title-cont">
           <!-- Icon of the mirror if not in group -->
@@ -36,7 +36,7 @@
       </v-card>
       </v-flex>
       <!-- List of chapters and progressbar-->
-      <v-flex xs6 class="amr-list-elt">
+      <v-flex xs5 class="amr-list-elt">
       <v-card dark tile flat :color="color(3)" class="back-card amr-chapter-list-cont">
           <template v-if="seen">
         <!-- List of chapters -->
