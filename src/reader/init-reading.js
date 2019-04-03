@@ -22,6 +22,19 @@ import mirrorHelper from '../amr/mirrors-helper';
 if (window["__armreader__"] === undefined) { // avoid loading script twice
     window["__armreader__"] = {}
 
+    window['onPushState'] = async function () {
+        //Do load manga only if it's not AMR that triggered the pushState
+        if (window["__AMR_IS_LOADING_CHAPTER__"]) {
+            //console.log("Push state from within AMR")
+            delete window["__AMR_IS_LOADING_CHAPTER__"]
+        } else {
+            //console.log("Website pushed state, load AMR")
+            // load AMR ! pushState comes from website
+            //window["registerMangaObject"](mirrorImpl.get()) --> css may have been lost... we need to reload the page
+            window.location.reload()
+        }
+    }
+
     /**
      * Every mirror implementation ends by a call to registerMangaObject
      * This function is defined here.
@@ -30,12 +43,14 @@ if (window["__armreader__"] === undefined) { // avoid loading script twice
      */
     window["registerMangaObject"] = async function (object) {
         // initialize options
-        options.load(await browser.runtime.sendMessage({action: "getoptions"}));
-        
+        if (typeof options.load === 'function') {
+            options.load(await browser.runtime.sendMessage({action: "getoptions"}));
+        }
         console.log("Mirror implementation " + object.mirrorName + " loaded in page.");
         // initialize Mirror Implementation
-        mirrorImpl.load(object);
-
+        if (typeof mirrorImpl.load === 'function') {
+            mirrorImpl.load(object);
+        }
         // initialize current chapter from data collected from current page
         let chap = new ChapterLoader()
         await chap.checkAndLoadInfos() // get is a chapter ?, infos (current manga, chapter) and scans urls 

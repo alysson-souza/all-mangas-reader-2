@@ -640,7 +640,7 @@ html {
 /** Pages navigator */
 .amr-page-next-prev {
     max-width: 400px;
-    margin: 0px auto;
+    margin: 0px auto!important;
 }
 .amr-page-next-prev .v-toolbar {
     opacity: 0.8;

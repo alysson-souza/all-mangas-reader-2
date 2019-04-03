@@ -757,6 +757,8 @@
         } else {
           // that worked ! scans state and bookmarks state are correctly initialized with new chapter data, pageData with manga url, name and current chapter url too, we now need to tweak the ui
 
+          // prevent pushState from triggering AMR reload
+          window["__AMR_IS_LOADING_CHAPTER__"] = true
           // update window history so navigation bar has the right url
           window.history.pushState({title: chapterloader.title}, chapterloader.title, chapterloader.url);
 

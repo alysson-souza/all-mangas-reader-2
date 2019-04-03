@@ -82,6 +82,11 @@ IconHelper.setBlueIcon();
         if ("auto_subframe" === args.transitionType) return; // do not reload amr on embedded iframes
         HandleManga.matchUrlAndLoadScripts(args.url, args.tabId)
     })
+    // pushstate events are listened from content script (if from background, we reload the page on amr navigation)
+    browser.webNavigation.onHistoryStateUpdated.addListener((args) => {
+        if ("auto_subframe" === args.transitionType) return; // do not reload amr on embedded iframes
+        HandleManga.sendPushState(args.url, args.tabId)
+    })
 
     /**
      * The function below increments the reading of each manga in the list from a chapter each 2 seconds

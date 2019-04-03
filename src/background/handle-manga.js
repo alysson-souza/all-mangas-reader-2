@@ -219,7 +219,6 @@ class HandleManga {
                 Promise.all(loading)
             }
         }
-
         let impl = await this.getImplementation(mir)
         if (impl) {
             if (localStorage["oldreader"]) {
@@ -242,7 +241,14 @@ class HandleManga {
         }
         return Promise.resolve(utils.serializeVuexObject(mir)); // doing that because content script is not vue aware, the reactive vuex object needs to be converted to POJSO
     }
-
+    /**
+     * Send an event to the tab telling that url has been changed. If it's done by AMR, nothing to do, if it's inner website navigation, load amr
+     * @param {*} url 
+     * @param {*} tabId 
+     */
+    async sendPushState(url, tabId) {
+        await browser.tabs.executeScript(tabId, { code: "window['onPushState']();" });
+    }
     /**
      * Return the list of images urls from a chapter
      * @param {*} message 

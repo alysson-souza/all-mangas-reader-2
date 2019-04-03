@@ -25,10 +25,19 @@ export default class ChapterLoader {
      * @param {*} url 
      */
     async checkAndLoadInfos() {
-        if (this.url) {
+        let url = this.url
+        if (!url) url = window.location.href
+
+        let loadFromBack = false
+        // test if implementation request to make the calls from background page, this is due to CORB in chrome 73, if CORS or set, request won't work from content script
+        if (mirrorImpl.get().fromback && mirrorImpl.get().fromback.includes("infos")) {
+            loadFromBack = true
+        }
+
+        if (this.url || loadFromBack) {
             let data = await browser.runtime.sendMessage({
                 action: "getChapterData", 
-                url: this.url,
+                url: url,
                 mirrorName: mirrorImpl.get().mirrorName, // assuming we read on the same mirror (no other possibilities for now...)
                 language: pageData.state.language // and in the same language...
             })
