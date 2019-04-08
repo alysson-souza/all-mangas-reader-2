@@ -84,7 +84,19 @@ class HandleManga {
                 } else {
                     return Promise.resolve();
                 }
+            case "loadListChaps": 
+                return this.loadListChaps(message)
         }
+    }
+
+    /**
+     * Loads chapters list
+     * @param {*} message 
+     */
+    async loadListChaps(message) {
+        let impl = await mirrorsImpl.getImpl(message.mirror);
+        let lst = await impl.getListChaps(message.url)
+        return Promise.resolve(lst);
     }
 
     /**
