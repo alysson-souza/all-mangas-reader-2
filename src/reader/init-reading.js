@@ -27,12 +27,12 @@ if (window["__armreader__"] === undefined) { // avoid loading script twice
         if (window["__AMR_IS_LOADING_CHAPTER__"]) {
             //console.log("Push state from within AMR")
             delete window["__AMR_IS_LOADING_CHAPTER__"]
-        } else {
+        } else if (window["__AMR_RESTORED_PAGE__"]) {
             //console.log("Website pushed state, load AMR")
             // load AMR ! pushState comes from website
             //window["registerMangaObject"](mirrorImpl.get()) --> css may have been lost... we need to reload the page
             window.location.reload()
-        }
+        } // else should reload through normal behavior
     }
 
     /**
@@ -142,6 +142,7 @@ function loadCss(file) {
  */
 function restorePage() {
     console.log("Restore page")
+    window["__AMR_RESTORED_PAGE__"] = true
     let cover = document.getElementById("amr-loading-cover")
     if (cover) cover.parentNode.removeChild(cover)
 
