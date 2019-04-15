@@ -77,6 +77,10 @@ if (window["__armreader__"] === undefined) { // avoid loading script twice
  *  - more options, resize fit height, width
  */
 function initReader() {
+    if (!document.body) { // create body element if non existing (thanks mangarock)
+        let bd = document.createElement("body")
+        document.children[0].appendChild(bd)
+    }
     document.body.innerHTML = ""; //empty the dom page
     let amrdiv = document.createElement("div")
     amrdiv.id = "app"
