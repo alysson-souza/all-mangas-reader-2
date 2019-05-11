@@ -180,6 +180,21 @@
                 <div class="subtitle">{{i18n('options_gen_savebandwidth_desc')}}</div>
                 <v-checkbox v-model="savebandwidth" @change="setOption('savebandwidth')"
                         :label="i18n('options_gen_savebandwidth_opt')"></v-checkbox>
+                <!-- Wait for n seconds between two chapters update request -->
+                <div class="subtitle">{{i18n('options_gen_waitbetweenupdates_desc')}}</div>
+                <div class="subtitle">
+                    <v-container fluid class="opt-container">
+                        <v-layout row wrap>
+                            <v-flex xs6 class="sel-title">
+                                {{ i18n("options_gen_waitbetweenupdates_opt") }} : 
+                            </v-flex>
+                            <v-flex xs6>
+                                <v-select v-model="waitbetweenupdates" :items="wait_update_values">
+                                </v-select>
+                            </v-flex>
+                        </v-layout>
+                    </v-container>
+                </div>
                 <!-- Display grey 0 when no new -->
                 <div class="subtitle">{{i18n('options_gen_displayzero_desc')}}</div>
                 <v-checkbox v-model="displayzero" @change="setOption('displayzero')"
@@ -475,6 +490,18 @@ export default {
         { value: 7 * 24 * 60 * 60 * 1000, text: i18n("options_week", 1) },
         { value: 2 * 7 * 24 * 60 * 60 * 1000, text: i18n("options_week", 2) }
       ],
+      wait_update_values: [
+        { value: 0, text: i18n("options_gen_waitbetweenupdates_0") },
+        { value: 1, text: i18n("options_seconds", 1) },
+        { value: 2, text: i18n("options_seconds", 2) },
+        { value: 3, text: i18n("options_seconds", 3) },
+        { value: 4, text: i18n("options_seconds", 4) },
+        { value: 5, text: i18n("options_seconds", 5) },
+        { value: 10, text: i18n("options_seconds", 10) },
+        { value: 20, text: i18n("options_seconds", 20) },
+        { value: 30, text: i18n("options_seconds", 30) },
+        { value: 60, text: i18n("options_minutes", 1) },
+      ],
       loadingMirrors: false,
       notificationtimer_values: [
         { value: 0, text: i18n("options_gen_notificationtimer_def") },
@@ -539,6 +566,9 @@ export default {
     },
     updatemg: function(n, o) {
       this.setOption("updatemg");
+    },
+    waitbetweenupdates: function(n, o) {
+        this.setOption("waitbetweenupdates");
     },
     displayzero: function() {
       amrUpdater.refreshBadgeAndIcon();
