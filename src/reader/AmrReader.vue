@@ -1164,6 +1164,9 @@
 .amr-chapters-toolbar {
   z-index: 8;
 }
+.amr-chapters-toolbar .v-toolbar__content {
+  height: auto!important;
+}
 .opacity-full {
   opacity: 1;
 }
