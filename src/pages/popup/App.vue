@@ -22,6 +22,10 @@
 				@manga-loaded="handleLoaded()"
 				>
 			</MangaList>
+			<v-tooltip top v-if="alertmessage !== ''">
+				<v-alert type="warning" :value="true" icon="mdi-alert-decagram" slot="activator">{{alertmessage}}</v-alert>
+				<span>{{tooltipalert}}</span>
+			</v-tooltip>
 			<div id="__bottom_app__"></div>
 		</v-content>
 		<!-- Options dialog -->
@@ -151,6 +155,8 @@ export default {
 			rpanel: false,
 			tabs: "refresh", // in rpanel, right tabs state
 			toSearch: "", // phrase to search in search panel (used to load search from manga)
+			alertmessage: "", // alert to display at the bottom of the popup
+			tooltipalert: ""
     };
   },
   name: "App",
@@ -162,7 +168,12 @@ export default {
       module: "mirrors",
       key: "all",
       mutation: "setMirrors"
-    });
+		});
+		if (this.$store.state.options.notifynewversion == 1 && ((localStorage.beta == 1 && localStorage.version != localStorage.latestBetaVersion) ||
+			(localStorage.beta == 0 && localStorage.version != localStorage.latestStableVersion ))) {
+				this.alertmessage = this.i18n("amr_newversion")
+				this.tooltipalert = this.i18n("amr_newversion_long")
+		}
 	}, 
 	watch: {
 		rpanel: function(n) {
@@ -242,5 +253,8 @@ export default {
 }
 .v-dialog .v-card--tile {
 	overflow: auto;
+}
+.v-alert {
+	padding: 4px!important;
 }
 </style>

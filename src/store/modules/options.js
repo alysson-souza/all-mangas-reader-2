@@ -1,6 +1,11 @@
 import storedb from '../../amr/storedb'
 import Vue from 'vue';
 
+const isFirefox = function() {
+    // Firefox 1.0+ (tested on Firefox 45 - 53)
+    return typeof InstallTrigger !== 'undefined';
+}
+
 /**
  * Default options of AMR.
  * Each option MUST figure in this object
@@ -71,6 +76,7 @@ const default_options = {
     /** Notification options */
     shownotifications: 1, //display notifications on new chapter
     notificationtimer: 0, //time to clear notification auto
+    notifynewversion: isFirefox() ? 0 : 1, //do we notify in the popup if the app is not the latest published version
 
     /** Sync options */
     syncEnabled: 0,

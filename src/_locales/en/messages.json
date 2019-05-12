@@ -1511,5 +1511,22 @@
   "options_gen_waitbetweenupdates_0": {
     "message": "Do not wait",
     "description": "Option  Wait between chapters updates description -> do not wait"
+  },
+  "options_gen_notifynewversion_opt": {
+    "message": "Notify on new version",
+    "description": "Option Wait between chapters updates "
+  },
+  "options_gen_notifynewversion_desc": {
+    "message": "Be notified when a new version of AMR is published. This notification will appear at the bottom of the popup",
+    "description": "Option  Wait between chapters updates description"
+  }, 
+  "amr_newversion": {
+    "message": "A new version of AMR is available",
+    "description": "Notification when a new version is available"
+  },
+  "amr_newversion_long": {
+    "message": "Normally, AMR will auto update. However, if you installed it manually (in chrome for example), you will have to download the latest version and install it manually. You can find instructions on AMR main website.",
+    "description": "Notification when a new version is available (tooltip text)"
   }
+  
 }

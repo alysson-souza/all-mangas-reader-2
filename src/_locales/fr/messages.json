@@ -1507,5 +1507,21 @@
   "options_gen_waitbetweenupdates_0": {
     "message": "Ne pas attendre",
     "description": "Option  Wait between chapters updates description -> do not wait"
+  },
+  "options_gen_notifynewversion_opt": {
+    "message": "Notifier lorsqu'il y a une nouvelle version",
+    "description": "Option Wait between chapters updates "
+  },
+  "options_gen_notifynewversion_desc": {
+    "message": "Etre notifié lorsqu'une nouvelle version de l'extension est publiée. Cette notification apparait en bas de la popup",
+    "description": "Option  Wait between chapters updates description"
+  },
+  "amr_newversion": {
+    "message": "Une nouvelle version d'AMR est disponible",
+    "description": "Notification when a new version is available"
+  },
+  "amr_newversion_long": {
+    "message": "Normalement, AMR va se mettre à jour automatiquement. Cependant, si vous l'avez installé manuellement (par exemple dans chrome), vous devez télécharger la nouvelle version et l'installer manuellement également. Vous trouverez toutes les instructions sur le site d'AMR",
+    "description": "Notification when a new version is available (tooltip text)"
   }
 }
