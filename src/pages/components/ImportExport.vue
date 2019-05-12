@@ -278,7 +278,8 @@ export default {
         }
 
         let readall = [];
-        imps.mangas.forEach(mg => {
+        let firstChapToImport = true;
+        for (let mg of imps.mangas) {
           // convert manga to something matching readManga requirements
           let readmg = {
             mirror: mg.m,
@@ -299,10 +300,34 @@ export default {
             else readmg.cats = [this.importcat];
           }
           readmg.action = "readManga";
-          readall.push(browser.runtime.sendMessage(readmg));
-        });
-        // read all mangas
-        await Promise.all(readall);
+
+          let mgimport = Promise.resolve(
+              browser.runtime.sendMessage(readmg)
+            .catch(e => e));
+          if (this.$store.state.options.waitbetweenupdates === 0) {
+              if (this.$store.state.options.savebandwidth === 1) {
+                  await mgimport;
+              } else {
+                  readall.push(mgimport);
+              }
+          } else {
+              if (firstChapToImport) {
+                  await mgimport;
+                  firstChapToImport = false
+              } else {
+                  await new Promise(resolve => {
+                      setTimeout(async () => {
+                          await mgimport;
+                          resolve()
+                      }, 1000 * this.$store.state.options.waitbetweenupdates)
+                  })
+              }
+          }
+        }
+        if (this.$store.state.options.savebandwidth !== 1) {
+          // read all mangas
+          await Promise.all(readall);
+        }
       }
       this.importingmangas = false;
     },
