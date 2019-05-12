@@ -1,5 +1,6 @@
 import store from '../store';
 import iconHelper from './icon-helper';
+import Axios from 'axios'
 
 /**
  * This class is used to update periodically manga chapters lists and mirrors list
@@ -33,10 +34,46 @@ class Updater {
         if (navigator.onLine && (lastUpdt + frequency < Date.now())) {
             // time to refresh !
             store.dispatch("updateMirrorsLists");
+            this.checkLatestPublishedVersion()
         }
         setTimeout(this.checkMirrorsUpdates.bind(this), 60 * 1000); // check every minutes
     }
 
+    /**
+     * Check latest version of stable and beta and keep it in localStorage
+     */
+    async checkLatestPublishedVersion() {
+        let vstable = await this.getVersionFromChromeUpdateFile("https://release.allmangasreader.com/update/chrome.xml"), 
+            vbeta = await this.getVersionFromChromeUpdateFile("https://release.allmangasreader.com/update/chrome-beta.xml")
+        if (vstable) {
+            localStorage.latestStableVersion = vstable.version
+            //localStorage.latestStableUrl = vstable.url
+        }
+        if (vbeta) {
+            localStorage.latestBetaVersion = vbeta.version
+            //localStorage.latestBetaUrl = vbeta.url
+        }
+    }
+
+    async getVersionFromChromeUpdateFile(url) {
+        let config = {	
+            headers: {
+                'Cache-Control' : 'no-cache'
+            }
+        };
+        let res = await Axios.get(url, config).catch(e => {
+            console.error("Failed to load " + url);
+            console.error(e);
+            return e;
+        });
+        if (res && res.data) {
+            const regex = /codebase\=\'(.[^\']*)\'(\s+)version\=\'(.[^\']*)\'/gm;
+            let m = regex.exec(res.data)
+            if (m) {
+                return {version: m[3], url: m[1]}
+            }
+        }
+    }
     /**
      * Refresh badge and icon 
      */

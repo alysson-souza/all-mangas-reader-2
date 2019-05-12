@@ -224,7 +224,11 @@
                         </v-layout>
                     </v-container>
                 </div>
-
+                <!-- Notify on new version of the app -->
+                <div class="subtitle">{{i18n('options_gen_notifynewversion_desc')}}</div>
+                <v-checkbox v-model="notifynewversion" @change="setOption('notifynewversion')"
+                        :label="i18n('options_gen_notifynewversion_opt')"></v-checkbox>
+                
                   <!-- Synchronization -->
                   <div class="headline">{{ i18n("options_sync_title") }}</div>
                   <div class="subtitle">{{i18n('options_sync_manga_list_desc')}}</div>
@@ -397,6 +401,7 @@ const converters = {
       "displayzero",
       "nocount",
       "shownotifications",
+      "notifynewversion",
       "stopupdateforaweek",
       "deactivateunreadable",
       "displayBook",
