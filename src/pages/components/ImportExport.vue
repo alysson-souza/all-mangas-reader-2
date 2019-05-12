@@ -52,6 +52,9 @@
                         :disabled="importingmangas || importingbookmarks">
                         {{i18n('ie_import_all')}}
                     </v-btn>
+                    <p v-if="donemessage !== ''">
+                      {{donemessage}}
+                    </p>
                 </v-container>
             </v-tab-item>
             <!-- Export tab -->
@@ -96,7 +99,8 @@ export default {
       hasbms: false, // data to import contain bookmarks
       importingmangas: false, // currently importing mangas
       importingbookmarks: false, // currently importing bookmarks
-      importcat: "" // category for all imported mangas
+      importcat: "", // category for all imported mangas
+      donemessage: "" // message when import is done
     };
   },
   watch: {
@@ -268,68 +272,14 @@ export default {
           };
         });
       }
-      if (imps.mangas && imps.mangas.length > 0) {
-        // add default category if inexistant
-        if (this.importcat !== "") {
-          let cats = this.$store.state.options.categoriesStates;
-          if (-1 === cats.findIndex(cat => cat.name === this.importcat)) {
-            this.$store.dispatch("addCategory", this.importcat);
-          }
-        }
-
-        let readall = [];
-        let firstChapToImport = true;
-        for (let mg of imps.mangas) {
-          // convert manga to something matching readManga requirements
-          let readmg = {
-            mirror: mg.m,
-            name: mg.n,
-            url: mg.u
-          };
-          if (mg.l) readmg.lastChapterReadURL = mg.l;
-          if (mg.r) readmg.read = mg.r;
-          if (mg.p) readmg.update = mg.p;
-          if (mg.d) readmg.display = mg.d;
-          if (mg.y) readmg.layout = mg.y;
-          if (mg.c) readmg.cats = mg.c;
-          if (mg.g) readmg.language = mg.g;
-          // add default category if specified
-          if (this.importcat !== "") {
-            if (readmg.cats && readmg.cats.length > 0)
-              readmg.cats.push(this.importcat);
-            else readmg.cats = [this.importcat];
-          }
-          readmg.action = "readManga";
-
-          let mgimport = Promise.resolve(
-              browser.runtime.sendMessage(readmg)
-            .catch(e => e));
-          if (this.$store.state.options.waitbetweenupdates === 0) {
-              if (this.$store.state.options.savebandwidth === 1) {
-                  await mgimport;
-              } else {
-                  readall.push(mgimport);
-              }
-          } else {
-              if (firstChapToImport) {
-                  await mgimport;
-                  firstChapToImport = false
-              } else {
-                  await new Promise(resolve => {
-                      setTimeout(async () => {
-                          await mgimport;
-                          resolve()
-                      }, 1000 * this.$store.state.options.waitbetweenupdates)
-                  })
-              }
-          }
-        }
-        if (this.$store.state.options.savebandwidth !== 1) {
-          // read all mangas
-          await Promise.all(readall);
-        }
+      let obj = {
+        importcat: this.importcat,
+        imports: imps,
+        action: "importMangas"
       }
-      this.importingmangas = false;
+      browser.runtime.sendMessage(obj)
+      this.donemessage = this.i18n("importmangas_message")
+      this.importingmangas = false
     },
     /**
      * Import bookmarks described in importstr in reading list.
