@@ -71,6 +71,8 @@ IconHelper.setBlueIcon();
 
     // Check if we need to refresh chapters lists, mirrors lists and launch automatic checker
     amrUpdater.load();
+    // Check the latest published version of AMR
+    amrUpdater.checkLatestPublishedVersion();
 
     // content script included, test if a mirror match the page and load AMR in tab
     /*browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
