@@ -9,6 +9,14 @@ export function isFirefox() {
     // Firefox 1.0+ (tested on Firefox 45 - 53)
     return typeof InstallTrigger !== 'undefined';
 }
+
+/**
+ * Test if current browser is Firefox on Android
+ */
+export function isFirefoxAndroid() {
+    return isFirefox() && navigator.userAgent.indexOf("Android") > -1
+}
+
 /**
  * Format manga name to test similarities
  * @param {*} name 
@@ -256,4 +264,36 @@ export function readLanguage(manga) {
     } else {
         return getUnifiedLang(langs)
     }
+}
+
+export function arrayToObject(array, keyField) {
+    return array.reduce((obj, item) => {
+        obj[item[keyField]] = item
+        return obj
+    }, {});
+}
+
+export function objectMapToArray(obj) {
+    const data = [];
+    Object.keys(obj).forEach(key => data.push(obj[key]))
+    return data;
+}
+
+export function batchProps(obj, batchSize) {
+    const batches = [];
+
+    let i = 0;
+    let batch = {};
+
+    Object.keys(obj).forEach(key => {
+        batch[key] = obj[key];
+        i++;
+        if (i >= batchSize) {
+            batches.push(batch)
+            i = 0;
+            batch = {};
+        }
+    })
+
+    return batches;
 }

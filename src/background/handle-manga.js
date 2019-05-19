@@ -84,7 +84,21 @@ class HandleManga {
                 } else {
                     return Promise.resolve();
                 }
+            case "loadListChaps": 
+                return this.loadListChaps(message)
+            case "importMangas": 
+                return this.importMangas(message)
         }
+    }
+
+    /**
+     * Loads chapters list
+     * @param {*} message 
+     */
+    async loadListChaps(message) {
+        let impl = await mirrorsImpl.getImpl(message.mirror);
+        let lst = await impl.getListChaps(message.url)
+        return Promise.resolve(lst);
     }
 
     /**
@@ -219,7 +233,6 @@ class HandleManga {
                 Promise.all(loading)
             }
         }
-
         let impl = await this.getImplementation(mir)
         if (impl) {
             if (localStorage["oldreader"]) {
@@ -242,7 +255,14 @@ class HandleManga {
         }
         return Promise.resolve(utils.serializeVuexObject(mir)); // doing that because content script is not vue aware, the reactive vuex object needs to be converted to POJSO
     }
-
+    /**
+     * Send an event to the tab telling that url has been changed. If it's done by AMR, nothing to do, if it's inner website navigation, load amr
+     * @param {*} url 
+     * @param {*} tabId 
+     */
+    async sendPushState(url, tabId) {
+        await browser.tabs.executeScript(tabId, { code: "window['onPushState']();" });
+    }
     /**
      * Return the list of images urls from a chapter
      * @param {*} message 
@@ -313,6 +333,75 @@ class HandleManga {
                     images: null
                 });
             });
+    }
+    /**
+     * Imports a list of mangas (only the long async part is in there)
+     * @param {*} message 
+     */
+    async importMangas(message) {
+        let importcat = message.importcat
+        let imps = message.imports
+        if (imps.mangas && imps.mangas.length > 0) {
+            // add default category if inexistant
+            if (importcat !== "") {
+                let cats = store.state.options.categoriesStates;
+                if (-1 === cats.findIndex(cat => cat.name === importcat)) {
+                    store.dispatch("addCategory", importcat);
+                }
+            }
+
+            let readall = [];
+            let firstChapToImport = true;
+            for (let mg of imps.mangas) {
+                // convert manga to something matching readManga requirements
+                let readmg = {
+                    mirror: mg.m,
+                    name: mg.n,
+                    url: mg.u
+                };
+                if (mg.l) readmg.lastChapterReadURL = mg.l;
+                if (mg.r) readmg.read = mg.r;
+                if (mg.p) readmg.update = mg.p;
+                if (mg.d) readmg.display = mg.d;
+                if (mg.y) readmg.layout = mg.y;
+                if (mg.c) readmg.cats = mg.c;
+                if (mg.g) readmg.language = mg.g;
+                // add default category if specified
+                if (importcat !== "") {
+                    if (readmg.cats && readmg.cats.length > 0)
+                        readmg.cats.push(importcat);
+                    else readmg.cats = [importcat];
+                }
+                readmg.action = "readManga";
+
+                let mgimport = Promise.resolve(
+                    store.dispatch('readManga', readmg)
+                .catch(e => e));
+                if (store.state.options.waitbetweenupdates === 0) {
+                    if (store.state.options.savebandwidth === 1) {
+                        await mgimport;
+                    } else {
+                        readall.push(mgimport);
+                    }
+                } else {
+                    if (firstChapToImport) {
+                        await mgimport;
+                        firstChapToImport = false
+                    } else {
+                        await new Promise(resolve => {
+                            setTimeout(async () => {
+                                await mgimport;
+                                resolve()
+                            }, 1000 * store.state.options.waitbetweenupdates)
+                        })
+                    }
+                }
+            }
+            if (store.state.options.savebandwidth !== 1) {
+                // read all mangas
+                await Promise.all(readall);
+            }
+        }
     }
 }
 

@@ -22,6 +22,19 @@ import mirrorHelper from '../amr/mirrors-helper';
 if (window["__armreader__"] === undefined) { // avoid loading script twice
     window["__armreader__"] = {}
 
+    window['onPushState'] = async function () {
+        //Do load manga only if it's not AMR that triggered the pushState
+        if (window["__AMR_IS_LOADING_CHAPTER__"]) {
+            //console.log("Push state from within AMR")
+            delete window["__AMR_IS_LOADING_CHAPTER__"]
+        } else if (window["__AMR_RESTORED_PAGE__"]) {
+            //console.log("Website pushed state, load AMR")
+            // load AMR ! pushState comes from website
+            //window["registerMangaObject"](mirrorImpl.get()) --> css may have been lost... we need to reload the page
+            window.location.reload()
+        } // else should reload through normal behavior
+    }
+
     /**
      * Every mirror implementation ends by a call to registerMangaObject
      * This function is defined here.
@@ -30,12 +43,14 @@ if (window["__armreader__"] === undefined) { // avoid loading script twice
      */
     window["registerMangaObject"] = async function (object) {
         // initialize options
-        options.load(await browser.runtime.sendMessage({action: "getoptions"}));
-        
+        if (typeof options.load === 'function') {
+            options.load(await browser.runtime.sendMessage({action: "getoptions"}));
+        }
         console.log("Mirror implementation " + object.mirrorName + " loaded in page.");
         // initialize Mirror Implementation
-        mirrorImpl.load(object);
-
+        if (typeof mirrorImpl.load === 'function') {
+            mirrorImpl.load(object);
+        }
         // initialize current chapter from data collected from current page
         let chap = new ChapterLoader()
         await chap.checkAndLoadInfos() // get is a chapter ?, infos (current manga, chapter) and scans urls 
@@ -62,6 +77,10 @@ if (window["__armreader__"] === undefined) { // avoid loading script twice
  *  - more options, resize fit height, width
  */
 function initReader() {
+    if (!document.body) { // create body element if non existing (thanks mangarock)
+        let bd = document.createElement("body")
+        document.children[0].appendChild(bd)
+    }
     document.body.innerHTML = ""; //empty the dom page
     let amrdiv = document.createElement("div")
     amrdiv.id = "app"
@@ -69,8 +88,18 @@ function initReader() {
     
     removeStyles()
 
+    // add this line for mobile : <meta name="viewport" content="width=device-width, initial-scale=1">
+    var metaview = document.createElement( "meta" )
+    metaview.name = "viewport"
+    metaview.content = "width=device-width, initial-scale=1"
+    document.getElementsByTagName( "head" )[0].appendChild( metaview )
+
+    // document is the only node we keep from the page, ensure it won't break our css : 
     document.body.style.padding = "0px"
     document.body.style.margin = "0px"
+    document.body.style.setProperty("max-width", "none", "important")
+    document.body.style.setProperty("min-width", "auto", "important")
+    document.body.style.setProperty("width", "auto", "important")
     if (options.darkreader === 1) document.body.style.backgroundColor = "#303030"
     else document.body.style.backgroundColor = "white"
 
@@ -117,6 +146,7 @@ function loadCss(file) {
  */
 function restorePage() {
     console.log("Restore page")
+    window["__AMR_RESTORED_PAGE__"] = true
     let cover = document.getElementById("amr-loading-cover")
     if (cover) cover.parentNode.removeChild(cover)
 

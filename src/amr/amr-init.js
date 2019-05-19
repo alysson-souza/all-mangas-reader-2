@@ -109,6 +109,9 @@ export default async function () {
 
     if (manifest.name.indexOf("Beta") > 0) {
         beta = true;
+        localStorage.beta = 1
+    } else {
+        localStorage.beta = 0
     }
 
     if (!ancVersion || curVersion !== ancVersion) {

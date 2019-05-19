@@ -100,6 +100,8 @@ export default {
 
             scansState: scansProvider.state, /** the provider of scan images */
             pageData: pageData.state, /* reactive pageData state (current manga chapter infos) */
+            
+            scanClickTimeout: -1, /* When clicking for next scan, if this is the last scan, wait for dblclick, this is the associated timeout, we need to clear it if going next chapter */
         }
     },
     props: {
@@ -242,13 +244,15 @@ export default {
 
             if (e.clientX >= this.$refs.scancontainer.clientWidth / 2) {
                 if (this.lastScan) { // last scan, wait a little before trying to go next scan so if double click, it will be handled
-                    setTimeout(() => this.goNextScan(false, true), 250)
+                    clearTimeout(this.scanClickTimeout)
+                    this.scanClickTimeout = setTimeout(() => this.goNextScan(false, true), 250)
                 } else {
                     this.goNextScan(false, true)
                 }
             } else {
                 if (this.firstScan) { // first scan, wait a little before trying to go next scan so if double click, it will be handled
-                    setTimeout(() => this.goPreviousScan(false, true), 250)
+                    clearTimeout(this.scanClickTimeout)
+                    this.scanClickTimeout = setTimeout(() => this.goPreviousScan(false, true), 250)
                 } else {
                     this.goPreviousScan(false, true)
                 }
@@ -263,11 +267,13 @@ export default {
             util.clearSelection()
             if (e.clientX >= this.$refs.scancontainer.clientWidth / 2) {
                 if (this.lastScan) {
+                    clearTimeout(this.scanClickTimeout)
                     EventBus.$emit('go-next-chapter')
                     return
                 }
             } else {
                 if (this.firstScan) {
+                    clearTimeout(this.scanClickTimeout)
                     EventBus.$emit('go-previous-chapter')
                     return
                 }
@@ -496,11 +502,11 @@ export default {
                         this.lastKeyPress = e.which
                         this.lastKeyPressTime = Date.now()
 
-                        if (e.which === 87) { //W
+                        if (e.which === 87 || e.which === 38) { //W or up arrow
                             window.scrollBy(0, -this.scrollStepWithKeys)
                             prevent()
                         }
-                        if (e.which === 83) { //S
+                        if (e.which === 83 || e.which === 40) { //S or down arrow
                             window.scrollBy(0, this.scrollStepWithKeys)
                             prevent()
                         }
@@ -634,7 +640,7 @@ html {
 /** Pages navigator */
 .amr-page-next-prev {
     max-width: 400px;
-    margin: 0px auto;
+    margin: 0px auto!important;
 }
 .amr-page-next-prev .v-toolbar {
     opacity: 0.8;

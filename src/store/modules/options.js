@@ -1,6 +1,11 @@
 import storedb from '../../amr/storedb'
 import Vue from 'vue';
 
+const isFirefox = function() {
+    // Firefox 1.0+ (tested on Firefox 45 - 53)
+    return typeof InstallTrigger !== 'undefined';
+}
+
 /**
  * Default options of AMR.
  * Each option MUST figure in this object
@@ -60,16 +65,21 @@ const default_options = {
     /** Updates options */
     updatechap: 21600000, // update chapters frequency (6 hours default)
     updatemg: 86400000, // update mirrors frequency
-    stopupdateforaweek: 1, // stop updates for a week after last chapter was found
+    stopupdateforaweek: 0, // stop updates for a week after last chapter was found
     checkmgstart: 0, // update chapters lists on startup
     refreshspin: 1, // spin the icon while loading chapters
     savebandwidth: 0, // save bandwidth while loading chapters
+    waitbetweenupdates: 0, // wait for n seconds betwwen two manga chapters update request
     displayzero: 0, // display a grey zero when no new chapter
     nocount: 1, // 1 : display gray sharingan and normal if new chaps; 0 : badge
 
     /** Notification options */
     shownotifications: 1, //display notifications on new chapter
     notificationtimer: 0, //time to clear notification auto
+    notifynewversion: isFirefox() ? 0 : 1, //do we notify in the popup if the app is not the latest published version
+
+    /** Sync options */
+    syncEnabled: 0,
 
     /** Language options */
     readlanguages: ["en", "gb"], // default language is english. On install, the user language is added to this list

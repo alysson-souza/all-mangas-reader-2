@@ -7,6 +7,9 @@ import * as utils from "../../amr/utils";
 import samples from "../../amr/samples";
 import amrUpdater from '../../amr/amr-updater';
 import iconHelper from '../../amr/icon-helper';
+import { createSync } from '../../amr/sync/sync-manager'
+
+const syncManager = createSync();
 
 /**
  *  initial state of the mangas module
@@ -166,7 +169,11 @@ const actions = {
                 await dispatch("consultManga", message);
             } catch (e) { console.error(e) } // ignore error if manga list can't be updated
             dispatch('updateManga', mg);
-            statsEvents.trackReadManga(mg);
+
+            // Ignore sync updates for stats
+            if (message.isSync !== 1) {
+                statsEvents.trackReadManga(mg);
+            }
         }
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();
@@ -392,9 +399,13 @@ const actions = {
      * @param {*} force force update if true. If false, check last time manga has been updated and take parameter pause for a week into account 
      */
     async updateChaptersLists({ dispatch, commit, getters, state, rootState }, {force} = {force: true}) {
+        let tsstopspin;
         if (rootState.options.refreshspin === 1) {
             // spin the badge
             iconHelper.spinIcon();
+            tsstopspin = setTimeout(() => {
+                iconHelper.stopSpinning();
+            }, 1000 * 60 * 2) // stop spinning after two minutes if any error occured
         }
 
         // update last update ts
@@ -402,6 +413,7 @@ const actions = {
 
         // refresh all mangas chapters lists
         let refchaps = [];
+        let firstChapToUpdate = true
         for (let mg of state.all) {
             let doupdate = true;
             // check if we are in a pause case (if pause for a week option is checked, we check updates only during 2 days (one before and one after) around each 7 days after last chapter found)
@@ -433,10 +445,24 @@ const actions = {
                             amrUpdater.refreshBadgeAndIcon();
                         })
                         .catch(e => e));
-                if (rootState.options.savebandwidth === 1) {
-                    await mgupdate;
+                if (rootState.options.waitbetweenupdates === 0) {
+                    if (rootState.options.savebandwidth === 1) {
+                        await mgupdate;
+                    } else {
+                        refchaps.push(mgupdate);
+                    }
                 } else {
-                    refchaps.push(mgupdate);
+                    if (firstChapToUpdate) {
+                        await mgupdate;
+                        firstChapToUpdate = false
+                    } else {
+                        await new Promise(resolve => {
+                            setTimeout(async () => {
+                                await mgupdate;
+                                resolve()
+                            }, 1000 * rootState.options.waitbetweenupdates)
+                        })
+                    }
                 }
             }
         }
@@ -447,6 +473,9 @@ const actions = {
         if (rootState.options.refreshspin === 1) {
             //stop the spinning
             iconHelper.stopSpinning();
+            if (tsstopspin) {
+                clearTimeout(tsstopspin)
+            }
         }
     },
     
@@ -516,6 +545,10 @@ const actions = {
         if (mg !== undefined) {
             commit('deleteManga', message.key);
             storedb.deleteManga(message.key);
+
+            if (rootState.options.syncEnabled) {
+                syncManager.deleteManga(message.key);
+            }
         }
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();

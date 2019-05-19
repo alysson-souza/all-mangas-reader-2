@@ -61,6 +61,19 @@ class MirrorsHelper {
                         }
                         resolve(div);
                     }
+                    /**
+                     * In Firefox, cookies and referer are not sent properly when using xhr from content script. Override the xhr provider to use the build in right xhr 
+                     * in Firefox and fallback to XMLHttpRequest on other browsers
+                     * @see https://discourse.mozilla.org/t/webextension-xmlhttprequest-issues-no-cookies-or-referrer-solved/11224/17
+                     */
+                    ajaxObj.xhr = () => {
+                        try {
+                            return XPCNativeWrapper(new window.wrappedJSObject.XMLHttpRequest());
+                        }
+                        catch (evt) {
+                            return new XMLHttpRequest();
+                        }
+                    }
                     $.ajax(ajaxObj)
                 });
             }
@@ -113,6 +126,19 @@ class MirrorsHelper {
                             }
                         } else {
                             resolve(data);
+                        }
+                    }
+                    /**
+                     * In Firefox, cookies and referer are not sent properly when using xhr from content script. Override the xhr provider to use the build in right xhr 
+                     * in Firefox and fallback to XMLHttpRequest on other browsers
+                     * @see https://discourse.mozilla.org/t/webextension-xmlhttprequest-issues-no-cookies-or-referrer-solved/11224/17
+                     */
+                    ajaxObj.xhr = () => {
+                        try {
+                            return XPCNativeWrapper(new window.wrappedJSObject.XMLHttpRequest());
+                        }
+                        catch (evt) {
+                            return new XMLHttpRequest();
                         }
                     }
                     $.ajax(ajaxObj)

@@ -2,7 +2,7 @@
   "name": "All Mangas Reader",
   "description": "__MSG_description__",
   "author": "",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "manifest_version": 2,
   "default_locale": "en",
   "icons": {
@@ -25,6 +25,7 @@
     "https://*/*",
     "http://*/*",
     "unlimitedStorage",
+    "storage",
     "contextMenus",
     "notifications",
     "downloads",

@@ -1,3 +1,30 @@
+### V2.1.1
+New features : 
+ - Sync your manga list over different instances of your favorite browser (option in general, and sync in your browser)
+ - First working (usable) version on Firefox for Android
+ - Option to check for new version of the extension, be notified right in the popup (option is enabled by default on Chromium based browsers)
+ - Open manga chapter page when clicking manga name (in reader and popup)
+ - Option to wait for n seconds between two manga update requests (check for new chapters) ACTIVATE this option is you keep being banned from MANGADEX (it requires quite a few mangas on your list)
+Fixes
+ - Height of the manga list in reader overflow on buttons
+ - Fix security issues with websites implementing CORS
+ - Import mangas run in background so you can close the popup and your manga don't stop being imported
+
+### V2.1.0
+New Reader :
+ - On the online reader, the whole page is removed and replaced with AMR reader
+ - more layout options (one page at a time, resize height / container )
+ - load chapters quickly and navigate "in the reader", the next preloaded chapter loads instantly
+ - display thumbs of the whole manga at the bottom
+ - Smooth navigation between pages
+ - better ergonomy / design
+ - lots of shortcuts
+ - improved bookmarks with preview
+ - save current page and reload at this position
+Fixes :
+ - Improve popup loading time
+ - Update Vuetify, fix a few css issues
+
 ### V2.0.3
 Websites implementation improvements (A lot of implementations have been added thanks to these improvements) : 
  - Abstract implementation for mirrors (A lot of websites are based on CMS like FoolSlide). Implement once for multiple websites

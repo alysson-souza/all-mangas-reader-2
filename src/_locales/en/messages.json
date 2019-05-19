@@ -1479,5 +1479,57 @@
   "reader_help_stop": {
     "message": "Stop showing that",
     "description": "Action button label to stop showing help messages"
+  },
+  "options_sync_title": {
+    "message": "Synchronization",
+    "description": "browser sync between different devices"
+  },
+  "options_sync_title_warning": {
+    "message": "It's highly recommended to create manga list export, before you enabled sync for the first time!",
+    "description": "create manga list export before enabling it"
+  },
+  "options_sync_manga_list_desc": {
+    "message": "Allow users to sync manga list",
+    "description": "browser sync between different devices"
+  },
+  "options_sync_checkbox": {
+    "message": "Enable browser sync",
+    "description": "browser sync between different devices"
+  },
+
+  "__V2_1_1__": {
+    "message": "Just a filler to separate new labels from old ones"
+  },
+  "options_gen_waitbetweenupdates_opt": {
+    "message": "Wait between chapters updates",
+    "description": "Option Wait between chapters updates "
+  },
+  "options_gen_waitbetweenupdates_desc": {
+    "message": "By default, AMR launches all manga chapters update requests at the same time, to avoid being banned from some websites are just for bandwidth convenience, you can set a number a seconds to wait between two requests",
+    "description": "Option  Wait between chapters updates description"
+  },
+  "options_gen_waitbetweenupdates_0": {
+    "message": "Do not wait",
+    "description": "Option  Wait between chapters updates description -> do not wait"
+  },
+  "options_gen_notifynewversion_opt": {
+    "message": "Notify on new version",
+    "description": "Option Wait between chapters updates "
+  },
+  "options_gen_notifynewversion_desc": {
+    "message": "Be notified when a new version of AMR is published. This notification will appear at the bottom of the popup",
+    "description": "Option  Wait between chapters updates description"
+  }, 
+  "amr_newversion": {
+    "message": "A new version of AMR is available",
+    "description": "Notification when a new version is available"
+  },
+  "amr_newversion_long": {
+    "message": "Normally, AMR will auto update. However, if you installed it manually (in chrome for example), you will have to download the latest version and install it manually. You can find instructions on AMR main website.",
+    "description": "Notification when a new version is available (tooltip text)"
+  },
+  "importmangas_message": {
+    "message": "These mangas are actually being imported in background. If the list to import is extensive, it can take a few minutes, especially if you set options to save bandwidth or to delay requests when updating chapters. As long as your browser is opened, your mangas will be imported.",
+    "description": "Message displayed in import popup after import is started"
   }
 }

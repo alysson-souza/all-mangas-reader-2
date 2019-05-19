@@ -641,10 +641,21 @@
         if (alreadyLoadedListChaps && alreadyLoadedListChaps.length > 0) {
             this.chapters = alreadyLoadedListChaps.map(arr => { return { url: arr[1], title: arr[0] } })
         } else {
-            // Change currentMangaURL so no conflict in http over https
-            let list = await mirrorImpl.get().getListChaps(
-                this.pageData.currentMangaURL.replace(/(^\w+:|^)/, '')
-            )
+            let list = []
+            if (mirrorImpl.get().fromback && mirrorImpl.get().fromback.includes("chaps")) {
+              // we need to load chapters using background page
+              list = await browser.runtime.sendMessage({
+                  action: "loadListChaps",
+                  mirror: this.mirror.mirrorName,
+                  url: this.pageData.currentMangaURL, 
+                  language: this.pageData.language 
+              });
+            } else {
+              // Change currentMangaURL so no conflict in http over https
+              list = await mirrorImpl.get().getListChaps(
+                  this.pageData.currentMangaURL.replace(/(^\w+:|^)/, '')
+              )
+            }
             if (list !== undefined && !Array.isArray(list)) { // case of returned list is an object keys are languages and values are list of mangas
               if (list[this.manga.language] && list[this.manga.language].length > 0) {
                   this.chapters = list[this.manga.language].map(arr => { return { url: arr[1], title: arr[0] } })
@@ -757,6 +768,8 @@
         } else {
           // that worked ! scans state and bookmarks state are correctly initialized with new chapter data, pageData with manga url, name and current chapter url too, we now need to tweak the ui
 
+          // prevent pushState from triggering AMR reload
+          window["__AMR_IS_LOADING_CHAPTER__"] = true
           // update window history so navigation bar has the right url
           window.history.pushState({title: chapterloader.title}, chapterloader.title, chapterloader.url);
 
@@ -1150,6 +1163,9 @@
 /** So the dropdown can hover the rest... */
 .amr-chapters-toolbar {
   z-index: 8;
+}
+.amr-chapters-toolbar .v-toolbar__content {
+  height: auto!important;
 }
 .opacity-full {
   opacity: 1;

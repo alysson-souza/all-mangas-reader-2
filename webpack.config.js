@@ -5,6 +5,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const ChromeExtensionReloader = require('webpack-chrome-extension-reloader')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const ejs = require('ejs');
 
 const config = {
   devtool: '#cheap-module-source-map', /* In Webpack 4, defaults devtool outputs an eval() for speeding compil but this obvioulsy fail in chrome extension due to CSP */
@@ -56,12 +57,30 @@ const config = {
     new CopyWebpackPlugin([
       {from: 'icons', to: 'icons', ignore: ['icon.xcf']},
       {from: 'background/background.html', to: 'background/background.html'},
-      {from: 'pages/popup/popup.html', to: 'pages/popup/popup.html'},
+      {from: 'pages/popup/popup.html', to: 'pages/popup/popup.html', transform: transformHtml},
       {from: 'pages/lab/lab.html', to: 'pages/lab/lab.html'},
       {from: 'pages/options/options.html', to: 'pages/options/options.html'},
       {from: 'pages/bookmarks/bookmarks.html', to: 'pages/bookmarks/bookmarks.html'},
       {from: 'pages/importexport/importexport.html', to: 'pages/importexport/importexport.html'},
-      {from: 'manifest.json', to: 'manifest.json'},
+      {
+        from: 'manifest.json',
+        to: 'manifest.json',
+        // THIS IS NOT WORKING PROPERLY ON FIREFOX
+        // adding a http domain to load script fails firefox csp rules and prevent the extension from working (csp are ignored and failed)
+        // uncomment to use devtools on chrome while developping, DO NOT COMMIT
+        /*transform(content) {
+          if (config.mode !== 'development') {
+            return content;
+          }
+          const ext = JSON.parse(content);
+          // Add dev env tools
+          const extra= " 'unsafe-eval' http://localhost:8098/ ";
+          const [scriptSource, ...rest] = ext.content_security_policy.split(';');
+          ext.content_security_policy = `${scriptSource} ${extra}; ${rest.join(';')}`;
+
+          return JSON.stringify(ext, null, 2);
+        },*/
+      },
       {from: 'content/*.css', to: '.'},
       {from: 'reader/*.css', to: '.'},
       {from: '_locales/**/*', to: '.'},
@@ -108,6 +127,23 @@ if (process.env.NODE_ENV === 'production') {
       }),
     ])
   }
+
+  // Add manifest update after
+  if (process.argv.includes("--chrome")) {
+    config.plugins.push(
+        new WebpackShellPlugin({ onBuildEnd: ['node scripts/update-manifest.js -chrome'] }),
+    );
+  } else if (process.argv.includes("--firefox")) {
+    config.plugins.push(
+        new WebpackShellPlugin({ onBuildEnd: ['node scripts/update-manifest.js -firefox'] }),
+    );
+  }
+}
+
+function transformHtml(content) {
+  return ejs.render(content.toString(), {
+    ...process.env,
+  });
 }
 
 module.exports = config;

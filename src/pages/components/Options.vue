@@ -180,6 +180,21 @@
                 <div class="subtitle">{{i18n('options_gen_savebandwidth_desc')}}</div>
                 <v-checkbox v-model="savebandwidth" @change="setOption('savebandwidth')"
                         :label="i18n('options_gen_savebandwidth_opt')"></v-checkbox>
+                <!-- Wait for n seconds between two chapters update request -->
+                <div class="subtitle">{{i18n('options_gen_waitbetweenupdates_desc')}}</div>
+                <div class="subtitle">
+                    <v-container fluid class="opt-container">
+                        <v-layout row wrap>
+                            <v-flex xs6 class="sel-title">
+                                {{ i18n("options_gen_waitbetweenupdates_opt") }} : 
+                            </v-flex>
+                            <v-flex xs6>
+                                <v-select v-model="waitbetweenupdates" :items="wait_update_values">
+                                </v-select>
+                            </v-flex>
+                        </v-layout>
+                    </v-container>
+                </div>
                 <!-- Display grey 0 when no new -->
                 <div class="subtitle">{{i18n('options_gen_displayzero_desc')}}</div>
                 <v-checkbox v-model="displayzero" @change="setOption('displayzero')"
@@ -209,6 +224,20 @@
                         </v-layout>
                     </v-container>
                 </div>
+                <!-- Notify on new version of the app -->
+                <div class="subtitle">{{i18n('options_gen_notifynewversion_desc')}}</div>
+                <v-checkbox v-model="notifynewversion" @change="setOption('notifynewversion')"
+                        :label="i18n('options_gen_notifynewversion_opt')"></v-checkbox>
+                
+                  <!-- Synchronization -->
+                  <div class="headline">{{ i18n("options_sync_title") }}</div>
+                  <div class="subtitle">{{i18n('options_sync_manga_list_desc')}}</div>
+                  <v-alert v-if="!syncEnabled"  :value="true" color="error" icon="mdi-alert-octagon" outline>
+                      {{i18n('options_sync_title_warning')}}
+                  </v-alert>
+
+                  <v-checkbox v-model="syncEnabled" @change="setOption('syncEnabled')"
+                              :label="i18n('options_sync_checkbox')"></v-checkbox>
               </v-container>
             </v-tab-item>
             <v-tab-item value="supported" v-if="tabs === 'supported'">
@@ -341,6 +370,7 @@ import amrUpdater from "../../amr/amr-updater";
 import Flag from "./Flag";
 import * as amrutils from "../../amr/utils";
 import * as utils from "../utils";
+import { getSyncSchedule } from '../../amr/sync/sync-schedule'
 
 /**
  * Converters to format options in db and in page (ex : booleans are store as 0:1 in db)
@@ -371,11 +401,13 @@ const converters = {
       "displayzero",
       "nocount",
       "shownotifications",
+      "notifynewversion",
       "stopupdateforaweek",
       "deactivateunreadable",
       "displayBook",
       "displayFullChapter",
-      "darkreader"
+      "darkreader",
+      "syncEnabled"
     ]
   }
 };
@@ -463,6 +495,18 @@ export default {
         { value: 7 * 24 * 60 * 60 * 1000, text: i18n("options_week", 1) },
         { value: 2 * 7 * 24 * 60 * 60 * 1000, text: i18n("options_week", 2) }
       ],
+      wait_update_values: [
+        { value: 0, text: i18n("options_gen_waitbetweenupdates_0") },
+        { value: 1, text: i18n("options_seconds", 1) },
+        { value: 2, text: i18n("options_seconds", 2) },
+        { value: 3, text: i18n("options_seconds", 3) },
+        { value: 4, text: i18n("options_seconds", 4) },
+        { value: 5, text: i18n("options_seconds", 5) },
+        { value: 10, text: i18n("options_seconds", 10) },
+        { value: 20, text: i18n("options_seconds", 20) },
+        { value: 30, text: i18n("options_seconds", 30) },
+        { value: 60, text: i18n("options_minutes", 1) },
+      ],
       loadingMirrors: false,
       notificationtimer_values: [
         { value: 0, text: i18n("options_gen_notificationtimer_def") },
@@ -528,6 +572,9 @@ export default {
     updatemg: function(n, o) {
       this.setOption("updatemg");
     },
+    waitbetweenupdates: function(n, o) {
+        this.setOption("waitbetweenupdates");
+    },
     displayzero: function() {
       amrUpdater.refreshBadgeAndIcon();
     },
@@ -560,6 +607,10 @@ export default {
       if (optstr === "deactivateunreadable" && val === 1) { // deactivate all unreadable mirrors if option is checked
           this.deactivateUnreadable();
       }
+
+      if (optstr === "syncEnabled") {
+          this.updateSync(val);
+      }
     },
     /**
      * Deactivate all unreadable mirrors when option is checked
@@ -572,6 +623,9 @@ export default {
                 _self.changeActivation(mir);
             }
         })
+    },
+    async updateSync(value) {
+        await browser.runtime.sendMessage({ action: "sync_update", value });
     },
     /**
      * Determine if a mirror is displayed depending on the language filter

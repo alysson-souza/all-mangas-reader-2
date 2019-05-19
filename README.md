@@ -58,6 +58,40 @@ To load firefox with All Mangas Reader in debug mode, execute the following comm
 ### Opera
 Go to Menu > Extensions and click on **Load unpacked extension**. Select the `dist` folder of your local repository. That's done !
 
+### Synchronisation
+
+Sync can be enabled under `settings > general > Enable browser sync checkbox`
+
+Syncing data using `browser.storage.sync` across different devices require same extension id on both devices.
+
+extension id can be set in manifest.json
+* for chrome - "key" field
+* for firefox - "applications.gecko.id"
+
+The easiest way to build and set know id by simply running two yarn commands
+* `yarn build:dev && yarn manifest:specify -chrome`
+* `yarn build:dev && yarn manifest:specify -firefox`
+
+#### Caveats:
+
+The above approach does not work very well during development as normally `yarn watch:dev` command is run to track changes and compile code, however it can cause the manifest to be reset and the `yarn build:dev && yarn manifest:specify` would need to be executed again.
+
+As a temporary solution, the `manifest.json` file in src directly can be modified (BUT NOT COMMITTED) with either specific vendor changes.
+
+Right fields can be copied from `dist/manifest.json` to `src/manifest.json` after running `yarn manifest:specify` command`
+
+
+### Firefox for Android
+To test the extension while developing on Firefox for Android, install Firefox on your computer and adb, follow the steps in the [Set up your computer and Android emulator or device](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Developing_WebExtensions_for_Firefox_for_Android) to configure your debugging environment
+
+Then, build the extension using `yarn run android:dev`, this will :
+* build the extension like usual,
+* add the firefox app id
+* then zip the `dist` folder and rename the created file to an xpi file
+* finally push it to your phone or emulator (using `adb push ./dist-zip/all-mangas-reader-vXXX.xpi /mnt/sdcard/`)
+
+The extension is on your phone, in Firefox for Android, open `file:///mnt/sdcard/` and tap on the extension file, it will install it ! You can debug it using Firefox WebIDE and connect to your phone.
+
 ## Contribute
 Before contributing to the project, please read [Contribution guide](CONTRIBUTING.md).
 
@@ -83,6 +117,18 @@ You can also work on the [wiki](https://gitlab.com/all-mangas-reader/all-mangas-
 
 ## Dev dependencies
 All Mangas Reader V2 is based on Webpack to compile the code.
+
+### Integration with Vue devtools
+Make sure "Allow access to file URLs" is enabled
+Install [Vue Remote tools](https://github.com/vuejs/vue-devtools/blob/master/shells/electron/README.md)
+
+if you installed vue-devtools globally, run it with `vue-devtools`
+Open AMR popup, vue-devtools should now be connected
+
+**Note**: Browser extension does not work due to security restrictions
+```
+Unchecked runtime.lastError while running tabs.executeScript: Cannot access a chrome-extension:// URL of different extension
+```
 
 ## Release version
 **For repository admins only**

@@ -1475,5 +1475,57 @@
   "reader_help_stop": {
     "message": "Arrêter de montrer ça",
     "description": "Action button label to stop showing help messages"
+  },
+  "options_sync_title": {
+    "message": "Synchronization",
+    "description": "browser sync between different devices"
+  },
+  "options_sync_title_warning": {
+    "message": "It's highly recommended to create manga list export, before you enabled sync for the first time!",
+    "description": "create manga list export before enabling it"
+  },
+  "options_sync_manga_list_desc": {
+    "message": "Allow users to sync manga list",
+    "description": "browser sync between different devices"
+  },
+  "options_sync_checkbox": {
+    "message": "Enable browser sync",
+    "description": "browser sync between different devices"
+  },
+
+  "__V2_1_1__": {
+    "message": "Just a filler to separate new labels from old ones"
+  },
+  "options_gen_waitbetweenupdates_opt": {
+    "message": "Attendre entre les mises à jour de chapitres",
+    "description": "Option Wait between chapters updates "
+  },
+  "options_gen_waitbetweenupdates_desc": {
+    "message": "Par défaut, AMR lance toutes les requêtes de mises à jour de liste de chapitres au même moment, pour sauvegarder de la bande passante ou pour éviter de se faire bannir de certains sites, vous pouvez définir un temps d'attente entre chaque requête de mise à jour de chapitres.",
+    "description": "Option  Wait between chapters updates description"
+  },
+  "options_gen_waitbetweenupdates_0": {
+    "message": "Ne pas attendre",
+    "description": "Option  Wait between chapters updates description -> do not wait"
+  },
+  "options_gen_notifynewversion_opt": {
+    "message": "Notifier lorsqu'il y a une nouvelle version",
+    "description": "Option Wait between chapters updates "
+  },
+  "options_gen_notifynewversion_desc": {
+    "message": "Etre notifié lorsqu'une nouvelle version de l'extension est publiée. Cette notification apparait en bas de la popup",
+    "description": "Option  Wait between chapters updates description"
+  },
+  "amr_newversion": {
+    "message": "Une nouvelle version d'AMR est disponible",
+    "description": "Notification when a new version is available"
+  },
+  "amr_newversion_long": {
+    "message": "Normalement, AMR va se mettre à jour automatiquement. Cependant, si vous l'avez installé manuellement (par exemple dans chrome), vous devez télécharger la nouvelle version et l'installer manuellement également. Vous trouverez toutes les instructions sur le site d'AMR",
+    "description": "Notification when a new version is available (tooltip text)"
+  },
+  "importmangas_message": {
+    "message": "Ces mangas sont en cours d'importation, cette opération tourne en tache de fond. Si la liste à importer est longue, cela peut prendre plusieurs minutes, ce sera encore plus long si vous avez activé des options pour sauvegarder la bande passante ou pour attendre entre les requetes de mise à jour. Tant que votre navigateur est ouvert, l'importation tourne en tache de fond.",
+    "description": "Message displayed in import popup after import is started"
   }
 }

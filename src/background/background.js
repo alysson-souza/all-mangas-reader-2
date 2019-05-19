@@ -7,6 +7,7 @@ import amrInit from '../amr/amr-init';
 import browser from "webextension-polyfill";
 import HandleManga from './handle-manga';
 import mirrorsHelper from '../amr/mirrors-helper';
+import { getSyncSchedule } from '../amr/sync/sync-schedule'
 
 // Blue icon while loading
 IconHelper.setBlueIcon();
@@ -37,6 +38,14 @@ IconHelper.setBlueIcon();
     await store.dispatch('initMangasFromDB');
 
     /**
+     * Start sync process between local and remote storage
+     */
+    const syncSchedule = getSyncSchedule({
+        syncEnabled: store.state.options.syncEnabled
+    });
+    syncSchedule.start()
+
+    /**
      * Initialize bookmarks list in store from DB
      */
     utils.debug("Initialize bookmarks");
@@ -62,6 +71,8 @@ IconHelper.setBlueIcon();
 
     // Check if we need to refresh chapters lists, mirrors lists and launch automatic checker
     amrUpdater.load();
+    // Check the latest published version of AMR
+    amrUpdater.checkLatestPublishedVersion();
 
     // content script included, test if a mirror match the page and load AMR in tab
     /*browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
@@ -72,6 +83,11 @@ IconHelper.setBlueIcon();
     browser.webNavigation.onCommitted.addListener((args) => {
         if ("auto_subframe" === args.transitionType) return; // do not reload amr on embedded iframes
         HandleManga.matchUrlAndLoadScripts(args.url, args.tabId)
+    })
+    // pushstate events are listened from content script (if from background, we reload the page on amr navigation)
+    browser.webNavigation.onHistoryStateUpdated.addListener((args) => {
+        if ("auto_subframe" === args.transitionType) return; // do not reload amr on embedded iframes
+        HandleManga.sendPushState(args.url, args.tabId)
     })
 
     /**
