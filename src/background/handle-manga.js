@@ -261,7 +261,9 @@ class HandleManga {
      * @param {*} tabId 
      */
     async sendPushState(url, tabId) {
-        await browser.tabs.executeScript(tabId, { code: "window['onPushState']();" });
+        browser.tabs
+          .executeScript(tabId, { code: "if (typeof window['onPushState'] === 'function') window['onPushState']();" })
+          .catch(utils.debug)
     }
     /**
      * Return the list of images urls from a chapter
