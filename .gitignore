@@ -5,3 +5,6 @@
 /.vscode
 /.idea
 
+.DS_Store
+
+/src/mirrors/register_implementations.js

@@ -4,8 +4,8 @@
   "description": "All Mangas Reader",
   "author": "Pierre-Louis Duhoux <pl.duhoux@gmail.com>",
   "scripts": {
-    "build": "cross-env NODE_ENV=production webpack --config webpack.config.js --progress --hide-modules",
-    "build:dev": "cross-env NODE_ENV=development webpack --config webpack.config.js --progress --hide-modules",
+    "build": "cd ./src/mirrors && node ./update-ws.js && cd ../.. && cross-env NODE_ENV=production webpack --config webpack.config.js --progress --hide-modules",
+    "build:dev": "cd ./src/mirrors && node ./update-ws.js && cd ../.. &&  cross-env NODE_ENV=development webpack --config webpack.config.js --progress --hide-modules",
     "build-zip": "node scripts/build-zip.js",
     "manifest:specify": "node scripts/update-manifest.js",
     "watch": "yarn run build --watch",
