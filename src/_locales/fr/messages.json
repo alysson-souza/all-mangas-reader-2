@@ -334,12 +334,11 @@
     "description": "Description of the supported websites tab"
   }, 
   "options_sup_repos": {
-    "message": "Dépot des implémentations de mirroirs",
+    "message": "Test des sites supportés",
     "description": "Options page section mirrors repositories"
   }, 
   "options_sup_repos_desc": {
-    "message": "Vous pouvez définir ici les différents dépots à partir desquels All Mangas Reader va essayer de charger les implémentations de mirroirs. AMR charge le premier dépot de la liste depuis lequel il peut télécharger le fichier websites.json. Si vous souhaitez nous aider à développer une nouvelle implémentation pour un site ou resoudre les problème d'une implémentation existante, forkez le dépot GitLab officiel et servez les fichier en local (la procédure est détaillée dans le dépot GitLab). Mettez votre serveur local en haut de la liste et cliquez sur mettre à jour les mirroirs lorsque vous modifiez une implémentation, n'oubliez pas de partager votre code avec la communauté !",
-    "description": "Options page section mirrors repositories description"
+    "message": "Pour tester les différents sites supportés par All Mangas Reader, vous pouvez utiliser notre laboratoire."
   },
   "options_gen_deactivate_all": {
     "message": "Désactiver tous ceux visibles",

@@ -308,34 +308,12 @@
                     </tr>
                     </template>
                 </v-data-table>
-                <!-- Repositories -->
+                <!-- Laboratory -->
                 <div class="headline mt-4">{{ i18n("options_sup_repos") }}</div>
                 <div class="subtitle">{{i18n('options_sup_repos_desc')}}</div>
                 <v-layout row>
                     <v-flex xs12>
-                <v-dialog v-model="newRepositoryDialog" max-width="500px">
-                    <v-btn color="primary" dark slot="activator" class="mb-2" small>{{i18n('options_gen_repos_dialog_title')}}</v-btn>
-                    <v-card>
-                        <v-card-title>
-                        <span class="headline">{{i18n('options_gen_repos_dialog_desc')}}</span>
-                        </v-card-title>
-                        <v-card-text>
-                        <v-container grid-list-md>
-                            <v-layout wrap>
-                            <v-flex xs12>
-                                <v-text-field :label="i18n('options_gen_repos_input')" v-model="newRepo" class="normal-input-group"></v-text-field>
-                            </v-flex>
-                            </v-layout>
-                        </v-container>
-                        </v-card-text>
-                        <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="blue darken-1" flat @click.native="newRepositoryDialog = false">{{i18n('button_cancel')}}</v-btn>
-                        <v-btn color="blue darken-1" flat @click.native="addRepository">{{i18n('button_add')}}</v-btn>
-                        </v-card-actions>
-                    </v-card>
-                </v-dialog>
-                <v-btn color="primary" dark class="mb-2" @click="goLab()" small>{{i18n('options_gen_laboratory')}}</v-btn>
+                        <v-btn color="primary" dark class="mb-2" @click="goLab()" small>{{i18n('options_gen_laboratory')}}</v-btn>
                     </v-flex>
                 </v-layout>
                 </v-container>

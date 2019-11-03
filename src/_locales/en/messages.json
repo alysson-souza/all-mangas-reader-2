@@ -334,11 +334,11 @@
     "description": "Description of the supported websites tab"
   }, 
   "options_sup_repos": {
-    "message": "Mirrors implementation repositories",
+    "message": "Testing supported websites",
     "description": "Options page section mirrors repositories"
   }, 
   "options_sup_repos_desc": {
-    "message": "Here you can define the different repositories in which All Mangas Reader will try to load mirrors implementations. AMR loads the first repository from which it can download the file websites.json correctly. If you want to help us and want to develop new implementations for a website or fix bugs in existing one, you can fork the official GitLab mirrors repo and serve the files on your localhost (the procedure is described in the GitLab repo). Set your local server on top of the list and refresh mirrors lists when you update something, don't forget to share your implementations !",
+    "message": "To test how All Mangas Reader works with all supported website, you can use our lab !",
     "description": "Options page section mirrors repositories description"
   },
   "options_gen_deactivate_all": {
