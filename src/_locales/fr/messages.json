@@ -1515,6 +1515,14 @@
     "message": "Etre notifié lorsqu'une nouvelle version de l'extension est publiée. Cette notification apparait en bas de la popup",
     "description": "Option  Wait between chapters updates description"
   },
+  "options_gen_allowtracking_opt": {
+    "message": "Autoriser l'envoi d'informations",
+    "description": "Option allow tracking "
+  },
+  "options_gen_allowtracking_desc": {
+    "message": "Autoriser All Mangas Reader à collecter des informations à des fins statistiques, toutes les données envoyées sont anonymisées",
+    "description": "Option  allow tracking description"
+  }, 
   "amr_newversion": {
     "message": "Une nouvelle version d'AMR est disponible",
     "description": "Notification when a new version is available"

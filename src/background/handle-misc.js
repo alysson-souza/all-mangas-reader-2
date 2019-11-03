@@ -1,5 +1,6 @@
 import browser from "webextension-polyfill";
 import store from '../store';
+import statsEvents from '../amr/stats-events';
 
 class HandleMisc {
     handle(message, sender) {
@@ -20,6 +21,8 @@ class HandleMisc {
                     mirrorIcon: mirror.mirrorIcon,
                     mirrorName: mirror.mirrorName
                 });
+            case "reloadStats":
+                return Promise.resolve(statsEvents.reloadStats())
         }
     }
 }

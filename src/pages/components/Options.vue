@@ -207,6 +207,11 @@
                 <v-checkbox v-model="notifynewversion" @change="setOption('notifynewversion')"
                         :label="i18n('options_gen_notifynewversion_opt')"></v-checkbox>
                 
+                <!--Allow tracking of reading -->
+                <div class="subtitle">{{i18n('options_gen_allowtracking_desc')}}</div>
+                <v-checkbox v-model="allowtracking" @change="setOption('allowtracking')"
+                        :label="i18n('options_gen_allowtracking_opt')"></v-checkbox>
+                
                   <!-- Synchronization -->
                   <div class="headline">{{ i18n("options_sync_title") }}</div>
                   <div class="subtitle">{{i18n('options_sync_manga_list_desc')}}</div>
@@ -338,6 +343,7 @@ const converters = {
       "nocount",
       "shownotifications",
       "notifynewversion",
+      "allowtracking",
       "stopupdateforaweek",
       "deactivateunreadable",
       "displayBook",

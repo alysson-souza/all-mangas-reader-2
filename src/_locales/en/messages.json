@@ -1520,6 +1520,14 @@
     "message": "Be notified when a new version of AMR is published. This notification will appear at the bottom of the popup",
     "description": "Option  Wait between chapters updates description"
   }, 
+  "options_gen_allowtracking_opt": {
+    "message": "Allow sending information",
+    "description": "Option allow tracking "
+  },
+  "options_gen_allowtracking_desc": {
+    "message": "Allow All MAngas Reader to collect reading data for statistics purpose. Your privacy is respected, every piece of data is collected anonymously.",
+    "description": "Option allow tracking description"
+  }, 
   "amr_newversion": {
     "message": "A new version of AMR is available",
     "description": "Notification when a new version is available"

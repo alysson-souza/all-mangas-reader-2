@@ -74,6 +74,7 @@ const default_options = {
     shownotifications: 1, //display notifications on new chapter
     notificationtimer: 0, //time to clear notification auto
     notifynewversion: isFirefox() ? 0 : 1, //do we notify in the popup if the app is not the latest published version
+    allowtracking: 0, // send informations to tracking tool
 
     /** Sync options */
     syncEnabled: 0,

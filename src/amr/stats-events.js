@@ -6,15 +6,19 @@ import store from '../store';
  */
 class StatsEvents {
     constructor() {
+        this.statsLoaded = false
         window['_paq'] = window['_paq'] || [];
         _paq.push(['setCustomUrl', this.getAdaptedUrl()]);
         _paq.push(['trackPageView', this.getCurPage()]);
-        (function() {
+        setTimeout(() => {
             var u="https://matomo.allmangasreader.com/";
             _paq.push(['setTrackerUrl', u+'piwik.php']);
             _paq.push(['setSiteId', '1']);
-            require("../stats/piwik")
-        })();
+            if (store.state.options.allowtracking === 1) {
+                require("../stats/piwik")
+                this.statsLoaded = true
+            }
+        }, 0)
     }
     getCurPage() {
         let lp = window.location.href.lastIndexOf("/");
@@ -42,6 +46,10 @@ class StatsEvents {
     trackUpdate(version, isbeta, navigator) {
         this.trackEvent('Update', version, navigator);
     }
-    
+    reloadStats() {
+        if (store.state.options.allowtracking && !this.statsLoaded) {
+            require("../stats/piwik")
+        }
+    }
 }
 export default (new StatsEvents)
