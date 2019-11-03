@@ -146,28 +146,6 @@
                 <v-checkbox v-model="stopupdateforaweek" @change="setOption('stopupdateforaweek')"
                         :label="i18n('options_gen_stopupdateforaweek_opt')"></v-checkbox>
                 
-                <!-- Update mirrors list -->
-                <div class="subtitle">
-                    <v-container fluid class="opt-container">
-                        <v-layout row wrap>
-                            <v-flex xs4 class="sel-title">
-                                {{ i18n("options_gen_update_mir_label") }} : 
-                            </v-flex>
-                            <v-flex xs4>
-                                <v-select v-model="updatemg" :items="update_mir_values">
-                                </v-select>
-                            </v-flex>
-                            <v-flex>
-                                <v-btn color="primary" class="btn-sel" small 
-                                    @click="updateMirrors()" 
-                                    :loading="loadingMirrors" 
-                                    :disabled="loadingMirrors">
-                                    {{i18n("options_update_mir_btn")}}
-                                </v-btn>
-                            </v-flex>
-                        </v-layout>
-                    </v-container>
-                </div>
                 <!-- Update on startup -->
                 <div class="subtitle">{{i18n('options_gen_checkmgstart_desc')}}</div>
                 <v-checkbox v-model="checkmgstart" @change="setOption('checkmgstart')"
@@ -447,12 +425,6 @@ export default {
         { value: 7 * 24 * 60 * 60 * 1000, text: i18n("options_week", 1) }
       ],
       loadingChapters: false,
-      update_mir_values: [
-        { value: 24 * 60 * 60 * 1000, text: i18n("options_days", 1) },
-        { value: 2 * 24 * 60 * 60 * 1000, text: i18n("options_days", 2) },
-        { value: 7 * 24 * 60 * 60 * 1000, text: i18n("options_week", 1) },
-        { value: 2 * 7 * 24 * 60 * 60 * 1000, text: i18n("options_week", 2) }
-      ],
       wait_update_values: [
         { value: 0, text: i18n("options_gen_waitbetweenupdates_0") },
         { value: 1, text: i18n("options_seconds", 1) },
@@ -603,14 +575,6 @@ export default {
       //We don't call the store updateChaptersLists because when refreshing chapters, it will use jQuery (inside implementations), which is not loaded in the popup, let's do it in background
       await browser.runtime.sendMessage({ action: "updateChaptersLists" }) // update is forced by default (mangas are updated even if chapters has been found recently (less than a week ago) and the pause for a week option is checked) but is done manually by the user (this case is called from options page or for timers page)
       this.loadingChapters = false
-    },
-    /**
-     * Update mirrors lists
-     */
-    async updateMirrors() {
-      this.loadingMirrors = true
-      await this.$store.dispatch("updateMirrorsLists")
-      this.loadingMirrors = false
     },
     /**
      * Return language name from code

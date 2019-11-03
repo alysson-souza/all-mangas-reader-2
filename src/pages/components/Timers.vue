@@ -14,18 +14,7 @@
             </v-flex>
         </v-layout>
         <v-layout row>
-            <v-flex xs6>
-                <v-btn color="primary"
-                    class="refresh-button" 
-                    @click="updateMirrors()"
-                    :loading="loadingMirrors" 
-                    :disabled="loadingMirrors">
-                    <v-icon>mdi-earth</v-icon>
-                    {{i18n("refresh_mirrors")}}
-                </v-btn>
-                {{i18n("refresh_last", lastmirs)}}
-            </v-flex>
-            <v-flex xs6>
+            <v-flex xs12>
                 <v-tooltip top>
                     <div slot="activator">
                         <v-btn color="primary"
@@ -95,14 +84,6 @@ export default {
       //We don't call the store updateChaptersLists because when refreshing chapters, it will use jQuery (inside implementations), which is not loaded in the popup, let's do it in background
       await browser.runtime.sendMessage({ action: "updateChaptersLists" }) // update is forced by default (mangas are updated even if chapters has been found recently (less than a week ago) and the pause for a week option is checked) but is done manually by the user (this case is called from options page or for timers page)
       this.loadingChapters = false
-    },
-    /**
-     * Update mirrors lists
-     */
-    async updateMirrors() {
-      this.loadingMirrors = true
-      await this.$store.dispatch("updateMirrorsLists")
-      this.loadingMirrors = false
     },
     /**
      * Reset manga lists stored in db
