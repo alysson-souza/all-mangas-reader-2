@@ -5,6 +5,8 @@ import store from '../store';
 import * as utils from '../amr/utils';
 import storedb from '../amr/storedb';
 
+const parser = new DOMParser();
+
 /** Scripts to inject in pages containing mangas */
 const contentScripts = [
     '/lib/jquery.min.js',
@@ -272,60 +274,39 @@ class HandleManga {
     async getChapterData(message) {
         return Axios.get(message.url)
             .then(resp => {
-                return new Promise((resolve, reject) => {
-                    var div = document.createElement("iframe");
-                    div.style.display = "none";
-                    var id = "mangaNextChap";
-                    var i = 0;
-                    while ($("#" + id + i).length > 0) {
-                        i++;
-                    }
-                    id = id + i;
-                    $(div).attr("id", id);
-                    document.body.appendChild(div);
-                    // was $(document.getElementById(id).contentWindow.document).ready(...); but ready method was removed from jQuery 3.x --> do it the js way
-                    let ldoc = document.getElementById(id).contentWindow.document;
-                    ldoc.documentElement.innerHTML = resp.data;
-                    let readyCall = async () => {
-                        // loads the implementation code
-                        let impl = await mirrorsImpl.getImpl(message.mirrorName);
-
-                        // Check if this is a chapter page
-                        let isChapter = impl.isCurrentPageAChapterPage(
-                            document.getElementById(id).contentWindow.document, 
-                            message.url)
-                        let infos, imagesUrl = []
-                        if (isChapter) {
-                            try {
-                                // Retrieve informations relative to current chapter / manga read
-                                infos = await impl.getInformationsFromCurrentPage(
-                                    document.getElementById(id).contentWindow.document, 
-                                    message.url)
-                                    
-                                // retrieve images to load
-                                imagesUrl = await impl.getListImages(
-                                    document.getElementById(id).contentWindow.document, 
-                                    message.url);
-                            } catch (e) {
-                                console.error("Error while loading infos and images from url " + message.url)
-                                console.error(e)
-                            }
+                return new Promise(async (resolve, reject) => {
+                    const htmlDocument = parser.parseFromString(resp.data, "text/html");
+                    // loads the implementation code
+                    let impl = await mirrorsImpl.getImpl(message.mirrorName);
+                    // Check if this is a chapter page
+                    let isChapter = impl.isCurrentPageAChapterPage(
+                        htmlDocument.documentElement, 
+                        message.url)
+                    let infos, imagesUrl = []
+                    if (isChapter) {
+                        try {
+                            // Retrieve informations relative to current chapter / manga read
+                            infos = await impl.getInformationsFromCurrentPage(
+                                htmlDocument.documentElement, 
+                                message.url)
+                                
+                            // retrieve images to load
+                            imagesUrl = await impl.getListImages(
+                                htmlDocument.documentElement, 
+                                message.url);
+                        } catch (e) {
+                            console.error("Error while loading infos and images from url " + message.url)
+                            console.error(e)
                         }
-                        let title = document.getElementById(id).contentWindow.document.title
-                        $("#" + id).remove();
-                        resolve({
-                            isChapter: isChapter,
-                            infos: infos,
-                            images: imagesUrl,
-                            title: title
-                        });
                     }
-                    if (ldoc.readyState === "complete" ||
-                        (ldoc.readyState !== "loading" && !ldoc.documentElement.doScroll)) {
-                        readyCall();
-                    } else {
-                        ldoc.addEventListener("DOMContentLoaded", readyCall);
-                    }
+                    let title = htmlDocument.documentElement.title
+                    
+                    resolve({
+                        isChapter: isChapter,
+                        infos: infos,
+                        images: imagesUrl,
+                        title: title
+                    });
                 });
             })
             .catch((e) => {

@@ -77,9 +77,6 @@ if (typeof registerMangaObject === "function") {
 
         doAfterMangaLoaded: function (doc, curUrl) {
             $("body > div:empty", doc).remove();
-            var script = doc.createElement('script');
-            script.innerText = "Hotkeys.hotkeys.clear();";
-            doc.body.appendChild(script);
         }
     })
 }

@@ -1,5 +1,7 @@
 import browser from "webextension-polyfill";
 
+const parser = new DOMParser();
+
 /**
  * Mirrors implementation helper
  */
@@ -53,13 +55,12 @@ class MirrorsHelper {
                     }
                     ajaxObj.error = (jqXhr, error, e) => reject(error)
                     ajaxObj.success = (data) => {
-                        var div = document.createElement("div");
+                        let toparse = data
                         if (options && options.preventimages) {
-                            div.innerHTML = data.replace(/<img/gi, '<noload')
-                        } else {
-                            div.innerHTML = data
+                            toparse = data.replace(/<img/gi, '<noload')
                         }
-                        resolve(div);
+                        let htmlDocument = parser.parseFromString(toparse, "text/html")
+                        resolve(htmlDocument.documentElement);
                     }
                     /**
                      * In Firefox, cookies and referer are not sent properly when using xhr from content script. Override the xhr provider to use the build in right xhr 
