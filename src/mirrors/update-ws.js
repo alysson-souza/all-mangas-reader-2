@@ -54,7 +54,7 @@ global.registerMangaObject = function(object) {
 
 fs.readdir(mirrors, async (err, files) => {
     let cur = 0
-    let allMirrors = "", allAbstracts = ""
+    let allMirrors = [], allAbstracts = []
     for (let file of files) {
         require(mirrors + file)
         cur++
@@ -66,9 +66,24 @@ fs.readdir(mirrors, async (err, files) => {
                     
                     let wsl = websites[websites.length - 1]
                     if (wsl.type === "abstract") {
-                        allAbstracts += ";" + (await fs.readFileSync(mirrors + file)) + ";\n"
+                        let absInList = allAbstracts.find(({def}) => def.mirrorName === wsl.mirrorName)
+                        if (absInList) {
+                            absInList.def = wsl
+                            absInList.impl = await fs.readFileSync(mirrors + file)
+                        } else {
+                            allAbstracts.push({def: wsl, impl: await fs.readFileSync(mirrors + file)})
+                        }
                     } else {
-                        allMirrors += ";" + (await fs.readFileSync(mirrors + file)) + ";\n"
+                        allMirrors.push({def: wsl, impl: await fs.readFileSync(mirrors + file)})
+                        if (wsl.abstract) {
+                            let absInList = allAbstracts.find(({def}) => def.mirrorName === wsl.abstract)
+                            if (absInList) {
+                                if (!absInList.impls) absInList.impls = []
+                                absInList.impls.push(wsl.mirrorName)
+                            } else {
+                                allAbstracts.push({def: {mirrorName: wsl.abstract}, impls: [wsl.mirrorName]})
+                            }
+                        }
                     }
                     resolve()
                 } else setTimeout(wait, 10)
@@ -83,7 +98,21 @@ fs.readdir(mirrors, async (err, files) => {
  */
 function writeWebsites(allAbstracts, allMirrors) {
     var json = JSON.stringify(websites, null, 2)
-    let content = "const loadMirrors = function() {\n" + allAbstracts + allMirrors + "\n};\n\nconst websitesDescription = " + json + ";\n\nmodule.exports = { loadMirrors, websitesDescription };\n"
+    let conditionalExec = ({def, impl, impls}) => {
+        return `if ("${def.mirrorName}" === current ${def.type === "abstract" ? " || " + "[" + impls.map(n => '"' + n + '"').join(",") + "].includes(current)": ""} || !current) {
+            ${impl}
+        }`
+    }
+    let content = `
+    const loadMirrors = function(current) {
+        ${allAbstracts.map(conditionalExec).join("\n;")}
+        ${allMirrors.map(conditionalExec).join("\n;")}
+    }
+    const websitesDescription = ${json};
+    
+    module.exports = { loadMirrors, websitesDescription };
+    window["amrLoadMirrors"] = loadMirrors;
+    `
     fs.writeFile('register_implementations.js', content, () => {})
 }
 

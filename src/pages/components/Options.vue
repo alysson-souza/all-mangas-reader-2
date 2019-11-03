@@ -338,26 +338,6 @@
                 <v-btn color="primary" dark class="mb-2" @click="goLab()" small>{{i18n('options_gen_laboratory')}}</v-btn>
                     </v-flex>
                 </v-layout>
-                <v-data-table
-                    :items="impl_repositories"
-                    hide-actions
-                    hide-headers
-                    >
-                    <template slot="items" slot-scope="props">
-                        <td>{{ props.item }}</td>
-                        <td class="justify-center layout px-0">
-                        <v-btn icon class="mx-0" @click="moveUpRepository(props.item)">
-                            <v-icon color="primary">mdi-chevron-up</v-icon>
-                        </v-btn>
-                        <v-btn icon class="mx-0" @click="moveDownRepository(props.item)">
-                            <v-icon color="primary">mdi-chevron-down</v-icon>
-                        </v-btn>
-                        <v-btn icon class="mx-0" @click="deleteRepository(props.item)">
-                            <v-icon color="primary">mdi-delete</v-icon>
-                        </v-btn>
-                        </td>
-                    </template>
-                    </v-data-table>
                 </v-container>
             </v-tab-item>
         </v-tabs-items>
