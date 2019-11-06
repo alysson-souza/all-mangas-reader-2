@@ -43,7 +43,14 @@ class MirrorsImpl {
             loadMirrors()
         }
         if (this.implementations[mirrorName] !== undefined) {
-            return Promise.resolve(this.implementations[mirrorName]);
+            let obj = this.implementations[mirrorName]
+            if (obj.abstract) {
+                let inst = new window[obj.abstract](obj.abstract_options)
+                // add implementation properties on instance
+                Object.assign(inst, obj)
+                obj = inst
+            }
+            return Promise.resolve(obj);
         }
     }
 }
