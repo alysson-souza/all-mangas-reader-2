@@ -146,28 +146,6 @@
                 <v-checkbox v-model="stopupdateforaweek" @change="setOption('stopupdateforaweek')"
                         :label="i18n('options_gen_stopupdateforaweek_opt')"></v-checkbox>
                 
-                <!-- Update mirrors list -->
-                <div class="subtitle">
-                    <v-container fluid class="opt-container">
-                        <v-layout row wrap>
-                            <v-flex xs4 class="sel-title">
-                                {{ i18n("options_gen_update_mir_label") }} : 
-                            </v-flex>
-                            <v-flex xs4>
-                                <v-select v-model="updatemg" :items="update_mir_values">
-                                </v-select>
-                            </v-flex>
-                            <v-flex>
-                                <v-btn color="primary" class="btn-sel" small 
-                                    @click="updateMirrors()" 
-                                    :loading="loadingMirrors" 
-                                    :disabled="loadingMirrors">
-                                    {{i18n("options_update_mir_btn")}}
-                                </v-btn>
-                            </v-flex>
-                        </v-layout>
-                    </v-container>
-                </div>
                 <!-- Update on startup -->
                 <div class="subtitle">{{i18n('options_gen_checkmgstart_desc')}}</div>
                 <v-checkbox v-model="checkmgstart" @change="setOption('checkmgstart')"
@@ -228,6 +206,11 @@
                 <div class="subtitle">{{i18n('options_gen_notifynewversion_desc')}}</div>
                 <v-checkbox v-model="notifynewversion" @change="setOption('notifynewversion')"
                         :label="i18n('options_gen_notifynewversion_opt')"></v-checkbox>
+                
+                <!--Allow tracking of reading -->
+                <div class="subtitle">{{i18n('options_gen_allowtracking_desc')}}</div>
+                <v-checkbox v-model="allowtracking" @change="setOption('allowtracking')"
+                        :label="i18n('options_gen_allowtracking_opt')"></v-checkbox>
                 
                   <!-- Synchronization -->
                   <div class="headline">{{ i18n("options_sync_title") }}</div>
@@ -308,56 +291,14 @@
                     </tr>
                     </template>
                 </v-data-table>
-                <!-- Repositories -->
+                <!-- Laboratory -->
                 <div class="headline mt-4">{{ i18n("options_sup_repos") }}</div>
                 <div class="subtitle">{{i18n('options_sup_repos_desc')}}</div>
                 <v-layout row>
                     <v-flex xs12>
-                <v-dialog v-model="newRepositoryDialog" max-width="500px">
-                    <v-btn color="primary" dark slot="activator" class="mb-2" small>{{i18n('options_gen_repos_dialog_title')}}</v-btn>
-                    <v-card>
-                        <v-card-title>
-                        <span class="headline">{{i18n('options_gen_repos_dialog_desc')}}</span>
-                        </v-card-title>
-                        <v-card-text>
-                        <v-container grid-list-md>
-                            <v-layout wrap>
-                            <v-flex xs12>
-                                <v-text-field :label="i18n('options_gen_repos_input')" v-model="newRepo" class="normal-input-group"></v-text-field>
-                            </v-flex>
-                            </v-layout>
-                        </v-container>
-                        </v-card-text>
-                        <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="blue darken-1" flat @click.native="newRepositoryDialog = false">{{i18n('button_cancel')}}</v-btn>
-                        <v-btn color="blue darken-1" flat @click.native="addRepository">{{i18n('button_add')}}</v-btn>
-                        </v-card-actions>
-                    </v-card>
-                </v-dialog>
-                <v-btn color="primary" dark class="mb-2" @click="goLab()" small>{{i18n('options_gen_laboratory')}}</v-btn>
+                        <v-btn color="primary" dark class="mb-2" @click="goLab()" small>{{i18n('options_gen_laboratory')}}</v-btn>
                     </v-flex>
                 </v-layout>
-                <v-data-table
-                    :items="impl_repositories"
-                    hide-actions
-                    hide-headers
-                    >
-                    <template slot="items" slot-scope="props">
-                        <td>{{ props.item }}</td>
-                        <td class="justify-center layout px-0">
-                        <v-btn icon class="mx-0" @click="moveUpRepository(props.item)">
-                            <v-icon color="primary">mdi-chevron-up</v-icon>
-                        </v-btn>
-                        <v-btn icon class="mx-0" @click="moveDownRepository(props.item)">
-                            <v-icon color="primary">mdi-chevron-down</v-icon>
-                        </v-btn>
-                        <v-btn icon class="mx-0" @click="deleteRepository(props.item)">
-                            <v-icon color="primary">mdi-delete</v-icon>
-                        </v-btn>
-                        </td>
-                    </template>
-                    </v-data-table>
                 </v-container>
             </v-tab-item>
         </v-tabs-items>
@@ -402,6 +343,7 @@ const converters = {
       "nocount",
       "shownotifications",
       "notifynewversion",
+      "allowtracking",
       "stopupdateforaweek",
       "deactivateunreadable",
       "displayBook",
@@ -489,12 +431,6 @@ export default {
         { value: 7 * 24 * 60 * 60 * 1000, text: i18n("options_week", 1) }
       ],
       loadingChapters: false,
-      update_mir_values: [
-        { value: 24 * 60 * 60 * 1000, text: i18n("options_days", 1) },
-        { value: 2 * 24 * 60 * 60 * 1000, text: i18n("options_days", 2) },
-        { value: 7 * 24 * 60 * 60 * 1000, text: i18n("options_week", 1) },
-        { value: 2 * 7 * 24 * 60 * 60 * 1000, text: i18n("options_week", 2) }
-      ],
       wait_update_values: [
         { value: 0, text: i18n("options_gen_waitbetweenupdates_0") },
         { value: 1, text: i18n("options_seconds", 1) },
@@ -645,14 +581,6 @@ export default {
       //We don't call the store updateChaptersLists because when refreshing chapters, it will use jQuery (inside implementations), which is not loaded in the popup, let's do it in background
       await browser.runtime.sendMessage({ action: "updateChaptersLists" }) // update is forced by default (mangas are updated even if chapters has been found recently (less than a week ago) and the pause for a week option is checked) but is done manually by the user (this case is called from options page or for timers page)
       this.loadingChapters = false
-    },
-    /**
-     * Update mirrors lists
-     */
-    async updateMirrors() {
-      this.loadingMirrors = true
-      await this.$store.dispatch("updateMirrorsLists")
-      this.loadingMirrors = false
     },
     /**
      * Return language name from code

@@ -1,5 +1,6 @@
 import mirrorsImpl from "../amr/mirrors-impl";
 import Axios from 'axios';
+import DOMPurify from "dompurify";
 
 /**
  * Runs implementation functions for the lab
@@ -47,49 +48,28 @@ class HandleLab {
     async loadChapterAndDo(message, impl) {
         return Axios.get(message.url)
             .then(resp => {
-                return new Promise((resolve, reject) => {
+                return new Promise(async (resolve, reject) => {
                     try {
-                        // load the chapter in an iframe
-                        var div = document.createElement("iframe");
-                        div.style.display = "none";
-                        var id = "mangaChap";
-                        var i = 0;
-                        while ($("#" + id + i).length > 0) {
-                            i++;
-                        }
-                        id = id + i;
-                        $(div).attr("id", id);
-                        document.body.appendChild(div);
-                        // was $(document.getElementById(id).contentWindow.document).ready(...); but ready method was removed from jQuery 3.x --> do it the js way
-                        let ldoc = document.getElementById(id).contentWindow.document;
-                        ldoc.documentElement.innerHTML = resp.data;
-                        let readyCall = async () => {
-                            //once the iframe is ready
-                            if (message.task === "containScans") {
-                                resolve(
-                                    impl.isCurrentPageAChapterPage(document.getElementById(id).contentWindow.document, message.url)
-                                );
-                            } else if (message.task === "informations") {
-                                let infos = await impl.getInformationsFromCurrentPage(
-                                    document.getElementById(id).contentWindow.document, 
-                                    message.url
-                                );
-                                resolve(infos);
-                            } else if (message.task === "listScans") {
-                                let imagesUrl = await impl.getListImages(document.getElementById(id).contentWindow.document, message.url);
-                                resolve(imagesUrl);
-                            } else if (message.task === "wherenav") {
-                                impl.doSomethingBeforeWritingScans(document.getElementById(id).contentWindow.document, message.url);
-                                let where = await impl.whereDoIWriteScans(document.getElementById(id).contentWindow.document, message.url);
-                                resolve(where.length);
-                            }
-                            $("#" + id).remove();
-                        }
-                        if (ldoc.readyState === "complete" ||
-                            (ldoc.readyState !== "loading" && !ldoc.documentElement.doScroll)) {
-                            readyCall();
-                        } else {
-                            ldoc.addEventListener("DOMContentLoaded", readyCall);
+                        let htmlDocument = DOMPurify.sanitize(resp.data, {RETURN_DOM: true, FORCE_BODY: true})
+                        
+                        //once the response has been parsed
+                        if (message.task === "containScans") {
+                            resolve(
+                                impl.isCurrentPageAChapterPage(htmlDocument, message.url)
+                            );
+                        } else if (message.task === "informations") {
+                            let infos = await impl.getInformationsFromCurrentPage(
+                                htmlDocument, 
+                                message.url
+                            );
+                            resolve(infos);
+                        } else if (message.task === "listScans") {
+                            let imagesUrl = await impl.getListImages(htmlDocument, message.url);
+                            resolve(imagesUrl);
+                        } else if (message.task === "wherenav") {
+                            impl.doSomethingBeforeWritingScans(htmlDocument, message.url);
+                            let where = await impl.whereDoIWriteScans(htmlDocument, message.url);
+                            resolve(where.length);
                         }
                     } catch (e) {
                         reject(e);

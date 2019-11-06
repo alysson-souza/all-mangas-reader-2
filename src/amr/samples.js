@@ -23,8 +23,8 @@ export default [
         url: "https://www.mangareader.net/hunter-x-hunter"
     },
     {
-        mirror: "GoodManga",
+        mirror: "Manga-Fox",
         name: "Naruto",
-        url: "http://www.goodmanga.net/3/naruto"
+        url: "http://fanfox.net/manga/naruto"
     }
 ];

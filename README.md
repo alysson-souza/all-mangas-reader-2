@@ -114,7 +114,8 @@ You can also work on the [wiki](https://gitlab.com/all-mangas-reader/all-mangas-
  - webextension-polyfill : web extension API has been normalize and is implemented in Chrome, Firefox, Edge, ... but with still a few differences, thanks to this polyfill, the code works everywhere
  - axios : for xhr
  - jQuery : jQuery is still there, to manipulate DOM, it's still the best. Mirrors implementations are based on jQuery and the content script uses it as well.
-
+ - dompurify to sanitize the dom before parsing it
+ 
 ## Dev dependencies
 All Mangas Reader V2 is based on Webpack to compile the code.
 
