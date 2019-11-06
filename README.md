@@ -97,7 +97,7 @@ Before contributing to the project, please read [Contribution guide](CONTRIBUTIN
 
 To contribute, fork the project and work on opened issues. Once fixed, submit a pull request which owners will merge as soon as possible
 
-You can submit issues through GitLab issues tool. **Please do not post issues related to mirrors implementation on this repository, do it on the [dedicated repository](https://gitlab.com/all-mangas-reader/all-mangas-reader-2-mirrors/issues)**.
+You can submit issues through GitLab issues tool.
 
 Please submit a test case to reproduce your issue.
 
