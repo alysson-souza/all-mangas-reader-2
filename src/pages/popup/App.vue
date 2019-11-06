@@ -170,8 +170,8 @@ export default {
   name: "App",
   components: { MangaList, Options, Search, Timers, ImportExport },
   created() {
-	  this.trackingDone = this.$store.state.options.allowtrackingdone != null;
-		document.title = i18n("page_popup_title");
+	this.trackingDone = this.$store.state.options.allowtrackingdone == 1;
+	document.title = i18n("page_popup_title");
     // initialize state for store in popup from background
     this.$store.dispatch("getStateFromReference", {
       module: "mirrors",
