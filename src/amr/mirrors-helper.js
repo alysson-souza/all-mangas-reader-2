@@ -1,6 +1,5 @@
 import browser from "webextension-polyfill";
-
-const parser = new DOMParser();
+import DOMPurify from "dompurify";
 
 /**
  * Mirrors implementation helper
@@ -59,8 +58,8 @@ class MirrorsHelper {
                         if (options && options.preventimages) {
                             toparse = data.replace(/<img/gi, '<noload')
                         }
-                        let htmlDocument = parser.parseFromString(toparse, "text/html")
-                        resolve(htmlDocument.documentElement);
+                        let htmlDocument = DOMPurify.sanitize(toparse, {RETURN_DOM: true, FORCE_BODY: true})
+                        resolve(htmlDocument)
                     }
                     /**
                      * In Firefox, cookies and referer are not sent properly when using xhr from content script. Override the xhr provider to use the build in right xhr 

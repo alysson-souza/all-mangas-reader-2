@@ -1,7 +1,7 @@
 import mirrorsImpl from "../amr/mirrors-impl";
 import Axios from 'axios';
+import DOMPurify from "dompurify";
 
-const parser = new DOMParser();
 /**
  * Runs implementation functions for the lab
  */
@@ -50,24 +50,25 @@ class HandleLab {
             .then(resp => {
                 return new Promise(async (resolve, reject) => {
                     try {
-                        const htmlDocument = parser.parseFromString(resp.data, "text/html");
+                        let htmlDocument = DOMPurify.sanitize(resp.data, {RETURN_DOM: true, FORCE_BODY: true})
+                        
                         //once the response has been parsed
                         if (message.task === "containScans") {
                             resolve(
-                                impl.isCurrentPageAChapterPage(htmlDocument.documentElement, message.url)
+                                impl.isCurrentPageAChapterPage(htmlDocument, message.url)
                             );
                         } else if (message.task === "informations") {
                             let infos = await impl.getInformationsFromCurrentPage(
-                                htmlDocument.documentElement, 
+                                htmlDocument, 
                                 message.url
                             );
                             resolve(infos);
                         } else if (message.task === "listScans") {
-                            let imagesUrl = await impl.getListImages(htmlDocument.documentElement, message.url);
+                            let imagesUrl = await impl.getListImages(htmlDocument, message.url);
                             resolve(imagesUrl);
                         } else if (message.task === "wherenav") {
-                            impl.doSomethingBeforeWritingScans(htmlDocument.documentElement, message.url);
-                            let where = await impl.whereDoIWriteScans(htmlDocument.documentElement, message.url);
+                            impl.doSomethingBeforeWritingScans(htmlDocument, message.url);
+                            let where = await impl.whereDoIWriteScans(htmlDocument, message.url);
                             resolve(where.length);
                         }
                     } catch (e) {

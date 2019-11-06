@@ -4,8 +4,7 @@ import mirrorsImpl from '../amr/mirrors-impl';
 import store from '../store';
 import * as utils from '../amr/utils';
 import storedb from '../amr/storedb';
-
-const parser = new DOMParser();
+import DOMPurify from "dompurify";
 
 /** Scripts to inject in pages containing mangas for new reader */
 const contentScriptsV2 = [
@@ -228,31 +227,31 @@ class HandleManga {
         return Axios.get(message.url)
             .then(resp => {
                 return new Promise(async (resolve, reject) => {
-                    const htmlDocument = parser.parseFromString(resp.data, "text/html");
+                    let htmlDocument = DOMPurify.sanitize(resp.data, {RETURN_DOM: true, FORCE_BODY: true});
                     // loads the implementation code
                     let impl = await mirrorsImpl.getImpl(message.mirrorName);
                     // Check if this is a chapter page
                     let isChapter = impl.isCurrentPageAChapterPage(
-                        htmlDocument.documentElement, 
+                        htmlDocument, 
                         message.url)
                     let infos, imagesUrl = []
                     if (isChapter) {
                         try {
                             // Retrieve informations relative to current chapter / manga read
                             infos = await impl.getInformationsFromCurrentPage(
-                                htmlDocument.documentElement, 
+                                htmlDocument, 
                                 message.url)
                                 
                             // retrieve images to load
                             imagesUrl = await impl.getListImages(
-                                htmlDocument.documentElement, 
+                                htmlDocument, 
                                 message.url);
                         } catch (e) {
                             console.error("Error while loading infos and images from url " + message.url)
                             console.error(e)
                         }
                     }
-                    let title = htmlDocument.documentElement.title
+                    let title = htmlDocument.title
                     
                     resolve({
                         isChapter: isChapter,
