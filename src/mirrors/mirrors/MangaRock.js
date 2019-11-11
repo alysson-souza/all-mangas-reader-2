@@ -8,7 +8,6 @@ if (typeof registerMangaObject === 'function') {
         home: "https://mangarock.com/",
         chapter_url: /\/manga\/.*\/chapter\/.*/g,
         api: "https://api.mangarockhd.com/query/web401/",
-        fromback: ["infos", "images", "chaps"],
 
         getMangaList: async function (search) {
             let json = await amr.loadJson(

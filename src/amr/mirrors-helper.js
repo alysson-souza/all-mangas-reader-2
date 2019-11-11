@@ -1,5 +1,5 @@
 import browser from "webextension-polyfill";
-import DOMPurify from "dompurify";
+import * as domutils from '../amr/domutils';
 
 /**
  * Mirrors implementation helper
@@ -58,7 +58,7 @@ class MirrorsHelper {
                         if (options && options.preventimages) {
                             toparse = data.replace(/<img/gi, '<noload')
                         }
-                        let htmlDocument = DOMPurify.sanitize(toparse, {RETURN_DOM: true, FORCE_BODY: true})
+                        let htmlDocument = domutils.sanitizeDom(toparse)
                         resolve(htmlDocument)
                     }
                     /**
@@ -149,12 +149,7 @@ class MirrorsHelper {
              * @param {*} varname 
              */
             amr.getVariable = function(varname, doc) {
-                let res = undefined
-                $("script", doc).each(function(i) {
-                    res = amr.getVariableFromScript(varname, $(this).text())
-                    if (res !== undefined) return false
-                })
-                return res
+                return amr.getVariableFromScript(varname, $("#__amr_text_dom__", doc).text())
             }
 
             /**
