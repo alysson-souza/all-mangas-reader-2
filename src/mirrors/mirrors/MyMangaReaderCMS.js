@@ -60,7 +60,7 @@ window["MyMangaReaderCMS"] = function (options) {
     this.getListImages = async function (doc, curUrl) {
         let self = this;
         var res = [];
-        $(".viewer-cnt #all img", doc).each(
+       $("img", $(".viewer-cnt #ppp", doc).prev()).each(
             function () {
                 var src = $(this).attr(self.options.img_src);
                 if (src && src !== '') {
