@@ -642,20 +642,13 @@
             this.chapters = alreadyLoadedListChaps.map(arr => { return { url: arr[1], title: arr[0] } })
         } else {
             let list = []
-            if (mirrorImpl.get().fromback && mirrorImpl.get().fromback.includes("chaps")) {
-              // we need to load chapters using background page
-              list = await browser.runtime.sendMessage({
-                  action: "loadListChaps",
-                  mirror: this.mirror.mirrorName,
-                  url: this.pageData.currentMangaURL, 
-                  language: this.pageData.language 
-              });
-            } else {
-              // Change currentMangaURL so no conflict in http over https
-              list = await mirrorImpl.get().getListChaps(
-                  this.pageData.currentMangaURL.replace(/(^\w+:|^)/, '')
-              )
-            }
+            // we need to load chapters using background page
+            list = await browser.runtime.sendMessage({
+                action: "loadListChaps",
+                mirror: this.mirror.mirrorName,
+                url: this.pageData.currentMangaURL, 
+                language: this.pageData.language 
+            });
             if (list !== undefined && !Array.isArray(list)) { // case of returned list is an object keys are languages and values are list of mangas
               if (list[this.manga.language] && list[this.manga.language].length > 0) {
                   this.chapters = list[this.manga.language].map(arr => { return { url: arr[1], title: arr[0] } })

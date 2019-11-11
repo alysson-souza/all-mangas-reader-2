@@ -1,6 +1,6 @@
 import mirrorsImpl from "../amr/mirrors-impl";
 import Axios from 'axios';
-import DOMPurify from "dompurify";
+import * as domutils from '../amr/domutils';
 
 /**
  * Runs implementation functions for the lab
@@ -50,7 +50,7 @@ class HandleLab {
             .then(resp => {
                 return new Promise(async (resolve, reject) => {
                     try {
-                        let htmlDocument = DOMPurify.sanitize(resp.data, {RETURN_DOM: true, FORCE_BODY: true})
+                        let htmlDocument = domutils.sanitizeDom(resp.data)
                         
                         //once the response has been parsed
                         if (message.task === "containScans") {

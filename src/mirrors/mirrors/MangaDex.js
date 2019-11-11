@@ -8,7 +8,6 @@ if (typeof registerMangaObject === 'function') {
         home: "https://www.mangadex.org/",
         chapter_url: /\/chapter\/.*/g,
         api: "https://www.mangadex.org/api/",
-        fromback: ["infos", "images", "chaps"],
         
         getMangaList: async function (search) {
             let doc = await amr.loadPage(
