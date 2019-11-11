@@ -8,6 +8,8 @@ All Mangas Reader is a browser extension which is designed to help you read and 
 * Order, classify mangas in your reading list
 * A lot of supported websites
 
+**Privacy** : All Mangas Reader can collect data for statistics purpose only. It keeps track of the manga you are reading and on which website you read it. These data are anonymized and are stored for at most 6 months on our own server, no google inside :). You can optout from this thracking by answering no to the question asked in the app at first time or from the options page.
+
 ## Why a V2 ?
 The first version, created in 2012, is no more maintained due to poor code design.
 All Mangas Reader V2 has been created to solve the two main issues of the V1 : 
