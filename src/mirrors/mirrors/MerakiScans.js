@@ -6,6 +6,7 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["merakiscans.com"],
         home: "https://www.merakiscans.com/",
+        chapter_url: /^\/(manga|manhua)\/.*\/.*$/g,
         
         getMangaList: async function (search) {
             let doc = await amr.loadPage("https://merakiscans.com/manga/", { nocache: true, preventimages: true })
@@ -25,7 +26,6 @@ if (typeof registerMangaObject === 'function') {
             if (!urlManga.includes("https:")) {
                 urlManga = "https:" + urlManga
             }
-            console.log(urlManga)
             let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
             let res = [];
             $("tr[id='chapter-head']", doc).each(function (index) {
@@ -37,9 +37,8 @@ if (typeof registerMangaObject === 'function') {
         getInformationsFromCurrentPage: async function (doc, curUrl) {
             let name = $("h1[id='reader_text'] a", doc).text()
             let nameurl = "https://merakiscans.com" + $("h1[id='reader_text'] a", doc).attr("href") + "/"
-            let matches = $.map($("script", doc), el => $(el).text()).join(";")
-			matches = matches.match(/var currentChapter = "(.*?)";/)
-			let chapurl = nameurl + matches[1] + "/"
+            let currentChapter = amr.getVariable('currentChapter', doc)
+			let chapurl = nameurl + currentChapter + "/"
 			return {
 				"name": name,
 				"currentMangaURL": nameurl,
@@ -49,31 +48,21 @@ if (typeof registerMangaObject === 'function') {
     
         getListImages: async function (doc, curUrl) {
             let res = [];
-			let matches = $.map($("script", doc), el => $(el).text()).join(";")
-			matches = matches.match(/var images =(.*?);/)
-			if (matches) {
-				let b = JSON.parse(matches[1]);
-				for (let i = 0; i < b.length; i++) {
-					res[i] = curUrl + "/" + b[i]
-				}
-			}
-			return res;
+            let images = amr.getVariable('images', doc)
+            images.forEach(image => {
+                res.push(curUrl + "/" + image)
+            })
+			return res
         },
     
         getImageFromPageAndWrite: function (urlImg, image) {
             $(image).attr("src", urlImg)
         },
     
-        whereDoIWriteScans: function (doc, curUrl) {
-            return $("#container", doc)
-        },
         isCurrentPageAChapterPage: function (doc, curUrl) {
-            
-            // return $("img[id='preload']", doc).length > 0 // Works for live testing but not in lab
-            
-            let matches = $.map($("script", doc), el => $(el).text()).join(";")
-            matches = matches.match(/var currentChapter = "(.*?)";/)
-            return matches.length > 0
+            let currentChapter = amr.getVariable('currentChapter', doc)
+
+            return currentChapter !== undefined
         },
         doSomethingBeforeWritingScans: function (doc, curUrl) {
             $("#container", doc).empty()
@@ -83,8 +72,6 @@ if (typeof registerMangaObject === 'function') {
             $("#reader_text", doc).remove()
             $("div[id='bottombox']", doc).remove()
             $("footer", doc).remove()
-        },
-        doAfterMangaLoaded: function (doc, curUrl) {
         }
     });
 }

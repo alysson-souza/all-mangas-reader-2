@@ -66,7 +66,7 @@ if (typeof registerMangaObject === "function") {
 			doc = await this.passAdult(doc, curUrl)
 
 			var res = [];
-			var matches = $.map($("script", doc), el => $(el).text()).join(";") //doc.documentElement.innerHTML; --> replace to work in JSDOM
+			var matches = $.map($("#__amr_text_dom__", doc), el => $(el).text()).join(";") //doc.documentElement.innerHTML; --> replace to work in JSDOM
 			matches = matches.match(/rm_h\.init\(.*?\]\]/);
 			if (matches) {
 				matches = matches[0].slice(10);

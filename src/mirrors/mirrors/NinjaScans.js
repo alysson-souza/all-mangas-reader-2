@@ -5,12 +5,13 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["ninjascans.com"],
         home: "https://ninjascans.com/",
-        chapter_url: /^\/manga\/.*\/.*$/g,
+        chapter_url: /^\/(manga|manhua)\/.*\/.*$/g,
         canListFullMangas: false,
         abstract: "Madara",
         abstract_options: {
-            search_url: "https://ninjascans.com/"
+            search_url: "https://ninjascans.com/",
+            page_container_sel: "div.fuck-off-container",
+            img_sel: "div.fuck-off img"
         }
     })
 }
-
