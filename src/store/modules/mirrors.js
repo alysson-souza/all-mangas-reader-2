@@ -48,10 +48,10 @@ const actions = {
      */
     async initMirrors({ commit, dispatch }) {
         let websites = await storedb.getWebsites(); // Get mirrors from local database
-        
-        //update the list of mirrors from internal generated list on startup
+
+        // No mirrors known yet, get the list
         websites = await dispatch("updateMirrorsLists");
-        
+
         if (!websites.length) {
             document.dispatchEvent(new CustomEvent("mirrorsError"));
         } else {
