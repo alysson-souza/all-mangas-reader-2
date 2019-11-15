@@ -4,15 +4,15 @@ if (typeof registerMangaObject === 'function') {
         canListFullMangas: true,
         mirrorIcon: "scantrad.png",
         languages: "fr",
-        domains: ["scantrad.fr"],
-        home: "https://scantrad.fr/",
+        domains: ["scantrad.net"],
+        home: "https://scantrad.net/",
         chapter_url: /^\/mangas\/.*\/[0-9]+.*$/g,
 
         getMangaList: async function (search) {
-            let doc = await amr.loadPage("https://scantrad.fr/mangas", { nocache: true, preventimages: true })
+            let doc = await amr.loadPage("https://scantrad.net/mangas", { nocache: true, preventimages: true })
             let res = [];
-            $('#projects-list a', doc).each(function (index) {
-                res[index] = [$(".project-name", $(this)).text(), $(this).attr('href')];
+            $('a.home-manga', doc).each(function (index) {
+                res[index] = [$(".hmi-titre", $(this)).text(), "https://scantrad.net" + $(this).attr('href')];
             });
            return res;
         },
@@ -20,45 +20,40 @@ if (typeof registerMangaObject === 'function') {
         getListChaps: async function (urlManga) {
             let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
             let res = [];
-            $('#project-chapters-list li', doc).each(function () {
-                res[res.length] = [$(".name-chapter", $(this)).text().trim(), $(".buttons a:first", $(this)).attr("href")];
+            $('.mf-chapitre .chapitre', doc).each(function () {
+                let url = $(".chr-button:first", $(this)).attr("href")
+                if (url.indexOf("/mangas") === 0) {
+                    res[res.length] = [$(".chl-titre:first", $(this)).text().trim(), "https://scantrad.net" + url];
+                }
             });
             return res;
         },
     
         getInformationsFromCurrentPage: async function (doc, curUrl) {
-            var mg = $(".controls a.project-name", doc)
+            var mg = $("#topLEL a.tl-titre", doc)
             return {
                 "name": mg.text(),
-                "currentMangaURL": mg.attr("href"),
-                "currentChapterURL": $("select[name='project-chapter'] option:selected", doc).val()
+                "currentMangaURL": "https://scantrad.net/" + mg.attr("href"),
+                "currentChapterURL": "https://scantrad.net/" + $("#selectCh option:selected", doc).val()
             }
         },
     
         getListImages: async function (doc, curUrl) {
             let res = []
-            $("select[name='chapter-page']:first option", doc).each(function() {
-                res.push($(this).val())
+            $(".main_img img", doc).each(function() {
+                let url = $(this).attr("data-src")
+                if (url.indexOf("http") !== 0) url = "https://scantrad.net/" + url
+                res.push(url)
             })
             return res
         },
     
         getImageFromPageAndWrite: async function (urlImg, image) {
-            let doc = await amr.loadPage(urlImg)
-            src = $(".image img", doc).attr("src");
-            $(image).attr("src", src);
+            $(image).attr("src", urlImg);
         },
     
-        whereDoIWriteScans: function (doc, curUrl) {
-            return $("#content", doc);
-        },
         isCurrentPageAChapterPage: function (doc, curUrl) {
-            return $(".image img", doc).length > 0;
-        },
-        doSomethingBeforeWritingScans: function (doc, curUrl) {
-            $("#content", doc).empty();
-        },
-        doAfterMangaLoaded: function (doc, curUrl) {
+            return $(".main_img img", doc).length > 0;
         }
     })
 }
