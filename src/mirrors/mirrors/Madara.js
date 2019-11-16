@@ -63,13 +63,14 @@ window["Madara"] = function (options) {
 
     this.getListChaps = async function (urlManga) {
         let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
+        let self = this
 
         var res = [];
         var mangaName = $(this.options.search_a_sel, doc).text().trim();
         $(this.options.chapters_a_sel, doc).each(function (index) {
             res[index] = [
                 $(this).text().replace(mangaName, "").trim(),
-                $(this).attr("href").replace("?style=list", "") + "?style=list" // add ?style=list to load chapter in long strip mode, remove it if it already there and add it again,
+                self.makeChapterUrl($(this).attr("href")) // add ?style=list to load chapter in long strip mode, remove it if it already there and add it again,
             ];
         });
         res = res;
@@ -90,17 +91,21 @@ window["Madara"] = function (options) {
             let docmg = await amr.loadPage(mangaurl);
             mgname = $("div.post-title > h3", docmg).text().trim();
         }
-        var curChapUrl = curUrl
         return {
             "name": mgname,
             "currentMangaURL": mangaurl,
-            "currentChapterURL": curChapUrl
+            "currentChapterURL": this.makeChapterUrl(curUrl)
         };
     }
 
     this.getListImages = async function (doc, curUrl) {
         res = [];
         let self = this;
+        
+        let preloadImages = await amr.getVariable('chapter_preloaded_images', doc);
+        if (preloadImages !== this.undefined) {
+            return preloadImages;
+        }
         $(this.options.img_sel, doc).each(function (index) {
             res[res.length] = $(this).attr(self.options.img_src);
         });
@@ -123,6 +128,17 @@ window["Madara"] = function (options) {
         this.options.doBefore(doc, curUrl)
     }
     this.doAfterMangaLoaded = function (doc, curUrl) {
+    }
+
+    this.makeChapterUrl = function (url) {
+        return this.stripLastSlash(url.replace("?style=list", "")) + "?style=list"
+    }
+
+    this.stripLastSlash = function(url) {
+        if (url.substring(url.length - 1) == "/") {
+            url = url.substring(0, url.length - 1);
+        }
+        return url
     }
 }
 

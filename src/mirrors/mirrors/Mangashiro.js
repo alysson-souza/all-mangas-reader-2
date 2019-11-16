@@ -3,13 +3,13 @@ if (typeof registerMangaObject === 'function') {
         mirrorName: "Mangashiro",
         canListFullMangas: false,
         mirrorIcon: "mangashiro.png",
-        domains: ["mangashiro.net"],
-        home: "https://mangashiro.net/",
+        domains: ["mangashiro.co"],
+        home: "https://mangashiro.co/",
         chapter_url: /^\/m[0-9]+\/$/g,
         languages: "id",
         abstract: "MangastreamAbs",
         abstract_options: {
-            search_url: "https://mangashiro.net/",
+            search_url: "https://mangashiro.co/",
             chapters_a_sel: "div.bixbox.bxcl > ul > li > span.lchx a"
         },      
     })

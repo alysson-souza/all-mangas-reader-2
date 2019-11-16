@@ -31,6 +31,7 @@ window["ComiCake"] = function(options) {
 
 
     this.getListChaps = async function (urlManga) {
+        console.log('List Chaps run')
         let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
         let res = []
         let self = this
@@ -45,6 +46,7 @@ window["ComiCake"] = function(options) {
     }
 
     this.getInformationsFromCurrentPage = async function (doc, curUrl) {
+        return false
         doc = await this.getStripMode(doc, curUrl)
         let link = $(this.options.chapter_information_selector, doc)
         return {

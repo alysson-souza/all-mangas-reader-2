@@ -5,12 +5,12 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["manytoon.com"],
         home: "https://manytoon.com/",
-        chapter_url: /^\/manga\/.*\/.*$/g,
+        chapter_url: /^\/(manga|comic)\/.*\/.*$/g,
         canListFullMangas: false,
         abstract: "Madara",
         abstract_options: {
             search_url: "https://manytoon.com/",
-            img_src: "data-src"
+            img_src: "src"
         }
     })
 }
