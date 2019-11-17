@@ -82,31 +82,11 @@ if (typeof registerMangaObject === "function") {
 		getImageFromPageAndWrite: async function (urlImg, image) {
 			$(image).attr("src", urlImg);
 		},
-	
-		whereDoIWriteScans: function (doc, curUrl) {
-			return $("#mangaBox", doc);
-		},
+
 		isCurrentPageAChapterPage: async function (doc, curUrl) {
 			doc = await this.passAdult(doc, curUrl)
 
 			return ($("img#mangaPicture", doc).length > 0);
-		},
-		doSomethingBeforeWritingScans: function (doc, curUrl) {
-			$("#mangaBox", doc).prev().remove();
-			$("#mangaBox", doc).prev().remove();
-			$(".second-nav", doc).append($("h1", doc));
-			$("h1", doc).css("text-align", "center");
-			$("#mangaBox", doc).empty();
-			$(".footerControl", doc).remove();
-			$("#mangaBox", doc).css("width", "100%");
-			$("#mangaBox", doc).css("padding", "0");
-			$("#mangaBox", doc).css("padding-top", "10px");
-			$("#mangaBox", doc).css("padding-bottom", "10px");
-			$("#mangaBox", doc).css("border", "0");
-			$("#mangaBox", doc).css("background-color", "black");
-		},
-		doAfterMangaLoaded: function (doc, curUrl) {
-			$("body > div:empty", doc).remove();
 		}
 	})
 }

@@ -72,9 +72,6 @@ window["ComiCake"] = function(options) {
         // This is not needed with regex?
         return $(this.options.chapter_determine_selector, doc).length > 0 || $(this.options.chapter_determine_strip_selector, doc).length > 0 ;
     }
-    this.doSomethingBeforeWritingScans = function (doc, curUrl) {
-        // $('body', doc).empty()
-    }
 
     /*
         Load chapters in list mode because it relies on html instead of javascript to load the images

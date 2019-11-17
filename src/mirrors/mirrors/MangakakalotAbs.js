@@ -88,9 +88,6 @@ window["MangakakalotAbs"] = function(options) {
     this.isCurrentPageAChapterPage = async function (doc, curUrl) {
         return false
     }
-    this.doSomethingBeforeWritingScans = function (doc, curUrl) {
-        // $('body', doc).empty()
-    }
 }
 
 if (typeof registerAbstractImplementation === 'function') {

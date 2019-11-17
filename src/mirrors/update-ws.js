@@ -3,7 +3,7 @@ const icons = './icons/'
 const fs = require('fs')
 
 let websites = []
-let deprecated = ["isMe", "removeBanners", "whereDoIWriteNavigation", "nextChapterUrl", "previousChapterUrl", "isImageInOneCol", "getMangaSelectFromPage"]
+let deprecated = ["isMe", "removeBanners", "whereDoIWriteNavigation", "nextChapterUrl", "previousChapterUrl", "isImageInOneCol", "getMangaSelectFromPage", "whereDoIWriteScans", "doSomethingBeforeWritingScans", "doAfterMangaLoaded"]
 global.window = {}
 
 global.registerAbstractImplementation = function(mirrorName) {

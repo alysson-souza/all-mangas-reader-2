@@ -71,21 +71,9 @@ if (typeof registerMangaObject === 'function') {
             var src = $("#showchaptercontainer img", doc).attr("src");
             $(image).attr("src", src);
         },
-    
-        whereDoIWriteScans: function (doc, curUrl) {
-            return $(".amr-container", doc);
-        },
+
         isCurrentPageAChapterPage: function (doc, curUrl) {
             return $("#showchaptercontainer img", doc).length > 0;
-        },
-        doSomethingBeforeWritingScans: function (doc, curUrl) {
-            let nav = $("#navbar", doc)
-            while (nav.next() && !nav.next().is(".footer")) {
-                nav.next().remove()
-            }
-            nav.after($("<div class='amr-container'></div>"))
-        },
-        doAfterMangaLoaded: function (doc, curUrl) {
         }
     })
 }
