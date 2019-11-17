@@ -4,6 +4,7 @@ import * as utils from '../../amr/utils'
 import iconHelper from '../../amr/icon-helper';
 import mirrorsImpl from '../../amr/mirrors-impl';
 import amrUpdater from '../../amr/amr-updater';
+import { websitesDescription } from '../../mirrors/register_implementations'
 
 /**
  *  initial state of the mirrors module
@@ -47,10 +48,10 @@ const actions = {
      */
     async initMirrors({ commit, dispatch }) {
         let websites = await storedb.getWebsites(); // Get mirrors from local database
-        if (!websites.length) {
-            // No mirrors known yet, get the list
-            websites = await dispatch("updateMirrorsLists");
-        }
+
+        // No mirrors known yet, get the list
+        websites = await dispatch("updateMirrorsLists");
+
         if (!websites.length) {
             document.dispatchEvent(new CustomEvent("mirrorsError"));
         } else {
@@ -84,53 +85,35 @@ const actions = {
         let websitesdb = await storedb.getWebsites();
         if (websitesdb === undefined) websitesdb = [];
 
-        let websites = [];
-        let config = {	
-            headers: {
-                'Content-Type': 'application/json',
-                'Cache-Control' : 'no-cache'
-            }
-        };
+        let websites = websitesDescription;
 
-        // Try all repos --> first to work wins.
-        for (let repo of rootState.options["impl_repositories"]) {
-            utils.debug("loading from repository " + repo);
-            let ws = await Axios.get(repo + "websites.json", config).catch(e => {
-                console.error("Failed to load websites.json from repo " + repo);
-                console.error(e);
-                return e;
-            });
-            if (ws && ws.data) {
-                let updts = []
-                for (let w of ws.data) {
-                    // get activated property in db, do not overright it
-                    let act = true;
-                    // languages is undefined for abstract implementations --> always activated
-                    if (w.languages !== undefined && rootState.options["deactivateunreadable"]) {
-                        let langs = w.languages.split(",")
-                        let hasReadable = false;
-                        for (let l of langs) {
-                            if (rootState.options["readlanguages"].includes(l)) {
-                                hasReadable = true
-                                break
-                            }
-                        }
-                        if (!hasReadable) act = false // default activation to false for a new implementation that does not match a readable language if option is checked
+        let updts = []
+        for (let w of websites) {
+            // get activated property in db, do not overright it
+            let act = true;
+            // languages is undefined for abstract implementations --> always activated
+            if (w.languages !== undefined && rootState.options["deactivateunreadable"]) {
+                let langs = w.languages.split(",")
+                let hasReadable = false;
+                for (let l of langs) {
+                    if (rootState.options["readlanguages"].includes(l)) {
+                        hasReadable = true
+                        break
                     }
-                    let wdb = websitesdb.find(m => m.mirrorName === w.mirrorName);
-                    if (wdb != undefined) act = wdb.activated;
-                    w.activated = act;
-                    updts.push(
-                        dispatch("updateMirror", w).catch(e => e) // avoid blocking the Promise.all due to an update failure
-                    );
                 }
-                // do not wait that all implementations are in db... few seconds. as the stores have been updated instantly, we do not need to wait for it to be in db
-                Promise.all(updts); 
-                websites = ws.data;
-                break;
+                if (!hasReadable) act = false // default activation to false for a new implementation that does not match a readable language if option is checked
             }
+            let wdb = websitesdb.find(m => m.mirrorName === w.mirrorName);
+            if (wdb != undefined) act = wdb.activated;
+            w.activated = act;
+            updts.push(
+                dispatch("updateMirror", w).catch(e => e) // avoid blocking the Promise.all due to an update failure
+            );
         }
-        if (!websites.length) {
+        // do not wait that all implementations are in db... few seconds. as the stores have been updated instantly, we do not need to wait for it to be in db
+        Promise.all(updts); 
+
+        if (!websites.length) { // hum should not happen now :)
             document.dispatchEvent(new CustomEvent("mirrorsError"));
         } else {
             // set mirrors list in store

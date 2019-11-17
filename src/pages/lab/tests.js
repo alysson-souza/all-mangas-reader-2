@@ -261,28 +261,6 @@ const tests = [
         ]
     },
     {
-        name: "where do we need to write chapter",
-        tests: [
-            {
-                input: ["valueof chaptersList"],
-                test: async function whereToWriteScans(mirror, chapter_url) {
-                    let nb = await browser.runtime.sendMessage({
-                        action: "lab",
-                        torun: "loadChapterAndDo",
-                        task: "wherenav",
-                        url: chapter_url,
-                        mirror: mirror.mirrorName
-                    });
-                    if (nb && nb === 1) {
-                        return [true, "Implementation returned one place to write chapter scans"];
-                    } else {
-                        return [false, "Implementation returned " + nb + " places to write chapter scans. Only one is required, fix the imlementation method <strong>whereDoIWriteScans</strong>"];
-                    }
-                }
-            }
-        ]
-    },
-    {
         name: "get list of scans",
         tests: [
             {

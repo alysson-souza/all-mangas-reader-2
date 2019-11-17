@@ -18,7 +18,7 @@
                         <v-subheader>Mirrors : </v-subheader>
                     </v-flex>
                     <v-flex xs9>
-                        <v-select v-model="current" :items="mirrors" item-value="mirrorName" item-text="mirrorName">
+                        <v-select v-model="current" :items="mirrors" item-value="mirrorName" item-text="mirrorName"             :menu-props="{auto: true}">
                         </v-select>
                     </v-flex>
                     </v-layout>
@@ -41,11 +41,6 @@
                         :disabled="loadingTests" 
                         color="primary" 
                         @click="loadCourse()">Load tests</v-btn>
-                    <v-btn  
-                        :loading="loadingMirrors" 
-                        :disabled="loadingMirrors" 
-                        color="primary" 
-                        @click="reloadMirrors()">Reload mirrors</v-btn>
                 </v-flex>
                 </v-layout>
                 <v-layout row v-if="testsResults.length > 0" class="mt-4">

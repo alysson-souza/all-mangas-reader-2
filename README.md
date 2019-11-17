@@ -8,6 +8,8 @@ All Mangas Reader is a browser extension which is designed to help you read and 
 * Order, classify mangas in your reading list
 * A lot of supported websites
 
+**Privacy** : All Mangas Reader can collect data for statistics purpose only. It keeps track of the manga you are reading and on which website you read it. These data are anonymized and are stored for at most 6 months on our own server, no google inside :). You can optout from this thracking by answering no to the question asked in the app at first time or from the options page.
+
 ## Why a V2 ?
 The first version, created in 2012, is no more maintained due to poor code design.
 All Mangas Reader V2 has been created to solve the two main issues of the V1 : 
@@ -97,7 +99,7 @@ Before contributing to the project, please read [Contribution guide](CONTRIBUTIN
 
 To contribute, fork the project and work on opened issues. Once fixed, submit a pull request which owners will merge as soon as possible
 
-You can submit issues through GitLab issues tool. **Please do not post issues related to mirrors implementation on this repository, do it on the [dedicated repository](https://gitlab.com/all-mangas-reader/all-mangas-reader-2-mirrors/issues)**.
+You can submit issues through GitLab issues tool.
 
 Please submit a test case to reproduce your issue.
 
@@ -114,7 +116,8 @@ You can also work on the [wiki](https://gitlab.com/all-mangas-reader/all-mangas-
  - webextension-polyfill : web extension API has been normalize and is implemented in Chrome, Firefox, Edge, ... but with still a few differences, thanks to this polyfill, the code works everywhere
  - axios : for xhr
  - jQuery : jQuery is still there, to manipulate DOM, it's still the best. Mirrors implementations are based on jQuery and the content script uses it as well.
-
+ - dompurify to sanitize the dom before parsing it
+ 
 ## Dev dependencies
 All Mangas Reader V2 is based on Webpack to compile the code.
 

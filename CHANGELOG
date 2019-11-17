@@ -1,3 +1,9 @@
+### V2.2.0
+After Mozilla disabled AMR from their store, a few changes, maily technical, have been MANGADEX
+ - All scripts are within the extension, no more mirrors repo
+ - Ask for send data agreement to collect statistics
+ - Avoid security issues by sanitizing loaded pages
+
 ### V2.1.1
 New features : 
  - Sync your manga list over different instances of your favorite browser (option in general, and sync in your browser)

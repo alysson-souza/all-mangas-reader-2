@@ -23,9 +23,16 @@
 				>
 			</MangaList>
 			<v-tooltip top v-if="alertmessage !== ''">
-				<v-alert type="warning" :value="true" icon="mdi-alert-decagram" slot="activator">{{alertmessage}}</v-alert>
+				<v-alert class="mb-0" type="warning" :value="true" icon="mdi-alert-decagram" slot="activator">{{alertmessage}}</v-alert>
 				<span>{{tooltipalert}}</span>
 			</v-tooltip>
+			<v-alert class="mb-0" type="info" :value="true" icon="mdi-incognito" v-if="!trackingDone">
+				{{i18n("options_gen_allowtracking_desc")}}
+				<div>
+					<v-btn @click="saveAllowTracking(true)">{{i18n('button_yes')}}</v-btn>
+					<v-btn flat @click="saveAllowTracking(false)">{{i18n('button_no')}}</v-btn>
+				</div>
+			</v-alert>
 			<div id="__bottom_app__"></div>
 		</v-content>
 		<!-- Options dialog -->
@@ -149,20 +156,22 @@ import * as utils from '../../amr/utils';
 export default {
   data() {
     return {
-			title: "All Mangas Reader", 
-			options: false,
-			search: false,
-			rpanel: false,
-			tabs: "refresh", // in rpanel, right tabs state
-			toSearch: "", // phrase to search in search panel (used to load search from manga)
-			alertmessage: "", // alert to display at the bottom of the popup
-			tooltipalert: ""
+		title: "All Mangas Reader", 
+		options: false,
+		search: false,
+		rpanel: false,
+		tabs: "refresh", // in rpanel, right tabs state
+		toSearch: "", // phrase to search in search panel (used to load search from manga)
+		alertmessage: "", // alert to display at the bottom of the popup
+		tooltipalert: "",
+		trackingDone: false
     };
   },
   name: "App",
   components: { MangaList, Options, Search, Timers, ImportExport },
   created() {
-		document.title = i18n("page_popup_title");
+	this.trackingDone = this.$store.state.options.allowtrackingdone == 1;
+	document.title = i18n("page_popup_title");
     // initialize state for store in popup from background
     this.$store.dispatch("getStateFromReference", {
       module: "mirrors",
@@ -231,6 +240,16 @@ export default {
 				this.opentab("/pages/importexport/importexport.html");
 				window.close();
 			}
+		},
+		async saveAllowTracking(doAllow) {
+			await this.$store.dispatch("setOption", { key: "allowtrackingdone", value: 1});
+			this.trackingDone = true
+			await this.$store.dispatch("setOption", { key: "allowtracking", value: doAllow ? 1 : 0 });
+			setTimeout(() => {
+				browser.runtime.sendMessage({
+					action: "reloadStats"
+				});
+			}, 0)
 		}
 	}, 
 	mounted: function () {

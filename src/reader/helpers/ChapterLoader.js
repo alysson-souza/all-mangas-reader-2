@@ -28,40 +28,16 @@ export default class ChapterLoader {
         let url = this.url
         if (!url) url = window.location.href
 
-        let loadFromBack = false
-        // test if implementation request to make the calls from background page, this is due to CORB in chrome 73, if CORS or set, request won't work from content script
-        if (mirrorImpl.get().fromback && mirrorImpl.get().fromback.includes("infos")) {
-            loadFromBack = true
-        }
-
-        if (this.url || loadFromBack) {
-            let data = await browser.runtime.sendMessage({
-                action: "getChapterData", 
-                url: url,
-                mirrorName: mirrorImpl.get().mirrorName, // assuming we read on the same mirror (no other possibilities for now...)
-                language: pageData.state.language // and in the same language...
-            })
-            this.isAChapter = data.isChapter
-            this.infos = data.infos
-            this.images = data.images
-            this.title = data.title
-        } else {
-            // retrieve infos from current page
-            // Initialize the page once the mirror implementation has been loaded
-            // Test if current page is a chapter page (according to mirror implementation)
-            this.isAChapter = mirrorImpl.get().isCurrentPageAChapterPage(document, window.location.href)
-            try {
-                this.title = document.title
-                // Retrieve informations relative to current chapter / manga read
-                this.infos = await mirrorImpl.get().getInformationsFromCurrentPage(document, window.location.href)
-
-                // retrieve images to load
-                this.images = await mirrorImpl.get().getListImages(document, window.location.href)
-            } catch (e) {
-                console.error("Error while initializing AMR : ");
-                console.error(e)
-            }
-        }
+        let data = await browser.runtime.sendMessage({
+            action: "getChapterData", 
+            url: url,
+            mirrorName: mirrorImpl.get().mirrorName, // assuming we read on the same mirror (no other possibilities for now...)
+            language: pageData.state.language // and in the same language...
+        })
+        this.isAChapter = data.isChapter
+        this.infos = data.infos
+        this.images = data.images
+        this.title = data.title
     }
 
     /** 

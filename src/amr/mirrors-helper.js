@@ -1,4 +1,5 @@
 import browser from "webextension-polyfill";
+import * as domutils from '../amr/domutils';
 
 /**
  * Mirrors implementation helper
@@ -53,13 +54,12 @@ class MirrorsHelper {
                     }
                     ajaxObj.error = (jqXhr, error, e) => reject(error)
                     ajaxObj.success = (data) => {
-                        var div = document.createElement("div");
+                        let toparse = data
                         if (options && options.preventimages) {
-                            div.innerHTML = data.replace(/<img/gi, '<noload')
-                        } else {
-                            div.innerHTML = data
+                            toparse = data.replace(/<img/gi, '<noload')
                         }
-                        resolve(div);
+                        let htmlDocument = domutils.sanitizeDom(toparse)
+                        resolve(htmlDocument)
                     }
                     /**
                      * In Firefox, cookies and referer are not sent properly when using xhr from content script. Override the xhr provider to use the build in right xhr 
@@ -149,12 +149,7 @@ class MirrorsHelper {
              * @param {*} varname 
              */
             amr.getVariable = function(varname, doc) {
-                let res = undefined
-                $("script", doc).each(function(i) {
-                    res = amr.getVariableFromScript(varname, $(this).text())
-                    if (res !== undefined) return false
-                })
-                return res
+                return amr.getVariableFromScript(varname, $("#__amr_text_dom__", doc).text())
             }
 
             /**

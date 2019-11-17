@@ -3,25 +3,14 @@ import browser from "webextension-polyfill";
 import mirrorsImpl from '../amr/mirrors-impl';
 import store from '../store';
 import * as utils from '../amr/utils';
+import * as domutils from '../amr/domutils';
 import storedb from '../amr/storedb';
-
-/** Scripts to inject in pages containing mangas */
-const contentScripts = [
-    '/lib/jquery.min.js',
-    '/lib/jquery.scrollTo.min.js',
-    '/lib/jquery.modal.min.js',
-    '/content/back.js'
-];
-/** CSS to inject in pages containing mangas */
-const contentCss = [
-    '/content/content.css',
-    '/lib/jquery.modal.min.css'
-];
 
 /** Scripts to inject in pages containing mangas for new reader */
 const contentScriptsV2 = [
-    '/lib/jquery.min.js',
-    '/reader/init-reading.js'
+    {file: '/lib/jquery.min.js'},
+    {file: '/reader/init-reading.js'},
+    {file: '/mirrors/register_implementations.js'}
 ];
 
 class HandleManga {
@@ -167,27 +156,6 @@ class HandleManga {
         });
     }
 
-    async getImplementation(mir) {
-        let impl;
-        let abstract;
-        // Load mirror implementation from repo (try next repo if previous fail)
-        for (let repo of store.state.options["impl_repositories"]) {
-            let url = repo + mir.jsFile;
-            if (url.indexOf("localhost") > 0) url += "?ts=" + Date.now();
-            impl = await Axios.get(url).catch(() => { }); // ignore error, jump to next repo
-            if (impl) {
-                // test if abstract
-                if (mir.abstract !== undefined) {
-                    let abs = store.state.mirrors.abstracts.find(abs => abs.mirrorName === mir.abstract)
-                    url = repo + abs.jsFile;
-                    if (url.indexOf("localhost") > 0) url += "?ts=" + Date.now();
-                    abstract = await Axios.get(url).catch(() => { }); // ignore error, jump to next repo
-                }
-                break;
-            }
-        }
-        return abstract !== undefined ? abstract.data + impl.data : impl.data
-    }
     /**
      * Test if the url matches a mirror implementation. 
      * If so, inject content script to transform the page and the mirror implementation inside the tab
@@ -198,61 +166,47 @@ class HandleManga {
         const mir = utils.currentPageMatch(url)
         if (mir === null) return Promise.resolve(null)
 
-        if (!localStorage["oldreader"]) {
-            // check if we need to load preload (it could be annoying to have preload on each pages of the website)
-            // websites which provide a chapter_url regexp will have their chapters with a preload
-            let dopreload = false
-            if (mir.chapter_url) {
-                var parts = /\/(.*)\/(.*)/.exec(mir.chapter_url);
-                var chaprx = new RegExp(parts[1], parts[2]);
-                if (chaprx.test("/" + utils.afterHostURL(url))) dopreload = true
-            }
-            if (dopreload) {
-                // Load amr preload
-                let loading = []
-                loading.push(browser.tabs.insertCSS(tabId, { file: "/reader/pre-loader.css" }))
-                let bgcolor = "#424242"
-                if (store.state.options.darkreader === 0) bgcolor = "white"
-                loading.push(browser.tabs.executeScript(
-                    tabId, 
-                    { code: `
-                        let amr_icon_url = '${browser.extension.getURL('/icons/icon_128.png')}';
-                        let cover = document.createElement("div")
-                        cover.id = "amr-loading-cover"
-                        cover.style.backgroundColor = "${bgcolor}"
-
-                        let img = document.createElement("img")
-                        img.src = amr_icon_url;
-                        cover.appendChild(img)
-
-                        document.body.appendChild(cover)
-                        setTimeout(() => {
-                            try {cover.parentNode.remove(cover)} catch(e) {}
-                        }, 5000)
-                    `}))
-                Promise.all(loading)
-            }
+        // check if we need to load preload (it could be annoying to have preload on each pages of the website)
+        // websites which provide a chapter_url regexp will have their chapters with a preload
+        let dopreload = false
+        if (mir.chapter_url) {
+            var parts = /\/(.*)\/(.*)/.exec(mir.chapter_url);
+            var chaprx = new RegExp(parts[1], parts[2]);
+            if (chaprx.test("/" + utils.afterHostURL(url))) dopreload = true
         }
-        let impl = await this.getImplementation(mir)
-        if (impl) {
-            if (localStorage["oldreader"]) {
-                // Inject css in matched tab
-                for (let css of contentCss) {
-                    await browser.tabs.insertCSS(tabId, { file: css });
-                }
-                // Inject content scripts in matched tab
-                for (let script of contentScripts) {
-                    await browser.tabs.executeScript(tabId, { file: script });
-                }
-            } else {
-                // Inject content scripts in matched tab
-                for (let script of contentScriptsV2) {
-                    await browser.tabs.executeScript(tabId, { file: script });
-                }
-            }
-            // Inject mirror implementation (through a function called in the implementation and existing in back.js)
-            await browser.tabs.executeScript(tabId, { code: impl });
+        if (dopreload) {
+            // Load amr preload
+            let loading = []
+            loading.push(browser.tabs.insertCSS(tabId, { file: "/reader/pre-loader.css" }))
+            let bgcolor = "#424242"
+            if (store.state.options.darkreader === 0) bgcolor = "white"
+            loading.push(browser.tabs.executeScript(
+                tabId, 
+                { code: `
+                    let amr_icon_url = '${browser.extension.getURL('/icons/icon_128.png')}';
+                    let cover = document.createElement("div")
+                    cover.id = "amr-loading-cover"
+                    cover.style.backgroundColor = "${bgcolor}"
+
+                    let img = document.createElement("img")
+                    img.src = amr_icon_url;
+                    cover.appendChild(img)
+
+                    document.body.appendChild(cover)
+                    setTimeout(() => {
+                        try {cover.parentNode.remove(cover)} catch(e) {}
+                    }, 5000)
+                `}))
+            Promise.all(loading)
         }
+        // Inject content scripts in matched tab
+        for (let script of contentScriptsV2) {
+            await browser.tabs.executeScript(tabId, script);
+        }
+        await browser.tabs.executeScript(
+            tabId, 
+            { code: `window["amrLoadMirrors"]("${mir.mirrorName}")` }
+        )
         return Promise.resolve(utils.serializeVuexObject(mir)); // doing that because content script is not vue aware, the reactive vuex object needs to be converted to POJSO
     }
     /**
@@ -261,7 +215,9 @@ class HandleManga {
      * @param {*} tabId 
      */
     async sendPushState(url, tabId) {
-        await browser.tabs.executeScript(tabId, { code: "window['onPushState']();" });
+        browser.tabs
+          .executeScript(tabId, { code: "if (typeof window['onPushState'] === 'function') window['onPushState']();" })
+          .catch(utils.debug)
     }
     /**
      * Return the list of images urls from a chapter
@@ -270,60 +226,39 @@ class HandleManga {
     async getChapterData(message) {
         return Axios.get(message.url)
             .then(resp => {
-                return new Promise((resolve, reject) => {
-                    var div = document.createElement("iframe");
-                    div.style.display = "none";
-                    var id = "mangaNextChap";
-                    var i = 0;
-                    while ($("#" + id + i).length > 0) {
-                        i++;
-                    }
-                    id = id + i;
-                    $(div).attr("id", id);
-                    document.body.appendChild(div);
-                    // was $(document.getElementById(id).contentWindow.document).ready(...); but ready method was removed from jQuery 3.x --> do it the js way
-                    let ldoc = document.getElementById(id).contentWindow.document;
-                    ldoc.documentElement.innerHTML = resp.data;
-                    let readyCall = async () => {
-                        // loads the implementation code
-                        let impl = await mirrorsImpl.getImpl(message.mirrorName);
-
-                        // Check if this is a chapter page
-                        let isChapter = impl.isCurrentPageAChapterPage(
-                            document.getElementById(id).contentWindow.document, 
-                            message.url)
-                        let infos, imagesUrl = []
-                        if (isChapter) {
-                            try {
-                                // Retrieve informations relative to current chapter / manga read
-                                infos = await impl.getInformationsFromCurrentPage(
-                                    document.getElementById(id).contentWindow.document, 
-                                    message.url)
-                                    
-                                // retrieve images to load
-                                imagesUrl = await impl.getListImages(
-                                    document.getElementById(id).contentWindow.document, 
-                                    message.url);
-                            } catch (e) {
-                                console.error("Error while loading infos and images from url " + message.url)
-                                console.error(e)
-                            }
+                return new Promise(async (resolve, reject) => {
+                    let htmlDocument = domutils.sanitizeDom(resp.data)
+                    // loads the implementation code
+                    let impl = await mirrorsImpl.getImpl(message.mirrorName);
+                    // Check if this is a chapter page
+                    let isChapter = impl.isCurrentPageAChapterPage(
+                        htmlDocument, 
+                        message.url)
+                    let infos, imagesUrl = []
+                    if (isChapter) {
+                        try {
+                            // Retrieve informations relative to current chapter / manga read
+                            infos = await impl.getInformationsFromCurrentPage(
+                                htmlDocument, 
+                                message.url)
+                                
+                            // retrieve images to load
+                            imagesUrl = await impl.getListImages(
+                                htmlDocument, 
+                                message.url);
+                        } catch (e) {
+                            console.error("Error while loading infos and images from url " + message.url)
+                            console.error(e)
                         }
-                        let title = document.getElementById(id).contentWindow.document.title
-                        $("#" + id).remove();
-                        resolve({
-                            isChapter: isChapter,
-                            infos: infos,
-                            images: imagesUrl,
-                            title: title
-                        });
                     }
-                    if (ldoc.readyState === "complete" ||
-                        (ldoc.readyState !== "loading" && !ldoc.documentElement.doScroll)) {
-                        readyCall();
-                    } else {
-                        ldoc.addEventListener("DOMContentLoaded", readyCall);
-                    }
+                    let title = htmlDocument.title
+                    
+                    resolve({
+                        isChapter: isChapter,
+                        infos: infos,
+                        images: imagesUrl,
+                        title: title
+                    });
                 });
             })
             .catch((e) => {
