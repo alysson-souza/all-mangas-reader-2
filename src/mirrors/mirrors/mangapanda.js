@@ -63,28 +63,9 @@ if (typeof registerMangaObject === 'function') {
             var src = $("#imgholder img", doc).attr("src");
             $(image).attr("src", src);
         },
-    
-        whereDoIWriteScans: function (doc, curUrl) {
-            return $("#imgholder", doc);
-        },
+
         isCurrentPageAChapterPage: function (doc, curUrl) {
             return $("img", $("#imgholder", doc)).length !== 0;
-        },
-        doSomethingBeforeWritingScans: function (doc, curUrl) {
-            $("#imgholder", doc).empty();
-            $("#imgholder", doc).css("width", "auto");
-            $("#imgholder", doc).closest("td").prev().remove();
-            $("#imgholder", doc).closest("td").next().remove();
-            $("#selection", doc).next().remove();
-            $("#selection", doc).remove();
-            $("#navi", doc).empty();
-            $("#selectmanga", doc).empty();
-            $("#wrapper_body", doc).css("width", "auto");
-            $("#topchapter", doc).css("width", "950px");
-            $("#topchapter", doc).css("text-align", "center");
-        },
-        doAfterMangaLoaded: function (doc, curUrl) {
-            $("body > div:empty", doc).remove();
         }
     })
 }

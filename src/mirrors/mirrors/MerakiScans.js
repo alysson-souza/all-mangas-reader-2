@@ -63,15 +63,6 @@ if (typeof registerMangaObject === 'function') {
             let currentChapter = amr.getVariable('currentChapter', doc)
 
             return currentChapter !== undefined
-        },
-        doSomethingBeforeWritingScans: function (doc, curUrl) {
-            $("#container", doc).empty()
-            
-            $("#navcontainer", doc).remove()
-            $("#controlbox", doc).remove()
-            $("#reader_text", doc).remove()
-            $("div[id='bottombox']", doc).remove()
-            $("footer", doc).remove()
         }
     });
 }

@@ -81,18 +81,9 @@ if (typeof registerMangaObject === 'function') {
             var src = $("#page_img", doc).attr("src");
             $(image).attr("src", "https://submanga.online" + src);
         },
-    
-        whereDoIWriteScans: function (doc, curUrl) {
-            return $(".content-wrapper", doc).length > 0 ? $(".content-wrapper", doc) : $(".site-content", doc);
-        },
+        
         isCurrentPageAChapterPage: function (doc, curUrl) {
             return $("a[href^='/mangas/leermanga/']", doc).length > 0 || $("#page_img", doc).length > 0;
-        },
-        doSomethingBeforeWritingScans: function (doc, curUrl) {
-            $(".content-wrapper", doc).empty();
-            $(".site-content", doc).empty();
-        },
-        doAfterMangaLoaded: function (doc, curUrl) {
         }
     })
 }

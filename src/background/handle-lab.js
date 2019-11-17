@@ -66,10 +66,6 @@ class HandleLab {
                         } else if (message.task === "listScans") {
                             let imagesUrl = await impl.getListImages(htmlDocument, message.url);
                             resolve(imagesUrl);
-                        } else if (message.task === "wherenav") {
-                            impl.doSomethingBeforeWritingScans(htmlDocument, message.url);
-                            let where = await impl.whereDoIWriteScans(htmlDocument, message.url);
-                            resolve(where.length);
                         }
                     } catch (e) {
                         reject(e);

@@ -104,18 +104,8 @@ window["MangastreamAbs"] = function (options) {
         $(image).attr("src", urlImg)
     }
 
-    this.whereDoIWriteScans = function (doc, curUrl) {
-        return $(this.options.page_container_sel, doc)
-    }
     this.isCurrentPageAChapterPage = function (doc, curUrl) {
         return $(this.options.page_container_sel, doc).length > 0
-
-    }
-    this.doSomethingBeforeWritingScans = function (doc, curUrl) {
-        $(this.options.page_container_sel, doc).empty()
-        this.options.doBefore(doc, curUrl)
-    }
-    this.doAfterMangaLoaded = function (doc, curUrl) {
     }
 }
 

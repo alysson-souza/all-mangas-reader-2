@@ -18,7 +18,7 @@
                         <v-subheader>Mirrors : </v-subheader>
                     </v-flex>
                     <v-flex xs9>
-                        <v-select v-model="current" :items="mirrors" item-value="mirrorName" item-text="mirrorName">
+                        <v-select v-model="current" :items="mirrors" item-value="mirrorName" item-text="mirrorName"             :menu-props="{auto: true}">
                         </v-select>
                     </v-flex>
                     </v-layout>

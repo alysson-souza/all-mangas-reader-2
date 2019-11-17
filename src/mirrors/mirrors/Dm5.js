@@ -137,24 +137,8 @@ if (typeof registerMangaObject === 'function') {
                 $(image).attr("src", "error"); 
             }
         },
-    
-        whereDoIWriteScans : function (doc, curUrl) {
-            return $('.amr-container', doc);
-        },
         isCurrentPageAChapterPage : function (doc, curUrl) {
             return $("#cp_img", doc).length > 0;
-        },
-        doSomethingBeforeWritingScans : function (doc, curUrl) {
-            while (
-                $("body > .view-header-2", doc).next().length > 0 && 
-                !$("body > .view-header-2", doc).next().is(".view-comment")
-            ) {
-                $("body > .view-header-2", doc).next().remove()
-            }
-            $("body > .view-header-2", doc).after("<div class='amr-container'></div>")
-        },
-        
-        doAfterMangaLoaded : function (doc, curUrl) {
         }
     })
 }

@@ -62,21 +62,9 @@ if (typeof registerMangaObject === "function") {
         getImageFromPageAndWrite: async function (urlImg, image) {
             $(image).attr("src", urlImg);
         },
-    
-        whereDoIWriteScans: function (doc, curUrl) {
-            return $("#image", doc)
-        },
 
         isCurrentPageAChapterPage: async function (doc, curUrl) {
             return $("#image", doc).length > 0;
-        },
-
-        doSomethingBeforeWritingScans: function (doc, curUrl) {
-        //empty
-        },
-
-        doAfterMangaLoaded: function (doc, curUrl) {
-            $("body > div:empty", doc).remove();
         }
     })
 }

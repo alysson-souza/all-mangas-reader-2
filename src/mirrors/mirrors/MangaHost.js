@@ -61,16 +61,8 @@ if (typeof registerMangaObject === 'function') {
             $(image).attr("src", urlImg);
         },
 
-        whereDoIWriteScans: function (doc, curUrl) {
-            return $(".content-site", doc)
-        },
         isCurrentPageAChapterPage: function (doc, curUrl) {
             return $("#imageWrapper img", doc).length > 0;
-        },
-        doSomethingBeforeWritingScans: function (doc, curUrl) {
-            $(".content-site", doc).empty()
-        },
-        doAfterMangaLoaded: function (doc, curUrl) {
         }
     })
 }

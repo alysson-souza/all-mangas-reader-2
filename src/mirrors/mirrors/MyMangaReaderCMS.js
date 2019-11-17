@@ -80,17 +80,8 @@ window["MyMangaReaderCMS"] = function (options) {
         $(image).attr("src", urlImg);
     }
 
-    this.whereDoIWriteScans = function (doc, curUrl) {
-        return $(".viewer-cnt", doc);
-    }
     this.isCurrentPageAChapterPage = function (doc, curUrl) {
         return $("#ppp img.scan-page", doc).length > 0;
-    }
-    this.doSomethingBeforeWritingScans = function (doc, curUrl) {
-        $(".viewer-cnt", doc).empty()
-        $(".pager-cnt", doc).remove()
-    }
-    this.doAfterMangaLoaded = function (doc, curUrl) {
     }
 }
 
