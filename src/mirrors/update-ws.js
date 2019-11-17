@@ -55,6 +55,8 @@ global.registerMangaObject = function(object) {
 fs.readdir(mirrors, async (err, files) => {
     let cur = 0
     let allMirrors = [], allAbstracts = []
+    //sort files using case insensitive sort
+    files.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
     for (let file of files) {
         require(mirrors + file)
         cur++
