@@ -10,7 +10,7 @@ if (typeof registerMangaObject === 'function') {
         abstract: "Madara",
         abstract_options: {
             search_url: "https://komikgo.com/",
-            img_src: "src",
+            img_src: "data-src",
         },
     })
 }

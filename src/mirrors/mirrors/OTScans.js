@@ -3,13 +3,13 @@ if (typeof registerMangaObject === 'function') {
         mirrorName : "One Time Scans",
         mirrorIcon : "onetimescans.png",
         languages : "en",
-        domains: ["otscans.com"],
+        domains: ["reader.otscans.com"],
         home: "https://otscans.com/",
-        chapter_url: /^\/foolslide\/read\/.*$/g,
+        chapter_url: /^\/read\/.*$/g,
 
         abstract: "FoolSlide",
         abstract_options: {
-            base_url: "https://otscans.com/foolslide",
+            base_url: "https://reader.otscans.com",
             mglist_selector: ".title > a[href*='/series/']"
         }
     })
