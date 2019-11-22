@@ -37,7 +37,7 @@ window["ComiCake"] = function(options) {
         $(this.options.chapter_list_selector, doc).each(function (index) {
             res.push([
                 $(this).text(), 
-                self.options.reader_url + $(this).attr("href")
+                self.stripUrl(self.options.reader_url + $(this).attr("href"))
             ])
         })
         
@@ -50,7 +50,7 @@ window["ComiCake"] = function(options) {
         return {
             "name" : link.text(),
             "currentMangaURL" : this.options.reader_url + link.attr('href'),
-            "currentChapterURL" : curUrl
+            "currentChapterURL" : this.stripUrl(curUrl)
         }
     }
 
@@ -68,8 +68,6 @@ window["ComiCake"] = function(options) {
     }
 
     this.isCurrentPageAChapterPage = async function (doc, curUrl) {
-        return false
-        // This is not needed with regex?
         return $(this.options.chapter_determine_selector, doc).length > 0 || $(this.options.chapter_determine_strip_selector, doc).length > 0 ;
     }
 
@@ -78,7 +76,7 @@ window["ComiCake"] = function(options) {
     */
     this.getStripMode = async function(doc, curUrl) {
         if (!this.isStripMode(curUrl)) {
-            doc = await amr.loadPage(curUrl + '/strip', { nocache: true})
+            doc = await amr.loadPage(this.stripUrl(curUrl), { nocache: true})
         }
         return doc;
     }
