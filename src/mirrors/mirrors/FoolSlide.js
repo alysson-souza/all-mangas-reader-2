@@ -103,21 +103,9 @@ window["FoolSlide"] = function(options) {
         $(image).attr("src", urlImg);
     }
 
-    this.whereDoIWriteScans = function (doc, curUrl) {
-        if ($(this.options.page_container, doc).length === 0) {
-            //doc = await this.passAdult(doc, curUrl) // only happens from test suite...
-            return $("body", doc)
-        }
-        return $(this.options.page_container, doc)
-    }
     this.isCurrentPageAChapterPage = async function (doc, curUrl) {
         doc = await this.passAdult(doc, curUrl)
         return $("#page img", doc).length > 0;
-    }
-    this.doSomethingBeforeWritingScans = function (doc, curUrl) {
-        $(this.options.page_container, doc).empty()
-    }
-    this.doAfterMangaLoaded = function (doc, curUrl) {
     }
 }
 

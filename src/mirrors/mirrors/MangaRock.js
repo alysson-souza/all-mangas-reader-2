@@ -80,16 +80,8 @@ if (typeof registerMangaObject === 'function') {
             xhr.send();
         },
     
-        whereDoIWriteScans: function (doc, curUrl) {
-            return $(".pageMangaReader", doc);
-        },
         isCurrentPageAChapterPage: function (doc, curUrl) {
             return curUrl.split("/").length === 7 && curUrl.split("/")[5] === "chapter";
-        },
-        doSomethingBeforeWritingScans: function (doc, curUrl) {
-            $(".pageMangaReader", doc).empty();
-        },
-        doAfterMangaLoaded: function (doc, curUrl) {
         },
     
         webPDecode: function(t) {

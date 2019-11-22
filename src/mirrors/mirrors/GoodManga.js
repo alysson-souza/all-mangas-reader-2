@@ -53,22 +53,9 @@ if (typeof registerMangaObject === 'function') {
             var src = $("#manga_viewer img", doc).attr("src");
             $(image).attr("src", src);
         },
-    
-        whereDoIWriteScans : function (doc, curUrl) {
-            return $("#manga_viewer", doc);
-        },
+
         isCurrentPageAChapterPage : function (doc, curUrl) {
             return ($("div#content div#manga_viewer img", doc).length > 0);
-        },
-        doSomethingBeforeWritingScans : function (doc, curUrl) {
-            $("#manga_nav_top", doc).remove();
-            $("#manga_nav_bottom", doc).remove();
-            $("#manga_viewer", doc).empty();
-            $("#content", doc).css("background-color", "black");
-            $("#manga_viewer", doc).css("padding-top", "10px");
-        },
-        doAfterMangaLoaded : function (doc, curUrl) {
-            $("body > div:empty", doc).remove();
         }
     })
 }

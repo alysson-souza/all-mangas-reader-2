@@ -54,18 +54,9 @@ if (typeof registerMangaObject === 'function') {
             var src = "http://www.mangaoku.net/" + $("#manga_img", doc).attr("src");
             $(image).attr("src", src);
         },
-    
-        whereDoIWriteScans: function (doc, curUrl) {
-            return $("#cont", doc);
-        },
+
         isCurrentPageAChapterPage: function (doc, curUrl) {
             return $("#manga_img", doc).length > 0 && $("#manga_img", doc).attr("src") !== "";
-        },
-        doSomethingBeforeWritingScans: function (doc, curUrl) {
-            $(".container", doc).remove()
-            $("#cont", doc).empty()
-        },
-        doAfterMangaLoaded: function (doc, curUrl) {
         }
     })
 }

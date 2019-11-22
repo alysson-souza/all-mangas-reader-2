@@ -49,17 +49,8 @@ if (typeof registerMangaObject === 'function') {
             $(image).attr("src", src);
         },
 
-        whereDoIWriteScans: function (doc, curUrl) {
-            return $(".amr-container", doc);
-        },
         isCurrentPageAChapterPage: function (doc, curUrl) {
             return $("#page img.open", doc).length > 0
-        },
-        doSomethingBeforeWritingScans: function (doc, curUrl) {
-            $(".container", doc).remove();
-            $(".navbar", doc).after("<div class='amr-container'></div>")
-        },
-        doAfterMangaLoaded: function (doc, curUrl) {
         }
     })
 }

@@ -61,29 +61,9 @@ if (typeof registerMangaObject === 'function') {
             let src = $("#imgholder img", doc).attr("src")
             $(image).attr("src", src)
         },
-    
-        whereDoIWriteScans: function (doc, curUrl) {
-            return $("#inject-chap", doc);
-        },
+
         isCurrentPageAChapterPage: function (doc, curUrl) {
             return ($("img", $("#imgholder", doc)).length !== 0);
-        },
-        doSomethingBeforeWritingScans: function (doc, curUrl) {
-            var imgholder = $("#imgholder", doc).closest("table");
-            var ws = $("<div id='inject-chap'></div>");
-            imgholder.before(ws);
-            imgholder.empty();
-            ws.css("width", "auto");
-            $("#selection", doc).next().remove();
-            $("#selection", doc).remove();
-            $("#navi", doc).empty();
-            $("#selectmanga", doc).empty();
-            $("#wrapper_body", doc).css("width", "auto");
-            $("#topchapter", doc).css("width", "950px");
-            $("#topchapter", doc).css("text-align", "center");
-        },
-        doAfterMangaLoaded: function (doc, curUrl) {
-            $("body > div:empty", doc).remove();
         }
     })
 }

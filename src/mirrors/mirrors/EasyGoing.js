@@ -57,22 +57,9 @@ if (typeof registerMangaObject === 'function') {
         getImageFromPageAndWrite : async function (urlImg, image) {
             $(image).attr("src", urlImg);
         },
-    
-        whereDoIWriteScans : function (doc, curUrl) {
-            return $('.imgAMR', doc);
-        },
+
         isCurrentPageAChapterPage : function (doc, curUrl) {
             return ($("select[name='chapter']", doc).length > 0);
-        },
-        doSomethingBeforeWritingScans : function (doc, curUrl) {
-            $('td.mid', doc).empty();
-            $('td.mid', doc).append($("<div class='imgAMR'></div>"));
-        },
-        
-        doAfterMangaLoaded : function (doc, curUrl) {
-            $("body > div:empty", doc).remove();
-            $('select', doc).css('background-color', 'white');
-            $('option', doc).css('background-color', 'white').css('color', 'black');
         }
     })
 }

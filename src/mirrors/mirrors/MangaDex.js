@@ -89,18 +89,8 @@ if (typeof registerMangaObject === 'function') {
             $(image).attr("src", urlImg)
         },
     
-        whereDoIWriteScans: function (doc, curUrl) {
-            return $(".reader-main", doc)
-        },
         isCurrentPageAChapterPage: function (doc, curUrl) {
             return curUrl.split("/")[3] === "chapter" && curUrl.split("/")[5] !== "comments"
-        },
-        doSomethingBeforeWritingScans: function (doc, curUrl) {
-            $(".reader-main", doc).empty()
-            $(".reader-controls-container", doc).remove()
-            $(".navbar", doc).remove()
-        },
-        doAfterMangaLoaded: function (doc, curUrl) {
         }
     });
 }
