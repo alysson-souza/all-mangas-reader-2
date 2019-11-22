@@ -109,7 +109,7 @@ if (typeof registerMangaObject === 'function') {
         },
 
         isCurrentPageAChapterPage: function (doc, curUrl) {
-            return $(".reader-main-img", doc).length > 0
+            return $(".reader-main", doc).length > 0
         }
     })
 }
