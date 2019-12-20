@@ -16,10 +16,10 @@ window["MangakakalotAbs"] = function(options) {
     this.canListFullMangas = false
 
     this.getMangaList = async function (search) {
+        search = search.replace(/ /g, '_')
         let res = []
         let url = this.options.base_url + this.options.search_url + search
         let doc = await amr.loadPage(url, {nocache: true, preventimages: true})
-
         res.push(...this.searchPage(doc))
 
         let lastPage = $(this.options.series_list_page_last_selector, doc)
