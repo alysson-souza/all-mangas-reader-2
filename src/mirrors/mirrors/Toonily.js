@@ -10,7 +10,7 @@ if (typeof registerMangaObject === 'function') {
         abstract: "Madara",
         abstract_options: {
             search_url: "https://toonily.com/",
-            img_src: "data-src"
+            img_src: "src"
         }
     })
 }
