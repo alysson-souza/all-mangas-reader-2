@@ -24,6 +24,7 @@ All Mangas Reader V2 is supported by **Firefox, Chrom(ium/e), Opera**, and Edge 
 
 ## Installation
 All Mangas Reader V2 has been package for Firefox, Chrom(ium/e) and Opera. You can find the links to download the stable version on **[All Mangas Reader's main website](https://v2.allmangasreader.com)**
+As Edge is now based on Chromium, it should work with Edge.
 
 Download Beta Channel:
  - **[All Mangas Reader Beta V2 for Firefox](https://release.allmangasreader.com/all-mangas-reader-beta-latest.xpi)**
