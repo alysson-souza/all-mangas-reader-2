@@ -107,7 +107,11 @@ window["Madara"] = function (options) {
             return preloadImages;
         }
         $(this.options.img_sel, doc).each(function (index) {
-            res[res.length] = $(this).attr(self.options.img_src);
+            let img = $(this).attr(self.options.img_src)
+            if (self.options.hasOwnProperty('secondary_img_src') && img === undefined) {
+                img = $(this).attr(self.options.secondary_img_src)
+            }
+            res[res.length] = img
         });
         return res;
     }
