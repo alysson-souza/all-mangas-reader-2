@@ -1,4 +1,4 @@
-image: node:13-alpine
+image: node:13
 
 stages:
     - build
