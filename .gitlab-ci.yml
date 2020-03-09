@@ -7,8 +7,11 @@ stages:
 before_script:
     - export PREVIOUS_TAGS=$(git tag --list --format '%(objectname)' --merged origin/master --no-contains HEAD)
     - export PREVIOUS_TAGS+=" $(git tag --list --format '%(objectname)' --points-at HEAD)"
+    - echo Previous tags = $PREVIOUS_TAGS
     - export LAST_TAG=$([[ -n "$PREVIOUS_TAGS" ]] && git merge-base --independent $PREVIOUS_TAGS)
+    - echo Last Tag = $LAST_TAG
     - export VERSION=$([[ -n "$LAST_TAG" ]] && git tag --points-at $LAST_TAG)
+    - echo Version = $VERSION
     - export VERSION=${VERSION:-2.0.0}
     - export PATCH=$(git rev-list ${LAST_TAG:+$LAST_TAG..}HEAD | wc -l)
     - yarn
