@@ -9,7 +9,8 @@ if (typeof registerMangaObject === 'function') {
 
         abstract: "MangakakalotAbs",
         abstract_options: {
-            base_url: "https://mangakakalot.com/"
+            base_url: "https://mangakakalot.com/",
+            chapter_information_selector: ".breadcrumb:first > p > :nth-child(3) a"
         }
         
     });

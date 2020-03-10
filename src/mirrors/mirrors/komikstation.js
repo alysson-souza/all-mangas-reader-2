@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         mirrorIcon: "komikstation.png",
         domains: ["www.komikstation.com","komikstation.com"],
         home: "https://www.komikstation.com/",
-        chapter_url: /^\/m[0-9]+\/$/g,
+        chapter_url: /chapter-[0-9]+\/$/g,
         languages: "id",
         abstract: "MangastreamAbs",
         abstract_options: {
@@ -15,8 +15,7 @@ if (typeof registerMangaObject === 'function') {
             search_a_sel: " div.allgreen.genrelst > ul > li> div > div.left > a",
             search_option: "&post_type=manga",
             manga_title_attr: true,
-            chapters_a_sel: "div.cl > ul > li > span.leftoff > a",
-            manga_url_sel: "div.chapterbody > div > article > div.headpost > a"
+            manga_url_sel: "div.chapterbody > div > article > div.headpost a"
         },      
     })
 }

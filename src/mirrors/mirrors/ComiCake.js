@@ -82,7 +82,7 @@ window["ComiCake"] = function(options) {
     }
 
     this.stripUrl = function(curUrl) {
-        return this.isStripMode(curUrl) ? curUrl : curUrl + '/strip'
+        return (this.isStripMode(curUrl) ? curUrl : curUrl + '/strip').replace(/\/\//g, '/')
     }
 
     this.isStripMode = function(curUrl) {

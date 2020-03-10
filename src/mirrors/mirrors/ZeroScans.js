@@ -1,3 +1,4 @@
+// Broken
 if (typeof registerMangaObject === 'function') {
     registerMangaObject({
         mirrorName: "ZeroScans",
@@ -5,14 +6,13 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["zeroscans.com"],
         home: "https://zeroscans.com/",
-        chapter_url: /^\/manga\/.*\/.*$/g,
+        chapter_url: /^\/(manga|comics)\/.*\/.*$/g,
         canListFullMangas: false,
         abstract: "Madara",
         abstract_options: {
             search_url: "https://zeroscans.com/",
-            page_container_sel: "div.read-container",
-            img_sel: "div.read-container img"
+            page_container_sel: "#pages-container",
+            img_sel: "#pages-container img"
         }
     })
 }
-

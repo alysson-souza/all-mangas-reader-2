@@ -9,9 +9,7 @@ if (typeof registerMangaObject === 'function') {
         canListFullMangas: false,
         abstract: "Madara",
         abstract_options: {
-            search_url: "https://ninjascans.com/",
-            page_container_sel: "div.fuck-off-container",
-            img_sel: "div.fuck-off img"
+            search_url: "https://ninjascans.com/"
         }
     })
 }

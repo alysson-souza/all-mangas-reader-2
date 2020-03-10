@@ -90,6 +90,9 @@ window["Madara"] = function (options) {
         if (mgname === undefined || mgname.trim() === "") {
             let docmg = await amr.loadPage(mangaurl);
             mgname = $("div.post-title > h3", docmg).text().trim();
+            if (mgname === undefined || mgname.trim() === "") {
+                mgname = $("div.post-title > h1", docmg).text().trim();
+            }
         }
         return {
             "name": mgname,
