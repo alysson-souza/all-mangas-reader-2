@@ -1,18 +1,15 @@
-// Broken
 if (typeof registerMangaObject === 'function') {
     registerMangaObject({
-        mirrorName: "ZeroScans",
-        mirrorIcon: "zeroscans.png",
-        languages: "en",
-        domains: ["zeroscans.com"],
-        home: "https://zeroscans.com/",
-        chapter_url: /^\/(manga|comics)\/.*\/.*$/g,
-        canListFullMangas: false,
-        abstract: "Madara",
+        mirrorName: 'Zero Scans',
+        mirrorIcon: 'zeroscans.png',
+        languages: 'en',
+        domains: ['zeroscans.com'],
+        home: 'https://zeroscans.com/',
+        canListFullMangas: true,
+
+        abstract: 'GenkanAbs',
         abstract_options: {
-            search_url: "https://zeroscans.com/",
-            page_container_sel: "#pages-container",
-            img_sel: "#pages-container img"
-        }
-    })
+            base_url: 'https://zeroscans.com/',
+        },
+    });
 }
