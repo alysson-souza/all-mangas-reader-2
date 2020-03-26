@@ -47,7 +47,7 @@ window['GenkanAbs'] = function(options) {
         let res = [];
         let self = this;
         $(this.options.chapter_list_selector, doc).each(function() {
-            let chapter_no = $(self.options.chapter_list_chapterno_selector, $(this))[0].innerText;
+            let chapter_no = $(self.options.chapter_list_chapterno_selector, $(this))[0].innerText.trim();
             let chapter_name = $(self.options.chapter_list_chaptername_selector, $(this))
                 .text()
                 .trim();
