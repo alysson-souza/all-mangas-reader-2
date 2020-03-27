@@ -1,4 +1,3 @@
-https://manhwa.club
 if (typeof registerMangaObject === 'function') {
     registerMangaObject({
         mirrorName: "ManhwaClub",
@@ -10,8 +9,8 @@ if (typeof registerMangaObject === 'function') {
         canListFullMangas: false,
         abstract: "Madara",
         abstract_options: {
-            search_url: "https://manhwa.club/"
+            search_url: "https://manhwa.club/",
+            secondary_img_src: "data-src"
         }
     })
 }
-

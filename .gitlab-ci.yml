@@ -1,10 +1,12 @@
-image: registry.gitlab.com/frnchfrgg/docker-web-ext
+image: node:13-stretch
 
 stages:
     - build
     - package
 
 before_script:
+    - echo deb http://ftp.debian.org/debian stretch-backports main > /etc/apt/sources.list.d/backports.list
+    - apt-get update && apt-get install -t stretch-backports -y --no-install-recommends git && rm -rf /var/lib/apt/lists/*
     - export PREVIOUS_TAGS=$(git tag --list --format '%(objectname)' --merged origin/master --no-contains HEAD)
     - export PREVIOUS_TAGS+=" $(git tag --list --format '%(objectname)' --points-at HEAD)"
     - export LAST_TAG=$([[ -n "$PREVIOUS_TAGS" ]] && git merge-base --independent $PREVIOUS_TAGS)
@@ -41,7 +43,7 @@ xpi-beta:
     stage: package
     script:
         - yarn run manifest:specify -firefox -checkver $VERSION -patch $PATCH
-        - web-ext sign --source-dir=dist --api-key="$SIGN_FF_API_KEY" --api-secret="$SIGN_FF_API_SECRET" --artifacts-dir=dist-zip
+        - npx web-ext sign --channel=unlisted --source-dir=dist --api-key="$SIGN_FF_API_KEY" --api-secret="$SIGN_FF_API_SECRET" --artifacts-dir=dist-zip
     artifacts:
         paths:
             - dist-zip/*.xpi
@@ -59,7 +61,9 @@ xpi-unsigned:
     stage: package
     script:
         - yarn run manifest:specify -firefox -checkver $VERSION
-        - yarn run build-zip
+        - npx web-ext sign --channel=unlisted --source-dir=dist --api-key="$SIGN_FF_API_KEY" --api-secret="$SIGN_FF_API_SECRET" --artifacts-dir=dist-zip
+        # Sign the file but do not upload it, this can then be manually uploaded
+        #- yarn run build-zip
         # do not sign file, has to be manually updated to Mozilla Addons, just prepare it for signing
     artifacts:
         paths:

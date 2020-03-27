@@ -5,15 +5,15 @@ if (typeof registerMangaObject === 'function') {
         mirrorIcon: "mangapanda.png",
         languages: "en",
         domains: ["www.mangapanda.com"],
-        home: "https://www.mangapanda.com/",
+        home: "http://www.mangapanda.com/",
         chapter_url: /^\/.*\/[0-9]+.*$/g,
 
         getMangaList: async function (search) {
-            var urlManga = "https://www.mangapanda.com/search/?w=" + search;
+            var urlManga = "http://www.mangapanda.com/search/?w=" + search;
             let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
             let res = []
             $(".mangaresultinner .manga_name a", doc).each(function () {
-                res[res.length] = [$(this).text(), "https://www.mangapanda.com" + $(this).attr("href")];
+                res[res.length] = [$(this).text(), "http://www.mangapanda.com" + $(this).attr("href")];
             });
             return res
         },
@@ -33,7 +33,7 @@ if (typeof registerMangaObject === 'function') {
                 });
                 txt = txt.replace(mangaName.trim(), " ");
                 txt = txt.replace(/(\n| )+/g, " ");
-                res[res.length] = [txt.trim(), "https://www.mangapanda.com" + inlink];
+                res[res.length] = [txt.trim(), "http://www.mangapanda.com" + inlink];
             });
             res = res.reverse();
             return res
@@ -41,8 +41,8 @@ if (typeof registerMangaObject === 'function') {
     
         getInformationsFromCurrentPage: async function (doc, curUrl) {
             var name = $($("#mangainfo h2.c4 a", doc)[0]).text().replace("Manga", "").trim();
-            var mangaurl = "https://www.mangapanda.com" + $($("#mangainfo h2.c4 a", doc)[0]).attr("href");
-            var curChapUrl = "https://www.mangapanda.com" + $($("#mangainfo_son a", doc)[0]).attr("href");
+            var mangaurl = "http://www.mangapanda.com" + $($("#mangainfo h2.c4 a", doc)[0]).attr("href");
+            var curChapUrl = "http://www.mangapanda.com" + $($("#mangainfo_son a", doc)[0]).attr("href");
             return {
                 "name": name.trim(),
                 "currentMangaURL": mangaurl.trim(),
@@ -53,7 +53,7 @@ if (typeof registerMangaObject === 'function') {
         getListImages: async function (doc, curUrl) {
             var res = [];
             $("#pageMenu option", doc).each(function (index) {
-                res[res.length] = "https://www.mangapanda.com" + $(this).val();
+                res[res.length] = "http://www.mangapanda.com" + $(this).val();
             });
             return res;
         },

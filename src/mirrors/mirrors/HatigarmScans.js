@@ -1,19 +1,15 @@
 if (typeof registerMangaObject === 'function') {
     registerMangaObject({
-        mirrorName: "Hatigarm Scans",
-        mirrorIcon: "hatigarmscans.png",
-        languages: "en",
-        domains: ["www.hatigarmscans.net"],
-        home: "http://www.hatigarmscans.net/",
-        chapter_url: /^\/manga\/.*\/.*$/g,
-        
-        abstract: "MyMangaReaderCMS",
-        abstract_options: {
-            base_url: "http://www.hatigarmscans.net"
-        },
+        mirrorName: 'Hatigarm Scans',
+        mirrorIcon: 'hatigarmscans.png',
+        languages: 'en',
+        domains: ['hatigarmscanz.net', 'www.hatigarmscans.net'],
+        home: 'https://hatigarmscanz.net/',
+        canListFullMangas: true,
 
-        test_options: {
-            search_phrase: "on"
+        abstract: 'GenkanAbs',
+        abstract_options: {
+            base_url: 'https://hatigarmscanz.net/',
         },
-    })
+    });
 }

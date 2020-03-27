@@ -166,7 +166,7 @@ export default {
      */
     resetManga() {
       for (let mg of this.mangas)
-        this.$store.dispatch("resetManga", { url: mg.url });
+        this.$store.dispatch("resetManga", { url: mg.url, language: mg.language });
     },
     /**
      * Stop following manga updates for this group
@@ -174,6 +174,7 @@ export default {
     stopFollowingUpdates: function() {
       this.$store.dispatch("markMangaReadTop", {
         url: this.mangas[0].url,
+        language: this.mangas[0].language,
         updatesamemangas: true,
         read: 1
       });
@@ -184,6 +185,7 @@ export default {
     followUpdates: function() {
       this.$store.dispatch("markMangaReadTop", {
         url: this.mangas[0].url,
+        language: this.mangas[0].language,
         updatesamemangas: true,
         read: 0
       });
@@ -194,6 +196,7 @@ export default {
     stopUpdating: function() {
       this.$store.dispatch("markMangaUpdateTop", {
         url: this.mangas[0].url,
+        language: this.mangas[0].language,
         updatesamemangas: true,
         update: 0
       });
@@ -204,6 +207,7 @@ export default {
     restartUpdating: function() {
       this.$store.dispatch("markMangaUpdateTop", {
         url: this.mangas[0].url,
+        language: this.mangas[0].language,
         updatesamemangas: true,
         update: 1
       });
