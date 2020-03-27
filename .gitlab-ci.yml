@@ -61,7 +61,9 @@ xpi-unsigned:
     stage: package
     script:
         - yarn run manifest:specify -firefox -checkver $VERSION
-        - yarn run build-zip
+        - npx web-ext sign --channel=unlisted --source-dir=dist --api-key="$SIGN_FF_API_KEY" --api-secret="$SIGN_FF_API_SECRET" --artifacts-dir=dist-zip
+        # Sign the file but do not upload it, this can then be manually uploaded
+        #- yarn run build-zip
         # do not sign file, has to be manually updated to Mozilla Addons, just prepare it for signing
     artifacts:
         paths:
