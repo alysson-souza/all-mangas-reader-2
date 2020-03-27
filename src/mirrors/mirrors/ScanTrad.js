@@ -42,6 +42,9 @@ if (typeof registerMangaObject === 'function') {
             let res = []
             $(".main_img img", doc).each(function() {
                 let url = $(this).attr("data-src")
+                if (!url) {
+                    return
+                }
                 if (url.indexOf("http") !== 0) url = "https://scantrad.net/" + url
                 res.push(url)
             })

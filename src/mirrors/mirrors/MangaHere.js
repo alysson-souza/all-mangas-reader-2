@@ -5,14 +5,14 @@ if (typeof registerMangaObject === 'function') {
         mirrorIcon: "mangahere.png",
         languages: "en",
         domains: ["www.mangahere.cc", "m.mangahere.cc", "www.mangahere.co"],
-        home: "https://www.mangahere.cc/",
+        home: "http://www.mangahere.cc/",
         chapter_url: /\/manga\/.*\/.+\/.*/g,
 
         getMangaList: async function (search) {
-            let doc = await amr.loadPage("https://www.mangahere.cc/search?title=" + search, { nocache: true, preventimages: true })
+            let doc = await amr.loadPage("http://www.mangahere.cc/search?title=" + search, { nocache: true, preventimages: true })
             let res = []
             $(".line-list ul .manga-list-4-item-title > a", doc).each(function (index) {
-                res[res.length] = [$(this).text().trim(), "https://www.mangahere.cc" + $(this).attr("href")];
+                res[res.length] = [$(this).text().trim(), "http://www.mangahere.cc" + $(this).attr("href")];
             });
             return res
         },
@@ -32,7 +32,7 @@ if (typeof registerMangaObject === 'function') {
             }
             let res = [];
             $(".detail-main-list a", doc).each(function () {
-                let url = "https://www.mangahere.cc" + $(this).attr("href")
+                let url = "http://www.mangahere.cc" + $(this).attr("href")
                 url = url.substr(0, url.lastIndexOf("/") + 1);
                 res.push([$(".title3", $(this)).text(), url]);
             });
@@ -43,7 +43,7 @@ if (typeof registerMangaObject === 'function') {
             let mga = $(".reader-header-title-1 a", doc)
             return {
                 "name": mga.text(),
-                "currentMangaURL": "https://www.mangahere.cc" + mga.attr("href"),
+                "currentMangaURL": "http://www.mangahere.cc" + mga.attr("href"),
                 "currentChapterURL": curUrl.substr(0, curUrl.lastIndexOf("/") + 1)
             };
         },
@@ -109,7 +109,7 @@ if (typeof registerMangaObject === 'function') {
         },
 
         isCurrentPageAChapterPage: function (doc, curUrl) {
-            return $(".reader-main-img", doc).length > 0
+            return $(".reader-main", doc).length > 0
         }
     })
 }
