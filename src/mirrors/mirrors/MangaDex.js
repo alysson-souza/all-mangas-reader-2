@@ -45,32 +45,21 @@ if (typeof registerMangaObject === 'function') {
             let done = [] // to avoid duplicate chapters. pick randomly a version
             for (let id in chaps) {
                 let chap = chaps[id]
-                let key = chap.lang_code + (chap.volume.length > 0 ? chap.volume + ":" : "") + (chap.chapter.length > 0 ? chap.chapter : chap.title)
-                if (done.indexOf(key) >= 0) continue;
+                if (done.indexOf(chap.lang_code + chap.chapter) >= 0) continue;
                 if (!res[chap.lang_code]) res[chap.lang_code] = []
-                done.push(key)
+                done.push(chap.lang_code + chap.chapter)
                 if (chap.timestamp > ut) continue // Skip chapters that are delayed
                 res[chap.lang_code].push([
-                    (chap.volume.length > 0 ? "Vol " + chap.volume + " - Ch: " : "") + (chap.chapter.length > 0 ? chap.chapter + " - " : "") + chap.title, 
-                    "https://mangadex.org/chapter/" + id,
-                    chap.volume, // Needed for ordering but will be ignored downstream
-                    chap.chapter // Needed for ordering but will be ignored downstream
+                    (chap.chapter.length > 0 ? chap.chapter + " - " : "") + chap.title, 
+                    "https://mangadex.org/chapter/" + id
                 ]);
             }
             // sort each chaps list 
-            let parseChapter = a => Number(a.length > 0 ? a : -1)
-            let parseVolume = a => Number(a.length > 0 ? a : 0)
+            let extractnum = a => Number(a.substr(0, a.indexOf(" "))) || -1
             for (let lang in res) {
                 res[lang] = res[lang].sort((a, b) => {
-                    let volNumberA = parseVolume(a[2])
-                    let chapNumberA = parseChapter(a[3])
-                    let volNumberB = parseVolume(b[2])
-                    let chapNumberB = parseChapter(b[3])
-
-                    if (volNumberA !== volNumberB) return -(volNumberA - volNumberB)
-                    else return -(chapNumberA - chapNumberB)
+                    return -(extractnum(a[0]) - extractnum(b[0]))
                 })
-                // return -(extractnum(a[0]) - extractnum(b[0]))
             }
             return res
         },
