@@ -1,5 +1,5 @@
 <template>
-    <td :class="{xs6: !full, xs12: full, 'res-w': resizeW(), 'res-h': resizeH()}" class='scanContainer' :colspan="full ? 2 : 1">
+    <td :class="{xs6: !full, xs12: full, 'res-w': resizeW(), 'res-h': resizeH(), 'scale-up': scaleUp}" class='scanContainer' :colspan="full ? 2 : 1">
         <!-- Progress while loading -->
         <v-container fill-height text-xs-center v-show="loading">
             <v-layout>
@@ -82,6 +82,10 @@ export default {
         bookmark: { /* Allow bookmarking */
             type: Boolean,
             default: true
+        },
+        scaleUp: {
+            type: Boolean,
+            default: false
         }
     },
     computed: {
@@ -182,6 +186,15 @@ td.scanContainer.xs12 {
 }
 .scanContainer.res-h img {
     max-height: 100vh;
+}
+.scanContainer.scale-up img {
+    object-fit: contain;
+}
+.scanContainer.res-w.scale-up img {
+    width: 100%;
+}
+.scanContainer.res-h.scale-up img {
+    height: 100vh;
 }
 /* Positioning bookmark button */
 .amr-scan {

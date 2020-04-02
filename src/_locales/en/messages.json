@@ -1108,6 +1108,10 @@
     "message": "Display full chapter as a long strip (if not, display only current page)",
     "description": "Option to display the the full chapter as a long strip (precise that if not, display only current page)"
   },
+  "option_read_scaleup": {
+    "message": "Scale images up larger than their normal size if they are too small",
+    "description": "Option to scale images up larger than their normal size if they are too small"
+  },
   "option_read_resize_w": {
     "message": "Scale scans to fit width",
     "description": "Button to choose option to scale scans to fit width"
