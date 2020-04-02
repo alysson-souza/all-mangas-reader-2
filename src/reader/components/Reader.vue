@@ -8,6 +8,7 @@
               :scans="scans" 
               :direction="direction"
               :resize="resize"
+              :scaleUp="scaleUp"
               ref="page" 
               v-show="isVisible(i)"
               @become-current="becomeCurrent" />
@@ -110,6 +111,7 @@ export default {
         resize: String, /* Mode of resize : width, height, container */
         fullchapter: Boolean, /* Do we display whole chapter or just current page */
         drawer: Boolean, /* Is the drawer opened ? (adjust some css) */
+        scaleUp: Boolean, /* Does the image scale up larger than its native size */
     },
     created() {
         /** Initialize key handlers */
@@ -615,6 +617,7 @@ export default {
   margin-left: auto;
   margin-right: auto;
   min-height: 100vh;
+  width: 100%;
 }
 .amr-scan-container td {
   padding-bottom: 4px;

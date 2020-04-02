@@ -266,6 +266,10 @@
               <!-- Display full chapter checkbox -->
               <v-switch v-model="fullchapter" :label="i18n('option_read_fullchapter')" hide-details class="pb-1"></v-switch>
             </v-flex>
+            <v-flex xs12>
+              <!-- Display full chapter checkbox -->
+              <v-switch v-model="scaleUp" :label="i18n('option_read_scaleup')" hide-details class="pb-1"></v-switch>
+            </v-flex>
             <!-- Resize mode -->
             <v-flex xs12 text-xs-center>
               <v-btn-toggle v-model="resize">
@@ -349,7 +353,8 @@
               :direction="direction" 
               :fullchapter="fullchapter" 
               :resize="resize"
-              :drawer="drawer" />
+              :drawer="drawer"
+              :scaleUp="scaleUp" />
     </v-content>
   </v-app>
 </template>
@@ -393,6 +398,7 @@
       book: true, /* Do we display side by side pages */
       resize: 'width', /* Mode of resize : width, height, container */
       fullchapter: true, /* Do we display whole chapter or just current page */
+      scaleUp: false, /* Does the image scale up larger than its native size */
 
       mangaExists: null, /* Does manga exists in reading list */
       mangaInfos: null, /* specific manga information (layout state, read top, latest read chapter) */
