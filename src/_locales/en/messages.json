@@ -1128,6 +1128,10 @@
     "message": "Do not scale scans",
     "description": "Button to choose option to not scale scans"
   },
+  "option_read_webtoon": {
+    "message": "Webtoon Mode",
+    "description": "Button to choose option to remove whitespace between images"
+  },
   "button_delete": {
     "message": "Delete",
     "description": "Delete button label"

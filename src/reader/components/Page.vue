@@ -7,7 +7,8 @@
             :resize="resize" 
             v-if="scans.length === 1" 
             :bookmark="bookmark"
-            :scaleUp="scaleUp" />
+            :scaleUp="scaleUp"
+            :webtoonMode="webtoonMode" />
 
         <!-- Displayed when two scans in page -->
         <Scan :full="false" 
@@ -60,6 +61,10 @@ export default {
             default: true
         },
         scaleUp: {
+            type: Boolean,
+            default: false
+        },
+        webtoonMode: { /* Removes whitespace between images */
             type: Boolean,
             default: false
         }

@@ -2,13 +2,14 @@
     <v-container fluid text-xs-center pa-0 
         :class="{'no-full-chapter': !fullchapter}" @click="pageChange" @dblclick="tryChapterChange" ref="scancontainer">
         <!-- Scans -->
-        <table ref="scantable" class="amr-scan-container" border="0" cellspacing="0" cellpadding="0">
+        <table ref="scantable" class="amr-scan-container" :class="{'webtoon': webtoonMode}" border="0" cellspacing="0" cellpadding="0">
           <Page v-for="(scans, i) in pages" :key="i"
               :index="i" 
               :scans="scans" 
               :direction="direction"
               :resize="resize"
               :scaleUp="scaleUp"
+              :webtoonMode="webtoonMode"
               ref="page" 
               v-show="isVisible(i)"
               @become-current="becomeCurrent" />
@@ -112,6 +113,7 @@ export default {
         fullchapter: Boolean, /* Do we display whole chapter or just current page */
         drawer: Boolean, /* Is the drawer opened ? (adjust some css) */
         scaleUp: Boolean, /* Does the image scale up larger than its native size */
+        webtoonMode: Boolean, /* Removes whitespace between images */
     },
     created() {
         /** Initialize key handlers */
@@ -624,6 +626,13 @@ export default {
   padding-top: 4px;
   line-height: 0;
 }
+.amr-scan-container-webtoon td {
+  padding-bottom: 0px;
+  padding-top: 0px;
+  line-height: 0;
+}
+
+.webtoon.amr-scan-container td,
 .no-full-chapter .amr-scan-container td {
   padding-bottom: 0px;
   padding-top: 0px;
