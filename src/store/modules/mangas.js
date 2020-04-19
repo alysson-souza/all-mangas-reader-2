@@ -358,10 +358,11 @@ const actions = {
                 return;
             }
 
+            const oldLastChap = (typeof mg.listChaps[0] === 'object' ? mg.listChaps[0][1] : undefined);
+
             utils.debug(listChaps.length + " chapters found for " + mg.name + " on " + mg.mirror)
             commit('updateMangaListChaps', { key: mg.key, listChaps: listChaps });
 
-            const oldLastChap = (typeof mg.listChaps[0] === 'object' ? mg.listChaps[0][1] : undefined);
             const newLastChap = mg.listChaps[0][1];
 
             if ((newLastChap !== oldLastChap) && (oldLastChap !== undefined)) {
