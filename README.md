@@ -39,7 +39,7 @@ Navigate to **[All Mangas Reader's main website](https://v2.allmangasreader.com)
 
 In the popup window right click the download button and click Save link as (in chrome) or Saved linked content as (Opera) and download the .crx file to somewhere on your computer.
 
-Change the extension of the file from .crx to .zip
+Change the extension of the file from .crx to .zip (Optional for windows if you do not have winrar or 7zip installed which will unpack the file with a crx extension)
 
 Extract the file using either the native archive program on your os or winrar/7zip.
 
