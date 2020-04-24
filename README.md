@@ -34,6 +34,30 @@ Google Chrome disabled extensions which are not referenced in their store. All M
 
 If you really want to have it in Chrom(ium/e), you will have to either follow the developer installation or to unzip the crx file and follow the developer installation / chrome instructions. Note that as it will be for development purpose, you may loose your local database doing that...
 
+## Chrom(ium/e) installation
+Navigate to **[All Mangas Reader's main website](https://v2.allmangasreader.com)** and click the download link for Opera and Chrome.
+
+In the popup window right click the download button and click Save link as (in chrome) or Saved linked content as (Opera) and download the .crx file to somewhere on your computer.
+
+Change the extension of the file from .crx to .zip
+
+Extract the file using either the native archive program on your os or winrar/7zip.
+
+Move this extracted folder to a location you wish to use for this extension, you will need to remember where this folder is in order to update the extension.
+
+Open the extensions page in your browser, enable developer mode, and click load unpacked extension.
+
+Select the folder you unpacked and you will have AMR installed.
+
+## Chrom(ium/e) Updates
+Follow the steps in the installation directions to download and unpack the file.
+
+Locate the folder you selected when you installed the extension.
+
+Copy the contents from the updated folder into the folder you have located, Select to override the files if you get a prompt.
+
+Open the extensions page on your browser and click the circle icon with an arrow in it to reload the extension with the latest updates.
+
 ## Developer installation
 First clone this repository locally and install it using `yarn` (if you don't have yarn, [install it](https://yarnpkg.com)).
 
