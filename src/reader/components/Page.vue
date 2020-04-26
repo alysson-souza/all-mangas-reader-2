@@ -7,8 +7,7 @@
             :resize="resize" 
             v-if="scans.length === 1" 
             :bookmark="bookmark"
-            :scaleUp="scaleUp"
-            :webtoonMode="webtoonMode" />
+            :scaleUp="scaleUp" />
 
         <!-- Displayed when two scans in page -->
         <Scan :full="false" 

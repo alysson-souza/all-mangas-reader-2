@@ -9,7 +9,6 @@
               :direction="direction"
               :resize="resize"
               :scaleUp="scaleUp"
-              :webtoonMode="webtoonMode"
               ref="page" 
               v-show="isVisible(i)"
               @become-current="becomeCurrent" />

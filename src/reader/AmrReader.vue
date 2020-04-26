@@ -272,7 +272,7 @@
             </v-flex>
             <v-flex xs12>
               <!-- Webtoon Mode checkbox -->
-              <v-switch v-model="webtoonMode" :label="i18n('option_read_webtoon')" hide-details class="pb-1"></v-switch>
+              <v-switch v-model="webtoonMode" :label="i18n('option_read_webtoon')" hide-details class="pb-1" v-show="fullchapter"></v-switch>
             </v-flex>
             <!-- Resize mode -->
             <v-flex xs12 text-xs-center>
