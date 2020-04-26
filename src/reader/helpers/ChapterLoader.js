@@ -63,6 +63,7 @@ export default class ChapterLoader {
 
             if (!this.images || this.images.length === 0) {
                 // No images, chapter loading fails
+                console.log((this.url ? this.url : 'Current page') + " does not contain any images");
                 return false;
             }
             console.log((this.url ? this.url : 'current page') + " --> " + this.images.length + " images to load");
