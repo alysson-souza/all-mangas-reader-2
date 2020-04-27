@@ -297,3 +297,17 @@ export function batchProps(obj, batchSize) {
 
     return batches;
 }
+
+/**
+ * MangaDex structure
+ * {
+ *  gb: [ ["121 - ", "https://mangadex.org/chapter/847019" ], [...]],
+ *  br: [ ["121 - ", "https://mangadex.org/chapter/847019"], [...]],
+ * }
+ *
+ * @param listChaps {[]|{}|undefined}
+ * @return {boolean}
+ */
+export function isMultiLanguageList(listChaps) {
+    return listChaps !== undefined && !Array.isArray(listChaps);
+}

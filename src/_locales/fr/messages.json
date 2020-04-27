@@ -1107,6 +1107,10 @@
     "message": "Afficher le chapitre entier (sinon, afficher uniquement la page courante)",
     "description": "Option to display the the full chapter as a long strip (precise that if not, display only current page)"
   },
+  "option_read_scaleup": {
+    "message": "Redimensionnez les images plus grandes que leur taille normale si elles sont trop petites",
+    "description": "Option to scale images up larger than their normal size if they are too small"
+  },
   "option_read_resize_w": {
     "message": "Redimensionner les scans pour s'adapter à la largeur",
     "description": "Button to choose option to scale scans to fit width"
@@ -1122,6 +1126,10 @@
   "option_read_resize_n": {
     "message": "Ne pas redimensionner les scans",
     "description": "Button to choose option to not scale scans"
+  },
+  "option_read_webtoon": {
+    "message": "Mode Webtoon",
+    "description": "Button to choose option to remove whitespace between images"
   },
   "button_delete": {
     "message": "Supprimer",

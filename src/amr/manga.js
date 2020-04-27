@@ -44,6 +44,9 @@ export default class {
         // last time we found a new chapter
         this.upts = obj.upts || 0;
 
+        // Webtoon mode (no whitespace between images)
+        this.webtoon = obj.webtoon || 0;
+
         /* listChaps can contain an object with multiple lists for each lang
         this value is the lang of the followed manga */
         this.language = obj.language;

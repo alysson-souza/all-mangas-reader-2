@@ -6,7 +6,8 @@
             :name="scans[0].name" 
             :resize="resize" 
             v-if="scans.length === 1" 
-            :bookmark="bookmark" />
+            :bookmark="bookmark"
+            :scaleUp="scaleUp" />
 
         <!-- Displayed when two scans in page -->
         <Scan :full="false" 
@@ -15,14 +16,16 @@
             :resize="resize" 
             class="amr-left-page" 
             v-if="scans.length === 2" 
-            :bookmark="bookmark" />
+            :bookmark="bookmark"
+            :scaleUp="scaleUp" />
         <Scan :full="false" 
             :src="scans[direction === 'ltr' ? 1 : 0].src" 
             :name="scans[direction === 'ltr' ? 1 : 0].name" 
             :resize="resize" 
             class="amr-right-page" 
             v-if="scans.length === 2"  
-            :bookmark="bookmark" />
+            :bookmark="bookmark"
+            :scaleUp="scaleUp" />
     </tr>
 </template>
 
@@ -55,6 +58,14 @@ export default {
         bookmark: { /* Allow to bookmark scans */
             type: Boolean,
             default: true
+        },
+        scaleUp: {
+            type: Boolean,
+            default: false
+        },
+        webtoonMode: { /* Removes whitespace between images */
+            type: Boolean,
+            default: false
         }
     },
     name: "Page",
