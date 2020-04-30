@@ -16,8 +16,6 @@ if (typeof registerMangaObject === 'function') {
         },
 
         listFromPage: async function(page) {
-
-            console.log('Loading page: ' + page)
             let res = []
             let self = this
             // Base url
@@ -27,11 +25,7 @@ if (typeof registerMangaObject === 'function') {
             let doc = await amr.loadPage(url.href, { nocache: true, preventimages: true })
 
             let nextPageUrl = new URL(this.home + '/' + $('a[href*="manga-list.html"] i.glyphicon-chevron-right', doc).parent().attr('href'))
-            console.log('Next page url: ' + nextPageUrl);
-            console.log('Raw param: ' + nextPageUrl.searchParams.get('page'))
             let nextPageNumber = parseInt(nextPageUrl.searchParams.get('page'))
-
-            console.log('Next Page Number: ' + nextPageNumber)
             
             $('div.media h3[id="tables"] a', doc).each(function () {
                 res.push([$(this).text(), self.home + '/' + $(this).attr('href')]);
