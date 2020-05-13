@@ -83,6 +83,9 @@ export default {
     },
     sortedCategories: function() {
       return this.categories.sort((a, b) => {
+        if (typeof a === 'string') {
+          return a.localeCompare(b);
+        }
         let at = types_order.findIndex(t => t === a.type), 
             bt = types_order.findIndex(t => t === b.type)
         return at === bt ? a.name.localeCompare(b.name) : at - bt

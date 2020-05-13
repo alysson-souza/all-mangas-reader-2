@@ -65,8 +65,8 @@ const default_options = {
     stopupdateforaweek: 0, // stop updates for a week after last chapter was found
     checkmgstart: 0, // update chapters lists on startup
     refreshspin: 1, // spin the icon while loading chapters
-    savebandwidth: 0, // save bandwidth while loading chapters
-    waitbetweenupdates: 0, // wait for n seconds betwwen two manga chapters update request
+    savebandwidth: 1, // save bandwidth while loading chapters
+    waitbetweenupdates: 2, // wait for n seconds betwwen two manga chapters update request
     displayzero: 0, // display a grey zero when no new chapter
     nocount: 1, // 1 : display gray sharingan and normal if new chaps; 0 : badge
 

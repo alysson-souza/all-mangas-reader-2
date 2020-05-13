@@ -85,8 +85,8 @@ function initReader() {
     let amrdiv = document.createElement("div")
     amrdiv.id = "app"
     document.body.appendChild(amrdiv)
-    
-    removeStyles()
+
+        removeStyles()
 
     // add this line for mobile : <meta name="viewport" content="width=device-width, initial-scale=1">
     var metaview = document.createElement( "meta" )
@@ -150,14 +150,17 @@ function restorePage() {
     let cover = document.getElementById("amr-loading-cover")
     if (cover) cover.parentNode.removeChild(cover)
 
-    // remove included style
-    let styles = document.getElementsByTagName('style'), st;
-    for (let i in styles) {
-        if (styles.hasOwnProperty(i)) {
-            st = styles[i];
-            // remove our own styles...
-            if (st.innerHTML.indexOf(".amr-") >= 0 || st.innerHTML.indexOf("Vuetify") >= 0) {
-                st.parentNode.removeChild(st);
+    // For some reason the first run does not actually remove them all, a couple of runs are needed
+    for (let a = 0; a < 10; a++) {
+        // remove included style
+        let styles = document.getElementsByTagName('style'), st;
+        for (let i in styles) {
+            if (styles.hasOwnProperty(i)) {
+                st = styles[i];
+                // remove our own styles...
+                if (st.innerHTML.indexOf(".amr-") >= 0 || st.innerHTML.indexOf("Vuetify") >= 0) {
+                    st.parentNode.removeChild(st);
+                }
             }
         }
     }
