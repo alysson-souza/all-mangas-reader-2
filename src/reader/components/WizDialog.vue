@@ -198,4 +198,7 @@
 a, a:link, a:visited {
     color: #f44336;
 }
+.amr-filler-tag {
+    text-decoration: none;
+}
 </style>
