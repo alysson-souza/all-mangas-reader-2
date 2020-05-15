@@ -518,6 +518,17 @@
               mirror: this.mirror.mirrorName
           })
         }
+      },
+      webtoonMode(nVal, oVal) {
+        if (this.mangaExists) {
+          browser.runtime.sendMessage({
+              action: "setWebtoonMode",
+              url: this.pageData.currentMangaURL,
+              webtoon: nVal,
+              language: this.pageData.language,
+              mirror: this.mirror.mirrorName
+          })
+        }
       }
     },
     computed: {
@@ -634,6 +645,10 @@
         this.direction = cdirection === 0 ? 'ltr': 'rtl'
         this.fullchapter = cfullchapter === 1
         this.resize = resize_values[cresize]
+
+        /** Set webtoon option */
+        if (specific)
+          this.webtoonMode = specific.webtoon || false
       },
       /** Load mirror description (containing icon and home page) */
       async loadMirror() {

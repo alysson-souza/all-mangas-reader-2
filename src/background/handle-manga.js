@@ -31,7 +31,8 @@ class HandleManga {
                         layout: mg.layout, /* Layout for the new reader */
                         lastchapter: mg.lastChapterReadURL, /* last read chapter (the most advanced one) */
                         currentChapter: mg.currentChapter, /* last read chapter, last chapter page opened */
-                        currentScanUrl: mg.currentScanUrl /* last viewed page in currentChapter */
+                        currentScanUrl: mg.currentScanUrlm, /* last viewed page in currentChapter */
+                        webtoon: mg.webtoon || false /* webtoon mode */
                     });
                 } else {
                     return Promise.resolve();
@@ -56,6 +57,8 @@ class HandleManga {
                 return store.dispatch('setMangaDisplayMode', message);
             case "setLayoutMode":
                 return store.dispatch('setMangaLayoutMode', message);
+            case "setWebtoonMode":
+                return store.dispatch('setMangaWebtoonMode', message);
             case "setMangaChapter":
                 return store.dispatch('resetManga', message) // reset reading to first chapter
                     .then(() => store.dispatch('readManga', message)); // set reading to current chapter

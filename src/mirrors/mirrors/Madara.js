@@ -9,13 +9,23 @@ window["Madara"] = function (options) {
         img_sel: "div.reading-content img",
         search_json: true,
         img_src: "src",
-        doBefore: () => { }
-    }
+        doBefore: () => { },
+        overload: {
+            getMangaList: null,
+            getListChaps: null,
+            getInformationsFromCurrentPage: null,
+            getListImages: null,
+            getImageFromPageAndWrite: null,
+            isCurrentPageAChapterPage: null
+        }
+    },
     this.options = Object.assign(this.default_options, options)
     this.mirrorName = "Madara"
     this.canListFullMangas = false
     this.getMangaList = async function (search) {
-        
+        if (this.options.overload.hasOwnProperty('getMangaList') && this.options.overload.getMangaList !== null) {
+            return this.options.overload.getMangaList(this, search)
+        }
         let searchApiUrl = this.options.search_url + "wp-admin/admin-ajax.php";
         var res = [];
 
@@ -62,6 +72,9 @@ window["Madara"] = function (options) {
     }
 
     this.getListChaps = async function (urlManga) {
+        if (this.options.overload.hasOwnProperty('getListChaps') && this.options.overload.getListChaps !== null) {
+            return this.options.overload.getListChaps(this, urlManga)
+        }
         let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
         let self = this
 
@@ -78,6 +91,9 @@ window["Madara"] = function (options) {
     }
 
     this.getInformationsFromCurrentPage = async function (doc, curUrl) {
+        if (this.options.overload.hasOwnProperty('getInformationsFromCurrentPage') && this.options.overload.getInformationsFromCurrentPage !== null) {
+            return this.options.overload.getInformationsFromCurrentPage(this, doc, curUrl)
+        }
         let url = new URL(curUrl);
         let path = url.pathname;
         let pathSplitted = path.split('/').filter(p => p != '');
@@ -102,6 +118,9 @@ window["Madara"] = function (options) {
     }
 
     this.getListImages = async function (doc, curUrl) {
+        if (this.options.overload.hasOwnProperty('getListImages') && this.options.overload.getListImages !== null) {
+            return this.options.overload.getListImages(this, doc, curUrl)
+        }
         res = [];
         let self = this;
         
@@ -120,10 +139,16 @@ window["Madara"] = function (options) {
     }
 
     this.getImageFromPageAndWrite = async function (urlImg, image) {
+        if (this.options.overload.hasOwnProperty('getImageFromPageAndWrite') && this.options.overload.getImageFromPageAndWrite !== null) {
+            return this.options.overload.getImageFromPageAndWrite(this, urlImg, image)
+        }
         $(image).attr("src", urlImg)
     }
 
     this.isCurrentPageAChapterPage = function (doc, curUrl) {
+        if (this.options.overload.hasOwnProperty('isCurrentPageAChapterPage') && this.options.overload.isCurrentPageAChapterPage !== null) {
+            return this.options.overload.isCurrentPageAChapterPage(this, doc, curUrl)
+        }
         return $(this.options.page_container_sel, doc).length > 0
     }
 
