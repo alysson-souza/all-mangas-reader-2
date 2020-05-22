@@ -26,13 +26,13 @@ if (typeof registerMangaObject === 'function') {
             let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
             let res = [];
             $(".detail_lst li > a", doc).each(function (index) {
-                res.push([$(".tx", $(this)).text().trim() + " - " + $(".subj", $(this)).text().trim(), $(this).attr("href")]);
+                res.push([$(".tx", $(this)).text().trim() + " - " + $(".subj span", $(this)).text().trim(), $(this).attr("href")]);
             });
             while ($(".paginate > a[href='#']", doc).next().length > 0) {
                 let nextpage = "https://www.webtoons.com" + $(".paginate > a[href='#']", doc).next().attr("href")
                 doc = await amr.loadPage(nextpage, { nocache: true, preventimages: true })
                 $(".detail_lst li > a", doc).each(function (index) {
-                    res.push([$(".tx", $(this)).text().trim() + " - " + $(".subj", $(this)).text().trim(), $(this).attr("href")]);
+                    res.push([$(".tx", $(this)).text().trim() + " - " + $(".subj span", $(this)).text().trim(), $(this).attr("href")]);
                 });
             }
             return res
