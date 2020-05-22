@@ -1,3 +1,20 @@
+### V2.2.3
+New Features :
+ - Added Webtoon mode which removes spaces between images. This is set on a per series basis
+ - Added toggle for zooming images to fit screen size. This does not persist
+Changes :
+ - Set the default options to save bandwidth and have a 2 second delay between update checks
+Fixes :
+ - Moved the tracking alert so it does not vanish
+ - Multiple categories no longer disappear
+ - Fixed the remove amr styling so mangadex no longer has red links and the footer is no longer in the middle of the page
+Mirrors :
+ - Attempted to fix webtoons.com, so far it appears to be working
+ - Added LHTranslation
+ - Added ReadM
+ - Added MartialScans
+ - Added Union Leitor 
+
 ### V2.2.1
 Mirrors:
     - Multiple mirror fixes and additions

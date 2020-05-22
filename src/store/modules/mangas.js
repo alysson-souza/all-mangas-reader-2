@@ -114,6 +114,16 @@ const actions = {
         dispatch('updateManga', state.all.find(manga => manga.key === key));
     },
     /**
+     * Change manga reader webtoon mode
+     * @param {*} vuex object 
+     * @param {*} message containing url of the manga and new webtoon mode
+     */
+    async setMangaWebtoonMode({ dispatch, commit, getters }, message) {
+        let key = utils.mangaKey(message.url, message.mirror, message.language);
+        commit('setMangaWebtoonMode', message);
+        dispatch('updateManga', state.all.find(manga => manga.key === key));
+    },
+    /**
      * Reset manga reading for a manga to first chapter
      * @param {*} vuex object 
      * @param {*} message containing url of the manga
@@ -687,6 +697,16 @@ const mutations = {
         let key = utils.mangaKey(url, mirror, language);
         let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) mg.layout = layout;
+    },
+    /**
+     * Change manga reader webtoon mode
+     * @param {*} state 
+     * @param {*} param1 url of the manga and layout mode
+     */
+    setMangaWebtoonMode(state, { url, mirror, language, webtoon }) {
+        let key = utils.mangaKey(url, mirror, language);
+        let mg = state.all.find(manga => manga.key === key)
+        if (mg !== undefined) mg.webtoon = webtoon;
     },
     /**
      * Change manga read top

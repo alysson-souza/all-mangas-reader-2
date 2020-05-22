@@ -9,6 +9,7 @@ if (typeof registerMangaObject === 'function') {
         chapter_url: /^.*\/viewer.*$/g,
 
         getMangaList : async function (search) {
+            await this.setCookie()
             let doc = await amr.loadPage(
                 "https://www.webtoons.com/search?keyword=" + search, 
                 { nocache: true, preventimages: true }
@@ -21,16 +22,17 @@ if (typeof registerMangaObject === 'function') {
         },
     
         getListChaps : async function (urlManga) {
+            await this.setCookie()
             let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
             let res = [];
             $(".detail_lst li > a", doc).each(function (index) {
-                res.push([$(".tx", $(this)).text().trim() + " - " + $(".subj", $(this)).text().trim(), $(this).attr("href")]);
+                res.push([$(".tx", $(this)).text().trim() + " - " + $(".subj span", $(this)).text().trim(), $(this).attr("href")]);
             });
             while ($(".paginate > a[href='#']", doc).next().length > 0) {
                 let nextpage = "https://www.webtoons.com" + $(".paginate > a[href='#']", doc).next().attr("href")
                 doc = await amr.loadPage(nextpage, { nocache: true, preventimages: true })
                 $(".detail_lst li > a", doc).each(function (index) {
-                    res.push([$(".tx", $(this)).text().trim() + " - " + $(".subj", $(this)).text().trim(), $(this).attr("href")]);
+                    res.push([$(".tx", $(this)).text().trim() + " - " + $(".subj span", $(this)).text().trim(), $(this).attr("href")]);
                 });
             }
             return res
@@ -60,6 +62,16 @@ if (typeof registerMangaObject === 'function') {
 
         isCurrentPageAChapterPage : function (doc, curUrl) {
             return ($("#_imageList img", doc).length > 0);
+        },
+
+        setCookie : async function() {
+            amr.setCookie({ // set the cookie for english
+                name: "locale",
+                value: "en",
+                path: "/",
+                domain: ".webtoons.com",
+                expirationDate: new Date().getTime() + (24*60*60*1000)
+            })
         }
     })
 }
