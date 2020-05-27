@@ -1,16 +1,18 @@
 if (typeof registerMangaObject === 'function') {
     registerMangaObject({
-        mirrorName: "Martial Scans",
-        mirrorIcon: "martialscans.png",
+        mirrorName: "EarlyManga",
+        mirrorIcon: "earlymanga.png",
         languages: "en",
-        domains: ["martialscans.com"],
-        home: "https://martialscans.com/",
-        chapter_url: /^\/manhua\/.*\/.*$/g,
-        canListFullMangas: false,
+        domains: ["earlymanga.net"],
+        home: "https://earlymanga.net",
+        chapter_url: /^\/manga\/.*\/.*$/g,
+
         abstract: "Madara",
         abstract_options: {
-            search_url: "https://martialscans.com/",
+            search_url: "https://earlymanga.net/",
+            search_json: true,
             img_src: "data-src",
+            secondary_img_src: "src",
             overload: {
                 getListChaps: async function(self, urlManga) {
                     let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
@@ -41,4 +43,3 @@ if (typeof registerMangaObject === 'function') {
         }
     })
 }
-
