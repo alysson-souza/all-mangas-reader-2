@@ -4,12 +4,12 @@ if (typeof registerMangaObject === 'function') {
         canListFullMangas: false,
         mirrorIcon: "mangahost.png",
         languages: "br,pt",
-        domains: ["mangahosted.com", "mangahost-br.cc", "mangahost1.com"],
-        home: "https://mangahosted.com/",
+        domains: ["mangahosted.com", "mangahost-br.cc", "mangahost1.com", "mangahost2.com"],
+        home: "https://mangahost2.com/",
         chapter_url: /\/manga\/.*\/.+/g,
 
         getMangaList: async function (search) {
-            let doc = await amr.loadPage("https://mangahosted.com/find/" + search, {
+            let doc = await amr.loadPage(this.home + "find/" + search, {
                 nocache: true,
                 preventimages: true
             })
@@ -21,6 +21,7 @@ if (typeof registerMangaObject === 'function') {
         },
 
         getListChaps: async function (urlManga) {
+            console.log(urlManga)
             let doc = await amr.loadPage(urlManga, {
                 nocache: true,
                 preventimages: true
@@ -35,17 +36,21 @@ if (typeof registerMangaObject === 'function') {
                     res.push([$(this).text(), $(this).attr("href")]);
                 });
             }
+            // https://mangahost2.com/manga/one-punch-man-mh96344/166
+            // https://mangahost2.com/manga/one-punch-man/166
+            console.log(res)
             return res
         },
 
         getInformationsFromCurrentPage: async function (doc, curUrl) {
             let mg = $(".breadcrumb a[href*='/manga/']:first", doc)
             let url = mg.attr("href")
-            let urlnomh = url.substr(0, url.indexOf("-mh"))
+            //let urlnomh = url.substr(0, url.indexOf("-mh"))
             return {
                 "name": mg.text(),
-                "currentMangaURL": urlnomh,
-                "currentChapterURL": (curUrl.indexOf(url) >= 0 ? url : urlnomh) + "/" + $("select.chapters option:selected", doc).val()
+                "currentMangaURL": url,
+                //"currentChapterURL": (curUrl.indexOf(url) >= 0 ? url : urlnomh) + "/" + $("select.chapters option:selected", doc).val()
+                "currentChapterURL": url + "/" + $("select.chapters option:selected", doc).val()
             }
         },
 
