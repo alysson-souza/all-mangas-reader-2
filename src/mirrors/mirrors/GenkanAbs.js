@@ -81,7 +81,6 @@ window['GenkanAbs'] = function(options) {
             let cleaned = item.replace(/\\/g, '');
             res.push(base_url + cleaned);
         });
-
         return res;
     };
 

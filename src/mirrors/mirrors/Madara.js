@@ -8,6 +8,7 @@ window["Madara"] = function (options) {
         page_container_sel: "div.reading-content",
         img_sel: "div.reading-content img",
         search_json: true,
+        chapter_list_ajax: false,
         img_src: "src",
         doBefore: () => { },
         overload: {
@@ -77,17 +78,31 @@ window["Madara"] = function (options) {
         }
         let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
         let self = this
+        var mangaName = $(this.options.search_a_sel, doc).text().trim()
 
-        var res = [];
-        var mangaName = $(this.options.search_a_sel, doc).text().trim();
+        if (this.options.chapter_list_ajax) {
+            let searchApiUrl = this.options.search_url + "wp-admin/admin-ajax.php"
+            let mangaVar = amr.getVariable('manga', doc)
+            doc = await amr.loadPage(searchApiUrl, { 
+                nocache: true, 
+                preventimages: true,
+                post: true,
+                data: {
+                    action: "manga_get_chapters",
+                    manga: mangaVar.manga_id
+                }
+            })
+        }
+
+        var res = []
         $(this.options.chapters_a_sel, doc).each(function (index) {
-            res[index] = [
+            res.push([
                 $(this).text().replace(mangaName, "").trim(),
                 self.makeChapterUrl($(this).attr("href")) // add ?style=list to load chapter in long strip mode, remove it if it already there and add it again,
-            ];
-        });
-        res = res;
-        return res;
+            ])
+        })
+
+        return res
     }
 
     this.getInformationsFromCurrentPage = async function (doc, curUrl) {
