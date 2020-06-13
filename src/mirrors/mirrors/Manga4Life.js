@@ -1,4 +1,3 @@
-// This uses angular and loads shit weird. Need to find if there is api source for it or how the content works if not
 if (typeof registerMangaObject === 'function') {
 	registerMangaObject({
         mirrorName : "Manga4Life",
