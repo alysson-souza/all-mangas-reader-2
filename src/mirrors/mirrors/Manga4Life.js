@@ -39,7 +39,6 @@ if (typeof registerMangaObject === 'function') {
             matches = regex.exec(doc.innerText)
             let titlePath = matches[1]
 
-            
             chapters.forEach(chapter => {
                 let linkPart = self.ChapterListLink(chapter.Chapter)
                 let name = self.ChapterListName(chapter.Type, chapter.Chapter)
