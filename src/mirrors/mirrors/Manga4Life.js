@@ -56,7 +56,7 @@ if (typeof registerMangaObject === 'function') {
             return {
                 "name" : mgtitle.text().trim().split("\n")[0].trim(),
                 "currentMangaURL" : this.home + mgtitle.attr("href"),
-                "currentChapterURL" : curUrl
+                "currentChapterURL" : curUrl.replace('-page-1', '')
             };
         },
     
