@@ -692,6 +692,7 @@ html {
   opacity: 0.9;
   cursor: pointer;
   vertical-align: middle;
+  width: auto !important;
 }
 .amr-pages-page-cont td {
   vertical-align: middle;

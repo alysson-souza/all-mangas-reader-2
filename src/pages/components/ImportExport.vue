@@ -244,7 +244,8 @@ export default {
       var url = URL.createObjectURL(blob);
       browser.downloads.download({
         url: url,
-        filename: this.filename + ".json"
+        filename: this.filename + ".json",
+        saveAs: true
       });
     },
     /**
