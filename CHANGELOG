@@ -1,3 +1,29 @@
+### V2.2.4
+Fixes:
+ - Add a css fix for the bottom page selection for Toonily and possibly other Madara based sites
+
+Mirror Fixes:
+ - Nani Scans
+ - Manga Host
+ - Manganelo
+ - Mangakakalot
+
+New Mirrors:
+ - Early Manga
+ - Hero Manhua
+ - Manga4Life
+ - Manhua Plus
+ - Arang Scans
+ - Eldelgarde Scans
+ - KKJ Scans
+ - Manga Turf
+ - The No Names Scans
+ - Reaper Scans
+ - Secret Scans
+ - Hunlight Scans
+ - Non Stop Scans
+ - PM Scans
+
 ### V2.2.3
 New Features :
  - Added Webtoon mode which removes spaces between images. This is set on a per series basis
