@@ -71,9 +71,6 @@ const config = {
       {from: '_locales/**/*', to: '.'},
       {from: 'backup/amr-backup.html', to: 'backup/index.html'},
       {from: '../node_modules/jquery/dist/jquery.min.js', to: 'lib/jquery.min.js'},
-      {from: '../node_modules/jquery-modal/jquery.modal.min.js', to: 'lib/jquery.modal.min.js'}, 
-      {from: '../node_modules/jquery-modal/jquery.modal.min.css', to: 'lib/jquery.modal.min.css'},
-      {from: '../node_modules/jquery.scrollto/jquery.scrollTo.min.js', to: 'lib/jquery.scrollTo.min.js'}
     ]),
     new WebpackShellPlugin({
       onBuildEnd: ['node scripts/remove-evals.js']
