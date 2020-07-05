@@ -9,8 +9,9 @@ if (typeof registerMangaObject === 'function') {
         canListFullMangas: false,
         abstract: "Madara",
         abstract_options: {
-            search_url: "htts://disasterscans.com/",
-            img_src: "data-src"
+            search_url: "https://disasterscans.com/",
+            img_src: "data-src",
+            chapter_list_ajax: true,
         }
     })
 }
