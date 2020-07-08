@@ -1,5 +1,5 @@
 import storedb from '../../amr/storedb'
-import Manga from '../../amr/manga'
+import Manga, { MANGA_READ_STOP, MANGA_UPDATE_STOP } from '../../amr/manga'
 import mirrorsImpl from '../../amr/mirrors-impl';
 import notifications from '../../amr/notifications';
 import statsEvents from '../../amr/stats-events';
@@ -221,18 +221,16 @@ const actions = {
         return impl.getListChaps(manga.url);
     },
 
+    /**
+     * Stop Reading and Following updates
+     * @param dispatch
+     * @param manga
+     * @return {Promise<void>}
+     */
     async disabledManga({ dispatch }, manga) {
-        const mangaUpdate = {
-            url: manga.url,
-            language: manga.language,
-            updatesamemangas: false, // Only current mirror
-            mirror: manga.mirror,
-            // No mirror available, Stop reading and following updates
-            update: 0,
-            read: 0,
-        };
-        await dispatch("markMangaUpdateTop", mangaUpdate);
-        await dispatch("markMangaReadTop", mangaUpdate);
+        manga.update = MANGA_UPDATE_STOP;
+        manga.read = MANGA_READ_STOP;
+        await dispatch('updateManga', manga);
     },
 
     /**
