@@ -213,11 +213,26 @@ const actions = {
     async getMangaListOfChapters({ dispatch, commit, getters }, manga) {
         utils.debug("getMangaListOfChapters : get implementation of " + manga.mirror);
         const impl = await mirrorsImpl.getImpl(manga.mirror);
-        if (!impl) {
+        if (!impl || impl.disabled) {
+            await dispatch("disabledManga", manga);
             throw new Error(`Failed to get implementation for mirror ${manga.mirror}`);
         }
         utils.debug("getMangaListOfChapters : implementation found, get list of chapters for manga " + manga.name + " key " + manga.key);
         return impl.getListChaps(manga.url);
+    },
+
+    async disabledManga({ dispatch }, manga) {
+        const mangaUpdate = {
+            url: manga.url,
+            language: manga.language,
+            updatesamemangas: false, // Only current mirror
+            mirror: manga.mirror,
+            // No mirror available, Stop reading and following updates
+            update: 0,
+            read: 0,
+        };
+        await dispatch("markMangaUpdateTop", mangaUpdate);
+        await dispatch("markMangaReadTop", mangaUpdate);
     },
 
     /**
