@@ -68,6 +68,7 @@ if (typeof registerMangaObject === 'function') {
             amr.setCookie({ // set the cookie for english
                 name: "locale",
                 value: "en",
+                url: this.home,
                 path: "/",
                 domain: ".webtoons.com",
                 expirationDate: new Date().getTime() + (24*60*60*1000)
