@@ -90,7 +90,8 @@
             <!-- Empty icon if no previous -->
             <v-icon v-if="posInChapList === manga.listChaps.length - 1" class="empty-icon"></v-icon> 
             <!-- Current chapter play -->
-            <v-tooltip top content-class="icon-ttip">
+            <v-icon v-if="!isMirrorEnabled" class="empty-icon"></v-icon>
+            <v-tooltip v-if="isMirrorEnabled" top content-class="icon-ttip">
               <v-icon slot="activator" @click="play(0)">mdi-play</v-icon>
               <span>{{i18n("list_mg_act_cur")}}</span>
             </v-tooltip>
@@ -102,7 +103,8 @@
             <!-- Empty icon if no next chapter -->
             <v-icon v-if="posInChapList <= 0" class="empty-icon"></v-icon> 
             <!-- Last chapter play -->
-            <v-tooltip top content-class="icon-ttip">
+            <v-icon v-if="!isMirrorEnabled" class="empty-icon"></v-icon>
+            <v-tooltip v-if="isMirrorEnabled" top content-class="icon-ttip">
               <v-icon slot="activator" @click="play(Infinity)">mdi-page-last</v-icon>
               <span>{{i18n("list_mg_act_latest")}}</span>
             </v-tooltip>
