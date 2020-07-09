@@ -8,9 +8,9 @@
         <v-card v-if="!isInGroup || isFirst" dark :color="color(0)" class="amr-manga-title-cont">
           <!-- Icon of the mirror if not in group -->
           <v-tooltip top content-class="icon-ttip">
-            <img v-if="!isInGroup && mirror" :src="mirror.mirrorIcon" class="mirror-icon" slot="activator" />
-            <v-icon v-if="!isInGroup && !mirror" slot="activator">mdi-cancel</v-icon>
-            <span>{{mirror ? mirror.mirrorName : i18n("list_mirror_disabled", manga.mirror)}}</span>
+            <img v-if="!isInGroup && isMirrorEnabled" :src="mirror.mirrorIcon" class="mirror-icon" slot="activator" />
+            <v-icon v-if="!isInGroup && !isMirrorEnabled" slot="activator">mdi-cancel</v-icon>
+            <span>{{ isMirrorEnabled ? mirror.mirrorName : i18n("list_mirror_disabled_tooltip", manga.mirror) }}</span>
           </v-tooltip>
           <!-- + / - icon if group of mangas  -->
           <v-icon v-if="isInGroup && isFirst && !expanded" @click="emitExpand()">mdi-plus</v-icon>
@@ -43,9 +43,9 @@
         <!-- List of chapters -->
         <!-- Icon of the mirror if in group -->
         <v-tooltip v-if="isInGroup" top content-class="icon-ttip" class="tip-icon-grouped">
-          <img v-if="mirror && !mirror.disabled" :src="mirror.mirrorIcon" class="mirror-icon grouped" slot="activator" />
-          <v-icon v-if="!mirror || mirror.disabled" class="mirror-icon grouped" slot="activator">mdi-cancel</v-icon>
-          <span>{{ mirror && !mirror.disabled ? mirror.mirrorName : i18n("list_mirror_disabled", manga.mirror) }}</span>
+          <img v-if="isMirrorEnabled" :src="mirror.mirrorIcon" class="mirror-icon grouped" slot="activator" />
+          <v-icon v-if="!isMirrorEnabled" class="mirror-icon grouped" slot="activator">mdi-cancel</v-icon>
+          <span>{{ isMirrorEnabled ? mirror.mirrorName : i18n("list_mirror_disabled_tooltip", manga.mirror) }}</span>
         </v-tooltip>
         <!-- Flag of the language of chapters if multiple languages available -->
         <Flag v-if="manga.language" :value="manga.language" @click.native="displayLangs = !displayLangs"/>
@@ -63,7 +63,10 @@
           </v-tooltip>
         </div>
         <!-- Loading bar if chapters list is not loaded yet-->
-        <v-progress-linear v-if="!manga.listChaps.length" :indeterminate="true" height="4" class="amr-manga-waiting" :color="color(1)"></v-progress-linear>
+        <v-progress-linear v-if="!manga.listChaps.length && isMirrorEnabled" :indeterminate="true" height="4" class="amr-manga-waiting" :color="color(1)"></v-progress-linear>
+          <span v-if="!manga.listChaps.length && !isMirrorEnabled">
+            {{ isMirrorEnabled ? mirror.mirrorName : i18n("list_mirror_disabled", manga.mirror) }}
+          </span>
           </template>
       </v-card>
       </v-flex>
@@ -200,6 +203,13 @@ export default {
       return this.$store.state.mirrors.all.find(
         mir => mir.mirrorName === this.manga.mirror
       );
+    },
+    isMirrorEnabled: function () {
+      const mirror = this.$store.state.mirrors.all.find(
+          mir => mir.mirrorName === this.manga.mirror
+      );
+
+      return mirror && !mirror.disabled;
     },
     // format chapters list to be displayed
     chapsForSelect: function() {
