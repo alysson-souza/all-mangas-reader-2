@@ -42,6 +42,9 @@ global.registerMangaObject = function(object) {
         if (typeof object.chapter_url === "string") website.chapter_url = object.chapter_url
         else if (object.chapter_url instanceof RegExp) website.chapter_url = object.chapter_url.toString()
     }
+
+    website.disabled = object.disabled
+
     websites.push(website)
     let deps = []
     for (let dep of deprecated) {

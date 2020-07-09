@@ -514,6 +514,10 @@
     "message": "Are you sure to delete $1 on $2 ?",
     "description": "Question to delete a manga, $1 is the name of the manga and $2 the website on which it is read"
   },
+  "list_mirror_disabled": {
+    "message": "Mirror $1 is no longer available. Please consider using different mirror to read this manga",
+    "description": "Tooltip on mirror icon, that no longer supported by AMR."
+  },
   "list_cat_include_all": {
     "message": "Include all categories",
     "description": "Tooltip on eye button before categories to include all categories (change state to include for all)"
