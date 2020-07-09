@@ -323,7 +323,8 @@ export function isMultiLanguageList(listChaps) {
  */
 export const shouldCheckForUpdate = (mg, options) => {
     if (!mg.upts || options.stopupdateforaweek !== 1) {
-        return false;
+        // No update time or stopupdateforaweek is not enabled
+        return true;
     }
 
     const day = 1000 * 60 * 60 * 24;
