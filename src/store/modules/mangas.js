@@ -1,5 +1,5 @@
 import storedb from '../../amr/storedb'
-import Manga from '../../amr/manga'
+import Manga, { MANGA_READ_STOP, MANGA_UPDATE_STOP } from '../../amr/manga'
 import mirrorsImpl from '../../amr/mirrors-impl';
 import notifications from '../../amr/notifications';
 import statsEvents from '../../amr/stats-events';
@@ -213,11 +213,24 @@ const actions = {
     async getMangaListOfChapters({ dispatch, commit, getters }, manga) {
         utils.debug("getMangaListOfChapters : get implementation of " + manga.mirror);
         const impl = await mirrorsImpl.getImpl(manga.mirror);
-        if (!impl) {
+        if (!impl || impl.disabled) {
+            await dispatch("disabledManga", manga);
             throw new Error(`Failed to get implementation for mirror ${manga.mirror}`);
         }
         utils.debug("getMangaListOfChapters : implementation found, get list of chapters for manga " + manga.name + " key " + manga.key);
         return impl.getListChaps(manga.url);
+    },
+
+    /**
+     * Stop Reading and Following updates
+     * @param dispatch
+     * @param manga
+     * @return {Promise<void>}
+     */
+    async disabledManga({ dispatch }, manga) {
+        manga.update = MANGA_UPDATE_STOP;
+        manga.read = MANGA_READ_STOP;
+        await dispatch('updateManga', manga);
     },
 
     /**

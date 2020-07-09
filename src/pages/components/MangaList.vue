@@ -170,6 +170,10 @@ export default {
         return this.sortedMangas.reduce((grps, manga) => {
             let key = utilsamr.formatMgName(manga.name);
             (grps[key] = grps[key] || []).push(manga);
+
+            // Ensure still updating manga are first in the group
+            grps[key] = grps[key].sort((a, b) => a.read - b.read)
+
             return grps;
         }, {});
     },
