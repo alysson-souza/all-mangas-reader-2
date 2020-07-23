@@ -1,3 +1,17 @@
+### V2.2.5
+Changes:
+  - Added the ability to disable mirrors that are closed while keeping the manga listed
+
+Mirror Fixes:
+  - Early Manga (Url changed)
+  - MangaSee (Url and Website changed)
+  - Disaster Scans (Website changed)
+  - Webtoons (Added url to cookie)
+  - ManhuaPlus (Website changed)
+
+Mirrors Disabled:
+  - Mangarock
+
 ### V2.2.4
 Fixes:
  - Add a css fix for the bottom page selection for Toonily and possibly other Madara based sites

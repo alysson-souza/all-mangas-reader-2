@@ -1,5 +1,13 @@
 import * as utils from './utils'
 
+
+// 0/1 have different meanings
+export const MANGA_READ_START = 0;
+export const MANGA_READ_STOP = 1;
+
+export const MANGA_UPDATE_START = 1;
+export const MANGA_UPDATE_STOP= 0;
+
 /**
  * Manga entry followed in AMR 
  */
@@ -24,11 +32,11 @@ export default class {
         }
 
         // start(0) / stop(1) following updates (unread chapters in manga list)
-        this.read = obj.read || 0;
+        this.read = obj.read || MANGA_READ_START;
 
         // start(1) / stop(0) updating (looking for new chapters) mangas
         this.update = obj.update;
-        if (this.update === undefined || this.update === null) this.update = 1;
+        if (this.update === undefined || this.update === null) this.update = MANGA_UPDATE_START;
         this.display = obj.display || 0;
         this.layout = obj.layout || 0;
         this.cats = obj.cats || [];

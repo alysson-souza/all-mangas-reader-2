@@ -27,7 +27,7 @@ export default {
     methods: {
         i18n: (message, ...args) => i18n(message, ...args),
         async search() {
-            if (this.disabled) return;
+            if (this.disabled || this.mirror.disabled) return;
             this.searching = true;
             let searchinit = this.searchPhrase;
             let mgs = await browser.runtime.sendMessage({

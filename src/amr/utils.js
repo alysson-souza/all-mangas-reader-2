@@ -311,3 +311,35 @@ export function batchProps(obj, batchSize) {
 export function isMultiLanguageList(listChaps) {
     return listChaps !== undefined && !Array.isArray(listChaps);
 }
+
+
+/**
+ * check if we are in a pause case (if pause for a week option is checked,
+ * we check updates only during 2 days (one before and one after)
+ * around each 7 days after last chapter found)
+ * @param mg
+ * @param {{ stopupdateforaweek: number }} options
+ * @return {boolean}
+ */
+export const shouldCheckForUpdate = (mg, options) => {
+    if (!mg.upts || options.stopupdateforaweek !== 1) {
+        // No update time or stopupdateforaweek is not enabled
+        return true;
+    }
+
+    const day = 1000 * 60 * 60 * 24;
+    const week = day * 7;
+    // number of weeks since last update
+    const nbweeks = Math.floor((Date.now() - mg.upts) / week) + 1;
+
+    // check if we are in the gap between minus one day to plus one day compared to nbweeks weeks after last update
+    const shouldUpdate = mg.upts + week * nbweeks - day <= Date.now() && Date.now() <= mg.upts + week * nbweeks + day;
+
+    if (shouldUpdate) {
+        debug("Manga " + mg.key + " has been updated less than " + nbweeks + " ago. We are in the minus one day to plus one day gap for this week number. We update the chapters list.")
+    } else {
+        debug("Manga " + mg.key + " has been updated less than " + nbweeks + " week ago. We are NOT in the minus one day to plus one day gap for this week number. We do not update the chapters list.")
+    }
+
+    return shouldUpdate
+};
