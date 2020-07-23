@@ -1,5 +1,5 @@
 import storedb from '../../amr/storedb'
-import Manga from '../../amr/manga'
+import Manga, { MANGA_READ_STOP, MANGA_UPDATE_STOP } from '../../amr/manga'
 import mirrorsImpl from '../../amr/mirrors-impl';
 import notifications from '../../amr/notifications';
 import statsEvents from '../../amr/stats-events';
@@ -148,46 +148,61 @@ const actions = {
         let mg = state.all.find(manga => manga.key === key);
         dispatch('updateManga', mg);
     },
+
+    async createUnlistedManga({ dispatch, commit }, message) {
+        commit('createManga', message);
+        const key = utils.mangaKey(message.url, message.mirror, message.language);
+        const mg = state.all.find(manga => manga.key === key);
+
+        try {
+            await dispatch("refreshLastChapters", message);
+        } catch (e) {
+            // do not save mangas added from search panel on websites proposing multiple language -->
+            // in this case, the first attempt does not contains the required language field
+            if (e === ABSTRACT_MANGA_MSG) {
+                return;
+            }
+            // ignore error if manga list can not be loaded --> save the manga
+            console.error(e)
+        }
+
+        utils.debug("saving new manga to database");
+        dispatch('updateManga', mg);
+        // update native language categories
+        dispatch("updateLanguageCategories")
+    },
+
     /**
      * Read a manga : update latest read chapter if the current chapter is more recent than the previous one
-     * @param {*} vuex object 
+     * @param {*} vuex object
      * @param {*} message containing infos about the manga read
      */
     async readManga({ dispatch, commit, getters }, message) {
-        let key = utils.mangaKey(message.url, message.mirror, message.language);
+        const key = utils.mangaKey(message.url, message.mirror, message.language);
         if (key.indexOf("unknown") === 0) {
             console.error("Impossible to import manga because mirror can't be found. Perhaps has it been deleted...");
             console.error(message);
             return;
         }
-        let mg = state.all.find(manga => manga.key === key);
+        const mg = state.all.find(manga => manga.key === key);
         if (mg === undefined) {
             utils.debug("readManga of an unlisted manga --> create it");
-            commit('createManga', message);
-            mg = state.all.find(manga => manga.key === key);
-            let code
-            try {
-                await dispatch("refreshLastChapters", message);
-            } catch (e) { 
-                code = e
-                if (code !== ABSTRACT_MANGA_MSG) console.error(e) // ignore error if manga list can not be loaded --> save the manga
-            }
-            if (code !== ABSTRACT_MANGA_MSG) { // do not save mangas added from search panel on websites proposing multiple language --> in this case, the first attempt does not contains the required language field
-                utils.debug("saving new manga to database");
-                dispatch('updateManga', mg);
-                // update native language categories
-                dispatch("updateLanguageCategories")
-            }
-        } else {
-            try {
-                await dispatch("consultManga", message);
-            } catch (e) { console.error(e) } // ignore error if manga list can't be updated
-            dispatch('updateManga', mg);
+            await dispatch("createUnlistedManga", message);
+            amrUpdater.refreshBadgeAndIcon();
+            return;
+        }
 
-            // Ignore sync updates for stats
-            if (message.isSync !== 1) {
-                statsEvents.trackReadManga(mg);
-            }
+        try {
+            await dispatch("consultManga", message);
+        } catch (e) {
+            console.error(e); // ignore error if manga list can't be updated
+        }
+
+        dispatch('updateManga', mg);
+
+        // Ignore sync updates for stats
+        if (message.isSync !== 1) {
+            statsEvents.trackReadManga(mg);
         }
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();
@@ -198,11 +213,24 @@ const actions = {
     async getMangaListOfChapters({ dispatch, commit, getters }, manga) {
         utils.debug("getMangaListOfChapters : get implementation of " + manga.mirror);
         const impl = await mirrorsImpl.getImpl(manga.mirror);
-        if (!impl) {
+        if (!impl || impl.disabled) {
+            await dispatch("disabledManga", manga);
             throw new Error(`Failed to get implementation for mirror ${manga.mirror}`);
         }
         utils.debug("getMangaListOfChapters : implementation found, get list of chapters for manga " + manga.name + " key " + manga.key);
         return impl.getListChaps(manga.url);
+    },
+
+    /**
+     * Stop Reading and Following updates
+     * @param dispatch
+     * @param manga
+     * @return {Promise<void>}
+     */
+    async disabledManga({ dispatch }, manga) {
+        manga.update = MANGA_UPDATE_STOP;
+        manga.read = MANGA_READ_STOP;
+        await dispatch('updateManga', manga);
     },
 
     /**
@@ -349,8 +377,8 @@ const actions = {
     /**
      * Check if there is new chapters on a manga entry
      * Display a notification if so
-     * Returns a promise
-     * @param {*} vuex object 
+     * @throws Error|string
+     * @param {*} vuex object
      * @param {*} message message contains info on a manga
      * @return void
      */
@@ -361,60 +389,25 @@ const actions = {
             return;
         }
 
-        try {
-            const listChaps = await dispatch("getMangaChapters", mg)
+        const listChaps = await dispatch("getMangaChapters", mg)
+        if (listChaps.length <= 0) {
+            return;
+        }
 
-            if (listChaps.length <= 0) {
-                return;
-            }
+        const oldLastChap = (typeof mg.listChaps[0] === 'object' ? mg.listChaps[0][1] : undefined);
 
-            const oldLastChap = (typeof mg.listChaps[0] === 'object' ? mg.listChaps[0][1] : undefined);
+        utils.debug(listChaps.length + " chapters found for " + mg.name + " on " + mg.mirror)
+        commit('updateMangaListChaps', { key: mg.key, listChaps: listChaps });
 
-            utils.debug(listChaps.length + " chapters found for " + mg.name + " on " + mg.mirror)
-            commit('updateMangaListChaps', { key: mg.key, listChaps: listChaps });
+        const newLastChap = mg.listChaps[0][1];
 
-            const newLastChap = mg.listChaps[0][1];
+        if ((newLastChap !== oldLastChap) && (oldLastChap !== undefined)) {
+            notifications.notifyNewChapter(mg);
+            commit('updateMangaLastChapTime', { key: mg.key });
+        }
 
-            if ((newLastChap !== oldLastChap) && (oldLastChap !== undefined)) {
-                notifications.notifyNewChapter(mg);
-                commit('updateMangaLastChapTime', { key: mg.key });
-            }
-
-            if (!mg.lastChapterReadURL) {
-                // no last chapter read (imported from samples or from search)
-                commit('updateMangaLastChapter', {
-                    key: mg.key, obj: {
-                        lastChapterReadURL: listChaps[listChaps.length - 1][1],
-                        lastChapterReadName: listChaps[listChaps.length - 1][0],
-                        fromSite: false
-                    }
-                });
-                return;
-            }
-
-            // test if lastChapterRead is consistent (exists)
-            const lastReadPath = utils.chapPath(mg.lastChapterReadURL);
-            const lastRead = mg.listChaps.find(arr => utils.chapPath(arr[1]) === lastReadPath);
-            if (lastRead) {
-                return;
-            }
-
-            console.error("Manga " + mg.name + " on " + mg.mirror + " has a lastChapterReadURL set to " + mg.lastChapterReadURL + " but this url can no more be found in the chapters list. First url in list is " + mg.listChaps[0][1] + ". ");
-            const probable = utils.findProbableChapter(mg.lastChapterReadURL, mg.listChaps);
-            if (probable !== undefined) {
-                const [name, url] = probable;
-                console.log(`Found probable chapter : ${name} : ${url}`)
-                commit('updateMangaLastChapter', {
-                    key: mg.key, obj: {
-                        lastChapterReadURL: url,
-                        lastChapterReadName: name,
-                        fromSite: false
-                    }
-                });
-                return;
-            }
-
-            console.log("No list entry or multiple list entries match the known last chapter. Reset to first chapter");
+        if (!mg.lastChapterReadURL) {
+            // no last chapter read (imported from samples or from search)
             commit('updateMangaLastChapter', {
                 key: mg.key, obj: {
                     lastChapterReadURL: listChaps[listChaps.length - 1][1],
@@ -422,15 +415,39 @@ const actions = {
                     fromSite: false
                 }
             });
-
-        } catch (e) {
-            // Bubble up special case
-            if (ABSTRACT_MANGA_MSG === e) {
-                throw e;
-            }
-            console.error(e);
-            throw mg;
+            return;
         }
+
+        // test if lastChapterRead is consistent (exists)
+        const lastReadPath = utils.chapPath(mg.lastChapterReadURL);
+        const lastRead = mg.listChaps.find(arr => utils.chapPath(arr[1]) === lastReadPath);
+        if (lastRead) {
+            return;
+        }
+
+        console.error("Manga " + mg.name + " on " + mg.mirror + " has a lastChapterReadURL set to " + mg.lastChapterReadURL + " but this url can no more be found in the chapters list. First url in list is " + mg.listChaps[0][1] + ". ");
+        const probable = utils.findProbableChapter(mg.lastChapterReadURL, mg.listChaps);
+        if (probable !== undefined) {
+            const [name, url] = probable;
+            console.log(`Found probable chapter : ${name} : ${url}`)
+            commit('updateMangaLastChapter', {
+                key: mg.key, obj: {
+                    lastChapterReadURL: url,
+                    lastChapterReadName: name,
+                    fromSite: false
+                }
+            });
+            return;
+        }
+
+        console.log("No list entry or multiple list entries match the known last chapter. Reset to first chapter");
+        commit('updateMangaLastChapter', {
+            key: mg.key, obj: {
+                lastChapterReadURL: listChaps[listChaps.length - 1][1],
+                lastChapterReadName: listChaps[listChaps.length - 1][0],
+                fromSite: false
+            }
+        });
     },
 
     /**
@@ -455,36 +472,19 @@ const actions = {
         let refchaps = [];
         let firstChapToUpdate = true
         for (let mg of state.all) {
-            let doupdate = true;
-            // check if we are in a pause case (if pause for a week option is checked, we check updates only during 2 days (one before and one after) around each 7 days after last chapter found)
-            if (!force && rootState.options.stopupdateforaweek === 1 && mg.upts) {
-                let day = 1000 * 60 * 60 * 24
-                let week = day * 7
-                doupdate = false
-                // number of weeks since last update
-                let nbweeks = Math.floor((Date.now() - mg.upts) / week) + 1;
-                // check if we are in the gap between minus one day to plus one day compared to nbweeks weeks after last update
-                if (mg.upts + week * nbweeks - day <= Date.now() && Date.now() <= mg.upts + week * nbweeks + day) {
-                    doupdate = true;
-                }
-                if (doupdate) {
-                    utils.debug("Manga " + mg.key + " has been updated less than " + nbweeks + " ago. We are in the minus one day to plus one day gap for this week number. We update the chapters list.")
-                } else {
-                    utils.debug("Manga " + mg.key + " has been updated less than " + nbweeks + " week ago. We are NOT in the minus one day to plus one day gap for this week number. We do not update the chapters list.")
-                }
-            }
             // we update if it has been forced by the user (through option or timers page) or if we need to update
-            if (force || doupdate) {
-                // we catch the reject from the promise to prevent the Promise.all to fail due to a rejected promise. Thanks to that, Promise.all will wait that each manga is refreshed, even if it does not work
-                let mgupdate = Promise.resolve(
-                    dispatch("refreshLastChapters", mg)
-                        .then(() => {
-                            //save updated manga do not wait
-                            dispatch('updateManga', mg);
-                            //update badges and icon state
-                            amrUpdater.refreshBadgeAndIcon();
-                        })
-                        .catch(e => e));
+            if (force || utils.shouldCheckForUpdate(mg, rootState.options)) {
+                // we catch the reject from the promise to prevent the Promise.all to fail due to a rejected promise.
+                // Thanks to that, Promise.all will wait that each manga is refreshed, even if it does not work
+                const mgupdate = dispatch("refreshLastChapters", mg).then(() => {
+                    dispatch('updateManga', mg); //save updated manga do not wait
+                    amrUpdater.refreshBadgeAndIcon();
+                }).catch(e => {
+                    if (e !== ABSTRACT_MANGA_MSG) {
+                        console.error(e);
+                    }
+                });
+
                 if (rootState.options.waitbetweenupdates === 0) {
                     if (rootState.options.savebandwidth === 1) {
                         await mgupdate;

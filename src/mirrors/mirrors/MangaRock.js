@@ -1,6 +1,7 @@
 if (typeof registerMangaObject === 'function') {
 	registerMangaObject({
         mirrorName: "Manga Rock",
+        disabled: true,
         canListFullMangas: false,
         mirrorIcon: "mangarock.png",
         languages: "en",
