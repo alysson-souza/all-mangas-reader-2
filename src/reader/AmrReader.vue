@@ -960,8 +960,13 @@
                 if (this.showLatestRead) this.markAsLatest()
                 prevent()
               }
+              // Reload all errored scans
+              if (e.which === 82) { // alt + r
+                this.reloadErrors()
+                prevent()
+              }
             }
-            if (e.altKey) {
+            if (e.altKey && !e.shiftKey) {
               // Display current manga name, chapter name and progression in the manga
               if (e.which === 67) { // alt + c
                 let chapName = "", chapPos = 0
@@ -1141,7 +1146,6 @@
         }
       },
       reloadErrors() {
-        console.log('Trigger reload')
         EventBus.$emit('reload-all-errors')
       }
     }

@@ -1356,6 +1356,10 @@
     "message": "Display a random page from the chapter",
     "description": "Description of the shortcut for displaying a random page from the chapter"
   },
+  "reader_shortcut_reload_errors": {
+    "message": "Reload errored scans",
+    "description": "Description of the shortcut for reloading errored scans from the chapter"
+  },
   "reader_shortcut_chapters_nextprevious": {
     "message": "Go to previous / next chapter",
     "description": "Description of the shortcut for previous / next chapters"
