@@ -5,20 +5,40 @@ if (typeof registerMangaObject === 'function') {
         mirrorIcon : "webtoons.png",
         languages : "en",
         domains: ["www.webtoons.com"],
-        home: "https://www.webtoons.com/",
+        home: "https://www.webtoons.com",
         chapter_url: /^.*\/viewer.*$/g,
+
+        fixUrl: function(url) {
+            if (!url.includes(this.home)) {
+                return this.home + url
+            }
+        },
 
         getMangaList : async function (search) {
             await this.setCookie()
             let doc = await amr.loadPage(
-                "https://www.webtoons.com/search?keyword=" + search, 
+                this.home + "/en/search?keyword=" + search, 
                 { nocache: true, preventimages: true }
             )
-            let res = [];
+            let self = this
+            let resOrig = []
             $(".challenge_lst li a, .card_lst li a", doc).each(function (index) {
-                res.push([$(".subj", $(this)).text().trim(), "https://www.webtoons.com" + $(this).attr("href")]);
-            });
-            return res;
+                resOrig.push([
+                    $(".subj", $(this)).text().trim(),
+                    self.fixUrl($(this).attr("href"))
+                ])
+            })
+
+            let res = []
+            for (let results of resOrig) {
+                let doc2 = await amr.loadPage(results[1], {preventimages: true})
+                let url = doc2.innerText.match(/<meta property="og:url" content="([^"]+)" \/>/)
+                res.push([
+                    results[0],
+                    url[1]
+                ])
+            }
+            return res
         },
     
         getListChaps : async function (urlManga) {
