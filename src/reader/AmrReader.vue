@@ -231,6 +231,13 @@
                 </v-btn>
                 <span>{{i18n("content_nav_follow")}}</span>
               </v-tooltip>
+              <!-- Reload all scan errors -->
+              <v-tooltip bottom class="ml-1">
+                <v-btn slot="activator" icon color="red--text" @click.stop="reloadErrors">
+                    <v-icon>mdi-replay</v-icon>
+                </v-btn>
+                <span>{{i18n("content_nav_reload")}}</span>
+              </v-tooltip>
             </v-flex>
           </v-layout>
         </v-card-actions>
@@ -1132,6 +1139,10 @@
               this.resize = "width"
             }
         }
+      },
+      reloadErrors() {
+        console.log('Trigger reload')
+        EventBus.$emit('reload-all-errors')
       }
     }
   }

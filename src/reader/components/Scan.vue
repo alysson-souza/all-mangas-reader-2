@@ -127,6 +127,14 @@ export default {
     },
     mounted() { /* Display image if already loaded */
         if (!this.loading) this.$nextTick(() => this.insertScanInDOM())
+        
+    },
+    created() {
+        /* Event from side bar to reload all errored scans */
+        EventBus.$on('reload-all-errors', this.reloadScan)
+    },
+    beforeDestroy() {
+        EventBus.$off('reload-all-errors', this.reloadScan)
     },
     methods: {
         /* check if we need to fit width */
@@ -139,7 +147,7 @@ export default {
         },
         /** Tell scansProvider to retry scan */
         reloadScan() {
-            this.scan.load()
+            if (this.error) this.scan.load()
         },
         /* Loads the scan, only called on nexttick so all computed properties have been refreshed */
         insertScanInDOM() {
