@@ -11,6 +11,7 @@ if (typeof registerMangaObject === 'function') {
         abstract_options: {
             search_url: "https://manhuas.net/",
             img_src: "src",
+            chapter_list_ajax: true,
             secondary_img_src: "data-src"
         }
     })
