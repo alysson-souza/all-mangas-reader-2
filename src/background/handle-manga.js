@@ -257,7 +257,7 @@ class HandleManga {
                     let title = htmlDocument.title
                     
                     resolve({
-                        isChapter: isChapter,
+                        isChapter: isChapter ? true : false,
                         infos: infos,
                         images: imagesUrl,
                         title: title
