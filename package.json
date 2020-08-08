@@ -1,6 +1,6 @@
 {
   "name": "all-mangas-reader",
-  "version": "2.2.5",
+  "version": "2.2.6",
   "description": "All Mangas Reader",
   "author": "Pierre-Louis Duhoux <pl.duhoux@gmail.com>",
   "scripts": {
@@ -13,7 +13,8 @@
     "watch:dev:hot": "yarn run build:dev --watch --hot",
     "watch:dev:chrome": "yarn run watch:dev --chrome",
     "watch:dev:firefox": "yarn run watch:dev --firefox",
-    "android:dev": "yarn run build:dev && yarn run manifest:specify -firefox && yarn run build-zip -xpi -push"
+    "android:dev": "yarn run build:dev && yarn run manifest:specify -firefox && yarn run build-zip -xpi -push",
+    "discord:beta": "node scripts/discord-notify.js"
   },
   "dependencies": {
     "axios": "^0.16.2",
@@ -25,7 +26,8 @@
     "vuetify": "^1.3.9",
     "vuex": "^3.0.1",
     "vuex-shared-mutations": "0.0.3",
-    "webextension-polyfill": "^0.6.0"
+    "webextension-polyfill": "^0.6.0",
+    "webhook-discord": "^3.7.4"
   },
   "devDependencies": {
     "clean-webpack-plugin": "^0.1.19",
