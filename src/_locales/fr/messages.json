@@ -614,6 +614,10 @@
     "message": "Suivre les publications de ce manga",
     "description": "Tooltip of the follow updates for this manga button"
   }, 
+  "content_nav_reload": {
+    "message": "Recharger les scans erronés",
+    "description": "Tooltip of the reload errored scans button"
+  },
   "content_nav_chapmode_1": {
     "message": "Afficher les scans les uns au dessus des autres (cliquer pour changer le mode uniquement pour ce manga)",
     "description": "Tooltip of the chapter mode button when value is 1 (Scans displayed on top of each other)"
@@ -1350,6 +1354,10 @@
   "reader_shortcut_random_scan": {
     "message": "Afficher une page du chapitre au hasard",
     "description": "Description of the shortcut for displaying a random page from the chapter"
+  },
+  "reader_shortcut_reload_errors": {
+    "message": "Recharger les scans erronés",
+    "description": "Description of the shortcut for reloading errored scans from the chapter"
   },
   "reader_shortcut_chapters_nextprevious": {
     "message": "Aller au chapitre précédent / suivant",

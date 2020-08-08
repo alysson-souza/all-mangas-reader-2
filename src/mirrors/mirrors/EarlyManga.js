@@ -3,13 +3,13 @@ if (typeof registerMangaObject === 'function') {
         mirrorName: "EarlyManga",
         mirrorIcon: "earlymanga.png",
         languages: "en",
-        domains: ["earlymanga.net", "earlymanga.me"],
-        home: "https://earlymanga.me",
+        domains: ["earlymanga.net", "earlymanga.xyz", "earlymanga.me"],
+        home: "https://earlymanga.xyz",
         chapter_url: /^\/manga\/.*\/.*$/g,
 
         abstract: "Madara",
         abstract_options: {
-            search_url: "https://earlymanga.me/",
+            search_url: "https://earlymanga.xyz/",
             search_json: true,
             img_src: "data-src",
             secondary_img_src: "src",

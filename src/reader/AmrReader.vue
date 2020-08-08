@@ -231,6 +231,13 @@
                 </v-btn>
                 <span>{{i18n("content_nav_follow")}}</span>
               </v-tooltip>
+              <!-- Reload all scan errors -->
+              <v-tooltip bottom class="ml-1">
+                <v-btn slot="activator" icon color="red--text" @click.stop="reloadErrors">
+                    <v-icon>mdi-replay</v-icon>
+                </v-btn>
+                <span>{{i18n("content_nav_reload")}}</span>
+              </v-tooltip>
             </v-flex>
           </v-layout>
         </v-card-actions>
@@ -953,8 +960,13 @@
                 if (this.showLatestRead) this.markAsLatest()
                 prevent()
               }
+              // Reload all errored scans
+              if (e.which === 82) { // alt + r
+                this.reloadErrors()
+                prevent()
+              }
             }
-            if (e.altKey) {
+            if (e.altKey && !e.shiftKey) {
               // Display current manga name, chapter name and progression in the manga
               if (e.which === 67) { // alt + c
                 let chapName = "", chapPos = 0
@@ -1132,6 +1144,9 @@
               this.resize = "width"
             }
         }
+      },
+      reloadErrors() {
+        EventBus.$emit('reload-all-errors')
       }
     }
   }

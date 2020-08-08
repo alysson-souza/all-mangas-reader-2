@@ -42,6 +42,7 @@ export default {
                 { keys: [[alt, "s"]], i18n:"reader_shortcut_info_scan" },
                 { keys: [[alt, "←"], [alt, "→"], [alt, "a"], [alt, "d"]], i18n:"reader_shortcut_first_last_scan" },
                 { keys: [[alt, "r"]], i18n:"reader_shortcut_random_scan" },
+                { keys: [[shift, "r"]], i18n:"reader_shortcut_reload_errors" },
             ],
             shortcuts_manga: [ // shortcuts linked to manga navigation
                 { keys: [["b"], ["n"], [shift, "a"], [shift, "d"], [shift, "←"], [shift, "→"]], i18n: "reader_shortcut_chapters_nextprevious" },

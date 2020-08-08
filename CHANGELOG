@@ -1,3 +1,18 @@
+### V2.2.6
+Fixes:
+  - Fixed an issue with firefox 79 preventing some mirrors from functioning
+
+Changes:
+  - Added reload all errored scans button
+
+Mirror Fixes:
+  - Webtoons.com (Fixed search)
+  - Early Manga (Url Changed)
+  - Manhuas.net (Chapter List fix)
+
+New Mirrors:
+  - Manwha 18 (https://manhwa18.com/)
+
 ### V2.2.5
 Changes:
   - Added the ability to disable mirrors that are closed while keeping the manga listed
