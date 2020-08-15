@@ -28,7 +28,7 @@ if (versionIndex > -1) {
     version = process.argv[versionIndex + 1]
 }
 
-if (!id || !token || !subject || !body || !version) {
+if (!id || !token || !subject || !version) {
     console.log('Invalid params')
     process.exit(255)
 }
@@ -43,7 +43,7 @@ try {
         .setName('Beta Builder')
         .setColor('#04ff00')
         .setText(`@everyone Beta version ${version} is now available`)
-        .addField(subject, body)
+        .addField(subject, body || '')
 
     hook.send(message)
 
