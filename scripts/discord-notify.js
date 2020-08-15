@@ -42,7 +42,7 @@ try {
     let message = new webhook.MessageBuilder()
         .setName('Beta Builder')
         .setColor('#04ff00')
-        .setText(`@everyone Beta version ${version} is now available`)
+        .setText(`@beta_builds Beta version ${version} is now available`)
         .addField(subject, body || '')
 
     hook.send(message)
