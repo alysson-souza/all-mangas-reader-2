@@ -98,8 +98,8 @@ window["Madara"] = function (options) {
         let mangaPath = pathSplitted.slice(0, 2);
         let mangaurl = url.origin + '/' + mangaPath.join('/') + '/';
         let mgname;
-        if ($(`a[href="${mangaurl}"]`, doc).length > 0) {
-            mgname = $(`a[href="${mangaurl}"]`, doc).first().text().trim();
+        if ($(`a[href="${mangaurl}"]:not(:contains("Manga Info"))`, doc).length > 0) {
+            mgname = $(`a[href="${mangaurl}"]:not(:contains("Manga Info"))`, doc).first().text().trim();
         }
         if (mgname === undefined || mgname.trim() === "") {
             let docmg = await amr.loadPage(mangaurl);
