@@ -104,7 +104,7 @@ crx:
         - build
 
 beta_notify:
-    stage: notify
+    stage: .post
     script:
         - yarn run discord:beta --version "$VERSION" --id "$DISCORD_NOTIFY_BETA_ID" --token "$DISCORD_NOTIFY_BETA_TOKEN" --subject "$LAST_COMMIT_SUBJECT" --body "$LAST_COMMIT_BODY"
     except:
@@ -114,4 +114,4 @@ beta_notify:
     only:
         - develop
     dependencies:
-        - package
+        - xpi-beta
