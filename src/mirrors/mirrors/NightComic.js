@@ -1,17 +1,17 @@
 if (typeof registerMangaObject === 'function') {
     registerMangaObject({
-        mirrorName: "IsekaiScans",
-        mirrorIcon: "isekaiscans.png",
+        mirrorName: "Night Comic",
+        mirrorIcon: "nightcomic.png",
         languages: "en",
-        domains: ["isekaiscan.com"],
-        home: "https://isekaiscan.com/",
+        domains: ["nightcomic.com"],
+        home: "https://nightcomic.com/",
         chapter_url: /^\/manga\/.*\/.*$/g,
         canListFullMangas: false,
         abstract: "Madara",
         abstract_options: {
-            search_url: "https://isekaiscan.com/",
+            search_url: "https://nightcomic.com/",
             img_src: "data-src",
-            chapter_list_ajax: true
+            chapter_list_ajax: true,
         }
     })
 }

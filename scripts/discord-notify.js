@@ -46,7 +46,7 @@ try {
         .addField(subject, body || '')
 
     message.data.allowed_mentions = {
-        roles: ["beta_builds"]
+        parse: ["roles"]
     }
 
     hook.send(message)
