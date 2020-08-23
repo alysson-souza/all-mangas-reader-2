@@ -1,6 +1,6 @@
-const webhook = require("webhook-discord")
+const axios = require("axios")
 
-let id, token, subject, body, version
+let id, token, subject, body, version, patch
 
 /* Build variables from arguments */
 const idIndex = process.argv.indexOf('--id')
@@ -28,7 +28,12 @@ if (versionIndex > -1) {
     version = process.argv[versionIndex + 1]
 }
 
-if (!id || !token || !subject || !version) {
+const patchIndex = process.argv.indexOf('--patch')
+if (patchIndex > -1) {
+    patch = process.argv[patchIndex + 1]
+}
+
+if (!id || !token || !subject || !version || !patch) {
     console.log('Invalid params')
     process.exit(255)
 }
@@ -38,20 +43,20 @@ let url = `https://discordapp.com/api/webhooks/${id}/${token}`
 
 
 try {
-    let hook = new webhook.Webhook(url)
-    let message = new webhook.MessageBuilder()
-        .setName('Beta Builder')
-        .setColor('#04ff00')
-        .setText(`@beta_builds Beta version ${version} is now available`)
-        .addField(subject, body || '')
-
-    message.data.allowed_mentions = {
-        parse: ["roles"]
+    let message = {
+        content: `<@&744261082067239093> Beta version ${version}.${patch} is now available`,
+        username: "Beta Build Bot",
+        embeds: [
+            {
+                title: subject,
+                type: "rich",
+                color: 327424,
+                description: body
+            }
+        ]
     }
 
-    hook.send(message)
-
-    
+    axios.post(url, message)   
 } catch(error) {
     console.log(error)
 }
