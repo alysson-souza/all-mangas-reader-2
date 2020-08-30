@@ -43,7 +43,7 @@
         <!-- List of chapters -->
         <!-- Icon of the mirror if in group -->
         <v-tooltip v-if="isInGroup" top content-class="icon-ttip" class="tip-icon-grouped">
-          <img v-if="isMirrorEnabled" :src="mirror.mirrorIcon" class="mirror-icon grouped" slot="activator" />
+          <img v-if="isMirrorEnabled" :src="mirror.mirrorIcon" @click="openManga" class="mirror-icon grouped" slot="activator" />
           <v-icon v-if="!isMirrorEnabled" class="mirror-icon grouped" slot="activator">mdi-cancel</v-icon>
           <span>{{ isMirrorEnabled ? mirror.mirrorName : i18n("list_mirror_disabled_tooltip", manga.mirror) }}</span>
         </v-tooltip>

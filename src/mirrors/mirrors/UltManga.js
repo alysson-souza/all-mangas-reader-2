@@ -1,17 +1,17 @@
 if (typeof registerMangaObject === 'function') {
     registerMangaObject({
-        mirrorName: "IsekaiScans",
-        mirrorIcon: "isekaiscans.png",
+        mirrorName: "Ult Manga",
+        mirrorIcon: "ultmanga.jpg",
         languages: "en",
-        domains: ["isekaiscan.com"],
-        home: "https://isekaiscan.com/",
+        domains: ["ultmanga.com"],
+        home: "https://ultmanga.com/",
         chapter_url: /^\/manga\/.*\/.*$/g,
         canListFullMangas: false,
         abstract: "Madara",
         abstract_options: {
-            search_url: "https://isekaiscan.com/",
+            search_url: "https://ultmanga.com/",
             img_src: "data-src",
-            chapter_list_ajax: true
+            // chapter_list_ajax: true,
         }
     })
 }

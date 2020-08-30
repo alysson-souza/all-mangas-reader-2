@@ -11,6 +11,8 @@ before_script:
     - export VERSION=$([[ -n "$LAST_TAG" ]] && git tag --points-at $LAST_TAG)
     - export VERSION=${VERSION:-2.0.0}
     - export PATCH=$(git rev-list ${LAST_TAG:+$LAST_TAG..}HEAD | wc -l)
+    - export LAST_COMMIT_SUBJECT=$(git log -1 --pretty=%s)
+    - export LAST_COMMIT_BODY=$(git log -1 --pretty=%b)
     - yarn
 
 .build_common: &build_common
@@ -101,3 +103,15 @@ crx:
     dependencies:
         - build
 
+beta_notify:
+    stage: .post
+    script:
+        - yarn run discord:beta --version "$VERSION" --patch "$PATCH" --id "$DISCORD_NOTIFY_BETA_ID" --token "$DISCORD_NOTIFY_BETA_TOKEN" --subject "$LAST_COMMIT_SUBJECT" --body "$LAST_COMMIT_BODY"
+    except:
+        variables:
+            - $DISCORD_NOTIFY_BETA_ID == null
+            - $CI_COMMIT_MESSAGE =~ /NO-CI/
+    only:
+        - develop
+    dependencies:
+        - xpi-beta

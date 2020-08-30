@@ -1,3 +1,22 @@
+### V2.2.7
+New Features:
+  - Added Discord webhook for beta builds
+
+Mirror Fixes:
+  - Fix for madara sites last chapter issue
+  - Isekai Scans switch to https
+  - Scan FR domain change
+  - Manga Reader site changes
+
+New Mirrors:
+  - Manga Hasu (http://mangahasu.se/)
+  - Night Comic (https://nightcomic.com/)
+  - Ult Manga (https://ultmanga.com/)
+  - Manga Hub (https://mangahub.io/)
+  - Love Heaven (https://loveheaven.net/)
+  - Manga Sushi (https://mangasushi.net/)
+  - Method Scans (https://methodscans.com/)
+
 ### V2.2.6
 Fixes:
   - Fixed an issue with firefox 79 preventing some mirrors from functioning
