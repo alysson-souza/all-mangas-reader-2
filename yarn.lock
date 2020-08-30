@@ -5644,11 +5644,6 @@ snapdragon@^0.8.1:
     source-map-resolve "^0.5.0"
     use "^3.1.0"
 
-snekfetch@^3.6.4:
-  version "3.6.4"
-  resolved "https://registry.yarnpkg.com/snekfetch/-/snekfetch-3.6.4.tgz#d13e80a616d892f3d38daae4289f4d258a645120"
-  integrity sha512-NjxjITIj04Ffqid5lqr7XdgwM7X61c/Dns073Ly170bPQHLm6jkmelye/eglS++1nfTWktpP6Y2bFXjdPlQqdw==
-
 sonic-boom@^0.7.5:
   version "0.7.7"
   resolved "https://registry.yarnpkg.com/sonic-boom/-/sonic-boom-0.7.7.tgz#d921de887428208bfa07b0ae32c278de043f350a"
@@ -6573,13 +6568,6 @@ webextension-polyfill@^0.6.0:
   version "0.6.0"
   resolved "https://registry.yarnpkg.com/webextension-polyfill/-/webextension-polyfill-0.6.0.tgz#1afd925f3274a0d4848083579b9c0b649a5c6763"
   integrity sha512-PlYwiX8e4bNZrEeBFxbFFsLtm0SMPxJliLTGdNCA0Bq2XkWrAn2ejUd+89vZm+8BnfFB1BclJyCz3iKsm2atNg==
-
-webhook-discord@^3.7.4:
-  version "3.7.4"
-  resolved "https://registry.yarnpkg.com/webhook-discord/-/webhook-discord-3.7.4.tgz#b030acbcf940e298dfa3f6504b4fa3334dd931d5"
-  integrity sha512-Zr05oqRpyetx04GWxaZpqopyY3dDT2TUIIv0U7DFMvEXhCwnT0YUhw8R9++8DwZI1rdYmpqOfys44AjznkdmDw==
-  dependencies:
-    snekfetch "^3.6.4"
 
 webidl-conversions@^5.0.0:
   version "5.0.0"
