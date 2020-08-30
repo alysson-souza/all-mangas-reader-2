@@ -63,7 +63,12 @@ export class SyncManager {
         }
 
         this.log(`Syncing ${remoteUpdates.length} keys to remote storage`)
-        await this.storage.saveAll(remoteUpdates);
+        try {
+           await this.storage.saveAll(remoteUpdates);
+        } catch (e) {
+            this.log(`Failed to sync keys to remote storage: ${e.message}`, e);
+            throw e;
+        }
 
         return remoteUpdates;
     }
