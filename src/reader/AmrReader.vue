@@ -392,6 +392,7 @@
   import BookmarkPopup from "./components/BookmarkPopup";
   import ShortcutsPopup from "./components/ShortcutsPopup";
   import SocialBar from "./components/SocialBar";
+  import { THINSCAN } from '../amr/options';
   
   /** Possible values for resize (readable), the stored value is the corresponding index */
   const resize_values = ['width', 'height', 'container', 'none']
@@ -420,7 +421,7 @@
       nextchapProgress: 0, /* Progression of next chapter loading */
 
       bookstate: bookmarks.state, /* bookmarks state */
-      thinscan: false, /* top telling that the chapter is containing thin scans (height >= 3 * width) */
+      thinscan: options.thinscan, /* top telling that the chapter is containing thin scans (height >= 3 * width) */
 
       darkreader: options.darkreader === 1, /* Top for using dark background */
       options: options, /* Make it reactive so update to local options object will be reflected in computed properties */
@@ -777,7 +778,7 @@
         this.loading = true
         this.nextChapterLoader = null
         this.nextchapProgress = 0
-        this.thinscan = false
+        this.thinscan = options.thinscan
         this.chaploaded = false
         // change current chapter --> do it now, if not, loadInReader will trigger nextChapterLoad and it will be the current one...
         this.selchap = chapterloader.url
@@ -1133,16 +1134,31 @@
       },
       /** Called when a thin scan (height >= 3 * width) is detected */
       async handleThinScan() {
-        if (this.thinscan) return // already handled
-        this.thinscan = true
-        if (!this.book && !["height", "container"].includes(this.resize)) return // parameters are already adapted for thin scans
-        if (await this.$refs.wizdialog.yesno(
-          this.i18n("reader_thinscan_title"), 
-          this.i18n("reader_thinscan_description"))) {
-            this.book = false
-            if (["height", "container"].includes(this.resize)) {
-              this.resize = "width"
-            }
+        if (this.thinscan === THINSCAN.no_adjust || (!this.book && !["height", "container"].includes(this.resize))) {
+          return // parameters are already adapted for thin scans
+        }
+
+        if (this.thinscan === THINSCAN.adjust) {
+          return this.adjustThinScan();
+        }
+
+        // Must be asking user
+        const modalResult = await this.$refs.wizdialog.yesno(
+            this.i18n("reader_thinscan_title"),
+            this.i18n("reader_thinscan_description")
+        );
+
+        if (modalResult) {
+            this.adjustThinScan();
+            this.thinscan = THINSCAN.adjust;
+        } else {
+          this.thinscan = THINSCAN.no_adjust;
+        }
+      },
+      adjustThinScan() {
+        this.book = false
+        if (["height", "container"].includes(this.resize)) {
+          this.resize = "width"
         }
       },
       reloadErrors() {

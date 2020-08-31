@@ -1,5 +1,6 @@
 import storedb from '../../amr/storedb'
 import Vue from 'vue';
+import { THINSCAN } from '../../amr/options';
 
 const isFirefox = function() {
     // Firefox 1.0+ (tested on Firefox 45 - 53)
@@ -29,6 +30,8 @@ const default_options = {
     imgorder: 0, //Load scans in order
 
     darkreader: 1, // Reader is in dark mode, if not --> light mode
+
+    thinscan: THINSCAN.default,
     
     /**
      * DEPRECATED OPTIONS --> these options are related to the old reader and will be removed 

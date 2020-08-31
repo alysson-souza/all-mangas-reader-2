@@ -1283,6 +1283,22 @@
     "message": "Fond sombre",
     "description": "In the options page, label of the dark reader option"
   },
+  "options_web_chapter_thinscan_desc": {
+    "message": "Thin Scan behaviour",
+    "description": "In the options page, description of the thin scan option"
+  },
+  "options_web_chapter_thinscan_ask": {
+    "message": "Always ask the user",
+    "description": "In the options page, description of the thin scan option ask"
+  },
+  "options_web_chapter_thinscan_adjust": {
+    "message": "Always Adjust",
+    "description": "In the options page, description of the thin scan option adjust"
+  },
+  "options_web_chapter_thinscan_no_adjust": {
+    "message": "Always Do not adjust",
+    "description": "In the options page, description of the thin scan option no adjust"
+  },
   "reader_button_saveoptions": {
     "message": "Enregistrer les options actuelles comme options par défaut",
     "description": "Tooltip on the save current options as default button in the reader"

@@ -55,6 +55,11 @@
                 <div class="subtitle">{{i18n('options_web_chapter_darkreader_desc')}}</div>
                 <v-checkbox v-model="darkreader" @change="setOption('darkreader')"
                         :label="i18n('options_web_chapter_darkreader_opt')"></v-checkbox>
+
+                <!-- Thin Scan option -->
+                <div class="subtitle">{{i18n('options_web_chapter_thinscan_desc')}}</div>
+                <v-select v-model="thinscan" :items="thinscan_values" @change="setOption('thinscan')"></v-select>
+
                 
                 <!-- Loading options -->
                 <div class="headline">{{ i18n("options_web_loading") }}</div>
@@ -312,6 +317,7 @@ import Flag from "./Flag";
 import * as amrutils from "../../amr/utils";
 import * as utils from "../utils";
 import { getSyncSchedule } from '../../amr/sync/sync-schedule'
+import { THINSCAN } from '../../amr/options';
 
 /**
  * Converters to format options in db and in page (ex : booleans are store as 0:1 in db)
@@ -429,6 +435,11 @@ export default {
         { value: 12 * 60 * 60 * 1000, text: i18n("options_hours", 12) },
         { value: 24 * 60 * 60 * 1000, text: i18n("options_days", 1) },
         { value: 7 * 24 * 60 * 60 * 1000, text: i18n("options_week", 1) }
+      ],
+      thinscan_values: [
+        { value: THINSCAN.ask, text: i18n("options_web_chapter_thinscan_ask") },
+        { value: THINSCAN.adjust, text: i18n("options_web_chapter_thinscan_adjust") },
+        { value: THINSCAN.no_adjust, text: i18n("options_web_chapter_thinscan_no_adjust") },
       ],
       loadingChapters: false,
       wait_update_values: [
