@@ -557,6 +557,18 @@
     "message": "Cette catégorie est associée à $1 manga. Cette action supprimera la catégorie de ces manga. Etes vous sur de vouloir effectuer cette action ?",
     "description": "Description of the popup when deleting category, $1 is the number of mangas associated to the category"
   },
+  "list_cat_edit": {
+    "message": "Edit this category",
+    "description": "Tooltip on category button edit"
+  },
+  "list_cat_edit_title": {
+    "message": "Edit category $1 ?",
+    "description": "Title of the popup when editing category, $1 is the name of the category"
+  },
+  "list_cat_edit_desc": {
+    "message": "This category is associated to $1 mangas. This action will update the category name to these mangas too. Are you sure to do that ?",
+    "description": "Description of the popup when editing category, $1 is the number of mangas associated to the category"
+  },
   "notif_message": {
     "message": "... a de nouveaux chapitre(s) sur $1! Cliquez pour ouvrir le prochain chapitre non lu.",
     "description": "Text from notification. The notification title is the manga name, $1 is the website on which the manga to notify is read"

@@ -33,6 +33,11 @@
             <v-icon v-if="cat.type !== 'native' && cat.type !== 'language'" class="cat-act" @click.stop="deleteCat(cat)" slot="activator">mdi-close</v-icon>
             <span>{{i18n("list_cat_delete")}}</span>
         </v-tooltip>
+        <!-- Edit icon -->
+        <v-tooltip top content-class="icon-ttip">
+          <v-icon v-if="cat.type !== 'native' && cat.type !== 'language'" class="cat-act" @click.stop="displayEditCategoryModal(cat)" slot="activator">mdi-pencil</v-icon>
+          <span>{{i18n("list_cat_edit")}}</span>
+        </v-tooltip>
         <!-- badge nb mangas -->
         <span v-if="countUsed(cat) > 0" class="cat-badge grey darken-1">{{countUsed(cat)}}</span>
       </div>
@@ -41,12 +46,32 @@
         @keyup.enter="addCategory()" />
     <v-dialog v-model="deleteCatDialog" max-width="290">
       <v-card>
-        <v-card-title class="headline">{{i18n("list_cat_delete", catToDelete.name)}}</v-card-title>
-        <v-card-text>{{i18n("list_cat_delete", countUsed(catToDelete))}}</v-card-text>
+        <v-card-title class="headline">{{i18n("list_cat_delete_title", catToDelete.name)}}</v-card-title>
+        <v-card-text>{{i18n("list_cat_delete_desc", countUsed(catToDelete))}}</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="red darken-1" flat @click.native="reallyDeleteCat()">{{i18n("button_yes")}}</v-btn>
           <v-btn color="grey darken-1" flat @click.native="deleteCatDialog = false">{{i18n("button_no")}}</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <!-- Edit Category Dialog -->
+    <v-dialog v-model="editCatDialog" max-width="290">
+      <v-card>
+        <v-card-title class="headline">{{i18n("list_cat_edit_title", catToEdit.name)}}</v-card-title>
+        <v-card-text>
+          <label>
+            {{i18n("list_cat_edit_desc", countUsed(catToEdit))}} <br />
+            <input type="text" v-model="updateCatName" class="category-edit" />
+          </label>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="red darken-1" :disabled="!isValidEditName" flat @click.native="submitEditCategory()">
+            {{i18n("button_yes")}}
+          </v-btn>
+          <v-btn color="grey darken-1" flat @click.native="editCatDialog = false">{{i18n("button_no")}}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -63,6 +88,9 @@ export default {
   data() {
     return {
       newCat: "", // used to create new category
+      editCatDialog: false,
+      catToEdit: { name: "" },
+      updateCatName: "",
       deleteCatDialog: false, // display delete category dialog
       catToDelete: {} // category to dele inside dialog
     };
@@ -90,6 +118,9 @@ export default {
             bt = types_order.findIndex(t => t === b.type)
         return at === bt ? a.name.localeCompare(b.name) : at - bt
       })
+    },
+    isValidEditName: function () {
+      return this.updateCatName.length >= 1 && this.updateCatName !== this.catToEdit.name;
     }
   },
   methods: {
@@ -119,6 +150,22 @@ export default {
           this.$store.dispatch("removeCategory", cat.name);
         }
       }
+    },
+    displayEditCategoryModal(cat) {
+      this.catToEdit = cat;
+      this.editCatDialog = true;
+      this.updateCatName = cat.name
+    },
+    submitEditCategory() {
+      this.$store.dispatch("editCategory", {
+        oldname: this.catToEdit.name ,
+        newname: this.updateCatName,
+      });
+
+      // Reset edit state
+      this.editCatDialog = false;
+      this.catToEdit = {};
+      this.updateCatName = ""
     },
     reallyDeleteCat() {
       this.$store.dispatch("removeCategory", this.catToDelete.name);
@@ -167,6 +214,13 @@ export default {
   display: -ms-inline-flexbox;
   font-size:11px;
 }
+
+input.category-edit {
+  border-style: solid;
+  display: block;
+  margin-top: 1rem;
+}
+
 .cat-act {
   font-size: 12px;
   cursor: pointer;
