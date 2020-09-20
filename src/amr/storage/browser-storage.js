@@ -1,5 +1,6 @@
 import browser from 'webextension-polyfill'
 import { arrayToObject, batchProps, objectMapToArray } from '../utils'
+import { ThrottleError } from './error/ToManyRequests';
 
 const LIMITS = {
     MAX_ITEMS: 512,
@@ -9,6 +10,8 @@ const LIMITS = {
     QUOTA_BYTES: 102400,
     QUOTA_BYTES_PER_ITEM: 8192,
 }
+
+const ThrottleErrorMessages = Object.keys(LIMITS).filter(k => k.includes('OPERATIONS'));
 
 /**
  * The sync object implements the methods defined on the storage.StorageArea type
@@ -32,7 +35,7 @@ export default class BrowserStorage {
     }
 
     save(key, value) {
-        return this.storageSync.set({[key]: value})
+        return this.storageSync.set({[key]: value}).catch(this.handleSyncError)
     }
 
     /**
@@ -46,11 +49,11 @@ export default class BrowserStorage {
             }
         }
 
-        return this.storageSync.set(data)
+        return this.storageSync.set(data).catch(this.handleSyncError)
     }
 
     get(key) {
-        return this.storageSync.get(key);
+        return this.storageSync.get(key).catch(this.handleSyncError)
     }
 
     saveAll(data) {
@@ -73,6 +76,21 @@ export default class BrowserStorage {
         const batchedKeys = batchProps(data, this.batchSize)
         const promises = batchedKeys.map(batch => this.storageSync.set(batch))
 
-        return Promise.all(promises)
+        return Promise.all(promises).catch(this.handleSyncError)
+    }
+
+    /**
+     * @private
+     * @param e Error
+     */
+    handleSyncError(e) {
+      if (ThrottleErrorMessages.some(msg => e.message.includes(msg))) {
+
+          // Delay by 30min
+          const timestamp = Date.now() + (1800 * 1000);
+          throw new ThrottleError(e.message, new Date(timestamp))
+      }
+
+      throw e;
     }
 }

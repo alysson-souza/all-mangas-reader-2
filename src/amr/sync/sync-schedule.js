@@ -1,5 +1,6 @@
 import { createSync, SyncManager } from './sync-manager'
 import { debug } from '../utils';
+import { ThrottleError } from '../storage/error/ToManyRequests';
 
 const defaultConfig = {
     syncInterval: 30 * 1000,
@@ -21,7 +22,7 @@ class SyncSchedule {
 
     start() {
         if (this.config.syncEnabled && !this.syncInterval) {
-            debug("Starting sync process");
+            debug("[SYNC] Starting sync process");
             this.triggerSync();
             this.syncInterval = setInterval(this.triggerSync.bind(this), this.config.syncInterval);
         }
@@ -32,7 +33,19 @@ class SyncSchedule {
     }
 
     triggerSync() {
-        this.syncManager.checkData().then(debug).catch(debug)
+
+        if (this.retryDate && this.retryDate.getTime() > Date.now()) {
+            debug(`[SYNC] Skipping sync due to present retry date until ${this.retryDate.toISOString()}`)
+            return
+        }
+
+        this.syncManager.checkData()
+        .then(debug)
+        .catch((e) => {
+            if (e instanceof ThrottleError) {
+                this.retryDate = e.getRetryAfterDate();
+            }
+        })
     }
 
     updateSync(value) {

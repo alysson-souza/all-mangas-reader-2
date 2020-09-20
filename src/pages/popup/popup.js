@@ -27,6 +27,7 @@ import * as util from "../utils";
       action: "opentab",
       url: "/pages/popup/popup.html?mode=tab"
     });
+    window.close();
   }
   if (popup && !util.isSmallDevice()) {
     document.body.classList.add("popup");

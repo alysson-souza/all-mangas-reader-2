@@ -1,5 +1,6 @@
 import storedb from '../../amr/storedb'
 import Vue from 'vue';
+import { THINSCAN } from '../../amr/options';
 
 const isFirefox = function() {
     // Firefox 1.0+ (tested on Firefox 45 - 53)
@@ -29,6 +30,8 @@ const default_options = {
     imgorder: 0, //Load scans in order
 
     darkreader: 1, // Reader is in dark mode, if not --> light mode
+
+    thinscan: THINSCAN.default,
     
     /**
      * DEPRECATED OPTIONS --> these options are related to the old reader and will be removed 
@@ -175,6 +178,24 @@ const actions = {
         }
     },
     /**
+     * Remove a non native category from categories states and save
+     * @param {*} param0
+     * @param {{oldname: string, newname: string}} nameChange Information about the category name change.
+     */
+    editCategory({ commit, dispatch, state, rootState }, nameChange) {
+        commit('updateCategoryName', nameChange);
+        localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates);
+        const { oldname, newname } = nameChange;
+
+        // Not very efficient way, but re-using existing methods
+        for (let mg of rootState.mangas.all) {
+            if (mg.cats.includes(oldname)) {
+                dispatch("removeCategoryFromManga", { key: mg.key, name: oldname });
+                dispatch("addCategoryToManga", { key: mg.key, name: newname });
+            }
+        }
+    },
+    /**
      * Adds a language category in categories states and save
      * @param {*} param0 
      * @param {*} name 
@@ -203,8 +224,8 @@ const actions = {
     },
     /**
      * Updates a categories name and save, use to upgrade native categories names for i18n
-     * @param {*} param0 
-     * @param {*} catObj 
+     * @param {*} param0
+     * @param {{oldname: string, newname: string}} oldnew Information about the category name change.
      */
     updateCategoryName({ commit, dispatch, state }, oldnew) {
         commit('updateCategoryName', oldnew);

@@ -555,8 +555,20 @@
     "description": "Title of the popup when deleting category, $1 is the name of the category"
   },
   "list_cat_delete_desc": {
-    "message": "This category is associated to $1 mangas. This action will remove the category from these mangas too. Are you sure to do that ?",
+    "message": "This category is associated to $1 mangas. This action will remove the category from these mangas too. Are you sure you want to do that ?",
     "description": "Description of the popup when deleting category, $1 is the number of mangas associated to the category"
+  },
+  "list_cat_edit": {
+    "message": "Edit this category",
+    "description": "Tooltip on category button edit"
+  },
+  "list_cat_edit_title": {
+    "message": "Edit category $1 ?",
+    "description": "Title of the popup when editing category, $1 is the name of the category"
+  },
+  "list_cat_edit_desc": {
+    "message": "This category is associated to $1 mangas. This action will update the category name to these mangas too. Are you sure you want to do that ?",
+    "description": "Description of the popup when editing category, $1 is the number of mangas associated to the category"
   },
   "notif_message": {
     "message": "... has new chapter(s) on $1! Click anywhere to open the next unread chapter.",
@@ -1153,7 +1165,7 @@
     "description": "Title of the popup displayed if thin scans detected (height >= 3 * width)"
   },
   "reader_thinscan_description": {
-    "message": "This chapter contains thin long scans (their height exceeds three times their width).\n Current layout options won't offer you the best possible reading. We can automatically adjust the way this manga is displayed (prefer not reading it with side by side scans and avoid scaling scans in height). \nDo you want to adjust these parameters ?",
+    "message": "This chapter contains thin long scans (their height exceeds three times their width).\n Current layout options won't offer you the best possible reading. We can automatically adjust the way this manga is displayed (prefer not reading it with side by side scans and avoid scaling scans in height). \nDo you want to adjust these parameters ? \nNote: Default behaviour can be adjusted in settings",
     "description": "Description of the popup displayed if thin scans detected (height >= 3 * width)"
   },
   "reader_alert_lastscan": {
@@ -1283,6 +1295,22 @@
   "options_web_chapter_darkreader_opt": {
     "message": "Dark background",
     "description": "In the options page, label of the dark reader option"
+  },
+  "options_web_chapter_thinscan_desc": {
+    "message": "Thin Scan behaviour",
+    "description": "In the options page, description of the thin scan option"
+  },
+  "options_web_chapter_thinscan_ask": {
+    "message": "Always ask the user",
+    "description": "In the options page, description of the thin scan option ask"
+  },
+  "options_web_chapter_thinscan_adjust": {
+    "message": "Always Adjust",
+    "description": "In the options page, description of the thin scan option adjust"
+  },
+  "options_web_chapter_thinscan_no_adjust": {
+    "message": "Always Do not adjust",
+    "description": "In the options page, description of the thin scan option no adjust"
   },
   "reader_button_saveoptions": {
     "message": "Save current options as default",
