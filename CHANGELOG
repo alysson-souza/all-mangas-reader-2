@@ -1,3 +1,17 @@
+### V2.2.8
+New Features:
+  - Added an option to disable the thin scan optimization alert
+  - Allow Editing of existing category names
+
+Fixes:
+  - Fixed popup still appearing when selecting open in new tab on firefox
+
+Mirror Fixes:
+  - Switched mangahere back to https
+
+New Mirrors:
+  - SK Scans (https://skscans.com/)
+
 ### V2.2.7
 New Features:
   - Added Discord webhook for beta builds
