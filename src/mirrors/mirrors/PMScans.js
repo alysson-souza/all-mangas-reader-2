@@ -16,7 +16,7 @@ if (typeof registerMangaObject === 'function') {
             img_src: "src",
             secondary_img_src: "data-src",
             search_json: true,
-            chapter_list_ajax: false,
+            chapter_list_ajax: true,
         },
 
         getMangaList: async function (search) {
