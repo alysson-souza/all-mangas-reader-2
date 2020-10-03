@@ -1586,5 +1586,12 @@
   "importmangas_message": {
     "message": "Ces mangas sont en cours d'importation, cette opération tourne en tache de fond. Si la liste à importer est longue, cela peut prendre plusieurs minutes, ce sera encore plus long si vous avez activé des options pour sauvegarder la bande passante ou pour attendre entre les requetes de mise à jour. Tant que votre navigateur est ouvert, l'importation tourne en tache de fond.",
     "description": "Message displayed in import popup after import is started"
+  },
+  "__V2_2_9__": {
+    "message": "Just a filler to separate new labels from old ones"
+  },
+  "reader_book_offset": {
+    "message": "Cela compensera la première page en mode livre au cas où une page de titre serait présente.",
+    "description": "Message displayed on button if book mode is active"
   }
 }

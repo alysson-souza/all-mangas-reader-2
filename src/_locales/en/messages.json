@@ -1591,5 +1591,12 @@
   "importmangas_message": {
     "message": "These mangas are actually being imported in background. If the list to import is extensive, it can take a few minutes, especially if you set options to save bandwidth or to delay requests when updating chapters. As long as your browser is opened, your mangas will be imported.",
     "description": "Message displayed in import popup after import is started"
+  },
+  "__V2_2_9__": {
+    "message": "Just a filler to separate new labels from old ones"
+  },
+  "reader_book_offset": {
+    "message": "This will offset the first page in book mode in case there is a title page present.",
+    "description": "Message displayed on button if book mode is active"
   }
 }
