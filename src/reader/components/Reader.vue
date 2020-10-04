@@ -139,7 +139,7 @@ export default {
 
         /** Event for offsetting first page of book */
         EventBus.$on('offset-book', obj => {
-            this.scansState.scans[0].doublepage = true
+            this.scansState.scans[0].doublepage = !this.scansState.scans[0].doublepage
             this.loadedChapter()
         })
     },
