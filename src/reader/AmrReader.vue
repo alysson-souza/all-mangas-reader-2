@@ -268,6 +268,12 @@
                   <span>{{i18n("option_read_book_rtl")}}</span>
                 </v-tooltip>
               </v-btn-toggle>
+              <v-tooltip top>
+                <v-btn slot="activator" icon @click="offsetBook" color="blue--text" v-show="displayBookOffsetButton" class="ma-0">
+                  <v-icon>mdi-library-books</v-icon>
+                </v-btn>
+                <span>{{i18n("reader_book_offset")}}</span>
+              </v-tooltip>
             </v-flex>
             <v-flex xs12>
               <!-- Display full chapter checkbox -->
@@ -417,6 +423,8 @@
       mangaExists: null, /* Does manga exists in reading list */
       mangaInfos: null, /* specific manga information (layout state, read top, latest read chapter) */
 
+      displayBookOffsetButton: false, /* This button will offset the chapter in book mode if there is a title page. Only display after chapter loads */
+
       nextChapterLoader: null, /* A ChapterLoader object to preload next chapter scans */
       nextchapProgress: 0, /* Progression of next chapter loading */
 
@@ -460,6 +468,9 @@
       })
       EventBus.$on('temporary-dialog', (obj) => { // display a temporary message
         this.$refs.wizdialog.temporary(obj.message, obj.duration)
+      })
+      EventBus.$on('pages-loaded', obj => { // Allow book mode offset button to display
+        this.displayBookOffsetButton = true
       })
       EventBus.$on('chapter-loaded', (obj) => { // consult current manga
         this.chaploaded = true
@@ -1062,6 +1073,9 @@
         this.fullchapter = this.options.displayFullChapter === 1
         this.resize = resize_values[this.options.resizeMode]
         this.$refs.wizdialog.temporary(this.i18n("action_done"))
+      },
+      offsetBook() {
+        EventBus.$emit('offset-book')
       },
       /** Toggle dark / light theme and save option */
       toggleDark() {

@@ -136,6 +136,12 @@ export default {
         })
         /** Register loaded scans events */
         EventBus.$on("chapter-loaded", this.loadedChapter)
+
+        /** Event for offsetting first page of book */
+        EventBus.$on('offset-book', obj => {
+            this.scansState.scans[0].doublepage = !this.scansState.scans[0].doublepage
+            this.loadedChapter()
+        })
     },
     watch: {
         /** Adjust the scroll in the thumbnails bar to have at most the currentPage centered and at least visible */

@@ -1,3 +1,14 @@
+### V2.2.9
+New Features:
+  - Added a button to toggle offsetting the first page in book mode in case there is a title page present.
+
+Mirror Fixes:
+  - PMScans moved to ajax loaded chapter list
+
+New Mirrors:
+  - Manhuaus (https://manhuaus.com/)
+  - Manga Dods (https://www.mangadods.com/)
+
 ### V2.2.8
 New Features:
   - Added an option to disable the thin scan optimization alert
