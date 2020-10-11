@@ -44,7 +44,7 @@
                                 <v-flex xs8>
                                     <v-tooltip top content-class="icon-ttip" v-for="(mg, key) in res[fmtkey]" :key="key">
                                         <div class="mirror-result-cont" slot="activator">
-                                            <img @click="addToList(mg)" :src="getIcon(mg.mirror)" :class="'mirror-icon ' + (isInList(mg) || mg.adding ? 'added' : '')" /> 
+                                            <img @click="handleIconClick(mg)" :src="getIcon(mg.mirror)" :class="'mirror-icon ' + (isInList(mg) || mg.adding ? 'added' : '')" /> 
                                             <v-icon v-if="isInList(mg)" color="green">mdi-check</v-icon>
                                             <v-progress-circular indeterminate size="18" v-if="mg.adding" color="grey darken-4"></v-progress-circular>
                                         </div>
@@ -183,6 +183,16 @@ export default {
          */
         isInList(mg) {
             return this.$store.state.mangas.all.findIndex(m => m.key.indexOf(utils.mangaKey(mg.url, mg.mirror, mg.language)) === 0) !== -1
+        },
+
+        handleIconClick(mg) {
+            console.log('Icon Clicked')
+            console.log(this.$store.state)
+            this.$store.state.options.searchOpenSeries ? this.openSeries(mg) : this.addToList(mg)
+        },
+
+        openSeries(mg) {
+            browser.runtime.sendMessage({ action: "opentab", url: mg.url });
         }
     },
     name: "Search",
