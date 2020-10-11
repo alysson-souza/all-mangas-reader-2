@@ -108,3 +108,10 @@ function isLight(colorname) {
 export function isSmallDevice() {
     return amrutils.isFirefoxAndroid() && window.innerWidth <= 700
 }
+
+export function filterByText(manga, search) {
+    if (search !== "") {
+        return manga.name.toLowerCase().includes(search.toLowerCase())
+    }
+    return true
+}

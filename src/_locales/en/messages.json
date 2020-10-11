@@ -1598,5 +1598,9 @@
   "reader_book_offset": {
     "message": "This will offset the first page in book mode in case there is a title page present.",
     "description": "Message displayed on button if book mode is active"
+  },
+  "list_filter": {
+    "message": "Filter your manga list by the entered text",
+    "description": "Toggle button to activate the text filter"
   }
 }
