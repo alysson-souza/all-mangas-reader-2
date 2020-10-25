@@ -217,15 +217,21 @@
                 <v-checkbox v-model="allowtracking" @change="setOption('allowtracking')"
                         :label="i18n('options_gen_allowtracking_opt')"></v-checkbox>
                 
-                  <!-- Synchronization -->
-                  <div class="headline">{{ i18n("options_sync_title") }}</div>
-                  <div class="subtitle">{{i18n('options_sync_manga_list_desc')}}</div>
-                  <v-alert v-if="!syncEnabled"  :value="true" color="error" icon="mdi-alert-octagon" outline>
-                      {{i18n('options_sync_title_warning')}}
-                  </v-alert>
+                <!-- Synchronization -->
+                <div class="headline">{{ i18n("options_sync_title") }}</div>
+                <div class="subtitle">{{i18n('options_sync_manga_list_desc')}}</div>
+                <v-alert v-if="!syncEnabled"  :value="true" color="error" icon="mdi-alert-octagon" outline>
+                    {{i18n('options_sync_title_warning')}}
+                </v-alert>
 
-                  <v-checkbox v-model="syncEnabled" @change="setOption('syncEnabled')"
-                              :label="i18n('options_sync_checkbox')"></v-checkbox>
+                <v-checkbox v-model="syncEnabled" @change="setOption('syncEnabled')"
+                            :label="i18n('options_sync_checkbox')"></v-checkbox>
+
+                <!-- Synchronization -->
+                <div class="headline">{{ i18n("options_search_title") }}</div>
+                <div class="subtitle">{{i18n('options_search_open_series_desc')}}</div>
+                <v-checkbox v-model="searchOpenSeries" @change="setOption('searchOpenSeries')"
+                            :label="i18n('options_search_open_series_checkbox')"></v-checkbox>
               </v-container>
             </v-tab-item>
             <v-tab-item value="supported" v-if="tabs === 'supported'">
@@ -355,7 +361,8 @@ const converters = {
       "displayBook",
       "displayFullChapter",
       "darkreader",
-      "syncEnabled"
+      "syncEnabled",
+      "searchOpenSeries"
     ]
   }
 };

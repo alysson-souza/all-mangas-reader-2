@@ -83,6 +83,9 @@ const default_options = {
     /** Sync options */
     syncEnabled: 0,
 
+    /** Search Options */
+    searchOpenSeries: 0,
+
     /** Language options */
     readlanguages: ["en", "gb"], // default language is english. On install, the user language is added to this list
     deactivateunreadable: false, // deactivate automatically mirrors in languages that do not match readable languages

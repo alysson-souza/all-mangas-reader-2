@@ -1,3 +1,8 @@
+### V2.2.10
+New Features:
+  - Added Text filter to your manga list. A button press will show/hide the input
+  - Added option to change search page behaviour to open the series page instead of adding when clicking a mirror icon
+  
 ### V2.2.9
 New Features:
   - Added a button to toggle offsetting the first page in book mode in case there is a title page present.

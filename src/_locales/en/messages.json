@@ -1598,5 +1598,21 @@
   "reader_book_offset": {
     "message": "This will offset the first page in book mode in case there is a title page present.",
     "description": "Message displayed on button if book mode is active"
+  },
+  "list_filter": {
+    "message": "Filter your manga list by the entered text",
+    "description": "Toggle button to activate the text filter"
+  },
+  "options_search_title": {
+    "message": "Search Options",
+    "description": "Various Search options"
+  },
+  "options_search_open_series_desc": {
+    "message": "Switches search screen to open series list in new tab instead of adding the series",
+    "description": "search open series in new tab"
+  },
+  "options_search_open_series_checkbox": {
+    "message": "Enable open in new tab",
+    "description": "search open series in new tab"
   }
 }

@@ -28,12 +28,26 @@
                             <v-icon slot="activator" @click="sort = 'updates'" :class="['amr-filter', {activated: sort === 'updates'}]">mdi-flash</v-icon>
                             <span>{{i18n("list_sort_new")}}</span>
                         </v-tooltip>
+                        <v-tooltip top content-class="icon-ttip">
+                            <v-icon slot="activator" @click="showFilter = !showFilter" class="amr-filter">mdi-magnify</v-icon>
+                            <span>{{i18n("list_filter")}}</span>
+                        </v-tooltip>
                     </v-card>
                 </div>
                 <!-- Categories -->
                 <div class="amr-categories-container">
                     <Categories :categories="categories" :static-cats="false" :delegate-delete="false" />
                 </div>
+                <v-card v-if="showFilter">
+                    <v-text-field 
+                        v-model="filterText" 
+                        solo 
+                        placeholder="Filter Text"
+                        outlined
+                        dense
+                        hide-details="auto">
+                    </v-text-field>
+                </v-card>
                 <!-- Load manga list -->
                 <div class="amr-manga-list-container">
                     <transition-group name="flip-list" tag="div">
@@ -115,6 +129,8 @@ export default {
       loaded: false,
       sort: "updates", // sort mode for list (az : alphabetical, updates : mangas with updates first)
       showDialog: false, // do show dialog to ask smthg
+      showFilter: false, // Show the text filter for existing manga
+      filterText: "", // Filter text
       dialogTitle: "", //title of opened dialog
       dialogText: "", // text of opened dialog
       dialogAction: () => {self.showDialog = false} // action to take on yes in dialog
@@ -134,7 +150,7 @@ export default {
      */
     visMangas: function() {
         return this.allMangas.filter(
-            mg => utils.displayFilterCats(mg, this.options.categoriesStates)
+            mg => utils.displayFilterCats(mg, this.options.categoriesStates) && utils.filterByText(mg, this.filterText)
         )
     },
     /**
