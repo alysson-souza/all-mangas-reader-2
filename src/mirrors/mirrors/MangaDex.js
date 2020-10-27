@@ -12,7 +12,7 @@ if (typeof registerMangaObject === 'function') {
         getMangaList: async function (search) {
             let doc = await amr.loadPage(
                 "https://mangadex.org/?page=search&title=" + search, 
-                { nocache: true, preventimages: true }
+                {preventimages: true }
             )
             res = [];
             $("a.manga_title", doc).each(function(ind) {
@@ -26,7 +26,7 @@ if (typeof registerMangaObject === 'function') {
     
         getInfo: async function (urlManga) {
             let id = urlManga.split("/")[4]
-            let json = await amr.loadJson(this.api + "manga/" + id, { nocache: true })
+            let json = await amr.loadJson(this.api + "manga/" + id)
             let info = json.manga
             return {
                 artist: info.artist,
@@ -38,7 +38,7 @@ if (typeof registerMangaObject === 'function') {
 
         getListChaps: async function (urlManga) {
             let id = urlManga.split("/")[4]
-            let json = await amr.loadJson(this.api + "manga/" + id, { nocache: true })
+            let json = await amr.loadJson(this.api + "manga/" + id)
             let ut = Math.round((new Date()).getTime() / 1000)
             let chaps = json.chapter
             let res = {}
