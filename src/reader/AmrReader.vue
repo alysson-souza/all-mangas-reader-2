@@ -810,7 +810,8 @@
           // prevent pushState from triggering AMR reload
           window["__AMR_IS_LOADING_CHAPTER__"] = true
           // update window history so navigation bar has the right url
-          window.history.pushState({title: chapterloader.title}, chapterloader.title, chapterloader.url);
+          const relativeUrlWithoutSchema = chapterloader.url.replace(/^https?:\/\//, '//')
+          window.history.pushState({title: chapterloader.title}, chapterloader.title, relativeUrlWithoutSchema);
 
           // reinitialize all $data props so everything goes well
           this.loadMangaInformations()
