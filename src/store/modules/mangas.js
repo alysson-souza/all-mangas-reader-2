@@ -20,6 +20,10 @@ const ABSTRACT_MANGA_MSG = "abstract_manga";
  */
 const state = {
     /**
+     * List of unique manga groups selected
+     */
+    selected: {},
+    /**
      * List of followed mangas
      */
     all: []
@@ -31,6 +35,10 @@ const getters = {
      * Return the whole list of followed mangas
      */
     allMangas: state => state.all,
+    /**
+     * Return the whole list of followed mangas
+     */
+    selectedManga: state => state.selected,
     /**
      * Count mangas
      */
@@ -659,6 +667,9 @@ const actions = {
                 }
             }
         }
+    },
+    toggleMangaSelect({ commit }, mangaKey) {
+        commit("onSelectChange", mangaKey);
     }
 }
 
@@ -889,6 +900,13 @@ const mutations = {
             if (mg.cats.includes(name)) {
                 mg.cats.splice(mg.cats.indexOf(name), 1);
             }
+        }
+    },
+    onSelectChange(state, mangaKey) {
+        if (state.selected[mangaKey]) {
+            delete(state.selected[mangaKey])
+        } else {
+            state.selected[mangaKey] = true;
         }
     }
 }

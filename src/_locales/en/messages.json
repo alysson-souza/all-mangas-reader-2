@@ -418,6 +418,10 @@
     "message": "New chapters to read first !",
     "description": "Tooltip for last new chapters sort on mangas list"
   },
+  "list_select_action": {
+    "message": "Toggle manga multi select actions",
+    "description": "Toggle button to activate the manga select, that allow to apply action to multiple manga "
+  },
   "list_no_manga_catstate_message": {
     "message": "Your categories state does not match any manga, include categories from which you want to view mangas !",
     "description": "Message displayed when the reading list does not display any manga because of categories states"
