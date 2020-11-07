@@ -145,7 +145,7 @@ export default {
       filterText: "", // Filter text
       dialogTitle: "", //title of opened dialog
       dialogText: "", // text of opened dialog
-      selectable: true, // Toggle Manga List select behaviour
+      selectable: false, // Toggle Manga List select behaviour
       dialogAction: () => {self.showDialog = false} // action to take on yes in dialog
     };
   },
