@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import storedb from '../../amr/storedb'
 import Manga, { MANGA_READ_STOP, MANGA_UPDATE_STOP } from '../../amr/manga'
 import mirrorsImpl from '../../amr/mirrors-impl';
@@ -36,15 +37,17 @@ const getters = {
      */
     allMangas: state => state.all,
     /**
-     * Return the whole list of followed mangas
-     */
-    selectedManga: state => state.selected,
-    /**
      * Count mangas
      */
     countMangas: (state) => {
         return state.all.length;
     },
+    /**
+     * Return the whole list of followed mangas
+     */
+    selectedManga: state => state.selected,
+    selectedMangasCount: state => Object.keys(state.selected).length,
+    selectedMangasKeys: state => Object.keys(state.selected),
     /**
      * Return true is there is unread chapters in manga list
      */
@@ -904,9 +907,9 @@ const mutations = {
     },
     onSelectChange(state, mangaKey) {
         if (state.selected[mangaKey]) {
-            delete(state.selected[mangaKey])
+            Vue.delete(state.selected, mangaKey)
         } else {
-            state.selected[mangaKey] = true;
+            Vue.set(state.selected, mangaKey, true)
         }
     }
 }

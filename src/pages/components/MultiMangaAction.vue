@@ -1,21 +1,43 @@
 <template>
     <div class="cat-cont multi-action green lighten-3 my-2">
         <!-- Manage manga categories -->
-        <v-flex xs6 class="amr-categories">
-            <div class="det-sel-wrapper">
-                <select dark v-model="newCat" @change="addCategory()" class="green lighten-2">
-                    <option value="">{{i18n("list_details_cats_select")}}</option>
-                    <option v-for="(cat, key) of categories"
-                            v-if="cat.type !== 'native' && cat.type !== 'language'"
-                            :key="key"
-                            :value="cat.name">
-                        {{cat.name}}
-                    </option>
-                </select>
-            </div>
-        </v-flex>
+        <v-layout row>
+            <v-flex xs12>
+                <h4 class="selected-header">
+                    Currently selected {{this.selectedMangasCount()}}
+                </h4>
+                <template v-if="this.selectedMangasCount() === 0">
+                    <h3 style="height: 24px">Please select manga</h3>
+                </template>
+            </v-flex>
+        </v-layout>
+        <v-layout v-if="this.selectedMangasCount() > 0" row>
+            <v-flex xs12 class="amr-categories">
+                <div class="det-sel-wrapper">
+                    <select v-model="selectedCategory" class="green lighten-1">
+                        <option value="">
+                            {{ i18n("list_details_cats_select") }}
+                        </option>
+                        <option v-for="(cat, key) of categories"
+                                v-if="cat.type !== 'native' && cat.type !== 'language'"
+                                :key="key"
+                                :value="cat.name">
+                            {{ cat.name }}
+                        </option>
+                    </select>
+                </div>
+                <!-- Actions buttons -->
+                <div v-if="selectedCategory" class="amr-actions">
+                    <v-btn dark @click='addCategory()' class="green" small>
+                        {{ i18n("list_details_cats_select") }}
+                    </v-btn>
+                    <v-btn dark @click='deleteCategory()' class="green" small>
+                        {{ i18n("list_details_cats_select") }}
+                    </v-btn>
+                </div>
+            </v-flex>
+        </v-layout>
     </div>
-
 </template>
 
 <script>
@@ -29,7 +51,7 @@ export default {
   components: { Categories },
   data() {
     return {
-      newCat: "",
+      selectedCategory: "",
     }
   },
   computed: {
@@ -40,60 +62,66 @@ export default {
     categories: function() {
       return this.options.categoriesStates.filter(cat => cat.type !== 'native' && cat.type !== 'language');
     },
-    selectedKeys: function () {
-      return Object.keys(this.selectedManga)
-    }
   },
   methods: {
     i18n: (message, ...args) => i18n(message, ...args),
     convertIcons: str => utils.convertIcons(str),
     addCategory: function() {
-      for (let key of this.selectedKeys) {
+      for (let key of this.selectedMangasKeys()) {
         this.$store.dispatch("addCategoryToManga", {
           key: key,
-          name: this.newCat
+          name: this.selectedCategory
         });
       }
-      this.newCat = "";
+      this.selectedCategory = "";
     },
     /**
      * Delete a category on this group of manga
      */
-    deleteCategory: function(cat) {
-      for (let key of this.selectedKeys) {
+    deleteCategory: function() {
+      for (let key of this.selectedMangasKeys()) {
         this.$store.dispatch("removeCategoryFromManga", {
           key: key,
-          name: cat
+          name: this.selectedCategory
         });
       }
+      this.selectedCategory = "";
     },
-    ...mapGetters(["selectedManga"])
+    ...mapGetters(["selectedMangasCount", "selectedMangasKeys"])
   },
 }
 </script>
 
 <style scoped>
+
+.multi-action {
+    min-height: 80px;
+}
 .det-sel-wrapper {
     display  : inline-block;
     position : relative;
 }
 
-select {
-    -moz-appearance    : none;
-    -webkit-appearance : none;
-    -ms-appearance     : none;
-    display            : inline-block;
-    outline            : none;
-    border-style       : none;
-    border-radius      : 2px !important;
-    position           : relative;
-    padding            : 2px 15px 2px 4px;
-    color              : white;
-    font-size          : 11px;
+.amr-categories {
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
 }
 
-select option {
-    font-size : 11px;
+.selected-header {
+    font-size : 1rem;
+}
+
+select {
+    display       : flex;
+    outline       : none;
+    border-style  : none;
+    border-radius : 2px !important;
+    position      : relative;
+    padding       : 2px 16px 2px 4px;
+    margin        : 6px 0;
+    color         : white;
+    font-size     : 16px;
 }
 
 .det-sel-wrapper:after {
@@ -102,9 +130,8 @@ select option {
     top            : 0;
     right          : 0;
     bottom         : 0;
-    font-size      : 75%;
-    line-height    : 19px;
-    padding        : 1px 5px;
+    line-height    : 36px;
+    padding        : 2px;
     pointer-events : none;
     z-index        : 1;
 }
