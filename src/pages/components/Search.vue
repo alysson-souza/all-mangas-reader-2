@@ -27,7 +27,7 @@
                         :href="'#langtab-' + lang"
                         class="primary--text">
                         <Flag v-if="lang != 'aa'" :value="lang" big />
-                        <span v-else>{{ i18n("search_multilang") }}</span>
+                        <v-btn color="primary" v-else>{{ i18n("search_multilang") }}</v-btn>
                     </v-tab>
                 
                     <v-tab-item :id="'langtab-' + lang" 

@@ -945,7 +945,7 @@
     "description": "Description of the option to deactivate mirrors containing only unreadable languages"
   },
   "search_multilang": {
-    "message": "Multi",
+    "message": "Multilingue",
     "description": "Title of a multilingual tab result in search panel"
   },
 
