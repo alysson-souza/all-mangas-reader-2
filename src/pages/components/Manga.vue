@@ -6,7 +6,7 @@
       <v-flex :xs4="!smalldevice" :xs12="smalldevice" class="amr-list-elt">
       <v-card dark tile flat :color="color(3)" class="back-card">
         <v-card v-if="!isInGroup || isFirst" dark :color="color(0)" class="amr-manga-title-cont">
-            <v-checkbox class="select-checkbox" :ripple="false" :value="isSelected" v-if="selectable" @change="toggleSelect(manga)"></v-checkbox>
+            <v-checkbox class="select-checkbox" :ripple="false" v-model="isSelected" v-if="selectable" @change="toggleSelect(manga)"></v-checkbox>
           <!-- Icon of the mirror if not in group -->
           <v-tooltip top content-class="icon-ttip">
             <img v-if="!isInGroup && isMirrorEnabled" :src="mirror.mirrorIcon" class="mirror-icon" slot="activator" />
