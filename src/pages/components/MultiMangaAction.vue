@@ -3,11 +3,11 @@
         <!-- Manage manga categories -->
         <v-layout row>
             <v-flex xs12>
-                <h4 class="selected-header">
-                    Currently selected {{this.selectedMangasCount()}}
-                </h4>
+                <p class="selected-header">
+                    {{ i18n("list_multi_action_currently_selected", this.selectedMangasCount()) }}
+                </p>
                 <template v-if="this.selectedMangasCount() === 0">
-                    <h3 style="height: 24px">Please select manga</h3>
+                    <h3 style="height: 24px"> {{ i18n("list_multi_action_select_manga") }}</h3>
                 </template>
             </v-flex>
         </v-layout>
@@ -16,7 +16,7 @@
                 <div class="det-sel-wrapper">
                     <select v-model="selectedCategory" class="green lighten-1">
                         <option value="">
-                            {{ i18n("list_details_cats_select") }}
+                            {{ i18n("list_multi_action_select_category") }}
                         </option>
                         <option v-for="(cat, key) of categories"
                                 v-if="cat.type !== 'native' && cat.type !== 'language'"
@@ -29,10 +29,10 @@
                 <!-- Actions buttons -->
                 <div v-if="selectedCategory" class="amr-actions">
                     <v-btn dark @click='addCategory()' class="green" small>
-                        {{ i18n("list_details_cats_select") }}
+                        {{ i18n("button_add") }}
                     </v-btn>
                     <v-btn dark @click='deleteCategory()' class="green" small>
-                        {{ i18n("list_details_cats_select") }}
+                        {{ i18n("button_remove") }}
                     </v-btn>
                 </div>
             </v-flex>
