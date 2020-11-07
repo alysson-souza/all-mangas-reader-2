@@ -429,14 +429,10 @@ export default {
   font-weight: bold;
   cursor: pointer;
 }
-
 .amr-manga-title-cont .select-checkbox {
     display: inline-flex;
     height: 20px;
 }
-
-
-
 .amr-manga-title-cont,
 .amr-manga-actions-cont {
   padding: 4px;
