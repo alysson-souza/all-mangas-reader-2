@@ -19,6 +19,7 @@
   "dependencies": {
     "axios": "^0.16.2",
     "dompurify": "^2.1.1",
+    "ejs": "^3.1.5",
     "jquery": "^3.5.1",
     "vue": "^2.5.17",
     "vue-gallery": "^1.4.0",
