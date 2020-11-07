@@ -10,6 +10,7 @@
       :is-first="manga.key === first.key"
       :group-expanded="expanded"
       :seen="seen"
+      :selectable="selectable"
       @details-click="details = !details"
       @expand-group="expanded = !expanded" />
 
@@ -98,7 +99,7 @@ export default {
     };
   },
   // property to load the component with --> a group of manga
-  props: ["mangas"],
+  props: ["mangas", "selectable"],
   components: { Manga, Categories },
   computed: {
     first: function() {

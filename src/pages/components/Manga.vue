@@ -6,6 +6,7 @@
       <v-flex :xs4="!smalldevice" :xs12="smalldevice" class="amr-list-elt">
       <v-card dark tile flat :color="color(3)" class="back-card">
         <v-card v-if="!isInGroup || isFirst" dark :color="color(0)" class="amr-manga-title-cont">
+            <v-checkbox class="select-checkbox" :ripple="false" v-model="isSelected" v-if="selectable" @change="toggleSelect(manga)"></v-checkbox>
           <!-- Icon of the mirror if not in group -->
           <v-tooltip top content-class="icon-ttip">
             <img v-if="!isInGroup && isMirrorEnabled" :src="mirror.mirrorIcon" class="mirror-icon" slot="activator" />
@@ -181,7 +182,9 @@ export default {
     // is the group currently expanded
     "groupExpanded",
     // has the group been in the viewport at least once
-    "seen"
+    "seen",
+    // Can be selected, display checkbox
+    "selectable",
   ],
   computed: {
     // current selected value
@@ -257,6 +260,9 @@ export default {
     smalldevice: function() {
       return utils.isSmallDevice()
     },
+    isSelected: function () {
+      return Boolean(this.selectedManga()[this.manga.key])
+    }
   },
   methods: {
     i18n: (message, ...args) => i18n(message, ...args),
@@ -339,7 +345,11 @@ export default {
         name: this.manga.name,
         language: lang
       });
-    }
+    },
+    toggleSelect: function (manga) {
+      this.$store.dispatch("toggleMangaSelect", manga.key);
+    },
+    ...mapGetters(["selectedManga"])
   },
   // Name of the component
   name: "Manga",
@@ -418,6 +428,10 @@ export default {
 .amr-manga-title {
   font-weight: bold;
   cursor: pointer;
+}
+.amr-manga-title-cont .select-checkbox {
+    display: inline-flex;
+    height: 20px;
 }
 .amr-manga-title-cont,
 .amr-manga-actions-cont {

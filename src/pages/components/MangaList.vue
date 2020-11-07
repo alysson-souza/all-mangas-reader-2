@@ -29,6 +29,10 @@
                             <span>{{i18n("list_sort_new")}}</span>
                         </v-tooltip>
                         <v-tooltip top content-class="icon-ttip">
+                            <v-icon slot="activator" @click="selectable = !selectable" class="amr-filter">mdi-pencil</v-icon>
+                            <span>{{i18n("list_select_action")}}</span>
+                        </v-tooltip>
+                        <v-tooltip top content-class="icon-ttip">
                             <v-icon slot="activator" @click="showFilter = !showFilter" class="amr-filter">mdi-magnify</v-icon>
                             <span>{{i18n("list_filter")}}</span>
                         </v-tooltip>
@@ -48,6 +52,11 @@
                         hide-details="auto">
                     </v-text-field>
                 </v-card>
+
+                <!-- Allow to add categories to selected mangas -->
+                <v-card v-if="selectable" class="amr-container-wrapper">
+                    <MultiMangaAction />
+                </v-card>
                 <!-- Load manga list -->
                 <div class="amr-manga-list-container">
                     <transition-group name="flip-list" tag="div">
@@ -58,6 +67,7 @@
                                 @stop-observing="stopObserving"
                                 v-for="mg in sortedMangas"
                                 :key="'GROUP' + mg.key"
+                                :selectable="selectable"
                                 :mangas="[mg]" />
                         </template>
                         <template v-else>
@@ -67,6 +77,7 @@
                                 @stop-observing="stopObserving"
                                 v-for="(grp, key) in groupedMangas"
                                 :key="key"
+                                :selectable="selectable"
                                 :mangas="grp" />
                         </template>
                     </transition-group>
@@ -111,6 +122,7 @@ import Categories from "./Categories";
 import browser from "webextension-polyfill";
 import * as utilsamr from '../../amr/utils';
 import * as utils from '../utils';
+import MultiMangaAction from './MultiMangaAction';
 
 const default_sort = (a, b) => {
     let af = utilsamr.formatMgName(a.name), bf = utilsamr.formatMgName(b.name)
@@ -133,6 +145,7 @@ export default {
       filterText: "", // Filter text
       dialogTitle: "", //title of opened dialog
       dialogText: "", // text of opened dialog
+      selectable: false, // Toggle Manga List select behaviour
       dialogAction: () => {self.showDialog = false} // action to take on yes in dialog
     };
   },
@@ -196,7 +209,7 @@ export default {
     ...mapGetters(["countMangas", "allMangas"])
   },
   name: "MangaList",
-  components: { MangaGroup, Categories },
+  components: { MultiMangaAction, MangaGroup, Categories },
   methods: {
     i18n: (message, ...args) => i18n(message, ...args),
     convertIcons: str => utils.convertIcons(str),
@@ -288,6 +301,9 @@ export default {
 };
 </script>
 <style>
+.amr-container-wrapper {
+    margin: 0 10px;
+}
 .amr-nomangas {
   padding: 20px;
   text-align: center;
