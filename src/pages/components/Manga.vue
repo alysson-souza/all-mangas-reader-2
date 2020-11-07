@@ -261,7 +261,7 @@ export default {
       return utils.isSmallDevice()
     },
     isSelected: function () {
-      return Boolean(this.selectedManga[this.manga.key])
+      return Boolean(this.selectedManga()[this.manga.key])
     }
   },
   methods: {

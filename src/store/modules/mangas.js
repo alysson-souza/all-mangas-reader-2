@@ -673,6 +673,9 @@ const actions = {
     },
     toggleMangaSelect({ commit }, mangaKey) {
         commit("onSelectChange", mangaKey);
+    },
+    clearMangasSelect({ commit }) {
+        commit("clearSelection");
     }
 }
 
@@ -911,6 +914,9 @@ const mutations = {
         } else {
             Vue.set(state.selected, mangaKey, true)
         }
+    },
+    clearSelection(state) {
+        Vue.set(state, 'selected', {})
     }
 }
 

@@ -51,6 +51,10 @@
     "message": "Retirer",
     "description": "Remove button label"
   },
+  "button_clear": {
+    "message": "Clear",
+    "description": "Clear"
+  },
   "options_title": {
     "message": "Options",
     "description": "Settings page title"

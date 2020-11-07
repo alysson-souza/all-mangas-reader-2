@@ -2,12 +2,22 @@
     <div class="cat-cont multi-action green lighten-3 my-2">
         <!-- Manage manga categories -->
         <v-layout row>
-            <v-flex xs12>
-                <p class="selected-header">
-                    {{ i18n("list_multi_action_currently_selected", this.selectedMangasCount()) }}
-                </p>
+            <v-flex xs12 class="header-container">
+                <div class="cat-chip grey">
+                    <span class="cat-badge">
+                        {{ i18n("list_multi_action_currently_selected", this.selectedMangasCount()) }}
+                    </span>
+                </div>
                 <template v-if="this.selectedMangasCount() === 0">
-                    <h3 style="height: 24px"> {{ i18n("list_multi_action_select_manga") }}</h3>
+                    <h3 class="flex">{{ i18n("list_multi_action_select_manga") }}</h3>
+                </template>
+                <template v-else>
+                    <v-tooltip top content-class="icon-ttip">
+                        <v-icon class="flex" slot="activator" @click.native="clearSelect()">
+                            mdi-close
+                        </v-icon>
+                        <span>{{ i18n("button_clear") }}</span>
+                    </v-tooltip>
                 </template>
             </v-flex>
         </v-layout>
@@ -18,9 +28,7 @@
                         <option value="">
                             {{ i18n("list_multi_action_select_category") }}
                         </option>
-                        <option v-for="(cat, key) of categories"
-                                v-if="cat.type !== 'native' && cat.type !== 'language'"
-                                :key="key"
+                        <option v-for="(cat, key) of categories" :key="key"
                                 :value="cat.name">
                             {{ cat.name }}
                         </option>
@@ -87,6 +95,9 @@ export default {
       }
       this.selectedCategory = "";
     },
+    clearSelect: function () {
+      this.$store.dispatch("clearMangasSelect");
+    },
     ...mapGetters(["selectedMangasCount", "selectedMangasKeys"])
   },
 }
@@ -97,6 +108,16 @@ export default {
 .multi-action {
     min-height: 80px;
 }
+
+.header-container {
+    font-size : 16px;
+}
+
+.header-container .v-icon {
+    font-size : 16px;
+    cursor: pointer;
+
+}
 .det-sel-wrapper {
     display  : inline-block;
     position : relative;
@@ -105,7 +126,6 @@ export default {
 .amr-categories {
     display: flex;
     align-items: center;
-    padding: 0 8px;
 }
 
 .selected-header {
