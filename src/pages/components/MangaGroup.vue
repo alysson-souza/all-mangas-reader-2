@@ -299,10 +299,10 @@ select {
   padding: 2px 4px;
   padding-right: 15px;
   color: white;
-  font-size: 11px;
+  font-size: 1rem;
 }
 select option {
-    font-size: 11px;
+    font-size: 1rem;
 }
 .det-sel-wrapper:after {
   content: "▼";
@@ -310,7 +310,7 @@ select option {
   top: 0;
   right: 0;
   bottom: 0;
-  font-size: 75%;
+  font-size: 0.75rem;
   line-height: 19px;
   padding: 1px 5px;
   pointer-events: none;

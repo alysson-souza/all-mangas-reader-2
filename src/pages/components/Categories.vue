@@ -212,7 +212,7 @@ export default {
   outline: none;
   display: -webkit-inline-box;
   display: -ms-inline-flexbox;
-  font-size:11px;
+  font-size: 1rem;
 }
 
 input.category-edit {
@@ -222,7 +222,7 @@ input.category-edit {
 }
 
 .cat-act {
-  font-size: 12px;
+  font-size: 1.1rem;
   cursor: pointer;
 }
 .application .theme--dark.icon, .theme--dark .icon.cat-act {
@@ -236,7 +236,7 @@ input.category-edit {
   cursor: pointer;
 }
 .cat-chip {
-  font-size: 12px;
+  font-size: 0.9rem;
   margin: 2px;
   padding: 0px 4px;
   background: #aaa;
@@ -276,7 +276,7 @@ input.category-edit {
 .cat-badge {
   color: white;
   font-weight: bold;
-  font-size: 10px;
+  font-size: 0.9rem;
   padding: 0px 3px;
 }
 </style>

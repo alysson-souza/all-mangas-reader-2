@@ -6,7 +6,7 @@
         </div>
         <!-- Once loaded -->
         <div v-if="loaded">
-            <div v-if="allMangas.length" class="amr-mangas">
+            <div v-if="allMangas.length" class="amr-mangas" :class="($isPopup) ? 'amr-width-popup' : 'amr-width'">
                 <div class="amr-filters-container">
                     <v-card v-if="visMangas.length" class="hover-card">
                         <v-tooltip v-if="visNewMangas.length" top content-class="icon-ttip">
@@ -84,7 +84,7 @@
                 </div>
             </div>
             <!-- No mangas in list because of caegories state -->
-            <div v-if="visMangas.length === 0 && allMangas.length > 0" class="amr-nomangas">
+            <div v-if="visMangas.length === 0 && allMangas.length > 0" class="amr-nomangas" :class="($isPopup) ? 'amr-width-popup' : 'amr-width'">
                 <p v-html="i18n('list_no_manga_catstate_message')">
                 </p>
             </div>
@@ -309,9 +309,17 @@ export default {
   text-align: center;
 }
 .amr-nomangas, .amr-mangas {
-    max-width: 750px;
+    /* max-width: 750px; */
     margin-left: auto;
     margin-right: auto;
+}
+
+.amr-width-popup {
+    max-width: 750px;
+}
+
+.amr-width {
+    max-width: 80%;
 }
 
 body.popup .amr-mangas {
@@ -357,7 +365,7 @@ body.popup .amr-mangas {
     background-color: #424242;
 }
 .hover-card i {
-    font-size: 18px;
+    font-size: 1.6rem;
     margin: 0px 2px;
 }
 .hover-card .tooltip {
@@ -365,6 +373,6 @@ body.popup .amr-mangas {
 }
 .hover-card .filters-icon {
     margin: 0;
-    font-size: 10px;
+    font-size: 0.9rem;
 }
 </style>

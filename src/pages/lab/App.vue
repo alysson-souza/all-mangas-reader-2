@@ -426,7 +426,7 @@ export default {
   padding-top: 10px;
 }
 * {
-  font-size: 12px;
+  font-size: 1rem;
 }
 .test-icon {
     vertical-align: middle;

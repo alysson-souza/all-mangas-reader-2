@@ -110,11 +110,11 @@ export default {
 }
 
 .header-container {
-    font-size : 16px;
+    font-size : 1.5rem;
 }
 
 .header-container .v-icon {
-    font-size : 16px;
+    font-size : 1.5rem;
     cursor: pointer;
 
 }
@@ -141,7 +141,7 @@ select {
     padding       : 2px 16px 2px 4px;
     margin        : 6px 0;
     color         : white;
-    font-size     : 16px;
+    font-size     : 1.5rem;
 }
 
 .det-sel-wrapper:after {

@@ -359,7 +359,7 @@ export default {
 
 <style lang="css" scoped>
 * {
-  font-size: 10pt;
+  font-size: 0.9rem;
 }
 .dark-text * {
   color: #424242!important;
@@ -440,10 +440,10 @@ export default {
 .amr-manga-actions-cont i,
 .amr-manga-title-cont i {
   cursor: pointer;
-  font-size: 18px;
+  font-size: 1.1rem;
 }
 .amr-manga-title-cont i {
-  font-size: 16px;
+  font-size: 1.5rem;
 }
 .amr-manga-actions-cont i:hover {
   opacity: 0.6;
@@ -493,7 +493,7 @@ select.amr-chap-sel {
   top: 0;
   right: 0;
   bottom: 0;
-  font-size: 75%;
+  font-size: 0.75rem;
   line-height: 19px;
   padding: 1px 5px;
   pointer-events: none;

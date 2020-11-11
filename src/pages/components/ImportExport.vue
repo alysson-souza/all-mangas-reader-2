@@ -341,13 +341,13 @@ export default {
 </script>
 <style>
 .import-text textarea {
-  font-size: 8pt;
+  font-size: 0.85rem;
 }
 .txtfield {
   padding-top: 18px;
 }
 .subtitle {
-  font-size: 14px !important;
+  font-size: 1.25rem !important;
   line-height: 24px !important;
   letter-spacing: normal !important;
 }
