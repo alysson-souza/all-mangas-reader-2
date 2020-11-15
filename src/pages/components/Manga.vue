@@ -443,7 +443,7 @@ export default {
   font-size: 1.1rem;
 }
 .amr-manga-title-cont i {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
 }
 .amr-manga-actions-cont i:hover {
   opacity: 0.6;
