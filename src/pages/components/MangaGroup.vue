@@ -64,6 +64,7 @@
                 <v-btn dark v-if="mangas[0].read === 1" @click='followUpdates()' :color="color(0)" small>{{i18n("list_details_act_follow")}}</v-btn>
                 <v-btn dark v-if="mangas[0].update === 1" @click='stopUpdating()' :color="color(0)" small>{{i18n("list_details_act_stop_updating")}}</v-btn>
                 <v-btn dark v-if="mangas[0].update === 0" @click='restartUpdating()' :color="color(0)" small>{{i18n("list_details_act_restart_updating")}}</v-btn>
+                <v-btn dark @click='refreshMangaNow()' :color="color(0)" small>{{ i18n("refresh_chapters") }}</v-btn>
               </v-flex>
             </v-layout>
           </v-container>
@@ -211,6 +212,18 @@ export default {
         language: this.mangas[0].language,
         updatesamemangas: true,
         update: 1
+      });
+    },
+    /**
+     * Refresh mangas chapter list
+     */
+    refreshMangaNow: function () {
+      browser.runtime.sendMessage({
+        action: 'refreshMangas',
+        mangas: this.mangas.map(mg => ({
+          url: mg.url,
+          language: mg.language,
+        }))
       });
     },
     /**
