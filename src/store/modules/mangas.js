@@ -587,6 +587,30 @@ const actions = {
         amrUpdater.refreshBadgeAndIcon();
     },
     /**
+     * Refresh chapters and update mangas from the message mangas list
+     * @param {*} param0
+     * @param {{ action: string, mangas: { url: string, mirror: any, language: any }[]}} message
+     */
+    async refreshMangas({ dispatch }, { mangas }) {
+        if (!Array.isArray(mangas)) {
+            return;
+        }
+
+        iconHelper.spinIcon();
+        try {
+            await Promise.all(mangas.map(async msgManga => {
+                // Update each manga
+                const key = utils.mangaKey(msgManga.url, msgManga.mirror, msgManga.language);
+                const mg = state.all.find(manga => manga.key === key);
+                await dispatch("refreshLastChapters", mg)
+                return storedb.storeManga(mg);
+            }));
+        } catch (e) {
+            console.error(e);
+        }
+        iconHelper.stopSpinning();
+    },
+    /**
      * Given its key, deletes a manga from reading list
      * @param {*} param0 
      * @param {*} message 
