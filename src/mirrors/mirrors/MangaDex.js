@@ -23,7 +23,6 @@ if (typeof registerMangaObject === 'function') {
             })
             return res
         },
-        //https://mangadex.org/manga/44246
 
         getListChaps: async function (urlManga) {
             let id = urlManga.split("/")[4]
@@ -33,23 +32,13 @@ if (typeof registerMangaObject === 'function') {
             let res = {}
             let done = [] // to avoid duplicate chapters. pick randomly a version
             chaps.forEach(chap => {
-                if (chap.timestamp > ut) return // Skip chapters that are delayed
-                
-                if (done.indexOf(chap.language + chap.chapter) >= 0) { // If we are getting a dupe lets ensure its
-                    let index = res[chap.language].findIndex(elem => elem[2] == chap.chapter)
-                    if (res[chap.language][index][3] > chap.timestamp) { // We want the oldest chapter so remove this one
-                        res[chap.language] = res[chap.language].splice(index, 1)
-                    } else {
-                        return
-                    }
-                }
-                if (!res[chap.language]) res[chap.language] = [] // Create array for specified language
+                if (done.indexOf(chap.language + chap.chapter) >= 0) return;
+                if (!res[chap.language]) res[chap.language] = []
                 done.push(chap.language + chap.chapter)
+                if (chap.timestamp > ut) return // Skip chapters that are delayed
                 res[chap.language].push([
                     (chap.chapter.length > 0 ? chap.chapter + " - " : "") + chap.title, 
-                    "https://mangadex.org/chapter/" + chap.id,
-                    chap.chapter,
-                    chap.timestamp
+                    "https://mangadex.org/chapter/" + chap.id
                 ]);
             })
 
