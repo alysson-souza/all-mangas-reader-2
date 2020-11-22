@@ -3,6 +3,7 @@ if (typeof registerMangaObject === 'function') {
         mirrorName: 'KKJ Scans',
         mirrorIcon: 'kkjscans.png',
         languages: 'en',
+        disabled: true,
         domains: ['kkjscans.co'],
         home: 'https://kkjscans.co/',
         canListFullMangas: true,
