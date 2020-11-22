@@ -6,6 +6,7 @@
       <v-flex :xs4="!smalldevice" :xs12="smalldevice" class="amr-list-elt">
       <v-card dark tile flat :color="color(3)" class="back-card">
         <v-card v-if="!isInGroup || isFirst" dark :color="color(0)" class="amr-manga-title-cont">
+            <v-checkbox class="select-checkbox" :ripple="false" v-model="isSelected" v-if="selectable" @change="toggleSelect(manga)"></v-checkbox>
           <!-- Icon of the mirror if not in group -->
           <v-tooltip top content-class="icon-ttip">
             <img v-if="!isInGroup && isMirrorEnabled" :src="mirror.mirrorIcon" class="mirror-icon" slot="activator" />
@@ -181,7 +182,9 @@ export default {
     // is the group currently expanded
     "groupExpanded",
     // has the group been in the viewport at least once
-    "seen"
+    "seen",
+    // Can be selected, display checkbox
+    "selectable",
   ],
   computed: {
     // current selected value
@@ -257,6 +260,9 @@ export default {
     smalldevice: function() {
       return utils.isSmallDevice()
     },
+    isSelected: function () {
+      return Boolean(this.selectedManga()[this.manga.key])
+    }
   },
   methods: {
     i18n: (message, ...args) => i18n(message, ...args),
@@ -339,7 +345,11 @@ export default {
         name: this.manga.name,
         language: lang
       });
-    }
+    },
+    toggleSelect: function (manga) {
+      this.$store.dispatch("toggleMangaSelect", manga.key);
+    },
+    ...mapGetters(["selectedManga"])
   },
   // Name of the component
   name: "Manga",
@@ -349,7 +359,7 @@ export default {
 
 <style lang="css" scoped>
 * {
-  font-size: 10pt;
+  font-size: 0.9rem;
 }
 .dark-text * {
   color: #424242!important;
@@ -419,6 +429,10 @@ export default {
   font-weight: bold;
   cursor: pointer;
 }
+.amr-manga-title-cont .select-checkbox {
+    display: inline-flex;
+    height: 20px;
+}
 .amr-manga-title-cont,
 .amr-manga-actions-cont {
   padding: 4px;
@@ -426,10 +440,10 @@ export default {
 .amr-manga-actions-cont i,
 .amr-manga-title-cont i {
   cursor: pointer;
-  font-size: 18px;
+  font-size: 1.1rem;
 }
 .amr-manga-title-cont i {
-  font-size: 16px;
+  font-size: 1.2rem;
 }
 .amr-manga-actions-cont i:hover {
   opacity: 0.6;
@@ -479,7 +493,7 @@ select.amr-chap-sel {
   top: 0;
   right: 0;
   bottom: 0;
-  font-size: 75%;
+  font-size: 0.75rem;
   line-height: 19px;
   padding: 1px 5px;
   pointer-events: none;

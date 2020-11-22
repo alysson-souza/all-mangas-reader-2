@@ -27,7 +27,7 @@
                         :href="'#langtab-' + lang"
                         class="primary--text">
                         <Flag v-if="lang != 'aa'" :value="lang" big />
-                        <span v-else>{{ i18n("search_multilang") }}</span>
+                        <v-btn color="primary" v-else>{{ i18n("search_multilang") }}</v-btn>
                     </v-tab>
                 
                     <v-tab-item :id="'langtab-' + lang" 
@@ -224,13 +224,13 @@ export default {
     top:0;
 }
 .mirror-result-cont > i {
-    font-size: 18px;
+    font-size: 1.6rem;
 }
 .mirror-icon.added {
     opacity: 0.3;
 }
 .search-results {
-    font-size: 12px;
+    font-size: 1.2rem;
 }
 </style>
 

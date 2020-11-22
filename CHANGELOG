@@ -1,4 +1,29 @@
 ### V2.2.11
+New Features:
+  - Ability to refresh chapters for a single manga series
+  - Ability to select multiple manga to set labels for at once
+
+Misc Changes:
+  - Added a little bit of padding to the bottom of the last image
+  - Removed http/https from page history call so changing chapters works when websites switch between http and https
+  - Vue Devtools support added back in
+  - Changed text of multilingual site tab in search, also made it a button to easily tell it is something to check
+  - Changed font size and list width when page is loaded in a tab instead of a popup. More work will be done later to make this look better
+
+New Mirrors:
+  - MangaTX (https://mangatx.com/)
+  - Random Translations (https://randomtranslations.com/)
+  - Asura Scans (https://asurascans.com/)
+
+Mirror Changes:
+  - Updated Mangadex to api V2
+
+Disabled Mirrors:
+  - Jaimini's Box
+  - Ninja Scans
+  - Pecintakomik
+
+### V2.2.11
 Mirror Changes:
   - Changed MangaDex to not use cache busting on search and series updates
   

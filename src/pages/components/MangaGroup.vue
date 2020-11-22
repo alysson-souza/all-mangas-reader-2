@@ -10,6 +10,7 @@
       :is-first="manga.key === first.key"
       :group-expanded="expanded"
       :seen="seen"
+      :selectable="selectable"
       @details-click="details = !details"
       @expand-group="expanded = !expanded" />
 
@@ -63,6 +64,7 @@
                 <v-btn dark v-if="mangas[0].read === 1" @click='followUpdates()' :color="color(0)" small>{{i18n("list_details_act_follow")}}</v-btn>
                 <v-btn dark v-if="mangas[0].update === 1" @click='stopUpdating()' :color="color(0)" small>{{i18n("list_details_act_stop_updating")}}</v-btn>
                 <v-btn dark v-if="mangas[0].update === 0" @click='restartUpdating()' :color="color(0)" small>{{i18n("list_details_act_restart_updating")}}</v-btn>
+                <v-btn dark @click='refreshMangaNow()' :color="color(0)" small>{{ i18n("refresh_chapters") }}</v-btn>
               </v-flex>
             </v-layout>
           </v-container>
@@ -98,7 +100,7 @@ export default {
     };
   },
   // property to load the component with --> a group of manga
-  props: ["mangas"],
+  props: ["mangas", "selectable"],
   components: { Manga, Categories },
   computed: {
     first: function() {
@@ -213,6 +215,18 @@ export default {
       });
     },
     /**
+     * Refresh mangas chapter list
+     */
+    refreshMangaNow: function () {
+      browser.runtime.sendMessage({
+        action: 'refreshMangas',
+        mangas: this.mangas.map(mg => ({
+          url: mg.url,
+          language: mg.language,
+        }))
+      });
+    },
+    /**
      * Delete a category on this group of manga
      */
     deleteCategory: function(cat) {
@@ -298,10 +312,10 @@ select {
   padding: 2px 4px;
   padding-right: 15px;
   color: white;
-  font-size: 11px;
+  font-size: 1rem;
 }
 select option {
-    font-size: 11px;
+    font-size: 1rem;
 }
 .det-sel-wrapper:after {
   content: "▼";
@@ -309,7 +323,7 @@ select option {
   top: 0;
   right: 0;
   bottom: 0;
-  font-size: 75%;
+  font-size: 0.75rem;
   line-height: 19px;
   padding: 1px 5px;
   pointer-events: none;

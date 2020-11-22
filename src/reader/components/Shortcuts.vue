@@ -44,7 +44,7 @@ export default {
         display: inline-block;
         background-color: #424242;
         color: white;
-        font-size: 12px;
+        font-size: 1.1rem;
         padding:2px 5px;
         min-width: 19px;
         border-radius: 2px;
