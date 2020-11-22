@@ -3,6 +3,7 @@ if (typeof registerMangaObject === 'function') {
         mirrorName: "NinjaScans",
         mirrorIcon: "ninjascans.png",
         languages: "en",
+        disabled: true,
         domains: ["ninjascans.com"],
         home: "https://ninjascans.com/",
         chapter_url: /^\/(manga|manhua)\/.*\/.*$/g,

@@ -2,6 +2,7 @@ if (typeof registerMangaObject === 'function') {
     registerMangaObject({
         mirrorName: "Pecintakomik",
         canListFullMangas: false,
+        disabled: true,
         mirrorIcon: "pecintakomik.png",
         domains: ["www.pecintakomik.net","pecintakomik.net"],
         home: "https://www.pecintakomik.net/",
