@@ -726,18 +726,18 @@ export default {
 </script>
 <style>
 .subtitle {
-  font-size: 14px !important;
+  font-size: 1.3rem !important;
   line-height: 24px !important;
   letter-spacing: normal !important;
 }
 .headline {
-  font-size: 16px !important;
+  font-size: 1.5rem !important;
   line-height: 30px !important;
   padding-bottom: 16px;
   font-weight: bold;
 }
 .v-input label {
-  font-size: 14px !important;
+  font-size: 1.3rem !important;
 }
 .v-input {
   padding: 0;

@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid text-xs-center pa-0 
+    <v-container fluid text-xs-center pa-0 pb-4 
         :class="{'no-full-chapter': !fullchapter}" @click="pageChange" @dblclick="tryChapterChange" ref="scancontainer">
         <!-- Scans -->
         <table ref="scantable" class="amr-scan-container" :class="{'webtoon': webtoonMode}" border="0" cellspacing="0" cellpadding="0">

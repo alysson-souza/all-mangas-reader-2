@@ -6,7 +6,7 @@
         </div>
         <!-- Once loaded -->
         <div v-if="loaded">
-            <div v-if="allMangas.length" class="amr-mangas">
+            <div v-if="allMangas.length" class="amr-mangas" :class="($isPopup) ? 'amr-width-popup' : 'amr-width'">
                 <div class="amr-filters-container">
                     <v-card v-if="visMangas.length" class="hover-card">
                         <v-tooltip v-if="visNewMangas.length" top content-class="icon-ttip">
@@ -29,6 +29,10 @@
                             <span>{{i18n("list_sort_new")}}</span>
                         </v-tooltip>
                         <v-tooltip top content-class="icon-ttip">
+                            <v-icon slot="activator" @click="selectable = !selectable" class="amr-filter">mdi-pencil</v-icon>
+                            <span>{{i18n("list_select_action")}}</span>
+                        </v-tooltip>
+                        <v-tooltip top content-class="icon-ttip">
                             <v-icon slot="activator" @click="showFilter = !showFilter" class="amr-filter">mdi-magnify</v-icon>
                             <span>{{i18n("list_filter")}}</span>
                         </v-tooltip>
@@ -48,6 +52,11 @@
                         hide-details="auto">
                     </v-text-field>
                 </v-card>
+
+                <!-- Allow to add categories to selected mangas -->
+                <v-card v-if="selectable" class="amr-container-wrapper">
+                    <MultiMangaAction />
+                </v-card>
                 <!-- Load manga list -->
                 <div class="amr-manga-list-container">
                     <transition-group name="flip-list" tag="div">
@@ -58,6 +67,7 @@
                                 @stop-observing="stopObserving"
                                 v-for="mg in sortedMangas"
                                 :key="'GROUP' + mg.key"
+                                :selectable="selectable"
                                 :mangas="[mg]" />
                         </template>
                         <template v-else>
@@ -67,13 +77,14 @@
                                 @stop-observing="stopObserving"
                                 v-for="(grp, key) in groupedMangas"
                                 :key="key"
+                                :selectable="selectable"
                                 :mangas="grp" />
                         </template>
                     </transition-group>
                 </div>
             </div>
             <!-- No mangas in list because of caegories state -->
-            <div v-if="visMangas.length === 0 && allMangas.length > 0" class="amr-nomangas">
+            <div v-if="visMangas.length === 0 && allMangas.length > 0" class="amr-nomangas" :class="($isPopup) ? 'amr-width-popup' : 'amr-width'">
                 <p v-html="i18n('list_no_manga_catstate_message')">
                 </p>
             </div>
@@ -111,6 +122,7 @@ import Categories from "./Categories";
 import browser from "webextension-polyfill";
 import * as utilsamr from '../../amr/utils';
 import * as utils from '../utils';
+import MultiMangaAction from './MultiMangaAction';
 
 const default_sort = (a, b) => {
     let af = utilsamr.formatMgName(a.name), bf = utilsamr.formatMgName(b.name)
@@ -133,6 +145,7 @@ export default {
       filterText: "", // Filter text
       dialogTitle: "", //title of opened dialog
       dialogText: "", // text of opened dialog
+      selectable: false, // Toggle Manga List select behaviour
       dialogAction: () => {self.showDialog = false} // action to take on yes in dialog
     };
   },
@@ -196,7 +209,7 @@ export default {
     ...mapGetters(["countMangas", "allMangas"])
   },
   name: "MangaList",
-  components: { MangaGroup, Categories },
+  components: { MultiMangaAction, MangaGroup, Categories },
   methods: {
     i18n: (message, ...args) => i18n(message, ...args),
     convertIcons: str => utils.convertIcons(str),
@@ -288,14 +301,25 @@ export default {
 };
 </script>
 <style>
+.amr-container-wrapper {
+    margin: 0 10px;
+}
 .amr-nomangas {
   padding: 20px;
   text-align: center;
 }
 .amr-nomangas, .amr-mangas {
-    max-width: 750px;
+    /* max-width: 750px; */
     margin-left: auto;
     margin-right: auto;
+}
+
+.amr-width-popup {
+    max-width: 750px;
+}
+
+.amr-width {
+    max-width: 80%;
 }
 
 body.popup .amr-mangas {
@@ -341,7 +365,7 @@ body.popup .amr-mangas {
     background-color: #424242;
 }
 .hover-card i {
-    font-size: 18px;
+    font-size: 1.6rem;
     margin: 0px 2px;
 }
 .hover-card .tooltip {
@@ -349,6 +373,6 @@ body.popup .amr-mangas {
 }
 .hover-card .filters-icon {
     margin: 0;
-    font-size: 10px;
+    font-size: 0.9rem;
 }
 </style>

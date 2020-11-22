@@ -33,9 +33,11 @@ import * as util from "../utils";
     document.body.classList.add("popup");
   } else {
     document.documentElement.style["overflow-y"] = "auto"
+    document.documentElement.style.fontSize = "16px"
   }
   // Load vue
   Vue.config.productionTip = false
+  Vue.prototype.$isPopup = popup
   Vue.use(Vuetify, {theme: theme, iconfont: 'mdi'})
   new Vue({
     el: '#app',

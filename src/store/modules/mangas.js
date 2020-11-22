@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import storedb from '../../amr/storedb'
 import Manga, { MANGA_READ_STOP, MANGA_UPDATE_STOP } from '../../amr/manga'
 import mirrorsImpl from '../../amr/mirrors-impl';
@@ -20,6 +21,10 @@ const ABSTRACT_MANGA_MSG = "abstract_manga";
  */
 const state = {
     /**
+     * List of unique manga groups selected
+     */
+    selected: {},
+    /**
      * List of followed mangas
      */
     all: []
@@ -37,6 +42,12 @@ const getters = {
     countMangas: (state) => {
         return state.all.length;
     },
+    /**
+     * Return the whole list of followed mangas
+     */
+    selectedManga: state => state.selected,
+    selectedMangasCount: state => Object.keys(state.selected).length,
+    selectedMangasKeys: state => Object.keys(state.selected),
     /**
      * Return true is there is unread chapters in manga list
      */
@@ -576,6 +587,30 @@ const actions = {
         amrUpdater.refreshBadgeAndIcon();
     },
     /**
+     * Refresh chapters and update mangas from the message mangas list
+     * @param {*} param0
+     * @param {{ action: string, mangas: { url: string, mirror: any, language: any }[]}} message
+     */
+    async refreshMangas({ dispatch }, { mangas }) {
+        if (!Array.isArray(mangas)) {
+            return;
+        }
+
+        iconHelper.spinIcon();
+        try {
+            await Promise.all(mangas.map(async msgManga => {
+                // Update each manga
+                const key = utils.mangaKey(msgManga.url, msgManga.mirror, msgManga.language);
+                const mg = state.all.find(manga => manga.key === key);
+                await dispatch("refreshLastChapters", mg)
+                return storedb.storeManga(mg);
+            }));
+        } catch (e) {
+            console.error(e);
+        }
+        iconHelper.stopSpinning();
+    },
+    /**
      * Given its key, deletes a manga from reading list
      * @param {*} param0 
      * @param {*} message 
@@ -659,6 +694,12 @@ const actions = {
                 }
             }
         }
+    },
+    toggleMangaSelect({ commit }, mangaKey) {
+        commit("onSelectChange", mangaKey);
+    },
+    clearMangasSelect({ commit }) {
+        commit("clearSelection");
     }
 }
 
@@ -890,6 +931,16 @@ const mutations = {
                 mg.cats.splice(mg.cats.indexOf(name), 1);
             }
         }
+    },
+    onSelectChange(state, mangaKey) {
+        if (state.selected[mangaKey]) {
+            Vue.delete(state.selected, mangaKey)
+        } else {
+            Vue.set(state.selected, mangaKey, true)
+        }
+    },
+    clearSelection(state) {
+        Vue.set(state, 'selected', {})
     }
 }
 

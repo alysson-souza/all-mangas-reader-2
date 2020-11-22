@@ -171,7 +171,7 @@ export default {
 </script>
 <style>
 .subtitle {
-  font-size: 14px !important;
+  font-size: 1.3rem !important;
   line-height: 24px !important;
   letter-spacing: normal !important;
 }

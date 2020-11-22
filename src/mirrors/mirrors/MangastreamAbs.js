@@ -5,6 +5,7 @@ window["MangastreamAbs"] = function (options) {
     this.default_options = {
         search_a_sel: "div.bsx > a",
         chapters_a_sel: "div.cl > ul > li > span.leftoff > a",
+        chapters_text_sel: "",
         page_container_sel: "#readerarea",
         search_field: "s",
         search_option: "",
@@ -71,12 +72,15 @@ window["MangastreamAbs"] = function (options) {
         let self = this;
         var res = [];
         $(this.options.chapters_a_sel, doc).each(function (index) {
-            res[index] = [
-                $(this).text().trim(),
+            let chapter_text = $(this).text().trim()
+            if (self.options.chapters_text_sel !== "") {
+                chapter_text = $(self.options.chapters_text_sel, this).text().trim()
+            }
+            res.push([
+                chapter_text,
                 $(this).attr("href") + self.options.chapter_url_suffix
-            ];
+            ]);
         });
-        res = res;
         return res;
     }
 

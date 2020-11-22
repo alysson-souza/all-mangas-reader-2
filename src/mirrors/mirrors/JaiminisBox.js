@@ -3,6 +3,7 @@ if (typeof registerMangaObject === 'function') {
         mirrorName : "Jaimini's Box",
         mirrorIcon : "jaiminisbox.png",
         languages : "en",
+        disabled: true,
         domains: ["jaiminisbox.com"],
         home: "https://jaiminisbox.com/",
         chapter_url: /^\/reader\/read\/.*$/g,
