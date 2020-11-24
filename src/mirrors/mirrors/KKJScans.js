@@ -5,6 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages: 'en',
         domains: ['kkjscans.co'],
         home: 'https://kkjscans.co/',
+        disabled: true,
         canListFullMangas: true,
         chapter_url: /^\/comics\/.*\/.*$/g,
         abstract: 'GenkanAbs',
