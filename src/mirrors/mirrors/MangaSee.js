@@ -83,8 +83,9 @@ if (typeof registerMangaObject === 'function') {
             let extraDir = vars.Directory == '' ? '' : vars.Directory + '/'
             for(i=1; i <= vars.Page; i++){
                 let pageImage = this.PageImage(i)
-                res.push(`https://${cdnPath}/manga/${titlePath}/${extraDir}/${chapImage}-${pageImage}.png`)
+                res.push(`https://${cdnPath}/manga/${titlePath}/${extraDir}${chapImage}-${pageImage}.png`)
             }
+            console.log(res)
             return res
         },
 
