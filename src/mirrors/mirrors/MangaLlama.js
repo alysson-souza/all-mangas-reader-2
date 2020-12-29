@@ -48,10 +48,11 @@ if (typeof registerMangaObject === 'function') {
         getListImages: async function (doc, curUrl) {
             let res = []
             $(`#chapcontainer img[width!="1px"]`, doc).each(function() {
-                res.push($(this).attr('src'))
+                let src = $(this).attr('src') 
+                if (!res.includes(src)) {
+                    res.push(src)
+                }
             })
-            console.log('Images')
-            console.log(res)
 			return res
         },
     
