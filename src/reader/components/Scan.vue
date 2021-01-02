@@ -36,7 +36,7 @@
                 <v-flex xs12>
                     <v-tooltip bottom>
                         <v-btn slot="activator" icon large @click="reloadScan" color="primary">
-                            <v-icon>mdi-image-broken</v-icon>
+                            <v-icon v-bind:data-src="src">mdi-image-broken</v-icon>
                         </v-btn>
                         <span>Click to try reloading scan</span>
                     </v-tooltip>

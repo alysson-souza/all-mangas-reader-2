@@ -69,6 +69,8 @@ IconHelper.setBlueIcon();
     utils.debug("Initialize message handler");
     Handler.handle();
 
+    window.AMR_STORE = store
+
     // Check if we need to refresh chapters lists, mirrors lists and launch automatic checker
     amrUpdater.load();
     // Check the latest published version of AMR

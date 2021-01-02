@@ -15,6 +15,9 @@
             <v-tab href="#supported" class="primary--text">
                 {{ i18n("options_supported") }}
             </v-tab>
+            <v-tab href="#mirror" class="primary--text">
+                {{ i18n("options_mirror_specific") }}
+            </v-tab>
         </v-tabs>
         <v-tabs-items v-model="tabs" :class="(dark ? 'black' : 'white') + ' elevation-1'">
             <v-tab-item value="onwebsites" v-if="tabs === 'onwebsites'">
@@ -311,6 +314,20 @@
                     </v-flex>
                 </v-layout>
                 </v-container>
+            </v-tab-item>
+            <v-tab-item value="mirror" v-if="tabs === 'mirror'">
+              <v-container fluid>
+                  <!-- Mangadex Options -->
+                  <div class="headline">{{ i18n("options_mirror_specific_mangadex") }}</div>
+                  <!-- Datasaver option -->
+                  <div class="subtitle">{{i18n('options_mangadex_datasaver')}}</div>
+                  <v-checkbox v-model="mangadexDataSaver" @change="setOption('mangadexDataSaver')"
+                        :label="i18n('options_mangadex_datasaver_label')"></v-checkbox>
+                  <!-- Datasaver option -->
+                  <div class="subtitle">{{i18n('options_mangadex_distributed')}}</div>
+                  <v-checkbox v-model="mangadexDistributedNetwork" @change="setOption('mangadexDistributedNetwork')"
+                        :label="i18n('options_mangadex_distributed_label')"></v-checkbox>
+              </v-container>
             </v-tab-item>
         </v-tabs-items>
     </div>

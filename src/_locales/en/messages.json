@@ -1638,5 +1638,32 @@
   "options_search_open_series_checkbox": {
     "message": "Enable open in new tab",
     "description": "search open series in new tab"
+  },
+  "__V2_3_0": {
+    "message": "Just a filler to separate new labels from old ones"
+  },
+  "options_mirror_specific": {
+    "message": "Mirror Specific Options",
+    "description": "Tab for Mirror specific options"
+  },
+  "options_mirror_specific_mangadex": {
+    "message": "Mangadex Options",
+    "description": "section header for mangadex options"
+  },
+  "options_mangadex_datasaver": {
+    "message": "Use datasaver images (Compressed jpeg images for less bandwidth)",
+    "description": "Option for datasaver toggle on mangadex"
+  },
+  "options_mangadex_datasaver_label": {
+    "message": "Use datasaver images",
+    "description": "Option for datasaver toggle on mangadex"
+  },
+  "options_mangadex_distributed": {
+    "message": "Use MD@Home Images",
+    "description": "Option for md@home toggle on mangadex"
+  },
+  "options_mangadex_distributed_label": {
+    "message": "Use MD@Home",
+    "description": "Option for hm@home toggle on mangadex"
   }
 }
