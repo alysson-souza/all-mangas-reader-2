@@ -1,5 +1,3 @@
-import storedb from '../../amr/storedb'
-import Vue from 'vue';
 import { THINSCAN } from '../../amr/options';
 
 const isFirefox = function() {
