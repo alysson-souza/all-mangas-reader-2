@@ -12,6 +12,7 @@ import theme from '../theme';
   // Load vue
   Vue.config.productionTip = false
   Vue.use(Vuetify, {theme: theme, iconfont: 'mdi'})
+  window['AMR_STORE'] = store
   new Vue({
     el: '#app',
     store,

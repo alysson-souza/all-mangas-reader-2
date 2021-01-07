@@ -1,5 +1,5 @@
 import browser from "webextension-polyfill";
-import store from "../store";
+
 import i18n from "./i18n";
 
 /**
@@ -39,7 +39,7 @@ class Notification {
      * @param {} mg manga to notify for
      */
     notifyNewChapter(mg) {
-        if (mg.read === 0 && (store.state.options.shownotifications === 1)) {
+        if (mg.read === 0 && (window['AMR_STORE'].state.options.shownotifications === 1)) {
             let urls = mg.listChaps.map(chap => chap[1]);
             let mangaData = {
                 name: mg.name,
@@ -68,10 +68,10 @@ class Notification {
                 // opens the notification.
                 browser.notifications.create("amr_" + curId, notificationOptions);
                 //Auto close notification if required
-                if (store.state.options.notificationtimer > 0) {
+                if (window['AMR_STORE'].state.options.notificationtimer > 0) {
                     setTimeout(function() {
                         browser.notifications.clear("amr_" + curId);
-                    }, store.state.options.notificationtimer);
+                    }, window['AMR_STORE'].state.options.notificationtimer);
                 }
             }
         }

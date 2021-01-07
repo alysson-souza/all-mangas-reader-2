@@ -1,4 +1,3 @@
-import store from '../../store'
 import storedb from '../storedb'
 
 class LocalStorage {
@@ -30,5 +29,5 @@ class LocalStorage {
     }
 }
 
-export const createLocalStorage = () => new LocalStorage(storedb, store)
+export const createLocalStorage = () => new LocalStorage(storedb, window['AMR_STORE'])
 

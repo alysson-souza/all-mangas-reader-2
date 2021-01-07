@@ -15,12 +15,14 @@ import browser from "webextension-polyfill";
 import mirrorImpl from './state/mirrorimpl';
 import options from './state/options';
 import ChapterLoader from "./helpers/ChapterLoader";
+import store from '../store'
 
 /** DO NOT REMOVE, not used here but define a global object used in loaded implementation */
 import mirrorHelper from '../amr/mirrors-helper';
 
 if (window["__armreader__"] === undefined) { // avoid loading script twice
     window["__armreader__"] = {}
+    window['AMR_STORE'] = store
 
     window['onPushState'] = async function () {
         //Do load manga only if it's not AMR that triggered the pushState

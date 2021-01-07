@@ -8,6 +8,9 @@ import store from '../../store';
 import theme from '../theme';
 
 (async function() {
+
+  window['AMR_STORE'] = store
+
   // Load options in store before everything
   await store.dispatch("getStateFromReference", {
     module: "options",
