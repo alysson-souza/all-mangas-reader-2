@@ -327,6 +327,24 @@
                   <div class="subtitle">{{i18n('options_mangadex_distributed')}}</div>
                   <v-checkbox v-model="mangadexDistributedNetwork" @change="setOption('mangadexDistributedNetwork')"
                         :label="i18n('options_mangadex_distributed_label')"></v-checkbox>
+                  <!-- Blocked Groups -->
+                  <div class="subtitle">{{i18n('options_mangadex_blocked_groups')}}</div>
+                  <v-text-field 
+                    v-model="mangadexBlockedGroups" :rules="stringArray" prepend-icon=""
+                    @click:append="validateArrayString('mangadexBlockedGroups')" clearable></v-text-field>
+                  <!-- Preferred Groups -->
+                  <div class="subtitle">{{i18n('options_mangadex_preferred_groups')}}</div>
+                  <v-text-field v-model="mangadexPreferredGroups" :rules="stringArray" clearable>
+                      <template v-slot:prepend>
+                          <v-tooltip top>
+                              <v-icon>mdi-help-circle</v-icon>
+                              <span>{{i18n('options_string_array_tooltip')}}</span>
+                          </v-tooltip>
+                      </template>
+                      <template v-slot:append-outer>
+                          <v-btn round @click="validateArrayString('mangadexPreferredGroups')">Update</v-btn>
+                      </template>
+                  </v-text-field>
               </v-container>
             </v-tab-item>
         </v-tabs-items>
@@ -379,7 +397,9 @@ const converters = {
       "displayFullChapter",
       "darkreader",
       "syncEnabled",
-      "searchOpenSeries"
+      "searchOpenSeries",
+      "mangadexDataSaver",
+      "mangadexDistributedNetwork"
     ]
   }
 };
@@ -530,6 +550,11 @@ export default {
                   languages: el
               }
           })
+      },
+      stringArray() {
+          return [
+              v => /^[0-9,]*$/.test(v) || 'This field must either be empty or numbers seperated by ,'
+          ]
       }
   },
   watch: {
@@ -582,6 +607,15 @@ export default {
       if (optstr === "syncEnabled") {
           this.updateSync(val);
       }
+    },
+    /**
+     * Validate an array string then set the option
+     * Must be numbers delimited by commas
+     */
+    validateArrayString(optstr) {
+        if (this.$refs.form.validate()) {
+            this.setOption(optstr)
+        }
     },
     /**
      * Deactivate all unreadable mirrors when option is checked

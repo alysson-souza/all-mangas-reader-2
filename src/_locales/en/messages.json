@@ -1665,5 +1665,17 @@
   "options_mangadex_distributed_label": {
     "message": "Use MD@Home",
     "description": "Option for hm@home toggle on mangadex"
+  },
+  "options_mangadex_blocked_groups": {
+    "message": "Blocked groups list",
+    "description": "Option for blocking groups on mangadex"
+  },
+  "options_mangadex_preferred_groups": {
+    "message": "Preferred groups list",
+    "description": "Option for md@home toggle on mangadex"
+  },
+  "options_string_array_tooltip": {
+    "message": "Must be a numerical list seperated by a comma (1,5,7)",
+    "description": "String array"
   }
 }

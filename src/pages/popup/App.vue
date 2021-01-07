@@ -7,7 +7,7 @@
 			<v-toolbar-title v-text="title"></v-toolbar-title>
 			<v-spacer></v-spacer>
 			<v-btn icon @click.stop="openOptions()">
-				<v-icon>mdi-settings</v-icon>
+				<v-icon>mdi-cog</v-icon>
 			</v-btn>
 			<v-btn icon @click.stop="openSearch()">
 				<v-icon>mdi-magnify</v-icon>
