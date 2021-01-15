@@ -25,38 +25,48 @@
           <v-icon>mdi-menu</v-icon>
         </v-btn>
         <!-- Quick button to go to next chapter -->
-        <v-tooltip left v-show="!lastChapter">
+        <v-tooltip left>
           <template v-slot:activator="{ on }">
-            <v-progress-circular v-on="on" class="amr-floting-progress"
+            <v-progress-circular v-on="on" class=" mt-2 amr-floting-progress"
               :rotate="90"
               :size="42"
               :width="3"
               :value="nextchapProgress"
-              color="red darken-2"
-              v-if="nextchapLoading && hover && !drawer"
+              color="green lighten-2"
+              v-show="!lastChapter && nextchapLoading && !drawer && hover"
             >
-              <v-btn small fab @click.stop="goNextChapter" class="btn-huge mt-2">
+              <v-btn small fab @click.stop="goNextChapter" class="green--text">
                 <v-icon>mdi-chevron-right</v-icon>
               </v-btn>
             </v-progress-circular>
-            <v-btn v-on="on" small class="mt-2" fab v-if="!nextchapLoading && hover && !drawer" @click.stop="goNextChapter">
-              <v-icon>mdi-chevron-right</v-icon>
-            </v-btn>
+            <v-progress-circular v-on="on" class=" mt-2 amr-floting-progress"
+              :rotate="90"
+              :size="42"
+              :width="3"
+              :value="nextchapProgress"
+              indeterminate
+              color="red darken-2"
+              v-show="!lastChapter && !nextchapLoading && !drawer && hover"
+            >
+              <v-btn small fab @click.stop="goNextChapter" class="red--text">
+                <v-icon>mdi-chevron-right</v-icon>
+              </v-btn>
+            </v-progress-circular>
           </template>
           <span>{{i18n("list_mg_act_next")}} {{nextchapLoading ? i18n("reader_loading", Math.floor(nextchapProgress)) : ""}}</span>
         </v-tooltip>
-        <v-tooltip left v-show="lastChapter">
+        <v-tooltip left>
           <template v-slot:activator="{ on }">
-            <v-btn v-on="on" small class="mt-2" fab v-show="hover && !drawer" color="orange--text">
+            <v-btn v-on="on" small class="mt-2" fab v-show="hover && !drawer && lastChapter" color="orange--text">
               <v-icon>mdi-alert</v-icon>
             </v-btn>
           </template>
           <span>{{i18n("content_nav_last_chap")}}</span>
         </v-tooltip>
         <!-- Quick button to add a manga to reading list -->
-        <v-tooltip left v-show="!mangaExists && options.addauto === 0">
+        <v-tooltip left>
           <template v-slot:activator="{ on }">
-            <v-btn v-on="on" small class="mt-2" fab v-show="hover && !drawer" color="green--text" @click.stop="addManga">
+            <v-btn v-on="on" small class="mt-2" fab v-show="!mangaExists && options.addauto === 0 && hover && !drawer" color="green--text" @click.stop="addManga">
               <v-icon>mdi-plus</v-icon>
             </v-btn>
           </template>
@@ -1309,10 +1319,6 @@
   top: 15px;
   right: 15px;
   z-index: 10;
-}
-.fab-container .amr-floting-progress {
-  margin-top: 6px;
-  margin-left: 6px;
 }
 /** Progress bars for next chapter loading */
 .amr-floting-progress .v-btn {
