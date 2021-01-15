@@ -2,7 +2,7 @@ const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const WebpackShellPluginNext = require('webpack-shell-plugin-next')
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require("terser-webpack-plugin")
 const ExtensionReloader  = require('webpack-extension-reloader')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const CircularDependencyPlugin = require('circular-dependency-plugin')
@@ -116,7 +116,7 @@ const config = {
 };
 
 if (process.env.NODE_ENV === 'production') {
-  config.devtool = '';
+  config.devtool = 'source-map';
   config.mode = "production";
 
   config.plugins = (config.plugins || []).concat([
@@ -128,13 +128,15 @@ if (process.env.NODE_ENV === 'production') {
         NODE_ENV: '"production"'
       }
     }),
-    new UglifyJsPlugin({
-      sourceMap: true
-    }),
     new webpack.LoaderOptionsPlugin({
       minimize: true
     })
   ]);
+
+  config.optimization = {
+    minimize: true,
+    minimizer: [new TerserPlugin()],
+  }
 } else {
   if (process.env["--watch"]) {
     config.plugins = (config.plugins || []).concat([
