@@ -51,7 +51,7 @@
 			scrollable
     	>
 			<v-card>
-				<v-toolbar>
+				<v-toolbar max-height="64">
 					<v-btn icon @click.native="closeOptions()">
 						<v-icon>mdi-close</v-icon>
 					</v-btn>

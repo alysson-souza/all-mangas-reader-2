@@ -25,6 +25,10 @@ if (typeof registerMangaObject === 'function') {
         },
 
         getListChaps: async function (urlManga) {
+            let amrOptions = window['AMR_STORE'].state.options
+            let blockedGroups = amrOptions.mangadexBlockedGroups.split(',') || []
+            console.log('Blocked Groups')
+            console.log(blockedGroups)
             let id = urlManga.split("/")[4]
             let json = await amr.loadJson(this.api + "manga/" + id + "/chapters")
             let ut = Math.round((new Date()).getTime() / 1000)
@@ -32,6 +36,16 @@ if (typeof registerMangaObject === 'function') {
             let res = {}
             let done = [] // to avoid duplicate chapters. pick randomly a version
             chaps.forEach(chap => {
+                let blockedGroup = false
+                chap.groups.forEach((group) => {
+                    console.log('Checking group ' + group)
+                    if (blockedGroups.includes(group + "")) {
+                        console.log('Found Blocked group ' + group)
+                        blockedGroup = true
+                    }
+                })
+                if (blockedGroup) return
+
                 if (done.indexOf(chap.language + chap.chapter) >= 0) return;
                 if (!res[chap.language]) res[chap.language] = []
                 done.push(chap.language + chap.chapter)
@@ -65,21 +79,19 @@ if (typeof registerMangaObject === 'function') {
         },
     
         getListImages: async function (doc, curUrl) {
-            let options = window['AMR_STORE'].state.options
+            let amrOptions = window['AMR_STORE'].state.options
             let chid = curUrl.split("/")[4]
 
             let url = this.api + "chapter/" + chid + "?"
             let params = new URLSearchParams()
-            if (options.mangadexDataSaver) {
+            if (amrOptions.mangadexDataSaver) {
                 params.append("saver", "true")
             }
-            if (options.mangadexImageServer !== 'none') {
-                params.append("server", options.mangadexImageServer)
+            if (amrOptions.mangadexImageServer !== 'none') {
+                params.append("server", amrOptions.mangadexImageServer)
             }
 
             url += params.toString()
-
-            console.log("Mangadex image list url: " + url)
 
             let chapter = await amr.loadJson(url )
             if (chapter.data.server.indexOf("/") === 0) {
