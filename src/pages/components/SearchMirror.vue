@@ -1,12 +1,12 @@
 <template>
-    <v-tooltip top>
-        <div class="mirror-search" slot="activator">
-            <v-progress-circular v-if="searching" indeterminate :width="3" color="primary" class="mirror-progress"></v-progress-circular>
-            <img :src="mirror.mirrorIcon" :class="'mirror-search-icon ' + (disabled ? 'disabled': '')" @click.stop="disabled = !disabled" />
-        </div>
-        <span v-if="disabled">{{i18n('search_mirror_enable', mirror.mirrorName)}}</span>
-        <span v-else>{{i18n('search_mirror_disable', mirror.mirrorName)}}</span>
-    </v-tooltip>
+  <v-tooltip top>
+    <div class="mirror-search" slot="activator">
+      <v-progress-circular v-if="searching" indeterminate :width="3" color="primary" class="mirror-progress"></v-progress-circular>
+      <img :src="mirror.mirrorIcon" :class="'mirror-search-icon ' + (disabled ? 'disabled': '')" @click.stop="disabled = !disabled" />
+    </div>
+    <span v-if="disabled">{{i18n('search_mirror_enable', mirror.mirrorName)}}</span>
+    <span v-else>{{i18n('search_mirror_disable', mirror.mirrorName)}}</span>
+  </v-tooltip>
 </template>
 
 <script>

@@ -91,8 +91,13 @@ const config = {
       ]
     }),
     new WebpackShellPluginNext({
-      onBuildStart: ['cd ./src/mirrors && node ./update-ws.js && cd ../..'],
-      onBuildEnd: ['node scripts/remove-evals.js']
+      onBeforeBuild: { // Not working :(
+        scripts: ['cd ./src/mirrors && node ./update-ws.js && cd ../.. && echo "Mirrors Rebuilt"'],
+        blocking: true
+      },
+      onBuildEnd: {
+        scripts: ['node scripts/remove-evals.js']
+      }
     }),
     new CircularDependencyPlugin({
       // exclude detection of files based on a RegExp
@@ -146,11 +151,11 @@ if (process.env.NODE_ENV === 'production') {
   // Add manifest update after
   if (process.argv.includes("--chrome")) {
     config.plugins.push(
-        new WebpackShellPlugin({ onBuildEnd: ['node scripts/update-manifest.js -chrome'] }),
+        new WebpackShellPluginNext({ onBuildEnd: { scripts: ['node scripts/update-manifest.js -chrome'] }}),
     );
   } else if (process.argv.includes("--firefox")) {
     config.plugins.push(
-        new WebpackShellPlugin({ onBuildEnd: ['node scripts/update-manifest.js -firefox'] }),
+        new WebpackShellPluginNext({ onBuildEnd: { scripts: ['node scripts/update-manifest.js -firefox'] }}),
     );
   }
 }

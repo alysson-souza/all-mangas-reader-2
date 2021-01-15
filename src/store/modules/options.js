@@ -112,12 +112,12 @@ const default_options = {
     mangadexBlockedGroups: '', // Group id's to block chapters from
     mangadexPreferredGroups: '', // Group id's to prefer chapters from
     mangadexDataSaver: 0, // Use the datasaver option when getting chapter images
-    mangadexDistributedNetwork: 0, // Use the MD@Home network when getting chapter images (not implimented in v2 api yet)
+    mangadexImageServer: 'none', // Use the MD@Home network when getting chapter images (not implimented in v2 api yet)
 
 }
 
 const jsonOptions = ["categoriesStates", "readlanguages"];
-const stringOptions = ["colornew", "colorread", "colornotfollow", "mangadexBlockedGroups", "mangadexPreferredGroups"];
+const stringOptions = ["colornew", "colorread", "colornotfollow", "mangadexBlockedGroups", "mangadexPreferredGroups", "mangadexImageServer"];
 
 /**
  *  initial state of amr options

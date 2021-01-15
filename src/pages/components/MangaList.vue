@@ -1,118 +1,128 @@
 <template>
-    <div>
-        <!-- Before mangas are loaded into popup -->
-        <div v-if="!loaded" class="amr-loader">
-            <v-progress-circular indeterminate :width="4" :size="50" color="red darken-2"></v-progress-circular>
-        </div>
-        <!-- Once loaded -->
-        <div v-if="loaded">
-            <div v-if="allMangas.length" class="amr-mangas" :class="($isPopup) ? 'amr-width-popup' : 'amr-width'">
-                <div class="amr-filters-container">
-                    <v-card v-if="visMangas.length" class="hover-card">
-                        <v-tooltip v-if="visNewMangas.length" top content-class="icon-ttip">
-                            <v-icon slot="activator" @click="markAllAsRead()">mdi-eye</v-icon>
-                            <span>{{i18n("list_global_read")}}</span>
-                        </v-tooltip>
-                        <v-tooltip top content-class="icon-ttip">
-                            <v-icon slot="activator" @click="deleteAll()">mdi-delete</v-icon>
-                            <span>{{i18n("list_global_delete")}}</span>
-                        </v-tooltip>
-                    </v-card>
-                    <v-card v-if="visMangas.length" class="hover-card">
-                        <v-icon class="filters-icon">mdi-filter</v-icon>
-                        <v-tooltip top content-class="icon-ttip">
-                            <v-icon slot="activator" @click="sort = 'az'" :class="['amr-filter', {activated: sort === 'az'}]">mdi-sort-alphabetical</v-icon>
-                            <span>{{i18n("list_sort_alpha")}}</span>
-                        </v-tooltip>
-                        <v-tooltip top content-class="icon-ttip">
-                            <v-icon slot="activator" @click="sort = 'updates'" :class="['amr-filter', {activated: sort === 'updates'}]">mdi-flash</v-icon>
-                            <span>{{i18n("list_sort_new")}}</span>
-                        </v-tooltip>
-                        <v-tooltip top content-class="icon-ttip">
-                            <v-icon slot="activator" @click="selectable = !selectable" class="amr-filter">mdi-pencil</v-icon>
-                            <span>{{i18n("list_select_action")}}</span>
-                        </v-tooltip>
-                        <v-tooltip top content-class="icon-ttip">
-                            <v-icon slot="activator" @click="showFilter = !showFilter" class="amr-filter">mdi-magnify</v-icon>
-                            <span>{{i18n("list_filter")}}</span>
-                        </v-tooltip>
-                    </v-card>
-                </div>
-                <!-- Categories -->
-                <div class="amr-categories-container">
-                    <Categories :categories="categories" :static-cats="false" :delegate-delete="false" />
-                </div>
-                <v-card v-if="showFilter">
-                    <v-text-field 
-                        v-model="filterText" 
-                        solo 
-                        placeholder="Filter Text"
-                        outlined
-                        dense
-                        hide-details="auto">
-                    </v-text-field>
-                </v-card>
-
-                <!-- Allow to add categories to selected mangas -->
-                <v-card v-if="selectable" class="amr-container-wrapper">
-                    <MultiMangaAction />
-                </v-card>
-                <!-- Load manga list -->
-                <div class="amr-manga-list-container">
-                    <transition-group name="flip-list" tag="div">
-                        <template v-if="options.groupmgs === 0">
-                            <MangaGroup
-                                @search-request="propagateSR"
-                                @start-observing="startObserving"
-                                @stop-observing="stopObserving"
-                                v-for="mg in sortedMangas"
-                                :key="'GROUP' + mg.key"
-                                :selectable="selectable"
-                                :mangas="[mg]" />
-                        </template>
-                        <template v-else>
-                            <MangaGroup
-                                @search-request="propagateSR"
-                                @start-observing="startObserving"
-                                @stop-observing="stopObserving"
-                                v-for="(grp, key) in groupedMangas"
-                                :key="key"
-                                :selectable="selectable"
-                                :mangas="grp" />
-                        </template>
-                    </transition-group>
-                </div>
-            </div>
-            <!-- No mangas in list because of caegories state -->
-            <div v-if="visMangas.length === 0 && allMangas.length > 0" class="amr-nomangas" :class="($isPopup) ? 'amr-width-popup' : 'amr-width'">
-                <p v-html="i18n('list_no_manga_catstate_message')">
-                </p>
-            </div>
-            <!-- No mangas yet -->
-            <div v-if="!allMangas.length" class="amr-nomangas">
-                <p v-html="convertIcons(i18n('list_no_manga_message'))">
-                </p>
-                <p>
-                    <a @click.prevent="importSamples()">{{ i18n("list_import_samples")}}</a>
-                </p>
-            </div>
-        </div>
-        <v-dialog v-model="showDialog" max-width="500px">
-            <v-card>
-                <v-card-title>
-                    <span class="headline" v-html="dialogTitle"></span>
-                </v-card-title>
-                <v-card-text>
-                    <span v-html="dialogText"></span>
-                </v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" flat @click.native="showDialog = false">{{i18n("button_no")}}</v-btn>
-                    <v-btn color="blue darken-1" flat @click.native="dialogAction">{{i18n("button_yes")}}</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
+  <div>
+    <!-- Before mangas are loaded into popup -->
+    <div v-if="!loaded" class="amr-loader">
+      <v-progress-circular indeterminate :width="4" :size="50" color="red darken-2"></v-progress-circular>
     </div>
+    <!-- Once loaded -->
+    <div v-if="loaded">
+      <div v-if="allMangas.length" class="amr-mangas" :class="($isPopup) ? 'amr-width-popup' : 'amr-width'">
+        <div class="amr-filters-container">
+          <v-card v-if="visMangas.length" class="hover-card">
+            <v-tooltip v-if="visNewMangas.length" top content-class="icon-ttip">
+              <template v-slot:activator="{ on }">
+                <v-icon v-on="on" @click="markAllAsRead()">mdi-eye</v-icon>
+              </template>
+              <span>{{i18n("list_global_read")}}</span>
+            </v-tooltip>
+            <v-tooltip top content-class="icon-ttip">
+              <template v-slot:activator="{ on }">
+                <v-icon v-on="on" @click="deleteAll()">mdi-delete</v-icon>
+              </template>
+              <span>{{i18n("list_global_delete")}}</span>
+            </v-tooltip>
+          </v-card>
+          <v-card v-if="visMangas.length" class="hover-card">
+            <v-icon class="filters-icon">mdi-filter</v-icon>
+            <v-tooltip top content-class="icon-ttip">
+              <template v-slot:activator="{ on }">
+                <v-icon v-on="on" @click="sort = 'az'" :class="['amr-filter', {activated: sort === 'az'}]">mdi-sort-alphabetical</v-icon>
+              </template>
+              <span>{{i18n("list_sort_alpha")}}</span>
+            </v-tooltip>
+            <v-tooltip top content-class="icon-ttip">
+              <template v-slot:activator="{ on }">
+                <v-icon v-on="on" @click="sort = 'updates'" :class="['amr-filter', {activated: sort === 'updates'}]">mdi-flash</v-icon>
+              </template>
+              <span>{{i18n("list_sort_new")}}</span>
+            </v-tooltip>
+            <v-tooltip top content-class="icon-ttip">
+              <template v-slot:activator="{ on }">
+                <v-icon v-on="on" @click="selectable = !selectable" class="amr-filter">mdi-pencil</v-icon>
+              </template>
+              <span>{{i18n("list_select_action")}}</span>
+            </v-tooltip>
+            <v-tooltip top content-class="icon-ttip">
+              <template v-slot:activator="{ on }">
+                <v-icon v-on="on" @click="showFilter = !showFilter" class="amr-filter">mdi-magnify</v-icon>
+              </template>
+              <span>{{i18n("list_filter")}}</span>
+            </v-tooltip>
+          </v-card>
+        </div>
+        <!-- Categories -->
+        <div class="amr-categories-container">
+          <Categories :categories="categories" :static-cats="false" :delegate-delete="false" />
+        </div>
+        <v-card v-if="showFilter">
+          <v-text-field 
+              v-model="filterText" 
+              solo 
+              placeholder="Filter Text"
+              outlined
+              dense
+              hide-details="auto">
+          </v-text-field>
+        </v-card>
+
+        <!-- Allow to add categories to selected mangas -->
+        <v-card v-if="selectable" class="amr-container-wrapper">
+            <MultiMangaAction />
+        </v-card>
+        <!-- Load manga list -->
+        <div class="amr-manga-list-container">
+          <transition-group name="flip-list" tag="div">
+            <template v-if="options.groupmgs === 0">
+              <MangaGroup
+                  @search-request="propagateSR"
+                  @start-observing="startObserving"
+                  @stop-observing="stopObserving"
+                  v-for="mg in sortedMangas"
+                  :key="'GROUP' + mg.key"
+                  :selectable="selectable"
+                  :mangas="[mg]" />
+            </template>
+            <template v-else>
+              <MangaGroup
+                  @search-request="propagateSR"
+                  @start-observing="startObserving"
+                  @stop-observing="stopObserving"
+                  v-for="(grp, key) in groupedMangas"
+                  :key="key"
+                  :selectable="selectable"
+                  :mangas="grp" />
+            </template>
+          </transition-group>
+        </div>
+      </div>
+      <!-- No mangas in list because of caegories state -->
+      <div v-if="visMangas.length === 0 && allMangas.length > 0" class="amr-nomangas" :class="($isPopup) ? 'amr-width-popup' : 'amr-width'">
+        <p v-html="i18n('list_no_manga_catstate_message')"></p>
+      </div>
+      <!-- No mangas yet -->
+      <div v-if="!allMangas.length" class="amr-nomangas">
+        <p v-html="convertIcons(i18n('list_no_manga_message'))"></p>
+        <p>
+          <a @click.prevent="importSamples()">{{ i18n("list_import_samples")}}</a>
+        </p>
+      </div>
+    </div>
+    <v-dialog v-model="showDialog" max-width="500px">
+      <v-card>
+        <v-card-title>
+          <span class="headline" v-html="dialogTitle"></span>
+        </v-card-title>
+        <v-card-text>
+          <span v-html="dialogText"></span>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" flat @click.native="showDialog = false">{{i18n("button_no")}}</v-btn>
+          <v-btn color="blue darken-1" flat @click.native="dialogAction">{{i18n("button_yes")}}</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
 </template>
 <script>
 import i18n from "../../amr/i18n";
@@ -316,6 +326,10 @@ export default {
 
 .amr-width-popup {
     max-width: 750px;
+}
+
+.amr-width-popup .v-icon {
+  font-size: 18px;
 }
 
 .amr-width {

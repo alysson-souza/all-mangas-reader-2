@@ -13,7 +13,7 @@
                 {{ i18n("ie_export") }}
             </v-tab>
         </v-tabs>
-        <v-tabs-items v-model="tabs" :class="($store.state.options.dark === 1 ? 'black' : 'white')">
+        <v-tabs-items v-model="tabs">
             <!-- Import tab -->
             <v-tab-item value="import">
                 <v-container fluid>

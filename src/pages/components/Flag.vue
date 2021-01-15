@@ -1,6 +1,8 @@
 <template>
     <v-tooltip top class='flag-container'>
-        <i slot="activator" :class='"flag flag-" + value + (big ? " big" : "")' />
+        <template v-slot:activator="{ on }">
+            <i v-on="on" :class='"flag flag-" + value + (big ? " big" : "")' />
+        </template>
         <span>{{i18n("language_" + value)}}</span>
     </v-tooltip>
 </template>

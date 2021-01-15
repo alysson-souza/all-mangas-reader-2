@@ -1,15 +1,15 @@
 <template>
     <td :class="{xs6: !full, xs12: full, 'res-w': resizeW(), 'res-h': resizeH(), 'scale-up': scaleUp}" class='scanContainer' :colspan="full ? 2 : 1">
         <!-- Progress while loading -->
-        <v-container fill-height text-xs-center v-show="loading">
-            <v-layout>
-                <v-flex xs12>
+        <v-container class="fill-height text-center" v-show="loading">
+            <v-row>
+                <v-col cols="12">
                     <v-progress-circular
                         indeterminate
                         color="red"
                         ></v-progress-circular>
-                </v-flex>
-            </v-layout>
+                </v-col>
+            </v-row>
         </v-container>
         <!-- The Scan container ! -->
         <v-hover>
@@ -17,31 +17,35 @@
                 <!-- @dblclick="toggleBookmark" -->
                 <!-- Top right triangle to show scan is bookmarked -->
                 <v-tooltip right v-if="bookmark" class="amr-triangle-tooltip-cont">
-                    <div slot="activator" 
-                        class="amr-triangle" 
-                        @click="bookmarkScan" 
-                        :class="{'not-bookmarked-hover': hover, 'bookmarked': scanbooked}" />
+                    <template v-slot:activator="{ on }">
+                        <div v-on="on" 
+                            class="amr-triangle" 
+                            @click="bookmarkScan" 
+                            :class="{'not-bookmarked-hover': hover, 'bookmarked': scanbooked}" />
+                    </template>
                     <span>
                         {{scanbooked ? (
                                 note ? i18n("reader_bookmarked_scan_note", note) : 
-                                       i18n("reader_bookmarked_scan")
+                                    i18n("reader_bookmarked_scan")
                             ) : i18n("reader_bookmark_scan_help")}}
                     </span>
                 </v-tooltip>
             </div>
         </v-hover>
         <!-- Error try to reload button -->
-        <v-container fill-height text-xs-center v-if="error && !loading">
-            <v-layout>
-                <v-flex xs12>
+        <v-container class="fill-height text-center" v-if="error && !loading">
+            <v-row>
+                <v-col cols="12">
                     <v-tooltip bottom>
-                        <v-btn slot="activator" icon large @click="reloadScan" color="primary">
-                            <v-icon v-bind:data-src="src">mdi-image-broken</v-icon>
-                        </v-btn>
+                        <template v-slot:activator="{ on }">
+                            <v-btn v-on="on" icon large @click="reloadScan" color="primary">
+                                <v-icon v-bind:data-src="src">mdi-image-broken</v-icon>
+                            </v-btn>
+                        </template>
                         <span>Click to try reloading scan</span>
                     </v-tooltip>
-                </v-flex>
-            </v-layout>
+                </v-col>
+            </v-row>
         </v-container>
     </td>
 </template>
