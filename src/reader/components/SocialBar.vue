@@ -1,37 +1,45 @@
 <template>
-    <v-layout row wrap class="amr-bottombar">
-        <v-flex xs12 text-xs-center pa-2>
-            <!-- Always displayed links -->
-            <v-tooltip top slot="activator" class="ml-1" v-for="(soc, i) in social_direct" :key="i">
-                <v-btn slot="activator" icon :color="soc.color" @click.stop="opentab(soc.url)">
+  <v-row   class="amr-bottombar">
+    <v-col class="text-center pa-2" cols="12">
+      <!-- Always displayed links -->
+      <v-tooltip top class="ml-1" v-for="(soc, i) in social_direct" :key="i">
+        <template v-slot:activator="{ on }">
+          <v-btn v-on="on" icon :color="soc.color" @click.stop="opentab(soc.url)">
+            <v-icon>{{soc.icon}}</v-icon>
+          </v-btn>
+        </template>
+        <span>{{i18n(soc.tooltip)}}</span>
+      </v-tooltip>
+      <v-menu offset-y top>
+        <template v-slot:activator="{ on: menu }">
+          <!-- Social buttons -->
+          <v-tooltip top slot="activator" class="ml-1">
+            <template v-slot:activator="{ on: tooltip }">
+              <v-btn v-on="{ ...tooltip, ...menu}" icon>
+                <v-icon>mdi-share-variant</v-icon>
+              </v-btn>
+            </template>
+            <span>{{i18n("reader_social_all")}}</span>
+          </v-tooltip>
+        </template>
+        <!-- List of social -->
+        <v-list class="amr-social-list">
+          <v-list-tile v-for="(soc, i) in social_shared" :key="i">
+            <v-list-tile-content>
+              <v-tooltip left class="ml-1">
+                <template v-slot:activator="{ on }">
+                  <v-btn v-on="on" icon :color="soc.color" @click="opentab(soc.url)">
                     <v-icon>{{soc.icon}}</v-icon>
-                </v-btn>
-                <span>{{i18n(soc.tooltip)}}</span>
-            </v-tooltip>
-            <v-menu offset-y top>
-                <!-- Social buttons -->
-                <v-tooltip top slot="activator" class="ml-1">
-                  <v-btn slot="activator" icon>
-                      <v-icon>mdi-share-variant</v-icon>
                   </v-btn>
-                  <span>{{i18n("reader_social_all")}}</span>
-                </v-tooltip>
-                <!-- List of social -->
-                <v-list class="amr-social-list">
-                    <v-list-tile v-for="(soc, i) in social_shared" :key="i">
-                        <v-list-tile-content>
-                            <v-tooltip left slot="activator" class="ml-1">
-                                <v-btn slot="activator" icon :color="soc.color" @click="opentab(soc.url)">
-                                    <v-icon>{{soc.icon}}</v-icon>
-                                </v-btn>
-                                <span>{{i18n(soc.tooltip)}}</span>
-                            </v-tooltip>
-                        </v-list-tile-content>
-                    </v-list-tile>
-                </v-list>
-            </v-menu>
-        </v-flex>
-    </v-layout>
+                </template>
+                <span>{{i18n(soc.tooltip)}}</span>
+              </v-tooltip>
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list>
+      </v-menu>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -44,9 +52,9 @@ export default {
         return {
             social_direct: [
                 { icon: "mdi-patreon", tooltip: "reader_social_patreon", 
-                    url: "https://www.patreon.com/allmangasreader", color: "deep-orange--text text--lighten-1"},
+                    url: "https://www.patreon.com/allmangasreader", color: "deep-orange lighten-1"},
                 { icon: "mdi-discord", tooltip: "reader_social_discord", 
-                    url: "https://discord.gg/bdzk9hR", color: "indigo--text text--lighten-2" }
+                    url: "https://discord.gg/bdzk9hR", color: "indigo lighten-2" }
             ],
             social_shared: [
                 { icon: "mdi-facebook", tooltip: "reader_social_facebook", 

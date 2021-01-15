@@ -15,6 +15,11 @@ IconHelper.setBlueIcon();
 // Initialize store
 (async () => {
     /**
+     * Make the store a global variable so we can avoid circular depandancies
+     */
+    window['AMR_STORE'] = store
+    
+    /**
      * Initialize AMR options from locaStorage
      */
     utils.debug("Initialize options");

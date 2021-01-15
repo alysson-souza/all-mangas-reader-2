@@ -19,9 +19,9 @@
                   mangaName,
                   mirrorName)
             }}
-          <v-container grid-list-md pb-0>
-            <v-layout wrap>
-              <v-flex xs12>
+          <v-container class="pb-0">
+            <v-row dense>
+              <v-col cols="12">
                 <v-textarea
                   box
                   hide-details
@@ -29,8 +29,8 @@
                   :label="i18n('bookmark_popup_note')"
                   v-model="note"
                 ></v-textarea>
-              </v-flex>
-            </v-layout>
+              </v-col>
+            </v-row>
           </v-container>
         </v-card-text>
         <v-card-actions>

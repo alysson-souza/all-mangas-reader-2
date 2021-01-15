@@ -1633,5 +1633,56 @@
   "options_search_open_series_checkbox": {
     "message": "Activer l'ouverture dans un nouvel onglet",
     "description": "search open series in new tab"
+  },
+  "__V2_3_0": {
+    "message": "Just a filler to separate new labels from old ones"
+  },
+  "options_mirror_specific": {
+    "message": "Options spécifiques au miroir",
+    "description": "Tab for Mirror specific options"
+  },
+  "options_mirror_specific_mangadex": {
+    "message": "Options Mangadex",
+    "description": "section header for mangadex options"
+  },
+  "options_mangadex_datasaver": {
+    "message": "Utilisez des images d'économiseur de données (images jpeg compressées pour moins de bande passante)",
+    "description": "Option for datasaver toggle on mangadex"
+  },
+  "options_mangadex_datasaver_label": {
+    "message": "Utiliser des images d'économiseur de données",
+    "description": "Option for datasaver toggle on mangadex"
+  },
+  "options_mangadex_blocked_groups": {
+    "message": "Liste des groupes bloqués",
+    "description": "Option for blocking groups on mangadex"
+  },
+  "options_mangadex_blocked_groups_label": {
+    "message": "Liste des groupes dont AMR devrait ignorer les versions de",
+    "description": "Option for blocking groups on mangadex"
+  },
+  "options_mangadex_preferred_groups": {
+    "message": "Liste des groupes préférés",
+    "description": "Option for preferred groups on mangadex"
+  },
+  "options_mangadex_preferred_groups_label": {
+    "message": "Liste des groupes que AMR doit utiliser si plusieurs groupes sortent pour une série",
+    "description": "Option for preferred groups on mangadex"
+  },
+  "options_mangadex_image_server": {
+    "message": "Utiliser un serveur d'images spécifique",
+    "description": "Option for image server override"
+  },
+  "options_mangadex_image_server_label": {
+    "message": "Sélectionnez le serveur d'images à utiliser (ignoré sur Mangadex si vous avez sélectionné MD@Home)",
+    "description": "Option for image server override"
+  },
+  "options_mangadex_image_server_none": {
+    "message": "Laissez Mangadex décider",
+    "description" : "No Mangadex image server ovverride text"
+  },
+  "options_numeric": {
+    "message": "Doit être une valeur numérique",
+    "description": "Numeric option tooltip"
   }
 }

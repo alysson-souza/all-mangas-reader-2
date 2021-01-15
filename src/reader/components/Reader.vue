@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid text-xs-center pa-0 pb-4 
+    <v-container class="text-center pa-0 pb-4" fluid 
         :class="{'no-full-chapter': !fullchapter}" @click="pageChange" @dblclick="tryChapterChange" ref="scancontainer">
         <!-- Scans -->
         <table ref="scantable" class="amr-scan-container" :class="{'webtoon': webtoonMode}" border="0" cellspacing="0" cellpadding="0">
@@ -19,40 +19,46 @@
             :class="{display: hover, 'shrink-draw': drawer}"
             slot-scope="{ hover }">
             <!-- Current page state + previous next buttons -->
-            <v-layout row wrap class="amr-page-next-prev">
-                <v-flex xs12 my-2>
+            <v-row   class="amr-page-next-prev">
+                <v-col class="my-2" cols="12">
                     <v-toolbar flat>
                         <!-- Previous scan button -->
                         <v-tooltip bottom>
-                            <v-btn slot="activator" icon v-show="!firstScan" @click.stop="goPreviousScan" class="btn-huge">
-                                <v-icon>mdi-chevron-left</v-icon>
-                            </v-btn>
+                            <template v-slot:activator="{ on }">
+                                <v-btn v-on="on" icon v-show="!firstScan" @click.stop="goPreviousScan" class="btn-huge">
+                                    <v-icon>mdi-chevron-left</v-icon>
+                                </v-btn>
+                            </template>
                             <span>{{i18n("reader_go_previous_scan")}}</span>
                         </v-tooltip>
                         <!-- Current scan infos -->
                         <div class="title">{{i18n("reader_page_progression", currentPage + 1, pages.length, pages.length > 0 ? Math.floor((currentPage + 1) / pages.length * 100) : 0)}}</div>
                         <v-tooltip bottom v-show="!lastScan">
+                            <template v-slot:activator="{ on }">
                             <!-- Next scan button -->
-                            <v-btn slot="activator" icon @click.stop="goNextScan" class="btn-huge">
-                                <v-icon>mdi-chevron-right</v-icon>
-                            </v-btn>
+                                <v-btn v-on="on" icon @click.stop="goNextScan" class="btn-huge">
+                                    <v-icon>mdi-chevron-right</v-icon>
+                                </v-btn>
+                            </template>
                             <span>{{i18n("reader_go_next_scan")}}</span>
                         </v-tooltip>
                     </v-toolbar>
-                </v-flex>
-            </v-layout>
+                </v-col>
+            </v-row>
             <div class="amr-thumbs-scrollable" ref="thumbs-scrollable" v-show="scansState.loaded" >
               <v-tooltip top v-for="(scans, i) in pages" :key="i">
-                <table slot="activator" class="amr-pages-page-cont"  
-                  :class="{current: i === currentPage}" 
-                  @click.stop="goScan(i)">
-                  <Page :index="i" 
-                    :scans="scans" 
-                    :direction="direction"
-                    resize="container" 
-                    ref="thumb" 
-                    :bookmark="false" />
-                </table>
+                <template v-slot:activator="{ on }">
+                    <table v-on="on" class="amr-pages-page-cont"  
+                    :class="{current: i === currentPage}" 
+                    @click.stop="goScan(i)">
+                    <Page :index="i" 
+                        :scans="scans" 
+                        :direction="direction"
+                        resize="container" 
+                        ref="thumb" 
+                        :bookmark="false" />
+                    </table>
+                </template>
                 <span>{{displayPageScansIndexes(i)}}</span>
               </v-tooltip>
             </div>
@@ -522,6 +528,7 @@ export default {
                         if (e.which === 107 || e.which === 187) { //+
                             // keep the scrolling ratio when zooming in
                             this.keepScrollPos(100)
+                            // eslint-disable-next-line vue/no-mutating-props
                             this.resize = "none"
                             if (!this.$refs.scantable.style.zoom || this.$refs.scantable.style.zoom === 0) {
                                 this.$refs.scantable.style.zoom = 1
@@ -533,6 +540,7 @@ export default {
                         if (e.which === 109 || e.which === 189) { //-
                             // keep the scrolling ratio when zooming out
                             this.keepScrollPos(100)
+                            // eslint-disable-next-line vue/no-mutating-props
                             this.resize = "none"
                             if (!this.$refs.scantable.style.zoom || this.$refs.scantable.style.zoom === 0) {
                                 this.$refs.scantable.style.zoom = 1

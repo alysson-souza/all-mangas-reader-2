@@ -6,7 +6,7 @@
 import Vue from "vue"
 import 'vuetify/dist/vuetify.min.css';
 import Vuetify from 'vuetify';
-import theme from '../pages/theme';
+import vuetifyOptions from '../pages/vuetifyOptions';
 import VueScrollTo from "vue-scrollto";
 
 import AmrReader from './AmrReader.vue';
@@ -15,12 +15,14 @@ import browser from "webextension-polyfill";
 import mirrorImpl from './state/mirrorimpl';
 import options from './state/options';
 import ChapterLoader from "./helpers/ChapterLoader";
+import store from '../store'
 
 /** DO NOT REMOVE, not used here but define a global object used in loaded implementation */
 import mirrorHelper from '../amr/mirrors-helper';
 
 if (window["__armreader__"] === undefined) { // avoid loading script twice
     window["__armreader__"] = {}
+    window['AMR_STORE'] = store
 
     window['onPushState'] = async function () {
         //Do load manga only if it's not AMR that triggered the pushState
@@ -100,18 +102,20 @@ function initReader() {
     document.body.style.setProperty("max-width", "none", "important")
     document.body.style.setProperty("min-width", "auto", "important")
     document.body.style.setProperty("width", "auto", "important")
-    if (options.darkreader === 1) document.body.style.backgroundColor = "#303030"
-    else document.body.style.backgroundColor = "white"
+    // if (options.darkreader === 1) document.body.style.backgroundColor = "#303030"
+    // else document.body.style.backgroundColor = "white"
 
     loadCss("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700")
-    loadCss("https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/3.0.39/css/materialdesignicons.min.css")
+    loadCss("https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.8.55/css/materialdesignicons.min.css")
     
     // Load vue
     Vue.config.productionTip = false
-    Vue.use(Vuetify, { theme: theme, iconfont: 'mdi' })
+    Vue.use(Vuetify)
+    vuetifyOptions.theme.dark = options.darkreader === 1
     Vue.use(VueScrollTo)
     new Vue({
         el: amrdiv,
+        vuetify: new Vuetify(vuetifyOptions),
         render: h => h(AmrReader)
     });
 }

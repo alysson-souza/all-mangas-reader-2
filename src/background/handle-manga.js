@@ -1,7 +1,6 @@
 import Axios from 'axios';
 import browser from "webextension-polyfill";
 import mirrorsImpl from '../amr/mirrors-impl';
-import store from '../store';
 import * as utils from '../amr/utils';
 import * as domutils from '../amr/domutils';
 import storedb from '../amr/storedb';
@@ -20,10 +19,10 @@ class HandleManga {
         switch (message.action) {
             case "mangaExists":
                 return Promise.resolve(
-                    store.state.mangas.all.find(manga => manga.key === key) !== undefined
+                    window['AMR_STORE'].state.mangas.all.find(manga => manga.key === key) !== undefined
                 );
             case "mangaInfos":
-                let mg = store.state.mangas.all.find(manga => manga.key === key)
+                let mg = window['AMR_STORE'].state.mangas.all.find(manga => manga.key === key)
                 if (mg !== undefined) {
                     return Promise.resolve({
                         read: mg.read, /* Read top */
@@ -38,41 +37,41 @@ class HandleManga {
                     return Promise.resolve();
                 }
             case "saveCurrentState":
-                return store.dispatch('saveCurrentState', message);
+                return window['AMR_STORE'].dispatch('saveCurrentState', message);
             case "readManga":
                 //count number of chapters read
                 let nb = localStorage["nb_read"] ? parseInt(localStorage["nb_read"]) : 1
                 localStorage["nb_read"] = "" + (nb + 1);
                 utils.debug("Read manga " + message.url);
                 // call store method to update reading list appropriately
-                return store.dispatch('readManga', message);
+                return window['AMR_STORE'].dispatch('readManga', message);
             case "deleteManga":
                 utils.debug("Delete manga key " + key);
-                return store.dispatch('deleteManga', {key: key});
+                return window['AMR_STORE'].dispatch('deleteManga', {key: key});
             case "getNextChapterImages", "getChapterData": //returns boolean telling if url is a chapter page, infos from page and list of images for prefetch of next chapter in content script
                 return this.getChapterData(message);
             case "markReadTop":
-                return store.dispatch('markMangaReadTop', message);
+                return window['AMR_STORE'].dispatch('markMangaReadTop', message);
             case "setDisplayMode":
-                return store.dispatch('setMangaDisplayMode', message);
+                return window['AMR_STORE'].dispatch('setMangaDisplayMode', message);
             case "setLayoutMode":
-                return store.dispatch('setMangaLayoutMode', message);
+                return window['AMR_STORE'].dispatch('setMangaLayoutMode', message);
             case "setWebtoonMode":
-                return store.dispatch('setMangaWebtoonMode', message);
+                return window['AMR_STORE'].dispatch('setMangaWebtoonMode', message);
             case "setMangaChapter":
-                return store.dispatch('resetManga', message) // reset reading to first chapter
-                    .then(() => store.dispatch('readManga', message)); // set reading to current chapter
+                return window['AMR_STORE'].dispatch('resetManga', message) // reset reading to first chapter
+                    .then(() => window['AMR_STORE'].dispatch('readManga', message)); // set reading to current chapter
             case "importSamples":
-                return store.dispatch("importSamples");
+                return window['AMR_STORE'].dispatch("importSamples");
             case "refreshMangas":
-                return store.dispatch("refreshMangas", message);
+                return window['AMR_STORE'].dispatch("refreshMangas", message);
             case "updateChaptersLists":
                 // updates all mangas lists (do it in background if called from popup because it requires jQuery)
-                return store.dispatch("updateChaptersLists"); // update is forced by default (mangas are updated even if chapters has been found recently (less than a week ago) and the pause for a week option is checked) but is done manually by the user (this case is called from options page or for timers page)
+                return window['AMR_STORE'].dispatch("updateChaptersLists"); // update is forced by default (mangas are updated even if chapters has been found recently (less than a week ago) and the pause for a week option is checked) but is done manually by the user (this case is called from options page or for timers page)
             case "searchList":
                 return this.searchList(message);
             case "getListChaps":
-                let mgch = store.state.mangas.all.find(mg => mg.key === key);
+                let mgch = window['AMR_STORE'].state.mangas.all.find(mg => mg.key === key);
                 if (mgch !== undefined) {
                     return Promise.resolve(mgch.listChaps);
                 } else {
@@ -184,7 +183,7 @@ class HandleManga {
             let loading = []
             loading.push(browser.tabs.insertCSS(tabId, { file: "/reader/pre-loader.css" }))
             let bgcolor = "#424242"
-            if (store.state.options.darkreader === 0) bgcolor = "white"
+            if (window['AMR_STORE'].state.options.darkreader === 0) bgcolor = "white"
             loading.push(browser.tabs.executeScript(
                 tabId, 
                 { code: `
@@ -284,9 +283,9 @@ class HandleManga {
         if (imps.mangas && imps.mangas.length > 0) {
             // add default category if inexistant
             if (importcat !== "") {
-                let cats = store.state.options.categoriesStates;
+                let cats = window['AMR_STORE'].state.options.categoriesStates;
                 if (-1 === cats.findIndex(cat => cat.name === importcat)) {
-                    store.dispatch("addCategory", importcat);
+                    window['AMR_STORE'].dispatch("addCategory", importcat);
                 }
             }
 
@@ -315,10 +314,10 @@ class HandleManga {
                 readmg.action = "readManga";
 
                 let mgimport = Promise.resolve(
-                    store.dispatch('readManga', readmg)
+                    window['AMR_STORE'].dispatch('readManga', readmg)
                 .catch(e => e));
-                if (store.state.options.waitbetweenupdates === 0) {
-                    if (store.state.options.savebandwidth === 1) {
+                if (window['AMR_STORE'].state.options.waitbetweenupdates === 0) {
+                    if (window['AMR_STORE'].state.options.savebandwidth === 1) {
                         await mgimport;
                     } else {
                         readall.push(mgimport);
@@ -332,12 +331,12 @@ class HandleManga {
                             setTimeout(async () => {
                                 await mgimport;
                                 resolve()
-                            }, 1000 * store.state.options.waitbetweenupdates)
+                            }, 1000 * window['AMR_STORE'].state.options.waitbetweenupdates)
                         })
                     }
                 }
             }
-            if (store.state.options.savebandwidth !== 1) {
+            if (window['AMR_STORE'].state.options.savebandwidth !== 1) {
                 // read all mangas
                 await Promise.all(readall);
             }

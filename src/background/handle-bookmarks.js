@@ -1,4 +1,3 @@
-import store from '../store';
 import * as utils from '../amr/utils';
 import i18n from '../amr/i18n';
 import browser from "webextension-polyfill";
@@ -67,7 +66,7 @@ class HandleBookmarks {
      */
     findBookmark(obj) {
         let key = utils.mangaKey(obj.chapUrl, obj.mirror) + (obj.scanUrl ? "_" + utils.mangaKey(obj.scanUrl, obj.mirror): "")
-        return store.state.bookmarks.all.find(bookmark => bookmark.key === key)
+        return window['AMR_STORE'].state.bookmarks.all.find(bookmark => bookmark.key === key)
     }
     /**
      * Retrieve a stored bookmark
@@ -114,10 +113,10 @@ class HandleBookmarks {
         };
         if (bm === undefined) {
             // adds a new bookmark
-            store.dispatch("createBookmark", tosave)
+            window['AMR_STORE'].dispatch("createBookmark", tosave)
         } else {
             // update bookmark note
-            store.dispatch("updateBookmarkNote", tosave);
+            window['AMR_STORE'].dispatch("updateBookmarkNote", tosave);
         }
     }
 
@@ -127,7 +126,7 @@ class HandleBookmarks {
      */
     deleteBookmark(obj) {
         // adds a new bookmark
-        store.dispatch("deleteBookmark", {
+        window['AMR_STORE'].dispatch("deleteBookmark", {
             chapUrl : obj.chapUrl,
             scanUrl : obj.scanUrl,
             mirror: obj.mirror

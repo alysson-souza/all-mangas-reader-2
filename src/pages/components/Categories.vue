@@ -2,11 +2,15 @@
   <div class="cat-cont">
       <!-- Eye button to include all / do not care about all -->
       <v-tooltip v-if="!staticCats && !allincluded" top content-class="icon-ttip">
-          <v-icon class="cat-act" @click.stop="stateAll('include')" slot="activator">mdi-eye</v-icon>
+          <template v-slot:activator="{ on }">
+            <v-icon class="cat-act" @click.stop="stateAll('include')" v-on="on">mdi-eye</v-icon>
+          </template>
           <span>{{i18n("list_cat_include_all")}}</span>
       </v-tooltip>
       <v-tooltip v-if="!staticCats && allincluded" top content-class="icon-ttip">
-          <v-icon class="cat-act" @click.stop="stateAll('')" slot="activator">mdi-eye-off</v-icon>
+          <template v-slot:activator="{ on }">
+            <v-icon class="cat-act" @click.stop="stateAll('')" v-on="on">mdi-eye-off</v-icon>
+          </template>
           <span>{{i18n("list_cat_donotcare_all")}}</span>
       </v-tooltip>
       <!-- Display all categories -->
@@ -16,7 +20,9 @@
         @click="switchState(cat)">
         <!-- Category name and tooltip -->
         <v-tooltip v-if="!staticCats && cat.type !== 'language'" top content-class="icon-ttip" class="cat-name">
-          <span class="cat-name" slot="activator">{{cat.type === 'native' ? i18n(cat.name) : cat.name}}</span>
+          <template v-slot:activator="{ on }">
+            <span class="cat-name" v-on="on">{{cat.type === 'native' ? i18n(cat.name) : cat.name}}</span>
+          </template>
           <span v-if="cat.state==='include'" v-html='i18n("list_cat_include", cat.type === "native" ? i18n(cat.name) : cat.name)'></span>
           <span v-if="cat.state==='exclude'" v-html='i18n("list_cat_exclude", cat.type === "native" ? i18n(cat.name) : cat.name)'></span>
           <span v-if="!cat.state" v-html='i18n("list_cat_no", cat.type === "native" ? i18n(cat.name) : cat.name)'></span>
@@ -25,17 +31,23 @@
         <span v-if="staticCats" class="cat-name">{{cat}}</span>
         <!-- Icon only me -->
         <v-tooltip v-if="!staticCats" top content-class="icon-ttip">
-            <v-icon class="cat-act" @click.stop="onlyMe(cat)" slot="activator">mdi-eye</v-icon>
-            <span>{{i18n("list_cat_only")}}</span>
+          <template v-slot:activator="{ on }">
+            <v-icon class="cat-act" @click.stop="onlyMe(cat)" v-on="on">mdi-eye</v-icon>
+          </template>
+          <span>{{i18n("list_cat_only")}}</span>
         </v-tooltip>
         <!-- Trash icon -->
         <v-tooltip top content-class="icon-ttip">
-            <v-icon v-if="cat.type !== 'native' && cat.type !== 'language'" class="cat-act" @click.stop="deleteCat(cat)" slot="activator">mdi-close</v-icon>
-            <span>{{i18n("list_cat_delete")}}</span>
+          <template v-slot:activator="{ on }">
+            <v-icon v-if="cat.type !== 'native' && cat.type !== 'language'" class="cat-act" @click.stop="deleteCat(cat)" v-on="on">mdi-close</v-icon>
+          </template>
+          <span>{{i18n("list_cat_delete")}}</span>
         </v-tooltip>
         <!-- Edit icon -->
         <v-tooltip top content-class="icon-ttip">
-          <v-icon v-if="cat.type !== 'native' && cat.type !== 'language'" class="cat-act" @click.stop="displayEditCategoryModal(cat)" slot="activator">mdi-pencil</v-icon>
+          <template v-slot:activator="{ on }">
+            <v-icon v-if="cat.type !== 'native' && cat.type !== 'language'" class="cat-act" @click.stop="displayEditCategoryModal(cat)" v-on="on">mdi-pencil</v-icon>
+          </template>
           <span>{{i18n("list_cat_edit")}}</span>
         </v-tooltip>
         <!-- badge nb mangas -->

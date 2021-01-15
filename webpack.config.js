@@ -1,14 +1,15 @@
 const webpack = require('webpack');
-const CleanWebpackPlugin = require('clean-webpack-plugin')
-const WebpackShellPlugin = require('webpack-shell-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const WebpackShellPluginNext = require('webpack-shell-plugin-next')
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const ChromeExtensionReloader = require('webpack-chrome-extension-reloader')
+const ExtensionReloader  = require('webpack-extension-reloader')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const CircularDependencyPlugin = require('circular-dependency-plugin')
 const ejs = require('ejs');
 
 const config = {
-  devtool: '#cheap-module-source-map', /* In Webpack 4, defaults devtool outputs an eval() for speeding compil but this obvioulsy fail in chrome extension due to CSP */
+  devtool: 'cheap-module-source-map', /* In Webpack 4, defaults devtool outputs an eval() for speeding compil but this obvioulsy fail in chrome extension due to CSP */
   context: __dirname + '/src',
   mode: "development",
   entry: {
@@ -55,42 +56,62 @@ const config = {
   },
   plugins: [
     new VueLoaderPlugin(),
-    new CopyWebpackPlugin([
-      {from: 'icons', to: 'icons', ignore: ['icon.xcf']},
-      {from: 'background/background.html', to: 'background/background.html'},
-      {from: 'pages/popup/popup.html', to: 'pages/popup/popup.html', transform: transformHtml},
-      {from: 'pages/lab/lab.html', to: 'pages/lab/lab.html'},
-      {from: 'pages/options/options.html', to: 'pages/options/options.html'},
-      {from: 'pages/bookmarks/bookmarks.html', to: 'pages/bookmarks/bookmarks.html'},
-      {from: 'pages/importexport/importexport.html', to: 'pages/importexport/importexport.html'},
-      {
-        from: 'manifest.json',
-        to: 'manifest.json',
-        transform(content) {
-          // This is not working properly on firefox
-          // adding a http domain to load script fails firefox csp rules and
-          // prevent the extension from working (csp are ignored and failed)
-          if (config.mode !== 'development' || !process.argv.includes("--chrome")) {
-            return content;
-          }
-          const ext = JSON.parse(content);
-          // Add dev env tools
-          const extra = " 'unsafe-eval' http://localhost:8098/ ";
-          const [scriptSource, ...rest] = ext.content_security_policy.split(';');
-          ext.content_security_policy = `${scriptSource} ${extra}; ${rest.join(';')}`;
+    new CopyWebpackPlugin({
+      patterns: [
+        {from: 'icons', to: 'icons', globOptions: {ignore: ['icon.xcf']}},
+        {from: 'background/background.html', to: 'background/background.html'},
+        {from: 'pages/popup/popup.html', to: 'pages/popup/popup.html', transform: transformHtml},
+        {from: 'pages/lab/lab.html', to: 'pages/lab/lab.html'},
+        {from: 'pages/options/options.html', to: 'pages/options/options.html'},
+        {from: 'pages/bookmarks/bookmarks.html', to: 'pages/bookmarks/bookmarks.html'},
+        {from: 'pages/importexport/importexport.html', to: 'pages/importexport/importexport.html'},
+        {
+          from: 'manifest.json',
+          to: 'manifest.json',
+          transform(content) {
+            // This is not working properly on firefox
+            // adding a http domain to load script fails firefox csp rules and
+            // prevent the extension from working (csp are ignored and failed)
+            if (config.mode !== 'development' || !process.argv.includes("--chrome")) {
+              return content;
+            }
+            const ext = JSON.parse(content);
+            // Add dev env tools
+            const extra = " 'unsafe-eval' http://localhost:8098/ ";
+            const [scriptSource, ...rest] = ext.content_security_policy.split(';');
+            ext.content_security_policy = `${scriptSource} ${extra}; ${rest.join(';')}`;
 
-          return JSON.stringify(ext, null, 2);
+            return JSON.stringify(ext, null, 2);
+          },
         },
-      },
-      {from: 'content/*.css', to: '.'},
-      {from: 'reader/*.css', to: '.'},
-      {from: '_locales/**/*', to: '.'},
-      {from: 'backup/amr-backup.html', to: 'backup/index.html'},
-      {from: '../node_modules/jquery/dist/jquery.min.js', to: 'lib/jquery.min.js'},
-    ]),
-    new WebpackShellPlugin({
-      onBuildEnd: ['node scripts/remove-evals.js']
+        {from: 'reader/*.css', to: '.'},
+        {from: '_locales/**/*', to: '.'},
+        {from: 'backup/amr-backup.html', to: 'backup/index.html'},
+        {from: '../node_modules/jquery/dist/jquery.min.js', to: 'lib/jquery.min.js'},
+      ]
     }),
+    new WebpackShellPluginNext({
+      onBeforeBuild: { // Not working :(
+        scripts: ['cd ./src/mirrors && node ./update-ws.js && cd ../.. && echo "Mirrors Rebuilt"'],
+        blocking: true
+      },
+      onBuildEnd: {
+        scripts: ['node scripts/remove-evals.js']
+      }
+    }),
+    new CircularDependencyPlugin({
+      // exclude detection of files based on a RegExp
+      exclude: /a\.js|node_modules/,
+      // include specific files based on a RegExp
+      include: /src/,
+      // add errors to webpack instead of warnings
+      failOnError: false,
+      // allow import cycles that include an asyncronous import,
+      // e.g. via import(/* webpackMode: "weak" */ './file.js')
+      allowAsyncCycles: false,
+      // set the current working directory for displaying module paths
+      cwd: process.cwd(),
+    })
   ]
 };
 
@@ -99,7 +120,9 @@ if (process.env.NODE_ENV === 'production') {
   config.mode = "production";
 
   config.plugins = (config.plugins || []).concat([
-    new CleanWebpackPlugin(['./dist/', './dist-zip/']),
+    new CleanWebpackPlugin({
+      cleanOnceBeforeBuildPatterns: ['./dist/', './dist-zip/']
+    }),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: '"production"'
@@ -116,11 +139,10 @@ if (process.env.NODE_ENV === 'production') {
   if (process.env["--watch"]) {
     config.plugins = (config.plugins || []).concat([
       new webpack.HotModuleReplacementPlugin(),
-      new ChromeExtensionReloader({
+      new ExtensionReloader({
         entries: {
           background: 'background/background',
-          options: 'pages/options/options',
-          popup: 'pages/popup/popup'
+          extensionPage: ['pages/options/options', 'pages/popup/popup']
         },
       }),
     ])
@@ -129,11 +151,11 @@ if (process.env.NODE_ENV === 'production') {
   // Add manifest update after
   if (process.argv.includes("--chrome")) {
     config.plugins.push(
-        new WebpackShellPlugin({ onBuildEnd: ['node scripts/update-manifest.js -chrome'] }),
+        new WebpackShellPluginNext({ onBuildEnd: { scripts: ['node scripts/update-manifest.js -chrome'] }}),
     );
   } else if (process.argv.includes("--firefox")) {
     config.plugins.push(
-        new WebpackShellPlugin({ onBuildEnd: ['node scripts/update-manifest.js -firefox'] }),
+        new WebpackShellPluginNext({ onBuildEnd: { scripts: ['node scripts/update-manifest.js -firefox'] }}),
     );
   }
 }

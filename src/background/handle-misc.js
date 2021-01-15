@@ -1,5 +1,4 @@
 import browser from "webextension-polyfill";
-import store from '../store';
 import statsEvents from '../amr/stats-events';
 
 class HandleMisc {
@@ -12,7 +11,7 @@ class HandleMisc {
                 });
                 return Promise.resolve();
             case "mirrorInfos":
-                let mirror = store.state.mirrors.all.find(mir => mir.mirrorName === message.name)
+                let mirror = window['AMR_STORE'].state.mirrors.all.find(mir => mir.mirrorName === message.name)
                 return Promise.resolve({ // can't send a vuex object through js instances on Firefox --> convert
                     activated: mirror.activated,
                     domains: mirror.domains,

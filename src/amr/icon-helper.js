@@ -1,7 +1,6 @@
 
 import browser from "webextension-polyfill";
 import * as utils from "./utils";
-import store from "../store";
 import amrUpdater from "./amr-updater";
 
 /**
@@ -105,7 +104,7 @@ class IconHelper {
         this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.canvasContext.translate(this.canvas.width / 2, this.canvas.height / 2);
         this.canvasContext.rotate(2 * Math.PI * (doEase ? this.ease(this.rotation) : this.rotation));
-        if (store.state.options.nocount == 1 && !store.getters.hasNewMangas) {
+        if (window['AMR_STORE'].state.options.nocount == 1 && !window['AMR_STORE'].getters.hasNewMangas) {
             this.canvasContext.drawImage(this.icon_bw, -this.canvas.width / 2, -this.canvas.height / 2);
         } else {
             this.canvasContext.drawImage(this.icon, -this.canvas.width / 2, -this.canvas.height / 2);

@@ -1,17 +1,17 @@
 <template>
-    <v-container grid-list-md pa-0>
-        <v-layout row wrap v-for="(item, i) in items" :key="i" class="amr-shortcut-line">
-            <v-flex xs4 text-xs-right>
+    <v-container class="pa-0">
+        <v-row v-for="(item, i) in items" :key="i" class="amr-shortcut-line" dense>
+            <v-col class="text-right" cols="4">
                 <div class="amr-shortcut" v-for="(shortcut, s) in item.keys" :key="s">
                     <div class="amr-shortcut-key" v-for="(key, k) in shortcut" :key="k">
                         {{key}}
                     </div>
                 </div>
-            </v-flex>
-            <v-flex xs8>
+            </v-col>
+            <v-col cols="8">
                 {{ i18n(item.i18n) }}
-            </v-flex>
-        </v-layout>
+            </v-col>
+        </v-row>
     </v-container>
 </template>
 

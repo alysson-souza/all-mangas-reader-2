@@ -1,5 +1,5 @@
 <template>
-	<v-app :dark="$store.state.options.dark === 1">
+	<v-app>
     <!-- Before mirrors and mangas are loaded into options -->
     <v-content v-if="!loaded" class="amr-loader">
         <v-progress-circular indeterminate :width="4" :size="50" color="red darken-2"></v-progress-circular>
