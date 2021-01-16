@@ -1,13 +1,13 @@
 <template>
 	<v-app>
-    <v-content>
+    <v-main>
       <!-- Before mirrors and mangas are loaded into options -->
       <div v-if="!loaded" class="amr-loader">
         <v-progress-circular indeterminate :width="4" :size="50" color="red darken-2"></v-progress-circular>
       </div>
       <!-- Once loaded -->
       <Options v-if="loaded" />
-    </v-content>
+    </v-main>
 	</v-app>
 </template>
 

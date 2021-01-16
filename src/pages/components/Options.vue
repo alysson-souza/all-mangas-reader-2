@@ -351,7 +351,7 @@
               </v-tooltip>
             </template>
             <template v-slot:append-outer>
-              <v-btn rounded @click="addArrayEntry('mangadexBlockedGroups')" disabled>Add</v-btn>
+              <v-btn rounded @click="addArrayEntry('mangadexBlockedGroups')" disabled>Add (Not Implimented)</v-btn>
             </template>
           </v-text-field>
           <v-card v-if="arrays.mangadexBlockedGroups.array.length">
@@ -377,7 +377,7 @@
               </v-tooltip>
             </template>
             <template v-slot:append-outer>
-              <v-btn rounded @click="addArrayEntry('mangadexPreferredGroups')" disabled>Add</v-btn>
+              <v-btn rounded @click="addArrayEntry('mangadexPreferredGroups')" disabled>Add (Not Implimented)</v-btn>
             </template>
           </v-text-field>
           <v-card v-if="arrays.mangadexPreferredGroups.array.length">

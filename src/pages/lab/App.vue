@@ -8,7 +8,7 @@
 				<v-icon>mdi-settings</v-icon>
 			</v-btn>
 		</v-toolbar>
-		<v-content>
+		<v-main>
       <v-container fluid>
         <div class="headline">Select the mirror to test : </div>
         <v-row >
@@ -91,7 +91,7 @@
           </v-col>
         </v-row>
       </v-container>
-		</v-content>
+		</v-main>
 		<v-dialog
         v-model="options"
         fullscreen

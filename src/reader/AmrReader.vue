@@ -136,10 +136,10 @@
                   attach='.amr-chapter-select'
                 ></v-select>
                 <v-spacer></v-spacer>
-                <v-tooltip bottom v-show="!lastChapter">
+                <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
                     <!-- Next chapter button -->
-                    <v-btn v-on="on" icon @click.stop="goNextChapter" class="btn-huge">
+                    <v-btn v-on="on" icon @click.stop="goNextChapter" class="btn-huge" v-show="!lastChapter">
                       <v-icon>mdi-chevron-right</v-icon>
                     </v-btn>
                   </template>
@@ -149,15 +149,15 @@
             </v-col>
             <!-- Next chapter preloading progression bar -->
             <v-col cols="12" class="amr-chapter-progress-cont">
-              <v-tooltip bottom v-show="nextchapLoading">
+              <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
-                  <v-progress-linear v-on="on" class="amr-floting-progress"
+                  <v-progress-linear v-show="nextchapLoading" v-on="on" class="amr-floting-progress"
                     :height="3"
                     :value="nextchapProgress"
                     color="red darken-2"
                   ></v-progress-linear>
                 </template>
-                <span>{{i18n("reader_next_chap", Math.floor(nextchapProgress))}}</span>
+                <span>{{ i18n('reader_loading', Math.floor(nextchapProgress)) }}</span>
               </v-tooltip>
             </v-col>
             <!-- Action buttons -->
@@ -302,7 +302,7 @@
               <v-btn-toggle v-model="direction">
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
-                    <v-btn v-on="on" flat value="ltr">
+                    <v-btn v-on="on" text value="ltr">
                       <!--<span>Left to right</span>-->
                       <v-icon>mdi-arrow-right</v-icon>
                     </v-btn>
@@ -311,7 +311,7 @@
                 </v-tooltip>
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
-                    <v-btn flat v-on="on" value="rtl">
+                    <v-btn text v-on="on" value="rtl">
                       <!--<span>Right to left</span>-->
                       <v-icon>mdi-arrow-left</v-icon>
                     </v-btn>
@@ -345,7 +345,7 @@
               <v-btn-toggle v-model="resize">
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
-                    <v-btn v-on="on" flat value="width">
+                    <v-btn v-on="on" text value="width">
                       <!--<span>Width</span>-->
                       <v-icon>mdi-arrow-expand-horizontal</v-icon>
                     </v-btn>
@@ -354,7 +354,7 @@
                 </v-tooltip>
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
-                    <v-btn v-on="on" flat value="height" v-show="!fullchapter">
+                    <v-btn v-on="on" text value="height" v-show="!fullchapter">
                       <!--<span>Height</span>-->
                       <v-icon>mdi-arrow-expand-vertical</v-icon>
                     </v-btn>
@@ -363,7 +363,7 @@
                 </v-tooltip>
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
-                    <v-btn v-on="on" flat value="container" v-show="!fullchapter">
+                    <v-btn v-on="on" text value="container" v-show="!fullchapter">
                       <!--<span>Container</span>-->
                       <v-icon>mdi-arrow-expand-all</v-icon>
                     </v-btn>
@@ -372,7 +372,7 @@
                 </v-tooltip>
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
-                    <v-btn v-on="on" flat value="none">
+                    <v-btn v-on="on" text value="none">
                       <!--<span>None</span>-->
                       <v-icon>mdi-border-none-variant</v-icon>
                     </v-btn>
@@ -437,7 +437,7 @@
     </v-navigation-drawer>
     <SocialBar v-show="drawer" />
     <!-- End AMR Reader Side bar -->
-    <v-content>
+    <v-main>
       <Reader ref="reader"
               :book="book" 
               :direction="direction" 
@@ -446,7 +446,7 @@
               :drawer="drawer"
               :webtoonMode="webtoonMode"
               :scaleUp="scaleUp" />
-    </v-content>
+    </v-main>
   </v-app>
 </template>
 
@@ -519,7 +519,7 @@
       /** Load current manga informations */
       this.loadMangaInformations().then(() => {
         /* retrieve current page if current chapter was the last opened */
-        if (util.matchChapUrl(this.pageData.currentChapterURL, this.mangaInfos.currentChapter) && this.mangaInfos.currentScanUrl) {
+        if (this.mangaInfos && util.matchChapUrl(this.pageData.currentChapterURL, this.mangaInfos.currentChapter) && this.mangaInfos.currentScanUrl) {
           // set current page to last currentScanUrl
           EventBus.$emit("go-to-scanurl", this.mangaInfos.currentScanUrl)
         }
@@ -624,6 +624,7 @@
       }
     },
     computed: {
+      console: () => console,
       // Current manga informations retrieved from implementation
       manga() {
         return this.pageData
@@ -1324,9 +1325,6 @@
 .amr-floting-progress .v-btn {
   width: 36px;
   height: 36px;
-}
-.amr-chapter-progress-cont {
-  height: 3px;
 }
 .amr-chapter-progress-cont .v-progress-linear {
   margin: 0px;

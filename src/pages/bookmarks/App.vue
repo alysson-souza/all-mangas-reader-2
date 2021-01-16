@@ -113,7 +113,7 @@
         </v-btn>
       </v-btn-toggle>
     </v-toolbar>
-    <v-content>
+    <v-main>
       <v-container class="fill-height" fluid>
         <v-row justify="center" align="center" v-if="!loaded">
           <!-- Before mirrors and bookmarks are loaded into bookmarks -->
@@ -128,7 +128,7 @@
           </h2>
         </v-row>
       </v-container>
-    </v-content>
+    </v-main>
 	</v-app>
 </template>
 

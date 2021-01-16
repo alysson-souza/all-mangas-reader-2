@@ -20,7 +20,7 @@
 		</v-card>
 		
 		<!-- Default panel containing manga list -->
-		<v-content>
+		<v-main>
 			<v-alert class="mb-0" type="info" :value="true" icon="mdi-incognito" v-if="!trackingDone">
 				{{i18n("options_gen_allowtracking_desc")}}
 				<div>
@@ -40,7 +40,7 @@
 				<span>{{tooltipalert}}</span>
 			</v-tooltip>
 			<div id="__bottom_app__"></div>
-		</v-content>
+		</v-main>
 		
 		<!-- Options dialog -->
 		<v-dialog
@@ -57,9 +57,9 @@
 					</v-btn>
 					<v-toolbar-title>{{i18n("options_title")}}</v-toolbar-title>
 				</v-toolbar>
-				<v-content>
+				<v-main>
 					<Options v-if="options" />
-				</v-content>
+				</v-main>
 			</v-card>
 		</v-dialog>
 		<!-- Search dialog -->
@@ -77,9 +77,9 @@
 				</v-btn>
 				<v-toolbar-title>{{i18n("search_title")}}</v-toolbar-title>
 			</v-toolbar>
-						<v-content>
+						<v-main>
 				<Search v-if="search" :to-search="toSearch" />
-						</v-content>
+						</v-main>
 			</v-card>
 		</v-dialog>
 		<!-- Right panel containing links, refresh buttons, import export panels -->
