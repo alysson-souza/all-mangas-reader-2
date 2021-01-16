@@ -1,39 +1,39 @@
 <template>
-  <div v-if="!isInGroup || (isFirst || groupExpanded)" class="amr-line-container" :class="{'dark-text': isDarkText, compact: smalldevice}">
+  <div v-show="!isInGroup || (isFirst || groupExpanded)" class="amr-line-container" :class="{'dark-text': isDarkText, compact: smalldevice}">
     <!-- manga line, containing title, list of chapters and actions-->
     <v-row no-gutters >
       <!-- Title and icon -->
       <v-col sm="4" cols="12" class="amr-list-elt">
       <v-card dark tile flat :color="color(3)" class="back-card">
-        <v-card v-if="!isInGroup || isFirst" dark :color="color(0)" class="amr-manga-title-cont">
-          <v-checkbox class="select-checkbox" :ripple="false" v-model="isSelected" v-if="selectable" @change="toggleSelect(manga)"></v-checkbox>
+        <v-card v-show="!isInGroup || isFirst" dark :color="color(0)" class="amr-manga-title-cont">
+          <v-checkbox class="select-checkbox" :ripple="false" v-model="isSelected" v-show="selectable" @change="toggleSelect(manga)"></v-checkbox>
           <!-- Icon of the mirror if not in group -->
           <v-tooltip top content-class="icon-ttip">
             <template v-slot:activator="{ on }">
-              <img v-if="!isInGroup && isMirrorEnabled" :src="mirror.mirrorIcon" class="mirror-icon" v-on="on" />
-              <v-icon v-if="!isInGroup && !isMirrorEnabled" v-on="on">mdi-cancel</v-icon>
+              <img v-show="!isInGroup && isMirrorEnabled" :src="mirror.mirrorIcon" class="mirror-icon" v-on="on" />
+              <v-icon v-show="!isInGroup && !isMirrorEnabled" v-on="on">mdi-cancel</v-icon>
             </template>
             <span>{{ isMirrorEnabled ? mirror.mirrorName : i18n("list_mirror_disabled_tooltip", manga.mirror) }}</span>
           </v-tooltip>
           <!-- + / - icon if group of mangas  -->
-          <v-icon v-if="isInGroup && isFirst && !expanded" @click="emitExpand()">mdi-plus</v-icon>
-          <v-icon v-if="isInGroup && isFirst && expanded" @click="emitExpand()">mdi-minus</v-icon>
-          <template v-if="seen">
+          <v-icon v-show="isInGroup && isFirst && !expanded" @click="emitExpand()">mdi-plus</v-icon>
+          <v-icon v-show="isInGroup && isFirst && expanded" @click="emitExpand()">mdi-minus</v-icon>
+          <template v-show="seen">
             <!-- Display a calendar with last update -->
-            <v-tooltip v-if="options.displastup === 1 && manga.upts != 0 && timeUpdated < 50" top content-class="icon-ttip">
+            <v-tooltip top content-class="icon-ttip">
               <template v-slot:activator="{ on }">
-                <v-card dark :class="color(-2) + ' amr-calendar-badge'" v-on="on">
+                <v-card v-show="options.displastup === 1 && manga.upts != 0 && timeUpdated < 50" dark :class="color(-2) + ' amr-calendar-badge'" v-on="on">
                   <v-icon>mdi-calendar-clock</v-icon>
-                  <span v-if="timeUpdated > 0">{{ timeUpdated }}</span>
+                  <span v-show="timeUpdated > 0">{{ timeUpdated }}</span>
                 </v-card>
               </template>
               <span v-if="timeUpdated === 0">{{i18n("list_calendar_today")}}</span>
               <span v-else>{{i18n("list_calendar_days_found", timeUpdated)}}</span>
             </v-tooltip>
             <!-- Display a timer off if the manga is not updating anymore -->
-            <v-tooltip v-if="manga.update === 0" top content-class="icon-ttip">
+            <v-tooltip top content-class="icon-ttip">
               <template v-slot:activator="{ on }">
-                <v-icon class="amr-timeroff-badge" v-on="on">mdi-timer-off</v-icon>
+                <v-icon v-show="manga.update === 0" class="amr-timeroff-badge" v-on="on">mdi-timer-off</v-icon>
               </template>
               <span>{{i18n("list_stopped_updating")}}</span>
             </v-tooltip>
@@ -46,23 +46,23 @@
     <!-- List of chapters and progressbar-->
     <v-col cols="5" class="amr-list-elt">
       <v-card dark tile flat :color="color(3)" class="back-card amr-chapter-list-cont">
-        <v-row v-if="seen" dense>
+        <v-row v-show="seen" dense>
           <v-col cols="auto">
             <!-- List of chapters -->
             <!-- Icon of the mirror if in group -->
-            <v-tooltip v-if="isInGroup" top content-class="icon-ttip" class="tip-icon-grouped">
+            <v-tooltip top content-class="icon-ttip" class="tip-icon-grouped">
               <template v-slot:activator="{ on }">
-                <img v-if="isMirrorEnabled" :src="mirror.mirrorIcon" @click="openManga" class="mirror-icon grouped" v-on="on" />
-                <v-icon v-if="!isMirrorEnabled" class="mirror-icon grouped" v-on="on">mdi-cancel</v-icon>
+                <img v-show="isInGroup && isMirrorEnabled" :src="mirror.mirrorIcon" @click="openManga" class="mirror-icon grouped" v-on="on" />
+                <v-icon v-show="isInGroup && !isMirrorEnabled" class="mirror-icon grouped" v-on="on">mdi-cancel</v-icon>
               </template>
               <span>{{ isMirrorEnabled ? mirror.mirrorName : i18n("list_mirror_disabled_tooltip", manga.mirror) }}</span>
             </v-tooltip>
             <!-- Flag of the language of chapters if multiple languages available -->
-            <Flag v-if="manga.language" :value="manga.language" @click.native="displayLangs = !displayLangs"/>
+            <Flag v-show="manga.language" :value="manga.language" @click.native="displayLangs = !displayLangs"/>
           </v-col>
           <v-col>
             <!-- List of chapters -->
-            <div v-if="manga.listChaps.length" class="amr-prog-cont">
+            <div v-show="manga.listChaps.length" class="amr-prog-cont">
               <div class="amr-select-wrapper">
                 <select :value="selValue" v-on:input="selChapter = urlFromValue($event.target.value)" :class="color(2) + ' amr-chap-sel'" @change="playChap()">
                   <option v-for="chap in chapsForSelect" :key="chap.value" :value="chap.value">{{chap.text}}</option>
@@ -77,8 +77,8 @@
               </v-tooltip>
             </div>
             <!-- Loading bar if chapters list is not loaded yet-->
-            <v-progress-linear v-if="!manga.listChaps.length && isMirrorEnabled" :indeterminate="true" height="4" class="amr-manga-waiting" :color="color(1)"></v-progress-linear>
-            <span v-if="!manga.listChaps.length && !isMirrorEnabled">
+            <v-progress-linear v-show="!manga.listChaps.length && isMirrorEnabled" :indeterminate="true" height="4" class="amr-manga-waiting" :color="color(1)"></v-progress-linear>
+            <span v-show="!manga.listChaps.length && !isMirrorEnabled">
               {{ isMirrorEnabled ? mirror.mirrorName : i18n("list_mirror_disabled", manga.mirror) }}
             </span>
           </v-col>
@@ -88,48 +88,48 @@
     <!-- Actions -->
     <v-col sm="3" cols="6" class="amr-list-elt text-center">
       <v-card  dark tile flat :color="color(3)" class="back-card">
-        <template v-if="seen">
+        <template v-show="seen">
           <v-card dark :color="color(0)" class="amr-manga-actions-cont">
             <!-- Mark as read -->
-            <v-tooltip v-if="hasNew" top content-class="icon-ttip">
+            <v-tooltip top content-class="icon-ttip">
               <template v-slot:activator="{ on }">
-                <v-icon v-if="hasNew" v-on="on" @click="markAsRead()">mdi-eye</v-icon>
+                <v-icon v-show="hasNew" v-on="on" @click="markAsRead()">mdi-eye</v-icon>
               </template>
               <span>{{i18n("list_mg_act_read")}}</span>
             </v-tooltip>
             <!-- Empty icon if all read -->
-            <v-icon v-if="!hasNew" class="empty-icon"></v-icon> 
+            <v-icon v-show="!hasNew" class="empty-icon"></v-icon> 
             <!-- Previous chapter -->
-            <v-tooltip v-if="posInChapList < manga.listChaps.length - 1" top content-class="icon-ttip">
+            <v-tooltip top content-class="icon-ttip">
               <template v-slot:activator="{ on }">
-                <v-icon v-on="on" @click="play(-1)">mdi-chevron-left</v-icon>
+                <v-icon v-show="posInChapList < manga.listChaps.length - 1" v-on="on" @click="play(-1)">mdi-chevron-left</v-icon>
               </template>
               <span>{{i18n("list_mg_act_prev")}}</span>
             </v-tooltip>
             <!-- Empty icon if no previous -->
-            <v-icon v-if="posInChapList === manga.listChaps.length - 1" class="empty-icon"></v-icon> 
+            <v-icon v-show="posInChapList === manga.listChaps.length - 1" class="empty-icon"></v-icon> 
             <!-- Current chapter play -->
-            <v-icon v-if="!isMirrorEnabled" class="empty-icon"></v-icon>
-            <v-tooltip v-if="isMirrorEnabled" top content-class="icon-ttip">
+            <v-icon v-show="!isMirrorEnabled" class="empty-icon"></v-icon>
+            <v-tooltip top content-class="icon-ttip">
               <template v-slot:activator="{ on }">
-                <v-icon v-on="on" @click="play(0)">mdi-play</v-icon>
+                <v-icon v-show="isMirrorEnabled" v-on="on" @click="play(0)">mdi-play</v-icon>
               </template>
               <span>{{i18n("list_mg_act_cur")}}</span>
             </v-tooltip>
             <!-- Next chapter play -->
-            <v-tooltip v-if="posInChapList > 0" top content-class="icon-ttip">
+            <v-tooltip top content-class="icon-ttip">
               <template v-slot:activator="{ on }">
-                <v-icon v-on="on" @click="play(1)">mdi-chevron-right</v-icon>
+                <v-icon v-show="posInChapList > 0" v-on="on" @click="play(1)">mdi-chevron-right</v-icon>
               </template>
               <span>{{i18n("list_mg_act_next")}}</span>
             </v-tooltip>
             <!-- Empty icon if no next chapter -->
-            <v-icon v-if="posInChapList <= 0" class="empty-icon"></v-icon> 
+            <v-icon v-show="posInChapList <= 0" class="empty-icon"></v-icon> 
             <!-- Last chapter play -->
-            <v-icon v-if="!isMirrorEnabled" class="empty-icon"></v-icon>
-            <v-tooltip v-if="isMirrorEnabled" top content-class="icon-ttip">
+            <v-icon v-show="!isMirrorEnabled" class="empty-icon"></v-icon>
+            <v-tooltip top content-class="icon-ttip">
               <template v-slot:activator="{ on }">
-                <v-icon v-on="on" @click="play(Infinity)">mdi-page-last</v-icon>
+                <v-icon v-show="isMirrorEnabled" v-on="on" @click="play(Infinity)">mdi-page-last</v-icon>
               </template>
               <span>{{i18n("list_mg_act_latest")}}</span>
             </v-tooltip>
@@ -141,9 +141,9 @@
               <span>{{i18n("list_mg_act_delete")}}</span>
             </v-tooltip>
             <!-- Display details panel -->
-            <v-icon v-if="isFirst" @click="$emit('details-click')">mdi-dots-vertical</v-icon>
+            <v-icon v-show="isFirst" @click="$emit('details-click')">mdi-dots-vertical</v-icon>
             <!-- Empty icon if not first instead of details button -->
-            <v-icon v-if="!isFirst" class="empty-icon"></v-icon> 
+            <v-icon v-show="!isFirst" class="empty-icon"></v-icon> 
             <!-- Delete manga dialog -->
             <v-dialog v-model="deleteManga" max-width="500px">
               <v-card>
