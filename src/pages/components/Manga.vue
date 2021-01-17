@@ -58,7 +58,7 @@
               <span>{{ isMirrorEnabled ? mirror.mirrorName : i18n("list_mirror_disabled_tooltip", manga.mirror) }}</span>
             </v-tooltip>
             <!-- Flag of the language of chapters if multiple languages available -->
-            <Flag v-show="manga.language" :value="manga.language" @click.native="displayLangs = !displayLangs"/>
+            <Flag v-if="manga.language" :value="manga.language" @click.native="displayLangs = !displayLangs"/>
           </v-col>
           <v-col>
             <!-- List of chapters -->
