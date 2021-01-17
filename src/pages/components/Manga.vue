@@ -1,11 +1,11 @@
 <template>
-  <div v-show="!isInGroup || (isFirst || groupExpanded)" class="amr-line-container" :class="{'dark-text': isDarkText, compact: smalldevice}">
+  <div v-if="!isInGroup || (isFirst || groupExpanded)" class="amr-line-container" :class="{'dark-text': isDarkText, compact: smalldevice}">
     <!-- manga line, containing title, list of chapters and actions-->
     <v-row no-gutters >
       <!-- Title and icon -->
       <v-col sm="4" cols="12" class="amr-list-elt">
       <v-card dark tile flat :color="color(3)" class="back-card">
-        <v-card v-show="!isInGroup || isFirst" dark :color="color(0)" class="amr-manga-title-cont">
+        <v-card v-if="!isInGroup || isFirst" dark :color="color(0)" class="amr-manga-title-cont">
           <v-checkbox class="select-checkbox" :ripple="false" v-model="isSelected" v-show="selectable" @change="toggleSelect(manga)"></v-checkbox>
           <!-- Icon of the mirror if not in group -->
           <v-tooltip top content-class="icon-ttip">
@@ -46,7 +46,7 @@
     <!-- List of chapters and progressbar-->
     <v-col cols="5" class="amr-list-elt">
       <v-card dark tile flat :color="color(3)" class="back-card amr-chapter-list-cont">
-        <v-row v-show="seen" dense>
+        <v-row v-if="seen" dense>
           <v-col cols="auto">
             <!-- List of chapters -->
             <!-- Icon of the mirror if in group -->
@@ -62,7 +62,7 @@
           </v-col>
           <v-col>
             <!-- List of chapters -->
-            <div v-show="manga.listChaps.length" class="amr-prog-cont">
+            <div v-if="manga.listChaps.length" class="amr-prog-cont">
               <div class="amr-select-wrapper">
                 <select :value="selValue" v-on:input="selChapter = urlFromValue($event.target.value)" :class="color(2) + ' amr-chap-sel'" @change="playChap()">
                   <option v-for="chap in chapsForSelect" :key="chap.value" :value="chap.value">{{chap.text}}</option>
@@ -88,7 +88,7 @@
     <!-- Actions -->
     <v-col sm="3" cols="6" class="amr-list-elt text-center">
       <v-card  dark tile flat :color="color(3)" class="back-card">
-        <template v-show="seen">
+        <template v-if="seen">
           <v-card dark :color="color(0)" class="amr-manga-actions-cont">
             <!-- Mark as read -->
             <v-tooltip top content-class="icon-ttip">
