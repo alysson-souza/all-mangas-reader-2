@@ -67,7 +67,7 @@
 
         <!-- Allow to add categories to selected mangas -->
         <v-card v-if="selectable" class="amr-container-wrapper">
-            <MultiMangaAction />
+            <MultiMangaAction /> 
         </v-card>
         <!-- Load manga list -->
         <div class="amr-manga-list-container">
