@@ -11,7 +11,8 @@ if (typeof registerMangaObject === 'function') {
         abstract_options: {
             base_url: "https://mangakakalot.com/",
             search_url: 'search/story/',
-            chapter_information_selector: ".breadcrumb:first > p > :nth-child(3) a"
+            chapter_information_selector: ".breadcrumb:first > p > :nth-child(3) a",
+            images_selector: ".container-chapter-reader img"
         }
         
     });

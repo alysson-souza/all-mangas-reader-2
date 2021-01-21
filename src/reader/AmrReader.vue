@@ -129,11 +129,9 @@
                   :items="chapters"
                   item-text="title"
                   item-value="url"
-                  :menu-props="{auto: true}"
                   solo dense single-line hide-details class="amr-chapter-select"
-                  loading="chapters.length === 0 ? 'primary' : false"
+                  :loading="chapters.length === 0 ? 'primary' : false"
                   @change="goToChapter"
-                  attach='.amr-chapter-select'
                 ></v-select>
                 <v-spacer></v-spacer>
                 <v-tooltip bottom>
