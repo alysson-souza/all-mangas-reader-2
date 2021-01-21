@@ -7,7 +7,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ["*.mangadex.org", "mangadex.org"],
         home: "https://www.mangadex.org/",
         chapter_url: /\/chapter\/.*/g,
-        api: "https://mangadex.org/api/v2/",
+        api: "https://api.mangadex.org/v2/",
         
         getMangaList: async function (search) {
             let doc = await amr.loadPage(
@@ -25,6 +25,10 @@ if (typeof registerMangaObject === 'function') {
         },
 
         getListChaps: async function (urlManga) {
+            let amrOptions = window['AMR_STORE'].state.options
+            let blockedGroups = amrOptions.mangadexBlockedGroups.split(',') || []
+            console.log('Blocked Groups')
+            console.log(blockedGroups)
             let id = urlManga.split("/")[4]
             let json = await amr.loadJson(this.api + "manga/" + id + "/chapters")
             let ut = Math.round((new Date()).getTime() / 1000)
@@ -32,6 +36,16 @@ if (typeof registerMangaObject === 'function') {
             let res = {}
             let done = [] // to avoid duplicate chapters. pick randomly a version
             chaps.forEach(chap => {
+                let blockedGroup = false
+                chap.groups.forEach((group) => {
+                    console.log('Checking group ' + group)
+                    if (blockedGroups.includes(group + "")) {
+                        console.log('Found Blocked group ' + group)
+                        blockedGroup = true
+                    }
+                })
+                if (blockedGroup) return
+
                 if (done.indexOf(chap.language + chap.chapter) >= 0) return;
                 if (!res[chap.language]) res[chap.language] = []
                 done.push(chap.language + chap.chapter)
@@ -65,8 +79,21 @@ if (typeof registerMangaObject === 'function') {
         },
     
         getListImages: async function (doc, curUrl) {
-            let chid = curUrl.split("/")[4];
-            let chapter = await amr.loadJson(this.api + "chapter/" + chid)
+            let amrOptions = window['AMR_STORE'].state.options
+            let chid = curUrl.split("/")[4]
+
+            let url = this.api + "chapter/" + chid + "?"
+            let params = new URLSearchParams()
+            if (amrOptions.mangadexDataSaver) {
+                params.append("saver", "true")
+            }
+            if (amrOptions.mangadexImageServer !== 'none') {
+                params.append("server", amrOptions.mangadexImageServer)
+            }
+
+            url += params.toString()
+
+            let chapter = await amr.loadJson(url )
             if (chapter.data.server.indexOf("/") === 0) {
                 chapter.data.server = "https://mangadex.org" + chapter.data.server
             }

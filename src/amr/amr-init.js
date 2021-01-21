@@ -1,6 +1,5 @@
 import browser from "webextension-polyfill";
 import statsEvents from './stats-events';
-import store from '../store';
 import * as utils from './utils';
 import storedb from './storedb';
 
@@ -29,24 +28,24 @@ let updateApp = async function(ancVersion, curVersion) {
         // from this version, mirrors are hosted to mirrors.allmangasreader.com/v4
         // update localStorage to change stored url if necessary
         console.log("Update main repository url to v4")
-        await store.dispatch("updateRepository", {
+        await window['AMR_STORE'].dispatch("updateRepository", {
             old_repo: "https://mirrors.allmangasreader.com/v3/", 
             new_repo: "https://mirrors.allmangasreader.com/v4/"
         })
         console.log("Reinitialize mirrors entries")
         // request an update of mirrors lists
-        store.dispatch("updateMirrorsLists")
+        window['AMR_STORE'].dispatch("updateMirrorsLists")
     }
     if (!versionAfter(ancVersion, "2.0.2.150")) { // if previous version is before 2.0.2.150
         // check if user language is in readable list of languages add it if not
         checkLangSet()
         // change category names New, Read, Unread and One Shots to the new ones (codes to be internationalized)
-        await store.dispatch("updateCategoryName", {oldname: "New", newname: "category_new"})
-        await store.dispatch("updateCategoryName", {oldname: "Read", newname: "category_read"})
-        await store.dispatch("updateCategoryName", {oldname: "Unread", newname: "category_unread"})
-        await store.dispatch("updateCategoryName", {oldname: "One Shots", newname: "category_oneshots"})
+        await window['AMR_STORE'].dispatch("updateCategoryName", {oldname: "New", newname: "category_new"})
+        await window['AMR_STORE'].dispatch("updateCategoryName", {oldname: "Read", newname: "category_read"})
+        await window['AMR_STORE'].dispatch("updateCategoryName", {oldname: "Unread", newname: "category_unread"})
+        await window['AMR_STORE'].dispatch("updateCategoryName", {oldname: "One Shots", newname: "category_oneshots"})
         // create languages categories
-        afterCalls.push(async () => {await store.dispatch("updateLanguageCategories")})
+        afterCalls.push(async () => {await window['AMR_STORE'].dispatch("updateLanguageCategories")})
     }
     if (!versionAfter(ancVersion, "2.0.4")) { // if previous version is before 2.0.3
         afterCalls.push(async () => {
@@ -65,7 +64,7 @@ let updateApp = async function(ancVersion, curVersion) {
             }
             // reloads mangas
             console.log("Reloading mangas after running db update")
-            await store.dispatch('initMangasFromDB');
+            await window['AMR_STORE'].dispatch('initMangasFromDB');
         })
     }
     /**
@@ -85,10 +84,10 @@ let checkLangSet = function() {
             Array.isArray(el) ? arr.push(...el) : arr.push(el)
             return arr
         }, []).includes(curlang)) {
-        let readLangs = store.state.options.readlanguages;
+        let readLangs = window['AMR_STORE'].state.options.readlanguages;
         if (!readLangs.includes(curlang)) {
             console.log("Add language " + curlang + " to readable list of languages")
-            store.dispatch("addReadLanguage", curlang) // add the language
+            window['AMR_STORE'].dispatch("addReadLanguage", curlang) // add the language
         }
     }
 }

@@ -1,6 +1,5 @@
 import storedb from '../../amr/storedb'
-import Axios from 'axios'
-import * as utils from '../../amr/utils'
+// import * as utils from '../../amr/utils'
 import iconHelper from '../../amr/icon-helper';
 import mirrorsImpl from '../../amr/mirrors-impl';
 import amrUpdater from '../../amr/amr-updater';
@@ -67,7 +66,7 @@ const actions = {
      * @param {*} manga 
      */
     async updateMirror({ commit }, mirror) {
-        utils.debug("update description of " + mirror.mirrorName + " in db");
+        // utils.debug("update description of " + mirror.mirrorName + " in db");
         await storedb.storeWebsite(mirror);
     },
 

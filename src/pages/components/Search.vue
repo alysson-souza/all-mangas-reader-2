@@ -1,64 +1,66 @@
 <template>
-    <v-container fluid class="searchpanel">
-        <v-layout row>
-            <div class="mirrors-cont">
-                <SearchMirror v-for="ws in activatedWebsites" :key="ws.mirrorName" :mirror="ws" :search-phrase="search" @add-mangas="addMangas" />
-            </div>
-        </v-layout>
-        <v-layout row class="searchbar">
-            <v-flex xs9>
-                <v-text-field v-model="searchwrite" @keyup.enter="launchSearch()" />
-            </v-flex>
-            <v-flex xs3>
-                <v-btn color="primary" @click="launchSearch()" small>{{i18n("search_button")}}</v-btn>
-            </v-flex>
-        </v-layout>
-        <!-- results area -->
-        <v-layout row class="search-results">
+  <v-container fluid class="searchpanel">
+    <v-row >
+      <div class="mirrors-cont">
+        <SearchMirror v-for="ws in activatedWebsites" :key="ws.mirrorName" :mirror="ws" :search-phrase="search" @add-mangas="addMangas" />
+      </div>
+    </v-row>
+    <v-row  class="searchbar">
+      <v-col cols="9">
+        <v-text-field v-model="searchwrite" @keyup.enter="launchSearch()" />
+      </v-col>
+      <v-col cols="3">
+        <v-btn color="primary" @click="launchSearch()" small>{{i18n("search_button")}}</v-btn>
+      </v-col>
+    </v-row>
+    <!-- results area -->
+    <v-row  class="search-results">
+      <v-container fluid>
+        <v-tabs
+            v-model="langtabs"
+            color="transparent"
+            show-arrows
+        >
+          <v-tabs-slider></v-tabs-slider>
+          <v-tab v-for="lang in langs" 
+                :key="lang" 
+                :href="'#langtab-' + lang"
+                class="primary--text">
+            <Flag v-if="lang != 'aa'" :value="lang" big />
+            <v-btn color="primary" v-else>{{ i18n("search_multilang") }}</v-btn>
+          </v-tab>
+          
+          <v-tab-item :id="'langtab-' + lang" 
+                  v-for="(res, lang) in results" 
+                  :key="lang" 
+                  v-model="langtabs">
             <v-container fluid>
-                <v-tabs
-                    v-model="langtabs"
-                    color="transparent"
-                    show-arrows
-                >
-                    <v-tabs-slider></v-tabs-slider>
-                    <v-tab v-for="lang in langs" 
-                        :key="lang" 
-                        :href="'#langtab-' + lang"
-                        class="primary--text">
-                        <Flag v-if="lang != 'aa'" :value="lang" big />
-                        <v-btn color="primary" v-else>{{ i18n("search_multilang") }}</v-btn>
-                    </v-tab>
-                
-                    <v-tab-item :id="'langtab-' + lang" 
-                            v-for="(res, lang) in results" 
-                            :key="lang" 
-                            v-model="langtabs">
-                        <v-container fluid>
-                            <v-layout row v-for="fmtkey in res['__SORTEDKEYS__']" :key="fmtkey">
-                                <!-- name of the manga -->
-                                <v-flex xs4><strong>
-                                    {{res[fmtkey] === undefined ? "" : res[fmtkey][0].name}}
-                                </strong></v-flex>
-                                <!-- mirror icons buttons to add to list -->
-                                <v-flex xs8>
-                                    <v-tooltip top content-class="icon-ttip" v-for="(mg, key) in res[fmtkey]" :key="key">
-                                        <div class="mirror-result-cont" slot="activator">
-                                            <img @click="handleIconClick(mg)" :src="getIcon(mg.mirror)" :class="'mirror-icon ' + (isInList(mg) || mg.adding ? 'added' : '')" /> 
-                                            <v-icon v-if="isInList(mg)" color="green">mdi-check</v-icon>
-                                            <v-progress-circular indeterminate size="18" v-if="mg.adding" color="grey darken-4"></v-progress-circular>
-                                        </div>
-                                        <span v-if="isInList(mg)">{{i18n("search_result_inlist", mg.name, mg.mirror)}}</span>
-                                        <span v-else>{{i18n("search_result_add", mg.name, mg.mirror)}}</span>
-                                    </v-tooltip>
-                                </v-flex>
-                            </v-layout>
-                        </v-container>
-                    </v-tab-item>
-                </v-tabs>
+              <v-row  v-for="fmtkey in res['__SORTEDKEYS__']" :key="fmtkey">
+                <!-- name of the manga -->
+                <v-col cols="4">
+                  <strong>
+                    {{res[fmtkey] === undefined ? "" : res[fmtkey][0].name}}
+                  </strong>
+                </v-col>
+                <!-- mirror icons buttons to add to list -->
+                <v-col cols="8">
+                  <v-tooltip top content-class="icon-ttip" v-for="(mg, key) in res[fmtkey]" :key="key">
+                    <div class="mirror-result-cont" slot="activator">
+                      <img @click="handleIconClick(mg)" :src="getIcon(mg.mirror)" :class="'mirror-icon ' + (isInList(mg) || mg.adding ? 'added' : '')" /> 
+                      <v-icon v-if="isInList(mg)" color="green">mdi-check</v-icon>
+                      <v-progress-circular indeterminate size="18" v-if="mg.adding" color="grey darken-4"></v-progress-circular>
+                    </div>
+                    <span v-if="isInList(mg)">{{i18n("search_result_inlist", mg.name, mg.mirror)}}</span>
+                    <span v-else>{{i18n("search_result_add", mg.name, mg.mirror)}}</span>
+                  </v-tooltip>
+                </v-col>
+              </v-row>
             </v-container>
-        </v-layout>
-    </v-container>
+          </v-tab-item>
+        </v-tabs>
+      </v-container>
+    </v-row>
+  </v-container>
 </template>
 
 <script>

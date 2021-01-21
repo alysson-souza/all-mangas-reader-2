@@ -1,38 +1,40 @@
 <template>
-    <v-container fluid text-xs-center>
-        <v-layout row>
-            <v-flex xs6 offset-xs3>
-                <v-btn color="primary"
-                    class="refresh-button" 
-                    @click="updateChaps()"
-                    :loading="loadingChapters" 
-                    :disabled="loadingChapters">
-                    <v-icon>mdi-book-open-variant</v-icon>
-                    {{i18n("refresh_chapters")}}
-                </v-btn>
-                {{i18n("refresh_last", lastchaps)}}
-            </v-flex>
-        </v-layout>
-        <v-layout row>
-            <v-flex xs12>
-                <v-tooltip top>
-                    <div slot="activator">
-                        <v-btn color="primary"
-                            class="refresh-button" 
-                            @click="resetLists()"
-                            :loading="loadingLists" 
-                            :disabled="loadingLists">
-                            <v-icon>mdi-format-list-bulleted</v-icon>
-                            {{i18n("refresh_lists")}}
-                        </v-btn>
-                        <br/>{{i18n("refresh_lists_nb", stats.nb, stats.nbmangas)}}
-                    </div>
-                    <span>{{i18n("refresh_lists_desc")}}</span>
-                </v-tooltip>
-            </v-flex>
-        </v-layout>
-    </v-container>
+  <v-container class="text-center" fluid>
+    <v-row >
+      <v-col cols="6" offset="3">
+        <v-btn color="primary"
+              class="refresh-button" 
+              @click="updateChaps()"
+              :loading="loadingChapters" 
+              :disabled="loadingChapters">
+          <v-icon>mdi-book-open-variant</v-icon>
+          {{i18n("refresh_chapters")}}
+        </v-btn>
+        {{i18n("refresh_last", lastchaps)}}
+      </v-col>
+    </v-row>
+    <v-row >
+      <v-col cols="12">
+        <v-tooltip top>
+          <div slot="activator">
+            <v-btn color="primary"
+                  class="refresh-button" 
+                  @click="resetLists()"
+                  :loading="loadingLists" 
+                  :disabled="loadingLists">
+              <v-icon>mdi-format-list-bulleted</v-icon>
+              {{i18n("refresh_lists")}}
+            </v-btn>
+            <br/>
+            {{i18n("refresh_lists_nb", stats.nb, stats.nbmangas)}}
+          </div>
+          <span>{{i18n("refresh_lists_desc")}}</span>
+        </v-tooltip>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
+
 <script>
 import i18n from "../../amr/i18n";
 import * as utils from "../../amr/utils";

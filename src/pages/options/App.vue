@@ -1,13 +1,13 @@
 <template>
-	<v-app :dark="$store.state.options.dark === 1">
-        <v-content>
-          <!-- Before mirrors and mangas are loaded into options -->
-          <div v-if="!loaded" class="amr-loader">
-              <v-progress-circular indeterminate :width="4" :size="50" color="red darken-2"></v-progress-circular>
-          </div>
-          <!-- Once loaded -->
-          <Options v-if="loaded" />
-        </v-content>
+	<v-app>
+    <v-main>
+      <!-- Before mirrors and mangas are loaded into options -->
+      <div v-if="!loaded" class="amr-loader">
+        <v-progress-circular indeterminate :width="4" :size="50" color="red darken-2"></v-progress-circular>
+      </div>
+      <!-- Once loaded -->
+      <Options v-if="loaded" />
+    </v-main>
 	</v-app>
 </template>
 

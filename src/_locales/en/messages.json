@@ -1638,5 +1638,56 @@
   "options_search_open_series_checkbox": {
     "message": "Enable open in new tab",
     "description": "search open series in new tab"
+  },
+  "__V2_3_0": {
+    "message": "Just a filler to separate new labels from old ones"
+  },
+  "options_mirror_specific": {
+    "message": "Mirror Specific Options",
+    "description": "Tab for Mirror specific options"
+  },
+  "options_mirror_specific_mangadex": {
+    "message": "Mangadex Options",
+    "description": "section header for mangadex options"
+  },
+  "options_mangadex_datasaver": {
+    "message": "Use datasaver images (Compressed jpeg images for less bandwidth)",
+    "description": "Option for datasaver toggle on mangadex"
+  },
+  "options_mangadex_datasaver_label": {
+    "message": "Use datasaver images",
+    "description": "Option for datasaver toggle on mangadex"
+  },
+  "options_mangadex_blocked_groups": {
+    "message": "Blocked groups list",
+    "description": "Option for blocking groups on mangadex"
+  },
+  "options_mangadex_blocked_groups_label": {
+    "message": "List of groups that AMR should ignore releases from",
+    "description": "Option for blocking groups on mangadex"
+  },
+  "options_mangadex_preferred_groups": {
+    "message": "Preferred groups list",
+    "description": "Option for preferred groups on mangadex"
+  },
+  "options_mangadex_preferred_groups_label": {
+    "message": "List of groups AMR should use if multiple groups release for a series",
+    "description": "Option for preferred groups on mangadex"
+  },
+  "options_mangadex_image_server": {
+    "message": "Use Specific Image server",
+    "description": "Option for image server override"
+  },
+  "options_mangadex_image_server_label": {
+    "message": "Select which image server to use (ignored on Mangadex if you selected MD@Home)",
+    "description": "Option for image server override"
+  },
+  "options_mangadex_image_server_none": {
+    "message": "Let Mangadex decide",
+    "description" : "No Mangadex image server ovverride text"
+  },
+  "options_numeric": {
+    "message": "Must be a numeric value",
+    "description": "Numeric option tooltip"
   }
 }

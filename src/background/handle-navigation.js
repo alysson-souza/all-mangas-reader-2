@@ -1,4 +1,3 @@
-import store from '../store';
 
 class HandleNavigation {
     handle(message, sender) {
@@ -31,7 +30,7 @@ class HandleNavigation {
                 return Promise.resolve();
             // set a Value in localStorage
             case "save_option": 
-                store.dispatch("setOption", { key: message.key, value: message.value });
+            window['AMR_STORE'].dispatch("setOption", { key: message.key, value: message.value });
                 return Promise.resolve();
         }
     }

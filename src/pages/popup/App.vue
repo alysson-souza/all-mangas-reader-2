@@ -1,24 +1,26 @@
 <template>
-	<v-app :dark="$store.state.options.dark === 1">
+	<v-app>
 		
 		<!-- Main toolbar in popup -->
-		<v-toolbar app>
-			<img src="/icons/icon_32.png" alt="All Mangas Reader">
-			<v-toolbar-title v-text="title"></v-toolbar-title>
-			<v-spacer></v-spacer>
-			<v-btn icon @click.stop="openOptions()">
-				<v-icon>mdi-settings</v-icon>
-			</v-btn>
-			<v-btn icon @click.stop="openSearch()">
-				<v-icon>mdi-magnify</v-icon>
-			</v-btn>
-			<v-btn icon @click.stop="openRPanel()">
-				<v-icon>mdi-dots-vertical</v-icon>
-			</v-btn>
-		</v-toolbar>
+		<v-card>
+			<v-toolbar>
+				<img src="/icons/icon_32.png" alt="All Mangas Reader">
+				<v-toolbar-title v-text="title"></v-toolbar-title>
+				<v-spacer></v-spacer>
+				<v-btn icon @click.stop="openOptions()">
+					<v-icon>mdi-cog</v-icon>
+				</v-btn>
+				<v-btn icon @click.stop="openSearch()">
+					<v-icon>mdi-magnify</v-icon>
+				</v-btn>
+				<v-btn icon @click.stop="openRPanel()">
+					<v-icon>mdi-dots-vertical</v-icon>
+				</v-btn>
+			</v-toolbar>
+		</v-card>
 		
 		<!-- Default panel containing manga list -->
-		<v-content>
+		<v-main>
 			<v-alert class="mb-0" type="info" :value="true" icon="mdi-incognito" v-if="!trackingDone">
 				{{i18n("options_gen_allowtracking_desc")}}
 				<div>
@@ -27,35 +29,37 @@
 				</div>
 			</v-alert>
 			<MangaList
-				@search-request="openSearch"
-				@manga-loaded="handleLoaded()"
-				>
+          @search-request="openSearch"
+          @manga-loaded="handleLoaded()"
+      >
 			</MangaList>
 			<v-tooltip top v-if="alertmessage !== ''">
-				<v-alert class="mb-0" type="warning" :value="true" icon="mdi-alert-decagram" slot="activator">{{alertmessage}}</v-alert>
+				<template v-slot:activator="{ on }">
+					<v-alert class="mb-0" type="warning" v-on="on" :value="true" icon="mdi-alert-decagram" slot="activator">{{alertmessage}}</v-alert>
+				</template>
 				<span>{{tooltipalert}}</span>
 			</v-tooltip>
 			<div id="__bottom_app__"></div>
-		</v-content>
+		</v-main>
 		
 		<!-- Options dialog -->
 		<v-dialog
 			v-model="options"
 			fullscreen
 			transition="dialog-bottom-transition"
-			:overlay="false"
+			hide-overlay
 			scrollable
-			>
-			<v-card tile>
-			<v-toolbar app>
-				<v-btn icon @click.native="closeOptions()">
-				<v-icon>mdi-close</v-icon>
-				</v-btn>
-				<v-toolbar-title>{{i18n("options_title")}}</v-toolbar-title>
-			</v-toolbar>
-						<v-content>
-				<Options v-if="options" />
-						</v-content>
+    	>
+			<v-card>
+				<v-toolbar max-height="64">
+					<v-btn icon @click.native="closeOptions()">
+						<v-icon>mdi-close</v-icon>
+					</v-btn>
+					<v-toolbar-title>{{i18n("options_title")}}</v-toolbar-title>
+				</v-toolbar>
+				<v-main>
+					<Options v-if="options" />
+				</v-main>
 			</v-card>
 		</v-dialog>
 		<!-- Search dialog -->
@@ -63,9 +67,9 @@
 				v-model="search"
 				fullscreen
 				transition="dialog-bottom-transition"
-				:overlay="false"
+				hide-overlay
 				scrollable
-				>
+    >
 			<v-card tile>
 			<v-toolbar app>
 				<v-btn icon @click.native="closeSearch()">
@@ -73,9 +77,9 @@
 				</v-btn>
 				<v-toolbar-title>{{i18n("search_title")}}</v-toolbar-title>
 			</v-toolbar>
-						<v-content>
+						<v-main>
 				<Search v-if="search" :to-search="toSearch" />
-						</v-content>
+						</v-main>
 			</v-card>
 		</v-dialog>
 		<!-- Right panel containing links, refresh buttons, import export panels -->
@@ -83,63 +87,62 @@
 			temporary
 			v-model="rpanel"
 					right
-			:dark="$store.state.options.dark === 1"
 			absolute
 			width="500"
 		>
 			<!-- Links in right panel -->
-			<v-container fluid class="pa-0" text-xs-center v-if="rpanel">
-				<v-layout row>
-					<v-flex xs6>
-						<v-layout row>
-					<v-flex xs3>
+			<v-container fluid class="pa-0 text-center" v-if="rpanel">
+				<v-row >
+					<v-col cols="6">
+						<v-row >
+					<v-col cols="3">
 						<v-btn flat icon color="red darken-2" @click="opentab('https://allmangasreader.com')">
 							<img src="/icons/icon_32.png" width="24" alt="All Mangas Reader">
 						</v-btn>
-					</v-flex>
-					<v-flex xs3>
+					</v-col>
+					<v-col cols="3">
 						<v-btn flat icon color="yellow" @click="opentab('/pages/bookmarks/bookmarks.html')">
 							<v-icon>mdi-star</v-icon>
 						</v-btn>
-					</v-flex>
-					<v-flex xs3>
+					</v-col>
+					<v-col cols="3">
 						<v-btn flat icon color="blue" @click="opentab('https://gitlab.com/all-mangas-reader/all-mangas-reader-2/wikis/home')">
 							<v-icon>mdi-help</v-icon>
 						</v-btn>
-					</v-flex>
-					<v-flex xs3>
+					</v-col>
+					<v-col cols="3">
 						<v-btn flat icon color="blue lighten-2" @click="opentab('/pages/popup/popup.html?mode=tab')">
 							<v-icon>mdi-open-in-new</v-icon>
 						</v-btn>
-					</v-flex>
-						</v-layout>
-					</v-flex>
-					<v-flex xs6>
+					</v-col>
+						</v-row>
+					</v-col>
+					<v-col cols="6">
 						<v-tabs
-				v-model="tabs"
-				color="transparent"
+              v-model="tabs"
+              color="transparent"
 							right
-					>
-				<v-tabs-slider></v-tabs-slider>
-				<v-tab href="#refresh">
-					<v-icon>mdi-refresh</v-icon>
-				</v-tab>
-				<v-tab @click="openImportExport()" href="#importexport">
-					<v-icon>mdi-content-save</v-icon>
-				</v-tab>
-			</v-tabs>
-					</v-flex>
-				</v-layout>
+					  >
+              <v-tabs-slider></v-tabs-slider>
+              <v-tab href="#refresh">
+                <v-icon>mdi-refresh</v-icon>
+              </v-tab>
+              <v-tab @click="openImportExport()" href="#importexport">
+                <v-icon>mdi-content-save</v-icon>
+              </v-tab>
+            </v-tabs>
+					</v-col>
+				</v-row>
 			</v-container>
 			<v-tabs-items v-model="tabs" :class="($store.state.options.dark === 1 ? 'black' : 'white')" v-if="rpanel">
-					<v-tab-item value="refresh">
-						<!-- Refresh buttons -->
-						<Timers />
-					</v-tab-item>
-					<v-tab-item value="importexport">
-						<!-- Import export panels -->
-						<ImportExport />
-					</v-tab-item>
+        <v-tab-item value="refresh">
+          <!-- Refresh buttons -->
+          <Timers />
+        </v-tab-item>
+        <v-tab-item value="importexport">
+          <!-- Import export panels -->
+          <ImportExport />
+        </v-tab-item>
 			</v-tabs-items>
 		</v-navigation-drawer>
 	</v-app>

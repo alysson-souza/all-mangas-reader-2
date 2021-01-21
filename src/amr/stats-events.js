@@ -1,4 +1,3 @@
-import store from '../store';
 
 /**
  * This class sends tracking information or statistical purposes
@@ -14,7 +13,7 @@ class StatsEvents {
             var u="https://matomo.allmangasreader.com/";
             _paq.push(['setTrackerUrl', u+'piwik.php']);
             _paq.push(['setSiteId', '1']);
-            if (store.state.options.allowtracking === 1) {
+            if (window['AMR_STORE'].state.options.allowtracking === 1) {
                 require("../stats/piwik")
                 this.statsLoaded = true
             }
@@ -31,7 +30,7 @@ class StatsEvents {
         try {
             _paq.push(['trackEvent', category, action, label]);
         } catch (e) {
-            if (store.state.options.debug === 1) {
+            if (window['AMR_STORE'].state.options.debug === 1) {
                 console.error("Error while recording statistics : ")
                 console.error(e)
             }
@@ -47,7 +46,7 @@ class StatsEvents {
         this.trackEvent('Update', version, navigator);
     }
     reloadStats() {
-        if (store.state.options.allowtracking && !this.statsLoaded) {
+        if (window['AMR_STORE'].state.options.allowtracking && !this.statsLoaded) {
             require("../stats/piwik")
         }
     }

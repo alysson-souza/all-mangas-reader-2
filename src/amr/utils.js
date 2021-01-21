@@ -1,4 +1,3 @@
-import store from '../store';
 import i18n from './i18n';
 
 /**
@@ -45,7 +44,7 @@ export function matchDomain(str, rule) {
  */
 export function currentPageMatch(url) {
     let host = extractHostname(url)
-    for (let mir of store.state.mirrors.all) {
+    for (let mir of window['AMR_STORE'].state.mirrors.all) {
         if (mir.activated && mir.domains) {
             let wss = mir.domains;
             for (let u of wss) {
@@ -61,7 +60,7 @@ export function currentPageMatch(url) {
  * Logs a message if debug mode
  */
 export function debug(message) {
-    if (store.state.options.debug === 1) {
+    if (window['AMR_STORE'].state.options.debug === 1) {
         console.log(message);
     }
 }
@@ -149,7 +148,7 @@ export function mangaKey(url, forcedmirror, toconcat) {
     } else {
         let host = extractHostname(url);
         // look for mirror implementation matching this root domain
-        let mirror = store.state.mirrors.all.find(
+        let mirror = window['AMR_STORE'].state.mirrors.all.find(
             mir => mir.domains.findIndex(
                 ws => matchDomain(host, ws)
             ) !== -1
@@ -258,7 +257,7 @@ export function getUnifiedLang(lang) {
 
 export function readLanguage(manga) {
     if (manga.language !== undefined) return getUnifiedLang(manga.language)
-    let langs = store.state.mirrors.all.find(mir => mir.mirrorName === manga.mirror).languages
+    let langs = window['AMR_STORE'].state.mirrors.all.find(mir => mir.mirrorName === manga.mirror).languages
     if (langs.split(",").length > 1) {
         return "aa" // code for multiple languages possible
     } else {

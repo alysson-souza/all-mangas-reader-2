@@ -1,5 +1,5 @@
 <template>
-	<v-app :dark="$store.state.options.dark === 1">
+	<v-app>
     <v-navigation-drawer
       :clipped="$vuetify.breakpoint.lgAndUp"
       v-model="drawer"
@@ -113,22 +113,22 @@
         </v-btn>
       </v-btn-toggle>
     </v-toolbar>
-    <v-content>
-      <v-container fluid fill-height>
-        <v-layout justify-center align-center v-if="!loaded">
+    <v-main>
+      <v-container class="fill-height" fluid>
+        <v-row justify="center" align="center" v-if="!loaded">
           <!-- Before mirrors and bookmarks are loaded into bookmarks -->
               <v-progress-circular indeterminate :width="4" :size="50" color="red darken-2"></v-progress-circular>
-        </v-layout>
-        <v-layout v-else>
+        </v-row>
+        <v-row v-else>
           <!-- Once loaded -->
           <Bookmarks :bookmark-list="displayedBookmarks" :size="size.value" v-if="nbBookmarks > 0 && displayedBookmarks.length > 0"/>
           <h2 v-else align-center>
             <span v-if="nbBookmarks > 0" v-html="i18n('bookmarks_no_bookmarks_filter')"></span>
             <span v-else v-html="i18n('bookmarks_no_bookmarks')"></span>
           </h2>
-        </v-layout>
+        </v-row>
       </v-container>
-    </v-content>
+    </v-main>
 	</v-app>
 </template>
 

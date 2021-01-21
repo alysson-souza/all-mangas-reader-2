@@ -16,13 +16,13 @@
 
     <!-- Details, hidden, more actions on manga group -->
     <transition name="fadeHeight">
-    <v-layout row v-if="details">
-      <v-flex xs12 class="amr-details">
+    <v-row  v-if="details" dense>
+      <v-col cols="12" class="amr-details">
         <v-card tile flat :color="color(3)" class="back-card">
-          <v-container grid-list-md>
-            <v-layout row>
+          <v-container>
+            <v-row dense>
               <!-- Manage manga categories -->
-              <v-flex xs6 class="amr-categories">
+              <v-col cols="6" class="amr-categories">
                 <span>{{i18n("list_details_cats")}} : </span>
                 <!-- Categories -->
                 <Categories 
@@ -41,9 +41,9 @@
                   </option>
                 </select>
                 </div>
-              </v-flex>
+              </v-col>
               <!-- Manage manga bookmarks -->
-              <v-flex xs6 class="amr-bookmarks">
+              <v-col cols="6" class="amr-bookmarks">
                 <span>{{i18n("list_details_books")}} : </span>
                 <select v-if="bookmarks.length" dark v-model="curBm" @change="openBookmark()" :class="color(2)">
                   <option v-for="(bm, key) of bookmarks" 
@@ -53,11 +53,11 @@
                   </option>
                 </select>
                 <span v-if="!bookmarks.length">{{i18n("list_details_no_bookmarks")}}</span>
-              </v-flex>
-            </v-layout>
+              </v-col>
+            </v-row>
             <!-- Actions buttons -->
-            <v-layout row text-xs-center>
-              <v-flex xs12 class="amr-actions">
+            <v-row class="text-center" >
+              <v-col cols="12" class="amr-actions">
                 <v-btn dark @click='searchElsewhere()' :color="color(0)" small>{{i18n("list_details_act_search")}}</v-btn>
                 <v-btn dark @click='resetManga()' :color="color(0)" small>{{i18n("list_details_act_reset")}}</v-btn>
                 <v-btn dark v-if="mangas[0].read === 0" @click='stopFollowingUpdates()' :color="color(0)" small>{{i18n("list_details_act_stop_follow")}}</v-btn>
@@ -65,12 +65,12 @@
                 <v-btn dark v-if="mangas[0].update === 1" @click='stopUpdating()' :color="color(0)" small>{{i18n("list_details_act_stop_updating")}}</v-btn>
                 <v-btn dark v-if="mangas[0].update === 0" @click='restartUpdating()' :color="color(0)" small>{{i18n("list_details_act_restart_updating")}}</v-btn>
                 <v-btn dark @click='refreshMangaNow()' :color="color(0)" small>{{ i18n("refresh_chapters") }}</v-btn>
-              </v-flex>
-            </v-layout>
+              </v-col>
+            </v-row>
           </v-container>
         </v-card>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
     </transition>
   </v-container>
 </template>

@@ -55,6 +55,39 @@ global.registerMangaObject = function(object) {
     }
 }
 
+
+/**
+ * Write register_implementations.js file
+ */
+function writeWebsites(allAbstracts, allMirrors) {
+    var json = JSON.stringify(websites, null, 2)
+    let conditionalExec = ({def, impl, impls}) => {
+        return `if ("${def.mirrorName}" === current ${def.type === "abstract" ? " || " + "[" + impls.map(n => '"' + n + '"').join(",") + "].includes(current)": ""} || !current) {
+            ${impl}
+        }`
+    }
+    let content = `
+    const loadMirrors = function(current) {
+        ${allAbstracts.map(conditionalExec).join("\n;")}
+        ${allMirrors.map(conditionalExec).join("\n;")}
+    }
+    const websitesDescription = ${json};
+    
+    module.exports = { loadMirrors, websitesDescription };
+    window["amrLoadMirrors"] = loadMirrors;
+    `
+    fs.writeFile('register_implementations.js', content, () => {})
+}
+
+// function to encode file data to base64 encoded string
+function base64_encode(file) {
+    // read binary data
+    var bitmap = fs.readFileSync(file)
+    // convert binary data to base64 encoded string
+    return "data:image/png;base64," +  Buffer.from(bitmap).toString('base64')
+}
+
+console.info("Starting mirror build")
 fs.readdir(mirrors, async (err, files) => {
     let cur = 0
     let allMirrors = [], allAbstracts = []
@@ -98,33 +131,5 @@ fs.readdir(mirrors, async (err, files) => {
     writeWebsites(allAbstracts, allMirrors)
 })
 
-/**
- * Write register_implementations.js file
- */
-function writeWebsites(allAbstracts, allMirrors) {
-    var json = JSON.stringify(websites, null, 2)
-    let conditionalExec = ({def, impl, impls}) => {
-        return `if ("${def.mirrorName}" === current ${def.type === "abstract" ? " || " + "[" + impls.map(n => '"' + n + '"').join(",") + "].includes(current)": ""} || !current) {
-            ${impl}
-        }`
-    }
-    let content = `
-    const loadMirrors = function(current) {
-        ${allAbstracts.map(conditionalExec).join("\n;")}
-        ${allMirrors.map(conditionalExec).join("\n;")}
-    }
-    const websitesDescription = ${json};
-    
-    module.exports = { loadMirrors, websitesDescription };
-    window["amrLoadMirrors"] = loadMirrors;
-    `
-    fs.writeFile('register_implementations.js', content, () => {})
-}
+console.info("Mirror Rebuild Complete")
 
-// function to encode file data to base64 encoded string
-function base64_encode(file) {
-    // read binary data
-    var bitmap = fs.readFileSync(file)
-    // convert binary data to base64 encoded string
-    return "data:image/png;base64," +  Buffer.from(bitmap).toString('base64')
-}

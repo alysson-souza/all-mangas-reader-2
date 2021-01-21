@@ -1,8 +1,8 @@
 <template>
-    <v-container fluid grid-list-lg>
+    <v-container fluid>
         <gallery :images="scans" :index="curScan" @close="curScan = null" :options="{closeOnSlideClick:true}"></gallery>
-        <v-layout row wrap>
-            <v-flex xs12 sm6  v-bind="getSize()" v-for="bm in sortBookmarkList" :key="bm.key">
+        <v-row  >
+            <v-col cols="12" sm="6"  v-bind="getSize()" v-for="bm in sortBookmarkList" :key="bm.key">
                 <v-card tile>
                     <BookmarkScan 
                          v-if="bm.type == 'scan'"
@@ -33,39 +33,39 @@
                         </div>
                     </v-card-title>
                 </v-card>
-            </v-flex>
-        </v-layout>
+            </v-col>
+        </v-row>
         <v-dialog v-model="deleteBookmarkDialog" max-width="290">
             <v-card v-if="bmToDelete">
                 <v-card-title class="headline">{{bmToDelete.type === 'chapter' ? i18n("bookmarks_chapter_delete") : i18n("bookmarks_scan_delete")}}</v-card-title>
                 <v-card-text>{{bmToDelete.type === 'chapter' ? i18n("bookmarks_chapter_delete_text", bmToDelete.name, bmToDelete.chapName) : i18n("bookmarks_scan_delete_text", bmToDelete.name, bmToDelete.chapName, bmToDelete.scanName)}}</v-card-text>
                 <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="red darken-1" flat @click.native="reallyDeleteBm()">{{i18n("button_yes")}}</v-btn>
-                <v-btn color="grey darken-1" flat @click.native="deleteBookmarkDialog = false">{{i18n("button_no")}}</v-btn>
+                  <v-spacer></v-spacer>
+                  <v-btn color="red darken-1" flat @click.native="reallyDeleteBm()">{{i18n("button_yes")}}</v-btn>
+                  <v-btn color="grey darken-1" flat @click.native="deleteBookmarkDialog = false">{{i18n("button_no")}}</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
         <v-dialog v-model="editBookmarkDialog" max-width="500px">
             <v-card v-if="bmToEdit">
                 <v-card-title>
-                <span class="headline" v-if="bmToEdit.type === 'chapter'">{{i18n('bookmarks_chapter_edit')}}</span>
-                <span class="headline" v-else>{{i18n('bookmarks_scan_edit')}}</span>
+                  <span class="headline" v-if="bmToEdit.type === 'chapter'">{{i18n('bookmarks_chapter_edit')}}</span>
+                  <span class="headline" v-else>{{i18n('bookmarks_scan_edit')}}</span>
                 </v-card-title>
                 <v-card-text>
-                    <p v-html="bmToEdit.type === 'chapter' ? i18n('bookmarks_chapter_edit_text', bmToEdit.name, bmToEdit.chapName) : i18n('bookmarks_scan_edit_text', bmToEdit.name, bmToEdit.chapName, bmToEdit.scanName)"></p>
-                <v-container grid-list-md>
-                    <v-layout wrap>
-                    <v-flex xs12>
-                        <v-textarea :label="i18n('bookmarks_edit_note')" v-model="bmToEdit.note"></v-textarea>
-                    </v-flex>
-                    </v-layout>
-                </v-container>
+                  <p v-html="bmToEdit.type === 'chapter' ? i18n('bookmarks_chapter_edit_text', bmToEdit.name, bmToEdit.chapName) : i18n('bookmarks_scan_edit_text', bmToEdit.name, bmToEdit.chapName, bmToEdit.scanName)"></p>
+                  <v-container>
+                      <v-row dense>
+                        <v-col cols="12">
+                            <v-textarea :label="i18n('bookmarks_edit_note')" v-model="bmToEdit.note"></v-textarea>
+                        </v-col>
+                      </v-row>
+                  </v-container>
                 </v-card-text>
                 <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="primary darken-1" flat @click.native="editBookmarkDialog = false">{{i18n('button_cancel')}}</v-btn>
-                <v-btn color="primary darken-1" flat @click.native="reallyEditBm">{{i18n('button_save')}}</v-btn>
+                  <v-spacer></v-spacer>
+                  <v-btn color="primary darken-1" flat @click.native="editBookmarkDialog = false">{{i18n('button_cancel')}}</v-btn>
+                  <v-btn color="primary darken-1" flat @click.native="reallyEditBm">{{i18n('button_save')}}</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -95,6 +95,7 @@ export default {
         .map(bm => bm.displayedUrl);
     },
     sortBookmarkList: function() {
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties, vue/no-mutating-props
         return this.bookmarkList.sort((a, b) => {
             let cmp = a.name.localeCompare(b.name);
             let cmpc = a.chapName.localeCompare(b.chapName);

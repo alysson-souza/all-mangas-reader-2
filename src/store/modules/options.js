@@ -1,5 +1,3 @@
-import storedb from '../../amr/storedb'
-import Vue from 'vue';
 import { THINSCAN } from '../../amr/options';
 
 const isFirefox = function() {
@@ -110,10 +108,16 @@ const default_options = {
     lastChaptersUpdate: 0, // last time chapters lists have been updated
     lastMirrorsUpdate: 0, // last time mirrors have been updated
 
+    /** Mangadex specific options */
+    mangadexBlockedGroups: '', // Group id's to block chapters from
+    mangadexPreferredGroups: '', // Group id's to prefer chapters from
+    mangadexDataSaver: 0, // Use the datasaver option when getting chapter images
+    mangadexImageServer: 'none', // Use the MD@Home network when getting chapter images (not implimented in v2 api yet)
+
 }
 
 const jsonOptions = ["categoriesStates", "readlanguages"];
-const stringOptions = ["colornew", "colorread", "colornotfollow"];
+const stringOptions = ["colornew", "colorread", "colornotfollow", "mangadexBlockedGroups", "mangadexPreferredGroups", "mangadexImageServer"];
 
 /**
  *  initial state of amr options
@@ -278,6 +282,15 @@ const mutations = {
     setOption(state, { key, value }) {
         if (!key) console.error("Impossible to set option with undefined key; value is " + value);
         else state[key] = value;
+    },
+    /**
+     * Set {key, value} option
+     * @param {*} state 
+     * @param {*} obj containing key and value
+     */
+    setMangadexOption(state, { key, value }) {
+        if (!key) console.error("Impossible to set option with undefined key; value is " + value);
+        else state.mangadex[key] = value;
     },
     /**
      * Adds a category in categories states

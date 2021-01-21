@@ -1,9 +1,9 @@
 <template>
-	<v-app :dark="$store.state.options.dark === 1">
+	<v-app>
     <!-- Before mirrors and mangas are loaded into options -->
-    <v-content v-if="!loaded" class="amr-loader">
+    <v-main v-if="!loaded" class="amr-loader">
         <v-progress-circular indeterminate :width="4" :size="50" color="red darken-2"></v-progress-circular>
-    </v-content>
+    </v-main>
 
     <!-- Once loaded -->
     <v-toolbar v-if="loaded"
@@ -22,9 +22,9 @@
         <span>{{i18n("importexport_title")}}</span>
       </v-toolbar-title>
     </v-toolbar>
-    <v-content>
+    <v-main>
       <ImportExport />
-    </v-content>
+    </v-main>
 	</v-app>
 </template>
 
