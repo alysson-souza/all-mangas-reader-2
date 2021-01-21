@@ -1,4 +1,31 @@
+### V2.3.0
+  This release includes a major update of the backend libraries used to build this extension. Some ui elements have been reworked as a result of this but
+  the end result should be very similar
+
+  New Features:
     - Added tab in options screen for mirror specific options
+    - Added option to select data saver option for mangadex
+    - Added option to select image server on mangadex (This is ignored when you have MD@Home turned on)
+
+  New Mirrors:
+    - Manga Llama (https://mangallama.com/)
+    - Manga Freak (https://w11.mangafreak.net)
+  
+  Mirror Fixes: 
+    - Asura Scans: Fixed broken images (they were only webscraper images not actual scans)
+    - Mangakakalot: Updated image selection to fix the reader
+    - Mangasee: Fixed image server path
+
+### V2.2.14
+  Fixes:
+    - Changed cdn for material icons due to an outage (Thanks to @GameBurrow)
+  
+  Mirror Fixes:
+    - Scan Trad (https://scantrad.net)
+  
+  New Mirrors:
+    - Read Comic Online (https://readcomiconline.to) - Note ths site has periodic captchas which cause amr to fail, this cannot be avoided
+
 ### V2.2.13
 New Mirrors:
   - Twilight Scans (https://twilightscans.com/)
@@ -7,31 +34,6 @@ Disabled Mirrors:
   - KKJ Scans
 
 ### V2.2.12
-New Features:
-  - Ability to refresh chapters for a single manga series
-  - Ability to select multiple manga to set labels for at once
-
-Misc Changes:
-  - Added a little bit of padding to the bottom of the last image
-  - Removed http/https from page history call so changing chapters works when websites switch between http and https
-  - Vue Devtools support added back in
-  - Changed text of multilingual site tab in search, also made it a button to easily tell it is something to check
-  - Changed font size and list width when page is loaded in a tab instead of a popup. More work will be done later to make this look better
-
-New Mirrors:
-  - MangaTX (https://mangatx.com/)
-  - Random Translations (https://randomtranslations.com/)
-  - Asura Scans (https://asurascans.com/)
-
-Mirror Changes:
-  - Updated Mangadex to api V2
-
-Disabled Mirrors:
-  - Jaimini's Box
-  - Ninja Scans
-  - Pecintakomik
-
-### V2.2.11
 New Features:
   - Ability to refresh chapters for a single manga series
   - Ability to select multiple manga to set labels for at once
