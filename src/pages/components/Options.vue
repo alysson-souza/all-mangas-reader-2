@@ -338,7 +338,7 @@
               </v-row>
             </v-container>
           </div>
-          <!-- Blocked Groups -->
+          <!-- Blocked Groups - ->
           <div class="text-h6">{{i18n('options_mangadex_blocked_groups')}}</div>
           <div class="text-body-1">{{i18n('options_mangadex_blocked_groups_label')}}</div>
           <v-text-field v-model="arrays.mangadexBlockedGroups.value" dense outlined>
@@ -364,7 +364,7 @@
               {{ group }}
             </v-chip>
           </v-card>
-          <!-- Preferred Groups -->
+          <!- - Preferred Groups - ->
           <div class="text-h6">{{i18n('options_mangadex_preferred_groups')}}</div>
           <div class="text-body-1">{{i18n('options_mangadex_preferred_groups_label')}}</div>
           <v-text-field v-model="arrays.mangadexPreferredGroups.value" dense outlined> 
@@ -389,7 +389,7 @@
             >
               {{ group }}
             </v-chip>
-          </v-card>
+          </v-card> -->
         </v-container>
       </v-tab-item>
     </v-tabs-items>

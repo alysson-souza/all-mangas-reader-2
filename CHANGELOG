@@ -1,3 +1,21 @@
+### V2.3.0
+  This release includes a major update of the backend libraries used to build this extension. Some ui elements have been reworked as a result of this but
+  the end result should be very similar
+
+  New Features:
+    - Added tab in options screen for mirror specific options
+    - Added option to select data saver option for mangadex
+    - Added option to select image server on mangadex (This is ignored when you have MD@Home turned on)
+
+  New Mirrors:
+    - Manga Llama (https://mangallama.com/)
+    - Manga Freak (https://w11.mangafreak.net)
+  
+  Mirror Fixes: 
+    - Asura Scans: Fixed broken images (they were only webscraper images not actual scans)
+    - Mangakakalot: Updated image selection to fix the reader
+    - Mangasee: Fixed image server path
+
 ### V2.2.14
   Fixes:
     - Changed cdn for material icons due to an outage (Thanks to @GameBurrow)
