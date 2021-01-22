@@ -1,10 +1,17 @@
 <template>
   <div>
-    <!-- Before mangas are loaded into popup -->
-    <div v-if="!loaded" class="amr-loader">
-      <v-progress-circular indeterminate :width="4" :size="50" color="red darken-2"></v-progress-circular>
-    </div>
-    <v-data-table :items="allMangas" :loading="!loaded" >
+    <!-- Categories and filters -->
+    <v-row no-gutters>
+      <!-- Categories -->
+      <v-col cols="9">
+        <Categories :categories="categories" :static-cats="false" :delegate-delete="false" />
+      </v-col>
+      <!-- Filters -->
+      <v-col cols="3" class="float-right">
+        
+      </v-col>
+    </v-row>
+    <v-data-table :items="visMangas" :loading="!loaded" :custom-sort="sortMangaList">
       <template v-slot:progress>
         <v-progress-linear
           color="purple"
@@ -14,11 +21,12 @@
       </template>
       <template v-slot:body="{items}">
         <tbody>
-          <tr v-for="manga in items" :key="manga.key" :class="color(manga, 0)">
-            <td>{{ manga.name }}</td>
-            <td>{{ manga.mirror }}</td>
-            <td>{{ manga.url }}</td>
-          </tr>
+          <Manga 
+            v-for="manga in items" 
+            :key="manga.key" 
+            :manga="[manga]"
+            :firstManga="manga"
+          />
         </tbody>
       </template>
     </v-data-table>
@@ -42,12 +50,11 @@
 <script>
 import i18n from "../../amr/i18n";
 import { mapGetters } from "vuex";
-import MangaGroup from "./MangaGroup";
+import Manga from "./Manga";
 import Categories from "./Categories";
 import browser from "webextension-polyfill";
 import * as utilsamr from '../../amr/utils';
 import * as utils from '../utils';
-import MultiMangaAction from './MultiMangaAction';
 
 const default_sort = (a, b) => {
     let af = utilsamr.formatMgName(a.name), bf = utilsamr.formatMgName(b.name)
@@ -100,23 +107,6 @@ export default {
         )
     },
     /**
-     * Sort mangas (according to this.sort)
-     */
-    sortedMangas: function() {
-        var cmp;
-        if (this.sort === "az") {
-            cmp = default_sort
-        } else /*if (sort === "updates")*/ {
-            cmp = function(a, b) {
-                let ha = utils.hasNew(a),
-                    hb = utils.hasNew(b);
-                // primary sort on manga has new chapter, secondary on alphabetical
-                return (ha === hb ? default_sort(a, b) : (ha && !hb ? -1 : 1));
-            };
-        };
-        return this.visMangas.sort(cmp);
-    },
-    /**
      * Build mangas groups (by name)
      */
     groupedMangas: function() {
@@ -134,7 +124,7 @@ export default {
     ...mapGetters(["countMangas", "allMangas"])
   },
   name: "MangaList",
-  // components: { MultiMangaAction, MangaGroup, Categories },
+  components: { Categories, Manga },
   methods: {
     i18n: (message, ...args) => i18n(message, ...args),
     convertIcons: str => utils.convertIcons(str),
@@ -196,6 +186,32 @@ export default {
     color: function(manga, light) {
       return utils.getColor(manga, this.options, light);
     },
+
+    sortMangaList(items) {
+      var cmp;
+      if (this.sort === "az") {
+          cmp = default_sort
+      } else /*if (sort === "updates")*/ {
+          cmp = function(a, b) {
+              let ha = utils.hasNew(a),
+                  hb = utils.hasNew(b);
+              // primary sort on manga has new chapter, secondary on alphabetical
+              return (ha === hb ? default_sort(a, b) : (ha && !hb ? -1 : 1));
+          };
+      };
+      return items.sort(cmp);
+    },
+
+    mirror: function(manga) {
+      return this.$store.state.mirrors.all.find(
+        mir => mir.mirrorName === manga.mirror
+      );
+    },
+    isMirrorEnabled: function (manga) {
+      let mirror = mirror(manga)
+
+      return mirror && !mirror.disabled;
+    },
   },
   async created() {
     // initialize the IntersectionObserver for visibility checks
@@ -223,6 +239,7 @@ export default {
       key: "all",
       mutation: "setBookmarks"
     });
+    await new Promise(resolve => setTimeout(resolve, 2000))
     this.loaded = true;
     this.$emit("manga-loaded")
   }
