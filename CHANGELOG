@@ -1,3 +1,17 @@
+### V2.3.1
+  Fixes:
+    - Updated the book offset icon so it appears
+    - Changed add category input so it responds to dark mode properly
+    
+  Changes:
+    - Removed extra padding on reader options to condense those
+    - Made the manga title text smaller
+    - Added margin to AMR logo on the list page
+
+  New Mirrors:
+    - Void Scans (https://voidscans.com/)
+    - Top Manhua (https://topmanhua.com/)
+
 ### V2.3.0
   This release includes a major update of the backend libraries used to build this extension. Some ui elements have been reworked as a result of this but
   the end result should be very similar

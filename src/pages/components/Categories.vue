@@ -54,7 +54,7 @@
         <span v-if="countUsed(cat) > 0" class="cat-badge grey darken-1">{{countUsed(cat)}}</span>
       </div>
       <!-- Input text to add a category -->
-      <input v-if="!staticCats" type="text" v-model="newCat" :placeholder="i18n('list_cat_add')" class="cat-add"
+      <v-text-field v-if="!staticCats" dense v-model="newCat" :placeholder="i18n('list_cat_add')" class="cat-add"
         @keyup.enter="addCategory()" />
     <v-dialog v-model="deleteCatDialog" max-width="290">
       <v-card>
