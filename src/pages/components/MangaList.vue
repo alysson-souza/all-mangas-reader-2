@@ -11,7 +11,7 @@
         
       </v-col>
     </v-row>
-    <v-data-table :items="visMangas" :loading="!loaded" :custom-sort="sortMangaList">
+    <v-data-table :items="visMangas" :loading="!loaded" :custom-sort="sortMangaList" show-expand>
       <template v-slot:progress>
         <v-progress-linear
           color="purple"
@@ -24,10 +24,14 @@
           <Manga 
             v-for="manga in items" 
             :key="manga.key" 
-            :manga="[manga]"
-            :firstManga="manga"
+            :manga="manga"
           />
         </tbody>
+      </template>
+      <template v-slot:expanded-item="{item }">
+        <td>
+          More info about {{ item.name }}
+        </td>
       </template>
     </v-data-table>
     <v-dialog v-model="showDialog" max-width="500px">
@@ -70,6 +74,7 @@ const default_sort = (a, b) => {
 export default {
   data() {
     return {
+      expanded: [],
       loaded: false,
       sort: "updates", // sort mode for list (az : alphabetical, updates : mangas with updates first)
       showDialog: false, // do show dialog to ask smthg
@@ -239,7 +244,6 @@ export default {
       key: "all",
       mutation: "setBookmarks"
     });
-    await new Promise(resolve => setTimeout(resolve, 2000))
     this.loaded = true;
     this.$emit("manga-loaded")
   }
