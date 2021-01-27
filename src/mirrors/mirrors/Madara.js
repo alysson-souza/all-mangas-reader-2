@@ -10,6 +10,7 @@ window["Madara"] = function (options) {
         search_json: true,
         chapter_list_ajax: false,
         img_src: "src",
+        secondary_img_src: "data-src",
         doBefore: () => { }
     },
     this.options = Object.assign(this.default_options, options)
