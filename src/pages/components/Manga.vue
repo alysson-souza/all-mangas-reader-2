@@ -2,7 +2,8 @@
   <tr :class="color(3)">
     <td class="amr-manga-row">
       <v-row dense :class="isDarkText ? 'dark-text' : 'light-text'">
-        <v-col sm="4" cols="12" class="amr-list-elt"><!-- Name, Last Updated -->
+        <!-- Name, Last Updated -->
+        <v-col sm="4" cols="12" class="amr-list-elt" @click="expanded = !expanded">
           <v-card :color="color(0)" class="back-card amr-manga-title-cont"> 
             <v-tooltip top content-class="icon-ttip">
               <template v-slot:activator="{ on }">
@@ -31,7 +32,8 @@
             <span class="amr-manga-title" @click="openManga">{{ manga.name }}</span>
           </v-card>
         </v-col>
-        <v-col cols="5"><!-- Select List -->
+        <!-- Select List -->
+        <v-col cols="5">
           <v-card :color="color(3)" tile flat class="back-card">
             <v-row no-gutters>
               <v-col cols="auto">
@@ -65,7 +67,8 @@
             </v-row>
           </v-card>
         </v-col>
-        <v-col sm="3" cols="6" class="amr-list-elt text-center"><!-- Actions -->
+        <!-- Actions -->
+        <v-col sm="3" cols="6" class="amr-list-elt text-center">
           <v-card :color="color(0)" class="back-card">
             <!-- Mark as read -->
             <v-tooltip top content-class="icon-ttip">
@@ -135,9 +138,46 @@
           </v-card>
         </v-col>
       </v-row>
-      <v-row v-show="expanded">
-        <v-col>
-          Just some random expanded content!!!
+      <v-row v-show="expanded" dense>
+        <!-- Categories -->
+        <v-col cols="6">
+          <span>{{i18n("list_details_cats")}} : </span>
+          <Categories 
+            :categories="manga.cats" 
+            :static-cats="true" 
+            :delegate-delete="true" 
+            @delete-category="deleteCategory" />
+          <div class="det-sel-wrapper">
+            <select dark v-model="newCat" @change="addCategory()" :class="color(2)">
+              <option value="">{{i18n("list_details_cats_select")}}</option>
+              <option v-for="(cat, key) of selectableCategory" 
+                      :key="key" 
+                      :value="cat.name">
+                  {{cat.name}}
+              </option>
+            </select>
+          </div>
+        </v-col>
+        <!-- Manage manga bookmarks -->
+        <v-col cols="6">
+          <span>{{i18n("list_details_books")}} : </span>
+          <select v-if="bookmarks.length" dark v-model="curBm" @change="openBookmark()" :class="color(2)">
+            <option v-for="(bm, key) of bookmarks" 
+                    :key="key" 
+                    :value="bm.chapUrl">
+                {{bm.type === 'scan' ? i18n("bookmarks_scan_title", bm.chapName, bm.scanName) : i18n("bookmarks_chapter_title", bm.chapName)}}
+            </option>
+          </select>
+          <span v-if="!bookmarks.length">{{i18n("list_details_no_bookmarks")}}</span>
+        </v-col>
+        <v-col cols="12" class="text-center">
+          <v-btn dark @click='searchElsewhere()' :color="color(-1)" small>{{i18n("list_details_act_search")}}</v-btn>
+          <v-btn dark @click='resetManga()' :color="color(-1)" small>{{i18n("list_details_act_reset")}}</v-btn>
+          <v-btn dark v-if="manga.read === 0" @click='toggleFollow()' :color="color(-1)" small>{{i18n("list_details_act_stop_follow")}}</v-btn>
+          <v-btn dark v-if="manga.read === 1" @click='toggleFollow()' :color="color(-1)" small>{{i18n("list_details_act_follow")}}</v-btn>
+          <v-btn dark v-if="manga.update === 1" @click='toggleUpdate()' :color="color(-1)" small>{{i18n("list_details_act_stop_updating")}}</v-btn>
+          <v-btn dark v-if="manga.update === 0" @click='toggleUpdate()' :color="color(-1)" small>{{i18n("list_details_act_restart_updating")}}</v-btn>
+          <v-btn dark @click='refreshMangaNow()' :color="color(-1)" small>{{ i18n("refresh_chapters") }}</v-btn>
         </v-col>
       </v-row>
     </td>
@@ -151,6 +191,7 @@ import browser from "webextension-polyfill";
 import * as utils from "../utils";
 import * as amrutils from "../../amr/utils";
 import Flag from "./Flag";
+import Categories from "./Categories";
 
 export default {
   data() {
@@ -160,7 +201,11 @@ export default {
       // delete manga popup state
       deleteManga: false,
       // list of languages state
-      displayLangs: false
+      displayLangs: false,
+      // category to add to this group of mangas
+      newCat: "",
+      // selected bookmark
+      curBm: null,
     };
   },
   // property to load the component with --> the manga it represents
@@ -244,7 +289,16 @@ export default {
     },
     isSelected: function () {
       return Boolean(this.selectedManga()[this.manga.key])
-    }
+    },
+    selectableCategory() {
+      return this.options.categoriesStates.filter(cat => cat.type !== 'native' && cat.type != 'language' && !this.manga.cats.includes(cat.name))
+    },
+    // bookmarks for this group
+    bookmarks: function() {
+      return this.$store.state.bookmarks.all.filter(
+        bm => this.manga.key.indexOf(amrutils.mangaKey(bm.url)) >= 0
+      )
+    },
   },
   methods: {
     i18n: (message, ...args) => i18n(message, ...args),
@@ -272,6 +326,52 @@ export default {
         name: this.manga.name,
         language: this.manga.language
       });
+    },
+    /**
+     * Reset manga reading to first chapter for the group of mangas
+     */
+    resetManga() {
+      this.$store.dispatch("resetManga", { url: this.manga.url, language: this.manga.language })
+    },
+    /**
+     * Toggle following manga updates for this group
+     */
+    toggleFollow: function() {
+      this.$store.dispatch("markMangaReadTop", {
+        url: this.manga.url,
+        language: this.manga.language,
+        updatesamemangas: true,
+        read: this.manga.read == 1 ? 0 : 1
+      });
+    },
+    /**
+     * Stop updating (looking for new chapters) mangas in this group
+     */
+    toggleUpdate: function() {
+      this.$store.dispatch("markMangaUpdateTop", {
+        url: this.manga.url,
+        language: this.manga.language,
+        updatesamemangas: true,
+        update: this.manga.update == 1 ? 0 : 1
+      });
+    },
+    /**
+     * Refresh manga chapter list
+     */
+    refreshMangaNow: function () {
+      browser.runtime.sendMessage({
+        action: 'refreshMangas',
+        mangas: {
+          url: this.manga.url,
+          language: this.manga.language,
+        }
+      })
+    },
+    /**
+     * Open search panel with search field prefilled with manga name
+     */
+    searchElsewhere: function() {
+      this.$emit("search-request", this.manga.name);
     },
     /**
      * Open a chapter in new tab
@@ -324,11 +424,24 @@ export default {
     toggleSelect: function (manga) {
       this.$store.dispatch("toggleMangaSelect", manga.key);
     },
+    deleteCategory: function(cat) {
+      this.$store.dispatch("removeCategoryFromManga", {
+        key: this.manga.key,
+        name: cat
+      })
+    },
+    addCategory: function() {
+      this.$store.dispatch("addCategoryToManga", {
+        key: this.manga.key,
+        name: this.newCat
+      })
+      this.newCat = ""
+    },
     ...mapGetters(["selectedManga"])
   },
   // Name of the component
   name: "Manga",
-  components: { Flag }
+  components: { Flag, Categories }
 };
 </script>
 
@@ -468,5 +581,39 @@ select.amr-chap-sel {
 .amr-manga-row {
   height: auto !important;
   padding: 5px !important;
+}
+
+.det-sel-wrapper {
+  display: inline-block;
+  position: relative;
+}
+.det-sel-wrapper:after {
+  content: "▼";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  font-size: 0.75rem;
+  line-height: 19px;
+  padding: 1px 5px;
+  pointer-events: none;
+  z-index: 1;
+}
+.det-sel-wrapper select {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  -ms-appearance: none;
+  display: inline-block;
+  outline: none;
+  border-style: none;
+  border-radius: 2px !important;
+  position: relative;
+  padding: 2px 4px;
+  padding-right: 15px;
+  color: white;
+  font-size: 1rem;
+}
+.cat-cont {
+  display: inline-block;
 }
 </style>

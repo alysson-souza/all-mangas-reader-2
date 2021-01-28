@@ -11,7 +11,7 @@
         
       </v-col>
     </v-row>
-    <v-data-table :items="visMangas" :loading="!loaded" :custom-sort="sortMangaList" show-expand>
+    <v-data-table :items="visMangas" :loading="!loaded" :custom-sort="sortMangaList" show-expand hide-default-header>
       <template v-slot:progress>
         <v-progress-linear
           color="purple"
@@ -23,6 +23,7 @@
         <tbody>
           <Manga 
             v-for="manga in items" 
+            @search-request="propagateSR"
             :key="manga.key" 
             :manga="manga"
           />
