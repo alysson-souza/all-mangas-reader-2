@@ -1,5 +1,5 @@
 <template>
-  <div class="cat-cont">
+  <div>
       <!-- Eye button to include all / do not care about all -->
       <v-tooltip v-if="!staticCats && !allincluded" top content-class="icon-ttip">
           <template v-slot:activator="{ on }">
@@ -54,7 +54,7 @@
         <span v-if="countUsed(cat) > 0" class="cat-badge grey darken-1">{{countUsed(cat)}}</span>
       </div>
       <!-- Input text to add a category -->
-      <input v-if="!staticCats" type="text" v-model="newCat" :placeholder="i18n('list_cat_add')" class="cat-add"
+      <v-text-field v-if="!staticCats" dense v-model="newCat" :placeholder="i18n('list_cat_add')" class="cat-add"
         @keyup.enter="addCategory()" />
     <v-dialog v-model="deleteCatDialog" max-width="290">
       <v-card>
@@ -122,7 +122,8 @@ export default {
       , 0) === this.categories.length;
     },
     sortedCategories: function() {
-      return this.categories.sort((a, b) => {
+      let cats = this.categories // This is just to get rid of the eslint error
+      return cats.sort((a, b) => {
         if (typeof a === 'string') {
           return a.localeCompare(b);
         }

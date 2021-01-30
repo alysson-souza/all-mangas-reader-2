@@ -3,15 +3,77 @@
     <!-- Categories and filters -->
     <v-row no-gutters>
       <!-- Categories -->
-      <v-col cols="9">
+      <v-col cols="12" md="9">
         <Categories :categories="categories" :static-cats="false" :delegate-delete="false" />
       </v-col>
       <!-- Filters -->
-      <v-col cols="3" class="float-right">
-        
+      <v-col cols="6" md="3" class="d-flex align-center justify-end filter-container">
+        <v-card v-if="visMangas.length" class="hover-card">
+          <v-tooltip v-if="visNewMangas.length" top content-class="icon-ttip">
+            <template v-slot:activator="{ on }">
+              <v-icon v-on="on" @click="markAllAsRead()">mdi-eye</v-icon>
+            </template>
+            <span>{{i18n("list_global_read")}}</span>
+          </v-tooltip>
+          <v-tooltip top content-class="icon-ttip">
+            <template v-slot:activator="{ on }">
+              <v-icon v-on="on" @click="deleteAll()">mdi-delete</v-icon>
+            </template>
+            <span>{{i18n("list_global_delete")}}</span>
+          </v-tooltip>
+        </v-card>
+        <v-card v-if="visMangas.length" class="hover-card">
+          <v-icon class="filters-icon">mdi-filter</v-icon>
+          <v-tooltip top content-class="icon-ttip">
+            <template v-slot:activator="{ on }">
+              <v-icon v-on="on" @click="sort = 'az'" :class="['amr-filter', {activated: sort === 'az'}]">mdi-sort-alphabetical-ascending</v-icon>
+            </template>
+            <span>{{i18n("list_sort_alpha")}}</span>
+          </v-tooltip>
+          <v-tooltip top content-class="icon-ttip">
+            <template v-slot:activator="{ on }">
+              <v-icon v-on="on" @click="sort = 'updates'" :class="['amr-filter', {activated: sort === 'updates'}]">mdi-flash</v-icon>
+            </template>
+            <span>{{i18n("list_sort_new")}}</span>
+          </v-tooltip>
+          <v-tooltip top content-class="icon-ttip">
+            <template v-slot:activator="{ on }">
+              <v-icon v-on="on" @click="selectable = !selectable" :class="['amr-filter', {activated: selectable}]">mdi-pencil</v-icon>
+            </template>
+            <span>{{i18n("list_select_action")}}</span>
+          </v-tooltip>
+        </v-card>
+      </v-col>
+      <v-col cols="6">
+        <!-- Search Field -->
+        <v-text-field
+            v-model="searchText"
+            prepend-icon="mdi-magnify"
+            :label="i18n('list_search_label')"
+            dense
+            single-line
+            filled
+            rounded
+            hide-details
+            clearable
+          ></v-text-field>
       </v-col>
     </v-row>
-    <v-data-table :items="visMangas" :loading="!loaded" :custom-sort="sortMangaList" show-expand hide-default-header>
+    <v-card v-if="selectedManga.length > 0" class="amr-container-wrapper">
+      <MultiMangaAction :selected="selectedManga" />
+    </v-card>
+    <br />
+    <!-- Manga List -->
+    <v-data-table 
+      :items="visMangas" 
+      :loading="!loaded"
+      :headers="[{value: 'name'}]"
+      :custom-sort="sortMangaList"
+      hide-default-header
+      :search="searchText"
+      show-select
+    >
+      <!-- Loading progress bar -->
       <template v-slot:progress>
         <v-progress-linear
           color="purple"
@@ -19,20 +81,46 @@
           indeterminate
         ></v-progress-linear>
       </template>
+      <!-- Table Body, manga entries -->
       <template v-slot:body="{items}">
-        <tbody>
+        <tbody v-if="items.length > 0">
           <Manga 
             v-for="manga in items" 
             @search-request="propagateSR"
+            @remove-selected="removeSelected"
+            @add-selected="addSelected"
             :key="manga.key" 
             :manga="manga"
+            :selectable="selectable"
           />
         </tbody>
-      </template>
-      <template v-slot:expanded-item="{item }">
-        <td>
-          More info about {{ item.name }}
-        </td>
+        <!-- No visible manga because of category state -->
+        <tbody v-else-if="allMangas.length > 0 && visMangas.length == 0">
+          <tr>
+            <td>
+              <p v-html="i18n('list_no_manga_catstate_message')"></p>
+            </td>
+          </tr>
+        </tbody>
+        <!-- No matches for search -->
+        <tbody v-else-if="allMangas.length > 0">
+          <tr>
+            <td>
+              <p v-html="i18n('list_no_manga_search_message')"></p>
+            </td>
+          </tr>
+        </tbody>
+        <!-- No mangas in list -->
+        <tbody v-else-if="loaded">
+          <tr>
+            <td>
+              <p v-html="convertIcons(i18n('list_no_manga_message'))"></p>
+              <p>
+                <a @click.prevent="importSamples()">{{ i18n("list_import_samples")}}</a>
+              </p>
+            </td>
+          </tr>
+        </tbody>
       </template>
     </v-data-table>
     <v-dialog v-model="showDialog" max-width="500px">
@@ -57,6 +145,7 @@ import i18n from "../../amr/i18n";
 import { mapGetters } from "vuex";
 import Manga from "./Manga";
 import Categories from "./Categories";
+import MultiMangaAction from './MultiMangaAction';
 import browser from "webextension-polyfill";
 import * as utilsamr from '../../amr/utils';
 import * as utils from '../utils';
@@ -84,7 +173,9 @@ export default {
       dialogTitle: "", //title of opened dialog
       dialogText: "", // text of opened dialog
       selectable: false, // Toggle Manga List select behaviour
-      dialogAction: () => {self.showDialog = false} // action to take on yes in dialog
+      dialogAction: () => {self.showDialog = false}, // action to take on yes in dialog
+      searchText: "",
+      selectedManga: []
     };
   },
   computed: {
@@ -130,7 +221,7 @@ export default {
     ...mapGetters(["countMangas", "allMangas"])
   },
   name: "MangaList",
-  components: { Categories, Manga },
+  components: { Categories, Manga, MultiMangaAction },
   methods: {
     i18n: (message, ...args) => i18n(message, ...args),
     convertIcons: str => utils.convertIcons(str),
@@ -218,6 +309,12 @@ export default {
 
       return mirror && !mirror.disabled;
     },
+    removeSelected: function(mangaKey) {
+      this.selectedManga = this.selectedManga.filter(key => key != mangaKey)
+    },
+    addSelected: function(mangaKey) {
+      this.selectedManga.push(mangaKey)
+    }
   },
   async created() {
     // initialize the IntersectionObserver for visibility checks
@@ -248,7 +345,7 @@ export default {
     this.loaded = true;
     this.$emit("manga-loaded")
   }
-};
+}
 </script>
 <style>
 .amr-container-wrapper {
@@ -328,5 +425,8 @@ body.popup .amr-mangas {
 .hover-card .filters-icon {
     margin: 0;
     font-size: 0.9rem;
+}
+.filter-container.v-icon {
+  font-size: 20px;
 }
 </style>

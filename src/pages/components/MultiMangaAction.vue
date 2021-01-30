@@ -1,27 +1,22 @@
 <template>
-  <div class="cat-cont multi-action green lighten-3 my-2">
+  <div>
     <!-- Manage manga categories -->
     <v-row >
       <v-col cols="12" class="header-container">
         <div class="cat-chip grey">
           <span class="cat-badge">
-            {{ i18n("list_multi_action_currently_selected", this.selectedMangasCount()) }}
+            {{ i18n("list_multi_action_currently_selected", selected.length) }}
           </span>
         </div>
-        <template v-if="this.selectedMangasCount() === 0">
-          <h3 class="flex">{{ i18n("list_multi_action_select_manga") }}</h3>
-        </template>
-        <template v-else>
-          <v-tooltip top content-class="icon-ttip">
-            <template v-slot:activator="{ on }">
-              <v-icon class="flex" v-on="on" @click.native="clearSelect()">mdi-close</v-icon>
-            </template>
-            <span>{{ i18n("button_clear") }}</span>
-          </v-tooltip>
-        </template>
+        <v-tooltip top content-class="icon-ttip">
+          <template v-slot:activator="{ on }">
+            <v-icon class="flex" v-on="on" @click.native="clearSelect()">mdi-close</v-icon>
+          </template>
+          <span>{{ i18n("button_clear") }}</span>
+        </v-tooltip>
       </v-col>
     </v-row>
-    <v-row v-if="this.selectedMangasCount() > 0" >
+    <v-row>
       <v-col cols="12" class="amr-categories">
         <div class="det-sel-wrapper">
           <select v-model="selectedCategory" class="green lighten-1">
@@ -58,6 +53,9 @@ export default {
       selectedCategory: "",
     }
   },
+  props: [
+    "selected"
+  ],
   computed: {
     // AMR options
     options: function() {
@@ -71,7 +69,7 @@ export default {
     i18n: (message, ...args) => i18n(message, ...args),
     convertIcons: str => utils.convertIcons(str),
     addCategory: function() {
-      for (let key of this.selectedMangasKeys()) {
+      for (let key of this.selected) {
         this.$store.dispatch("addCategoryToManga", {
           key: key,
           name: this.selectedCategory
@@ -83,7 +81,7 @@ export default {
      * Delete a category on this group of manga
      */
     deleteCategory: function() {
-      for (let key of this.selectedMangasKeys()) {
+      for (let key of this.selected) {
         this.$store.dispatch("removeCategoryFromManga", {
           key: key,
           name: this.selectedCategory

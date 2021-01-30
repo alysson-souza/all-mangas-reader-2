@@ -1,5 +1,8 @@
 <template>
   <tr :class="color(3)">
+    <td v-show="selectable">
+      <v-checkbox v-model="selected" hide-details @change="changeSelection" />
+    </td>
     <td class="amr-manga-row">
       <v-row dense :class="isDarkText ? 'dark-text' : 'light-text'">
         <!-- Name, Last Updated -->
@@ -186,7 +189,6 @@
 
 <script>
 import i18n from "../../amr/i18n";
-import { mapGetters } from "vuex";
 import browser from "webextension-polyfill";
 import * as utils from "../utils";
 import * as amrutils from "../../amr/utils";
@@ -206,12 +208,16 @@ export default {
       newCat: "",
       // selected bookmark
       curBm: null,
+      // Checkbox for multiple actions
+      selected: false
     };
   },
   // property to load the component with --> the manga it represents
   props: [
     // the manga to display
-    "manga"
+    "manga",
+    // If the checkbox should show
+    "selectable"
   ],
   computed: {
     // current selected value
@@ -286,9 +292,6 @@ export default {
     },
     smalldevice: function() {
       return utils.isSmallDevice()
-    },
-    isSelected: function () {
-      return Boolean(this.selectedManga()[this.manga.key])
     },
     selectableCategory() {
       return this.options.categoriesStates.filter(cat => cat.type !== 'native' && cat.type != 'language' && !this.manga.cats.includes(cat.name))
@@ -437,7 +440,12 @@ export default {
       })
       this.newCat = ""
     },
-    ...mapGetters(["selectedManga"])
+    changeSelection: function(newValue, oldValue) {
+      if (newValue)
+        this.$emit('add-selected', this.manga.key)
+      else
+        this.$emit('remove-selected', this.manga.key)
+    }
   },
   // Name of the component
   name: "Manga",
