@@ -1700,5 +1700,9 @@
   "list_search_label": {
     "message": "Search",
     "description": "Label for manga list search bar"
+  },
+  "multi_manga_button_delete": {
+    "message": "Remove from list",
+    "description": "Button to remove multiple selected manga from list"
   }
 }

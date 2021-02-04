@@ -38,7 +38,7 @@
           </v-tooltip>
           <v-tooltip top content-class="icon-ttip">
             <template v-slot:activator="{ on }">
-              <v-icon v-on="on" @click="selectable = !selectable" :class="['amr-filter', {activated: selectable}]">mdi-pencil</v-icon>
+              <v-icon v-on="on" @click="selectable = !selectable" :class="['amr-filter', {activated: selectable}]">mdi-order-bool-ascending-variant</v-icon>
             </template>
             <span>{{i18n("list_select_action")}}</span>
           </v-tooltip>
@@ -58,21 +58,34 @@
             clearable
           ></v-text-field>
       </v-col>
+      <v-col cols="12" md="6" v-if="selectedManga.length > 0">
+        <MultiMangaAction :selected="selectedManga" @clearSelected="clearSelected"/>
+      </v-col>
     </v-row>
-    <v-card v-if="selectedManga.length > 0" class="amr-container-wrapper">
-      <MultiMangaAction :selected="selectedManga" />
-    </v-card>
     <br />
     <!-- Manga List -->
     <v-data-table 
-      :items="visMangas" 
+      :items="groupedMangas" 
       :loading="!loaded"
       :headers="[{value: 'name'}]"
       :custom-sort="sortMangaList"
+      :page.sync="pagination.currentPage"
+      :items-per-page="itemsPerPage"
       hide-default-header
+      hide-default-footer
       :search="searchText"
-      show-select
+      @page-count="pagination.pageCount = $event"
     >
+      <template v-slot:top>
+        <v-row class="mx-2">
+          <v-col cols="3">
+            <v-select dense outlined :items="pagination.pageOptions" v-model="itemsPerPage" label="Manga Per Page"></v-select>
+          </v-col>
+          <v-col>
+            <v-pagination :total-visible="10" v-model="pagination.currentPage" :length="pagination.pageCount"></v-pagination>
+          </v-col>
+        </v-row>
+      </template>
       <!-- Loading progress bar -->
       <template v-slot:progress>
         <v-progress-linear
@@ -82,45 +95,32 @@
         ></v-progress-linear>
       </template>
       <!-- Table Body, manga entries -->
-      <template v-slot:body="{items}">
-        <tbody v-if="items.length > 0">
-          <Manga 
-            v-for="manga in items" 
-            @search-request="propagateSR"
-            @remove-selected="removeSelected"
-            @add-selected="addSelected"
-            :key="manga.key" 
-            :manga="manga"
-            :selectable="selectable"
-          />
-        </tbody>
-        <!-- No visible manga because of category state -->
-        <tbody v-else-if="allMangas.length > 0 && visMangas.length == 0">
-          <tr>
-            <td>
-              <p v-html="i18n('list_no_manga_catstate_message')"></p>
-            </td>
-          </tr>
-        </tbody>
-        <!-- No matches for search -->
-        <tbody v-else-if="allMangas.length > 0">
-          <tr>
-            <td>
-              <p v-html="i18n('list_no_manga_search_message')"></p>
-            </td>
-          </tr>
-        </tbody>
-        <!-- No mangas in list -->
-        <tbody v-else-if="loaded">
-          <tr>
-            <td>
-              <p v-html="convertIcons(i18n('list_no_manga_message'))"></p>
-              <p>
-                <a @click.prevent="importSamples()">{{ i18n("list_import_samples")}}</a>
-              </p>
-            </td>
-          </tr>
-        </tbody>
+      <template v-slot:item="{item}">
+        <tr class="m-2">
+          <td v-show="selectable">
+            <v-checkbox v-model="selectedManga" :value="item.key" hide-details />
+          </td>
+          <td>
+            <Manga 
+              @search-request="propagateSR"
+              :manga="item"
+            />
+          </td>
+        </tr>
+      </template>
+      <template v-slot:no-data>
+        <div v-if="allMangas.length > 0">
+          <p v-html="i18n('list_no_manga_catstate_message')"></p>
+        </div>
+        <div v-else>
+          <p v-html="convertIcons(i18n('list_no_manga_message'))"></p>
+          <p>
+            <a @click.prevent="importSamples()">{{ i18n("list_import_samples")}}</a>
+          </p>
+        </div>
+      </template>
+      <template v-slot:no-results>
+        <p v-html="i18n('list_no_manga_search_message')"></p>
       </template>
     </v-data-table>
     <v-dialog v-model="showDialog" max-width="500px">
@@ -164,59 +164,78 @@ const default_sort = (a, b) => {
 export default {
   data() {
     return {
-      expanded: [],
       loaded: false,
       sort: "updates", // sort mode for list (az : alphabetical, updates : mangas with updates first)
       showDialog: false, // do show dialog to ask smthg
-      showFilter: false, // Show the text filter for existing manga
-      filterText: "", // Filter text
       dialogTitle: "", //title of opened dialog
       dialogText: "", // text of opened dialog
       selectable: false, // Toggle Manga List select behaviour
       dialogAction: () => {self.showDialog = false}, // action to take on yes in dialog
       searchText: "",
-      selectedManga: []
+      selectedManga: [],
+      pagination: {
+        pageOptions: [
+          5,
+          25,
+          50,
+          100
+        ],
+        currentPage: 1,
+        pageCount: 0
+      },
+      itemsPerPage: 25 // Temp variable until settings can be added for it
     };
   },
   computed: {
     // AMR options
     options: function() {
-        return this.$store.state.options;
+      return this.$store.state.options;
     },
     // categories states
     categories: function() {
-        return this.options.categoriesStates;
+      return this.options.categoriesStates;
     },
     /**
      * Return all visible mangas
      */
     visMangas: function() {
-        return this.allMangas.filter(
-            mg => utils.displayFilterCats(mg, this.options.categoriesStates) && utils.filterByText(mg, this.filterText)
-        )
+      return this.allMangas.filter(
+        mg => utils.displayFilterCats(mg, this.options.categoriesStates)
+      )
     },
     /**
      * Return all visible mangas having new chapters to read
      */
     visNewMangas: function() {
-        return this.visMangas.filter(
-            mg => utils.hasNew(mg)
-        )
+      return this.visMangas.filter(
+        mg => utils.hasNew(mg)        )
     },
     /**
      * Build mangas groups (by name)
      */
     groupedMangas: function() {
-        // create groups
-        return this.sortedMangas.reduce((grps, manga) => {
-            let key = utilsamr.formatMgName(manga.name);
-            (grps[key] = grps[key] || []).push(manga);
+      return this.sortMangaList(this.visMangas).reduce((groups, manga) => {
+        let key
+        if (options.groupmgs === 0) {
+          key = manga.key
+        } else {
+          key = utilsamr.formatMgName(manga.name)
+        }
 
-            // Ensure still updating manga are first in the group
-            grps[key] = grps[key].sort((a, b) => a.read - b.read)
+        if (!groups.hasOwnProperty(key)) {
+          groups[key] = {
+            name: manga.name,
+            mangas: []
+          }
+        }
+        
+        groups[key].mangas.push(manga)
 
-            return grps;
-        }, {});
+        // Ensure still updating manga are first in the group
+        groups[key].mangas = groups[key].mangas.sort((a, b) => a.read - b.read)
+
+        return groups
+      }, [])
     },
     ...mapGetters(["countMangas", "allMangas"])
   },
@@ -230,106 +249,63 @@ export default {
       browser.runtime.sendMessage({ action: "importSamples" });
     }, 
     markAllAsRead() {
-        this.dialogTitle = i18n("list_global_read_title");
-        this.dialogText = i18n("list_global_read_text", this.visNewMangas.length);
-        let self = this;
-        this.dialogAction = () => {
-            self.showDialog = false
-            self.visNewMangas.forEach(mg => {
-                self.$store.dispatch("readManga", {
-                    url: mg.url,
-                    mirror: mg.mirror,
-                    lastChapterReadName: mg.listChaps[0][0],
-                    lastChapterReadURL: mg.listChaps[0][1],
-                    name: mg.name,
-                    language: mg.language
-                })
-            })
-        }
-        this.showDialog = true;
+      this.dialogTitle = i18n("list_global_read_title");
+      this.dialogText = i18n("list_global_read_text", this.visNewMangas.length);
+      let self = this;
+      this.dialogAction = () => {
+        self.showDialog = false
+        self.visNewMangas.forEach(mg => {
+          self.$store.dispatch("readManga", {
+            url: mg.url,
+            mirror: mg.mirror,
+            lastChapterReadName: mg.listChaps[0][0],
+            lastChapterReadURL: mg.listChaps[0][1],
+            name: mg.name,
+            language: mg.language
+          })
+        })
+      }
+      this.showDialog = true;
     },
     deleteAll() {
-        this.dialogTitle = i18n("list_global_delete_title");
-        this.dialogText = i18n("list_global_delete_text", this.visMangas.length);
-        let self = this;
-        this.dialogAction = () => {
-            self.showDialog = false
-            self.visMangas.forEach(mg => {
-                self.$store.dispatch("deleteManga", {
-                    key: mg.key
-                })
-            })
-        }
-        this.showDialog = true;
+      this.dialogTitle = i18n("list_global_delete_title");
+      this.dialogText = i18n("list_global_delete_text", this.visMangas.length);
+      let self = this;
+      this.dialogAction = () => {
+        self.showDialog = false
+        self.visMangas.forEach(mg => {
+          self.$store.dispatch("deleteManga", {
+            key: mg.key
+          })
+        })
+      }
+      this.showDialog = true;
     }, 
     /**
      * Propagate search request event from MangaGroup to parent
      */
     propagateSR(str) {
-        this.$emit("search-request", str)
+      this.$emit("search-request", str)
     },
-    /**
-     * IntersectionObserver register/unregister
-     */
-    startObserving(mangagroup) {
-        // setup a backref on the HTMLElement
-        mangagroup.$el.mangagroup = mangagroup;
-        // add the HTMLElement to the observer
-        this.observer.observe(mangagroup.$el);
-    },
-    stopObserving(mangagroup) {
-        this.observer.unobserve(mangagroup.$el);
-    },
-    color: function(manga, light) {
-      return utils.getColor(manga, this.options, light);
-    },
-
     sortMangaList(items) {
       var cmp;
       if (this.sort === "az") {
-          cmp = default_sort
+        cmp = default_sort
       } else /*if (sort === "updates")*/ {
-          cmp = function(a, b) {
-              let ha = utils.hasNew(a),
-                  hb = utils.hasNew(b);
-              // primary sort on manga has new chapter, secondary on alphabetical
-              return (ha === hb ? default_sort(a, b) : (ha && !hb ? -1 : 1));
-          };
+        cmp = function(a, b) {
+          let ha = utils.hasNew(a),
+              hb = utils.hasNew(b);
+          // primary sort on manga has new chapter, secondary on alphabetical
+          return (ha === hb ? default_sort(a, b) : (ha && !hb ? -1 : 1));
+        };
       };
       return items.sort(cmp);
     },
-
-    mirror: function(manga) {
-      return this.$store.state.mirrors.all.find(
-        mir => mir.mirrorName === manga.mirror
-      );
-    },
-    isMirrorEnabled: function (manga) {
-      let mirror = mirror(manga)
-
-      return mirror && !mirror.disabled;
-    },
-    removeSelected: function(mangaKey) {
-      this.selectedManga = this.selectedManga.filter(key => key != mangaKey)
-    },
-    addSelected: function(mangaKey) {
-      this.selectedManga.push(mangaKey)
+    clearSelected: function() {
+      this.selectedManga = []
     }
   },
   async created() {
-    // initialize the IntersectionObserver for visibility checks
-    this.observer = new IntersectionObserver(
-        (entries) => {
-            entries.forEach( (entry) => {
-                if (entry.isIntersecting) {
-                    let mg = entry.target.mangagroup;
-                    mg.seen = true;
-                    this.stopObserving(mg);
-                }
-            });
-        },
-        {} // default options
-    );
     // initialize state for store in popup from background
     await this.$store.dispatch("getStateFromReference", {
       module: "mangas",
@@ -343,54 +319,13 @@ export default {
       mutation: "setBookmarks"
     });
     this.loaded = true;
-    this.$emit("manga-loaded")
+    setTimeout(() => this.$emit("manga-loaded"), 1000)
+    
   }
 }
 </script>
 <style>
-.amr-container-wrapper {
-    margin: 0 10px;
-}
-.amr-nomangas {
-  padding: 20px;
-  text-align: center;
-}
-.amr-nomangas, .amr-mangas {
-    /* max-width: 750px; */
-    margin-left: auto;
-    margin-right: auto;
-}
 
-.amr-width-popup {
-    max-width: 750px;
-}
-
-.amr-width-popup .v-icon {
-  font-size: 18px;
-}
-
-.amr-width {
-    max-width: 80%;
-}
-
-body.popup .amr-mangas {
-  max-height: 452px;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-.amr-loader {
-  margin: 20px;
-  text-align: center;
-  width: 100%;
-}
-.amr-filters-container {
-    float: right;
-    margin-top: 7px;
-    margin-right: 9px;
-}
-.amr-categories-container {
-    margin-right: 44px;
-}
 .amr-filter {
     color:grey;
 }
@@ -402,9 +337,6 @@ body.popup .amr-mangas {
 }
 .theme--dark .amr-filter.activated {
     color: white;
-}
-.flip-list-move {
-  transition: transform 1s;
 }
 .hover-card {
     margin: 0px 2px;
@@ -428,5 +360,8 @@ body.popup .amr-mangas {
 }
 .filter-container.v-icon {
   font-size: 20px;
+}
+td {
+  height: auto !important;
 }
 </style>

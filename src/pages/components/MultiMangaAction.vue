@@ -2,7 +2,7 @@
   <div>
     <!-- Manage manga categories -->
     <v-row >
-      <v-col cols="12" class="header-container">
+      <v-col>
         <div class="cat-chip grey">
           <span class="cat-badge">
             {{ i18n("list_multi_action_currently_selected", selected.length) }}
@@ -15,24 +15,14 @@
           <span>{{ i18n("button_clear") }}</span>
         </v-tooltip>
       </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" class="amr-categories">
-        <div class="det-sel-wrapper">
-          <select v-model="selectedCategory" class="green lighten-1">
-            <option value="">{{ i18n("list_multi_action_select_category") }}</option>
-            <option v-for="(cat, key) of categories" :key="key"
-                    :value="cat.name">
-                {{ cat.name }}
-            </option>
-          </select>
-        </div>
+      <v-col class="amr-categories">
+        <v-select :items="categories" v-model="selectedCategory" item-text="name" item-value="name" :label="i18n('list_multi_action_select_category')"></v-select>
         <!-- Actions buttons -->
-        <div v-if="selectedCategory" class="amr-actions">
+        <div v-if="selectedCategory">
           <v-btn dark @click='addCategory()' class="green" small>
             {{ i18n("button_add") }}
           </v-btn>
-          <v-btn dark @click='deleteCategory()' class="green" small>
+          <v-btn dark @click='deleteCategory()' class="red" small>
             {{ i18n("button_remove") }}
           </v-btn>
         </div>
@@ -44,7 +34,6 @@
 <script>
 import i18n from '../../amr/i18n';
 import * as utils from '../utils';
-import { mapGetters } from 'vuex';
 
 export default {
   name: "MultiMangaAction",
@@ -90,64 +79,8 @@ export default {
       this.selectedCategory = "";
     },
     clearSelect: function () {
-      this.$store.dispatch("clearMangasSelect");
-    },
-    ...mapGetters(["selectedMangasCount", "selectedMangasKeys"])
+      this.$emit('clearSelected')
+    }
   },
 }
-</script>
-
-<style scoped>
-
-.multi-action {
-    min-height: 80px;
-}
-
-.header-container {
-    font-size : 1.5rem;
-}
-
-.header-container .v-icon {
-    font-size : 1.5rem;
-    cursor: pointer;
-
-}
-.det-sel-wrapper {
-    display  : inline-block;
-    position : relative;
-}
-
-.amr-categories {
-    display: flex;
-    align-items: center;
-}
-
-.selected-header {
-    font-size : 1rem;
-}
-
-select {
-    display       : flex;
-    outline       : none;
-    border-style  : none;
-    border-radius : 2px !important;
-    position      : relative;
-    padding       : 2px 16px 2px 4px;
-    margin        : 6px 0;
-    color         : white;
-    font-size     : 1.5rem;
-}
-
-.det-sel-wrapper:after {
-    content        : "▼";
-    position       : absolute;
-    top            : 0;
-    right          : 0;
-    bottom         : 0;
-    line-height    : 36px;
-    padding        : 2px;
-    pointer-events : none;
-    z-index        : 1;
-}
-
-</style>
+</script>s
