@@ -111,7 +111,7 @@
         </v-card-title>
         <!-- Chapters navigation -->
         <v-card-actions>
-          <v-row no-gutters>
+          <v-row  no-gutters>
             <v-col cols="12">
               <v-toolbar flat class="pa-0 amr-chapters-toolbar" my-1>
                 <!-- Previous chapter button -->
@@ -320,7 +320,7 @@
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
                   <v-btn v-on="on" icon @click="offsetBook" color="blue" v-show="displayBookOffsetButton" class="ma-0">
-                    <v-icon>mdi-library-books</v-icon>
+                    <v-icon>mdi-book-open-page-variant</v-icon>
                   </v-btn>
                 </template>
                 <span>{{i18n("reader_book_offset")}}</span>

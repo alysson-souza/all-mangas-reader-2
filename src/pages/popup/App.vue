@@ -4,7 +4,7 @@
 		<!-- Main toolbar in popup -->
 		<v-card>
 			<v-toolbar>
-				<img src="/icons/icon_32.png" alt="All Mangas Reader">
+				<img src="/icons/icon_32.png" alt="All Mangas Reader" style="margin-right: 5px;">
 				<v-toolbar-title v-text="title"></v-toolbar-title>
 				<v-spacer></v-spacer>
 				<v-btn icon @click.stop="openOptions()">
