@@ -1684,5 +1684,28 @@
   "options_numeric": {
     "message": "Doit être une valeur numérique",
     "description": "Numeric option tooltip"
+  },
+  "__V2_3_2": {
+    "message": "Just a filler to separate new labels from old ones"
+  },
+  "list_no_manga_search_message": {
+    "message": "Vous n'avez aucun manga qui correspond à ce modèle de recherche",
+    "description": "No manga list search results method"
+  },
+  "list_search_label": {
+    "message": "Chercher",
+    "description": "Label for manga list search bar"
+  },
+  "multi_manga_button_delete": {
+    "message": "Retirer de la liste",
+    "description": "Button to remove multiple selected manga from list"
+  },
+  "list_move_navigation": {
+    "message": "Déplacer la navigation en haut / en bas",
+    "description": "Button to move page navigation to top/bottom of table"
+  },
+  "list_page_label": {
+    "message": "Mangas par page",
+    "description": "Label for the manga per page select box"
   }
 }

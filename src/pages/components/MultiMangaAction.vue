@@ -15,8 +15,8 @@
           <span>{{ i18n("button_clear") }}</span>
         </v-tooltip>
       </v-col>
-      <v-col class="amr-categories">
-        <v-select :items="categories" v-model="selectedCategory" item-text="name" item-value="name" :label="i18n('list_multi_action_select_category')"></v-select>
+      <v-col>
+        <v-select :items="categories" dense outlined v-model="selectedCategory" item-text="name" item-value="name" :label="i18n('list_multi_action_select_category')"></v-select>
         <!-- Actions buttons -->
         <div v-if="selectedCategory">
           <v-btn dark @click='addCategory()' class="green" small>
@@ -83,4 +83,4 @@ export default {
     }
   },
 }
-</script>s
+</script>

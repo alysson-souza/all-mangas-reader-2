@@ -66,7 +66,7 @@
           ></v-text-field>
       </v-col>
       <v-col cols="12" md="6" v-if="selectedManga.length > 0">
-        <MultiMangaAction :selected="selectedManga" @clearSelected="clearSelected"/>
+        <MultiMangaAction :selected="selectedMangaExpanded" @clearSelected="clearSelected"/>
       </v-col>
     </v-row>
     <br />
@@ -261,7 +261,7 @@ export default {
         if (this.options.groupmgs === 0) {
           key = manga.key
         } else {
-          key = utilsamr.formatMgName(manga.name)
+          key = 'group:' + utilsamr.formatMgName(manga.name)
         }
 
         let index = groups.findIndex(group => group.key == key)
@@ -281,6 +281,20 @@ export default {
         groups[index].mangas = groups[index].mangas.sort((a, b) => a.read - b.read)
         return groups
       }, [])
+    },
+    selectedMangaExpanded: function() {
+      let newList = []
+      this.selectedManga.forEach(key => {
+        if (key.startsWith('group:')) {
+          let index = this.groupedMangas.findIndex(group => group.key == key)
+          if (index !== -1) {
+            newList.push(...this.groupedMangas[index].mangas.map(manga => manga.key))
+          }
+        } else {
+          newList.push(key)
+        }
+      })
+      return newList
     },
     ...mapGetters(["countMangas", "allMangas"])
   },
