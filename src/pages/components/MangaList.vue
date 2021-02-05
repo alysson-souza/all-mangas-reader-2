@@ -42,9 +42,15 @@
             </template>
             <span>{{i18n("list_select_action")}}</span>
           </v-tooltip>
+          <v-tooltip top content-class="icon-ttip">
+              <template v-slot:activator="{ on }">
+                <v-icon v-on="on" @click="toggleFilter()" :class="['amr-filter', {activated: showFilter}]">mdi-magnify</v-icon>
+              </template>
+              <span>{{i18n("list_filter")}}</span>
+            </v-tooltip>
         </v-card>
       </v-col>
-      <v-col cols="6">
+      <v-col cols="6" v-show="showFilter">
         <!-- Search Field -->
         <v-text-field
             v-model="searchText"
@@ -56,6 +62,7 @@
             rounded
             hide-details
             clearable
+            autofocus
           ></v-text-field>
       </v-col>
       <v-col cols="12" md="6" v-if="selectedManga.length > 0">
@@ -68,7 +75,6 @@
       :items="groupedMangas" 
       :loading="!loaded"
       :headers="[{value: 'name'}]"
-      :custom-sort="sortMangaList"
       :page.sync="pagination.currentPage"
       :items-per-page="itemsPerPage"
       hide-default-header
@@ -76,13 +82,43 @@
       :search="searchText"
       @page-count="pagination.pageCount = $event"
     >
-      <template v-slot:top>
+      <template v-if="pageNavigationPosition == 'top'" v-slot:top>
         <v-row class="mx-2">
           <v-col cols="3">
-            <v-select dense outlined :items="pagination.pageOptions" v-model="itemsPerPage" label="Manga Per Page"></v-select>
+            <v-select dense outlined :items="pagination.pageOptions" v-model="itemsPerPage" :label="i18n('list_page_label')"></v-select>
           </v-col>
           <v-col>
             <v-pagination :total-visible="10" v-model="pagination.currentPage" :length="pagination.pageCount"></v-pagination>
+          </v-col>
+          <v-col cols="1">
+            <v-tooltip top content-class="icon-ttip">
+            <template v-slot:activator="{ on }">
+              <v-btn color="blue" icon x-large @click="moveNavigation()" v-on="on">
+                <v-icon>mdi-arrow-down-box</v-icon>
+              </v-btn>
+            </template>
+            <span>{{i18n("list_move_navigation")}}</span>
+          </v-tooltip>
+          </v-col>
+        </v-row>
+      </template>
+      <template v-if="pageNavigationPosition == 'bottom'" v-slot:footer>
+        <v-row class="mx-2 pt-5">
+          <v-col cols="3">
+            <v-select dense outlined :items="pagination.pageOptions" v-model="itemsPerPage" :label="i18n('list_page_label')"></v-select>
+          </v-col>
+          <v-col>
+            <v-pagination :total-visible="10" v-model="pagination.currentPage" :length="pagination.pageCount"></v-pagination>
+          </v-col>
+          <v-col cols="1">
+            <v-tooltip top content-class="icon-ttip">
+            <template v-slot:activator="{ on }">
+              <v-btn color="blue" icon x-large @click="moveNavigation()" v-on="on">
+                <v-icon>mdi-arrow-up-box</v-icon>
+              </v-btn>
+            </template>
+            <span>{{i18n("list_move_navigation")}}</span>
+          </v-tooltip>
           </v-col>
         </v-row>
       </template>
@@ -101,9 +137,9 @@
             <v-checkbox v-model="selectedManga" :value="item.key" hide-details />
           </td>
           <td>
-            <Manga 
+            <MangaGroup 
               @search-request="propagateSR"
-              :manga="item"
+              :group="item"
             />
           </td>
         </tr>
@@ -143,7 +179,7 @@
 <script>
 import i18n from "../../amr/i18n";
 import { mapGetters } from "vuex";
-import Manga from "./Manga";
+import MangaGroup from "./MangaGroup";
 import Categories from "./Categories";
 import MultiMangaAction from './MultiMangaAction';
 import browser from "webextension-polyfill";
@@ -167,6 +203,7 @@ export default {
       loaded: false,
       sort: "updates", // sort mode for list (az : alphabetical, updates : mangas with updates first)
       showDialog: false, // do show dialog to ask smthg
+      showFilter: false, // Show the text search
       dialogTitle: "", //title of opened dialog
       dialogText: "", // text of opened dialog
       selectable: false, // Toggle Manga List select behaviour
@@ -175,7 +212,6 @@ export default {
       selectedManga: [],
       pagination: {
         pageOptions: [
-          5,
           25,
           50,
           100
@@ -183,8 +219,14 @@ export default {
         currentPage: 1,
         pageCount: 0
       },
-      itemsPerPage: 25 // Temp variable until settings can be added for it
+      itemsPerPage: this.$store.state.options.perPageMangas,
+      pageNavigationPosition: this.$store.state.options.pageNavigationPosition
     };
+  },
+  watch: {
+    itemsPerPage: function(newValue) {
+      this.$store.dispatch("setOption", { key: 'perPageMangas', value: newValue })
+    }
   },
   computed: {
     // AMR options
@@ -216,31 +258,34 @@ export default {
     groupedMangas: function() {
       return this.sortMangaList(this.visMangas).reduce((groups, manga) => {
         let key
-        if (options.groupmgs === 0) {
+        if (this.options.groupmgs === 0) {
           key = manga.key
         } else {
           key = utilsamr.formatMgName(manga.name)
         }
 
-        if (!groups.hasOwnProperty(key)) {
-          groups[key] = {
+        let index = groups.findIndex(group => group.key == key)
+
+        if (index === -1) {
+          groups.push({
             name: manga.name,
+            key: key,
             mangas: []
-          }
+          })
         }
-        
-        groups[key].mangas.push(manga)
+        index = groups.findIndex(group => group.key == key)
+
+        groups[index].mangas.push(manga)
 
         // Ensure still updating manga are first in the group
-        groups[key].mangas = groups[key].mangas.sort((a, b) => a.read - b.read)
-
+        groups[index].mangas = groups[index].mangas.sort((a, b) => a.read - b.read)
         return groups
       }, [])
     },
     ...mapGetters(["countMangas", "allMangas"])
   },
   name: "MangaList",
-  components: { Categories, Manga, MultiMangaAction },
+  components: { Categories, MangaGroup, MultiMangaAction },
   methods: {
     i18n: (message, ...args) => i18n(message, ...args),
     convertIcons: str => utils.convertIcons(str),
@@ -303,6 +348,23 @@ export default {
     },
     clearSelected: function() {
       this.selectedManga = []
+    },
+    toggleFilter: function() {
+      this.showFilter = !this.showFilter
+
+      if (!this.showFilter) {
+        this.searchText = ''
+      }
+    },
+    moveNavigation: function() {
+      let newDir = ''
+      if (this.pageNavigationPosition == 'top') {
+        newDir = 'bottom'
+      } else {
+        newDir = 'top'
+      }
+      this.pageNavigationPosition = newDir
+      this.$store.dispatch("setOption", { key: 'pageNavigationPosition', value: newDir })
     }
   },
   async created() {

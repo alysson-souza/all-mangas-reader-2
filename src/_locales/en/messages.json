@@ -1704,5 +1704,13 @@
   "multi_manga_button_delete": {
     "message": "Remove from list",
     "description": "Button to remove multiple selected manga from list"
+  },
+  "list_move_navigation": {
+    "message": "Move Navigation to top/bottom",
+    "description": "Button to move page navigation to top/bottom of table"
+  },
+  "list_page_label": {
+    "message": "Mangas per page",
+    "description": "Label for the manga per page select box"
   }
 }

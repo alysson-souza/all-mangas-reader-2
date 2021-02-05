@@ -1,9 +1,12 @@
 <template>
-  <v-card :class="color(3) + ' amr-manga-row'">
+  <v-card v-if="shouldShow" :class="color(3) + ' amr-manga-row'">
     <v-row :class="isDarkText ? 'dark-text' : 'light-text'">
       <!-- Name, Last Updated -->
       <v-col cols="4">
         <v-card :color="color(0)" class="back-card amr-manga-title-cont"> 
+           <!-- + / - icon if group of mangas  -->
+          <v-icon v-show="isInGroup && isFirst && !groupExpanded" @click="emitExpand()">mdi-plus</v-icon>
+          <v-icon v-show="isInGroup && isFirst && groupExpanded" @click="emitExpand()">mdi-minus</v-icon>
           <v-tooltip top content-class="icon-ttip">
             <template v-slot:activator="{ on }">
               <img v-if="isMirrorEnabled" :src="mirror.mirrorIcon" class="mirror-icon" v-on="on" />
@@ -219,8 +222,23 @@ export default {
   props: [
     // the manga to display
     "manga",
+    // is part of a group of mangas
+    "isInGroup",
+    // if manga is first of the group
+    "isFirst",
+    // is the group currently expanded
+    "groupExpanded",
   ],
   computed: {
+    shouldShow: function() {
+      let show = true
+
+      if (this.isInGroup && !this.isFirst && !this.groupExpanded) {
+        show = false
+      }
+
+      return show
+    },
     // current selected value
     selValue: function() {
       return amrutils.chapPath(this.manga.lastChapterReadURL);
@@ -436,7 +454,10 @@ export default {
      */
     openBookmark: function() {
       browser.runtime.sendMessage({ action: "opentab", url: this.curBm });
-    }
+    },
+    emitExpand: function() {
+      this.$emit("expand-group");
+    },
   },
   // Name of the component
   name: "Manga",
