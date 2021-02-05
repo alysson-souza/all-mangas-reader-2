@@ -108,6 +108,10 @@ const default_options = {
     lastChaptersUpdate: 0, // last time chapters lists have been updated
     lastMirrorsUpdate: 0, // last time mirrors have been updated
 
+    /** Manga List options */
+    perPageMangas: 25, // Manga entries per page
+    pageNavigationPosition: 'top', // Should the page navigation/settings bar be up top or on bottom
+
     /** Mangadex specific options */
     mangadexBlockedGroups: '', // Group id's to block chapters from
     mangadexPreferredGroups: '', // Group id's to prefer chapters from
@@ -117,7 +121,7 @@ const default_options = {
 }
 
 const jsonOptions = ["categoriesStates", "readlanguages"];
-const stringOptions = ["colornew", "colorread", "colornotfollow", "mangadexBlockedGroups", "mangadexPreferredGroups", "mangadexImageServer"];
+const stringOptions = ["colornew", "colorread", "colornotfollow", "mangadexBlockedGroups", "mangadexPreferredGroups", "mangadexImageServer", "pageNavigationPosition"];
 
 /**
  *  initial state of amr options

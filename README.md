@@ -153,6 +153,9 @@ Install [Vue Remote tools](https://github.com/vuejs/vue-devtools/blob/master/she
 if you installed vue-devtools globally, run it with `vue-devtools`
 Open AMR popup, vue-devtools should now be connected
 
+Change content_security_policy in manifest.json to
+`"content_security_policy": "script-src 'self' 'unsafe-eval' http://localhost:8098 'unsafe-inline'; object-src 'self'",`
+
 **Note**: Browser extension does not work due to security restrictions
 ```
 Unchecked runtime.lastError while running tabs.executeScript: Cannot access a chrome-extension:// URL of different extension

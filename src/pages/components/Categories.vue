@@ -1,5 +1,5 @@
 <template>
-  <div class="cat-cont">
+  <div>
       <!-- Eye button to include all / do not care about all -->
       <v-tooltip v-if="!staticCats && !allincluded" top content-class="icon-ttip">
           <template v-slot:activator="{ on }">
@@ -122,7 +122,8 @@ export default {
       , 0) === this.categories.length;
     },
     sortedCategories: function() {
-      return this.categories.sort((a, b) => {
+      let cats = this.categories // This is just to get rid of the eslint error
+      return cats.sort((a, b) => {
         if (typeof a === 'string') {
           return a.localeCompare(b);
         }

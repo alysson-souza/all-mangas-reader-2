@@ -32,7 +32,7 @@
     "cookies",
     "webNavigation"
   ],
-  "content_security_policy": "script-src 'self' ; object-src 'self'",
+  "content_security_policy": "script-src 'self'; object-src 'self'",
   "web_accessible_resources": [
     "icons/icon_32.png",
     "icons/icon_128.png",

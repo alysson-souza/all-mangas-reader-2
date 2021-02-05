@@ -20,7 +20,7 @@
 		</v-card>
 		
 		<!-- Default panel containing manga list -->
-		<v-main>
+		<v-main class="ma-3">
 			<v-alert class="mb-0" type="info" :value="true" icon="mdi-incognito" v-if="!trackingDone">
 				{{i18n("options_gen_allowtracking_desc")}}
 				<div>
@@ -69,17 +69,17 @@
 				transition="dialog-bottom-transition"
 				hide-overlay
 				scrollable
-    >
+    	>
 			<v-card tile>
-			<v-toolbar app>
+			<v-toolbar app max-height="64">
 				<v-btn icon @click.native="closeSearch()">
 				<v-icon>mdi-close</v-icon>
 				</v-btn>
 				<v-toolbar-title>{{i18n("search_title")}}</v-toolbar-title>
 			</v-toolbar>
-						<v-main>
+			<v-main>
 				<Search v-if="search" :to-search="toSearch" />
-						</v-main>
+			</v-main>
 			</v-card>
 		</v-dialog>
 		<!-- Right panel containing links, refresh buttons, import export panels -->
