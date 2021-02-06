@@ -3,7 +3,7 @@
   <div>
     <Manga 
       v-for="(manga, index) in group.mangas" 
-      :key="index"
+      :key="manga.key"
       :manga="manga"
       :is-in-group="group.mangas.length > 1" 
       :is-first="index == 0"
