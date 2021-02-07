@@ -10,7 +10,7 @@ const isFirefox = function() {
  * Each option MUST figure in this object
  */
 const default_options = {
-    debug: 1, // display debug traces in content script, background, popup, ...
+    debug: 0, // display debug traces in content script, background, popup, ...
 
 
     /**

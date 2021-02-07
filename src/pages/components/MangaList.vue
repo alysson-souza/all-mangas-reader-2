@@ -131,7 +131,7 @@
         ></v-progress-linear>
       </template>
       <!-- Table Body, manga entries -->
-      <template v-slot:item="{item}">
+      <template v-slot:item="{item, index}">
         <tr class="m-2">
           <td v-show="selectable">
             <v-checkbox v-model="selectedManga" :value="item.key" hide-details />
@@ -140,6 +140,7 @@
             <MangaGroup 
               @search-request="propagateSR"
               :group="item"
+              :group-index="index"
             />
           </td>
         </tr>

@@ -71,15 +71,15 @@
 				scrollable
     	>
 			<v-card tile>
-			<v-toolbar app max-height="64">
-				<v-btn icon @click.native="closeSearch()">
-				<v-icon>mdi-close</v-icon>
-				</v-btn>
-				<v-toolbar-title>{{i18n("search_title")}}</v-toolbar-title>
-			</v-toolbar>
-			<v-main>
-				<Search v-if="search" :to-search="toSearch" />
-			</v-main>
+        <v-toolbar app max-height="64">
+          <v-btn icon @click.native="closeSearch()">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+          <v-toolbar-title>{{i18n("search_title")}}</v-toolbar-title>
+        </v-toolbar>
+        <v-main>
+          <Search v-if="search" :to-search="toSearch" />
+        </v-main>
 			</v-card>
 		</v-dialog>
 		<!-- Right panel containing links, refresh buttons, import export panels -->
@@ -95,32 +95,32 @@
 				<v-row >
 					<v-col cols="6">
 						<v-row >
-					<v-col cols="3">
-						<v-btn flat icon color="red darken-2" @click="opentab('https://allmangasreader.com')">
-							<img src="/icons/icon_32.png" width="24" alt="All Mangas Reader">
-						</v-btn>
-					</v-col>
-					<v-col cols="3">
-						<v-btn flat icon color="yellow" @click="opentab('/pages/bookmarks/bookmarks.html')">
-							<v-icon>mdi-star</v-icon>
-						</v-btn>
-					</v-col>
-					<v-col cols="3">
-						<v-btn flat icon color="blue" @click="opentab('https://gitlab.com/all-mangas-reader/all-mangas-reader-2/wikis/home')">
-							<v-icon>mdi-help</v-icon>
-						</v-btn>
-					</v-col>
-					<v-col cols="3">
-						<v-btn flat icon color="blue lighten-2" @click="opentab('/pages/popup/popup.html?mode=tab')">
-							<v-icon>mdi-open-in-new</v-icon>
-						</v-btn>
-					</v-col>
+              <v-col cols="3">
+                <v-btn text icon color="red darken-2" @click="opentab('https://allmangasreader.com')">
+                  <img src="/icons/icon_32.png" width="24" alt="All Mangas Reader">
+                </v-btn>
+              </v-col>
+              <v-col cols="3">
+                <v-btn text icon color="yellow" @click="opentab('/pages/bookmarks/bookmarks.html')">
+                  <v-icon>mdi-star</v-icon>
+                </v-btn>
+              </v-col>
+              <v-col cols="3">
+                <v-btn text icon color="blue" @click="opentab('https://gitlab.com/all-mangas-reader/all-mangas-reader-2/wikis/home')">
+                  <v-icon>mdi-help</v-icon>
+                </v-btn>
+              </v-col>
+              <v-col cols="3">
+                <v-btn text icon color="blue lighten-2" @click="opentab('/pages/popup/popup.html?mode=tab')">
+                  <v-icon>mdi-open-in-new</v-icon>
+                </v-btn>
+              </v-col>
 						</v-row>
 					</v-col>
 					<v-col cols="6">
 						<v-tabs
-              v-model="tabs"
-              color="transparent"
+							v-model="tabs"
+							color="transparent"
 							right
 					  >
               <v-tabs-slider></v-tabs-slider>
@@ -134,7 +134,7 @@
 					</v-col>
 				</v-row>
 			</v-container>
-			<v-tabs-items v-model="tabs" :class="($store.state.options.dark === 1 ? 'black' : 'white')" v-if="rpanel">
+			<v-tabs-items v-model="tabs" v-if="rpanel">
         <v-tab-item value="refresh">
           <!-- Refresh buttons -->
           <Timers />

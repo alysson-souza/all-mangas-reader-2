@@ -7,6 +7,7 @@
       :manga="manga"
       :is-in-group="group.mangas.length > 1" 
       :is-first="index == 0"
+      :group-index="groupIndex"
       :group-expanded="expanded"
       @expand-group="expanded = !expanded"
       @search-request="propagateSR"
@@ -25,7 +26,7 @@ export default {
     }
   },
   // property to load the component with --> a group of manga
-  props: ["group"],
+  props: ["group", "groupIndex"],
   components: { Manga },
   methods: {
     /**

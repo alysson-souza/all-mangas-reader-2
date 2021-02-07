@@ -16,18 +16,19 @@
     <v-row >
       <v-col cols="12">
         <v-tooltip top>
-          <div slot="activator">
+          <template v-slot:activator="{ on }">
             <v-btn color="primary"
                   class="refresh-button" 
                   @click="resetLists()"
                   :loading="loadingLists" 
-                  :disabled="loadingLists">
+                  :disabled="loadingLists"
+                  v-on="on">
               <v-icon>mdi-format-list-bulleted</v-icon>
               {{i18n("refresh_lists")}}
             </v-btn>
-            <br/>
-            {{i18n("refresh_lists_nb", stats.nb, stats.nbmangas)}}
-          </div>
+            <br />
+            <span v-on="on">{{i18n("refresh_lists_nb", stats.nb, stats.nbmangas)}}</span>
+          </template>
           <span>{{i18n("refresh_lists_desc")}}</span>
         </v-tooltip>
       </v-col>
