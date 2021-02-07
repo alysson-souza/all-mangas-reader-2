@@ -155,13 +155,11 @@ if (process.env.NODE_ENV === 'production') {
   }
 
   // Add manifest update after
-  if (isChrome) {
+  if (AMR_BROWSER) {
     config.plugins.push(
-        new WebpackShellPluginNext({ onBuildEnd: { scripts: ['node scripts/update-manifest.js -chrome'] }}),
-    );
-  } else if (isFirefox) {
-    config.plugins.push(
-        new WebpackShellPluginNext({ onBuildEnd: { scripts: ['node scripts/update-manifest.js -firefox'] }}),
+      new WebpackShellPluginNext({
+        onAfterDone: { scripts: [`node scripts/update-manifest.js -${AMR_BROWSER}`] },
+      }),
     );
   }
 }
