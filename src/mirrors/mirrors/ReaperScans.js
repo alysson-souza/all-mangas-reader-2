@@ -10,6 +10,7 @@ if (typeof registerMangaObject === 'function') {
         abstract: 'GenkanAbs',
         abstract_options: {
             base_url: 'https://reaperscans.com/',
+            images_include_base_url: false
         },
     });
 }

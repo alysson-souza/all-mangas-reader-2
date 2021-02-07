@@ -20,7 +20,7 @@
 		</v-card>
 		
 		<!-- Default panel containing manga list -->
-		<v-main>
+		<v-main class="ma-3">
 			<v-alert class="mb-0" type="info" :value="true" icon="mdi-incognito" v-if="!trackingDone">
 				{{i18n("options_gen_allowtracking_desc")}}
 				<div>
@@ -71,7 +71,7 @@
 				scrollable
     >
 			<v-card tile>
-			<v-toolbar app>
+        <v-toolbar app max-height="64">
 				<v-btn icon @click.native="closeSearch()">
 				<v-icon>mdi-close</v-icon>
 				</v-btn>
@@ -96,22 +96,22 @@
 					<v-col cols="6">
 						<v-row >
 					<v-col cols="3">
-						<v-btn flat icon color="red darken-2" @click="opentab('https://allmangasreader.com')">
+                <v-btn text icon color="red darken-2" @click="opentab('https://allmangasreader.com')">
 							<img src="/icons/icon_32.png" width="24" alt="All Mangas Reader">
 						</v-btn>
 					</v-col>
 					<v-col cols="3">
-						<v-btn flat icon color="yellow" @click="opentab('/pages/bookmarks/bookmarks.html')">
+                <v-btn text icon color="yellow" @click="opentab('/pages/bookmarks/bookmarks.html')">
 							<v-icon>mdi-star</v-icon>
 						</v-btn>
 					</v-col>
 					<v-col cols="3">
-						<v-btn flat icon color="blue" @click="opentab('https://gitlab.com/all-mangas-reader/all-mangas-reader-2/wikis/home')">
+                <v-btn text icon color="blue" @click="opentab('https://gitlab.com/all-mangas-reader/all-mangas-reader-2/wikis/home')">
 							<v-icon>mdi-help</v-icon>
 						</v-btn>
 					</v-col>
 					<v-col cols="3">
-						<v-btn flat icon color="blue lighten-2" @click="opentab('/pages/popup/popup.html?mode=tab')">
+                <v-btn text icon color="blue lighten-2" @click="opentab('/pages/popup/popup.html?mode=tab')">
 							<v-icon>mdi-open-in-new</v-icon>
 						</v-btn>
 					</v-col>
@@ -134,7 +134,7 @@
 					</v-col>
 				</v-row>
 			</v-container>
-			<v-tabs-items v-model="tabs" :class="($store.state.options.dark === 1 ? 'black' : 'white')" v-if="rpanel">
+			<v-tabs-items v-model="tabs" v-if="rpanel">
         <v-tab-item value="refresh">
           <!-- Refresh buttons -->
           <Timers />

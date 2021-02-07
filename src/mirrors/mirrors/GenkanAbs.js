@@ -12,6 +12,7 @@ window['GenkanAbs'] = function(options) {
         chapter_information_selector: 'div.heading > h6',
         images_start: 'window.chapterPages = ',
         images_end: ';window.nextChapter',
+        images_include_base_url: true,
         chapter_page: 'h6.page-section-title',
     };
     this.options = Object.assign(this.default_options, options);
@@ -71,6 +72,7 @@ window['GenkanAbs'] = function(options) {
     this.getListImages = async function(doc, curUrl) {
         let res = [];
         let base_url = this.options.base_url;
+        let self = this
 
         let tmp_script = doc.innerText.split(this.options.images_start)[1];
         tmp_script = tmp_script.split(this.options.images_end)[0];
@@ -79,7 +81,11 @@ window['GenkanAbs'] = function(options) {
 
         matches.forEach(function(item) {
             let cleaned = item.replace(/\\/g, '');
-            res.push(base_url + cleaned);
+            if (self.options.images_include_base_url) {
+                res.push(base_url + cleaned);
+            } else {
+                res.push(cleaned);
+            }
         });
         return res;
     };

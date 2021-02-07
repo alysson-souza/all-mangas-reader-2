@@ -27,8 +27,6 @@ if (typeof registerMangaObject === 'function') {
         getListChaps: async function (urlManga) {
             let amrOptions = window['AMR_STORE'].state.options
             let blockedGroups = amrOptions.mangadexBlockedGroups.split(',') || []
-            console.log('Blocked Groups')
-            console.log(blockedGroups)
             let id = urlManga.split("/")[4]
             let json = await amr.loadJson(this.api + "manga/" + id + "/chapters")
             let ut = Math.round((new Date()).getTime() / 1000)
@@ -36,15 +34,15 @@ if (typeof registerMangaObject === 'function') {
             let res = {}
             let done = [] // to avoid duplicate chapters. pick randomly a version
             chaps.forEach(chap => {
-                let blockedGroup = false
-                chap.groups.forEach((group) => {
-                    console.log('Checking group ' + group)
-                    if (blockedGroups.includes(group + "")) {
-                        console.log('Found Blocked group ' + group)
-                        blockedGroup = true
-                    }
-                })
-                if (blockedGroup) return
+                // let blockedGroup = false
+                // chap.groups.forEach((group) => {
+                //     console.log('Checking group ' + group)
+                //     if (blockedGroups.includes(group + "")) {
+                //         console.log('Found Blocked group ' + group)
+                //         blockedGroup = true
+                //     }
+                // })
+                // if (blockedGroup) return
 
                 if (done.indexOf(chap.language + chap.chapter) >= 0) return;
                 if (!res[chap.language]) res[chap.language] = []
