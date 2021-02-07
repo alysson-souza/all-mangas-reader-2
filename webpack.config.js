@@ -8,6 +8,10 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const CircularDependencyPlugin = require('circular-dependency-plugin')
 const ejs = require('ejs');
 
+const AMR_BROWSER = process.env.AMR_BROWSER;
+const isFirefox = AMR_BROWSER === 'firefox';
+const isChrome = AMR_BROWSER === 'chrome';
+
 const config = {
   devtool: 'cheap-module-source-map', /* In Webpack 4, defaults devtool outputs an eval() for speeding compil but this obvioulsy fail in chrome extension due to CSP */
   context: __dirname + '/src',
@@ -72,7 +76,7 @@ const config = {
             // This is not working properly on firefox
             // adding a http domain to load script fails firefox csp rules and
             // prevent the extension from working (csp are ignored and failed)
-            if (config.mode !== 'development' || !process.argv.includes("--chrome")) {
+            if (config.mode !== 'development' || !isChrome) {
               return content;
             }
             const ext = JSON.parse(content);
@@ -91,8 +95,8 @@ const config = {
       ]
     }),
     new WebpackShellPluginNext({
-      onBeforeBuild: { // Not working :(
-        scripts: ['cd ./src/mirrors && node ./update-ws.js && cd ../.. && echo "Mirrors Rebuilt"'],
+      onBuildStart: {
+        scripts: ['node ./src/mirrors/update-ws.js && echo "Mirrors Rebuilt"'],
         blocking: true
       },
       onBuildEnd: {
@@ -151,11 +155,11 @@ if (process.env.NODE_ENV === 'production') {
   }
 
   // Add manifest update after
-  if (process.argv.includes("--chrome")) {
+  if (isChrome) {
     config.plugins.push(
         new WebpackShellPluginNext({ onBuildEnd: { scripts: ['node scripts/update-manifest.js -chrome'] }}),
     );
-  } else if (process.argv.includes("--firefox")) {
+  } else if (isFirefox) {
     config.plugins.push(
         new WebpackShellPluginNext({ onBuildEnd: { scripts: ['node scripts/update-manifest.js -firefox'] }}),
     );
