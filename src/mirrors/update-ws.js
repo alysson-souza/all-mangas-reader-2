@@ -1,6 +1,12 @@
-const mirrors = './mirrors/'
-const icons = './icons/'
 const fs = require('fs')
+const path = require('path')
+
+// @TODO should be replaced by webpack imports
+// Ensure all dirs are relative to current file
+const currentDir = path.dirname(fs.realpathSync(__filename));
+const mirrors = currentDir + '/mirrors/';
+const icons = currentDir + '/icons/';
+const implementationFilePath = currentDir + '/register_implementations.js';
 
 let websites = []
 let deprecated = ["isMe", "removeBanners", "whereDoIWriteNavigation", "nextChapterUrl", "previousChapterUrl", "isImageInOneCol", "getMangaSelectFromPage", "whereDoIWriteScans", "doSomethingBeforeWritingScans", "doAfterMangaLoaded"]
@@ -76,7 +82,7 @@ function writeWebsites(allAbstracts, allMirrors) {
     module.exports = { loadMirrors, websitesDescription };
     window["amrLoadMirrors"] = loadMirrors;
     `
-    fs.writeFile('register_implementations.js', content, () => {})
+    fs.writeFile(implementationFilePath, content, () => {})
 }
 
 // function to encode file data to base64 encoded string
