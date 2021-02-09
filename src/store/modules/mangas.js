@@ -887,6 +887,8 @@ const mutations = {
         let mg = new Manga(mgdef);
         let titMg = utils.formatMgName(mg.name);
         let smgs = state.all.filter(manga => utils.formatMgName(manga.name) === titMg)
+        // Setting webtoon default
+        mg.webtoon = window['AMR_STORE'].state.options.webtoonDefault === 1
         for (let sim of smgs) {
             mg.cats.push(...sim.cats)
             mg.layout = sim.layout

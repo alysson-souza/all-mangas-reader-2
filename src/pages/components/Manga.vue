@@ -46,14 +46,14 @@
               <!-- List of chapters -->
               <div v-if="manga.listChaps.length" class="amr-prog-cont">
                 <div class="amr-select-wrapper">
-                  <select :value="selValue" v-on:input="selChapter = urlFromValue($event.target.value)" :class="color(2) + ' amr-chap-sel'" @change="playChap()">
+                  <select :value="selValue" v-on:input="selChapter = urlFromValue($event.target.value)" :class="color(-2) + ' amr-chap-sel'" @change="playChap()">
                     <option v-for="chap in chapsForSelect" :key="chap.value" :value="chap.value">{{chap.text}}</option>
                   </select>
                 </div>
                 <!-- Reading progress -->
                 <v-tooltip top content-class="icon-ttip">
                   <template v-slot:activator="{ on }">
-                    <v-progress-linear :value="progress" height="5" :color="color(-2)" v-on="on"></v-progress-linear>
+                    <v-progress-linear :value="progress" height="5" :color="color(1)" :background-color="color(-1)" v-on="on"></v-progress-linear>
                   </template>
                   <span>{{ i18n("list_progress_reading", Math.floor(progress)) }}</span>
                 </v-tooltip>
@@ -228,6 +228,7 @@ export default {
     "isFirst",
     // is the group currently expanded
     "groupExpanded",
+    "groupIndex"
   ],
   computed: {
     shouldShow: function() {
@@ -321,6 +322,10 @@ export default {
      * Return the right color for this manga, depending if it updates (you can stop following udates for a manga), if it has unread chapters or not
      */
     color: function(light) {
+      if (this.options.alternateColors) {
+        let odd = (this.groupIndex + 1) % 2 == 1
+        light *= odd ? -1 : 1 
+      }
       return utils.getColor(this.manga, this.options, light);
     },
     /** get the real url from the value (url path used in select) in the manga list */

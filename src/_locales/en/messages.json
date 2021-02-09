@@ -1712,5 +1712,21 @@
   "list_page_label": {
     "message": "Mangas per page",
     "description": "Label for the manga per page select box"
+  },
+  "options_webtoon_mode_default": {
+    "message": "Turn on webtoon mode by default",
+    "description": "webtoon mode default check box"
+  },
+  "options_webtoon_mode_default_option": {
+    "message": "Default to Webtoon mode",
+    "description": "Label for webtoon mode default check box"
+  },
+  "options_invert_color_scheme": {
+    "message": "Turn on alternative alternating color scheme for manga list",
+    "description": "alternating color scheme check box"
+  },
+  "options_invert_color_scheme_option": {
+    "message": "Alternating color scheme",
+    "description": "Label for alternating color scheme check box"
   }
 }
