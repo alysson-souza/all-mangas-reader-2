@@ -1,5 +1,5 @@
 <template>
-  <v-card v-if="shouldShow" :class="color(3) + ' amr-manga-row'">
+  <v-card v-if="shouldShow" :class="color(3, true) + ' amr-manga-row'">
     <v-row :class="isDarkText ? 'dark-text' : 'light-text'">
       <!-- Name, Last Updated -->
       <v-col cols="4">
@@ -36,7 +36,7 @@
       </v-col>
       <!-- Select List -->
       <v-col cols="4" md="5">
-        <v-card :color="color(3)" tile flat class="back-card">
+        <v-card :color="color(3, true)" tile flat class="back-card">
           <v-row no-gutters>
             <v-col cols="auto">
               <!-- Flag of the language of chapters if multiple languages available -->
@@ -46,21 +46,21 @@
               <!-- List of chapters -->
               <div v-if="manga.listChaps.length" class="amr-prog-cont">
                 <div class="amr-select-wrapper">
-                  <select :value="selValue" v-on:input="selChapter = urlFromValue($event.target.value)" :class="color(-2) + ' amr-chap-sel'" @change="playChap()">
+                  <select :value="selValue" v-on:input="selChapter = urlFromValue($event.target.value)" :class="color(0) + ' amr-chap-sel'" @change="playChap()">
                     <option v-for="chap in chapsForSelect" :key="chap.value" :value="chap.value">{{chap.text}}</option>
                   </select>
                 </div>
                 <!-- Reading progress -->
                 <v-tooltip top content-class="icon-ttip">
                   <template v-slot:activator="{ on }">
-                    <v-progress-linear :value="progress" height="5" :color="color(1)" :background-color="color(-1)" v-on="on"></v-progress-linear>
+                    <v-progress-linear :value="progress" height="5" :color="color(-2, true)" :background-color="color(2, true)" v-on="on"></v-progress-linear>
                   </template>
                   <span>{{ i18n("list_progress_reading", Math.floor(progress)) }}</span>
                 </v-tooltip>
               </div>
               <div v-else>
                 <!-- Loading bar if chapters list is not loaded yet-->
-                <v-progress-linear v-show="isMirrorEnabled" :indeterminate="true" height="4" class="amr-manga-waiting" :color="color(1)"></v-progress-linear>
+                <v-progress-linear v-show="isMirrorEnabled" :indeterminate="true" height="4" class="amr-manga-waiting" :color="color(2, true)"></v-progress-linear>
                 <span v-show="!isMirrorEnabled">
                   {{ isMirrorEnabled ? mirror.mirrorName : i18n("list_mirror_disabled", manga.mirror) }}
                 </span>
@@ -321,8 +321,8 @@ export default {
     /**
      * Return the right color for this manga, depending if it updates (you can stop following udates for a manga), if it has unread chapters or not
      */
-    color: function(light) {
-      if (this.options.alternateColors) {
+    color: function(light, invertable = false) {
+      if (this.options.alternateColors && invertable) {
         let odd = (this.groupIndex + 1) % 2 == 1
         light *= odd ? -1 : 1 
       }
@@ -477,7 +477,6 @@ export default {
 .light-text * {
   color: #fafafa !important;
 }
-
 .amr-manga-title {
   font-weight: bold;
   cursor: pointer;
@@ -600,4 +599,8 @@ select.amr-chap-sel {
 .amr-list-actions .v-icon.v-icon{
   font-size: 22px;
 }
+.cat-cont {
+  display: inline-block;
+}
+
 </style>
