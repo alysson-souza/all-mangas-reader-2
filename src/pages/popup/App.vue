@@ -1,6 +1,5 @@
 <template>
 	<v-app>
-		
 		<!-- Main toolbar in popup -->
 		<v-card>
 			<v-toolbar>
@@ -29,10 +28,9 @@
 				</div>
 			</v-alert>
 			<MangaList
-          @search-request="openSearch"
-          @manga-loaded="handleLoaded()"
-      >
-			</MangaList>
+        @search-request="openSearch"
+        @manga-loaded="handleLoaded()"
+       />
 			<v-tooltip top v-if="alertmessage !== ''">
 				<template v-slot:activator="{ on }">
 					<v-alert class="mb-0" type="warning" v-on="on" :value="true" icon="mdi-alert-decagram" slot="activator">{{alertmessage}}</v-alert>
@@ -49,7 +47,7 @@
 			transition="dialog-bottom-transition"
 			hide-overlay
 			scrollable
-    	>
+    >
 			<v-card>
 				<v-toolbar max-height="64">
 					<v-btn icon @click.native="closeOptions()">
@@ -64,12 +62,12 @@
 		</v-dialog>
 		<!-- Search dialog -->
 		<v-dialog
-				v-model="search"
-				fullscreen
-				transition="dialog-bottom-transition"
-				hide-overlay
-				scrollable
-    	>
+      v-model="search"
+      fullscreen
+      transition="dialog-bottom-transition"
+      hide-overlay
+      scrollable
+    >
 			<v-card tile>
         <v-toolbar app max-height="64">
           <v-btn icon @click.native="closeSearch()">
@@ -86,7 +84,7 @@
 		<v-navigation-drawer
 			temporary
 			v-model="rpanel"
-					right
+			right
 			absolute
 			width="500"
 		>
@@ -120,14 +118,13 @@
 					<v-col cols="6">
 						<v-tabs
 							v-model="tabs"
-							color="transparent"
 							right
 					  >
               <v-tabs-slider></v-tabs-slider>
-              <v-tab href="#refresh">
+              <v-tab key="refresh">
                 <v-icon>mdi-refresh</v-icon>
               </v-tab>
-              <v-tab @click="openImportExport()" href="#importexport">
+              <v-tab @click="openImportExport()" key="importexport">
                 <v-icon>mdi-content-save</v-icon>
               </v-tab>
             </v-tabs>
@@ -135,11 +132,11 @@
 				</v-row>
 			</v-container>
 			<v-tabs-items v-model="tabs" v-if="rpanel">
-        <v-tab-item value="refresh">
+        <v-tab-item key="refresh">
           <!-- Refresh buttons -->
           <Timers />
         </v-tab-item>
-        <v-tab-item value="importexport">
+        <v-tab-item key="importexport">
           <!-- Import export panels -->
           <ImportExport />
         </v-tab-item>

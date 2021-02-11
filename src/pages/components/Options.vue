@@ -225,7 +225,7 @@
           <!-- Synchronization -->
           <div class="headline">{{ i18n("options_sync_title") }}</div>
           <div class="subtitle">{{i18n('options_sync_manga_list_desc')}}</div>
-          <v-alert v-if="!syncEnabled"  :value="true" color="error" icon="mdi-alert-octagon" outline>
+          <v-alert v-if="!syncEnabled"  :value="true" color="error" icon="mdi-alert-octagon" outlined>
             {{i18n('options_sync_title_warning')}}
           </v-alert>
 
@@ -273,7 +273,6 @@
               :headers="headersSupportedWebsites"
               :items="supportedWebsites"
               item-key="mirrorName"
-              hide-actions
               class="elevation-1"
               disable-pagination
               dense
