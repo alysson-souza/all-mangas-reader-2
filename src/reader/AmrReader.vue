@@ -489,7 +489,7 @@
       resize: 'width', /* Mode of resize : width, height, container */
       fullchapter: true, /* Do we display whole chapter or just current page */
       scaleUp: false, /* Does the image scale up larger than its native size */
-      webtoonMode: false, /* Removes whitespace between images for webtoons */
+      webtoonMode: options.webtoonDefault === 1, /* Removes whitespace between images for webtoons */
 
       mangaExists: null, /* Does manga exists in reading list */
       mangaInfos: null, /* specific manga information (layout state, read top, latest read chapter) */

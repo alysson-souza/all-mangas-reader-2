@@ -2,7 +2,7 @@
   "name": "All Mangas Reader",
   "description": "__MSG_description__",
   "author": "",
-  "version": "2.3.4",
+  "version": "2.3.5",
   "manifest_version": 2,
   "default_locale": "en",
   "icons": {
@@ -32,7 +32,7 @@
     "cookies",
     "webNavigation"
   ],
-  "content_security_policy": "script-src 'self' ; object-src 'self'",
+  "content_security_policy": "script-src 'self'; object-src 'self'",
   "web_accessible_resources": [
     "icons/icon_32.png",
     "icons/icon_128.png",

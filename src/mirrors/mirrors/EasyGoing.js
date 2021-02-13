@@ -5,6 +5,7 @@ if (typeof registerMangaObject === 'function') {
         mirrorIcon : "easygoing.png",
         languages : "en",
         domains: ["*.egscans.org", "*.egscans.com"],
+        disabled: true,
         home: "https://egscans.com/",
         /*no chapter_url, all urls are /any/ will be loaded everywhere... */
 

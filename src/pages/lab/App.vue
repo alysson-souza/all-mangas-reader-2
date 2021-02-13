@@ -1,6 +1,6 @@
 <template>
 	<v-app>
-		<v-toolbar app>
+		<v-toolbar app max-height="64">
 			<img src="/icons/icon_32.png" alt="All Mangas Reader">
 			<v-toolbar-title v-text="title"></v-toolbar-title>
 			<v-spacer></v-spacer>

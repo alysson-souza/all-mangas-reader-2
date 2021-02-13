@@ -1,11 +1,11 @@
 <template>
     <!-- Before mangas are loaded into popup -->
-    <v-card-media
+    <v-img
         :src="scanUrl"
         :height="height"
         @click="$emit('click-scan')"
         class="amr-scan"
-    ></v-card-media>
+     />
 </template>
 
 <script>

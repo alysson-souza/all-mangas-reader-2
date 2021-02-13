@@ -30,22 +30,9 @@ const default_options = {
     darkreader: 1, // Reader is in dark mode, if not --> light mode
 
     thinscan: THINSCAN.default,
+    webtoonDefault: 0, // Should webtoon mode be the default or not
     
-    /**
-     * DEPRECATED OPTIONS --> these options are related to the old reader and will be removed 
-     * when the old reader will be.
-     */
-    displayChapters: 1, // display scans as a book
-    /**
-     * mode = 1 --> images are displayed on top of one another
-     * mode = 2 --> images are displayed two by two occidental reading mode
-     * mode = 3 --> images are displayed two by two japanese reading mode
-     */
-    displayMode: 3,  // DEPRECATED WITH NEW READER
-    resize: 1, // resize scans to fit in viewport  // DEPRECATED WITH NEW READER
-    autobm: 1, // bookmark automatically the scans when dlbclicked in page // DEPRECATED WITH NEW READER
-    lrkeys: 1, // use arrows keys to read chapter // DEPRECATED WITH NEW READER
-    rightnext: 1, // arrow right goes to next chapter at bottom // DEPRECATED WITH NEW READER
+    resize: 1, // resize scans to fit in viewport  // DEPRECATED WITH NEW READER (A search for this term gives lots of results so removing it later)
 
     /**
      * Options used by background script
@@ -111,6 +98,7 @@ const default_options = {
     /** Manga List options */
     perPageMangas: 25, // Manga entries per page
     pageNavigationPosition: 'top', // Should the page navigation/settings bar be up top or on bottom
+    alternateColors: 0, // This applies a alternating color scheme to the manga list
 
     /** Mangadex specific options */
     mangadexBlockedGroups: '', // Group id's to block chapters from

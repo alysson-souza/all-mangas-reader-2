@@ -58,6 +58,11 @@
           <div class="subtitle">{{i18n('options_web_chapter_thinscan_desc')}}</div>
           <v-select v-model="thinscan" :items="thinscan_values" @change="setOption('thinscan')"></v-select>
 
+           <!-- Default to webtoon mode -->
+          <div class="subtitle">{{i18n('options_webtoon_mode_default')}}</div>
+          <v-checkbox v-model="webtoonDefault" @change="setOption('webtoonDefault')"
+                  :label="i18n('options_webtoon_mode_default_option')"></v-checkbox>
+
               
           <!-- Loading options -->
           <div class="headline">{{ i18n("options_web_loading") }}</div>
@@ -119,6 +124,11 @@
           <v-radio-group v-model="colornotfollow" @change="setOption('colornotfollow')" row class="colored-radio">
             <v-radio v-for="c in colors" :key="c" :value="c" :color="getColor(c)" :class="getTextColor(c)" ></v-radio>
           </v-radio-group>
+
+          <!-- Create inverted color scheme -->
+          <div class="subtitle">{{i18n('options_invert_color_scheme')}}</div>
+          <v-checkbox v-model="alternateColors" @change="setOption('alternateColors')"
+                  :label="i18n('options_invert_color_scheme_option')"></v-checkbox>
 
           <!-- Updates -->
           <div class="headline">{{ i18n("options_gen_updates") }}</div>
@@ -215,7 +225,7 @@
           <!-- Synchronization -->
           <div class="headline">{{ i18n("options_sync_title") }}</div>
           <div class="subtitle">{{i18n('options_sync_manga_list_desc')}}</div>
-          <v-alert v-if="!syncEnabled"  :value="true" color="error" icon="mdi-alert-octagon" outline>
+          <v-alert v-if="!syncEnabled"  :value="true" color="error" icon="mdi-alert-octagon" outlined>
             {{i18n('options_sync_title_warning')}}
           </v-alert>
 
@@ -263,7 +273,6 @@
               :headers="headersSupportedWebsites"
               :items="supportedWebsites"
               item-key="mirrorName"
-              hide-actions
               class="elevation-1"
               disable-pagination
               dense
@@ -414,16 +423,12 @@ const converters = {
     fromDb: val => val === 1,
     toDb: val => (val ? 1 : 0),
     properties: [
-      "displayChapters",
       "resize",
       "load",
       "imgorder",
       "prefetch",
       "markwhendownload",
       "addauto",
-      "lrkeys",
-      "autobm",
-      "rightnext",
       "newTab",
       "groupmgs",
       "displastup",
@@ -443,7 +448,9 @@ const converters = {
       "darkreader",
       "syncEnabled",
       "searchOpenSeries",
-      "mangadexDataSaver"
+      "mangadexDataSaver",
+      "webtoonDefault",
+      "alternateColors"
     ]
   }
 };
@@ -900,6 +907,3 @@ export default {
     opacity: 0.4;
 }
 </style>
-
-    
-

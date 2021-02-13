@@ -55,6 +55,9 @@ export default class {
         // Webtoon mode (no whitespace between images)
         this.webtoon = obj.webtoon || false;
 
+        // Display name (so mangas can be renamed)
+        this.displayName = obj.displayName || ''
+
         /* listChaps can contain an object with multiple lists for each lang
         this value is the lang of the followed manga */
         this.language = obj.language;

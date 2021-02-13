@@ -5,6 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages : "en",
         domains: ["elpsykongroo.pw"],
         home: "https://elpsykongroo.pw",
+        disabled: true,
         chapter_url: /^\/r\/read\/.*$/g,
 
         abstract: "FoolSlide",

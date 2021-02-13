@@ -5,6 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages : "en",
         domains: ["helveticascans.com"],
         home: "https://helveticascans.com/",
+        disabled: true,
         chapter_url: /^\/r\/read\/.*$/g,
         
         abstract: "FoolSlide",

@@ -1712,5 +1712,44 @@
   "list_page_label": {
     "message": "Mangas per page",
     "description": "Label for the manga per page select box"
+  },
+  "options_webtoon_mode_default": {
+    "message": "Turn on webtoon mode by default",
+    "description": "webtoon mode default check box"
+  },
+  "options_webtoon_mode_default_option": {
+    "message": "Default to Webtoon mode",
+    "description": "Label for webtoon mode default check box"
+  },
+  "options_invert_color_scheme": {
+    "message": "Turn on alternative alternating color scheme for manga list",
+    "description": "alternating color scheme check box"
+  },
+  "options_invert_color_scheme_option": {
+    "message": "Alternating color scheme",
+    "description": "Label for alternating color scheme check box"
+  },
+  "__V2_3_5": {
+    "message": "Just a filler to separate new labels from old ones"
+  },
+  "list_details_rename_manga": {
+    "message": "Rename",
+    "description": "Button for renaming Manga"
+  },
+  "rename_dialog_title": {
+    "message": "Rename Manga",
+    "description": "Title for dialog for renaming manga"
+  },
+  "rename_dialog_original": {
+    "message": "Original Name",
+    "description": "Original Name Label for dialog for renaming manga"
+  },
+  "rename_dialog_button_confirm": {
+    "message": "Rename Manga",
+    "description": "Confirm button for renaming manga"
+  },
+  "list_details_reset_name": {
+    "message": "Remove Custom Name",
+    "description": "Button to remove custom name"
   }
 }

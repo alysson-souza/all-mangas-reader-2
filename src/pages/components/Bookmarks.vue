@@ -1,75 +1,77 @@
 <template>
-    <v-container fluid>
-        <gallery :images="scans" :index="curScan" @close="curScan = null" :options="{closeOnSlideClick:true}"></gallery>
-        <v-row  >
-            <v-col cols="12" sm="6"  v-bind="getSize()" v-for="bm in sortBookmarkList" :key="bm.key">
-                <v-card tile>
-                    <BookmarkScan 
-                         v-if="bm.type == 'scan'"
-                        :bookmark="bm" 
-                        @click-scan="setScan(bm)" 
-                        @change-url="changeUrl"
-                        :height="getHeight()" />
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn icon @click="openEdit(bm)">
-                            <v-icon>mdi-pencil</v-icon>
-                        </v-btn>
-                        <v-btn icon @click="openDelete(bm)">
-                            <v-icon>mdi-delete</v-icon>
-                        </v-btn>
-                        <v-btn icon @click="openTab(bm)">
-                            <v-icon>mdi-open-in-new</v-icon>
-                        </v-btn>
-                    </v-card-actions>
-                    <v-card-title primary-title class="pt-1">
-                        <div>
-                            <div class="headline">
-                                <img :src="getIcon(bm.mirror)" /> 
-                                {{bm.name}} - {{bm.chapName}}
-                            </div>
-                            <p class="grey--text mb-0" v-if="bm.scanUrl">{{i18n("bookmarks_scan_number", bm.scanName)}}</p>
-                            <p class="subtitle grey--text mb-0">{{bm.note}}</p>
-                        </div>
-                    </v-card-title>
-                </v-card>
+  <v-container fluid>
+    <gallery :images="scans" :index="curScan" @close="curScan = null" :options="{closeOnSlideClick:true}"></gallery>
+    <v-row  >
+      <v-col cols="12" sm="6" :lg="getSize()" v-for="bm in sortBookmarkList" :key="bm.key">
+        <v-card tile>
+          <BookmarkScan 
+              v-if="bm.type == 'scan'"
+              :bookmark="bm" 
+              @click-scan="setScan(bm)" 
+              @change-url="changeUrl"
+              :height="getHeight()" />
+          <v-row>
+            <v-col>
+              <div class="text-h6">
+                <img :src="getIcon(bm.mirror)" /> 
+                {{bm.name}} - {{bm.chapName}}
+              </div>
+              <p class="grey--text mb-0 text-subtitle-2" v-if="bm.scanUrl">{{i18n("bookmarks_scan_number", bm.scanName)}}</p>
+              <p class="grey--text mb-0 text-caption">{{bm.note}}</p>
             </v-col>
-        </v-row>
-        <v-dialog v-model="deleteBookmarkDialog" max-width="290">
-            <v-card v-if="bmToDelete">
-                <v-card-title class="headline">{{bmToDelete.type === 'chapter' ? i18n("bookmarks_chapter_delete") : i18n("bookmarks_scan_delete")}}</v-card-title>
-                <v-card-text>{{bmToDelete.type === 'chapter' ? i18n("bookmarks_chapter_delete_text", bmToDelete.name, bmToDelete.chapName) : i18n("bookmarks_scan_delete_text", bmToDelete.name, bmToDelete.chapName, bmToDelete.scanName)}}</v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="red darken-1" flat @click.native="reallyDeleteBm()">{{i18n("button_yes")}}</v-btn>
-                  <v-btn color="grey darken-1" flat @click.native="deleteBookmarkDialog = false">{{i18n("button_no")}}</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
-        <v-dialog v-model="editBookmarkDialog" max-width="500px">
-            <v-card v-if="bmToEdit">
-                <v-card-title>
-                  <span class="headline" v-if="bmToEdit.type === 'chapter'">{{i18n('bookmarks_chapter_edit')}}</span>
-                  <span class="headline" v-else>{{i18n('bookmarks_scan_edit')}}</span>
-                </v-card-title>
-                <v-card-text>
-                  <p v-html="bmToEdit.type === 'chapter' ? i18n('bookmarks_chapter_edit_text', bmToEdit.name, bmToEdit.chapName) : i18n('bookmarks_scan_edit_text', bmToEdit.name, bmToEdit.chapName, bmToEdit.scanName)"></p>
-                  <v-container>
-                      <v-row dense>
-                        <v-col cols="12">
-                            <v-textarea :label="i18n('bookmarks_edit_note')" v-model="bmToEdit.note"></v-textarea>
-                        </v-col>
-                      </v-row>
-                  </v-container>
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="primary darken-1" flat @click.native="editBookmarkDialog = false">{{i18n('button_cancel')}}</v-btn>
-                  <v-btn color="primary darken-1" flat @click.native="reallyEditBm">{{i18n('button_save')}}</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
-    </v-container>
+            <v-col cols="auto">
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn icon @click="openEdit(bm)">
+                  <v-icon>mdi-pencil</v-icon>
+                </v-btn>
+                <v-btn icon @click="openDelete(bm)">
+                  <v-icon>mdi-delete</v-icon>
+                </v-btn>
+                <v-btn icon @click="openTab(bm)">
+                  <v-icon>mdi-open-in-new</v-icon>
+                </v-btn>
+              </v-card-actions>
+            </v-col>
+          </v-row>
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-dialog v-model="deleteBookmarkDialog" max-width="290">
+      <v-card v-if="bmToDelete">
+        <v-card-title class="headline">{{bmToDelete.type === 'chapter' ? i18n("bookmarks_chapter_delete") : i18n("bookmarks_scan_delete")}}</v-card-title>
+        <v-card-text>{{bmToDelete.type === 'chapter' ? i18n("bookmarks_chapter_delete_text", bmToDelete.name, bmToDelete.chapName) : i18n("bookmarks_scan_delete_text", bmToDelete.name, bmToDelete.chapName, bmToDelete.scanName)}}</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="red darken-1" flat @click.native="reallyDeleteBm()">{{i18n("button_yes")}}</v-btn>
+          <v-btn color="grey darken-1" flat @click.native="deleteBookmarkDialog = false">{{i18n("button_no")}}</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="editBookmarkDialog" max-width="500px">
+      <v-card v-if="bmToEdit">
+        <v-card-title>
+          <span class="headline" v-if="bmToEdit.type === 'chapter'">{{i18n('bookmarks_chapter_edit')}}</span>
+          <span class="headline" v-else>{{i18n('bookmarks_scan_edit')}}</span>
+        </v-card-title>
+        <v-card-text>
+          <p v-html="bmToEdit.type === 'chapter' ? i18n('bookmarks_chapter_edit_text', bmToEdit.name, bmToEdit.chapName) : i18n('bookmarks_scan_edit_text', bmToEdit.name, bmToEdit.chapName, bmToEdit.scanName)"></p>
+          <v-container>
+            <v-row dense>
+              <v-col cols="12">
+                <v-textarea :label="i18n('bookmarks_edit_note')" v-model="bmToEdit.note"></v-textarea>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary darken-1" flat @click.native="editBookmarkDialog = false">{{i18n('button_cancel')}}</v-btn>
+          <v-btn color="primary darken-1" flat @click.native="reallyEditBm">{{i18n('button_save')}}</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-container>
 </template>
 <script>
 import i18n from "../../amr/i18n";
@@ -121,8 +123,8 @@ export default {
     i18n: (message, ...args) => i18n(message, ...args),
     getSize: function() {
       return this.size === 2
-        ? { [`lg6`]: true }
-        : this.size === 3 ? { [`lg4`]: true } : { [`lg3`]: true };
+        ? 6
+        : this.size === 3 ? 4 : 3 ;
     },
     getHeight: function() {
       return this.size === 2

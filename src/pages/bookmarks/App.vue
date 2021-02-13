@@ -8,40 +8,41 @@
     >
     <v-card flat>
       <v-list two-line>
-        <v-list-tile @click="switchAllStates()" avatar ripple>
-            <v-list-tile-content>
-              <v-list-tile-title>
-                {{i18n("bookmarks_allmangas")}}
-              </v-list-tile-title>
-              <v-list-tile-sub-title class="text--primary">{{i18n("bookmarks_number", nbBookmarks)}}
-              </v-list-tile-sub-title>
-            </v-list-tile-content>
-              <v-list-tile-action>
-                  <v-icon
-                    v-if="hasOneUnState()"
-                    color="red darken-2"
-                  >
-                  mdi-eye
-                  </v-icon>
-                  <v-icon
-                    v-else
-                    color="grey lighten-1"
-                  >
-                  mdi-eye-off
-                  </v-icon>
-              </v-list-tile-action>
-          </v-list-tile>
-          <v-divider></v-divider>
+        <v-list-item @click="switchAllStates()" avatar ripple>
+          <v-list-item-content>
+            <v-list-item-title>
+              {{i18n("bookmarks_allmangas")}}
+            </v-list-item-title>
+            <v-list-item-subtitle class="text--primary">
+              {{i18n("bookmarks_number", nbBookmarks)}}
+            </v-list-item-subtitle>
+          </v-list-item-content>
+          <v-list-item-action>
+            <v-icon
+              v-if="hasOneUnState()"
+              color="red darken-2"
+            >
+            mdi-eye
+            </v-icon>
+            <v-icon
+              v-else
+              color="grey lighten-1"
+            >
+            mdi-eye-off
+            </v-icon>
+          </v-list-item-action>
+        </v-list-item>
+        <v-divider></v-divider>
         <template v-for="(mg, index) in mangas">
-          <v-list-tile :key="mg.key" @click="switchMgState(mg)" avatar ripple>
-            <v-list-tile-content>
-              <v-list-tile-title>
+          <v-list-item :key="mg.key" @click="switchMgState(mg)" avatar ripple>
+            <v-list-item-content>
+              <v-list-item-title>
                 {{ mg.name }}
-              </v-list-tile-title>
-              <v-list-tile-sub-title class="text--primary">{{i18n("bookmarks_number", mg.nb)}}
-              </v-list-tile-sub-title>
-            </v-list-tile-content>
-              <v-list-tile-action>
+              </v-list-item-title>
+              <v-list-item-subtitle class="text--primary">{{i18n("bookmarks_number", mg.nb)}}
+              </v-list-item-subtitle>
+            </v-list-item-content>
+              <v-list-item-action>
                   <v-icon
                     v-if="!mangasUnSel[mg.key]"
                     color="red darken-2"
@@ -54,8 +55,8 @@
                   >
                   mdi-eye-off
                   </v-icon>
-              </v-list-tile-action>
-          </v-list-tile>
+              </v-list-item-action>
+          </v-list-item>
           <v-divider
               v-if="index + 1 < mangas.length"
               :key="index"
@@ -64,22 +65,22 @@
       </v-list>
     </v-card>
     </v-navigation-drawer>
-    <v-toolbar
+    <v-app-bar
       :clipped-left="$vuetify.breakpoint.lgAndUp"
       color="red darken-2"
       dark
       app
       fixed
     >
-      <v-toolbar-title style="width: 300px" class="ml-0 pl-3">
-        <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+      <v-app-bar-title style="width: 300px" class="ml-0 pl-3">
+        <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
         <v-btn icon large color="white" class="hidden-sm-and-down">
           <v-avatar size="32px" tile>
             <img src="/icons/icon_32.png" alt="All Mangas Reader">
           </v-avatar>
         </v-btn>
         <span>{{i18n("bookmarks_title")}}</span>
-      </v-toolbar-title>
+      </v-app-bar-title>
       <v-text-field
         flat
         solo-inverted
@@ -105,16 +106,16 @@
         flat
       ></v-overflow-btn>
       <v-btn-toggle v-model="toggle_type" multiple class="transparent">
-        <v-btn flat>
+        <v-btn text>
           <v-icon>mdi-image</v-icon>
         </v-btn>
-        <v-btn flat>
+        <v-btn text>
           <v-icon>mdi-book-open-variant</v-icon>
         </v-btn>
       </v-btn-toggle>
-    </v-toolbar>
+    </v-app-bar>
     <v-main>
-      <v-container class="fill-height" fluid>
+      <v-container fluid>
         <v-row justify="center" align="center" v-if="!loaded">
           <!-- Before mirrors and bookmarks are loaded into bookmarks -->
               <v-progress-circular indeterminate :width="4" :size="50" color="red darken-2"></v-progress-circular>

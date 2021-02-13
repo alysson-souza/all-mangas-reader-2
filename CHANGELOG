@@ -1,7 +1,43 @@
+### V2.3.5
+  New Manga List:
+    - The entire manga list page has been rewritten for speed
+    - Pagination has been added with customizable per page options
+    - Loading, searching and filtering should be much faster on larger lists
+    - Added alternating color scheme option, this alternates dark/light background colors for each series
+    - The hidden options now only apply to one entry not a whole group
+
+  New Features:
+    - Ability to rename manga series
+    - This new name will be taken into account when grouping is enabled
+    - Option to default all chapters to have webtoon mode on (for series that you do not have added already)
+
+  Fixes:
+    - The top bar for certain pages have had the max height fixed so they do not take up half the page
+    - The bookmarks page (when you open in new tab) has been fixed
+  
+  New Mirrors:
+    - Manga Katana (https://mangakatana.com)
+  
+  Mirror Fixes:
+    - Scan Trad - Fixed image path so scans will load
+    - Arang Scans - Fixing Manga list not populating
+    - Chibi Manga - Forced switch to https and fixed manga list not populating
+    - Early Manga - They changed domains and site software, it is working now
+
+  Disabled Mirrors:
+    - Baca Manga
+    - Bang Aqua
+    - Doki Reader
+    - Easy Going Scans
+    - Elpsy Kingroo
+    - Fos Scans
+    - Helvetica Scans
+    - Ita Scans
+
 ### V2.3.4
   Mirror Fixes:
     - Last time mangadex fix did not commit. Did it again
-
+    
 ### V2.3.3
   Mirror Fixes:
     - Reverted to old mangadex api url as that one seems to be working

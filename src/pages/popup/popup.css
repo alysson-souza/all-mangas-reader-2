@@ -5,12 +5,12 @@ html, body {
 body.popup {
     min-width:700px;
     /* max-height: 500px; */
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 @-moz-document url-prefix() { /* Hack for firefox only CSS */
-    html {
+    /* html {
         overflow: hidden
-    }
+    } */
 }
 body {
     font-size: 14px;

@@ -26,11 +26,11 @@
               <v-icon>mdi-format-list-bulleted</v-icon>
               {{i18n("refresh_lists")}}
             </v-btn>
-            <br/>
-            <span v-on="on">{{i18n("refresh_lists_nb", stats.nb, stats.nbmangas)}}</span>
           </template>
           <span>{{i18n("refresh_lists_desc")}}</span>
         </v-tooltip>
+        <br />
+        {{i18n("refresh_lists_nb", stats.nb, stats.nbmangas)}}
       </v-col>
     </v-row>
   </v-container>

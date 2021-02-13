@@ -3,6 +3,7 @@ if (typeof registerMangaObject === 'function') {
         mirrorName : "Doki Reader",
         mirrorIcon : "doki.png",
         languages : "en",
+        disabled: true,
         domains: ["kobato.hologfx.com"],
         home: "https://kobato.hologfx.com/",
         chapter_url: /^\/reader\/read\/.*$/g,
