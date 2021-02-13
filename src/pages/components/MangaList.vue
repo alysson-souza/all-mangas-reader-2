@@ -138,9 +138,10 @@
           </td>
           <td>
             <MangaGroup 
-              @search-request="propagateSR"
               :group="item"
               :group-index="index"
+              @search-request="propagateSR"
+              @rename-manga="renameManga"
             />
           </td>
         </tr>
@@ -172,6 +173,25 @@
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" flat @click.native="showDialog = false">{{i18n("button_no")}}</v-btn>
           <v-btn color="blue darken-1" flat @click.native="dialogAction">{{i18n("button_yes")}}</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="renameDialog" max-width="800px">
+      <v-card>
+        <v-card-title>{{ i18n("rename_dialog_title") }}</v-card-title>
+        <v-card-text>
+          <v-row>
+            <v-col cols="12" md="6">
+              {{ i18n("rename_dialog_original") }} - {{ renameOrigial }}
+            </v-col>
+            <v-col cols="12" md="6">
+              <v-text-field v-model="renameInput" />
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn color="green" @click.native="renameMangaConfirm">{{ i18n("rename_dialog_button_confirm") }}</v-btn>
+          <v-btn color="red" @click.native="renameMangaCancel">{{ i18n("button_cancel") }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -207,6 +227,10 @@ export default {
       showFilter: false, // Show the text search
       dialogTitle: "", //title of opened dialog
       dialogText: "", // text of opened dialog
+      renameDialog: false, // Show dialog for renaming manga
+      renameOrigial: '', // Original manga name when renaming
+      renameInput: '', // Text field for renaming manga
+      renameKey: '', // Key of the manga we are going to rename
       selectable: false, // Toggle Manga List select behaviour
       dialogAction: () => {self.showDialog = false}, // action to take on yes in dialog
       searchText: "",
@@ -259,17 +283,18 @@ export default {
     groupedMangas: function() {
       return this.sortMangaList(this.visMangas).reduce((groups, manga) => {
         let key
+        let name = (manga.displayName && manga.displayName !== '') ? manga.displayName : manga.name
         if (this.options.groupmgs === 0) {
           key = manga.key
         } else {
-          key = 'group:' + utilsamr.formatMgName(manga.name)
+          key = 'group:' + utilsamr.formatMgName(name)
         }
 
         let index = groups.findIndex(group => group.key == key)
 
         if (index === -1) {
           groups.push({
-            name: manga.name,
+            name: name,
             key: key,
             mangas: []
           })
@@ -380,6 +405,32 @@ export default {
       }
       this.pageNavigationPosition = newDir
       this.$store.dispatch("setOption", { key: 'pageNavigationPosition', value: newDir })
+    },
+    /** 
+     * Pull up the dialog for renaming a manga
+     */
+    renameManga(manga) {
+      this.renameKey = manga.key
+      this.renameOrigial = manga.name
+      this.renameInput = manga.displayName
+      this.renameDialog = true
+    },
+    renameMangaConfirm() {
+      browser.runtime.sendMessage({
+        action: "setDisplayName",
+        key: this.renameKey,
+        displayName: this.renameInput
+      })
+      this.renameMangaCancel() // Why copy the logic when I need the same things?
+    },
+    /** 
+     * Cancel button action that resets the form / variables
+     */
+    renameMangaCancel() {
+      this.renameOrigial = ''
+      this.renameKey = ''
+      this.renameInput = ''
+      this.renameDialog = false
     }
   },
   async created() {

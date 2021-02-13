@@ -31,7 +31,14 @@
             </template>
             <span>{{i18n("list_stopped_updating")}}</span>
           </v-tooltip>
-          <span class="amr-manga-title" @click="openManga">{{ manga.name }}</span>
+          <v-tooltip top :disabled="!(manga.displayName && manga.displayName !== '')">
+            <template v-slot:activator="{on}">
+              <span class="amr-manga-title" v-on="on" @click="openManga">
+                {{ manga.displayName && manga.displayName !== '' ? manga.displayName : manga.name }}
+              </span>
+            </template>
+            {{ manga.name }}
+          </v-tooltip>          
         </v-card>
       </v-col>
       <!-- Select List -->
@@ -173,13 +180,15 @@
         <span v-if="!bookmarks.length">{{i18n("list_details_no_bookmarks")}}</span>
       </v-col>
       <v-col cols="12" class="text-center">
-        <v-btn dark @click='searchElsewhere()' :color="color(-1)" small>{{i18n("list_details_act_search")}}</v-btn>
-        <v-btn dark @click='resetManga()' :color="color(-1)" small>{{i18n("list_details_act_reset")}}</v-btn>
-        <v-btn dark v-if="manga.read === 0" @click='toggleFollow()' :color="color(-1)" small>{{i18n("list_details_act_stop_follow")}}</v-btn>
-        <v-btn dark v-if="manga.read === 1" @click='toggleFollow()' :color="color(-1)" small>{{i18n("list_details_act_follow")}}</v-btn>
-        <v-btn dark v-if="manga.update === 1" @click='toggleUpdate()' :color="color(-1)" small>{{i18n("list_details_act_stop_updating")}}</v-btn>
-        <v-btn dark v-if="manga.update === 0" @click='toggleUpdate()' :color="color(-1)" small>{{i18n("list_details_act_restart_updating")}}</v-btn>
-        <v-btn dark @click='refreshMangaNow()' :color="color(-1)" small>{{ i18n("refresh_chapters") }}</v-btn>
+        <v-btn @click='searchElsewhere()' :color="color(-1)" small>{{i18n("list_details_act_search")}}</v-btn>
+        <v-btn @click='resetManga()' :color="color(-1)" small>{{i18n("list_details_act_reset")}}</v-btn>
+        <v-btn v-if="manga.read === 0" @click='toggleFollow()' :color="color(-1)" small>{{i18n("list_details_act_stop_follow")}}</v-btn>
+        <v-btn v-if="manga.read === 1" @click='toggleFollow()' :color="color(-1)" small>{{i18n("list_details_act_follow")}}</v-btn>
+        <v-btn v-if="manga.update === 1" @click='toggleUpdate()' :color="color(-1)" small>{{i18n("list_details_act_stop_updating")}}</v-btn>
+        <v-btn v-if="manga.update === 0" @click='toggleUpdate()' :color="color(-1)" small>{{i18n("list_details_act_restart_updating")}}</v-btn>
+        <v-btn @click='refreshMangaNow()' :color="color(-1)" small>{{ i18n("refresh_chapters") }}</v-btn>
+        <v-btn @click='renameManga()' :color="color(-1)" small>{{ i18n("list_details_rename_manga") }}</v-btn>
+        <v-btn v-if="manga.displayName && manga.displayName !== ''" @click='resetName()' :color="color(-1)" small>{{ i18n("list_details_reset_name") }}</v-btn>
       </v-col>
     </v-row>
     <v-row  v-if="displayLangs">
@@ -381,7 +390,7 @@ export default {
     refreshMangaNow: function () {
       browser.runtime.sendMessage({
         action: 'refreshMangas',
-        mangas: {
+        manga: {
           url: this.manga.url,
           language: this.manga.language,
         }
@@ -460,9 +469,22 @@ export default {
     openBookmark: function() {
       browser.runtime.sendMessage({ action: "opentab", url: this.curBm });
     },
-    emitExpand: function() {
+    emitExpand() {
       this.$emit("expand-group");
     },
+    /** 
+     * Emit the event for renaming this manga
+     */
+    renameManga() {
+      this.$emit('rename-manga', this.manga)
+    },
+    resetName() {
+      browser.runtime.sendMessage({
+        action: "setDisplayName",
+        key: this.manga.key,
+        displayName: ''
+      })
+    }
   },
   // Name of the component
   name: "Manga",

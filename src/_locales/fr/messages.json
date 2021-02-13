@@ -1723,5 +1723,28 @@
   "options_invert_color_scheme_option": {
     "message": "Jeu de couleurs alternées",
     "description": "Label for alternating color scheme check box"
+  },
+  "__V2_3_5": {
+    "message": "Just a filler to separate new labels from old ones"
+  },
+  "list_details_rename_manga": {
+    "message": "Renommer",
+    "description": "Button for renaming Manga"
+  },
+  "rename_dialog_title": {
+    "message": "Renommer Manga",
+    "description": "Title for dialog for renaming manga"
+  },
+  "rename_dialog_original": {
+    "message": "Nom d'origine",
+    "description": "Original Name Label for dialog for renaming manga"
+  },
+  "rename_dialog_button_confirm": {
+    "message": "Renommer Manga",
+    "description": "Confirm button for renaming manga"
+  },
+  "list_details_reset_name": {
+    "message": "Supprimer le nom personnalisé",
+    "description": "Button to remove custom name"
   }
 }

@@ -58,6 +58,8 @@ class HandleManga {
                 return window['AMR_STORE'].dispatch('setMangaLayoutMode', message);
             case "setWebtoonMode":
                 return window['AMR_STORE'].dispatch('setMangaWebtoonMode', message);
+            case "setDisplayName":
+                return window['AMR_STORE'].dispatch('setMangaDisplayName', message);
             case "setMangaChapter":
                 return window['AMR_STORE'].dispatch('resetManga', message) // reset reading to first chapter
                     .then(() => window['AMR_STORE'].dispatch('readManga', message)); // set reading to current chapter

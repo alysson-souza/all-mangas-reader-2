@@ -135,6 +135,15 @@ const actions = {
         dispatch('updateManga', state.all.find(manga => manga.key === key));
     },
     /**
+     * Change manga display name
+     * @param {*} vuex object 
+     * @param {*} message containing manga object
+     */
+    async setMangaDisplayName({ dispatch, commit, getters }, message) {
+        commit('setMangaDisplayName', message);
+        dispatch('updateManga', state.all.find(manga => manga.key === message.key));
+    },
+    /**
      * Reset manga reading for a manga to first chapter
      * @param {*} vuex object 
      * @param {*} message containing url of the manga
@@ -541,19 +550,19 @@ const actions = {
         if (mg !== undefined) {
             commit('setMangaReadTop', message);
             dispatch('updateManga', mg);
-            if (message.updatesamemangas && rootState.options.groupmgs === 1) {
-                let titMg = utils.formatMgName(mg.name);
-                let smgs = state.all.filter(manga => utils.formatMgName(manga.name) === titMg)
-                for (let smg of smgs) {
-                    commit('setMangaReadTop', { 
-                        url: smg.url, 
-                        read: message.read,
-                        mirror: message.mirror,
-                        language: message.language
-                    });
-                    dispatch('updateManga', smg);
-                }
-            }
+            // if (message.updatesamemangas && rootState.options.groupmgs === 1) {
+            //     let titMg = utils.formatMgName(mg.name);
+            //     let smgs = state.all.filter(manga => utils.formatMgName(manga.name) === titMg)
+            //     for (let smg of smgs) {
+            //         commit('setMangaReadTop', { 
+            //             url: smg.url, 
+            //             read: message.read,
+            //             mirror: message.mirror,
+            //             language: message.language
+            //         });
+            //         dispatch('updateManga', smg);
+            //     }
+            // }
         }
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();
@@ -569,19 +578,19 @@ const actions = {
         if (mg !== undefined) {
             commit('setMangaUpdateTop', message);
             dispatch('updateManga', mg);
-            if (message.updatesamemangas && rootState.options.groupmgs === 1) {
-                let titMg = utils.formatMgName(mg.name);
-                let smgs = state.all.filter(manga => utils.formatMgName(manga.name) === titMg)
-                for (let smg of smgs) {
-                    commit('setMangaUpdateTop', { 
-                        url: smg.url, 
-                        update: message.update,
-                        mirror: message.mirror,
-                        language: message.language
-                    });
-                    dispatch('updateManga', smg);
-                }
-            }
+            // if (message.updatesamemangas && rootState.options.groupmgs === 1) {
+            //     let titMg = utils.formatMgName(mg.name);
+            //     let smgs = state.all.filter(manga => utils.formatMgName(manga.name) === titMg)
+            //     for (let smg of smgs) {
+            //         commit('setMangaUpdateTop', { 
+            //             url: smg.url, 
+            //             update: message.update,
+            //             mirror: message.mirror,
+            //             language: message.language
+            //         });
+            //         dispatch('updateManga', smg);
+            //     }
+            // }
         }
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();
@@ -591,20 +600,12 @@ const actions = {
      * @param {*} param0
      * @param {{ action: string, mangas: { url: string, mirror: any, language: any }[]}} message
      */
-    async refreshMangas({ dispatch }, { mangas }) {
-        if (!Array.isArray(mangas)) {
-            return;
-        }
+    async refreshMangas({ dispatch }, { manga }) {
 
         iconHelper.spinIcon();
         try {
-            await Promise.all(mangas.map(async msgManga => {
-                // Update each manga
-                const key = utils.mangaKey(msgManga.url, msgManga.mirror, msgManga.language);
-                const mg = state.all.find(manga => manga.key === key);
-                await dispatch("refreshLastChapters", mg)
-                return storedb.storeManga(mg);
-            }));
+            await dispatch("refreshLastChapters", manga)
+            await storedb.storeManga(manga);
         } catch (e) {
             console.error(e);
         }
@@ -748,6 +749,15 @@ const mutations = {
         let key = utils.mangaKey(url, mirror, language);
         let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) mg.webtoon = webtoon;
+    },
+    /**
+     * Change manga display name
+     * @param {*} state 
+     * @param {*} param1 url of the manga and layout mode
+     */
+    setMangaDisplayName(state, { key, displayName }) {
+        let mg = state.all.find(manga => manga.key === key)
+        if (mg !== undefined) mg.displayName = displayName;
     },
     /**
      * Change manga read top

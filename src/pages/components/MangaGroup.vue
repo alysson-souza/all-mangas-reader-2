@@ -11,6 +11,7 @@
       :group-expanded="expanded"
       @expand-group="expanded = !expanded"
       @search-request="propagateSR"
+      @rename-manga="renameManga"
     />
   </div>
 </template>
@@ -35,6 +36,12 @@ export default {
     propagateSR(str) {
       this.$emit("search-request", str)
     },
+    /** 
+     * Emit the event for renaming this manga
+     */
+    renameManga(manga) {
+      this.$emit('rename-manga', manga)
+    }
   },
   // Name of the component
   name: "MangaGroup"
