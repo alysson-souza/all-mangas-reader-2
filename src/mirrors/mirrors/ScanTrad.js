@@ -46,7 +46,7 @@ if (typeof registerMangaObject === 'function') {
                 if (!url) {
                     return
                 }
-                if (url.indexOf("http") !== 0) url = "https://scantrad.net/" + url
+                if (url.indexOf("http") !== 0) url = "https://scan-trad.fr/" + url
                 res.push(url)
             })
             return res
