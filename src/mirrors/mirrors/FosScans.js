@@ -5,6 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages : "en",
         domains: ["reader.fos-scans.com"],
         home: "http://fos-scans.com/",
+        disabled: true,
         chapter_url: /^\/read\/.*$/g,
         
         abstract: "FoolSlide",

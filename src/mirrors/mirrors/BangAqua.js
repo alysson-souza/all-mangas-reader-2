@@ -3,6 +3,7 @@ if (typeof registerMangaObject === 'function') {
         mirrorName : "Bang Aqua",
         mirrorIcon : "bangaqua.png",
         languages : "en",
+        disabled: true,
         domains: ["reader.bangaqua.com"],
         home: "http://bangaqua.com/",
         chapter_url: /^\/read\/.*$/g,

@@ -3,6 +3,7 @@ if (typeof registerMangaObject === 'function') {
         mirrorName: "ItaScan",
         mirrorIcon: "itascan.png",
         languages: "it",
+        disabled: true,
         domains: ["itascan.info"],
         home: "https://itascan.info/",
 

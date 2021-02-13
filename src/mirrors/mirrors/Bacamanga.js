@@ -2,6 +2,7 @@ if (typeof registerMangaObject === 'function') {
     registerMangaObject({
         mirrorName: "Bacamanga",
         canListFullMangas: false,
+        disabled: true,
         mirrorIcon: "bacamanga.png",
         domains: ["bacamanga.co"],
         home: "https://bacamanga.co/",

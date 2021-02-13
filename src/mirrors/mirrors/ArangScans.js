@@ -9,7 +9,8 @@ if (typeof registerMangaObject === 'function') {
         chapter_url: /^\/manga\/.*\/.*$/g,
         abstract: "Madara",
         abstract_options: {
-            search_url: 'https://arangscans.com/'
+            search_url: 'https://arangscans.com/',
+            chapter_list_ajax: true
         },
     });
 }
