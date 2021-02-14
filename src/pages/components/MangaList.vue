@@ -208,7 +208,8 @@ import * as utilsamr from '../../amr/utils';
 import * as utils from '../utils';
 
 const default_sort = (a, b) => {
-    let af = utilsamr.formatMgName(a.name), bf = utilsamr.formatMgName(b.name)
+    let af = utilsamr.formatMgName((a.displayName && a.displayName !== '') ? a.displayName : a.name), 
+      bf = utilsamr.formatMgName((b.displayName && b.displayName !== '') ? b.displayName : b.name)
     let res = af === undefined ? -1 : af.localeCompare(bf)
     if (res === 0) {
         res = a.mirror === undefined ? -1 : a.mirror.localeCompare(b.mirror)
