@@ -292,27 +292,25 @@
                 </tr>
               </thead>
             </template>
-            <template v-slot:body="{ items }">
-              <tbody>
-                <tr v-for="item in items" :key="item.mirrorName" :active="item.activated" @click="item.activated = !item.activated">
-                  <td>
-                    <img :src="item.mirrorIcon" class="mirror-icon" />
-                    {{ item.mirrorName }}
-                    <!-- Badge with number of mangas read -->
-                    <v-card v-if="nbMangas(item.mirrorName) > 0" color="primary" dark class="mirror-manga-info">
-                      {{ i18n('options_gen_mirrornbmangas', nbMangas(item.mirrorName)) }}
-                    </v-card>
-                  </td>
-                  <td class="text-right td-langs">
-                    <span v-for="(lang, key) in item.languages.split(',')" :key="key">
-                      <Flag :value="lang" />
-                    </span>
-                  </td>
-                  <td class="text-right">
-                    <v-checkbox :disabled="nbMangas(item.mirrorName) > 0" v-model="item.activated" @change="changeActivation(item)"/>
-                  </td>
-                </tr>
-              </tbody>
+            <template v-slot:item="{item }">
+              <tr>
+                <td>
+                  <img :src="item.mirrorIcon" class="mirror-icon" />
+                  {{ item.mirrorName }}
+                  <!-- Badge with number of mangas read -->
+                  <v-card v-if="nbMangas(item.mirrorName) > 0" color="primary" dark class="mirror-manga-info">
+                    {{ i18n('options_gen_mirrornbmangas', nbMangas(item.mirrorName)) }}
+                  </v-card>
+                </td>
+                <td class="text-right td-langs">
+                  <span v-for="(lang, key) in item.languages.split(',')" :key="key">
+                    <Flag :value="lang" />
+                  </span>
+                </td>
+                <td class="text-right">
+                  <v-checkbox :disabled="nbMangas(item.mirrorName) > 0 && item.activated" v-model="item.activated" @change="changeActivation(item)"/>
+                </td>
+              </tr>
             </template>
           </v-data-table>
           <!-- Laboratory -->

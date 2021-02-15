@@ -1,5 +1,5 @@
 <template>
-  <v-card v-if="shouldShow" :class="color(3, true) + ' amr-manga-row'">
+  <v-card v-if="shouldShow" :class="color(3, true) + ' amr-manga-row' + (manga.update === 0 ? ' amr-noupdates' : '')">
     <v-row :class="isDarkText ? 'dark-text' : 'light-text'">
       <!-- Name, Last Updated -->
       <v-col cols="4">
@@ -624,5 +624,10 @@ select.amr-chap-sel {
 .cat-cont {
   display: inline-block;
 }
+
+.amr-noupdates {
+  opacity: 0.75;
+}
+
 
 </style>
