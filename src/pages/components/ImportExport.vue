@@ -187,6 +187,8 @@ export default {
           if (mg.layout !== 0) res.y = mg.layout;
           if (mg.cats.length > 0) res.c = mg.cats;
           if (mg.language !== undefined) res.g = mg.language;
+          if (mg.displayName !== '') res.dn = mg.displayName
+          if (mg.webtoon !== 0) res.wt = mg.webtoon
           return res;
         } else {
           let res = {
