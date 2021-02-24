@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         mirrorIcon: "asurascans.png",
         domains: ["asurascans.com"],
         home: "https://asurascans.com/",
-        chapter_url: /^\/m[0-9]+\/$/g,
+        chapter_url: /\/.*?chapter-[0-9]+\//g,
         languages: "en",
         abstract: "MangastreamAbs",
         abstract_options: {
@@ -13,8 +13,8 @@ if (typeof registerMangaObject === 'function') {
             chapters_a_sel: "div.bixbox.bxcl ul li div.eph-num a",
             chapters_text_sel: "span.chapternum",
             search_json: false,
-            img_sel: `#readerarea img[data-src][width!="1px"]`,
-            img_src: 'data-src'
+            img_sel: `#readerarea img[width!="1px"][class*="size-full"]`,
+            img_src: 'src'
         },      
     })
 }

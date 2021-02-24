@@ -282,10 +282,11 @@ class HandleManga {
     async importMangas(message) {
         let importcat = message.importcat
         let imps = message.imports
+        let cats = window['AMR_STORE'].state.options.categoriesStates;
+        let catsToAdd = []
         if (imps.mangas && imps.mangas.length > 0) {
             // add default category if inexistant
             if (importcat !== "") {
-                let cats = window['AMR_STORE'].state.options.categoriesStates;
                 if (-1 === cats.findIndex(cat => cat.name === importcat)) {
                     window['AMR_STORE'].dispatch("addCategory", importcat);
                 }
@@ -305,8 +306,17 @@ class HandleManga {
                 if (mg.p) readmg.update = mg.p;
                 if (mg.d) readmg.display = mg.d;
                 if (mg.y) readmg.layout = mg.y;
-                if (mg.c) readmg.cats = mg.c;
+                if (mg.c) {
+                    readmg.cats = mg.c;
+                    mg.c.forEach(cat => {
+                        if (-1 === cats.findIndex(cat => cat.name === cat) && !catsToAdd.includes(cat)) {
+                            catsToAdd.push(cat)
+                        }
+                    })
+                }
                 if (mg.g) readmg.language = mg.g;
+                if (mg.dn) readmg.displayName = mg.dn
+                if (mg.wt) readmg.webtoon = mg.wt
                 // add default category if specified
                 if (importcat !== "") {
                     if (readmg.cats && readmg.cats.length > 0)
@@ -341,6 +351,10 @@ class HandleManga {
             if (window['AMR_STORE'].state.options.savebandwidth !== 1) {
                 // read all mangas
                 await Promise.all(readall);
+            }
+
+            if (catsToAdd.length > 0) {
+                catsToAdd.forEach(cat => window['AMR_STORE'].dispatch("addCategory", cat))
             }
         }
     }
