@@ -1,3 +1,20 @@
+### V2.3.6
+  Changes:
+    * Webtoon mode and custom names are now included in exports
+    * Custom categories are now added at the end of the import if they were missing
+
+  Fixes:
+    * Custom names are sorted correctly
+    * Fixed opacity for series that you are no longer updating
+    * Removed disabling mirrors by clicking on the row
+    * You can now enable a mirror if it got disabled and you have mangas from that mirror but you cannot disable them
+
+  New Mirrors:
+    * Seri Manga (https://serimanga.com/)
+  
+  Mirror Fixes:
+    * Asura Scans (https://asurascans.com/)
+
 ### V2.3.5
   New Manga List:
     - The entire manga list page has been rewritten for speed
