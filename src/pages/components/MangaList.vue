@@ -220,7 +220,6 @@ const default_sort = (a, b) => {
     return res
 }
 const num_chapters_to_read_sort = (a, b) => {
-    console.log(a)
     let af = a.listChaps.findIndex(ele => ele[1] == a.lastChapterReadURL), 
       bf = b.listChaps.findIndex(ele => ele[1] == b.lastChapterReadURL)
     if (bf-af == 0){
