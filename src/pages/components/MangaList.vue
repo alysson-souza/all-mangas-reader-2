@@ -219,6 +219,15 @@ const default_sort = (a, b) => {
     }
     return res
 }
+const num_chapters_to_read_sort = (a, b) => {
+    let af = a.listChaps.findIndex(ele => ele[1] == a.lastChapterReadURL), 
+      bf = b.listChaps.findIndex(ele => ele[1] == b.lastChapterReadURL)
+    if (bf-af == 0){
+      return default_sort(a, b)
+    }else{
+      return bf-af
+    }
+}
 export default {
   data() {
     return {
@@ -381,8 +390,8 @@ export default {
         cmp = function(a, b) {
           let ha = utils.hasNew(a),
               hb = utils.hasNew(b);
-          // primary sort on manga has new chapter, secondary on alphabetical
-          return (ha === hb ? default_sort(a, b) : (ha && !hb ? -1 : 1));
+          // primary sort on manga amount of new chapters, secondary on alphabetical
+          return (ha && hb ? num_chapters_to_read_sort(a, b) : ha === hb ? default_sort(a, b) : (ha && !hb ? -1 : 1 ) );
         };
       };
       return items.sort(cmp);
