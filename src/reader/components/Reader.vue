@@ -577,10 +577,10 @@ export default {
                             prevent()
                         }
                         if (e.which === 32) {
-                            let images = document.querySelectorAll('.amr-scan-container img');
+                            let images = this.$refs.page;
                             // Are we at the end of the last page
                             // can't use this.lastScan cause that is any point on last page
-                            if(images[images.length-1].getBoundingClientRect().bottom-window.innerHeight < 1) {
+                            if(this.lastScan && images[this.currentPage].atBottom) {
                                 // Should we go to next chapter because we previouysly reached the end of page ?
                                 if (this.autoNextChapter) {
                                     try {
@@ -595,39 +595,43 @@ export default {
                                     setTimeout(function(){ this.autoNextChapter=false; }, 4000);
                                 }
                             } else {
-                                // Lets stay on current page
+                                // Lets stay on current chapter
                                 // Find current images within view
-                                let targetScrollImages = [...images].filter(image => {
-                                    let rect = image.getBoundingClientRect();
-                                    return (rect.top <= window.innerHeight && rect.bottom > 1);
-                                });
+                                let targetScrollImages = [...images].filter(image => image.inViewport);
 
                                 // If multiple images filtered, get the last one. If none scroll use the top image
                                 let targetScrollImage = targetScrollImages[targetScrollImages.length -1] || images[0];
 
                                 // Is the target image top within view ? then scroll to the top of it
-                                if (targetScrollImage.getBoundingClientRect().top > 1 ) {
+                                if (targetScrollImage.topInViewport && !targetScrollImage.atTop) {
                                     // Scroll to it
-                                    jQuery('html, body').animate({
-                                        scrollTop: jQuery(targetScrollImage).offset().top
-                                    }, 500);
+                                    this.$scrollTo(targetScrollImage.$el, this.animationDuration)
                                 }
                                 // Do we stay within target ? (bottom is further than current view)
-                                else if (window.innerHeight +1 < targetScrollImage.getBoundingClientRect().bottom ){
-                                    window.scrollBy({
-                                        top: window.innerHeight * 0.80,
-                                        left: 0,
-                                        behavior: 'smooth'
-                                    });
+                                else if (!targetScrollImage.bottomInViewport){
+                                    //is +80% after the end of the screen
+                                    if (window.innerHeight * 1.80 + window.visualViewport.pageTop >= document.body.clientHeight){
+                                        //go to the end of the last page & allow next chapter
+                                        this.autoNextChapter = true;
+                                        setTimeout(function(){ this.autoNextChapter=false; }, 4000);
+                                        this.$scrollTo(targetScrollImage.$el, this.animationDuration, {
+                                        offset: targetScrollImage.$el.offsetHeight - window.innerHeight
+                                        })
+                                    } 
+                                    //else scroll to 80%
+                                    else {
+                                        this.$scrollTo(document.body,{
+                                            duration:this.animationDuration,
+                                            offset: window.innerHeight * 0.80 + window.visualViewport.pageTop,
+                                        })
+                                    }
                                 }
                                 // We have to try to get to next image
                                 else {
                                     // Find next image
-                                    let nextScrollImage = targetScrollImage.nextElementSibling;
+                                    let nextScrollImage = targetScrollImage.$el.nextElementSibling;
                                     // Scroll to it
-                                    jQuery('html, body').animate({
-                                        scrollTop: jQuery(nextScrollImage).offset().top
-                                    }, 500);
+                                    this.$scrollTo(nextScrollImage, this.animationDuration)
                                 }
                             }
                             prevent()
