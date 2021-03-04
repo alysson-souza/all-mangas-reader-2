@@ -1412,6 +1412,10 @@
     "message": "Reload errored scans",
     "description": "Description of the shortcut for reloading errored scans from the chapter"
   },
+  "reader_shortcut_magic_scroll": {
+    "message": "Magic scroll",
+    "description": "Dynamically change the scrolling to stop at the start of scans or 80%, press twice at the end of a chapter to goto next chapter"
+  },
   "reader_shortcut_chapters_nextprevious": {
     "message": "Go to previous / next chapter",
     "description": "Description of the shortcut for previous / next chapters"

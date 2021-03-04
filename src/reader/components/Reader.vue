@@ -122,6 +122,7 @@ export default {
     },
     created() {
         /** Initialize key handlers */
+        this.autoNextChapter = false;
         this.handlekeys()
         /** Keep scroll ratio */
         window.addEventListener('scroll', () => {
@@ -572,6 +573,62 @@ export default {
                                 try {
                                 this.goNextScan(doubletap)
                                 } catch (e) {} // prevent default in any case
+                            }
+                            prevent()
+                        }
+                        if (e.which === 32) {
+                            let images = document.querySelectorAll('.amr-scan-container img');
+                            // Are we at the end of the last page
+                            // can't use this.lastScan cause that is any point on last page
+                            if(images[images.length-1].getBoundingClientRect().bottom-window.innerHeight < 1) {
+                                // Should we go to next chapter because we previouysly reached the end of page ?
+                                if (this.autoNextChapter) {
+                                    try {
+                                        this.autoNextChapter=false;
+                                        EventBus.$emit('go-next-chapter');
+                                    } catch (e) {}
+                                } else {
+                                    // Prepare for next chapter
+                                    this.autoNextChapter = true;
+                                    // gotta press spacebar again within 4s 
+                                    // im doing this rather than using this.goNextScan(doubletap) cause i don't like how that works
+                                    setTimeout(function(){ this.autoNextChapter=false; }, 4000);
+                                }
+                            } else {
+                                // Lets stay on current page
+                                // Find current images within view
+                                let targetScrollImages = [...images].filter(image => {
+                                    let rect = image.getBoundingClientRect();
+                                    return (rect.top <= window.innerHeight && rect.bottom > 1);
+                                });
+
+                                // If multiple images filtered, get the last one. If none scroll use the top image
+                                let targetScrollImage = targetScrollImages[targetScrollImages.length -1] || images[0];
+
+                                // Is the target image top within view ? then scroll to the top of it
+                                if (targetScrollImage.getBoundingClientRect().top > 1 ) {
+                                    // Scroll to it
+                                    jQuery('html, body').animate({
+                                        scrollTop: jQuery(targetScrollImage).offset().top
+                                    }, 500);
+                                }
+                                // Do we stay within target ? (bottom is further than current view)
+                                else if (window.innerHeight +1 < targetScrollImage.getBoundingClientRect().bottom ){
+                                    window.scrollBy({
+                                        top: window.innerHeight * 0.80,
+                                        left: 0,
+                                        behavior: 'smooth'
+                                    });
+                                }
+                                // We have to try to get to next image
+                                else {
+                                    // Find next image
+                                    let nextScrollImage = targetScrollImage.nextElementSibling;
+                                    // Scroll to it
+                                    jQuery('html, body').animate({
+                                        scrollTop: jQuery(nextScrollImage).offset().top
+                                    }, 500);
+                                }
                             }
                             prevent()
                         }
