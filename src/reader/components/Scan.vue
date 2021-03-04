@@ -215,7 +215,6 @@ td.scanContainer.xs12 {
     transition: all 0.2s;
 }
 .amr-triangle {
-    border-left: 100px solid transparent;
     border-right: 100px solid #ffeb3b;
     border-bottom: 100px solid transparent;
     height: 0;
