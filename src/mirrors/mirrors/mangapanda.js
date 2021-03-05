@@ -3,6 +3,7 @@ if (typeof registerMangaObject === 'function') {
         mirrorName: "Manga Panda",
         canListFullMangas: false,
         mirrorIcon: "mangapanda.png",
+        disabled: true,
         languages: "en",
         domains: ["www.mangapanda.com"],
         home: "http://www.mangapanda.com/",

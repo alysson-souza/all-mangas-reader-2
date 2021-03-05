@@ -206,6 +206,10 @@ class MirrorsHelper {
             amr.setCookie = async function(setCookieObj) {
                 await browser.cookies.set(setCookieObj)
             }
+
+            amr.getOption = function(option) {
+                return window['AMR_STORE'].state.options[option] || ''
+            }
         })(this);
     }
 }

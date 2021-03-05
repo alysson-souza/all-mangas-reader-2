@@ -2,6 +2,7 @@ if (typeof registerMangaObject === 'function') {
     registerMangaObject({
         mirrorName: "Manga Reader",
         canListFullMangas: false,
+        disabled: true,
         mirrorIcon: "mangareader.png",
         domains: ["www.mangareader.net"],
         home: "http://www.mangareader.net",

@@ -53,4 +53,31 @@ import * as util from "../utils";
 
     render: h => h(App)
   });
+
+  async function waitForPopup(retries = 10, delay = 50) {
+    const wait = (ms) => new Promise((func) => setTimeout(func, ms))
+    
+    if (window.innerWidth !== 0 && window.innerHeight !== 0) {
+      return Promise.resolve()
+    }
+
+    if (retries <= 0) {
+      return
+    }
+
+    await wait(delay)
+
+    // retry
+    return waitForPopup(retries - 1, delay)
+  }
+
+  await waitForPopup()
+
+  if (popup && [348, 425].includes(window.innerWidth)) {
+    browser.runtime.sendMessage({
+      action: "opentab",
+      url: "/pages/popup/popup.html?mode=tab"
+    });
+    window.close();
+  }
 })();
