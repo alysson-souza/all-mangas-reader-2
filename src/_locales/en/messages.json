@@ -426,6 +426,10 @@
     "message": "New chapters to read first !",
     "description": "Tooltip for last new chapters sort on mangas list"
   },
+  "list_sort_upts": {
+    "message": "sort manga by recently updated",
+    "description": "Tooltip for recently updated sort on mangas list"
+  },
   "list_select_action": {
     "message": "Toggle manga multi select actions",
     "description": "Toggle button to activate the manga select, that allow to apply action to multiple manga "
