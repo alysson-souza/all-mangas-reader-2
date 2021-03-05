@@ -60,14 +60,14 @@
                 <!-- Reading progress -->
                 <v-tooltip top content-class="icon-ttip">
                   <template v-slot:activator="{ on }">
-                    <v-progress-linear :value="progress" height="5" :color="color(-2, true)" :background-color="color(2, true)" v-on="on"></v-progress-linear>
+                    <v-progress-linear :value="progress" height="5" :color="color(-2)" :background-color="color(2)" v-on="on"></v-progress-linear>
                   </template>
                   <span>{{ i18n("list_progress_reading", Math.floor(progress)) }}</span>
                 </v-tooltip>
               </div>
               <div v-else>
                 <!-- Loading bar if chapters list is not loaded yet-->
-                <v-progress-linear v-show="isMirrorEnabled" :indeterminate="true" height="4" class="amr-manga-waiting" :color="color(2, true)"></v-progress-linear>
+                <v-progress-linear v-show="isMirrorEnabled" :indeterminate="true" height="4" class="amr-manga-waiting" :color="color(2)"></v-progress-linear>
                 <span v-show="!isMirrorEnabled">
                   {{ isMirrorEnabled ? mirror.mirrorName : i18n("list_mirror_disabled", manga.mirror) }}
                 </span>
@@ -333,7 +333,7 @@ export default {
     color: function(light, invertable = false) {
       if (this.options.alternateColors && invertable) {
         let odd = (this.groupIndex + 1) % 2 == 1
-        light *= odd ? -1 : 1 
+        light += odd ? -2 : 1
       }
       return utils.getColor(this.manga, this.options, light);
     },
