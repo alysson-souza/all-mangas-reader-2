@@ -892,7 +892,8 @@
           let reader = this.$refs.reader
           reader.originalTitle = chapterloader.title
           document.title = chapterloader.title
-          reader.$scrollTo(document.body,{duration: 0,offset: 0,})
+          reader.goScan(0)
+          window.scroll(0, 0)
 
           /** Handle help us dialogs once in a while */
           dialogs.handleHelps(this.$refs.wizdialog)
