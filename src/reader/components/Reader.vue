@@ -122,6 +122,7 @@ export default {
     },
     created() {
         /** Initialize key handlers */
+        this.autoNextChapter = false;
         this.handlekeys()
         /** Keep scroll ratio */
         window.addEventListener('scroll', () => {
@@ -572,6 +573,66 @@ export default {
                                 try {
                                 this.goNextScan(doubletap)
                                 } catch (e) {} // prevent default in any case
+                            }
+                            prevent()
+                        }
+                        if (e.which === 32) {
+                            let images = this.$refs.page;
+                            // Are we at the end of the last page
+                            // can't use this.lastScan cause that is any point on last page
+                            if(this.lastScan && images[this.currentPage].atBottom) {
+                                // Should we go to next chapter because we previouysly reached the end of page ?
+                                if (this.autoNextChapter) {
+                                    try {
+                                        this.autoNextChapter=false;
+                                        EventBus.$emit('go-next-chapter');
+                                    } catch (e) {}
+                                } else {
+                                    // Prepare for next chapter
+                                    this.autoNextChapter = true;
+                                    // gotta press spacebar again within 4s 
+                                    // im doing this rather than using this.goNextScan(doubletap) cause i don't like how that works
+                                    setTimeout(function(){ this.autoNextChapter=false; }, 4000);
+                                }
+                            } else {
+                                // Lets stay on current chapter
+                                // Find current images within view
+                                let targetScrollImages = [...images].filter(image => image.inViewport);
+
+                                // If multiple images filtered, get the last one. If none scroll use the top image
+                                let targetScrollImage = targetScrollImages[targetScrollImages.length -1] || images[0];
+
+                                // Is the target image top within view ? then scroll to the top of it
+                                if (targetScrollImage.topInViewport && !targetScrollImage.atTop) {
+                                    // Scroll to it
+                                    this.$scrollTo(targetScrollImage.$el, this.animationDuration)
+                                }
+                                // Do we stay within target ? (bottom is further than current view)
+                                else if (!targetScrollImage.bottomInViewport){
+                                    //is +80% after the end of the screen
+                                    if (window.innerHeight * 1.80 + window.visualViewport.pageTop >= document.body.clientHeight){
+                                        //go to the end of the last page & allow next chapter
+                                        this.autoNextChapter = true;
+                                        setTimeout(function(){ this.autoNextChapter=false; }, 4000);
+                                        this.$scrollTo(targetScrollImage.$el, this.animationDuration, {
+                                        offset: targetScrollImage.$el.offsetHeight - window.innerHeight
+                                        })
+                                    } 
+                                    //else scroll to 80%
+                                    else {
+                                        this.$scrollTo(document.body,{
+                                            duration:this.animationDuration,
+                                            offset: window.innerHeight * 0.80 + window.visualViewport.pageTop,
+                                        })
+                                    }
+                                }
+                                // We have to try to get to next image
+                                else {
+                                    // Find next image
+                                    let nextScrollImage = targetScrollImage.$el.nextElementSibling;
+                                    // Scroll to it
+                                    this.$scrollTo(nextScrollImage, this.animationDuration)
+                                }
                             }
                             prevent()
                         }

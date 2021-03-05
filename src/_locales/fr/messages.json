@@ -1415,6 +1415,10 @@
     "message": "Recharger les scans erronés",
     "description": "Description of the shortcut for reloading errored scans from the chapter"
   },
+  "reader_shortcut_magic_scroll": {
+    "message": "Parchemin magique",
+    "description": "Changer dynamiquement le défilement pour s'arrêter au début des scans ou 80%, appuyer deux fois à la fin d'un chapitre pour aller au chapitre suivant"
+  },
   "reader_shortcut_chapters_nextprevious": {
     "message": "Aller au chapitre précédent / suivant",
     "description": "Description of the shortcut for previous / next chapters"
