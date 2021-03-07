@@ -658,6 +658,10 @@
     "message": "Recharger les scans erronés",
     "description": "Tooltip of the reload errored scans button"
   },
+  "content_nav_downlaod": {
+    "message": "télécharger le chapitre",
+    "description": "Info-bulle du bouton de téléchargement du chapitre"
+  },
   "content_nav_chapmode_1": {
     "message": "Afficher les scans les uns au dessus des autres (cliquer pour changer le mode uniquement pour ce manga)",
     "description": "Tooltip of the chapter mode button when value is 1 (Scans displayed on top of each other)"
