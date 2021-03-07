@@ -10,7 +10,8 @@ if (typeof registerMangaObject === 'function') {
 
         abstract: "Madara",
         abstract_options: {
-            search_url: "https://readmanhua.net/"
+            search_url: "https://readmanhua.net/",
+            chapter_list_ajax: true
         }
     })
 }
