@@ -1,6 +1,7 @@
 import mirrorsImpl from "../amr/mirrors-impl";
 import Axios from 'axios';
 import * as domutils from '../amr/domutils';
+import * as utils from '../amr/utils';
 
 /**
  * Runs implementation functions for the lab
@@ -20,6 +21,9 @@ class HandleLab {
                 let impl = await mirrorsImpl.getImpl(message.mirror);
                 if (message.torun === "search") {
                     let res = await impl.getMangaList(message.search)
+                    if (impl.canListFullMangas) {
+                        res = res.filter(arr => utils.formatMgName(arr[0]).indexOf(utils.formatMgName(message.search)) !== -1)
+                    }
                     resolve(res);
                 }
                 else if (message.torun === "chapters") {

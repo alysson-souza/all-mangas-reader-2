@@ -94,7 +94,7 @@
             <v-select dense outlined :items="pagination.pageOptions" v-model="itemsPerPage" :label="i18n('list_page_label')"></v-select>
           </v-col>
           <v-col>
-            <v-pagination :total-visible="10" v-model="pagination.currentPage" :length="pagination.pageCount"></v-pagination>
+            <v-pagination :total-visible="$isPopup ? 5 : 10" v-model="pagination.currentPage" :length="pagination.pageCount"></v-pagination>
           </v-col>
           <v-col cols="1">
             <v-tooltip top content-class="icon-ttip">
@@ -114,7 +114,7 @@
             <v-select dense outlined :items="pagination.pageOptions" v-model="itemsPerPage" :label="i18n('list_page_label')"></v-select>
           </v-col>
           <v-col>
-            <v-pagination :total-visible="10" v-model="pagination.currentPage" :length="pagination.pageCount"></v-pagination>
+            <v-pagination :total-visible="$isPopup ? 5 : 10" v-model="pagination.currentPage" :length="pagination.pageCount"></v-pagination>
           </v-col>
           <v-col cols="1">
             <v-tooltip top content-class="icon-ttip">
@@ -262,6 +262,7 @@ export default {
       selectedManga: [],
       pagination: {
         pageOptions: [
+          5,
           25,
           50,
           100
