@@ -283,6 +283,15 @@
                 </template>
                 <span>{{i18n("content_nav_reload")}}</span>
               </v-tooltip>
+              <!-- download chapter button -->
+              <v-tooltip bottom class="ml-1">
+                <template v-slot:activator="{ on }">
+                  <v-btn v-on="on" icon color="red" @click.stop="DownloadChapter">
+                      <v-icon>mdi-download-outline</v-icon>
+                  </v-btn>
+                </template>
+                <span>{{i18n("content_nav_downlaod")}}</span>
+              </v-tooltip>
             </v-col>
           </v-row>
         </v-card-actions>
@@ -1252,6 +1261,13 @@
       },
       reloadErrors() {
         EventBus.$emit('reload-all-errors')
+      },
+      DownloadChapter() {
+        browser.runtime.sendMessage({
+            action: "DownloadChapter",
+            urls: this.$refs.reader.pages.map(ele => ele[0].src),
+            name: this.$refs.book.chapterName+".cbz"
+        });
       }
     }
   }
