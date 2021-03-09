@@ -1,3 +1,24 @@
+### V2.3.7
+  Changes:
+    * Sort by new also sorts by most unread chapters (Courtesy of @Robo)
+    * Added Magic scroll to reader (Courtesy of @Robo)
+    * Adjusted bookmark triangle box size (Courtesy of @Robo)
+    * Adjusted alternating colors on reader (Courtesy of @Robo)
+    * Popup will force a new tab if detecting its opened from firefox pinned menu
+    * Last read chapter name has been added to export (Courtesy of @Robo)
+    * Adjusted number of pagination items that show up in the popup to reduce its size
+
+  Fixes:
+    * Search mirror icons have tooltips again
+
+  Mirror Fixes:
+    * Fixed Read Manhua chapter loading (https://readmanhua.net/)
+    * Changed Mangadex api back to the new server, they claim it is working now
+  
+  Disabled Mirrors:
+    * Manga Panda
+    * Manga Reader
+
 ### V2.3.6
   Changes:
     * Webtoon mode and custom names are now included in exports

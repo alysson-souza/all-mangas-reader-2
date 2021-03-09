@@ -122,6 +122,7 @@ export default {
     },
     created() {
         /** Initialize key handlers */
+        this.autoNextChapter = false;
         this.handlekeys()
         /** Keep scroll ratio */
         window.addEventListener('scroll', () => {
@@ -572,6 +573,58 @@ export default {
                                 try {
                                 this.goNextScan(doubletap)
                                 } catch (e) {} // prevent default in any case
+                            }
+                            prevent()
+                        }
+                        if (e.which === 32) {
+                            let images = this.$refs.page;
+                            // Are we at the end of the last page
+                            // can't use this.lastScan cause that is any point on last page, also wont work if the last scan is small
+                            if(images[images.length -1].$el.getBoundingClientRect().bottom-window.innerHeight < 1) {
+                                // Should we go to next chapter because we previously reached the end of page ?
+                                if (this.autoNextChapter) {
+                                    try {
+                                        this.autoNextChapter=false;
+                                        EventBus.$emit('go-next-chapter');
+                                    } catch (e) {}
+                                } else {
+                                    // Prepare for next chapter
+                                    this.autoNextChapter = true;
+                                    // gotta press spacebar again within 4s 
+                                    // im doing this rather than using this.goNextScan(doubletap) cause i don't like how that works
+                                    setTimeout(function(){ this.autoNextChapter=false; }, 4000);
+                                }
+                            } else {
+                                // Lets stay on current chapter
+                                // Find current images within view
+                                let targetScrollImages = [...images].filter(image => {
+                                    let rect = image.$el.getBoundingClientRect();
+                                    return (rect.top <= window.innerHeight && rect.bottom >1);
+                                });
+
+                                // If multiple images filtered, get the last one. If none scroll use the top image
+                                let targetScrollImage = targetScrollImages[targetScrollImages.length -1] || images[0];
+
+                                // Is the target image top within view ? then scroll to the top of it
+                                if (targetScrollImage.$el.getBoundingClientRect().top > 1) {
+                                    // Scroll to it
+                                    this.$scrollTo(targetScrollImage.$el, this.animationDuration)
+                                }
+                                // Do we stay within target ? (bottom is further than current view)
+                                else if (window.innerHeight +1 < targetScrollImage.$el.getBoundingClientRect().bottom){
+                                    //scroll to 80%
+                                    this.$scrollTo(document.body,{
+                                        duration:this.animationDuration,
+                                        offset: window.innerHeight * 0.80 + window.visualViewport.pageTop,
+                                    })
+                                }
+                                // We have to try to get to next image
+                                else {
+                                    // Find next image
+                                    let nextScrollImage = targetScrollImage.$el.nextElementSibling;
+                                    // Scroll to it
+                                    this.$scrollTo(nextScrollImage, this.animationDuration)
+                                }
                             }
                             prevent()
                         }

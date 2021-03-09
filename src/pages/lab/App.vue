@@ -54,7 +54,8 @@
           </v-col>
         </v-row>
         <!-- Display tests -->
-        <v-row  v-if="currentTest >= 0 && index <= currentTest && testsResults.length >= index" v-for="(test, index) in tests" :key="index" :class="'ma-4 pa-4 elevation-1 lighten-5 ' + (testsResults[index] && testsResults[index].passed ? 'green' : 'red')">
+        <!-- <v-row  v-if="currentTest >= 0 && index <= currentTest && testsResults.length >= index" v-for="(test, index) in tests" :key="index" :class="'ma-4 pa-4 elevation-1 lighten-5 ' + (testsResults[index] && testsResults[index].passed ? 'green' : 'red')"> -->
+        <v-row  v-for="(test, index) in finishedTests" :key="index" :class="'ma-4 pa-4 elevation-1 rounded-xl darken-1 ' + (testsResults[index] && testsResults[index].passed ? 'brown' : 'danger')">
           <v-col cols="3">
             <v-icon v-if="testsResults[index] && testsResults[index].passed" color="green" class="test-icon">mdi-check</v-icon>
             <v-icon v-else-if="testsResults[index]" color="red" class="test-icon">mdi-alert-circle</v-icon>
@@ -65,7 +66,7 @@
             <div v-for="(res, index) in testsResults[index].results" :key="index">
               <span v-html="res"></span>
             </div>
-            <div v-if="testsResults[index].output.length > 0" class="green lighten-3 ma-2 pa-2 elevation-1">
+            <div v-if="testsResults[index].output.length > 0" :class="(testsResults[index] && testsResults[index].passed ? 'brown' : 'danger') + ' darken-4 ma-2 pa-2 elevation-1'">
               <!-- display generated oututs during test -->
               <div v-for="(out, ind) in testsResults[index].output" :key="ind">
                 <!-- name, value, display -->
@@ -125,7 +126,7 @@ export default {
       options: false,
       loadingMirrors: false,
       loadingTests: false,
-      current: "Manga Reader", // current selected mirror
+      current: "", // current selected mirror
       search: "", // current search phrase
       tests: tests,
       testsResults: [],
@@ -148,6 +149,11 @@ export default {
             if (!res.passed) nb++;
         }
         return nb;
+    },
+    finishedTests() {
+      //<v-row  v-if="currentTest >= 0 && index <= currentTest && testsResults.length >= index" v-for="(test, index) in tests" 
+      let fin = this.tests.filter((val, index) => this.currentTest >= 0 && index <= this.currentTest && this.testsResults.length >= index)
+      return fin
     }
   },
   name: "App",

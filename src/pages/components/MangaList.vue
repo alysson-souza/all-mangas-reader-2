@@ -38,6 +38,12 @@
           </v-tooltip>
           <v-tooltip top content-class="icon-ttip">
             <template v-slot:activator="{ on }">
+              <v-icon v-on="on" @click="sort = 'uptime'" :class="['amr-filter', {activated: sort === 'uptime'}]">mdi-sort-calendar-ascending</v-icon>
+            </template>
+            <span>{{i18n("list_sort_upts")}}</span>
+          </v-tooltip>
+          <v-tooltip top content-class="icon-ttip">
+            <template v-slot:activator="{ on }">
               <v-icon v-on="on" @click="selectable = !selectable" :class="['amr-filter', {activated: selectable}]">mdi-order-bool-ascending-variant</v-icon>
             </template>
             <span>{{i18n("list_select_action")}}</span>
@@ -88,7 +94,7 @@
             <v-select dense outlined :items="pagination.pageOptions" v-model="itemsPerPage" :label="i18n('list_page_label')"></v-select>
           </v-col>
           <v-col>
-            <v-pagination :total-visible="10" v-model="pagination.currentPage" :length="pagination.pageCount"></v-pagination>
+            <v-pagination :total-visible="$isPopup ? 5 : 10" v-model="pagination.currentPage" :length="pagination.pageCount"></v-pagination>
           </v-col>
           <v-col cols="1">
             <v-tooltip top content-class="icon-ttip">
@@ -108,7 +114,7 @@
             <v-select dense outlined :items="pagination.pageOptions" v-model="itemsPerPage" :label="i18n('list_page_label')"></v-select>
           </v-col>
           <v-col>
-            <v-pagination :total-visible="10" v-model="pagination.currentPage" :length="pagination.pageCount"></v-pagination>
+            <v-pagination :total-visible="$isPopup ? 5 : 10" v-model="pagination.currentPage" :length="pagination.pageCount"></v-pagination>
           </v-col>
           <v-col cols="1">
             <v-tooltip top content-class="icon-ttip">
@@ -219,6 +225,24 @@ const default_sort = (a, b) => {
     }
     return res
 }
+const num_chapters_to_read_sort = (a, b) => {
+    let af = a.listChaps.findIndex(ele => ele[1] == a.lastChapterReadURL), 
+      bf = b.listChaps.findIndex(ele => ele[1] == b.lastChapterReadURL)
+    if (bf-af == 0){
+      return default_sort(a, b)
+    }else{
+      return bf-af
+    }
+}
+const sort_chapters_upts = (a, b) => {
+    let af = a.upts, 
+      bf = b.upts
+    if (bf-af == 0){//this should never happen
+      return default_sort(a, b)
+    }else{
+      return bf-af
+    }
+}
 export default {
   data() {
     return {
@@ -238,6 +262,7 @@ export default {
       selectedManga: [],
       pagination: {
         pageOptions: [
+          5,
           25,
           50,
           100
@@ -377,14 +402,23 @@ export default {
       var cmp;
       if (this.sort === "az") {
         cmp = default_sort
-      } else /*if (sort === "updates")*/ {
+      } else if (this.sort === "updates") {
         cmp = function(a, b) {
           let ha = utils.hasNew(a),
               hb = utils.hasNew(b);
-          // primary sort on manga has new chapter, secondary on alphabetical
-          return (ha === hb ? default_sort(a, b) : (ha && !hb ? -1 : 1));
+          // primary sort on manga amount of new chapters, secondary on alphabetical
+          return (ha && hb ? num_chapters_to_read_sort(a, b) : ha === hb ? default_sort(a, b) : (ha && !hb ? -1 : 1 ) );
         };
-      };
+      } else {
+        cmp = function(a, b) {
+          let na = a.upts != 0,
+              nb = b.upts != 0;
+          let ha = utils.hasNew(a),
+              hb = utils.hasNew(b);
+          // primary sort on manga when last chapter, secondary on number unread, tertiary on alphabetical
+          return ((na || nb) ? sort_chapters_upts(a, b) : ha && hb ? num_chapters_to_read_sort(a, b) : ha === hb ? default_sort(a, b) : (ha && !hb ? -1 : 1 ) );
+        }
+      }
       return items.sort(cmp);
     },
     clearSelected: function() {

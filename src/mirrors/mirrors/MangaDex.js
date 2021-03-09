@@ -7,8 +7,8 @@ if (typeof registerMangaObject === 'function') {
         domains: ["*.mangadex.org", "mangadex.org"],
         home: "https://www.mangadex.org/",
         chapter_url: /\/chapter\/.*/g,
-        // api: "https://api.mangadex.org/v2/",
-        api: "https://mangadex.org/api/v2/",
+        api: "https://api.mangadex.org/v2/",
+        // api: "https://mangadex.org/api/v2/",
         
         getMangaList: async function (search) {
             let doc = await amr.loadPage(

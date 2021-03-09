@@ -426,6 +426,10 @@
     "message": "New chapters to read first !",
     "description": "Tooltip for last new chapters sort on mangas list"
   },
+  "list_sort_upts": {
+    "message": "sort manga by recently updated",
+    "description": "Tooltip for recently updated sort on mangas list"
+  },
   "list_select_action": {
     "message": "Toggle manga multi select actions",
     "description": "Toggle button to activate the manga select, that allow to apply action to multiple manga "
@@ -1411,6 +1415,10 @@
   "reader_shortcut_reload_errors": {
     "message": "Reload errored scans",
     "description": "Description of the shortcut for reloading errored scans from the chapter"
+  },
+  "reader_shortcut_magic_scroll": {
+    "message": "Magic scroll",
+    "description": "Dynamically change the scrolling to stop at the start of scans or 80%, press twice at the end of a chapter to goto next chapter"
   },
   "reader_shortcut_chapters_nextprevious": {
     "message": "Go to previous / next chapter",

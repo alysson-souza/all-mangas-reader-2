@@ -257,7 +257,7 @@ class HandleManga {
                             console.error(e)
                         }
                     }
-                    let title = htmlDocument.title
+                    let title = htmlDocument.title || htmlDocument.querySelector('title').text
                     
                     resolve({
                         isChapter: isChapter ? true : false,

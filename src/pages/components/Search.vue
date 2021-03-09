@@ -45,11 +45,13 @@
                 <!-- mirror icons buttons to add to list -->
                 <v-col cols="8">
                   <v-tooltip top content-class="icon-ttip" v-for="(mg, key) in res[fmtkey]" :key="key">
-                    <div class="mirror-result-cont" slot="activator">
-                      <img @click="handleIconClick(mg)" :src="getIcon(mg.mirror)" :class="'mirror-icon ' + (isInList(mg) || mg.adding ? 'added' : '')" /> 
-                      <v-icon v-if="isInList(mg)" color="green">mdi-check</v-icon>
-                      <v-progress-circular indeterminate size="18" v-if="mg.adding" color="grey darken-4"></v-progress-circular>
-                    </div>
+                    <template v-slot:activator="{on}">
+                      <div class="mirror-result-cont" v-on="on">
+                        <img @click="handleIconClick(mg)" :src="getIcon(mg.mirror)" :class="'mirror-icon ' + (isInList(mg) || mg.adding ? 'added' : '')" /> 
+                        <v-icon v-if="isInList(mg)" color="green">mdi-check</v-icon>
+                        <v-progress-circular indeterminate size="18" v-if="mg.adding" color="grey darken-4"></v-progress-circular>
+                      </div>
+                    </template>
                     <span v-if="isInList(mg)">{{i18n("search_result_inlist", mg.name, mg.mirror)}}</span>
                     <span v-else>{{i18n("search_result_add", mg.name, mg.mirror)}}</span>
                   </v-tooltip>
