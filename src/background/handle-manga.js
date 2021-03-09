@@ -31,7 +31,8 @@ class HandleManga {
                         lastchapter: mg.lastChapterReadURL, /* last read chapter (the most advanced one) */
                         currentChapter: mg.currentChapter, /* last read chapter, last chapter page opened */
                         currentScanUrl: mg.currentScanUrlm, /* last viewed page in currentChapter */
-                        webtoon: mg.webtoon || false /* webtoon mode */
+                        webtoon: mg.webtoon || false, /* webtoon mode */
+                        displayName: mg.displayName
                     });
                 } else {
                     return Promise.resolve();

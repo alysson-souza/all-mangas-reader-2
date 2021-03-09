@@ -31,18 +31,18 @@ class HandleMisc {
     }
 
     async DownloadChapter(message) {
-    let urls = message.urls
-    let zip = new JSZip();
-    let name = message.name
-    await Promise.all(urls.map(async (url,int) =>{
-        let data = await fetch(url,message.requestOptions).then(data => data.blob())
-        console.log('hi')
-        let imgData = new File([data], 'filename.jpg');
-        return zip.file(int+'.'+mime[data.type].extensions[0], imgData,  {binary:true});
-    }));
-    let content = await zip.generateAsync({type:'blob'})
-    saveAs(content, name);
-    return Promise.resolve()
+        let urls = message.urls
+        let zip = new JSZip();
+        let name = message.seriesName + ' - ' + message.chapterName
+        await Promise.all(urls.map(async (url,int) =>{
+            let data = await fetch(url,message.requestOptions).then(data => data.blob())
+            console.log('hi')
+            let imgData = new File([data], 'filename.jpg');
+            return zip.file(int+'.'+mime[data.type].extensions[0], imgData,  {binary:true});
+        }));
+        let content = await zip.generateAsync({type:'blob'})
+        saveAs(content, name);
+        return Promise.resolve()
     }
 }
 export default (new HandleMisc)

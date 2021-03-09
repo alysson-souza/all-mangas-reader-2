@@ -102,7 +102,7 @@
               <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
                   <!-- Manga name -->
-                  <a v-on="on" :href="manga.currentMangaURL" target="_blank">{{manga.name}}</a>
+                  <a v-on="on" :href="manga.currentMangaURL" target="_blank">{{ mangaInfos && mangaInfos.displayName ? mangaInfos.displayName : manga.name }}</a>
                 </template>
                 <span>{{i18n("reader_click_go_manga")}}</span>
               </v-tooltip>
@@ -1266,7 +1266,8 @@
         browser.runtime.sendMessage({
             action: "DownloadChapter",
             urls: this.$refs.reader.pages.map(ele => ele[0].src),
-            name: this.$refs.book.chapterName+".cbz"
+            chapterName: this.pageData.currentChapter +".cbz",
+            seriesName: this.mangaInfos && this.mangaInfos.displayName ? this.mangaInfos.displayName : this.manga.name
         });
       }
     }
