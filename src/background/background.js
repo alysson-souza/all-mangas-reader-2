@@ -48,7 +48,8 @@ IconHelper.setBlueIcon();
     const syncSchedule = getSyncSchedule({
         syncEnabled: store.state.options.syncEnabled
     });
-    syncSchedule.start()
+    // Need to complete sync before we refresh chapters to clean up deleted entries
+    await syncSchedule.start()
 
     /**
      * Initialize bookmarks list in store from DB
