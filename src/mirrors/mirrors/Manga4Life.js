@@ -70,7 +70,10 @@ if (typeof registerMangaObject === 'function') {
             let vars = JSON.parse(matches[1])
 
             // regex = /vm\.CurChapter\s*=\s*\{.*?\};\s*vm\.\w+\s*=\s*"(.*?)";/g
-            regex = /vm\.CurPathNames = "(.*?)";/g
+            regex = /vm\.(\w+?)\s*=\s*\w+\.data\.val\.PathName/g
+            matches = regex.exec(doc.innerText)
+            regex = new RegExp('vm\\.'+matches[1]+'\\s*=\\s*\\"(.*?)\\"','g');
+
             matches = regex.exec(doc.innerText)
             let cdnPath = matches[1]
 
