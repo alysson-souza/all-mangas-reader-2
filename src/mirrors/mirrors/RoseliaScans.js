@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages : "en",
         domains: ["reader.roseliascans.com"],
         home: "http://roseliascans.com/",
-        chapter_url: /^\/read\/.*$/g,
+        chapter_url: /^\/read\/.+$/g,
         
         abstract: "FoolSlide",
         abstract_options: {

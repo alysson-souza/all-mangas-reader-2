@@ -7,7 +7,7 @@ if (typeof registerMangaObject === 'function') {
         home: 'https://kkjscans.co/',
         disabled: true,
         canListFullMangas: true,
-        chapter_url: /^\/comics\/.*\/.*$/g,
+        chapter_url: /^\/comics\/.*\/.+$/g,
         abstract: 'GenkanAbs',
         abstract_options: {
             base_url: 'https://kkjscans.co/',

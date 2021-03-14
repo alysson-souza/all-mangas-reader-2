@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         languages : "en",
         domains: ["manga4life.com"],
         home: "https://manga4life.com",
-        chapter_url: /^\/read-online\/.*$/g,
+        chapter_url: /^\/read-online\/.+$/g,
 
         getMangaList : async function (search) {
             let doc = await amr.loadPage(this.home + "/directory/", { nocache: true, preventimages: true })

@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages: "id",
         domains: ["www.komikid.com","komikid.com"],
         home: "http://www.komikid.com",
-        chapter_url: /^\/manga\/.*\/.*$/g,
+        chapter_url: /^\/manga\/.*\/.+$/g,
         
         abstract: "MyMangaReaderCMS",
         abstract_options: {

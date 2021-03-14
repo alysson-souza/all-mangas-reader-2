@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         mirrorIcon: "heromanhua.png",
         domains: ["heromanhua.com"],
         home: "https://heromanhua.com",
-        chapter_url: /^\/manga\/.*\/.*$/g,
+        chapter_url: /^\/manga\/.*\/.+$/g,
         languages: "en",
         search_json: false,
         abstract: "Madara",

@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages : "en",
         domains: ["reader.serenade.moe"],
         home: "https://serenade.moe/",
-        chapter_url: /^\/read\/.*$/g,
+        chapter_url: /^\/read\/.+$/g,
         
         abstract: "FoolSlide",
         abstract_options: {

@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["www.nonstopscans.com"],
         home: "https://www.nonstopscans.com/",
-        // chapter_url: /^\/manga\/.*\/.*$/g,
+        // chapter_url: /^\/manga\/.*\/.+$/g,
 
 
         getMangaList : async function (search) {

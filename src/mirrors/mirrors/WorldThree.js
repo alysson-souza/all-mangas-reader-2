@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages : "en",
         domains: ["www.slide.world-three.org"],
         home: "http://www.world-three.org/",
-        chapter_url: /^\/read\/.*$/g,
+        chapter_url: /^\/read\/.+$/g,
         
         abstract: "FoolSlide",
         abstract_options: {

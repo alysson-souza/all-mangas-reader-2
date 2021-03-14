@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ['mangabob.com'],
         home: 'https://mangabob.com/',
         canListFullMangas: true,
-        chapter_url: /^\/manga\/.*\/.*$/g,
+        chapter_url: /^\/manga\/.*\/.+$/g,
         abstract: "Madara",
         abstract_options: {
             search_url: 'https://mangabob.com/',

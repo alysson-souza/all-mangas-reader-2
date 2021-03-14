@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         disabled: true,
         domains: ["ninjascans.com"],
         home: "https://ninjascans.com/",
-        chapter_url: /^\/(manga|manhua)\/.*\/.*$/g,
+        chapter_url: /^\/(manga|manhua)\/.*\/.+$/g,
         canListFullMangas: false,
         abstract: "Madara",
         abstract_options: {

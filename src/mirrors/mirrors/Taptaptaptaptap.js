@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages : "en",
         domains: ["taptaptaptaptap.net"],
         home: "https://taptaptaptaptap.net/",
-        chapter_url: /^\/fs\/read\/.*$/g,
+        chapter_url: /^\/fs\/read\/.+$/g,
 
         abstract: "FoolSlide",
         abstract_options: {

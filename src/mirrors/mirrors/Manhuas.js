@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["manhuas.net"],
         home: "https://manhuas.net/",
-        chapter_url: /\/manhua\/.*\-chapter\-.*$/g,
+        chapter_url: /\/manhua\/.*\-chapter\-.+$/g,
         canListFullMangas: false,
         abstract: "Madara",
         abstract_options: {
