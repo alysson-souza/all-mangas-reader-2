@@ -7,7 +7,7 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["www.mangapanda.com"],
         home: "http://www.mangapanda.com/",
-        chapter_url: /^\/.*\/[0-9]+.*$/g,
+        chapter_url: /^\/.*\/[0-9]+.+$/g,
 
         getMangaList: async function (search) {
             var urlManga = "http://www.mangapanda.com/search/?w=" + search;

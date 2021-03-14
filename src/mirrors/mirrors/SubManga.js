@@ -4,9 +4,9 @@ if (typeof registerMangaObject === 'function') {
         canListFullMangas: false,
         mirrorIcon: "submanga.png",
         languages: "es",
-        domains: ["submanga.online", "submanga.com"],
+        domains: ["submanga.online", "submanga.com", "submanga.io"],
         home: "https://submanga.online/",
-        chapter_url: /^\/manga\/.*\/.*$/g,
+        chapter_url: /^\/manga\/.*\/.+$/g,
         
         getMangaList: async function (search) {
             let doc = await amr.loadPage(

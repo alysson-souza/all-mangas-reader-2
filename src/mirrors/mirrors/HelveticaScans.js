@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ["helveticascans.com"],
         home: "https://helveticascans.com/",
         disabled: true,
-        chapter_url: /^\/r\/read\/.*$/g,
+        chapter_url: /^\/r\/read\/.+$/g,
         
         abstract: "FoolSlide",
         abstract_options: {

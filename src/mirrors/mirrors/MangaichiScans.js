@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages : "en",
         domains: ["mangaichiscans.mokkori.fr"],
         home: "http://mangaichiscans.mokkori.fr/",
-        chapter_url: /^\/fs\/read\/.*$/g,
+        chapter_url: /^\/fs\/read\/.+$/g,
 
         abstract: "FoolSlide",
         abstract_options: {

@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages : "en",
         domains: ["www.twistedhelscans.com"],
         home: "http://www.twistedhelscans.com/",
-        chapter_url: /^\/read\/.*$/g,
+        chapter_url: /^\/read\/.+$/g,
         
         abstract: "FoolSlide",
         abstract_options: {

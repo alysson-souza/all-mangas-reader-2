@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         mirrorIcon: "komikcast.png",
         domains: ["komikcast.com"],
         home: "https://komikcast.com/",
-        chapter_url: /^\/chapter\/.*$/g,
+        chapter_url: /^\/chapter\/.+$/g,
         languages: "id",
         abstract: "MangastreamAbs",
         abstract_options: {

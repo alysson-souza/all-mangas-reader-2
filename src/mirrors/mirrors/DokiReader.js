@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         disabled: true,
         domains: ["kobato.hologfx.com"],
         home: "https://kobato.hologfx.com/",
-        chapter_url: /^\/reader\/read\/.*$/g,
+        chapter_url: /^\/reader\/read\/.+$/g,
         canListFullMangas: false, /* to avoid loading 4 pages to load all mangas */
     
         abstract: "FoolSlide",

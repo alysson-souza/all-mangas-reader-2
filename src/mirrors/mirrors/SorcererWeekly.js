@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages : "en",
         domains: ["sorcererweekly.com"],
         home: "https://sorcererweekly.com/",
-        chapter_url: /^\/read\/.*$/g,
+        chapter_url: /^\/read\/.+$/g,
 
         abstract: "FoolSlide",
         abstract_options: {

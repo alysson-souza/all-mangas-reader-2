@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ['hunlight-scans.info'],
         home: 'https://hunlight-scans.info/home',
         canListFullMangas: true,
-        chapter_url: /^\/comics\/.*\/.*$/g,
+        chapter_url: /^\/comics\/.*\/.+$/g,
         abstract: 'GenkanAbs',
         abstract_options: {
             base_url: 'https://hunlight-scans.info/',

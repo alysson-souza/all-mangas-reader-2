@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ["reader.evilflowers.com"],
         home: "http://reader.evilflowers.com",
         canListFullMangas: false, /* to avoid loading 8 pages to load all mangas */
-        chapter_url: /^\/read\/.*$/g,
+        chapter_url: /^\/read\/.+$/g,
         
         abstract: "FoolSlide",
         abstract_options: {

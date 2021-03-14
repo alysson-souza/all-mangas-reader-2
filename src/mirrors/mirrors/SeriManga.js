@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ["serimanga.com"],
         home: "https://serimanga.com/",
         canListFullMangas: true,
-        chapter_url: /^\/mangas\/.*\/[0-9]+.*$/g,
+        chapter_url: /^\/mangas\/.*\/[0-9]+.+$/g,
 
         getMangaList : async function (search) {
             let url = this.home + 'mangalar'

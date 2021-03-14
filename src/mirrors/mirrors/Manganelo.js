@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["manganelo.com", "chap.manganelo.com"],
         home: "https://manganelo.com/",
-        chapter_url: /^\/chapter\/.*\/.*$/g,
+        chapter_url: /^\/chapter\/.*\/.+$/g,
 
         abstract: "MangakakalotAbs",
         abstract_options: {

@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages : "en",
         domains: ["shoujohearts.com"],
         home: "http://shoujohearts.com/",
-        chapter_url: /^\/reader\/read\/.*$/g,
+        chapter_url: /^\/reader\/read\/.+$/g,
         
         abstract: "FoolSlide",
         abstract_options: {

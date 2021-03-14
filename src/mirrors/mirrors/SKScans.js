@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ['skscans.com'],
         home: 'https://skscans.com/home',
         canListFullMangas: true,
-        chapter_url: /^\/comics\/.*\/.*$/g,
+        chapter_url: /^\/comics\/.*\/.+$/g,
         abstract: 'GenkanAbs',
         abstract_options: {
             base_url: 'https://skscans.com/',

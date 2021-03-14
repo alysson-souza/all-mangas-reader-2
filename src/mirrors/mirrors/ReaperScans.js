@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ['reaperscans.com'],
         home: 'https://reaperscans.com/',
         canListFullMangas: true,
-        chapter_url: /^\/comics\/.*\/.*$/g,
+        chapter_url: /^\/comics\/.*\/.+$/g,
         abstract: 'GenkanAbs',
         abstract_options: {
             base_url: 'https://reaperscans.com/',

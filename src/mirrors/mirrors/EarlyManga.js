@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["earlymanga.net", "earlymanga.xyz", "earlymanga.me", "earlymanga.org"],
         home: "https://earlymanga.org",
-        chapter_url: /^\/manga\/.*\/.*$/g,
+        chapter_url: /^\/manga\/.*\/.+$/g,
 
         getMangaList : async function (search) {
             let doc = await amr.loadPage(this.home + "/search?search=" + search, { nocache: true, preventimages: true })
