@@ -135,7 +135,8 @@ fs.readdir(mirrors, async (err, files) => {
         })
     }
     writeWebsites(allAbstracts, allMirrors)
+    console.info("Mirror Rebuild Complete")
 })
 
-console.info("Mirror Rebuild Complete")
+
 

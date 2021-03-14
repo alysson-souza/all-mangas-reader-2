@@ -74,7 +74,7 @@
         <v-card-text>
           <label>
             {{i18n("list_cat_edit_desc", countUsed(catToEdit))}} <br />
-            <input type="text" v-model="updateCatName" class="category-edit" />
+            <v-text-field solo outlined dense v-model="updateCatName" />
           </label>
         </v-card-text>
 
@@ -226,12 +226,6 @@ export default {
   display: -webkit-inline-box;
   display: -ms-inline-flexbox;
   font-size: 1rem;
-}
-
-input.category-edit {
-  border-style: solid;
-  display: block;
-  margin-top: 1rem;
 }
 
 .cat-act {
