@@ -25,22 +25,27 @@ global.registerMangaObject = function(object) {
         console.error(mirrorName + " : mirrorName is required !")
     }
     website.mirrorName = mirrorName
+
     if (!object.domains) {
         console.error(mirrorName + " : domains is required !")
     }
     website.domains = object.domains
+
     if (!object.languages) {
         console.error(mirrorName + " : languages is required !")
     }
-    website.home = object.home
+    website.languages = object.languages
+    
     if (!object.home) {
         console.error(mirrorName + " : home is required !")
     }
-    website.languages = object.languages
+    website.home = object.home
+    
     if (!object.mirrorIcon) {
         console.error(mirrorName + " : mirrorIcon is required !")
     }
     website.mirrorIcon = base64_encode(icons + object.mirrorIcon)
+    
     if (object.abstract !== undefined) {
         website.abstract = object.abstract
     }

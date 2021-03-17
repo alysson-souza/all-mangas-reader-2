@@ -422,7 +422,7 @@
     "description": "Tooltip for alphabetical sort on mangas list"
   },
   "list_sort_new": {
-    "message": "Nouveaux chapitres à lire en premier !",
+    "message": "Nouveaux chapitres à lire en premier! Tous les nouveaux classés par ordre alphabétique",
     "description": "Tooltip for last new chapters sort on mangas list"
   },
   "list_sort_upts": {
@@ -1758,5 +1758,36 @@
   "list_details_reset_name": {
     "message": "Supprimer le nom personnalisé",
     "description": "Button to remove custom name"
+  },
+  "__V2_3_8": {
+    "message": "Just a filler to separate new labels from old ones"
+  },
+  "list_sort_new_most_unread": {
+    "message": "Nouveaux chapitres à lire en premier. Avec la plupart des chapitres non lus plus haut",
+    "description": "Tooltip for last new chapters sort on mangas list with most unread on top"
+  },
+  "options_komga_server": {
+    "message": "URL du serveur Komga",
+    "description": "Option for komga url"
+  },
+  "options_komga_server_label": {
+    "message": "URL de base du serveur komga. La valeur par défaut est http://localhost:8080",
+    "description": "Option for komga url"
+  },
+  "options_komga_username": {
+    "message": "Nom d'utilisateur Komga",
+    "description": "Option for komga username"
+  },
+  "options_komga_username_label": {
+    "message": "Entrez votre nom d'utilisateur / email pour komga",
+    "description": "Option for komga username"
+  },
+  "options_komga_password": {
+    "message": "Mot de passe Komga",
+    "description": "Option for komga password"
+  },
+  "options_komga_password_label": {
+    "message": "Mot de passe de votre compte komga",
+    "description": "Option for komga password"
   }
 }
