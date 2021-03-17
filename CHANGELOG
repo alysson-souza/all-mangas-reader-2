@@ -1,3 +1,25 @@
+### V2.3.8
+  New Features:
+    * Added download feature for current chapter (Courtesy of @Robo)
+  
+  Fixes:
+    * Export manga list fixed
+    * The reader no longer tries to load unless it matches the pattern, preventing some issues when the website is restored (Courtesy of @Robo)
+    * Edit Category now shows up properly in dark mode
+  
+  Changes:
+    * Notifications and reader now show custom manga names (Courtesy of @kYem)
+    * Sort Preference is now saved
+    * Sort by newest now is split into two options, one is the former behaviour and the other shows the ones with the most unread chapters first
+  
+  Mirror Fixes:
+    * Manga4Life (https://manga4life.com)
+    * MangaSee (https://mangasee123.com)
+    * Asura Scans (https://asurascans.com/)
+    * Early Manga (https://earlymanga.org)
+    * Leviathan Scans (https://leviatanscans.com/)
+    * SKScans (https://skscans.com)
+
 ### V2.3.7
   Changes:
     * Sort by new also sorts by most unread chapters (Courtesy of @Robo)
