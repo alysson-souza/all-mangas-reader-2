@@ -32,9 +32,15 @@
           </v-tooltip>
           <v-tooltip top content-class="icon-ttip">
             <template v-slot:activator="{ on }">
-              <v-icon v-on="on" @click="sort = 'updates'" :class="['amr-filter', {activated: sort === 'updates'}]">mdi-flash</v-icon>
+              <v-icon v-on="on" @click="sort = 'updates'" :class="['amr-filter', {activated: sort === 'updates'}]">mdi-flash-auto</v-icon>
             </template>
             <span>{{i18n("list_sort_new")}}</span>
+          </v-tooltip>
+          <v-tooltip top content-class="icon-ttip">
+            <template v-slot:activator="{ on }">
+              <v-icon v-on="on" @click="sort = 'updates-mostunread'" :class="['amr-filter', {activated: sort === 'updates-mostunread'}]">mdi-flash</v-icon>
+            </template>
+            <span>{{i18n("list_sort_new_most_unread")}}</span>
           </v-tooltip>
           <v-tooltip top content-class="icon-ttip">
             <template v-slot:activator="{ on }">
@@ -247,7 +253,7 @@ export default {
   data() {
     return {
       loaded: false,
-      sort: "updates", // sort mode for list (az : alphabetical, updates : mangas with updates first)
+      sort: this.$store.state.options.sortOrder, // sort mode for list (az : alphabetical, updates : mangas with updates first)
       showDialog: false, // do show dialog to ask smthg
       showFilter: false, // Show the text search
       dialogTitle: "", //title of opened dialog
@@ -277,6 +283,9 @@ export default {
   watch: {
     itemsPerPage: function(newValue) {
       this.$store.dispatch("setOption", { key: 'perPageMangas', value: newValue })
+    },
+    sort: function(newValue) {
+      this.$store.dispatch("setOption", { key: 'sortOrder', value: newValue })
     }
   },
   computed: {
@@ -402,13 +411,20 @@ export default {
       var cmp;
       if (this.sort === "az") {
         cmp = default_sort
-      } else if (this.sort === "updates") {
+      } else if (this.sort === "updates-mostunread") {
         cmp = function(a, b) {
           let ha = utils.hasNew(a),
               hb = utils.hasNew(b);
           // primary sort on manga amount of new chapters, secondary on alphabetical
           return (ha && hb ? num_chapters_to_read_sort(a, b) : ha === hb ? default_sort(a, b) : (ha && !hb ? -1 : 1 ) );
-        };
+        }
+      } else if (this.sort === "updates") {
+        cmp = function(a, b) {
+          let ha = utils.hasNew(a),
+              hb = utils.hasNew(b);
+          // primary sort on manga has new chapter, secondary on alphabetical
+          return (ha === hb ? default_sort(a, b) : (ha && !hb ? -1 : 1));
+        }
       } else {
         cmp = function(a, b) {
           let na = a.upts != 0,

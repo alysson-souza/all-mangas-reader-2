@@ -99,6 +99,7 @@ const default_options = {
     perPageMangas: 25, // Manga entries per page
     pageNavigationPosition: 'top', // Should the page navigation/settings bar be up top or on bottom
     alternateColors: 0, // This applies a alternating color scheme to the manga list
+    sortOrder: 'updates', // Order to sort manga list
 
     /** Mangadex specific options */
     mangadexBlockedGroups: '', // Group id's to block chapters from
@@ -106,10 +107,16 @@ const default_options = {
     mangadexDataSaver: 0, // Use the datasaver option when getting chapter images
     mangadexImageServer: 'none', // Use the MD@Home network when getting chapter images (not implimented in v2 api yet)
 
+    /** Komga specific options */
+    komgaUrl: 'http://localhost:8080',
+    komgaUser: '',
+    komgaPassword: ''
+
 }
 
 const jsonOptions = ["categoriesStates", "readlanguages"];
-const stringOptions = ["colornew", "colorread", "colornotfollow", "mangadexBlockedGroups", "mangadexPreferredGroups", "mangadexImageServer", "pageNavigationPosition"];
+const stringOptions = ["colornew", "colorread", "colornotfollow", "mangadexBlockedGroups", "mangadexPreferredGroups", "mangadexImageServer", "pageNavigationPosition",
+    "sortOrder", "komgaUrl", "komgaUser", "komgaPassword"];
 
 /**
  *  initial state of amr options

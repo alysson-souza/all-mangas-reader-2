@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ['the-nonames.com'],
         home: 'https://the-nonames.com/',
         canListFullMangas: true,
-        chapter_url: /^\/comics\/.*\/.*$/g,
+        chapter_url: /^\/comics\/.*\/.+$/g,
         abstract: 'GenkanAbs',
         abstract_options: {
             base_url: 'https://the-nonames.com/',

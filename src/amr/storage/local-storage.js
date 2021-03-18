@@ -1,4 +1,5 @@
 import storedb from '../storedb'
+import * as syncUtils from '../sync/utils';
 
 class LocalStorage {
 
@@ -17,7 +18,7 @@ class LocalStorage {
 
     syncLocal(mangaUpdates) {
         const storeUpdates = mangaUpdates.map(manga => {
-            if (manga.deleted === 1) {
+            if (manga.deleted === syncUtils.DELETED) {
                 return this.vuexStore.dispatch('deleteManga', { key: manga.key })
             }
 

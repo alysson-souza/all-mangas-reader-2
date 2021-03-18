@@ -102,7 +102,7 @@
               <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
                   <!-- Manga name -->
-                  <a v-on="on" :href="manga.currentMangaURL" target="_blank">{{manga.name}}</a>
+                  <a v-on="on" :href="manga.currentMangaURL" target="_blank">{{ mangaInfos && mangaInfos.displayName ? mangaInfos.displayName : manga.name }}</a>
                 </template>
                 <span>{{i18n("reader_click_go_manga")}}</span>
               </v-tooltip>
@@ -282,6 +282,15 @@
                   </v-btn>
                 </template>
                 <span>{{i18n("content_nav_reload")}}</span>
+              </v-tooltip>
+              <!-- download chapter button -->
+              <v-tooltip bottom class="ml-1">
+                <template v-slot:activator="{ on }">
+                  <v-btn v-on="on" icon color="red" @click.stop="DownloadChapter">
+                      <v-icon>mdi-download-outline</v-icon>
+                  </v-btn>
+                </template>
+                <span>{{i18n("content_nav_downlaod")}}</span>
               </v-tooltip>
             </v-col>
           </v-row>
@@ -1252,6 +1261,14 @@
       },
       reloadErrors() {
         EventBus.$emit('reload-all-errors')
+      },
+      DownloadChapter() {
+        browser.runtime.sendMessage({
+            action: "DownloadChapter",
+            urls: this.$refs.reader.pages.map(ele => ele[0].src),
+            chapterName: this.pageData.currentChapter +".cbz",
+            seriesName: this.mangaInfos && this.mangaInfos.displayName ? this.mangaInfos.displayName : this.manga.name
+        });
       }
     }
   }

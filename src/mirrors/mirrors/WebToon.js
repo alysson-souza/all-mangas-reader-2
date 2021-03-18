@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         languages : "en",
         domains: ["www.webtoons.com"],
         home: "https://www.webtoons.com",
-        chapter_url: /^.*\/viewer.*$/g,
+        chapter_url: /^.*\/viewer.+$/g,
 
         fixUrl: function(url) {
             if (!url.includes(this.home)) {

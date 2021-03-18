@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages : "en",
         domains: ["reader2.thecatscans.com"],
         home: "http://reader2.thecatscans.com/",
-        chapter_url: /^\/read\/.*$/g,
+        chapter_url: /^\/read\/.+$/g,
 
         abstract: "FoolSlide",
         abstract_options: {

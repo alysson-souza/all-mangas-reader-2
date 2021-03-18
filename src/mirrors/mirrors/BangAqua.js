@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         disabled: true,
         domains: ["reader.bangaqua.com"],
         home: "http://bangaqua.com/",
-        chapter_url: /^\/read\/.*$/g,
+        chapter_url: /^\/read\/.+$/g,
 
         abstract: "FoolSlide",
         abstract_options: {

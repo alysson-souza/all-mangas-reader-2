@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["read.ptscans.com"],
         home: "https://ptscans.com/",
-        chapter_url: /^\/read\/.*\/.*$/g,
+        chapter_url: /^\/read\/.*\/.+$/g,
 
         abstract: "ComiCake",
         abstract_options: {

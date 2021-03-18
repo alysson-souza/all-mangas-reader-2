@@ -179,9 +179,9 @@ export default {
             m: mg.mirror,
             n: mg.name,
             u: mg.url,
-            l: mg.lastChapterReadURL,
-            cn: mg.listChaps.find(ele => ele[1] == mg.lastChapterReadURL)[0]
+            l: mg.lastChapterReadURL
           };
+          if (mg.listChaps.find(ele => ele[1] == mg.lastChapterReadURL) > 0) res.cn = mg.listChaps.find(ele => ele[1] == mg.lastChapterReadURL)
           if (mg.read !== 0) res.r = mg.read;
           if (mg.update !== 1) res.p = mg.update;
           if (mg.display !== 0) res.d = mg.display;

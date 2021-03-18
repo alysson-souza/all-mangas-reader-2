@@ -7,9 +7,9 @@ import storedb from '../amr/storedb';
 
 /** Scripts to inject in pages containing mangas for new reader */
 const contentScriptsV2 = [
-    {file: '/lib/jquery.min.js'},
-    {file: '/reader/init-reading.js'},
-    {file: '/mirrors/register_implementations.js'}
+    { file: '/lib/jquery.min.js' },
+    { file: '/reader/init-reading.js' },
+    { file: '/mirrors/register_implementations.js' }
 ];
 
 class HandleManga {
@@ -31,7 +31,8 @@ class HandleManga {
                         lastchapter: mg.lastChapterReadURL, /* last read chapter (the most advanced one) */
                         currentChapter: mg.currentChapter, /* last read chapter, last chapter page opened */
                         currentScanUrl: mg.currentScanUrlm, /* last viewed page in currentChapter */
-                        webtoon: mg.webtoon || false /* webtoon mode */
+                        webtoon: mg.webtoon || false, /* webtoon mode */
+                        displayName: mg.displayName
                     });
                 } else {
                     return Promise.resolve();
@@ -47,7 +48,7 @@ class HandleManga {
                 return window['AMR_STORE'].dispatch('readManga', message);
             case "deleteManga":
                 utils.debug("Delete manga key " + key);
-                return window['AMR_STORE'].dispatch('deleteManga', {key: key});
+                return window['AMR_STORE'].dispatch('deleteManga', { key: key });
             case "getNextChapterImages", "getChapterData": //returns boolean telling if url is a chapter page, infos from page and list of images for prefetch of next chapter in content script
                 return this.getChapterData(message);
             case "markReadTop":
@@ -79,9 +80,9 @@ class HandleManga {
                 } else {
                     return Promise.resolve();
                 }
-            case "loadListChaps": 
+            case "loadListChaps":
                 return this.loadListChaps(message)
-            case "importMangas": 
+            case "importMangas":
                 return this.importMangas(message)
         }
     }
@@ -110,7 +111,7 @@ class HandleManga {
                 if (list && list.length > 0) {
                     // filter entries on search phrase
                     resolve(this.resultSearchFromArray(
-                        this.filterSearchList(list, message.search), 
+                        this.filterSearchList(list, message.search),
                         message.mirror));
                 } else {
                     // retrieve from website
@@ -119,13 +120,13 @@ class HandleManga {
                     storedb.storeListOfMangaForMirror(message.mirror, mgs);
                     // return filtered results
                     resolve(this.resultSearchFromArray(
-                        this.filterSearchList(mgs, message.search), 
+                        this.filterSearchList(mgs, message.search),
                         message.mirror));
                 }
             } else {
                 // let website search 
                 resolve(this.resultSearchFromArray(
-                    await this.searchListRemote(message.search, impl), 
+                    await this.searchListRemote(message.search, impl),
                     message.mirror));
             }
         });
@@ -174,43 +175,45 @@ class HandleManga {
 
         // check if we need to load preload (it could be annoying to have preload on each pages of the website)
         // websites which provide a chapter_url regexp will have their chapters with a preload
-        let dopreload = false
         if (mir.chapter_url) {
-            var parts = /\/(.*)\/(.*)/.exec(mir.chapter_url);
-            var chaprx = new RegExp(parts[1], parts[2]);
-            if (chaprx.test("/" + utils.afterHostURL(url))) dopreload = true
+            let parts = /\/(.*)\/(.*)/.exec(mir.chapter_url);
+            let chaprx = new RegExp(parts[1], parts[2]);
+            if (!chaprx.test("/" + utils.afterHostURL(url))) {
+                return // returns if there is no match
+            }
         }
-        if (dopreload) {
-            // Load amr preload
-            let loading = []
-            loading.push(browser.tabs.insertCSS(tabId, { file: "/reader/pre-loader.css" }))
-            let bgcolor = "#424242"
-            if (window['AMR_STORE'].state.options.darkreader === 0) bgcolor = "white"
-            loading.push(browser.tabs.executeScript(
-                tabId, 
-                { code: `
-                    let amr_icon_url = '${browser.extension.getURL('/icons/icon_128.png')}';
-                    let cover = document.createElement("div")
-                    cover.id = "amr-loading-cover"
-                    cover.style.backgroundColor = "${bgcolor}"
 
-                    let img = document.createElement("img")
-                    img.src = amr_icon_url;
-                    cover.appendChild(img)
+        // Load amr preload
+        let loading = []
+        loading.push(browser.tabs.insertCSS(tabId, { file: "/reader/pre-loader.css" }))
+        let bgcolor = "#424242"
+        if (window['AMR_STORE'].state.options.darkreader === 0) bgcolor = "white"
+        loading.push(browser.tabs.executeScript(
+            tabId,
+            {
+                code: `
+                let amr_icon_url = '${browser.extension.getURL('/icons/icon_128.png')}';
+                let cover = document.createElement("div")
+                cover.id = "amr-loading-cover"
+                cover.style.backgroundColor = "${bgcolor}"
 
-                    document.body.appendChild(cover)
-                    setTimeout(() => {
-                        try {cover.parentNode.remove(cover)} catch(e) {}
-                    }, 5000)
-                `}))
-            Promise.all(loading)
-        }
+                let img = document.createElement("img")
+                img.src = amr_icon_url;
+                cover.appendChild(img)
+
+                document.body.appendChild(cover)
+                setTimeout(() => {
+                    try {cover.parentNode.remove(cover)} catch(e) {}
+                }, 5000)
+            `}))
+        Promise.all(loading)
+
         // Inject content scripts in matched tab
         for (let script of contentScriptsV2) {
             await browser.tabs.executeScript(tabId, script);
         }
         await browser.tabs.executeScript(
-            tabId, 
+            tabId,
             { code: `window["amrLoadMirrors"]("${mir.mirrorName}")` }
         )
         return Promise.resolve(utils.serializeVuexObject(mir)); // doing that because content script is not vue aware, the reactive vuex object needs to be converted to POJSO
@@ -222,8 +225,8 @@ class HandleManga {
      */
     async sendPushState(url, tabId) {
         browser.tabs
-          .executeScript(tabId, { code: "if (typeof window['onPushState'] === 'function') window['onPushState']();" })
-          .catch(utils.debug)
+            .executeScript(tabId, { code: "if (typeof window['onPushState'] === 'function') window['onPushState']();" })
+            .catch(utils.debug)
     }
     /**
      * Return the list of images urls from a chapter
@@ -238,19 +241,19 @@ class HandleManga {
                     let impl = await mirrorsImpl.getImpl(message.mirrorName);
                     // Check if this is a chapter page
                     let isChapter = impl.isCurrentPageAChapterPage(
-                        htmlDocument, 
+                        htmlDocument,
                         message.url)
                     let infos, imagesUrl = []
                     if (isChapter) {
                         try {
                             // Retrieve informations relative to current chapter / manga read
                             infos = await impl.getInformationsFromCurrentPage(
-                                htmlDocument, 
+                                htmlDocument,
                                 message.url)
-                                
+
                             // retrieve images to load
                             imagesUrl = await impl.getListImages(
-                                htmlDocument, 
+                                htmlDocument,
                                 message.url);
                         } catch (e) {
                             console.error("Error while loading infos and images from url " + message.url)
@@ -258,7 +261,7 @@ class HandleManga {
                         }
                     }
                     let title = htmlDocument.title || htmlDocument.querySelector('title').text
-                    
+
                     resolve({
                         isChapter: isChapter ? true : false,
                         infos: infos,
@@ -327,7 +330,7 @@ class HandleManga {
 
                 let mgimport = Promise.resolve(
                     window['AMR_STORE'].dispatch('readManga', readmg)
-                .catch(e => e));
+                        .catch(e => e));
                 if (window['AMR_STORE'].state.options.waitbetweenupdates === 0) {
                     if (window['AMR_STORE'].state.options.savebandwidth === 1) {
                         await mgimport;

@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["mangazuki.co"],
         home: "https://mangazuki.co/",
-        chapter_url: /^\/fs\/read\/.*$/g,
+        chapter_url: /^\/fs\/read\/.+$/g,
         canListFullMangas: true,
 
         abstract: "MyMangaReaderCMS",

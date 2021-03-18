@@ -100,7 +100,7 @@ export class SyncManager {
     }
 
     shouldSkipSync(manga) {
-        return manga.deleted === 1 || manga.key === syncUtils.FAIL_KEY
+        return manga.deleted === syncUtils.DELETED || manga.key === syncUtils.FAIL_KEY
     }
 
     /**

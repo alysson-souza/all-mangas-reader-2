@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["www.pmscans.com"],
         home: "http://www.pmscans.com/",
-        chapter_url: /^\/manga\/.*\/.*$/g,
+        chapter_url: /^\/manga\/.*\/.+$/g,
 
         options:  {
             search_url: "http://www.pmscans.com/",

@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["earlymanga.net", "earlymanga.xyz", "earlymanga.me", "earlymanga.org"],
         home: "https://earlymanga.org",
-        chapter_url: /^\/manga\/.*\/.*$/g,
+        chapter_url: /^\/manga\/.*\/.+$/g,
 
         getMangaList : async function (search) {
             let doc = await amr.loadPage(this.home + "/search?search=" + search, { nocache: true, preventimages: true })
@@ -29,9 +29,12 @@ if (typeof registerMangaObject === 'function') {
             let res = []
             let self = this
 
-            $("#chapters .col-lg-5 a", doc).each(function (index) {
+            console.log(doc)
+            console.log($("#chapters .col-lg-5 a[style!='display:none']:contains('Chapter')", doc))
+
+            $("#chapters .col-lg-5 a[style!='display:none']:contains('Chapter')", doc).each(function (index) {
                 res.push([
-                    $(this).text().trim(), 
+                    $("div[style!='display:none']",this).text().trim(), 
                     self.home + $(this).attr("href")]);
             })
 
@@ -56,7 +59,7 @@ if (typeof registerMangaObject === 'function') {
         getListImages: async function (doc, curUrl) {
             let res = []
             let self = this
-            $(".chapter-images-container-inside img", doc).each(function (index) {
+            $(".chapter-images-container-up img", doc).each(function (index) {
                 res.push(self.home + $(this).attr("src"))
             });
             return res;
@@ -67,7 +70,7 @@ if (typeof registerMangaObject === 'function') {
         },
 
         isCurrentPageAChapterPage: function (doc, curUrl) {
-            return $(".chapter-images-container-inside img", doc).length > 0
+            return $(".chapter-images-container-up img", doc).length > 0
         }
     })
 }

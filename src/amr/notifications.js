@@ -42,7 +42,7 @@ class Notification {
         if (mg.read === 0 && (window['AMR_STORE'].state.options.shownotifications === 1)) {
             let urls = mg.listChaps.map(chap => chap[1]);
             let mangaData = {
-                name: mg.name,
+                name: mg.displayName ? mg.displayName : mg.name,
                 mirror: mg.mirror,
                 url: urls[urls.indexOf(mg.lastChapterReadURL) - 1]
             };

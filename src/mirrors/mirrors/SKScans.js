@@ -5,11 +5,18 @@ if (typeof registerMangaObject === 'function') {
         languages: 'en',
         domains: ['skscans.com'],
         home: 'https://skscans.com/home',
-        canListFullMangas: true,
-        chapter_url: /^\/comics\/.*\/.*$/g,
-        abstract: 'GenkanAbs',
+        chapter_url: /^\/manga\/.*\/.+$/g,
+
+        abstract: 'Madara',
         abstract_options: {
-            base_url: 'https://skscans.com/',
+            search_url: 'https://skscans.com/',
+            chapter_list_ajax: true
         },
+        // canListFullMangas: true,
+        // chapter_url: /^\/comics\/.*\/.+$/g,
+        // abstract: 'GenkanAbs',
+        // abstract_options: {
+        //     base_url: 'https://skscans.com/',
+        // },
     });
 }

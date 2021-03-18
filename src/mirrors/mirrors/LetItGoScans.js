@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["reader.letitgo.scans.today"],
         home: "http://letitgo-scans.blogspot.com/",
-        chapter_url: /^\/read\/.*\/.*$/g,
+        chapter_url: /^\/read\/.*\/.+$/g,
 
         abstract: "ComiCake",
         abstract_options: {

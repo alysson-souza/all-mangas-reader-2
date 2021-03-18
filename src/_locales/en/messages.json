@@ -423,7 +423,7 @@
     "description": "Tooltip for alphabetical sort on mangas list"
   },
   "list_sort_new": {
-    "message": "New chapters to read first !",
+    "message": "New chapters to read first! All new sorted alphabetically",
     "description": "Tooltip for last new chapters sort on mangas list"
   },
   "list_sort_upts": {
@@ -658,7 +658,11 @@
   "content_nav_reload": {
     "message": "Reload errored scans",
     "description": "Tooltip of the reload errored scans button"
-  }, 
+  },
+  "content_nav_downlaod": {
+    "message": "download chapter",
+    "description": "Tooltip of the download chapter button"
+  },
   "content_nav_chapmode_1": {
     "message": "Scans displayed on top of each other (click to switch display mode for this manga only)",
     "description": "Tooltip of the chapter mode button when value is 1 (Scans displayed on top of each other)"
@@ -1759,5 +1763,36 @@
   "list_details_reset_name": {
     "message": "Remove Custom Name",
     "description": "Button to remove custom name"
+  },
+  "__V2_3_8": {
+    "message": "Just a filler to separate new labels from old ones"
+  },
+  "list_sort_new_most_unread": {
+    "message": "New chapters to read first. With most unread chapters higher",
+    "description": "Tooltip for last new chapters sort on mangas list with most unread on top"
+  },
+  "options_komga_server": {
+    "message": "Url for Komga Server",
+    "description": "Option for komga url"
+  },
+  "options_komga_server_label": {
+    "message": "Base url for komga server. Default is http://localhost:8080",
+    "description": "Option for komga url"
+  },
+  "options_komga_username": {
+    "message": "Komga Username",
+    "description": "Option for komga username"
+  },
+  "options_komga_username_label": {
+    "message": "Enter your username/email for komga",
+    "description": "Option for komga username"
+  },
+  "options_komga_password": {
+    "message": "Komga Password",
+    "description": "Option for komga password"
+  },
+  "options_komga_password_label": {
+    "message": "Password for your komga account",
+    "description": "Option for komga password"
   }
 }

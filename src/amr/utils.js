@@ -33,6 +33,9 @@ export function formatMgName(name) {
  * @param {*} rule 
  */
 export function matchDomain(str, rule) {
+    if (rule == 'komga') {
+        rule = new URL(AMR_STORE.state.options.komgaUrl).host
+    }
     let doMatch = new RegExp("^" + rule.replace(/\*/g, '.*') + "$").test(str)
     return doMatch
 }
@@ -78,22 +81,9 @@ export function serializeVuexObject(obj) {
  * @param {*} url 
  */
 export function extractHostname(url) {
-    var hostname;
-    //find & remove protocol (http, ftp, etc.) and get hostname
+    let uid = new URL(url)
 
-    if (url.indexOf("://") > -1 || url.indexOf("//") === 0) {
-        hostname = url.split('/')[2];
-    }
-    else {
-        hostname = url.split('/')[0];
-    }
-
-    //find & remove port number
-    hostname = hostname.split(':')[0];
-    //find & remove "?"
-    hostname = hostname.split('?')[0];
-
-    return hostname;
+    return uid.hostname
 }
 /**
  * Extract the root domain of a url without subdomain

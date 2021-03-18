@@ -9,6 +9,7 @@ import samples from "../../amr/samples";
 import amrUpdater from '../../amr/amr-updater';
 import iconHelper from '../../amr/icon-helper';
 import { createSync } from '../../amr/sync/sync-manager'
+import * as syncUtils from '../../amr/sync/utils';
 
 const syncManager = createSync();
 
@@ -492,6 +493,12 @@ const actions = {
         let refchaps = [];
         let firstChapToUpdate = true
         for (let mg of state.all) {
+
+            // Don't refresh deleted manga
+            if (mg.deleted === syncUtils.DELETED) {
+                continue
+            }
+
             // we update if it has been forced by the user (through option or timers page) or if we need to update
             if (force || utils.shouldCheckForUpdate(mg, rootState.options)) {
                 // we catch the reject from the promise to prevent the Promise.all to fail due to a rejected promise.

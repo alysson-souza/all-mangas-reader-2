@@ -1,5 +1,8 @@
 import browser from "webextension-polyfill";
 import statsEvents from '../amr/stats-events';
+import saveAs from 'file-saver';
+import JSZip from 'jszip';
+import mime from 'mime-db';
 
 class HandleMisc {
     handle(message, sender) {
@@ -22,7 +25,24 @@ class HandleMisc {
                 });
             case "reloadStats":
                 return Promise.resolve(statsEvents.reloadStats())
+            case "DownloadChapter":
+                return this.DownloadChapter(message)
         }
+    }
+
+    async DownloadChapter(message) {
+        let urls = message.urls
+        let zip = new JSZip();
+        let name = message.seriesName + ' - ' + message.chapterName
+        await Promise.all(urls.map(async (url,int) =>{
+            let data = await fetch(url,message.requestOptions).then(data => data.blob())
+            console.log('hi')
+            let imgData = new File([data], 'filename.jpg');
+            return zip.file(int+'.'+mime[data.type].extensions[0], imgData,  {binary:true});
+        }));
+        let content = await zip.generateAsync({type:'blob'})
+        saveAs(content, name);
+        return Promise.resolve()
     }
 }
 export default (new HandleMisc)

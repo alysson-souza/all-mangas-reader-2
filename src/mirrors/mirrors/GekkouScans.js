@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages : "pt",
         domains: ["leitor.mangascenter.com.br"],
         home: "http://leitor.mangascenter.com.br",
-        chapter_url: /^\/read\/.*$/g,
+        chapter_url: /^\/read\/.+$/g,
         canListFullMangas: false, /* to avoid loading 8 pages to load all mangas */
         
         abstract: "FoolSlide",
