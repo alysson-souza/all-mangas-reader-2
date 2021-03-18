@@ -6,10 +6,12 @@ if (typeof registerMangaObject === 'function') {
         domains: ['leviatanscans.com'],
         home: 'https://leviatanscans.com/',
         canListFullMangas: true,
+        chapter_url: /^\/manga\/.*\/.+$/g,
 
-        abstract: 'GenkanAbs',
+        abstract: 'Madara',
         abstract_options: {
-            base_url: 'https://leviatanscans.com/',
+            search_url: 'https://leviatanscans.com/',
+            chapter_list_ajax: true
         },
     });
 }

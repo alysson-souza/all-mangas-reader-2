@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ['edelgardescans.com'],
         home: 'https://edelgardescans.com/home',
         canListFullMangas: true,
-        chapter_url: /^\/comics\/.*\/.*$/g,
+        chapter_url: /^\/comics\/.*\/.+$/g,
         abstract: 'GenkanAbs',
         abstract_options: {
             base_url: 'https://edelgardescans.com/',

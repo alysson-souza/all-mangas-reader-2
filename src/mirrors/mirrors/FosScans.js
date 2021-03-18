@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ["reader.fos-scans.com"],
         home: "http://fos-scans.com/",
         disabled: true,
-        chapter_url: /^\/read\/.*$/g,
+        chapter_url: /^\/read\/.+$/g,
         
         abstract: "FoolSlide",
         abstract_options: {

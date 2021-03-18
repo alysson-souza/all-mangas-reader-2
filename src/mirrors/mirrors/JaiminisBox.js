@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         disabled: true,
         domains: ["jaiminisbox.com"],
         home: "https://jaiminisbox.com/",
-        chapter_url: /^\/reader\/read\/.*$/g,
+        chapter_url: /^\/reader\/read\/.+$/g,
         canListFullMangas: false, /* to avoid loading 3 pages to load all mangas */
 
         abstract: "FoolSlide",

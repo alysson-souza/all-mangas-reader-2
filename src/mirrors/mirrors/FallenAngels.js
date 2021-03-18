@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["manga.fascans.com"],
         home: "https://manga.fascans.com/",
-        chapter_url: /^\/manga\/.*\/.*$/g,
+        chapter_url: /^\/manga\/.*\/.+$/g,
         
         abstract: "MyMangaReaderCMS",
         abstract_options: {

@@ -390,10 +390,7 @@ export default {
     refreshMangaNow: function () {
       browser.runtime.sendMessage({
         action: 'refreshMangas',
-        manga: {
-          url: this.manga.url,
-          language: this.manga.language,
-        }
+        manga: this.manga
       })
     },
     /**

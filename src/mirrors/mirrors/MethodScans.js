@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ['methodscans.com'],
         home: 'https://methodscans.com/home',
         canListFullMangas: true,
-        chapter_url: /^\/comics\/.*\/.*$/g,
+        chapter_url: /^\/comics\/.*\/.+$/g,
         abstract: 'GenkanAbs',
         abstract_options: {
             base_url: 'https://methodscans.com/',

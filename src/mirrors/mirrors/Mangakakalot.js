@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["mangakakalot.com"],
         home: "https://mangakakalot.com/",
-        chapter_url: /^\/chapter\/.*\/.*$/g,
+        chapter_url: /^\/chapter\/.*\/.+$/g,
 
         abstract: "MangakakalotAbs",
         abstract_options: {

@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages : "it",
         domains: ["hastareader.com"],
         home: "https://hastareader.com/",
-        chapter_url: /^\/slide\/read\/.*$/g,
+        chapter_url: /^\/slide\/read\/.+$/g,
         canListFullMangas: false, /* to avoid loading 8 pages to load all mangas */
 
         abstract: "FoolSlide",

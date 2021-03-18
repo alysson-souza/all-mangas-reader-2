@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["martialscans.com"],
         home: "https://martialscans.com/",
-        chapter_url: /^\/manhua\/.*\/.*$/g,
+        chapter_url: /^\/manhua\/.*\/.+$/g,
         canListFullMangas: false,
         abstract: "Madara",
         abstract_options: {

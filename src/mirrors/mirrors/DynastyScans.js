@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         languages : "en",
         domains: ["dynasty-scans.com"],
         home: "https://dynasty-scans.com/",
-        chapter_url: /^\/chapters\/.*$/g,
+        chapter_url: /^\/chapters\/.+$/g,
 
         getMangaList : async function (search) {
             let doc = await amr.loadPage("https://dynasty-scans.com/series", { nocache: true, preventimages: true })

@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         languages : "en",
         domains: ["mangaseeonline.us", "mangasee123.com"],
         home: "https://mangasee123.com",
-        chapter_url: /^\/read-online\/.*$/g,
+        chapter_url: /^\/read-online\/.+$/g,
 
         getMangaList : async function (search) {
             let doc = await amr.loadPage(this.home + "/directory/", { nocache: true, preventimages: true })
@@ -69,7 +69,10 @@ if (typeof registerMangaObject === 'function') {
             matches = regex.exec(doc.innerText)
             let vars = JSON.parse(matches[1])
 
-            regex = /vm\.CurPathName = "(.*?)";/g
+            // regex = /vm\.CurChapter\s*=\s*\{.*?\};\s*vm\.\w+\s*=\s*"(.*?)";/g
+            regex = /vm\.(\w+?)\s*=\s*\w+\.data\.val\.PathName/g
+            matches = regex.exec(doc.innerText)
+            regex = new RegExp('vm\\.'+matches[1]+'\\s*=\\s*\\"(.*?)\\"','g');
             matches = regex.exec(doc.innerText)
             let cdnPath = matches[1]
 

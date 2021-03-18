@@ -20,11 +20,12 @@ class SyncSchedule {
         this.triggerSync.bind(this);
     }
 
-    start() {
+    async start() {
         if (this.config.syncEnabled && !this.syncInterval) {
             debug("[SYNC] Starting sync process");
-            this.triggerSync();
+            const result = this.triggerSync();
             this.syncInterval = setInterval(this.triggerSync.bind(this), this.config.syncInterval);
+            return result;
         }
     }
 
@@ -32,14 +33,13 @@ class SyncSchedule {
         clearInterval(this.syncInterval)
     }
 
-    triggerSync() {
-
+    async triggerSync() {
         if (this.retryDate && this.retryDate.getTime() > Date.now()) {
             debug(`[SYNC] Skipping sync due to present retry date until ${this.retryDate.toISOString()}`)
             return
         }
 
-        this.syncManager.checkData()
+        return this.syncManager.checkData()
         .then(debug)
         .catch((e) => {
             if (e instanceof ThrottleError) {

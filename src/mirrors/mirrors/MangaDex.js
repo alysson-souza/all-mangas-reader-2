@@ -1,22 +1,22 @@
 if (typeof registerMangaObject === 'function') {
-	registerMangaObject({
+    registerMangaObject({
         mirrorName: "MangaDex",
         canListFullMangas: false,
         mirrorIcon: "mangadex.png",
-        languages: ["sa", "bd", "bg", "ct", "cn", "hk", "cz", "dk", "nl", "gb", "ph", "fi", "fr", "de", "gr", "hu", "id", "it", "jp", "kr", "my", "mn", "ir", "pl", "br", "pt", "ro", "ru", "rs", "es", "mx", "se", "th", "tr", "ua", "vn"].join(","),
+        languages: ['en', "sa", "bd", "bg", "ct", "cn", "hk", "cz", "dk", "nl", "gb", "ph", "fi", "fr", "de", "gr", "hu", "id", "it", "jp", "kr", "my", "mn", "ir", "pl", "br", "pt", "ro", "ru", "rs", "es", "mx", "se", "th", "tr", "ua", "vn"].join(","),
         domains: ["*.mangadex.org", "mangadex.org"],
         home: "https://www.mangadex.org/",
         chapter_url: /\/chapter\/.*/g,
         api: "https://api.mangadex.org/v2/",
         // api: "https://mangadex.org/api/v2/",
-        
+
         getMangaList: async function (search) {
             let doc = await amr.loadPage(
-                "https://mangadex.org/?page=search&title=" + search, 
-                {preventimages: true }
+                "https://mangadex.org/?page=search&title=" + search,
+                { preventimages: true }
             )
             res = [];
-            $("a.manga_title", doc).each(function(ind) {
+            $("a.manga_title", doc).each(function (ind) {
                 res.push([
                     $(this).text(),
                     "https://mangadex.org/manga/" + $(this).attr("href").split("/")[2]
@@ -50,7 +50,7 @@ if (typeof registerMangaObject === 'function') {
                 done.push(chap.language + chap.chapter)
                 if (chap.timestamp > ut) return // Skip chapters that are delayed
                 res[chap.language].push([
-                    (chap.chapter.length > 0 ? chap.chapter + " - " : "") + chap.title, 
+                    (chap.chapter.length > 0 ? chap.chapter + " - " : "") + chap.title,
                     "https://mangadex.org/chapter/" + chap.id
                 ]);
             })
@@ -64,7 +64,7 @@ if (typeof registerMangaObject === 'function') {
             }
             return res
         },
-    
+
         getInformationsFromCurrentPage: async function (doc, curUrl) {
             let chid = curUrl.split("/")[4]
             let chapter = await amr.loadJson(this.api + "chapter/" + chid)
@@ -76,7 +76,7 @@ if (typeof registerMangaObject === 'function') {
             res.language = chapter.data.language
             return res;
         },
-    
+
         getListImages: async function (doc, curUrl) {
             let amrOptions = window['AMR_STORE'].state.options
             let chid = curUrl.split("/")[4]
@@ -92,17 +92,17 @@ if (typeof registerMangaObject === 'function') {
 
             url += params.toString()
 
-            let chapter = await amr.loadJson(url )
+            let chapter = await amr.loadJson(url)
             if (chapter.data.server.indexOf("/") === 0) {
                 chapter.data.server = "https://mangadex.org" + chapter.data.server
             }
             return chapter.data.pages.map(img => chapter.data.server + chapter.data.hash + "/" + img)
         },
-    
+
         getImageFromPageAndWrite: function (urlImg, image) {
             $(image).attr("src", urlImg)
         },
-    
+
         isCurrentPageAChapterPage: function (doc, curUrl) {
             return curUrl.split("/")[3] === "chapter" && curUrl.split("/")[5] !== "comments"
         }
