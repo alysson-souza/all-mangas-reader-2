@@ -1794,5 +1794,9 @@
   "options_komga_password_label": {
     "message": "Password for your komga account",
     "description": "Option for komga password"
+  },
+  "list_asc_desc": {
+    "message": "sort ascending/descending",
+    "description": "Tooltip for ascending/descending option"
   }
 }

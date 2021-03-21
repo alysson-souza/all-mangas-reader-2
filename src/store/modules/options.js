@@ -100,6 +100,7 @@ const default_options = {
     pageNavigationPosition: 'top', // Should the page navigation/settings bar be up top or on bottom
     alternateColors: 0, // This applies a alternating color scheme to the manga list
     sortOrder: 'updates', // Order to sort manga list
+    asc_desc: false,
 
     /** Mangadex specific options */
     mangadexBlockedGroups: '', // Group id's to block chapters from

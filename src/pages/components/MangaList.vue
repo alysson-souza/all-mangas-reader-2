@@ -54,6 +54,15 @@
             </template>
             <span>{{i18n("list_select_action")}}</span>
           </v-tooltip>
+
+          <!-- ascending/decending toggle -->
+          <v-tooltip top content-class="icon-ttip">
+            <template v-slot:activator="{ on }">
+              <v-icon v-on="on" @click="asc_desc = !asc_desc" :class="['amr-filter', {activated: asc_desc}]">mdi-swap-vertical</v-icon>
+            </template>
+            <span>{{i18n("list_asc_desc")}}</span>
+          </v-tooltip>
+          
           <v-tooltip top content-class="icon-ttip">
               <template v-slot:activator="{ on }">
                 <v-icon v-on="on" @click="toggleFilter()" :class="['amr-filter', {activated: showFilter}]">mdi-magnify</v-icon>
@@ -263,6 +272,7 @@ export default {
       renameInput: '', // Text field for renaming manga
       renameKey: '', // Key of the manga we are going to rename
       selectable: false, // Toggle Manga List select behaviour
+      asc_desc: this.$store.state.options.asc_desc, // Toggle Manga List select behaviour
       dialogAction: () => {self.showDialog = false}, // action to take on yes in dialog
       searchText: "",
       selectedManga: [],
@@ -286,6 +296,9 @@ export default {
     },
     sort: function(newValue) {
       this.$store.dispatch("setOption", { key: 'sortOrder', value: newValue })
+    },
+    asc_desc: function(newValue) {
+      this.$store.dispatch("setOption", { key: 'asc_desc', value: newValue })
     }
   },
   computed: {
@@ -435,7 +448,9 @@ export default {
           return ((na || nb) ? sort_chapters_upts(a, b) : ha && hb ? num_chapters_to_read_sort(a, b) : ha === hb ? default_sort(a, b) : (ha && !hb ? -1 : 1 ) );
         }
       }
-      return items.sort(cmp);
+      return items.sort(function(a, b) {
+        return AMR_STORE.getters.options.asc_desc ? cmp(b,a): cmp(a,b)
+      });
     },
     clearSelected: function() {
       this.selectedManga = []
