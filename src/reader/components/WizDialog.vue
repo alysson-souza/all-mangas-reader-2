@@ -17,11 +17,11 @@
       </v-card-text>
       <v-card-actions class="pt-0" v-show="options.buttons.length > 0 || options.cancel">
         <v-spacer></v-spacer>
-        <v-btn v-if="options.cancel" color="grey" flat="flat" @click.native="cancel">
+        <v-btn v-if="options.cancel" color="grey" text @click.native="cancel">
           {{i18n("button_cancel")}}
         </v-btn>
         <v-btn v-for="(but, i) in options.buttons" :key="i" 
-          :color="but.color || 'grey'" flat="flat" 
+          :color="but.color || 'grey'" text 
           @click.native="clickButton(but)">
           {{but.title}}
         </v-btn>

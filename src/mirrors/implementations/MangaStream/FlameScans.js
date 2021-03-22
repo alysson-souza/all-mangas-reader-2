@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         mirrorIcon: "flamescans.png",
         domains: ["flamescans.org"],
         home: "https://flamescans.org",
-        chapter_url: /\/.*?chapter-[0-9]+\//g,
+        chapter_url: /\/.*?chapter-[0-9]+.*\//g,
         languages: "en",
         abstract: "MangastreamAbs",
         abstract_options: {

@@ -3,7 +3,7 @@ if (typeof registerMangaObject === 'function') {
         mirrorName: "Manganelo",
         mirrorIcon: "manganelo.png",
         languages: "en",
-        domains: ["manganelo.com", "chap.manganelo.com"],
+        domains: ["manganelo.com", "chap.manganelo.com", "m.manganelo.com"],
         home: "https://manganelo.com/",
         chapter_url: /^\/chapter\/.*\/.+$/g,
 
