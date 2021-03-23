@@ -88,25 +88,23 @@
       <v-card :color="backcolor()" class="white--text">
         <!-- Manga Title -->
         <v-card-title class="white--text amr-manga-title">
-          <div>
-            <h4>
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <a v-on="on" :href="mirrorDesc.home" v-if="mirrorDesc !== null" target="_blank">
-                    <!-- Mirror icon -->
-                    <img :src="mirrorDesc.mirrorIcon" ma-1 />
-                  </a>
-                </template>
-                <span>{{i18n("reader_click_go_mirror")}}</span>
+          <div class="text-h6">
+            <v-tooltip bottom v-if="mirrorDesc">
+              <template v-slot:activator="{ on }">
+                <a v-on="on" :href="mirrorDesc.home" target="_blank">
+                  <!-- Mirror icon -->
+                  <img :src="mirrorDesc.mirrorIcon" />
+                </a>
+              </template>
+              <span>{{i18n("reader_click_go_mirror")}}</span>
               </v-tooltip>
               <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
                   <!-- Manga name -->
                   <a v-on="on" :href="manga.currentMangaURL" target="_blank">{{ mangaInfos && mangaInfos.displayName ? mangaInfos.displayName : manga.name }}</a>
-                </template>
-                <span>{{i18n("reader_click_go_manga")}}</span>
-              </v-tooltip>
-            </h4>
+              </template>
+              <span>{{i18n("reader_click_go_manga")}}</span>
+            </v-tooltip>
           </div>
         </v-card-title>
         <!-- Chapters navigation -->
@@ -299,7 +297,7 @@
       <!-- Display options -->
       <v-card :color="backcolor(1)" class="white--text">
         <v-card-title>
-          <v-row  >
+          <v-row dense>
             <v-col cols="12">
               <!-- Display book checkbox -->
               <v-switch v-model="book" :label="i18n('option_read_book')" hide-details class="pb-1"></v-switch>
