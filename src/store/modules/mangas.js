@@ -490,8 +490,25 @@ const actions = {
         dispatch("setOption", {key: "lastChaptersUpdate", value: Date.now()});
 
         // refresh all mangas chapters lists
-        let refchaps = [];
-        let firstChapToUpdate = true
+        let mirrorTasks = {}
+        let delay = Math.max(rootState.options.waitbetweenupdates, 1) // Force at least 1 second interval
+
+        async function mgupdate(mg, delay) {
+            return new Promise(resolve => {
+                setTimeout(async () => {
+                    await dispatch("refreshLastChapters", mg).then(() => {
+                            dispatch('updateManga', mg); //save updated manga do not wait
+                            amrUpdater.refreshBadgeAndIcon();
+                        }).catch(e => {
+                            if (e !== ABSTRACT_MANGA_MSG) {
+                                console.error(e);
+                            }
+                        });
+                    resolve()
+                }, 1000 * delay)
+            })
+        }
+
         for (let mg of state.all) {
 
             // Don't refresh deleted manga
@@ -501,41 +518,24 @@ const actions = {
 
             // we update if it has been forced by the user (through option or timers page) or if we need to update
             if (force || utils.shouldCheckForUpdate(mg, rootState.options)) {
-                // we catch the reject from the promise to prevent the Promise.all to fail due to a rejected promise.
-                // Thanks to that, Promise.all will wait that each manga is refreshed, even if it does not work
-                const mgupdate = dispatch("refreshLastChapters", mg).then(() => {
-                    dispatch('updateManga', mg); //save updated manga do not wait
-                    amrUpdater.refreshBadgeAndIcon();
-                }).catch(e => {
-                    if (e !== ABSTRACT_MANGA_MSG) {
-                        console.error(e);
-                    }
-                });
-
-                if (rootState.options.waitbetweenupdates === 0) {
-                    if (rootState.options.savebandwidth === 1) {
-                        await mgupdate;
-                    } else {
-                        refchaps.push(mgupdate);
-                    }
-                } else {
-                    if (firstChapToUpdate) {
-                        await mgupdate;
-                        firstChapToUpdate = false
-                    } else {
-                        await new Promise(resolve => {
-                            setTimeout(async () => {
-                                await mgupdate;
-                                resolve()
-                            }, 1000 * rootState.options.waitbetweenupdates)
-                        })
-                    }
+                
+                if (!(mg.mirror in mirrorTasks)) {
+                    mirrorTasks[mg.mirror] = []
                 }
+                
+                mirrorTasks[mg.mirror].push(() => mgupdate(mg, delay))
             }
         }
-        if (rootState.options.savebandwidth !== 1) {
-            await Promise.all(refchaps); // wait for everything to be updated
-        }
+
+        let mirrorTasks2 = Object.values(mirrorTasks).map(list => {
+            return () => new Promise(async (resolve) => {
+                for (let seriesUpdate of list) {
+                    await seriesUpdate()
+                }
+            })
+        })
+
+        await Promise.all(mirrorTasks2.map(t => t()))
 
         if (rootState.options.refreshspin === 1) {
             //stop the spinning
