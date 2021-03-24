@@ -1,3 +1,32 @@
+### V2.3.9
+  New Features:
+    * Added option to filter manga list by mirror (Currently ignores category filters when this is used)
+
+  Fixes:
+    * The mirror icons are now working in the reader again
+    * Remove more css from sites, this was causing large images on some sites
+
+  Changes:
+    * The reader side menu has been condensed a little bit. Longer series names should no longer cause a scrollbar
+
+  Mirror Fixes: 
+    * LHTranslations (https://lhtranslation.net) (Courtesy of @Robo)
+    * Manhuaus (https://manhuaus.com/)
+    * Komikcast (https://komikcast.com/)
+    * Manganelo (https://manganelo.com/)
+
+  New Mirrors:
+    * Flame Scans (https://flamescans.org)
+    * Manga Fast (https://mangafast.net)
+    * Hiperdex (https://hiperdex.com/)
+    * Silent Sky Scans (https://reader.silentsky-scans.net)
+    * Lynx Scans (https://lynxscans.com/home)
+    * Immortal Updates (https://immortalupdates.com/)
+    * Manga Great (https://mangagreat.com/)
+    * Manga SY (https://www.mangasy.com/)
+    * MM Scans (https://mm-scans.com/)
+    * Tritinia Scans (https://tritinia.com/)
+
 ### V2.3.8
   New Features:
     * Added download feature for current chapter (Courtesy of @Robo)
