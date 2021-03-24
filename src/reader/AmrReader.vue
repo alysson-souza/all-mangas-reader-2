@@ -301,9 +301,21 @@
             <v-col cols="12">
               <!-- Display book checkbox -->
               <v-switch v-model="book" :label="i18n('option_read_book')" hide-details class="pb-1"></v-switch>
+              <span v-show="book">
+                <v-tooltip top>
+                  <template v-slot:activator="{ on }">
+                    <!-- Book offset button -->
+                    <v-btn block outlined v-on="on" @click="offsetBook" color="blue" v-show="displayBookOffsetButton">
+                      <v-icon left>mdi-book-open-page-variant</v-icon>
+                      {{i18n("reader_book_offset")}}
+                    </v-btn>
+                  </template>
+                  <span>{{i18n("reader_book_offset_description")}}</span>
+                </v-tooltip>
+              </span>
             </v-col>
             <!-- Reading direction -->
-            <v-col class="text-center" cols="12" v-show="book">
+            <v-col class="text-center" cols="12">
               <v-btn-toggle v-model="direction">
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
@@ -324,14 +336,6 @@
                   <span>{{i18n("option_read_book_rtl")}}</span>
                 </v-tooltip>
               </v-btn-toggle>
-              <v-tooltip top>
-                <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon @click="offsetBook" color="blue" v-show="displayBookOffsetButton" class="ma-0">
-                    <v-icon>mdi-book-open-page-variant</v-icon>
-                  </v-btn>
-                </template>
-                <span>{{i18n("reader_book_offset")}}</span>
-              </v-tooltip>
             </v-col>
             <v-col cols="12">
               <!-- Display full chapter checkbox -->
@@ -446,6 +450,7 @@
       <Reader ref="reader"
               :book="book" 
               :direction="direction" 
+              :invertKeys="invertKeys"
               :fullchapter="fullchapter" 
               :resize="resize"
               :drawer="drawer"
@@ -492,6 +497,7 @@
       mirrorDesc: null, /* Current mirror description */
 
       direction: 'ltr', /* Reading from left to right or right to left */
+      invertKeys: options.invertKeys === 1, /* Invert keys in right to left mode */
       book: true, /* Do we display side by side pages */
       resize: 'width', /* Mode of resize : width, height, container */
       fullchapter: true, /* Do we display whole chapter or just current page */

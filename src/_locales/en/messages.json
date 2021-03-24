@@ -1153,12 +1153,12 @@
     "description": "Option to display the chapter pages side by side as in a book if possible"
   },
   "option_read_book_ltr": {
-    "message": "Read side by side pages from left to right",
-    "description": "Button to choose option to read side by side pages from left to right"
+    "message": "Read from left to right",
+    "description": "Button to choose option to read from left to right"
   },
   "option_read_book_rtl": {
-    "message": "Read side by side pages from right to left",
-    "description": "Button to choose option to read side by side pages from right to left"
+    "message": "Read from right to left",
+    "description": "Button to choose option to read from right to left"
   },
   "option_read_fullchapter": {
     "message": "Display full chapter as a long strip (if not, display only current page)",
@@ -1307,6 +1307,10 @@
   "options_web_chapter_reading_direction_opt": {
     "message": "Reading direction",
     "description": "In the options page, label above options to choose reading direction"
+  },
+  "options_web_chapter_reading_direction_invert_keys_opt": {
+    "message": "Invert keys in Right to Left mode",
+    "description": "In the options page, label below options to choose reading direction, inverts keys if Right to Left mode is enabled"
   },
   "options_web_chapter_display_full_chapter_opt": {
     "message": "Display full chapter",
@@ -1632,6 +1636,10 @@
     "message": "Just a filler to separate new labels from old ones"
   },
   "reader_book_offset": {
+    "message": "Offset first page",
+    "description": "Offset first page button label"
+  },
+  "reader_book_offset_description": {
     "message": "This will offset the first page in book mode in case there is a title page present.",
     "description": "Message displayed on button if book mode is active"
   },

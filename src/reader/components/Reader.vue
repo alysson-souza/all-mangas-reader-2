@@ -113,6 +113,7 @@ export default {
     },
     props: {
         direction: String, /* Reading from left to right or right to left */
+        invertKeys: Boolean, /* Invert keys in right to left mode */
         book: Boolean, /* Do we display side by side pages */
         resize: String, /* Mode of resize : width, height, container */
         fullchapter: Boolean, /* Do we display whole chapter or just current page */
@@ -402,8 +403,17 @@ export default {
                 this.$scrollTo(this.$refs.page[index].$el, this.animationDuration)
             }
         },
-        /** Go to next scan */
+        /** Go to next scan respecting the invert keys option */
         goNextScan(doubletap = false, clicked = false) {
+            // If we are in Right to Left mode and the user set the option to also invert the keys, we invert the logic
+            if (this.direction === 'rtl' && this.invertKeys) {
+                return this.goPreviousScanImpl(doubletap, clicked);
+            }
+
+            return this.goNextScanImpl(doubletap, clicked);
+        },
+        /** Go to next scan */
+        goNextScanImpl(doubletap = false, clicked = false) {
             let cur = this.currentPage, n = cur
             if (cur + 1 < this.pages.length) n = cur + 1
 
@@ -440,8 +450,17 @@ export default {
                 }
             }
         },
-        /** Go to previous scan */
+        /** Go to previous scan respecting the invert keys option  */
         goPreviousScan(doubletap = false, clicked = false) {
+            // If we are in Right to Left mode and the user set the option to also invert the keys, we invert the logic
+            if (this.direction === 'rtl' && this.invertKeys) {
+                return this.goNextScanImpl(doubletap, clicked);
+            }
+
+            return this.goPreviousScanImpl(doubletap, clicked);
+        },
+        /** Go to previous scan */
+        goPreviousScanImpl(doubletap = false, clicked = false) {
             let cur = this.currentPage, n = cur
             if (cur - 1 >= 0) n = cur - 1
 
