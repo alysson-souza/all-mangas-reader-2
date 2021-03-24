@@ -181,7 +181,9 @@ export default {
             u: mg.url,
             l: mg.lastChapterReadURL
           };
-          if (mg.listChaps.find(ele => ele[1] == mg.lastChapterReadURL) > 0) res.cn = mg.listChaps.find(ele => ele[1] == mg.lastChapterReadURL)
+          try{
+            if (mg.listChaps.find(ele => ele[1] == mg.lastChapterReadURL) > 0) res.cn = mg.listChaps.find(ele => ele[1] == mg.lastChapterReadURL)
+          }catch(e){}
           if (mg.read !== 0) res.r = mg.read;
           if (mg.update !== 1) res.p = mg.update;
           if (mg.display !== 0) res.d = mg.display;
