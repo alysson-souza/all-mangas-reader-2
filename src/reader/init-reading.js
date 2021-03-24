@@ -131,6 +131,16 @@ function removeStyles() {
             }
         }
     }
+
+    let inline = document.getElementsByTagName('style')
+    for(i in inline) {
+        if (inline.hasOwnProperty(i)) {
+            sheet = inline[i];
+            if((sheet.getAttribute('type') && sheet.getAttribute('type').toLowerCase() == 'text/css')) {
+                sheet.parentNode.removeChild(sheet);
+            }
+        }
+    }
 }
 /** Load css in the page for AMR reader needs */
 function loadCss(file) {

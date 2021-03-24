@@ -3,11 +3,11 @@
     <!-- Categories and filters -->
     <v-row no-gutters>
       <!-- Categories -->
-      <v-col cols="12" md="auto">
+      <v-col cols="6" lg="9">
         <Categories :categories="categories" :static-cats="false" :delegate-delete="false" />
       </v-col>
       <!-- Filters -->
-      <v-col cols="6" md="auto" class="d-flex align-center justify-end filter-container">
+      <v-col cols="6" lg="3" class="d-flex align-center justify-end filter-container">
         <v-card v-if="visMangas.length" class="hover-card">
           <v-tooltip v-if="visNewMangas.length" top content-class="icon-ttip">
             <template v-slot:activator="{ on }">
@@ -55,11 +55,17 @@
             <span>{{i18n("list_select_action")}}</span>
           </v-tooltip>
           <v-tooltip top content-class="icon-ttip">
-              <template v-slot:activator="{ on }">
-                <v-icon v-on="on" @click="toggleFilter()" :class="['amr-filter', {activated: showFilter}]">mdi-magnify</v-icon>
-              </template>
-              <span>{{i18n("list_filter")}}</span>
-            </v-tooltip>
+            <template v-slot:activator="{ on }">
+              <v-icon v-on="on" @click="showFilter = !showFilter" :class="['amr-filter', {activated: showFilter}]">mdi-magnify</v-icon>
+            </template>
+            <span>{{i18n("list_filter")}}</span>
+          </v-tooltip>
+          <v-tooltip top content-class="icon-ttip">
+            <template v-slot:activator="{ on }">
+              <v-icon v-on="on" @click="showMirrorSelection = !showMirrorSelection" :class="['amr-filter', {activated: showMirrorSelection}]">mdi-image-multiple-outline</v-icon>
+            </template>
+            <span>{{i18n("list_mirror_filter_icon")}}</span>
+          </v-tooltip>
         </v-card>
       </v-col>
       <v-col cols="6" v-show="showFilter">
@@ -76,6 +82,10 @@
             clearable
             autofocus
           ></v-text-field>
+      </v-col>
+      <v-col cols="6" v-show="showMirrorSelection">
+        <!-- Search Field -->
+        <v-select v-model="mirrorSelection" :items="usedMirrors" dense :label="i18n('list_mirror_filter_label')"></v-select>
       </v-col>
       <v-col cols="12" md="6" v-if="selectedManga.length > 0">
         <MultiMangaAction :selected="selectedMangaExpanded" @clearSelected="clearSelected"/>
@@ -256,6 +266,7 @@ export default {
       sort: this.$store.state.options.sortOrder, // sort mode for list (az : alphabetical, updates : mangas with updates first)
       showDialog: false, // do show dialog to ask smthg
       showFilter: false, // Show the text search
+      showMirrorSelection: false, // Show mirror search selection
       dialogTitle: "", //title of opened dialog
       dialogText: "", // text of opened dialog
       renameDialog: false, // Show dialog for renaming manga
@@ -265,6 +276,7 @@ export default {
       selectable: false, // Toggle Manga List select behaviour
       dialogAction: () => {self.showDialog = false}, // action to take on yes in dialog
       searchText: "",
+      mirrorSelection: "All",
       selectedManga: [],
       pagination: {
         pageOptions: [
@@ -286,6 +298,16 @@ export default {
     },
     sort: function(newValue) {
       this.$store.dispatch("setOption", { key: 'sortOrder', value: newValue })
+    },
+    showFilter: function(newValue) {
+      if (!newValue) {
+        this.searchText = ""
+      }
+    },
+    showMirrorSelection: function(newValue) {
+      if (!newValue) {
+        this.mirrorSelection = "All"
+      }
     }
   },
   computed: {
@@ -301,16 +323,32 @@ export default {
      * Return all visible mangas
      */
     visMangas: function() {
+      if (this.mirrorSelection != 'All') {
+        return this.allMangas.filter(
+          mg => mg.mirror == this.mirrorSelection
+        )
+      }
       return this.allMangas.filter(
         mg => utils.displayFilterCats(mg, this.options.categoriesStates)
       )
+    },
+    /** 
+     * Returns a list of all mirrors that have series
+     */
+    usedMirrors: function() {
+      return this.allMangas.reduce((mirrors, manga) => {
+        let name = manga.mirror
+        if (!mirrors.includes(name)) {
+          mirrors.push(name)
+        }
+        return mirrors
+      }, ['All'])
     },
     /**
      * Return all visible mangas having new chapters to read
      */
     visNewMangas: function() {
-      return this.visMangas.filter(
-        mg => utils.hasNew(mg)        )
+      return this.visMangas.filter(mg => utils.hasNew(mg))
     },
     /**
      * Build mangas groups (by name)
@@ -439,13 +477,6 @@ export default {
     },
     clearSelected: function() {
       this.selectedManga = []
-    },
-    toggleFilter: function() {
-      this.showFilter = !this.showFilter
-
-      if (!this.showFilter) {
-        this.searchText = ''
-      }
     },
     moveNavigation: function() {
       let newDir = ''

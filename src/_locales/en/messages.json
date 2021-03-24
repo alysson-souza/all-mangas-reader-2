@@ -1794,5 +1794,13 @@
   "options_komga_password_label": {
     "message": "Password for your komga account",
     "description": "Option for komga password"
+  },
+  "list_mirror_filter_label": {
+    "message": "Select a mirror",
+    "description": "Mirror filter select label"
+  },
+  "list_mirror_filter_icon": {
+    "message": "Show from selected mirror only",
+    "description": "Mirror filter icon tooltip"
   }
 }

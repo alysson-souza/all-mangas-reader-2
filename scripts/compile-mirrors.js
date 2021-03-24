@@ -1,16 +1,20 @@
 const fs = require('fs')
+const fspromise = require('fs').promises
 const path = require('path')
 
 // @TODO should be replaced by webpack imports
 // Ensure all dirs are relative to current file
-const currentDir = path.dirname(fs.realpathSync(__filename));
-const mirrors = currentDir + '/mirrors/';
-const icons = currentDir + '/icons/';
-const implementationFilePath = currentDir + '/register_implementations.js';
+const baseDir = path.join(process.cwd(), 'src', 'mirrors')
+const mirrorDir = path.join(baseDir, 'implementations')
+const iconDir = path.join(baseDir, 'icons') + path.sep
+const implementationFilePath = baseDir + path.sep +  'register_implementations.js'
 
 let websites = []
 let deprecated = ["isMe", "removeBanners", "whereDoIWriteNavigation", "nextChapterUrl", "previousChapterUrl", "isImageInOneCol", "getMangaSelectFromPage", "whereDoIWriteScans", "doSomethingBeforeWritingScans", "doAfterMangaLoaded"]
 global.window = {}
+let index = 0
+let allMirrors = []
+let allAbstracts = []
 
 global.registerAbstractImplementation = function(mirrorName) {
     websites.push({
@@ -44,7 +48,7 @@ global.registerMangaObject = function(object) {
     if (!object.mirrorIcon) {
         console.error(mirrorName + " : mirrorIcon is required !")
     }
-    website.mirrorIcon = base64_encode(icons + object.mirrorIcon)
+    website.mirrorIcon = base64_encode(iconDir + object.mirrorIcon)
     
     if (object.abstract !== undefined) {
         website.abstract = object.abstract
@@ -98,32 +102,46 @@ function base64_encode(file) {
     return "data:image/png;base64," +  Buffer.from(bitmap).toString('base64')
 }
 
-console.info("Starting mirror build")
-fs.readdir(mirrors, async (err, files) => {
-    let cur = 0
-    let allMirrors = [], allAbstracts = []
-    //sort files using case insensitive sort
-    files.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
-    for (let file of files) {
-        require(mirrors + file)
-        cur++
+/**
+ * Builds list of all mirror implimentations, recursively
+ */
+async function getFiles(dir) {
+    const dirents = await fspromise.readdir(dir, { withFileTypes: true });
+    const files = await Promise.all(dirents.map((dirent) => {
+      const res = path.resolve(dir, dirent.name);
+      return dirent.isDirectory() ? getFiles(res) : res;
+    }));
+    return Array.prototype.concat(...files);
+}
+
+async function main() {
+    console.info("Starting mirror build")
+    /** Get list of all files */
+    let files = await getFiles(mirrorDir)
+
+    /** Sort files alphabetically without the path */
+    files.sort((a, b) => path.basename(a.toLowerCase()).localeCompare(path.basename(b.toLowerCase())))
+
+    await files.forEach(async file => {
+        require(file)
+        index++
         await new Promise((resolve, reject) => {
             (async function wait() {
-                if (cur === websites.length) {
-                    websites[websites.length - 1].jsFile = mirrors.substring(2) + file;
-                    websites[websites.length - 1].id = cur;
+                if (index === websites.length) {
+                    websites[websites.length - 1].jsFile = file.replace(mirrorDir, '');
+                    websites[websites.length - 1].id = index;
                     
                     let wsl = websites[websites.length - 1]
                     if (wsl.type === "abstract") {
                         let absInList = allAbstracts.find(({def}) => def.mirrorName === wsl.mirrorName)
                         if (absInList) {
                             absInList.def = wsl
-                            absInList.impl = await fs.readFileSync(mirrors + file)
+                            absInList.impl = fs.readFileSync(file)
                         } else {
-                            allAbstracts.push({def: wsl, impl: await fs.readFileSync(mirrors + file)})
+                            allAbstracts.push({def: wsl, impl: fs.readFileSync(file)})
                         }
                     } else {
-                        allMirrors.push({def: wsl, impl: await fs.readFileSync(mirrors + file)})
+                        allMirrors.push({def: wsl, impl: fs.readFileSync(file)})
                         if (wsl.abstract) {
                             let absInList = allAbstracts.find(({def}) => def.mirrorName === wsl.abstract)
                             if (absInList) {
@@ -137,11 +155,16 @@ fs.readdir(mirrors, async (err, files) => {
                     resolve()
                 } else setTimeout(wait, 10)
             })()
-        })
-    }
+        }) 
+    })
+
+    // console.log(allMirrors)
     writeWebsites(allAbstracts, allMirrors)
+    
     console.info("Mirror Rebuild Complete")
-})
-
-
-
+}
+(async () => {
+    main()
+})().catch(e => {
+    console.log(e)
+});

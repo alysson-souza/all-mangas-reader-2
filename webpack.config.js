@@ -96,7 +96,8 @@ const config = {
     }),
     new WebpackShellPluginNext({
       onBuildStart: {
-        scripts: ['node ./src/mirrors/update-ws.js && echo "Mirrors Rebuilt"'],
+        //scripts: ['node ./src/mirrors/update-ws.js && echo "Mirrors Rebuilt"'],
+        scripts: ['node ./scripts/compile-mirrors.js'],
         blocking: true
       },
       onBuildEnd: {
