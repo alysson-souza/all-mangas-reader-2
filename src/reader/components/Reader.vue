@@ -406,7 +406,7 @@ export default {
         /** Go to next scan respecting the invert keys option */
         goNextScan(doubletap = false, clicked = false) {
             // If we are in Right to Left mode and the user set the option to also invert the keys, we invert the logic
-            if (this.direction === 'rtl' && this.invertKeys) {
+            if (this.direction === 'rtl' && this.invertKeys && !this.fullchapter) {
                 return this.goPreviousScanImpl(doubletap, clicked);
             }
 
@@ -453,7 +453,7 @@ export default {
         /** Go to previous scan respecting the invert keys option  */
         goPreviousScan(doubletap = false, clicked = false) {
             // If we are in Right to Left mode and the user set the option to also invert the keys, we invert the logic
-            if (this.direction === 'rtl' && this.invertKeys) {
+            if (this.direction === 'rtl' && this.invertKeys && !this.fullchapter) {
                 return this.goNextScanImpl(doubletap, clicked);
             }
 
