@@ -6,6 +6,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ["www.komikgue.com","komikgue.com"],
         home: "http://www.komikgue.com",
         chapter_url: /^\/manga\/.*\/.+$/g,
+        disabled: true,
         
         abstract: "MyMangaReaderCMS",
         abstract_options: {

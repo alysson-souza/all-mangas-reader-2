@@ -7,6 +7,7 @@ if (typeof registerMangaObject === "function") {
         domains: ["mangachan.me"],
         home: "http://mangachan.me",
         chapter_url: /^\/online\/.+$/g,
+        disabled: true,
 
         getMangaList: async function (search) {
             let doc = await amr.loadPage("http://mangachan.me/engine/ajax/search.php",

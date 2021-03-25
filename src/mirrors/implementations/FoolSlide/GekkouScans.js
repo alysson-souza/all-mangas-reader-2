@@ -7,6 +7,7 @@ if (typeof registerMangaObject === 'function') {
         home: "http://leitor.mangascenter.com.br",
         chapter_url: /^\/read\/.+$/g,
         canListFullMangas: false, /* to avoid loading 8 pages to load all mangas */
+        disabled: true,
         
         abstract: "FoolSlide",
         abstract_options: {
