@@ -46,7 +46,7 @@
                 </v-col>
             </v-row>
             <div class="amr-thumbs-scrollable" ref="thumbs-scrollable" v-show="scansState.loaded" >
-              <v-tooltip top v-for="(scans, i) in thumbs(pages)" :key="i">
+              <v-tooltip top v-for="(scans, i) in thumbSorter(pages)" :key="i">
                 <template v-slot:activator="{ on }">
                     <table v-on="on" class="amr-pages-page-cont"  
                     :class="{current: scans.index === currentPage}" 
@@ -252,7 +252,10 @@ export default {
     },
     components: { Page },
     methods: {
-        thumbs: function(pages) {
+        /**
+         * Sorts the thumbnails respecting the Invert Keys option
+         */
+        thumbSorter: function(pages) {
             const res = new Array(pages.length);
 
             for (let i = 0; i < pages.length; i++) {
