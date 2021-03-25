@@ -7,6 +7,7 @@ if (typeof registerMangaObject === "function") {
 		domains: ["mangalib.me"],
 		home: "https://mangalib.me/",
 		chapter_url: /\/.*\/v[0-9]+\/c[0-9]+/g,
+		disabled: true,
 
 		getMangaList: async function (search) {
 			let json = await amr.loadJson(

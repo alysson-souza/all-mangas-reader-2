@@ -7,6 +7,7 @@ if (typeof registerMangaObject === "function") {
 		domains: ["mintmanga.com"],
 		home: "http://mintmanga.com/",
 		chapter_url: /^\/.*\/vol.*\/[0-9]+.+$/g,
+		disabled: true,
 
 		getMangaList: async function (search) {
 			let json = await amr.loadJson(
