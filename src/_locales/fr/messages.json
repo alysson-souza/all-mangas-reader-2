@@ -1797,5 +1797,29 @@
   "options_komga_password_label": {
     "message": "Mot de passe de votre compte komga",
     "description": "Option for komga password"
+  },
+  "list_mirror_filter_label": {
+    "message": "Sélectionnez un miroir",
+    "description": "Mirror filter select label"
+  },
+  "list_mirror_filter_icon": {
+    "message": "Afficher uniquement à partir du miroir sélectionné",
+    "description": "Mirror filter icon tooltip"
+  },
+  "button_multi_manga_open_latest": {
+    "message": "Lire le dernier chapitre",
+    "description": "Read latest chapter for multi select button"
+  },
+  "button_multi_manga_open_new": {
+    "message": "Lire le prochain chapitre non lu",
+    "description": "Read next unread chapter for multi select button"
+  },
+  "button_multi_manga_select_all": {
+    "message": "Tout sélectionner",
+    "description": "Multi select, select all button"
+  },
+  "button_multi_manga_select_unread": {
+    "message": "Tout sélectionner avec des chapitres non lus",
+    "description": "multi select, select all with unread button"
   }
 }
