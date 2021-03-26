@@ -35,7 +35,6 @@ if (typeof registerMangaObject === "function") {
                 .each(function() {
                     res[res.length] = [$("h6", this).text(), "https://martialscans.com" + $(this).attr("href")];
                 });
-            res.reverse();
 
             return res;
         },
