@@ -8,10 +8,7 @@ import * as utils from "../../amr/utils";
 import samples from "../../amr/samples";
 import amrUpdater from '../../amr/amr-updater';
 import iconHelper from '../../amr/icon-helper';
-import { createSync } from '../../amr/sync/sync-manager'
 import * as syncUtils from '../../amr/sync/utils';
-
-const syncManager = createSync();
 
 // @TODO replace with actual error
 // actually have specific meaning, does not get saved to db
@@ -628,10 +625,6 @@ const actions = {
         if (mg !== undefined) {
             commit('deleteManga', message.key);
             storedb.deleteManga(message.key);
-
-            if (rootState.options.syncEnabled) {
-                syncManager.deleteManga(message.key);
-            }
         }
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();

@@ -7,7 +7,7 @@ import amrInit from '../amr/amr-init';
 import browser from "webextension-polyfill";
 import HandleManga from './handle-manga';
 import mirrorsHelper from '../amr/mirrors-helper';
-import { getSyncSchedule } from '../amr/sync/sync-schedule'
+import { getSyncManager } from '../amr/sync/sync-manager'
 
 // Blue icon while loading
 IconHelper.setBlueIcon();
@@ -18,7 +18,7 @@ IconHelper.setBlueIcon();
      * Make the store a global variable so we can avoid circular depandancies
      */
     window['AMR_STORE'] = store
-    
+
     /**
      * Initialize AMR options from locaStorage
      */
@@ -45,12 +45,23 @@ IconHelper.setBlueIcon();
     /**
      * Start sync process between local and remote storage
      */
-    const syncSchedule = getSyncSchedule({
-        syncEnabled: store.state.options.syncEnabled
-    });
-    // Need to complete sync before we refresh chapters to clean up deleted entries
-    await syncSchedule.start()
 
+    // Filtering all *sync* options
+    const SyncOptions = Object.keys(store.state.options)
+        .filter(x=>x.toLowerCase().indexOf('sync') > -1)
+        .reduce((obj, key) => {
+            obj[key] = store.state.options[key]
+            return obj
+        }, {})
+    const syncManager = getSyncManager(SyncOptions, window['AMR_STORE']);
+    // Need to complete sync before we refresh chapters to clean up deleted entries
+    await syncManager.start()
+
+    store.subscribe((mutation) => {
+        if (mutation.type === 'deleteManga') {
+            syncManager.deleteManga(mutation.payload)
+        }
+    })
     /**
      * Initialize bookmarks list in store from DB
      */

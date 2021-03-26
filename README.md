@@ -107,6 +107,17 @@ As a temporary solution, the `manifest.json` file in src directly can be modifie
 
 Right fields can be copied from `dist/manifest.json` to `src/manifest.json` after running `yarn manifest:specify` command`
 
+#### Synchronisation with Gist (Github)
+
+1. Create or Login into your Github account
+2. Go to [Settings > Dev settings > Personal access tokens](https://github.com/settings/tokens)
+3. Create a token with `gist` scope checked
+4. Save token
+5. Go to [Gist](https://gist.github.com/)
+6. Create a new Gist with random filename and content **do not use amr.json as a filename**
+7. Get the Gist ID from the URL : `https://gist.github.com/{username}/{gist_id}`
+8. Open AMR and enable Gist Sync under `settings > general > Synchronize using Gist from github checkbox`
+9. Enter your token and Gist ID
 
 ### Firefox for Android
 To test the extension while developing on Firefox for Android, install Firefox on your computer and adb, follow the steps in the [Set up your computer and Android emulator or device](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Developing_WebExtensions_for_Firefox_for_Android) to configure your debugging environment
