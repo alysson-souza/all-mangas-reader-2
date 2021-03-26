@@ -231,7 +231,12 @@
 
           <v-checkbox v-model="syncEnabled" @change="setOption('syncEnabled')"
                       :label="i18n('options_sync_checkbox')"></v-checkbox>
-
+          <v-checkbox v-model="gistSyncEnabled" @change="setOption('gistSyncEnabled')"
+                      :label="i18n('options_sync_gist')"></v-checkbox>
+          <v-text-field v-if="gistSyncEnabled" v-model="gistSyncSecret" @change="setOption('gistSyncSecret')"
+                      :label="i18n('option_sync_gist_secret')"></v-text-field>
+          <v-text-field v-if="gistSyncEnabled" v-model="gistSyncGitID" @change="setOption('gistSyncGitID')"
+                      :label="i18n('option_sync_gist_gitID')"></v-text-field>
           <!-- Synchronization -->
           <div class="headline">{{ i18n("options_search_title") }}</div>
           <div class="subtitle">{{i18n('options_search_open_series_desc')}}</div>
@@ -409,7 +414,7 @@ import amrUpdater from "../../amr/amr-updater";
 import Flag from "./Flag";
 import * as amrutils from "../../amr/utils";
 import * as utils from "../utils";
-import { getSyncSchedule } from '../../amr/sync/sync-schedule'
+import { getSyncSchedule } from '../../amr/sync/sync-manager'
 import { THINSCAN } from '../../amr/options';
 
 /**
@@ -445,6 +450,7 @@ const converters = {
       "displayFullChapter",
       "darkreader",
       "syncEnabled",
+      "gistSyncEnabled",
       "searchOpenSeries",
       "mangadexDataSaver",
       "webtoonDefault",
@@ -672,10 +678,13 @@ export default {
       if (optstr === "deactivateunreadable" && val === 1) { // deactivate all unreadable mirrors if option is checked
           this.deactivateUnreadable();
       }
-
-      if (optstr === "syncEnabled") {
-          this.updateSync(val);
+      // retrieve Sync options, must follow current naming convention : providerSyncEnabled
+      if (optstr.toLowerCase().includes('syncenabled')) {
+        this.updateSync(optstr, val)
+      } else if(optstr.toLowerCase().includes('sync')) {
+        this.updateStorageConf(optstr, val)
       }
+
     },
 
     addArrayEntry(optstr) {
@@ -703,8 +712,11 @@ export default {
             }
         })
     },
-    async updateSync(value) {
-        await browser.runtime.sendMessage({ action: "sync_update", value });
+    async updateSync(key, value) {
+        await browser.runtime.sendMessage({ action: "sync_update", key, value });
+    },
+    async updateStorageConf(key, value) {
+      await browser.runtime.sendMessage({ action: 'sync_config_update', key, value })
     },
     /**
      * Determine if a mirror is displayed depending on the language filter

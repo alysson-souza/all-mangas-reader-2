@@ -1579,7 +1579,18 @@
     "message": "Enable browser sync",
     "description": "browser sync between different devices"
   },
-
+  "options_sync_gist" : {
+    "message": "Activer la synchronisation avec Gist",
+    "description": "Synchroniser les données avec Gist"
+  },
+  "option_sync_gist_secret" : {
+    "message": "Personal access token",
+    "description": "token"
+  },
+  "option_sync_gist_gitID" : {
+    "message": "ID du Gist",
+    "description": "Identifiant unique du gist"
+  },
   "__V2_1_1__": {
     "message": "Just a filler to separate new labels from old ones"
   },
