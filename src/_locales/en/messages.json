@@ -1802,5 +1802,21 @@
   "list_mirror_filter_icon": {
     "message": "Show from selected mirror only",
     "description": "Mirror filter icon tooltip"
+  },
+  "button_multi_manga_open_latest": {
+    "message": "Read Latest Chapter",
+    "description": "Read latest chapter for multi select button"
+  },
+  "button_multi_manga_open_new": {
+    "message": "Read Next Unread Chapter",
+    "description": "Read next unread chapter for multi select button"
+  },
+  "button_multi_manga_select_all": {
+    "message": "Select all",
+    "description": "Multi select, select all button"
+  },
+  "button_multi_manga_select_unread": {
+    "message": "Select all with unread chapters",
+    "description": "multi select, select all with unread button"
   }
 }

@@ -4,13 +4,13 @@ if (typeof registerMangaObject === "function") {
 		canListFullMangas: false,
 		mirrorIcon: "readmanga.png",
 		languages: "ru",
-		domains: ["readmanga.me"],
-		home: "http://readmanga.me/",
+		domains: ["readmanga.me", "readmanga.live"],
+		home: "http://readmanga.live",
 		chapter_url: /^\/.*\/vol.*\/[0-9]+.+$/g,
 
 		getMangaList: async function (search) {
 			let json = await amr.loadJson(
-				"http://readmanga.me/search/suggestion", 
+				this.home + "/search/suggestion", 
 				{
 					nocache: true,
 					preventimages: true,
@@ -22,7 +22,7 @@ if (typeof registerMangaObject === "function") {
 			let res = [];
 			for (let sug of json.suggestions) {
 				if (!sug.link.includes("/", 1)) {
-					res[res.length] = [sug.value, "http://readmanga.me" + sug.link]
+					res[res.length] = [sug.value, this.home + sug.link]
 				}
 			}
 			return res
@@ -32,13 +32,15 @@ if (typeof registerMangaObject === "function") {
 			let doc = await amr.loadPage(urlManga + "?mtr=1", { nocache: true, preventimages: true })
 			let res = []
 			var mng_nm = (urlManga.split("/")).pop();
+			let self = this
+
 			$("div.expandable td > a", doc).each(function (index) {
 				var str = $(this).attr("href");
 				str = str.split("/")[1];
 				if (str === mng_nm) {
 					res[res.length] = [
 						this.innerText.match(/\u000a\s+(.*)/g)[1].trim(),
-						"http://readmanga.me" + $(this).attr("href")
+						self.home + $(this).attr("href")
 					];
 				}
 			})
@@ -53,7 +55,7 @@ if (typeof registerMangaObject === "function") {
 		},
 		getInformationsFromCurrentPage: async function (doc, curUrl) {
 			var name = $($("#mangaBox h1 a:first-child", doc).contents()[0]).text();
-			var nameurl = "http://readmanga.me" + $("#mangaBox h1 a:first-child", doc).attr("href");
+			var nameurl = this.home + $("#mangaBox h1 a:first-child", doc).attr("href");
 			var chapurl = curUrl.split("?")[0] + "?mtr=1";
 			return {
 				"name": name,
