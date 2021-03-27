@@ -1,9 +1,12 @@
 <template>
     <v-tooltip top class='flag-container'>
         <template v-slot:activator="{ on }">
-            <i v-on="on" :class='"flag flag-" + value + (big ? " big" : "")' @click="$emit('toggleLanguageSelection')" />
+            <i
+            v-on="on"
+            :class='"flag flag-" + (Array.isArray(value) ? value[0] : value) + (big ? " big" : "") + ((Array.isArray(value) ? value[1] : value) ? "" : " flag-disabled")'
+            @click="$emit('toggleLanguageSelection')" />
         </template>
-        <span>{{i18n("language_" + value)}}</span>
+        <span>{{i18n("language_" +  (Array.isArray(value) ? value[0] : value))}}</span>
     </v-tooltip>
 </template>
 

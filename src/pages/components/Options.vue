@@ -252,10 +252,10 @@
           <Flag 
               v-for="lang in alllangs" 
               :key="lang.flag" 
-              :value="lang.flag" 
-              @click.native="clickReadLanguage(lang.languages)"
+              :value="[lang.flag, isReadable(lang.flag)]"
+              v-on:toggleLanguageSelection="clickReadLanguage(lang.languages)"
               big
-              :class="'flag-list ' + (isReadable(lang.flag) ? '' : 'flag-disabled')" />
+              class="flag-list" />
           <!-- Deactivate unreadable websites-->
           <div class="subtitle">{{i18n('options_sup_deactivate_unreadable_desc')}}</div>
           <v-checkbox v-model="deactivateunreadable" @change="setOption('deactivateunreadable')"
@@ -414,7 +414,6 @@ import amrUpdater from "../../amr/amr-updater";
 import Flag from "./Flag";
 import * as amrutils from "../../amr/utils";
 import * as utils from "../utils";
-import { getSyncSchedule } from '../../amr/sync/sync-manager'
 import { THINSCAN } from '../../amr/options';
 
 /**
