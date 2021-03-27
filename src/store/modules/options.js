@@ -68,7 +68,9 @@ const default_options = {
     
     /** Sync options */
     syncEnabled: 0,
-
+    gistSyncEnabled: 0,
+    gistSyncSecret: "",
+    gistSyncGitID: "",
     /** Search Options */
     searchOpenSeries: 0,
 
@@ -117,7 +119,7 @@ const default_options = {
 
 const jsonOptions = ["categoriesStates", "readlanguages"];
 const stringOptions = ["colornew", "colorread", "colornotfollow", "mangadexBlockedGroups", "mangadexPreferredGroups", "mangadexImageServer", "pageNavigationPosition",
-    "sortOrder", "komgaUrl", "komgaUser", "komgaPassword"];
+    "sortOrder", "komgaUrl", "komgaUser", "komgaPassword", "gistSyncSecret", "gistSyncGitID"];
 
 /**
  *  initial state of amr options
