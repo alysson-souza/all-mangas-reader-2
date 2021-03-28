@@ -246,13 +246,16 @@ export function getUnifiedLang(lang) {
 }
 
 export function readLanguage(manga) {
-    if (manga.language !== undefined) return getUnifiedLang(manga.language)
-    let langs = window['AMR_STORE'].state.mirrors.all.find(mir => mir.mirrorName === manga.mirror).languages
-    if (langs.split(",").length > 1) {
-        return "aa" // code for multiple languages possible
-    } else {
-        return getUnifiedLang(langs)
+    if (manga.language !== undefined) {
+        return getUnifiedLang(manga.language)
     }
+
+    const mirror = window['AMR_STORE'].state.mirrors.all.find(mir => mir.mirrorName === manga.mirror);
+    if (!mirror) {
+        return undefined;
+    }
+
+    return mirror.languages.split(",").length > 1 ? "aa" : getUnifiedLang(mirror.languages);
 }
 
 export function arrayToObject(array, keyField) {
