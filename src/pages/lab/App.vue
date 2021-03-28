@@ -10,87 +10,91 @@
 		</v-toolbar>
 		<v-main>
       <v-container fluid>
-        <div class="headline">Select the mirror to test : </div>
-        <v-row >
-          <v-col cols="6">
-            <v-row >
-              <v-col cols="3">
-                <v-subheader>Mirrors : </v-subheader>
-              </v-col>
-              <v-col cols="9">
-                <v-select v-model="current" :items="mirrors" item-value="mirrorName" item-text="mirrorName" :menu-props="{auto: true}"></v-select>
-              </v-col>
-            </v-row>
-          </v-col>
-          <v-col cols="6">
-            <v-row>
-              <v-col cols="4">
-                <v-subheader>Search field : </v-subheader>
-              </v-col>
-              <v-col cols="8">
-                <v-text-field v-model="search"></v-text-field>
-              </v-col>
-            </v-row>
-          </v-col>
-        </v-row>
-        <v-row >
-          <v-col cols="12">
-            <v-btn  
-                :loading="loadingTests" 
-                :disabled="loadingTests" 
-                color="primary" 
-                @click="loadCourse()">Load tests</v-btn>
-          </v-col>
-        </v-row>
-        <v-row  v-if="testsResults.length > 0" class="mt-4">
-          <v-col cols="3">
-            <div class="headline">
-                Course of tests
-            </div>
-          </v-col>
-          <v-col cols="9">
-            Test {{ currentTest + 1 }} / {{ nbtests }} ({{ nbfailed }} failed)
-            <v-progress-linear :value="(currentTest + 1) / nbtests * 100" :color="nbfailed > 0 ? 'red' : 'green'"></v-progress-linear>
-          </v-col>
-        </v-row>
-        <!-- Display tests -->
-        <!-- <v-row  v-if="currentTest >= 0 && index <= currentTest && testsResults.length >= index" v-for="(test, index) in tests" :key="index" :class="'ma-4 pa-4 elevation-1 lighten-5 ' + (testsResults[index] && testsResults[index].passed ? 'green' : 'red')"> -->
-        <v-row  v-for="(test, index) in finishedTests" :key="index" :class="'ma-4 pa-4 elevation-1 rounded-xl darken-1 ' + (testsResults[index] && testsResults[index].passed ? 'brown' : 'danger')">
-          <v-col cols="3">
-            <v-icon v-if="testsResults[index] && testsResults[index].passed" color="green" class="test-icon">mdi-check</v-icon>
-            <v-icon v-else-if="testsResults[index]" color="red" class="test-icon">mdi-alert-circle</v-icon>
-            <v-progress-circular v-else indeterminate color="green" class="test-icon"></v-progress-circular>
-            <span><strong>Test {{test.name}}</strong></span>
-          </v-col>
-          <v-col cols="6" v-if="testsResults[index]">
-            <div v-for="(res, index) in testsResults[index].results" :key="index">
-              <span v-html="res"></span>
-            </div>
-            <div v-if="testsResults[index].output.length > 0" :class="(testsResults[index] && testsResults[index].passed ? 'brown' : 'danger') + ' darken-4 ma-2 pa-2 elevation-1'">
-              <!-- display generated oututs during test -->
-              <div v-for="(out, ind) in testsResults[index].output" :key="ind">
-                <!-- name, value, display -->
-                {{out.name}} : 
-                <v-select v-if="out.display === 'select'" :items="out.value" v-model="out.currentValue" class="list-results"></v-select>
-                <div v-if="out.display === 'select'">Selected value : <i>{{ out.currentValue }}</i></div>
-                <span v-if="out.display === 'object'">{{JSON.stringify(out.value, null, 4)}}</span>
-                <span v-if="out.display === 'text'">{{out.value}}</span>
-                <div v-if="out.display === 'image'" :ref='out.name' class="dom-elt">
-                  <img :src="out.value" />
-                </div>
-                <div v-if="out.buttons && out.buttons.length > 0">
-                  <div v-for="(but, indd) in out.buttons" :key="indd" class="result-button">
-                    <v-btn v-if="but === 'gotourl'" @click="goToUrl(out.currentValue)" small>Go to url</v-btn>
-                    <v-btn v-if="but === 'reloadtestforvalue'" @click="reloadNextWith(out.name, out.currentValue)" small>Reload following tests with the selected value</v-btn>
+        <v-form ref="form" @submit.prevent="loadCourse" id="mirrorTests">
+          <div class="headline">Select the mirror to test : </div>
+          <v-row >
+            <v-col cols="6">
+              <v-row >
+                <v-col cols="3">
+                  <v-subheader>Mirrors : </v-subheader>
+                </v-col>
+                <v-col cols="9">
+                  <v-select v-model="current" :items="mirrors" item-value="mirrorName" item-text="mirrorName" :menu-props="{auto: true}" :rules="mirrorRules" required></v-select>
+                </v-col>
+              </v-row>
+            </v-col>
+            <v-col cols="6">
+              <v-row>
+                <v-col cols="4">
+                  <v-subheader>Search field : </v-subheader>
+                </v-col>
+                <v-col cols="8">
+                  <v-text-field v-model="search" :rules="searchRules" required></v-text-field>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+          <v-row >
+            <v-col cols="12">
+              <v-btn  
+                  :loading="loadingTests" 
+                  :disabled="loadingTests" 
+                  color="primary"
+                  type="submit"
+                  form="mirrorTests"
+                  @click="loadCourse()">Load tests</v-btn>
+            </v-col>
+          </v-row>
+          <v-row  v-if="testsResults.length > 0" class="mt-4">
+            <v-col cols="3">
+              <div class="headline">
+                  Course of tests
+              </div>
+            </v-col>
+            <v-col cols="9">
+              Test {{ currentTest + 1 }} / {{ nbtests }} ({{ nbfailed }} failed)
+              <v-progress-linear :value="(currentTest + 1) / nbtests * 100" :color="nbfailed > 0 ? 'red' : 'green'"></v-progress-linear>
+            </v-col>
+          </v-row>
+          <!-- Display tests -->
+          <!-- <v-row  v-if="currentTest >= 0 && index <= currentTest && testsResults.length >= index" v-for="(test, index) in tests" :key="index" :class="'ma-4 pa-4 elevation-1 lighten-5 ' + (testsResults[index] && testsResults[index].passed ? 'green' : 'red')"> -->
+          <v-row  v-for="(test, index) in finishedTests" :key="index" :class="'ma-4 pa-4 elevation-1 rounded-xl darken-1 ' + (testsResults[index] && testsResults[index].passed ? 'brown' : 'danger')">
+            <v-col cols="3">
+              <v-icon v-if="testsResults[index] && testsResults[index].passed" color="green" class="test-icon">mdi-check</v-icon>
+              <v-icon v-else-if="testsResults[index]" color="red" class="test-icon">mdi-alert-circle</v-icon>
+              <v-progress-circular v-else indeterminate color="green" class="test-icon"></v-progress-circular>
+              <span><strong>Test {{test.name}}</strong></span>
+            </v-col>
+            <v-col cols="6" v-if="testsResults[index]">
+              <div v-for="(res, index) in testsResults[index].results" :key="index">
+                <span v-html="res"></span>
+              </div>
+              <div v-if="testsResults[index].output.length > 0" :class="(testsResults[index] && testsResults[index].passed ? 'brown' : 'danger') + ' darken-4 ma-2 pa-2 elevation-1'">
+                <!-- display generated oututs during test -->
+                <div v-for="(out, ind) in testsResults[index].output" :key="ind">
+                  <!-- name, value, display -->
+                  {{out.name}} : 
+                  <v-select v-if="out.display === 'select'" :items="out.value" v-model="out.currentValue" class="list-results"></v-select>
+                  <div v-if="out.display === 'select'">Selected value : <i>{{ out.currentValue }}</i></div>
+                  <span v-if="out.display === 'object'">{{JSON.stringify(out.value, null, 4)}}</span>
+                  <span v-if="out.display === 'text'">{{out.value}}</span>
+                  <div v-if="out.display === 'image'" :ref='out.name' class="dom-elt">
+                    <img :src="out.value" />
+                  </div>
+                  <div v-if="out.buttons && out.buttons.length > 0">
+                    <div v-for="(but, indd) in out.buttons" :key="indd" class="result-button">
+                      <v-btn v-if="but === 'gotourl'" @click="goToUrl(out.currentValue)" small>Go to url</v-btn>
+                      <v-btn v-if="but === 'reloadtestforvalue'" @click="reloadNextWith(out.name, out.currentValue)" small>Reload following tests with the selected value</v-btn>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </v-col>
-          <v-col cols="3" v-if="testsResults[index]">
-            <span v-html="test.comment"></span>
-          </v-col>
-        </v-row>
+            </v-col>
+            <v-col cols="3" v-if="testsResults[index]">
+              <span v-html="test.comment"></span>
+            </v-col>
+          </v-row>
+        </v-form>
       </v-container>
 		</v-main>
 		<v-dialog
@@ -133,7 +137,13 @@ export default {
       currentTest: -1, //current test, display all tests before, 
       forcedValues: {}, // values selected manually to test
       outputs: {}, // values retrieved while testing
-      curtest: 0 // current test id
+      curtest: 0, // current test id
+      mirrorRules: [
+        v => !!v || 'Select a mirror.'
+      ],
+      searchRules: [
+        v => !!v || 'Enter a search term.'
+      ]
     };
   },
   computed: {
@@ -165,6 +175,10 @@ export default {
       key: "all",
       mutation: "setMirrors"
     });
+
+    const params = new URLSearchParams(window.location.search);
+    this.search = params.get('search');
+    this.current = params.get('mirror');
   },
   methods: {
     /**
@@ -176,8 +190,17 @@ export default {
       this.loadingMirrors = false;
     },
     loadCourse() {
-        this.curtest++;
-        this.loadTests();
+      if (!this.$refs.form.validate()) {
+        return;
+      }
+
+      const params = new URLSearchParams(window.location.search);
+      params.set('search', this.search);
+      params.set('mirror', this.current);
+      window.history.replaceState({}, '', `${location.pathname}?${params}`);
+
+      this.curtest++;
+      this.loadTests();
     },
     /**
      * Runs the test course
