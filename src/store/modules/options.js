@@ -71,8 +71,10 @@ const default_options = {
     gistSyncEnabled: 0,
     gistSyncSecret: "",
     gistSyncGitID: "",
+
     /** Search Options */
     searchOpenSeries: 0,
+    
 
     /** Language options */
     readlanguages: ["en", "gb"], // default language is english. On install, the user language is added to this list
@@ -103,6 +105,7 @@ const default_options = {
     pageNavigationPosition: 'top', // Should the page navigation/settings bar be up top or on bottom
     alternateColors: 0, // This applies a alternating color scheme to the manga list
     sortOrder: 'updates', // Order to sort manga list
+    alpha_asc_desc: false, // Order by name asending/descending
 
     /** Mangadex specific options */
     mangadexBlockedGroups: '', // Group id's to block chapters from

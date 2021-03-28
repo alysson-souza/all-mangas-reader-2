@@ -48,6 +48,13 @@
             </template>
             <span>{{i18n("list_sort_upts")}}</span>
           </v-tooltip>
+          <!-- ascending/decending toggle -->
+          <v-tooltip top content-class="icon-ttip">
+            <template v-slot:activator="{ on }">
+              <v-icon v-on="on" @click="alpha_asc_desc = !alpha_asc_desc" :class="['amr-filter', {activated: alpha_asc_desc}]">mdi-swap-vertical</v-icon>
+            </template>
+            <span>{{i18n("list_asc_desc")}}</span>
+          </v-tooltip>
           <v-tooltip top content-class="icon-ttip">
             <template v-slot:activator="{ on }">
               <v-icon v-on="on" @click="selectable = !selectable" :class="['amr-filter', {activated: selectable}]">mdi-order-bool-ascending-variant</v-icon>
@@ -286,7 +293,8 @@ export default {
         pageCount: 0
       },
       itemsPerPage: this.$store.state.options.perPageMangas,
-      pageNavigationPosition: this.$store.state.options.pageNavigationPosition
+      pageNavigationPosition: this.$store.state.options.pageNavigationPosition,
+      alpha_asc_desc: this.$store.state.options.alpha_asc_desc, // Toggle Manga List select behaviour
     };
   },
   watch: {
@@ -311,6 +319,9 @@ export default {
         this.$eventBus.$emit('multi-manga:show-multiselect')
       else
         this.$eventBus.$emit('multi-manga:hide-multiselect')
+    },
+    asc_desc: function(newValue) {
+      this.$store.dispatch("setOption", { key: 'asc_desc', value: newValue })
     }
   },
   computed: {
@@ -473,7 +484,9 @@ export default {
           return ((na || nb) ? sort_chapters_upts(a, b) : ha && hb ? num_chapters_to_read_sort(a, b) : ha === hb ? default_sort(a, b) : (ha && !hb ? -1 : 1 ) );
         }
       }
-      return items.sort(cmp);
+      return items.sort(function(a, b) {
+        return AMR_STORE.getters.options.alpha_asc_desc ? cmp(b,a): cmp(a,b)
+      })
     },
     moveNavigation: function() {
       let newDir = ''

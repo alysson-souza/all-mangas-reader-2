@@ -1832,5 +1832,12 @@
   "button_multi_manga_select_unread": {
     "message": "Tout sélectionner avec des chapitres non lus",
     "description": "multi select, select all with unread button"
+  },
+  "__V2_3_10": {
+    "message": "Just a filler to separate new labels from old ones"
+  },
+  "list_asc_desc": {
+    "message": "trier par ordre croissant / décroissant",
+    "description": "Tooltip for ascending/descending option"
   }
 }
