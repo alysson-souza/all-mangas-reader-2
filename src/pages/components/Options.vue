@@ -16,319 +16,351 @@
       </v-tab>
     </v-tabs>
     <v-tabs-items v-model="tabs" class="elevation-1">
-      <v-tab-item value="onwebsites" v-if="tabs === 'onwebsites'">
-        <v-container fluid>
-          <!-- Display options -->
-          <div class="headline">{{ i18n("options_web_chapter_display_mode") }}</div>
-          <div class="subtitle mb-3">{{i18n('options_web_chapter_desc')}}</div>
-              
-          <!-- Display as a book option -->
-          <div class="subtitle">{{i18n('option_read_book')}}</div>
-          <v-checkbox v-model="displayBook" @change="setOption('displayBook')" 
-                  :label="i18n('options_web_chapter_display_book_opt')"></v-checkbox>
-          <!-- Reading direction -->
-          <div v-if="displayBook">
-            <div class="subtitle">{{ i18n("options_web_chapter_reading_direction_opt") }}</div>
-            <v-radio-group v-model="readingDirection" @change="setOption('readingDirection')" column>
-              <v-radio :label="i18n('option_read_book_ltr')" :value="0" ></v-radio>
-              <v-radio :label="i18n('option_read_book_rtl')" :value="1"></v-radio>
-            </v-radio-group>
-          </div>
+      <v-tab-item value="onwebsites" v-if="tabs === 'onwebsites'" transition="false">
+        <v-expansion-panels accordion>
+          <v-expansion-panel>
+            <v-expansion-panel-header><div class="headline">{{ i18n("options_web_chapter_display_mode") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <!-- Display options -->
+              <div class="subtitle mb-3">{{i18n('options_web_chapter_desc')}}</div>
+                  
+              <!-- Display as a book option -->
+              <div class="subtitle">{{i18n('option_read_book')}}</div>
+              <v-checkbox v-model="displayBook" @change="setOption('displayBook')" 
+                      :label="i18n('options_web_chapter_display_book_opt')"></v-checkbox>
+              <!-- Reading direction -->
+              <div v-if="displayBook">
+                <div class="subtitle">{{ i18n("options_web_chapter_reading_direction_opt") }}</div>
+                <v-radio-group v-model="readingDirection" @change="setOption('readingDirection')" column>
+                  <v-radio :label="i18n('option_read_book_ltr')" :value="0" ></v-radio>
+                  <v-radio :label="i18n('option_read_book_rtl')" :value="1"></v-radio>
+                </v-radio-group>
+              </div>
 
-          <!-- Display full chapter option -->
-          <div class="subtitle">{{i18n('option_read_fullchapter')}}</div>
-          <v-checkbox v-model="displayFullChapter" @change="setOption('displayFullChapter')"
-                  :label="i18n('options_web_chapter_display_full_chapter_opt')"></v-checkbox>
+              <!-- Display full chapter option -->
+              <div class="subtitle">{{i18n('option_read_fullchapter')}}</div>
+              <v-checkbox v-model="displayFullChapter" @change="setOption('displayFullChapter')"
+                      :label="i18n('options_web_chapter_display_full_chapter_opt')"></v-checkbox>
           
-          <!-- Scaling mode -->
-          <div class="subtitle">{{ i18n("options_web_chapter_resize_mode_opt") }}</div>
-          <v-radio-group v-model="resizeMode" @change="setOption('resizeMode')" column>
-            <v-radio :label="i18n('option_read_resize_w')" :value="0" ></v-radio>
-            <v-radio :label="i18n('option_read_resize_h')" :value="1" v-show="!displayFullChapter" ></v-radio>
-            <v-radio :label="i18n('option_read_resize_c')" :value="2" v-show="!displayFullChapter" ></v-radio>
-            <v-radio :label="i18n('option_read_resize_n')" :value="3" ></v-radio>
-          </v-radio-group>
+              <!-- Scaling mode -->
+              <div class="subtitle">{{ i18n("options_web_chapter_resize_mode_opt") }}</div>
+              <v-radio-group v-model="resizeMode" @change="setOption('resizeMode')" column>
+                <v-radio :label="i18n('option_read_resize_w')" :value="0" ></v-radio>
+                <v-radio :label="i18n('option_read_resize_h')" :value="1" v-show="!displayFullChapter" ></v-radio>
+                <v-radio :label="i18n('option_read_resize_c')" :value="2" v-show="!displayFullChapter" ></v-radio>
+                <v-radio :label="i18n('option_read_resize_n')" :value="3" ></v-radio>
+              </v-radio-group>
 
-          <!-- Display dark reader option -->
-          <div class="subtitle">{{i18n('options_web_chapter_darkreader_desc')}}</div>
-          <v-checkbox v-model="darkreader" @change="setOption('darkreader')"
-                  :label="i18n('options_web_chapter_darkreader_opt')"></v-checkbox>
+              <!-- Display dark reader option -->
+              <div class="subtitle">{{i18n('options_web_chapter_darkreader_desc')}}</div>
+              <v-checkbox v-model="darkreader" @change="setOption('darkreader')"
+                      :label="i18n('options_web_chapter_darkreader_opt')"></v-checkbox>
 
-          <!-- Thin Scan option -->
-          <div class="subtitle">{{i18n('options_web_chapter_thinscan_desc')}}</div>
-          <v-select v-model="thinscan" :items="thinscan_values" @change="setOption('thinscan')"></v-select>
+              <!-- Thin Scan option -->
+              <div class="subtitle">{{i18n('options_web_chapter_thinscan_desc')}}</div>
+              <v-select v-model="thinscan" :items="thinscan_values" @change="setOption('thinscan')"></v-select>
 
-           <!-- Default to webtoon mode -->
-          <div class="subtitle">{{i18n('options_webtoon_mode_default')}}</div>
-          <v-checkbox v-model="webtoonDefault" @change="setOption('webtoonDefault')"
-                  :label="i18n('options_webtoon_mode_default_option')"></v-checkbox>
-
-              
-          <!-- Loading options -->
-          <div class="headline">{{ i18n("options_web_loading") }}</div>
-          <!-- Loading progression -->
-          <div class="subtitle">{{i18n('options_web_load_desc')}}</div>
-          <v-checkbox v-model="load" @change="setOption('load')"
-                  :label="i18n('options_web_load_opt')"></v-checkbox>
-          <!-- Loading images in the order -->
-          <div class="subtitle">{{i18n('options_web_imgorder_desc')}}</div>
-          <v-checkbox v-model="imgorder" @change="setOption('imgorder')"
-                  :label="i18n('options_web_imgorder_opt')"></v-checkbox>
-          <!-- Prefetch next chapter -->
-          <div class="subtitle">{{i18n('options_web_prefetch_desc')}}</div>
-          <v-checkbox v-model="prefetch" @change="setOption('prefetch')"
-                  :label="i18n('options_web_prefetch_opt')"></v-checkbox>
-          <!-- Mark chapter as read when loaded -->
-          <div class="subtitle">{{i18n('options_web_markwhendownload_desc')}}</div>
-          <v-checkbox v-model="markwhendownload" @change="setOption('markwhendownload')"
-                  :label="i18n('options_web_markwhendownload_opt')"></v-checkbox>
-          <!-- Automatically add manga to updates list -->
-          <div class="subtitle">{{i18n('options_web_addauto_desc')}}</div>
-          <v-checkbox v-model="addauto" @change="setOption('addauto')"
-                  :label="i18n('options_web_addauto_opt')"></v-checkbox>
-        </v-container>
+              <!-- Default to webtoon mode -->
+              <div class="subtitle">{{i18n('options_webtoon_mode_default')}}</div>
+              <v-checkbox v-model="webtoonDefault" @change="setOption('webtoonDefault')"
+                      :label="i18n('options_webtoon_mode_default_option')"></v-checkbox>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+          <v-expansion-panel>
+            <!-- Loading options -->
+            <v-expansion-panel-header><div class="headline">{{ i18n("options_web_loading") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <!-- Loading progression -->
+              <div class="subtitle">{{i18n('options_web_load_desc')}}</div>
+              <v-checkbox v-model="load" @change="setOption('load')"
+                      :label="i18n('options_web_load_opt')"></v-checkbox>
+              <!-- Loading images in the order -->
+              <div class="subtitle">{{i18n('options_web_imgorder_desc')}}</div>
+              <v-checkbox v-model="imgorder" @change="setOption('imgorder')"
+                      :label="i18n('options_web_imgorder_opt')"></v-checkbox>
+              <!-- Prefetch next chapter -->
+              <div class="subtitle">{{i18n('options_web_prefetch_desc')}}</div>
+              <v-checkbox v-model="prefetch" @change="setOption('prefetch')"
+                      :label="i18n('options_web_prefetch_opt')"></v-checkbox>
+              <!-- Mark chapter as read when loaded -->
+              <div class="subtitle">{{i18n('options_web_markwhendownload_desc')}}</div>
+              <v-checkbox v-model="markwhendownload" @change="setOption('markwhendownload')"
+                      :label="i18n('options_web_markwhendownload_opt')"></v-checkbox>
+              <!-- Automatically add manga to updates list -->
+              <div class="subtitle">{{i18n('options_web_addauto_desc')}}</div>
+              <v-checkbox v-model="addauto" @change="setOption('addauto')"
+                      :label="i18n('options_web_addauto_opt')"></v-checkbox>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
       </v-tab-item>
-      <v-tab-item value="general" v-if="tabs === 'general'">
-        <v-container fluid>
-          <!-- AMR aspect -->
-          <div class="headline">{{ i18n("options_gen_aspect") }}</div>
-          <!-- Open in new tab -->
-          <div class="subtitle">{{i18n('options_gen_newTab_desc')}}</div>
-          <v-checkbox v-model="newTab" @change="setOption('newTab')"
-                  :label="i18n('options_gen_newTab_opt')"></v-checkbox>
-          <!-- Group mangas with same name -->
-          <div class="subtitle">{{i18n('options_gen_groupmgs_desc')}}</div>
-          <v-checkbox v-model="groupmgs" @change="setOption('groupmgs')"
-                  :label="i18n('options_gen_groupmgs_opt')"></v-checkbox>
-          <!-- Display badge last update -->
-          <div class="subtitle">{{i18n('options_gen_displastup_desc')}}</div>
-          <v-checkbox v-model="displastup" @change="setOption('displastup')"
-                  :label="i18n('options_gen_displastup_opt')"></v-checkbox>
-          <!-- Dark popup -->
-          <div class="subtitle">{{i18n('options_gen_dark_desc')}}</div>
-          <v-checkbox v-model="dark" @change="setOption('dark')"
-                  :label="i18n('options_gen_dark_opt')"></v-checkbox>
+      <v-tab-item value="general" v-if="tabs === 'general'" transition="false">
+        <v-expansion-panels accordion>
+          <v-expansion-panel>
+            <!-- AMR aspect -->
+            <v-expansion-panel-header><div class="headline">{{ i18n("options_gen_aspect") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <!-- Open in new tab -->
+              <div class="subtitle">{{i18n('options_gen_newTab_desc')}}</div>
+              <v-checkbox v-model="newTab" @change="setOption('newTab')"
+                      :label="i18n('options_gen_newTab_opt')"></v-checkbox>
+              <!-- Group mangas with same name -->
+              <div class="subtitle">{{i18n('options_gen_groupmgs_desc')}}</div>
+              <v-checkbox v-model="groupmgs" @change="setOption('groupmgs')"
+                      :label="i18n('options_gen_groupmgs_opt')"></v-checkbox>
+              <!-- Display badge last update -->
+              <div class="subtitle">{{i18n('options_gen_displastup_desc')}}</div>
+              <v-checkbox v-model="displastup" @change="setOption('displastup')"
+                      :label="i18n('options_gen_displastup_opt')"></v-checkbox>
+              <!-- Dark popup -->
+              <div class="subtitle">{{i18n('options_gen_dark_desc')}}</div>
+              <v-checkbox v-model="dark" @change="setOption('dark')"
+                      :label="i18n('options_gen_dark_opt')"></v-checkbox>
+              
+              <!-- Mangas with new chapters color -->
+              <div class="subtitle">{{ i18n("options_gen_colors_new") }}</div>
+              <v-radio-group v-model="colornew" @change="setOption('colornew')" row class="colored-radio">
+                <v-radio v-for="c in colors" :key="c" :value="c" :color="getColor(c)" :class="getTextColor(c)" ></v-radio>
+              </v-radio-group>
+              <!-- Mangas with read chapters color -->
+              <div class="subtitle">{{ i18n("options_gen_colors_read") }}</div>
+              <v-radio-group v-model="colorread" @change="setOption('colorread')" row class="colored-radio">
+                <v-radio v-for="c in colors" :key="c" :value="c" :color="getColor(c)" :class="getTextColor(c)" ></v-radio>
+              </v-radio-group>
+              <!-- Mangas with notfollow chapters color -->
+              <div class="subtitle">{{ i18n("options_gen_colors_notfollow") }}</div>
+              <v-radio-group v-model="colornotfollow" @change="setOption('colornotfollow')" row class="colored-radio">
+                <v-radio v-for="c in colors" :key="c" :value="c" :color="getColor(c)" :class="getTextColor(c)" ></v-radio>
+              </v-radio-group>
+
+              <!-- Create inverted color scheme -->
+              <div class="subtitle">{{i18n('options_invert_color_scheme')}}</div>
+              <v-checkbox v-model="alternateColors" @change="setOption('alternateColors')"
+                      :label="i18n('options_invert_color_scheme_option')"></v-checkbox>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+          <v-expansion-panel>
+            <!-- Updates -->
+            <v-expansion-panel-header><div class="headline">{{ i18n("options_gen_updates") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-content>
           
-          <!-- Mangas with new chapters color -->
-          <div class="subtitle">{{ i18n("options_gen_colors_new") }}</div>
-          <v-radio-group v-model="colornew" @change="setOption('colornew')" row class="colored-radio">
-            <v-radio v-for="c in colors" :key="c" :value="c" :color="getColor(c)" :class="getTextColor(c)" ></v-radio>
-          </v-radio-group>
-          <!-- Mangas with read chapters color -->
-          <div class="subtitle">{{ i18n("options_gen_colors_read") }}</div>
-          <v-radio-group v-model="colorread" @change="setOption('colorread')" row class="colored-radio">
-            <v-radio v-for="c in colors" :key="c" :value="c" :color="getColor(c)" :class="getTextColor(c)" ></v-radio>
-          </v-radio-group>
-          <!-- Mangas with notfollow chapters color -->
-          <div class="subtitle">{{ i18n("options_gen_colors_notfollow") }}</div>
-          <v-radio-group v-model="colornotfollow" @change="setOption('colornotfollow')" row class="colored-radio">
-            <v-radio v-for="c in colors" :key="c" :value="c" :color="getColor(c)" :class="getTextColor(c)" ></v-radio>
-          </v-radio-group>
+          
+              <!-- Update chapters list -->
+              <div class="subtitle">
+                <v-container fluid class="opt-container">
+                  <v-row  >
+                    <v-col cols="4" class="sel-title">
+                      {{ i18n("options_gen_update_chap_label") }} : 
+                    </v-col>
+                    <v-col cols="4">
+                      <v-select v-model="updatechap" :items="update_chap_values"></v-select>
+                    </v-col>
+                    <v-col>
+                      <v-btn color="primary" class="btn-sel" small 
+                          @click="updateChaps()" 
+                          :loading="loadingChapters" 
+                          :disabled="loadingChapters">
+                          {{i18n("options_update_chap_btn")}}
+                      </v-btn>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </div>
+              <!-- Stop updates for a week -->
+              <div class="subtitle">{{i18n('options_gen_stopupdateforaweek_desc')}}</div>
+              <v-checkbox v-model="stopupdateforaweek" @change="setOption('stopupdateforaweek')"
+                      :label="i18n('options_gen_stopupdateforaweek_opt')"></v-checkbox>
+              
+              <!-- Update on startup -->
+              <div class="subtitle">{{i18n('options_gen_checkmgstart_desc')}}</div>
+              <v-checkbox v-model="checkmgstart" @change="setOption('checkmgstart')"
+                      :label="i18n('options_gen_checkmgstart_opt')"></v-checkbox>
+              <!-- Spin icon while loading chapters -->
+              <div class="subtitle">{{i18n('options_gen_refreshspin_desc')}}</div>
+              <v-checkbox v-model="refreshspin" @change="setOption('refreshspin')"
+                      :label="i18n('options_gen_refreshspin_opt')"></v-checkbox>
+              <!-- Save bandwidth while loading chapters -->
+              <div class="subtitle">{{i18n('options_gen_savebandwidth_desc')}}</div>
+              <v-checkbox v-model="savebandwidth" @change="setOption('savebandwidth')"
+                      :label="i18n('options_gen_savebandwidth_opt')"></v-checkbox>
+              <!-- Wait for n seconds between two chapters update request -->
+              <div class="subtitle">{{i18n('options_gen_waitbetweenupdates_desc')}}</div>
+              <div class="subtitle">
+                <v-container fluid class="opt-container">
+                  <v-row  >
+                    <v-col cols="6" class="sel-title">
+                      {{ i18n("options_gen_waitbetweenupdates_opt") }} : 
+                    </v-col>
+                    <v-col cols="6">
+                      <v-select v-model="waitbetweenupdates" :items="wait_update_values"></v-select>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </div>
+              <!-- Display grey 0 when no new -->
+              <div class="subtitle">{{i18n('options_gen_displayzero_desc')}}</div>
+              <v-checkbox v-model="displayzero" @change="setOption('displayzero')"
+                      :label="i18n('options_gen_displayzero_opt')"></v-checkbox>
+              <!-- Grey sharingan if no new -->
+              <div class="subtitle">{{i18n('options_gen_nocount_desc')}}</div>
+              <v-checkbox v-model="nocount" @change="setOption('nocount')"
+                      :label="i18n('options_gen_nocount_opt')"></v-checkbox>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+          <v-expansion-panel>
+            <!-- Notifications -->
+            <v-expansion-panel-header><div class="headline">{{ i18n("options_gen_notifs") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <!-- Notify on new chapter -->
+              <div class="subtitle">{{i18n('options_gen_shownotifications_desc')}}</div>
+              <v-checkbox v-model="shownotifications" @change="setOption('shownotifications')"
+                      :label="i18n('options_gen_shownotifications_opt')"></v-checkbox>
+              <!-- Time to close notification -->
+              <div class="subtitle">
+                <v-container fluid class="opt-container">
+                  <v-row  >
+                    <v-col cols="6" class="sel-title">
+                      {{ i18n("options_gen_notificationtimer_label") }} : 
+                    </v-col>
+                    <v-col cols="6">
+                      <v-select v-model="notificationtimer" :items="notificationtimer_values"></v-select>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </div>
+              <!-- Notify on new version of the app -->
+              <div class="subtitle">{{i18n('options_gen_notifynewversion_desc')}}</div>
+              <v-checkbox v-model="notifynewversion" @change="setOption('notifynewversion')"
+                      :label="i18n('options_gen_notifynewversion_opt')"></v-checkbox>
+              
+              <!--Allow tracking of reading -->
+              <div class="subtitle">{{i18n('options_gen_allowtracking_desc')}}</div>
+              <v-checkbox v-model="allowtracking" @change="setOption('allowtracking')"
+                      :label="i18n('options_gen_allowtracking_opt')"></v-checkbox>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+          <v-expansion-panel>
+            <!-- Synchronization -->
+            <v-expansion-panel-header><div class="headline">{{ i18n("options_sync_title") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <div class="subtitle">{{i18n('options_sync_manga_list_desc')}}</div>
+              <v-alert v-if="!syncEnabled"  :value="true" color="error" icon="mdi-alert-octagon" outlined>
+                {{i18n('options_sync_title_warning')}}
+              </v-alert>
 
-          <!-- Create inverted color scheme -->
-          <div class="subtitle">{{i18n('options_invert_color_scheme')}}</div>
-          <v-checkbox v-model="alternateColors" @change="setOption('alternateColors')"
-                  :label="i18n('options_invert_color_scheme_option')"></v-checkbox>
-
-          <!-- Updates -->
-          <div class="headline">{{ i18n("options_gen_updates") }}</div>
-          <!-- Update chapters list -->
-          <div class="subtitle">
-            <v-container fluid class="opt-container">
-              <v-row  >
-                <v-col cols="4" class="sel-title">
-                  {{ i18n("options_gen_update_chap_label") }} : 
-                </v-col>
+              <v-checkbox v-model="syncEnabled" @change="setOption('syncEnabled')"
+                          :label="i18n('options_sync_checkbox')"></v-checkbox>
+              <v-checkbox v-model="gistSyncEnabled" @change="setOption('gistSyncEnabled')"
+                          :label="i18n('options_sync_gist')"></v-checkbox>
+              <v-text-field v-if="gistSyncEnabled" v-model="gistSyncSecret" @change="setOption('gistSyncSecret')"
+                          :label="i18n('option_sync_gist_secret')"></v-text-field>
+              <v-text-field v-if="gistSyncEnabled" v-model="gistSyncGitID" @change="setOption('gistSyncGitID')"
+                          :label="i18n('option_sync_gist_gitID')"></v-text-field>
+              <!-- Synchronization -->
+              <div class="headline">{{ i18n("options_search_title") }}</div>
+              <div class="subtitle">{{i18n('options_search_open_series_desc')}}</div>
+              <v-checkbox v-model="searchOpenSeries" @change="setOption('searchOpenSeries')"
+                          :label="i18n('options_search_open_series_checkbox')"></v-checkbox>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+      </v-tab-item>
+      <v-tab-item value="supported" transition="false">
+        <v-expansion-panels accordion>
+          <v-expansion-panel>
+            <!-- Languages -->
+            <v-expansion-panel-header><div class="headline">{{ i18n("options_sup_languages") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-content>          
+              <div class="subtitle">{{i18n('options_sup_languages_desc')}}</div>
+              <Flag 
+                  v-for="lang in alllangs" 
+                  :key="lang.flag" 
+                  :value="[lang.flag, isReadable(lang.flag)]"
+                  v-on:toggleLanguageSelection="clickReadLanguage(lang.languages)"
+                  big
+                  class="flag-list" />
+              <!-- Deactivate unreadable websites-->
+              <div class="subtitle">{{i18n('options_sup_deactivate_unreadable_desc')}}</div>
+              <v-checkbox v-model="deactivateunreadable" @change="setOption('deactivateunreadable')"
+                      :label="i18n('options_sup_deactivate_unreadable')"></v-checkbox>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+          <v-expansion-panel>
+            <!-- Supported websites -->
+            <v-expansion-panel-header><div class="headline">{{ i18n("options_supported") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <div class="subtitle">{{i18n('options_sup_desc')}}</div>
+              <!-- Filters -->
+              <v-row class="mt-2 flex">
                 <v-col cols="4">
-                  <v-select v-model="updatechap" :items="update_chap_values"></v-select>
+                  <v-select v-model="selectedLang" :items="distinctLangs"></v-select>
                 </v-col>
-                <v-col>
-                  <v-btn color="primary" class="btn-sel" small 
-                      @click="updateChaps()" 
-                      :loading="loadingChapters" 
-                      :disabled="loadingChapters">
-                      {{i18n("options_update_chap_btn")}}
-                  </v-btn>
+                <v-col cols="8">
+                  <v-btn @click="deactivateAll()" color="primary" small>{{i18n('options_gen_deactivate_all')}}</v-btn>
+                  <v-btn @click="activateAll()" color="primary" small>{{i18n('options_gen_activate_all')}}</v-btn>
                 </v-col>
               </v-row>
-            </v-container>
-          </div>
-          <!-- Stop updates for a week -->
-          <div class="subtitle">{{i18n('options_gen_stopupdateforaweek_desc')}}</div>
-          <v-checkbox v-model="stopupdateforaweek" @change="setOption('stopupdateforaweek')"
-                  :label="i18n('options_gen_stopupdateforaweek_opt')"></v-checkbox>
-          
-          <!-- Update on startup -->
-          <div class="subtitle">{{i18n('options_gen_checkmgstart_desc')}}</div>
-          <v-checkbox v-model="checkmgstart" @change="setOption('checkmgstart')"
-                  :label="i18n('options_gen_checkmgstart_opt')"></v-checkbox>
-          <!-- Spin icon while loading chapters -->
-          <div class="subtitle">{{i18n('options_gen_refreshspin_desc')}}</div>
-          <v-checkbox v-model="refreshspin" @change="setOption('refreshspin')"
-                  :label="i18n('options_gen_refreshspin_opt')"></v-checkbox>
-          <!-- Save bandwidth while loading chapters -->
-          <div class="subtitle">{{i18n('options_gen_savebandwidth_desc')}}</div>
-          <v-checkbox v-model="savebandwidth" @change="setOption('savebandwidth')"
-                  :label="i18n('options_gen_savebandwidth_opt')"></v-checkbox>
-          <!-- Wait for n seconds between two chapters update request -->
-          <div class="subtitle">{{i18n('options_gen_waitbetweenupdates_desc')}}</div>
-          <div class="subtitle">
-            <v-container fluid class="opt-container">
-              <v-row  >
-                <v-col cols="6" class="sel-title">
-                  {{ i18n("options_gen_waitbetweenupdates_opt") }} : 
-                </v-col>
-                <v-col cols="6">
-                  <v-select v-model="waitbetweenupdates" :items="wait_update_values"></v-select>
-                </v-col>
-              </v-row>
-            </v-container>
-          </div>
-          <!-- Display grey 0 when no new -->
-          <div class="subtitle">{{i18n('options_gen_displayzero_desc')}}</div>
-          <v-checkbox v-model="displayzero" @change="setOption('displayzero')"
-                  :label="i18n('options_gen_displayzero_opt')"></v-checkbox>
-          <!-- Grey sharingan if no new -->
-          <div class="subtitle">{{i18n('options_gen_nocount_desc')}}</div>
-          <v-checkbox v-model="nocount" @change="setOption('nocount')"
-                  :label="i18n('options_gen_nocount_opt')"></v-checkbox>
-          
-          <!-- Notifications -->
-          <div class="headline">{{ i18n("options_gen_notifs") }}</div>
-          <!-- Notify on new chapter -->
-          <div class="subtitle">{{i18n('options_gen_shownotifications_desc')}}</div>
-          <v-checkbox v-model="shownotifications" @change="setOption('shownotifications')"
-                  :label="i18n('options_gen_shownotifications_opt')"></v-checkbox>
-          <!-- Time to close notification -->
-          <div class="subtitle">
-            <v-container fluid class="opt-container">
-              <v-row  >
-                <v-col cols="6" class="sel-title">
-                  {{ i18n("options_gen_notificationtimer_label") }} : 
-                </v-col>
-                <v-col cols="6">
-                  <v-select v-model="notificationtimer" :items="notificationtimer_values"></v-select>
+              <v-data-table
+                  :headers="headersSupportedWebsites"
+                  :items="supportedWebsites"
+                  item-key="mirrorName"
+                  class="elevation-1"
+                  disable-pagination
+                  dense
+                  hide-default-header
+                  hide-default-footer
+              >
+                <template v-slot:header="{ props: { headers } }">
+                  <thead>
+                    <tr>
+                      <th
+                          v-for="header in headers"
+                          :key="header.text"
+                          class="column"
+                      >
+                        {{ header.text }}
+                      </th>
+                    </tr>
+                  </thead>
+                </template>
+                <template v-slot:item="{item }">
+                  <tr>
+                    <td>
+                      <img :src="item.mirrorIcon" class="mirror-icon" />
+                      {{ item.mirrorName }}
+                      <!-- Badge with number of mangas read -->
+                      <v-card v-if="nbMangas(item.mirrorName) > 0" color="primary" dark class="mirror-manga-info">
+                        {{ i18n('options_gen_mirrornbmangas', nbMangas(item.mirrorName)) }}
+                      </v-card>
+                    </td>
+                    <td class="text-right td-langs">
+                      <span v-for="(lang, key) in item.languages.split(',')" :key="key">
+                        <Flag :value="lang" />
+                      </span>
+                    </td>
+                    <td class="text-right">
+                      <v-checkbox :disabled="nbMangas(item.mirrorName) > 0 && item.activated" v-model="item.activated" @change="changeActivation(item)"/>
+                    </td>
+                  </tr>
+                </template>
+              </v-data-table>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+          <v-expansion-panel>
+            <!-- Laboratory -->
+            <v-expansion-panel-header><div class="headline mt-4">{{ i18n("options_sup_repos") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <div class="subtitle">{{i18n('options_sup_repos_desc')}}</div>
+              <v-row >
+                <v-col cols="12">
+                  <v-btn color="primary" dark class="mb-2" @click="goLab()" small>{{i18n('options_gen_laboratory')}}</v-btn>
                 </v-col>
               </v-row>
-            </v-container>
-          </div>
-          <!-- Notify on new version of the app -->
-          <div class="subtitle">{{i18n('options_gen_notifynewversion_desc')}}</div>
-          <v-checkbox v-model="notifynewversion" @change="setOption('notifynewversion')"
-                  :label="i18n('options_gen_notifynewversion_opt')"></v-checkbox>
-          
-          <!--Allow tracking of reading -->
-          <div class="subtitle">{{i18n('options_gen_allowtracking_desc')}}</div>
-          <v-checkbox v-model="allowtracking" @change="setOption('allowtracking')"
-                  :label="i18n('options_gen_allowtracking_opt')"></v-checkbox>
-          
-          <!-- Synchronization -->
-          <div class="headline">{{ i18n("options_sync_title") }}</div>
-          <div class="subtitle">{{i18n('options_sync_manga_list_desc')}}</div>
-          <v-alert v-if="!syncEnabled"  :value="true" color="error" icon="mdi-alert-octagon" outlined>
-            {{i18n('options_sync_title_warning')}}
-          </v-alert>
-
-          <v-checkbox v-model="syncEnabled" @change="setOption('syncEnabled')"
-                      :label="i18n('options_sync_checkbox')"></v-checkbox>
-          <v-checkbox v-model="gistSyncEnabled" @change="setOption('gistSyncEnabled')"
-                      :label="i18n('options_sync_gist')"></v-checkbox>
-          <v-text-field v-if="gistSyncEnabled" v-model="gistSyncSecret" @change="setOption('gistSyncSecret')"
-                      :label="i18n('option_sync_gist_secret')"></v-text-field>
-          <v-text-field v-if="gistSyncEnabled" v-model="gistSyncGitID" @change="setOption('gistSyncGitID')"
-                      :label="i18n('option_sync_gist_gitID')"></v-text-field>
-          <!-- Synchronization -->
-          <div class="headline">{{ i18n("options_search_title") }}</div>
-          <div class="subtitle">{{i18n('options_search_open_series_desc')}}</div>
-          <v-checkbox v-model="searchOpenSeries" @change="setOption('searchOpenSeries')"
-                      :label="i18n('options_search_open_series_checkbox')"></v-checkbox>
-        </v-container>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
       </v-tab-item>
-      <v-tab-item value="supported">
-        <v-container fluid>
-          <!-- Languages -->
-          <div class="headline">{{ i18n("options_sup_languages") }}</div>
-          <div class="subtitle">{{i18n('options_sup_languages_desc')}}</div>
-          <Flag 
-              v-for="lang in alllangs" 
-              :key="lang.flag" 
-              :value="[lang.flag, isReadable(lang.flag)]"
-              v-on:toggleLanguageSelection="clickReadLanguage(lang.languages)"
-              big
-              class="flag-list" />
-          <!-- Deactivate unreadable websites-->
-          <div class="subtitle">{{i18n('options_sup_deactivate_unreadable_desc')}}</div>
-          <v-checkbox v-model="deactivateunreadable" @change="setOption('deactivateunreadable')"
-                  :label="i18n('options_sup_deactivate_unreadable')"></v-checkbox>
-
-          <!-- Supported websites -->
-          <div class="headline">{{ i18n("options_supported") }}</div>
-          <div class="subtitle">{{i18n('options_sup_desc')}}</div>
-          <!-- Filters -->
-          <v-row class="mt-2 flex">
-            <v-col cols="4">
-              <v-select v-model="selectedLang" :items="distinctLangs"></v-select>
-            </v-col>
-            <v-col cols="8">
-              <v-btn @click="deactivateAll()" color="primary" small>{{i18n('options_gen_deactivate_all')}}</v-btn>
-              <v-btn @click="activateAll()" color="primary" small>{{i18n('options_gen_activate_all')}}</v-btn>
-            </v-col>
-          </v-row>
-          <v-data-table
-              :headers="headersSupportedWebsites"
-              :items="supportedWebsites"
-              item-key="mirrorName"
-              class="elevation-1"
-              disable-pagination
-              dense
-              hide-default-header
-              hide-default-footer
-          >
-            <template v-slot:header="{ props: { headers } }">
-              <thead>
-                <tr>
-                  <th
-                      v-for="header in headers"
-                      :key="header.text"
-                      class="column"
-                  >
-                    {{ header.text }}
-                  </th>
-                </tr>
-              </thead>
-            </template>
-            <template v-slot:item="{item }">
-              <tr>
-                <td>
-                  <img :src="item.mirrorIcon" class="mirror-icon" />
-                  {{ item.mirrorName }}
-                  <!-- Badge with number of mangas read -->
-                  <v-card v-if="nbMangas(item.mirrorName) > 0" color="primary" dark class="mirror-manga-info">
-                    {{ i18n('options_gen_mirrornbmangas', nbMangas(item.mirrorName)) }}
-                  </v-card>
-                </td>
-                <td class="text-right td-langs">
-                  <span v-for="(lang, key) in item.languages.split(',')" :key="key">
-                    <Flag :value="lang" />
-                  </span>
-                </td>
-                <td class="text-right">
-                  <v-checkbox :disabled="nbMangas(item.mirrorName) > 0 && item.activated" v-model="item.activated" @change="changeActivation(item)"/>
-                </td>
-              </tr>
-            </template>
-          </v-data-table>
-          <!-- Laboratory -->
-          <div class="headline mt-4">{{ i18n("options_sup_repos") }}</div>
-          <div class="subtitle">{{i18n('options_sup_repos_desc')}}</div>
-          <v-row >
-            <v-col cols="12">
-              <v-btn color="primary" dark class="mb-2" @click="goLab()" small>{{i18n('options_gen_laboratory')}}</v-btn>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-tab-item>
-      <v-tab-item value="mirror">
+      <v-tab-item value="mirror" transition="false">
         <v-container fluid>
           <!-- Mangadex Options -->
           <div class="text-h5">{{ i18n("options_mirror_specific_mangadex") }}</div>
@@ -869,7 +901,6 @@ export default {
 .headline {
   font-size: 1.5rem !important;
   line-height: 30px !important;
-  padding-bottom: 16px;
   font-weight: bold;
 }
 .v-input label {
