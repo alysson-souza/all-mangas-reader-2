@@ -1777,30 +1777,6 @@
     "message": "Nouveaux chapitres à lire en premier. Avec la plupart des chapitres non lus plus haut",
     "description": "Tooltip for last new chapters sort on mangas list with most unread on top"
   },
-  "options_komga_server": {
-    "message": "URL du serveur Komga",
-    "description": "Option for komga url"
-  },
-  "options_komga_server_label": {
-    "message": "URL de base du serveur komga. La valeur par défaut est http://localhost:8080",
-    "description": "Option for komga url"
-  },
-  "options_komga_username": {
-    "message": "Nom d'utilisateur Komga",
-    "description": "Option for komga username"
-  },
-  "options_komga_username_label": {
-    "message": "Entrez votre nom d'utilisateur / email pour komga",
-    "description": "Option for komga username"
-  },
-  "options_komga_password": {
-    "message": "Mot de passe Komga",
-    "description": "Option for komga password"
-  },
-  "options_komga_password_label": {
-    "message": "Mot de passe de votre compte komga",
-    "description": "Option for komga password"
-  },
   "list_mirror_filter_label": {
     "message": "Sélectionnez un miroir",
     "description": "Mirror filter select label"
@@ -1831,5 +1807,65 @@
   "list_asc_desc": {
     "message": "trier par ordre croissant / décroissant",
     "description": "Tooltip for ascending/descending option"
+  },
+  "options_mirror_specific_komga": {
+    "message": "Options Komga",
+    "description": "Option panel header komga"
+  },
+  "options_komga_server_label": {
+    "message": "URL du serveur Komga",
+    "description": "Option for komga url"
+  },
+  "options_komga_server": {
+    "message": "URL de base du serveur Komga. La valeur par défaut est http: // localhost: 8080",
+    "description": "Option for komga url"
+  },
+  "options_komga_username_label": {
+    "message": "Nom d'utilisateur Komga",
+    "description": "Option for komga username"
+  },
+  "options_komga_username": {
+    "message": "Entrez votre nom d'utilisateur / email pour Komga",
+    "description": "Option for komga username"
+  },
+  "options_komga_password_label": {
+    "message": "Mot de passe Komga",
+    "description": "Option for komga password"
+  },
+  "options_komga_password": {
+    "message": "Mot de passe de votre compte Komga",
+    "description": "Option for komga password"
+  },
+  "reader_snackbar_copyurl_success": {
+    "message": "URL de l'image copiée!",
+    "description": "Notification for url copy success"
+  },
+  "reader_snackbar_copyurl_error": {
+    "message": "Échec de la copie de l'URL",
+    "description": "Notification for url copy error"
+  },
+  "reader_context_menu_manage_bookmark": {
+    "message": "Gérer le signet",
+    "description": "Context Menu link for mangaging existing bookmark"
+  },
+  "reader_context_menu_add_bookmark": {
+    "message": "Analyse des signets",
+    "description": "Context Menu link for adding bookmark"
+  },
+  "reader_context_menu_copy_url": {
+    "message": "Copier l'URL de l'image",
+    "description": "Context Menu link for copying image url"
+  },
+  "reader_zoom_show": {
+    "message": "Afficher la commande de zoom",
+    "description": "Button to show zoom controls"
+  },
+  "reader_zoom_plus": {
+    "message": "Agrandir",
+    "description": "Button to zoom in"
+  },
+  "reader_zoom_minus": {
+    "message": "Dézoomer",
+    "description": "Button to zoom out"
   }
 }

@@ -8,6 +8,7 @@ import 'vuetify/dist/vuetify.min.css';
 import Vuetify from 'vuetify';
 import vuetifyOptions from '../pages/vuetifyOptions';
 import VueScrollTo from "vue-scrollto";
+import Clipboard from 'v-clipboard'
 
 import AmrReader from './AmrReader.vue';
 
@@ -113,6 +114,7 @@ function initReader() {
     Vue.use(Vuetify)
     vuetifyOptions.theme.dark = options.darkreader === 1
     Vue.use(VueScrollTo)
+    Vue.use(Clipboard)
     new Vue({
         el: amrdiv,
         vuetify: new Vuetify(vuetifyOptions),

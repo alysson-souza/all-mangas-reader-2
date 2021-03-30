@@ -4,6 +4,7 @@
 /dist-zip
 /.vscode
 /.idea
+/test
 
 .DS_Store
 

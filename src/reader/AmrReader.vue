@@ -97,11 +97,11 @@
                 </a>
               </template>
               <span>{{i18n("reader_click_go_mirror")}}</span>
-              </v-tooltip>
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <!-- Manga name -->
-                  <a v-on="on" :href="manga.currentMangaURL" target="_blank">{{ mangaInfos && mangaInfos.displayName ? mangaInfos.displayName : manga.name }}</a>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <!-- Manga name -->
+                <a v-on="on" :href="manga.currentMangaURL" target="_blank">{{ mangaInfos && mangaInfos.displayName ? mangaInfos.displayName : manga.name }}</a>
               </template>
               <span>{{i18n("reader_click_go_manga")}}</span>
             </v-tooltip>
@@ -386,6 +386,33 @@
                 </v-tooltip>
               </v-btn-toggle>
             </v-col>
+            <v-col class="text-center mt-2" cols="12" v-if="showMaxWidth">
+              <v-row>
+                <v-col>
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on }">
+                      <v-btn v-on="on" icon color="green" @click="changeMaxWidth('more')" class="ma-0">
+                        <v-icon>mdi-plus-circle</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>{{i18n("reader_zoom_plus")}}</span>
+                  </v-tooltip>
+                </v-col>
+                <v-col>
+                  {{ maxWidthValue }}%
+                </v-col>
+                <v-col>
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on }">
+                      <v-btn v-on="on" icon color="red" @click="changeMaxWidth('less')" class="ma-0">
+                        <v-icon>mdi-minus-circle</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>{{i18n("reader_zoom_minus")}}</span>
+                  </v-tooltip>
+                </v-col>
+              </v-row>
+            </v-col>
             <v-col class="text-center mt-2" cols="12">
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
@@ -435,6 +462,14 @@
                 </template>
                 <span>{{i18n("reader_button_tips")}}</span>
               </v-tooltip>
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-btn v-on="on" icon @click="showMaxWidth = !showMaxWidth" color="blue" class="ma-0">
+                    <v-icon>mdi-magnify-minus</v-icon>
+                  </v-btn>
+                </template>
+                <span>{{i18n("reader_zoom_show")}}</span>
+              </v-tooltip>
             </v-col>
           </v-row>
         </v-card-title>
@@ -450,6 +485,7 @@
               :resize="resize"
               :drawer="drawer"
               :webtoonMode="webtoonMode"
+              :maxWidthValue="maxWidthValue"
               :scaleUp="scaleUp" />
     </v-main>
   </v-app>
@@ -515,6 +551,9 @@
 
       chaploaded: false, /* Top telling if all scans have been loaded */
       pageData: pageData.state, /* reactive data from pageData */
+
+      showMaxWidth: false, /* Show the max width */
+      maxWidthValue: 100
     }),
     created() {
       /** Register keys */
@@ -1267,6 +1306,18 @@
             chapterName: this.pageData.currentChapter +".cbz",
             seriesName: this.mangaInfos && this.mangaInfos.displayName ? this.mangaInfos.displayName : this.manga.name
         });
+      },
+      changeMaxWidth(type) {
+        if (type == 'more') {
+          if (this.maxWidthValue < 100) {
+            this.maxWidthValue += 10
+          }
+        }
+        if (type == 'less') {
+          if (this.maxWidthValue > 40) {
+            this.maxWidthValue -= 10
+          }
+        }
       }
     }
   }

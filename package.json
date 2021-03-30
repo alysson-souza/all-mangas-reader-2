@@ -24,6 +24,7 @@
     "jquery": "^3.5.1",
     "jszip": "^3.6.0",
     "mime-db": "^1.46.0",
+    "v-clipboard": "^2.2.3",
     "vue": "^2.6.4",
     "vue-gallery": "^2.0.1",
     "vue-scrollto": "^2.20.0",
