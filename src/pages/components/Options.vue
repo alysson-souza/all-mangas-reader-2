@@ -508,7 +508,8 @@ const converters = {
       "searchOpenSeries",
       "mangadexDataSaver",
       "webtoonDefault",
-      "alternateColors"
+      "alternateColors",
+      "malSync"
     ]
   }
 };
