@@ -444,13 +444,13 @@
             <v-expansion-panel-content>
               <!-- Komga Domain -->
               <div class="text-h6">{{i18n('options_komga_server')}}</div>
-              <v-text-field disabled v-model="komgaDomain" @change="setOption('komgaDomain')" :label="i18n('options_komga_server_label')" />
+              <v-text-field v-model="komgaUrl" @change="setOption('komgaUrl')" :label="i18n('options_komga_server_label')" />
               <!-- Komga Username -->
               <div class="text-h6">{{i18n('options_komga_username')}}</div>
-              <v-text-field disabled v-model="komgaUser" @change="setOption('komgaUser')" :label="i18n('options_komga_username_label')" />
+              <v-text-field v-model="komgaUser" @change="setOption('komgaUser')" :label="i18n('options_komga_username_label')" />
               <!-- Komga Password -->
               <div class="text-h6">{{i18n('options_komga_password')}}</div>
-              <v-text-field disabled v-model="komgaPassword" @change="setOption('komgaPassword')" :label="i18n('options_komga_password_label')" />
+              <v-text-field v-model="komgaPassword" type="password" @change="setOption('komgaPassword')" :label="i18n('options_komga_password_label')" />
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>

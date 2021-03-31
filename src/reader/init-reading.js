@@ -21,6 +21,11 @@ import store from '../store'
 /** DO NOT REMOVE, not used here but define a global object used in loaded implementation */
 import mirrorHelper from '../amr/mirrors-helper';
 
+let ourCss = [
+    'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700',
+    'https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.8.55/css/materialdesignicons.min.css'
+]
+
 if (window["__armreader__"] === undefined) { // avoid loading script twice
     window["__armreader__"] = {}
     window['AMR_STORE'] = store
@@ -89,7 +94,7 @@ function initReader() {
     amrdiv.id = "app"
     document.body.appendChild(amrdiv)
 
-        removeStyles()
+    removeStyles(true)
 
     // add this line for mobile : <meta name="viewport" content="width=device-width, initial-scale=1">
     var metaview = document.createElement( "meta" )
@@ -106,8 +111,8 @@ function initReader() {
     // if (options.darkreader === 1) document.body.style.backgroundColor = "#303030"
     // else document.body.style.backgroundColor = "white"
 
-    loadCss("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700")
-    loadCss("https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.8.55/css/materialdesignicons.min.css")
+    for (let css of ourCss) 
+        loadCss(css)
     
     // Load vue
     Vue.config.productionTip = false
@@ -120,26 +125,30 @@ function initReader() {
         vuetify: new Vuetify(vuetifyOptions),
         render: h => h(AmrReader)
     });
-}
 
+    setInterval(removeStyles, 1500) // Doing this because of websites that load css dynamically
+}
 /** Remove styles from original page to avoid interference with AMR reader */
-function removeStyles() {
+function removeStyles(withInline = false) {
     let stylesheets = document.getElementsByTagName('link'), i, sheet;
     for(i in stylesheets) {
         if (stylesheets.hasOwnProperty(i)) {
             sheet = stylesheets[i];
-            if((sheet.getAttribute("rel") && sheet.getAttribute("rel") == "stylesheet") || (sheet.getAttribute('type') && sheet.getAttribute('type').toLowerCase() == 'text/css')) {
+            if(((sheet.getAttribute("rel") && sheet.getAttribute("rel") == "stylesheet") || (sheet.getAttribute('type') && sheet.getAttribute('type').toLowerCase() == 'text/css'))
+                && !ourCss.includes(sheet.getAttribute('href'))) {
                 sheet.parentNode.removeChild(sheet);
             }
         }
     }
 
-    let inline = document.getElementsByTagName('style')
-    for(i in inline) {
-        if (inline.hasOwnProperty(i)) {
-            sheet = inline[i];
-            if((sheet.getAttribute('type') && sheet.getAttribute('type').toLowerCase() == 'text/css')) {
-                sheet.parentNode.removeChild(sheet);
+    if (withInline) {
+        let inline = document.getElementsByTagName('style')
+        for(i in inline) {
+            if (inline.hasOwnProperty(i)) {
+                sheet = inline[i];
+                if((sheet.getAttribute('type') && sheet.getAttribute('type').toLowerCase() == 'text/css')) {
+                    sheet.parentNode.removeChild(sheet);
+                }
             }
         }
     }

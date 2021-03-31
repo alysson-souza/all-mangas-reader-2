@@ -82,8 +82,13 @@ export function serializeVuexObject(obj) {
  */
 export function extractHostname(url) {
     let uid = new URL(url)
+    
 
-    return uid.hostname
+    if(uid.hostname == 'localhost') {
+        return uid.host
+    } else {
+        return uid.hostname
+    }
 }
 /**
  * Extract the root domain of a url without subdomain
