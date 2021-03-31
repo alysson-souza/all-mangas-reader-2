@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["www.nonstopscans.com"],
         home: "https://www.nonstopscans.com/",
-        // chapter_url: /^\/manga\/.*\/.+$/g,
+        chapter_url: /^\/\d.+-.+?/g,
 
 
         getMangaList : async function (search) {
@@ -25,8 +25,11 @@ if (typeof registerMangaObject === 'function') {
         getListChaps : async function (urlManga) {
             let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
             let res = []
-            $(".lchx a", doc).each(function (index) {
-                res.push([$(this).text(), $(this).attr('href')])
+            $(".eph-num a", doc).each(function (index) {
+                res.push([
+                    $('.chapternum', this).text().trim(),
+                    $(this).attr('href')
+                ])
             });
             return res
         },
@@ -42,8 +45,17 @@ if (typeof registerMangaObject === 'function') {
     
         getListImages : async function (doc, curUrl) {
             let res = []
-            $("div#readerarea img", doc).each(function(index) {
-                res.push($(this).attr('src'))
+
+            let regex = /ts_reader\.run\((.*?)\);/g
+            let parts = doc.innerText.match(regex)
+            let json = JSON.parse(parts[0].replace('ts_reader.run(', '').replace(');', ''))
+            // console.log('Images parts')
+            // console.log(json)
+
+            json.sources.forEach(source => {
+                source.images.forEach(image => {
+                    res.push(image)
+                })
             })
             return res
         },
@@ -53,7 +65,7 @@ if (typeof registerMangaObject === 'function') {
         },
         
         isCurrentPageAChapterPage : function (doc, curUrl) {
-            return $("div#readerarea img", doc).length > 0
+            return $("div#readerarea", doc).length > 0
         }
     })
 }
