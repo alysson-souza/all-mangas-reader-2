@@ -963,7 +963,9 @@
             this.$refs.wizdialog.temporary(this.i18n("content_nav_last_chap"), 1000, {important: true})
         }
         if (!this.nextChapter) return
-        if (this.nextchapLoading) {
+        if (this.options.malSync){
+          window.location.href = this.nextChapter
+        }else if (this.nextchapLoading) {
           this.loadChapterInReaderUsingChapterLoader(this.nextChapterLoader)
         } else {
           this.loadChapterInReader(this.nextChapter)

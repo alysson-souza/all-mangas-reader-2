@@ -90,6 +90,10 @@
               <div class="text-h6">{{i18n('options_web_addauto_desc')}}</div>
               <v-checkbox v-model="addauto" @change="setOption('addauto')"
                       :label="i18n('options_web_addauto_opt')"></v-checkbox>
+              <!-- option to let malSync work (refreshes on next chapter) -->
+              <div class="text-h6">{{i18n('options_malSync_title')}}</div>
+              <v-checkbox v-model="malSync" @change="setOption('malSync')"
+                      :label="i18n('options_malSync')"></v-checkbox>
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
