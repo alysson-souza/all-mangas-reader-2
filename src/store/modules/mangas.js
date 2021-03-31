@@ -905,6 +905,7 @@ const mutations = {
             if (sim.read === 1) mg.read = 1
             if (sim.update === 0) mg.update = 0
         }
+        mg.cats = [...(new Set(mg.cats))]
         state.all.push(mg);
     }, 
     /**

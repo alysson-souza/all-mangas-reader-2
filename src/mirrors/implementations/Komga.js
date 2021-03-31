@@ -40,8 +40,6 @@ if (typeof registerMangaObject === 'function') {
             let self = this
 
             let list = await this.apiCall('series/' + id + '/books')
-            console.log('Chapter list')
-            console.log(list.content)
             list.content.forEach(chap => {
                 res.push([
                     chap.name,
