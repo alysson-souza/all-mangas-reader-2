@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["www.mangadods.com"],
         home: "https://www.mangadods.com/",
-        chapter_url: /\/manga\/.*\/\d/g,
+        chapter_url: /\/manga\/.*\/(ch-)?\d/g,
         canListFullMangas: false,
         abstract: "Madara",
         abstract_options: {
