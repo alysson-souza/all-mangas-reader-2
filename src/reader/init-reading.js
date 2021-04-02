@@ -126,10 +126,28 @@ function initReader() {
         render: h => h(AmrReader)
     });
 
-    setInterval(removeStyles, 1500) // Doing this because of websites that load css dynamically
+    setTimeout(removeJsAddedStuff, 1500)
 }
+
+function removeJsAddedStuff(times = 10) {
+    document.body.style.padding = "0px"
+    document.body.style.margin = "0px"
+    document.body.style.setProperty("max-width", "none", "important")
+    document.body.style.setProperty("min-width", "auto", "important")
+    document.body.style.setProperty("width", "auto", "important")
+
+    for (child of document.body.children) { 
+        if (child.getAttribute('id') !== 'amrapp') 
+            child.remove()
+    }
+
+    if (times > 0) {
+        setTimeout(() => removeJsAddedStuff(times - 1), 1500)
+    }
+}
+
 /** Remove styles from original page to avoid interference with AMR reader */
-function removeStyles(withInline = false) {
+function removeStyles(withInline = false, times = 10) {
     let stylesheets = document.getElementsByTagName('link'), i, sheet;
     for(i in stylesheets) {
         if (stylesheets.hasOwnProperty(i)) {
@@ -151,6 +169,10 @@ function removeStyles(withInline = false) {
                 }
             }
         }
+    }
+
+    if (times > 0) {
+        setTimeout(() => removeJsAddedStuff(false, times - 1), 1500)
     }
 }
 /** Load css in the page for AMR reader needs */
