@@ -30,5 +30,5 @@ class LocalStorage {
     }
 }
 
-export const createLocalStorage = () => new LocalStorage(storedb, window['AMR_STORE'])
+export const createLocalStorage = (vuexStore) => new LocalStorage(storedb, vuexStore)
 

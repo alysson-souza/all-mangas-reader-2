@@ -35,9 +35,9 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="grey darken-1" flat @click="cancel">{{i18n("button_cancel")}}</v-btn>
-          <v-btn color="primary darken-1" flat @click="deleteBookmark" v-show="alreadyBookmarked">{{i18n("button_delete")}}</v-btn>
-          <v-btn color="primary darken-1" flat @click="saveBookmark">{{i18n("button_save")}}</v-btn>
+          <v-btn color="grey darken-1" text @click="cancel">{{i18n("button_cancel")}}</v-btn>
+          <v-btn color="primary darken-1" text @click="deleteBookmark" v-show="alreadyBookmarked">{{i18n("button_delete")}}</v-btn>
+          <v-btn color="primary darken-1" text @click="saveBookmark">{{i18n("button_save")}}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

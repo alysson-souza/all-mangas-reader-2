@@ -76,12 +76,12 @@ const config = {
             // This is not working properly on firefox
             // adding a http domain to load script fails firefox csp rules and
             // prevent the extension from working (csp are ignored and failed)
-            if (config.mode !== 'development' || !isChrome) {
+            if (config.mode !== 'development') {
               return content;
             }
             const ext = JSON.parse(content);
             // Add dev env tools
-            const extra = " 'unsafe-eval' http://localhost:8098/ ";
+            const extra = " 'unsafe-eval' http://localhost:8098 'unsafe-inline'";
             const [scriptSource, ...rest] = ext.content_security_policy.split(';');
             ext.content_security_policy = `${scriptSource} ${extra}; ${rest.join(';')}`;
 

@@ -2,7 +2,7 @@
     <v-container class="text-center pa-0 pb-4" fluid 
         :class="{'no-full-chapter': !fullchapter}" @click="pageChange" @dblclick="tryChapterChange" ref="scancontainer">
         <!-- Scans -->
-        <table ref="scantable" class="amr-scan-container" :class="{'webtoon': webtoonMode}" border="0" cellspacing="0" cellpadding="0">
+        <table ref="scantable" :style="'max-width: ' + maxWidthValue + '%;'" class="amr-scan-container" :class="{'webtoon': webtoonMode}" border="0" cellspacing="0" cellpadding="0">
           <Page v-for="(scans, i) in pages" :key="i"
               :index="i" 
               :scans="scans" 
@@ -49,7 +49,7 @@
               <v-tooltip top v-for="(scans, i) in pages" :key="i">
                 <template v-slot:activator="{ on }">
                     <table v-on="on" class="amr-pages-page-cont"  
-                    :class="{current: i === currentPage}" 
+                    :class="{current: i === currentPage}"
                     @click.stop="goScan(i)">
                     <Page :index="i" 
                         :scans="scans" 
@@ -119,6 +119,7 @@ export default {
         drawer: Boolean, /* Is the drawer opened ? (adjust some css) */
         scaleUp: Boolean, /* Does the image scale up larger than its native size */
         webtoonMode: Boolean, /* Removes whitespace between images */
+        maxWidthValue: Number, /* Changes max width % of reader */
     },
     created() {
         /** Initialize key handlers */

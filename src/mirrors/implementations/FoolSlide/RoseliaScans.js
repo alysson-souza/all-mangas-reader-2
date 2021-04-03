@@ -6,6 +6,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ["reader.roseliascans.com"],
         home: "http://roseliascans.com/",
         chapter_url: /^\/read\/.+$/g,
+        disabled: true,
         
         abstract: "FoolSlide",
         abstract_options: {

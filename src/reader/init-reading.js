@@ -8,6 +8,7 @@ import 'vuetify/dist/vuetify.min.css';
 import Vuetify from 'vuetify';
 import vuetifyOptions from '../pages/vuetifyOptions';
 import VueScrollTo from "vue-scrollto";
+import Clipboard from 'v-clipboard'
 
 import AmrReader from './AmrReader.vue';
 
@@ -19,6 +20,11 @@ import store from '../store'
 
 /** DO NOT REMOVE, not used here but define a global object used in loaded implementation */
 import mirrorHelper from '../amr/mirrors-helper';
+
+let ourCss = [
+    'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700',
+    'https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.8.55/css/materialdesignicons.min.css'
+]
 
 if (window["__armreader__"] === undefined) { // avoid loading script twice
     window["__armreader__"] = {}
@@ -88,7 +94,7 @@ function initReader() {
     amrdiv.id = "app"
     document.body.appendChild(amrdiv)
 
-        removeStyles()
+    removeStyles(true)
 
     // add this line for mobile : <meta name="viewport" content="width=device-width, initial-scale=1">
     var metaview = document.createElement( "meta" )
@@ -105,41 +111,68 @@ function initReader() {
     // if (options.darkreader === 1) document.body.style.backgroundColor = "#303030"
     // else document.body.style.backgroundColor = "white"
 
-    loadCss("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700")
-    loadCss("https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.8.55/css/materialdesignicons.min.css")
+    for (let css of ourCss) 
+        loadCss(css)
     
     // Load vue
     Vue.config.productionTip = false
     Vue.use(Vuetify)
     vuetifyOptions.theme.dark = options.darkreader === 1
     Vue.use(VueScrollTo)
+    Vue.use(Clipboard)
     new Vue({
         el: amrdiv,
         vuetify: new Vuetify(vuetifyOptions),
         render: h => h(AmrReader)
     });
+
+    setTimeout(removeJsAddedStuff, 1500)
+}
+
+function removeJsAddedStuff(times = 10) {
+    document.body.style.padding = "0px"
+    document.body.style.margin = "0px"
+    document.body.style.setProperty("max-width", "none", "important")
+    document.body.style.setProperty("min-width", "auto", "important")
+    document.body.style.setProperty("width", "auto", "important")
+
+    for (child of document.body.children) { 
+        if (child.getAttribute('id') !== 'amrapp') 
+            child.remove()
+    }
+
+    if (times > 0) {
+        setTimeout(() => removeJsAddedStuff(times - 1), 1500)
+    }
 }
 
 /** Remove styles from original page to avoid interference with AMR reader */
-function removeStyles() {
+function removeStyles(withInline = false, times = 10) {
     let stylesheets = document.getElementsByTagName('link'), i, sheet;
     for(i in stylesheets) {
         if (stylesheets.hasOwnProperty(i)) {
             sheet = stylesheets[i];
-            if((sheet.getAttribute("rel") && sheet.getAttribute("rel") == "stylesheet") || (sheet.getAttribute('type') && sheet.getAttribute('type').toLowerCase() == 'text/css')) {
+            if(((sheet.getAttribute("rel") && sheet.getAttribute("rel") == "stylesheet") || (sheet.getAttribute('type') && sheet.getAttribute('type').toLowerCase() == 'text/css'))
+                && !ourCss.includes(sheet.getAttribute('href'))) {
                 sheet.parentNode.removeChild(sheet);
             }
         }
     }
 
-    let inline = document.getElementsByTagName('style')
-    for(i in inline) {
-        if (inline.hasOwnProperty(i)) {
-            sheet = inline[i];
-            if((sheet.getAttribute('type') && sheet.getAttribute('type').toLowerCase() == 'text/css')) {
-                sheet.parentNode.removeChild(sheet);
+    if (withInline) {
+        let inline = document.getElementsByTagName('style')
+        for(i in inline) {
+            if (inline.hasOwnProperty(i)) {
+                sheet = inline[i];
+                if((sheet.getAttribute('type') && sheet.getAttribute('type').toLowerCase() == 'text/css')) {
+                    sheet.parentNode.removeChild(sheet);
+                }
             }
         }
+    }
+
+    if (times > 0) {
+        setTimeout(() => removeStyles(false, times - 1), 1500)
     }
 }
 /** Load css in the page for AMR reader needs */

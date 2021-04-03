@@ -1,6 +1,7 @@
 import browser from 'webextension-polyfill'
 import { arrayToObject, batchProps, objectMapToArray } from '../utils'
 import { ThrottleError } from './error/ToManyRequests';
+import Storage from './model-storage';
 
 const LIMITS = {
     MAX_ITEMS: 512,
@@ -17,9 +18,12 @@ const ThrottleErrorMessages = Object.keys(LIMITS).filter(k => k.includes('OPERAT
  * The sync object implements the methods defined on the storage.StorageArea type
  * @link https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/sync
  */
-export default class BrowserStorage {
-
-    constructor() {
+export default class BrowserStorage extends Storage {
+    /**
+     * @param {number} interval 
+     */
+    constructor(config) {
+        super(true)
         this.storageSync = browser.storage.sync;
         this.batchSize = 10;
     }
@@ -38,6 +42,10 @@ export default class BrowserStorage {
         return this.storageSync.set({[key]: value}).catch(this.handleSyncError)
     }
 
+
+    async delete(key, value) {
+        return this.save(key, value)
+    }
     /**
      * @param {{}} data
      */

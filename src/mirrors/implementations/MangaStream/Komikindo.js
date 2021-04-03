@@ -8,6 +8,7 @@ if (typeof registerMangaObject === 'function') {
         chapter_url: /^\/m[0-9]+\/$/g,
         languages: "id",
         abstract: "MangastreamAbs",
+        disabled: true,
         abstract_options: {
             search_url: "https://www.komikindo.web.id/",
             search_a_sel: "div.chlf > h2 > a",
