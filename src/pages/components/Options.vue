@@ -28,16 +28,17 @@
               <div class="text-h6">{{i18n('option_read_book')}}</div>
               <v-checkbox v-model="displayBook" @change="setOption('displayBook')" 
                       :label="i18n('options_web_chapter_display_book_opt')"></v-checkbox>
+                      
               <!-- Reading direction -->
-              <div v-if="displayBook">
-                <div class="text-h6">{{ i18n("options_web_chapter_reading_direction_opt") }}</div>
-                <v-radio-group v-model="readingDirection" @change="setOption('readingDirection')" column>
-                  <v-radio :label="i18n('option_read_book_ltr')" :value="0" ></v-radio>
-                  <v-radio :label="i18n('option_read_book_rtl')" :value="1"></v-radio>
-                </v-radio-group>
-            <v-checkbox v-model="invertKeys" @change="setOption('invertKeys')"
-                  :label="i18n('options_web_chapter_reading_direction_invert_keys_opt')"></v-checkbox>
-              </div>
+              <div class="text-h6">{{ i18n("options_web_chapter_reading_direction_opt") }}</div>
+              <v-radio-group v-model="readingDirection" @change="setOption('readingDirection')" column>
+                <v-radio :label="i18n('option_read_book_ltr')" :value="0" ></v-radio>
+                <v-radio :label="i18n('option_read_book_rtl')" :value="1"></v-radio>
+              </v-radio-group>
+
+              <!-- Invert keys with reading direction change -->
+              <v-checkbox v-model="invertKeys" @change="setOption('invertKeys')"
+                :label="i18n('options_web_chapter_reading_direction_invert_keys_opt')"></v-checkbox>
 
               <!-- Display full chapter option -->
               <div class="text-h6">{{i18n('option_read_fullchapter')}}</div>
@@ -315,11 +316,7 @@
                 <template v-slot:header="{ props: { headers } }">
                   <thead>
                     <tr>
-                      <th
-                          v-for="header in headers"
-                          :key="header.text"
-                          class="column"
-                      >
+                      <th v-for="header in headers" :key="header.text" class="column">
                         {{ header.text }}
                       </th>
                     </tr>

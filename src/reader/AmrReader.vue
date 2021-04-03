@@ -115,11 +115,17 @@
                 <!-- Previous chapter button -->
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
-                    <v-btn v-on="on" icon v-show="!firstChapter" @click.stop="goPreviousChapter" class="btn-huge">
+                    <v-btn v-on="on" icon v-show="(direction == 'ltr' ? !firstChapter : !lastChapter)" 
+                      @click.stop="direction == 'ltr' ? goPreviousChapter() : goNextChapter()" class="btn-huge">
                       <v-icon>mdi-chevron-left</v-icon>
                     </v-btn>
                   </template>
-                  <span>{{i18n("list_mg_act_prev")}}</span>
+                  <span>
+                    {{ direction == 'ltr' ? 
+                      i18n("list_mg_act_prev") : 
+                      i18n("list_mg_act_next") + ' ' + (nextchapLoading ? i18n("reader_loading", Math.floor(nextchapProgress)) : '')
+                    }}
+                  </span>
                 </v-tooltip>
                 <!-- List of chapters -->
                 <v-select
@@ -135,11 +141,17 @@
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
                     <!-- Next chapter button -->
-                    <v-btn v-on="on" icon @click.stop="goNextChapter" class="btn-huge" v-show="!lastChapter">
+                    <v-btn v-on="on" icon v-show="(direction == 'ltr' ? !lastChapter : !firstChapter)" 
+                      @click.stop="direction == 'ltr' ? goNextChapter() : goPreviousChapter()" class="btn-huge">
                       <v-icon>mdi-chevron-right</v-icon>
                     </v-btn>
                   </template>
-                  <span>{{i18n("list_mg_act_next")}} {{nextchapLoading ? i18n("reader_loading", Math.floor(nextchapProgress)) : ""}}</span>
+                  <span>
+                    {{ direction == 'ltr' ? 
+                      i18n("list_mg_act_next") + ' ' + (nextchapLoading ? i18n("reader_loading", Math.floor(nextchapProgress)) : '') :
+                      i18n("list_mg_act_prev") 
+                    }}
+                  </span>
                 </v-tooltip>
               </v-toolbar>
             </v-col>
@@ -316,7 +328,7 @@
             </v-col>
             <!-- Reading direction -->
             <v-col class="text-center" cols="12">
-              <v-btn-toggle v-model="direction">
+              <v-btn-toggle v-model="direction" mandatory>
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
                     <v-btn v-on="on" text value="ltr">
@@ -532,7 +544,7 @@
       selchap: null, /* Current chapter */
       mirrorDesc: null, /* Current mirror description */
 
-      direction: 'ltr', /* Reading from left to right or right to left */
+      direction: options.readingDirection === 0 ? 'ltr' : 'rtl', /* Reading from left to right or right to left */
       invertKeys: options.invertKeys === 1, /* Invert keys in right to left mode */
       book: true, /* Do we display side by side pages */
       resize: 'width', /* Mode of resize : width, height, container */
