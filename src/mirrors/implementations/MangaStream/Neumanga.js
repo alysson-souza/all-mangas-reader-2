@@ -9,6 +9,7 @@ if (typeof registerMangaObject === 'function') {
         chapter_url: /^\/m[0-9]+\/$/g,
         languages: "id",
         abstract: "MangastreamAbs",
+        disabled: true,
         abstract_options: {
             search_url: "https://neumanga.tv/advanced_search",
             search_option: "&name_search_mode=contain",

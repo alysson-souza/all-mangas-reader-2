@@ -47,6 +47,7 @@
 			transition="dialog-bottom-transition"
 			hide-overlay
 			scrollable
+			:content-class="istab()"
     >
 			<v-card>
 				<v-toolbar max-height="64">
@@ -194,6 +195,13 @@ export default {
 	},
 	methods: {
 		i18n: (message, ...args) => i18n(message, ...args),
+		istab() {
+			if(window.location.href.indexOf("mode=tab") >= 0) {
+				return
+			} else {
+				return 'hidescrollbar' 
+			}
+		},
 		openOptions() {
 			this.options = true;
 			PopupResizer.setHeightToMax();
@@ -263,6 +271,15 @@ export default {
 };
 </script>
 <style>
+
+/* Disable Webkit */
+.hidescrollbar::-webkit-scrollbar {
+	display: none;
+}
+/* Disable scrollbar Firefox */
+.hidescrollbar {
+	scrollbar-width: none;
+}
 .v-dialog .v-card__title,
 .v-dialog .v-card__text {
   padding: 4px 16px;

@@ -48,6 +48,13 @@
             </template>
             <span>{{i18n("list_sort_upts")}}</span>
           </v-tooltip>
+          <!-- ascending/decending toggle -->
+          <v-tooltip top content-class="icon-ttip">
+            <template v-slot:activator="{ on }">
+              <v-icon v-on="on" @click="alpha_asc_desc = !alpha_asc_desc" :class="['amr-filter', {activated: alpha_asc_desc}]">mdi-swap-vertical</v-icon>
+            </template>
+            <span>{{i18n("list_asc_desc")}}</span>
+          </v-tooltip>
           <v-tooltip top content-class="icon-ttip">
             <template v-slot:activator="{ on }">
               <v-icon v-on="on" @click="selectable = !selectable" :class="['amr-filter', {activated: selectable}]">mdi-order-bool-ascending-variant</v-icon>
@@ -87,8 +94,8 @@
         <!-- Search Field -->
         <v-select v-model="mirrorSelection" :items="usedMirrors" dense :label="i18n('list_mirror_filter_label')"></v-select>
       </v-col>
-      <v-col cols="12" md="6" v-if="selectedManga.length > 0">
-        <MultiMangaAction :selected="selectedMangaExpanded" @clearSelected="clearSelected"/>
+      <v-col cols="12" v-if="selectable">
+        <MultiMangaAction :selected="selectedMangaExpanded" />
       </v-col>
     </v-row>
     <br />
@@ -155,9 +162,6 @@
       <!-- Table Body, manga entries -->
       <template v-slot:item="{item, index}">
         <tr class="m-2">
-          <td v-show="selectable">
-            <v-checkbox v-model="selectedManga" :value="item.key" hide-details />
-          </td>
           <td>
             <MangaGroup 
               :group="item"
@@ -289,7 +293,8 @@ export default {
         pageCount: 0
       },
       itemsPerPage: this.$store.state.options.perPageMangas,
-      pageNavigationPosition: this.$store.state.options.pageNavigationPosition
+      pageNavigationPosition: this.$store.state.options.pageNavigationPosition,
+      alpha_asc_desc: this.$store.state.options.alpha_asc_desc, // Toggle Manga List select behaviour
     };
   },
   watch: {
@@ -308,6 +313,15 @@ export default {
       if (!newValue) {
         this.mirrorSelection = "All"
       }
+    },
+    selectable: function(newValue) {
+      if (newValue)
+        this.$eventBus.$emit('multi-manga:show-multiselect')
+      else
+        this.$eventBus.$emit('multi-manga:hide-multiselect')
+    },
+    asc_desc: function(newValue) {
+      this.$store.dispatch("setOption", { key: 'asc_desc', value: newValue })
     }
   },
   computed: {
@@ -381,19 +395,16 @@ export default {
         return groups
       }, [])
     },
+
     selectedMangaExpanded: function() {
-      let newList = []
-      this.selectedManga.forEach(key => {
-        if (key.startsWith('group:')) {
-          let index = this.groupedMangas.findIndex(group => group.key == key)
-          if (index !== -1) {
-            newList.push(...this.groupedMangas[index].mangas.map(manga => manga.key))
+      return this.allMangas.filter(manga => this.selectedManga.includes(manga.key))
+        .map(manga => {
+          return {
+            'key': manga.key,
+            'name': manga.displayName && manga.displayName !== '' ? manga.displayName : manga.name,
+            'mirror': manga.mirror
           }
-        } else {
-          newList.push(key)
-        }
-      })
-      return newList
+        })
     },
     ...mapGetters(["countMangas", "allMangas"])
   },
@@ -473,10 +484,9 @@ export default {
           return ((na || nb) ? sort_chapters_upts(a, b) : ha && hb ? num_chapters_to_read_sort(a, b) : ha === hb ? default_sort(a, b) : (ha && !hb ? -1 : 1 ) );
         }
       }
-      return items.sort(cmp);
-    },
-    clearSelected: function() {
-      this.selectedManga = []
+      return items.sort(function(a, b) {
+        return AMR_STORE.getters.options.alpha_asc_desc ? cmp(b,a): cmp(a,b)
+      })
     },
     moveNavigation: function() {
       let newDir = ''
@@ -530,6 +540,14 @@ export default {
     });
     this.loaded = true;
     setTimeout(() => this.$emit("manga-loaded"), 1000)
+
+    this.$eventBus.$on('multi-manga:select-manga', key => {
+      this.selectedManga.push(key)
+    })
+
+    this.$eventBus.$on('multi-manga:deselect-manga', key => {
+      this.selectedManga = this.selectedManga.filter(k => k != key)
+    })
     
   }
 }

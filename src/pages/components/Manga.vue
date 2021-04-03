@@ -1,9 +1,14 @@
 <template>
   <v-card v-if="shouldShow" :class="color(3, true) + ' amr-manga-row' + (manga.update === 0 ? ' amr-noupdates' : '')">
     <v-row :class="isDarkText ? 'dark-text' : 'light-text'">
+      <v-col v-show="selectable" cols="auto">
+        <v-checkbox v-model="selected" hide-details dense class="shrink mr-2 mt-0"></v-checkbox>
+      </v-col>
       <!-- Name, Last Updated -->
-      <v-col cols="4">
+      <v-col :cols="selectable ? '3' : '4'">
+        
         <v-card :color="color(0)" class="back-card amr-manga-title-cont"> 
+          
            <!-- + / - icon if group of mangas  -->
           <v-icon v-show="isInGroup && isFirst && !groupExpanded" @click="emitExpand()">mdi-plus</v-icon>
           <v-icon v-show="isInGroup && isFirst && groupExpanded" @click="emitExpand()">mdi-minus</v-icon>
@@ -42,7 +47,7 @@
         </v-card>
       </v-col>
       <!-- Select List -->
-      <v-col cols="4" md="5">
+      <v-col>
         <v-card :color="color(3, true)" tile flat class="back-card">
           <v-row no-gutters>
             <v-col cols="auto">
@@ -139,8 +144,8 @@
               </v-card-title>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" flat @click.native="deleteManga = false">{{i18n("button_no")}}</v-btn>
-                <v-btn color="blue darken-1" flat @click.native="trash()">{{i18n("button_yes")}}</v-btn>
+                <v-btn color="blue darken-1" elevation="1" @click.native="deleteManga = false">{{i18n("button_no")}}</v-btn>
+                <v-btn color="blue darken-1" elevation="1" @click.native="trash()">{{i18n("button_yes")}}</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -225,6 +230,8 @@ export default {
       newCat: "",
       // selected bookmark
       curBm: null,
+      selectable: false, // Should we show the multi select checkbox
+      selected: false,
     };
   },
   // property to load the component with --> the manga it represents
@@ -482,6 +489,51 @@ export default {
         displayName: ''
       })
     }
+  },
+  watch: {
+    selected(newValue) {
+      if (newValue)
+        this.$eventBus.$emit('multi-manga:select-manga', this.manga.key)
+      else
+        this.$eventBus.$emit('multi-manga:deselect-manga', this.manga.key)
+    },
+    shouldShow(newValue) {
+      if (newValue && this.selected) {
+        this.selected = false
+      }
+    }
+  },
+  created() {
+    this.$eventBus.$on('multi-manga:open-latest:' + this.manga.key, () => {
+      if (this.isMirrorEnabled) {
+        this.play(0)
+      }
+    })
+    this.$eventBus.$on('multi-manga:open-first-new:' + this.manga.key, () => {
+      if (this.isMirrorEnabled && this.posInChapList > 0) {
+        this.play(1)
+      }
+    })
+    this.$eventBus.$on('multi-manga:show-multiselect', () => {
+      this.selectable = true
+      this.selected = false
+    })
+    this.$eventBus.$on('multi-manga:hide-multiselect', () => {
+      this.selectable = false
+      this.selected = false
+    })
+    this.$eventBus.$on('multi-manga:select-all', () => {
+      if (this.shouldShow && !this.selected)
+        this.selected = true
+    })
+    this.$eventBus.$on('multi-manga:select-unread', () => {
+      if (this.shouldShow && !this.selected && this.posInChapList > 0)
+        this.selected = true
+    })
+    this.$eventBus.$on('multi-manga:deselect-all', () => {
+      if (this.selected)
+        this.selected = false
+    })
   },
   // Name of the component
   name: "Manga",

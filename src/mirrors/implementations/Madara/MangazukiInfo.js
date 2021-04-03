@@ -8,6 +8,7 @@ if (typeof registerMangaObject === 'function') {
         chapter_url: /^\/manga\/.*\/.+$/g,
         canListFullMangas: false,
         abstract: "Madara",
+        disabled: true,
         abstract_options: {
             search_url: "https://mangazuki.info/",
             page_container_sel: "div.read-container",

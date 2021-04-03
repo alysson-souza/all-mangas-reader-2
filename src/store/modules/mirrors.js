@@ -104,6 +104,12 @@ const actions = {
             }
             let wdb = websitesdb.find(m => m.mirrorName === w.mirrorName);
             if (wdb != undefined) act = wdb.activated;
+
+            // Komga shit
+            if (w.mirrorName == 'Komga') {
+                w.home = rootState.options.komgaUrl
+            }
+
             w.activated = act;
             updts.push(
                 dispatch("updateMirror", w).catch(e => e) // avoid blocking the Promise.all due to an update failure

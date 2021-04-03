@@ -6,6 +6,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ["www.twistedhelscans.com"],
         home: "http://www.twistedhelscans.com/",
         chapter_url: /^\/read\/.+$/g,
+        disabled: true,
         
         abstract: "FoolSlide",
         abstract_options: {

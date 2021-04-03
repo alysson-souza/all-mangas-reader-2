@@ -7,6 +7,7 @@ if (typeof registerMangaObject === 'function') {
         home: "https://yomanga.info/",
         chapter_url: /^\/manga\/.*\/.+$/g,
         canListFullMangas: false,
+        disabled: true,
         abstract: "Madara",
         abstract_options: {
             search_url: "https://yomanga.info/"

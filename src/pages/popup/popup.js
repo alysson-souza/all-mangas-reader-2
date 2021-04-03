@@ -44,6 +44,7 @@ import * as util from "../utils";
   // Load vue
   Vue.config.productionTip = false
   Vue.prototype.$isPopup = popup
+  Vue.prototype.$eventBus = new Vue()
   Vue.use(Vuetify)
   vuetifyOptions.theme.dark = window['AMR_STORE'].state.options.dark === 1
   new Vue({
