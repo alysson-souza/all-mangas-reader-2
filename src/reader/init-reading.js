@@ -172,7 +172,7 @@ function removeStyles(withInline = false, times = 10) {
     }
 
     if (times > 0) {
-        setTimeout(() => removeJsAddedStuff(false, times - 1), 1500)
+        setTimeout(() => removeStyles(false, times - 1), 1500)
     }
 }
 /** Load css in the page for AMR reader needs */

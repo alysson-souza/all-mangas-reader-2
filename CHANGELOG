@@ -1,3 +1,51 @@
+### V2.3.10
+  New Features:
+    * Multi Select has been reworked and now offers the option to open latest read and next new chapter for selected series
+    * Added ability to sync manga via gist. (Credit: @JiPai)
+    * You can now change sort order to be ascending or descending order (Credit: @Robo)
+    * Added zoom out option for reader. Can be used if the images on a page are too wide
+  
+  Changes:
+    * Changed how chapter refresh works to hit multiple sites at the same time but queue up series for each job for the delay
+    * Mirror Labratory overhaul (Credit @alyssonsouza)
+    * Options page has been updated to have extension panels to seperate sections. (Credit: @JiPai)
+    * Bookmarking scans has been redone. The yellow triangle is gone and a context menu (right click) has been added for it
+
+  Fixes:
+    * Export was not working when a series had no chapters (Credit @Robo)
+    * Fixed browser sync (Credit @JiPai)
+    * Language select flags were not working (Credit @JiPai)
+    * And error fixed with deleting manga (Credit: @kYem)
+    * Fixed duplicating categories when adding a new series with the same name as one already on your list
+    * Added some extra checks to remove elements/css that is added via javascript on mirror sites
+  
+  New Mirrors:
+    * Astral Library (www.astrallibrary.net) (Credit @alyssonsouza)
+    * Vanguard Scans (https://vanguardbun.com/)
+    * Glitchy Comics (https://glitchycomics.com/) (Credit @alyssonsouza)
+    * Komga local server (https://komga.org) Note: This requires setting up options for url and username/password
+    * Socal Weebs (https://socialweebs.in)
+  
+  Mirror Fixes:
+    * Marial Scans (https://martialscans.com/) (Credit: @alyssonsouza)
+    * Flame Scans (https://flamescans.org)
+    * Read Manga (http://readmanga.live)
+    * Non Stop Scans (https://www.nonstopscans.com/)
+    * Manga Dods (https://www.mangadods.com/)
+
+  Disabled Mirrors:
+    * Gekkou Scans
+    * Roselia Scans
+    * Twisted Hel Scans
+    * Mangazuki Info
+    * Yo Manga
+    * Manga Chan
+    * Manga Lib
+    * Komik Indo
+    * Nue Manga
+    * Mint Manga
+    * Komik Gue
+
 ### V2.3.9
   New Features:
     * Added option to filter manga list by mirror (Currently ignores category filters when this is used)
