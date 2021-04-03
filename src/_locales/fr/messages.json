@@ -1153,11 +1153,11 @@
   },
   "option_read_book_ltr": {
     "message": "Lire les scans du livre de gauche à droite",
-    "description": "Button to choose option to read side by side pages from left to right"
+    "description": "Button to choose option to read from left to right"
   },
   "option_read_book_rtl": {
     "message": "Lire les scans du livre de droite à gauche",
-    "description": "Button to choose option to read side by side pages from right to left"
+    "description": "Button to choose option to read from right to left"
   },
   "option_read_fullchapter": {
     "message": "Afficher le chapitre entier (sinon, afficher uniquement la page courante)",
@@ -1306,6 +1306,10 @@
   "options_web_chapter_reading_direction_opt": {
     "message": "Sens de lecture",
     "description": "In the options page, label above options to choose reading direction"
+  },
+  "options_web_chapter_reading_direction_invert_keys_opt": {
+    "message": "Invert keys in Right to Left mode",
+    "description": "In the options page, label below options to choose reading direction, inverts keys if Right to Left mode is enabled"
   },
   "options_web_chapter_display_full_chapter_opt": {
     "message": "Afficher le chapitre entier",
@@ -1638,6 +1642,10 @@
     "message": "Just a filler to separate new labels from old ones"
   },
   "reader_book_offset": {
+    "message": "Compenser la première page",
+    "description": "Offset first page button label"
+  },
+  "reader_book_offset_description": {
     "message": "Cela compensera la première page en mode livre au cas où une page de titre serait présente.",
     "description": "Message displayed on button if book mode is active"
   },

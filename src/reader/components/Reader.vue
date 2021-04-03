@@ -46,20 +46,20 @@
                 </v-col>
             </v-row>
             <div class="amr-thumbs-scrollable" ref="thumbs-scrollable" v-show="scansState.loaded" >
-              <v-tooltip top v-for="(scans, i) in pages" :key="i">
+              <v-tooltip top v-for="(scans, i) in thumbSorter(pages)" :key="i">
                 <template v-slot:activator="{ on }">
                     <table v-on="on" class="amr-pages-page-cont"  
-                    :class="{current: i === currentPage}"
-                    @click.stop="goScan(i)">
-                    <Page :index="i" 
-                        :scans="scans" 
+                    :class="{current: scans.index === currentPage}" 
+                    @click.stop="goScan(scans.index)">
+                    <Page :index="scans.index" 
+                        :scans="scans.page" 
                         :direction="direction"
                         resize="container" 
                         ref="thumb" 
                         :bookmark="false" />
                     </table>
                 </template>
-                <span>{{displayPageScansIndexes(i)}}</span>
+                <span>{{displayPageScansIndexes(scans.index)}}</span>
               </v-tooltip>
             </div>
           </div>
@@ -113,6 +113,7 @@ export default {
     },
     props: {
         direction: String, /* Reading from left to right or right to left */
+        invertKeys: Boolean, /* Invert keys in right to left mode */
         book: Boolean, /* Do we display side by side pages */
         resize: String, /* Mode of resize : width, height, container */
         fullchapter: Boolean, /* Do we display whole chapter or just current page */
@@ -252,6 +253,21 @@ export default {
     },
     components: { Page },
     methods: {
+        /**
+         * Sorts the thumbnails respecting the Invert Keys option
+         */
+        thumbSorter: function(pages) {
+            const res = new Array(pages.length);
+
+            for (let i = 0; i < pages.length; i++) {
+                res[i] = {
+                    index: i,
+                    page: pages[i]
+                };
+            }
+
+            return this.invertKeys && this.direction === 'rtl' && !this.fullchapter ? res.reverse() : res;
+        },
         /**
          * Click on the scans container, if single page mode, go to next or previous page
          */
@@ -403,8 +419,17 @@ export default {
                 this.$scrollTo(this.$refs.page[index].$el, this.animationDuration)
             }
         },
-        /** Go to next scan */
+        /** Go to next scan respecting the invert keys option */
         goNextScan(doubletap = false, clicked = false) {
+            // If we are in Right to Left mode and the user set the option to also invert the keys, we invert the logic
+            if (this.direction === 'rtl' && this.invertKeys && !this.fullchapter) {
+                return this.goPreviousScanImpl(doubletap, clicked);
+            }
+
+            return this.goNextScanImpl(doubletap, clicked);
+        },
+        /** Go to next scan */
+        goNextScanImpl(doubletap = false, clicked = false) {
             let cur = this.currentPage, n = cur
             if (cur + 1 < this.pages.length) n = cur + 1
 
@@ -441,8 +466,17 @@ export default {
                 }
             }
         },
-        /** Go to previous scan */
+        /** Go to previous scan respecting the invert keys option  */
         goPreviousScan(doubletap = false, clicked = false) {
+            // If we are in Right to Left mode and the user set the option to also invert the keys, we invert the logic
+            if (this.direction === 'rtl' && this.invertKeys && !this.fullchapter) {
+                return this.goNextScanImpl(doubletap, clicked);
+            }
+
+            return this.goPreviousScanImpl(doubletap, clicked);
+        },
+        /** Go to previous scan */
+        goPreviousScanImpl(doubletap = false, clicked = false) {
             let cur = this.currentPage, n = cur
             if (cur - 1 >= 0) n = cur - 1
 

@@ -35,6 +35,8 @@
                   <v-radio :label="i18n('option_read_book_ltr')" :value="0" ></v-radio>
                   <v-radio :label="i18n('option_read_book_rtl')" :value="1"></v-radio>
                 </v-radio-group>
+            <v-checkbox v-model="invertKeys" @change="setOption('invertKeys')"
+                  :label="i18n('options_web_chapter_reading_direction_invert_keys_opt')"></v-checkbox>
               </div>
 
               <!-- Display full chapter option -->
@@ -504,7 +506,8 @@ const converters = {
       "searchOpenSeries",
       "mangadexDataSaver",
       "webtoonDefault",
-      "alternateColors"
+      "alternateColors",
+      "invertKeys"
     ]
   }
 };
