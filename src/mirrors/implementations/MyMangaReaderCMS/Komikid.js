@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ["www.komikid.com","komikid.com"],
         home: "http://www.komikid.com",
         chapter_url: /^\/manga\/.*\/.+$/g,
-        
+
         abstract: "MyMangaReaderCMS",
         abstract_options: {
             base_url: "http://www.komikid.com",

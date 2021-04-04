@@ -1,7 +1,7 @@
 import mirrorImpl from '../state/mirrorimpl';
 import EventBus from "./EventBus";
 
-/** 
+/**
  * This file handles Scans Loading, (unique scan and all scans from a chapter)
  * and keeps the state of the current chapter scans
  */
@@ -58,7 +58,7 @@ export const scansProvider = {
 }
 
 /**
- * Create a ScansLoader, which loads scans in background 
+ * Create a ScansLoader, which loads scans in background
  */
 export const ScansLoader = class {
     constructor(scansUrl) {
@@ -74,7 +74,7 @@ export const ScansLoader = class {
     /** Load all scans */
     async load(inorder = false) {
         // we create a new Promise to encapsulate the scan's load function because we need to call onloadscan after each load unitarily. We can't use then() to chain the load because that will trigger the load promise and we want to be able to call it in order OR all at the same time)
-        let pload = this.scans.map(sc => new Promise(async (resolve, reject) => { 
+        let pload = this.scans.map(sc => new Promise(async (resolve, reject) => {
             await sc.load() // loads the scan
             this.onloadscan() // raise event to notify than the scan has been loaded (for example to update progress)
             resolve() // resolve current promise (in case scans are loaded in order, allows to load next scan)

@@ -25,7 +25,7 @@ import vuetifyOptions from '../vuetifyOptions';
     el: '#app',
     store,
     vuetify: new Vuetify(vuetifyOptions),
-    
+
     render: h => h(App)
   });
 })();

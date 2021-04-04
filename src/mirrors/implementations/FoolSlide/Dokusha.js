@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ["dokusha.info"],
         home: "http://dokusha.info",
         chapter_url: /^\/read\/.+$/g,
-        
+
         abstract: "FoolSlide",
         abstract_options: {
             base_url: "http://dokusha.info",

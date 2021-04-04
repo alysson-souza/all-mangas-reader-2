@@ -15,14 +15,14 @@ class MirrorsHelper {
 
             /**
              * Loads a page and return an element in which page is loaded
-             * options : 
+             * options :
              *  - nocache: true to prevent page to be loaded from cache
              *  - preventimages: true to prevent images in page to be loaded
              *  - post: true to send message using POST
              *  - dataType: valid jQuery ajax dataType
              *  - data: object to send in accordance with its dataType
-             * @param {*} url 
-             * @param {*} options 
+             * @param {*} url
+             * @param {*} options
              */
             amr.loadPage = function(url, options) {
                 return new Promise((resolve, reject) => {
@@ -62,7 +62,7 @@ class MirrorsHelper {
                         resolve(htmlDocument)
                     }
                     /**
-                     * In Firefox, cookies and referer are not sent properly when using xhr from content script. Override the xhr provider to use the build in right xhr 
+                     * In Firefox, cookies and referer are not sent properly when using xhr from content script. Override the xhr provider to use the build in right xhr
                      * in Firefox and fallback to XMLHttpRequest on other browsers
                      * @see https://discourse.mozilla.org/t/webextension-xmlhttprequest-issues-no-cookies-or-referrer-solved/11224/17
                      */
@@ -79,13 +79,13 @@ class MirrorsHelper {
             }
             /**
              * Loads a url and get JSON
-             * options : 
+             * options :
              *  - nocache: true to prevent cache
              *  - post: true to send message using POST
              *  - dataType: valid jQuery ajax dataType
              *  - data: object to send in accordance with its dataType
-             * @param {*} url 
-             * @param {*} options 
+             * @param {*} url
+             * @param {*} options
              */
             amr.loadJson = function(url, options) {
                 return new Promise((resolve, reject) => {
@@ -129,7 +129,7 @@ class MirrorsHelper {
                         }
                     }
                     /**
-                     * In Firefox, cookies and referer are not sent properly when using xhr from content script. Override the xhr provider to use the build in right xhr 
+                     * In Firefox, cookies and referer are not sent properly when using xhr from content script. Override the xhr provider to use the build in right xhr
                      * in Firefox and fallback to XMLHttpRequest on other browsers
                      * @see https://discourse.mozilla.org/t/webextension-xmlhttprequest-issues-no-cookies-or-referrer-solved/11224/17
                      */
@@ -146,7 +146,7 @@ class MirrorsHelper {
             }
             /**
              * Get a variable value from a script tag, parse it manually
-             * @param {*} varname 
+             * @param {*} varname
              */
             amr.getVariable = function(varname, doc) {
                 return amr.getVariableFromScript(varname, $("#__amr_text_dom__", doc).text())
@@ -215,4 +215,3 @@ class MirrorsHelper {
 }
 
 export default (new MirrorsHelper)
-

@@ -14,13 +14,13 @@ export default class GistStorage extends Storage {
   initAxios() {
     return Axios.create({
       baseURL: 'https://api.github.com/',
-      headers: { 
+      headers: {
         'Authorization': `Bearer ${this.gistSyncSecret}`,
         'Cache-Control': 'no-cache'
       }
     })
   }
-  
+
   reconfig(key, value) {
     this[key] = value
     this.axios = this.initAxios()

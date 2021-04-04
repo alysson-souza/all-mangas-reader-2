@@ -36,11 +36,11 @@ window["ComiCake"] = function(options) {
         let self = this
         $(this.options.chapter_list_selector, doc).each(function (index) {
             res.push([
-                $(this).text(), 
+                $(this).text(),
                 self.stripUrl(self.options.reader_url + $(this).attr("href"))
             ])
         })
-        
+
         return res
     }
 

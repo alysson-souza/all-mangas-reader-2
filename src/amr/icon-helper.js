@@ -94,7 +94,7 @@ class IconHelper {
     }
     /**
      * Draw spinning sharingan on chrome
-     * @param {*} doEase 
+     * @param {*} doEase
      */
     drawIconAtRotation(doEase) {
         if (doEase == undefined) {
@@ -136,7 +136,7 @@ class IconHelper {
     }
     /**
      * Ease for rotation
-     * @param {*} x 
+     * @param {*} x
      */
     ease(x) {
         return (1 - Math.sin(Math.PI / 2 + x * Math.PI)) / 2;

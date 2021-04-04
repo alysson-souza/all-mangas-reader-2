@@ -4,9 +4,9 @@ import * as utils from './utils'
  * Class helping to store data in IndexedDb
  * In AMR V1, objects were stored in WebDB. WebDB is deprecated and Mozilla never implemented WebDB in FireFox
  * In AMR V2, objects are stored through IndexedDB.
- * Handle storage of 
- *  - mirrors definition, 
- *  - mirrors full list of mangas 
+ * Handle storage of
+ *  - mirrors definition,
+ *  - mirrors full list of mangas
  *  - mangas reading list
  *  - bookmarked chapters and scans
  */
@@ -145,8 +145,8 @@ class StoreDB {
     // Accessors for mangas list (full list of mangas from mirror)
     /**
      * Store a list of mangas for a mirror implementation
-     * @param {*} mirror 
-     * @param {*} list 
+     * @param {*} mirror
+     * @param {*} list
      */
     storeListOfMangaForMirror(mirror, list) {
         let store = this;
@@ -161,7 +161,7 @@ class StoreDB {
                     let objectStore = transaction.objectStore("mangalists");
                     let request = objectStore.put({
                         mirrorName: mirror,
-                        list: list 
+                        list: list
                     });
                     request.onsuccess = function (event) {
                         resolve(event.target.result);
@@ -171,7 +171,7 @@ class StoreDB {
     }
     /**
      * Get a list of manga stored from a mirror implementation
-     * @param {*} mirror 
+     * @param {*} mirror
      */
     getListOfMangaForMirror(mirror) {
         let store = this;
@@ -332,7 +332,7 @@ class StoreDB {
     }
     /**
      * Get all bookmarks
-     * @param {*} bm 
+     * @param {*} bm
      */
     getBookmarks() {
         let store = this;
@@ -357,7 +357,7 @@ class StoreDB {
     }
     /**
      * Delete a bookmark
-     * @param {*} bm 
+     * @param {*} bm
      */
     deleteBookmark(key) {
         let store = this;

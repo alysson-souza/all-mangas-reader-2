@@ -36,9 +36,9 @@
           </v-row>
           <v-row >
             <v-col cols="12">
-              <v-btn  
-                  :loading="loadingTests" 
-                  :disabled="loadingTests" 
+              <v-btn
+                  :loading="loadingTests"
+                  :disabled="loadingTests"
                   color="primary"
                   type="submit"
                   form="mirrorTests"
@@ -73,7 +73,7 @@
                 <!-- display generated oututs during test -->
                 <div v-for="(out, ind) in testsResults[index].output" :key="ind">
                   <!-- name, value, display -->
-                  {{out.name}} : 
+                  {{out.name}} :
                   <v-select v-if="out.display === 'select'" :items="out.value" v-model="out.currentValue" class="list-results"></v-select>
                   <div v-if="out.display === 'select'">Selected value : <i>{{ out.currentValue }}</i></div>
                   <span v-if="out.display === 'object'">{{JSON.stringify(out.value, null, 4)}}</span>
@@ -134,7 +134,7 @@ export default {
       search: "", // current search phrase
       tests: tests,
       testsResults: [],
-      currentTest: -1, //current test, display all tests before, 
+      currentTest: -1, //current test, display all tests before,
       forcedValues: {}, // values selected manually to test
       outputs: {}, // values retrieved while testing
       curtest: 0, // current test id
@@ -149,7 +149,7 @@ export default {
   computed: {
     mirrors() {
       return this.$store.state.mirrors.all;
-    }, 
+    },
     nbtests() {
         return this.tests.length;
     },
@@ -161,7 +161,7 @@ export default {
         return nb;
     },
     finishedTests() {
-      //<v-row  v-if="currentTest >= 0 && index <= currentTest && testsResults.length >= index" v-for="(test, index) in tests" 
+      //<v-row  v-if="currentTest >= 0 && index <= currentTest && testsResults.length >= index" v-for="(test, index) in tests"
       let fin = this.tests.filter((val, index) => this.currentTest >= 0 && index <= this.currentTest && this.testsResults.length >= index)
       return fin
     }
@@ -297,7 +297,7 @@ export default {
                     }
                     let allres = [];
                     // if there is only one result, add it to the result array
-                    if (ress.length > 0 && (ress[0] === true || ress[0] === false)) { 
+                    if (ress.length > 0 && (ress[0] === true || ress[0] === false)) {
                         allres.push(ress);
                     } else {
                         allres.push(...ress);
@@ -313,7 +313,7 @@ export default {
                                     name: name,
                                     value: output,
                                     display: unit.display !== undefined && unit.display.length >= o+1 ? unit.display[o] : undefined,
-                                    currentValue: undefined, 
+                                    currentValue: undefined,
                                     buttons: unit.buttons !== undefined && unit.buttons.length >= o+1 ? unit.buttons[o] : undefined
                                 });
                             }
@@ -403,7 +403,7 @@ export default {
         }
       }
       return undefined;
-    }, 
+    },
     /**
      * Opens a url
      */
@@ -412,7 +412,7 @@ export default {
             action: "opentab",
             url: url
         });
-    }, 
+    },
     /**
      * Reloads the tests after a step with a selected value
      */

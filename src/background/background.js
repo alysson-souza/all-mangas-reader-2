@@ -29,7 +29,7 @@ IconHelper.setBlueIcon();
      * Initialize extension versioning --> after options because versionning update can affect options
      */
     let afterLoadingCall = await amrInit()
-    
+
     /**
      * Initialize mirrors list in store from DB or repo
      */

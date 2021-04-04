@@ -23,12 +23,12 @@
             <v-expansion-panel-content>
               <!-- Display options -->
               <div class="text-h6 mb-3">{{i18n('options_web_chapter_desc')}}</div>
-                  
+
               <!-- Display as a book option -->
               <div class="text-h6">{{i18n('option_read_book')}}</div>
-              <v-checkbox v-model="displayBook" @change="setOption('displayBook')" 
+              <v-checkbox v-model="displayBook" @change="setOption('displayBook')"
                       :label="i18n('options_web_chapter_display_book_opt')"></v-checkbox>
-                      
+
               <!-- Reading direction -->
               <div class="text-h6">{{ i18n("options_web_chapter_reading_direction_opt") }}</div>
               <v-radio-group v-model="readingDirection" @change="setOption('readingDirection')" column>
@@ -44,7 +44,7 @@
               <div class="text-h6">{{i18n('option_read_fullchapter')}}</div>
               <v-checkbox v-model="displayFullChapter" @change="setOption('displayFullChapter')"
                       :label="i18n('options_web_chapter_display_full_chapter_opt')"></v-checkbox>
-          
+
               <!-- Scaling mode -->
               <div class="text-h6">{{ i18n("options_web_chapter_resize_mode_opt") }}</div>
               <v-radio-group v-model="resizeMode" @change="setOption('resizeMode')" column>
@@ -119,7 +119,7 @@
               <div class="text-h6">{{i18n('options_gen_dark_desc')}}</div>
               <v-checkbox v-model="dark" @change="setOption('dark')"
                       :label="i18n('options_gen_dark_opt')"></v-checkbox>
-              
+
               <!-- Mangas with new chapters color -->
               <div class="text-h6">{{ i18n("options_gen_colors_new") }}</div>
               <v-radio-group v-model="colornew" @change="setOption('colornew')" row class="colored-radio">
@@ -146,22 +146,22 @@
             <!-- Updates -->
             <v-expansion-panel-header><div class="text-h5 light-blue--text darken-3">{{ i18n("options_gen_updates") }}</div></v-expansion-panel-header>
             <v-expansion-panel-content>
-          
-          
+
+
               <!-- Update chapters list -->
               <div class="text-h6">
                 <v-container fluid class="opt-container">
                   <v-row  >
                     <v-col cols="4" class="sel-title">
-                      {{ i18n("options_gen_update_chap_label") }} : 
+                      {{ i18n("options_gen_update_chap_label") }} :
                     </v-col>
                     <v-col cols="4">
                       <v-select v-model="updatechap" :items="update_chap_values"></v-select>
                     </v-col>
                     <v-col>
-                      <v-btn color="primary" class="btn-sel" small 
-                          @click="updateChaps()" 
-                          :loading="loadingChapters" 
+                      <v-btn color="primary" class="btn-sel" small
+                          @click="updateChaps()"
+                          :loading="loadingChapters"
                           :disabled="loadingChapters">
                           {{i18n("options_update_chap_btn")}}
                       </v-btn>
@@ -173,7 +173,7 @@
               <div class="text-h6">{{i18n('options_gen_stopupdateforaweek_desc')}}</div>
               <v-checkbox v-model="stopupdateforaweek" @change="setOption('stopupdateforaweek')"
                       :label="i18n('options_gen_stopupdateforaweek_opt')"></v-checkbox>
-              
+
               <!-- Update on startup -->
               <div class="text-h6">{{i18n('options_gen_checkmgstart_desc')}}</div>
               <v-checkbox v-model="checkmgstart" @change="setOption('checkmgstart')"
@@ -192,7 +192,7 @@
                 <v-container fluid class="opt-container">
                   <v-row  >
                     <v-col cols="6" class="sel-title">
-                      {{ i18n("options_gen_waitbetweenupdates_opt") }} : 
+                      {{ i18n("options_gen_waitbetweenupdates_opt") }} :
                     </v-col>
                     <v-col cols="6">
                       <v-select v-model="waitbetweenupdates" :items="wait_update_values"></v-select>
@@ -223,7 +223,7 @@
                 <v-container fluid class="opt-container">
                   <v-row  >
                     <v-col cols="6" class="sel-title">
-                      {{ i18n("options_gen_notificationtimer_label") }} : 
+                      {{ i18n("options_gen_notificationtimer_label") }} :
                     </v-col>
                     <v-col cols="6">
                       <v-select v-model="notificationtimer" :items="notificationtimer_values"></v-select>
@@ -235,7 +235,7 @@
               <div class="text-h6">{{i18n('options_gen_notifynewversion_desc')}}</div>
               <v-checkbox v-model="notifynewversion" @change="setOption('notifynewversion')"
                       :label="i18n('options_gen_notifynewversion_opt')"></v-checkbox>
-              
+
               <!--Allow tracking of reading -->
               <div class="text-h6">{{i18n('options_gen_allowtracking_desc')}}</div>
               <v-checkbox v-model="allowtracking" @change="setOption('allowtracking')"
@@ -273,11 +273,11 @@
           <v-expansion-panel>
             <!-- Languages -->
             <v-expansion-panel-header><div class="text-h5 light-blue--text darken-3">{{ i18n("options_sup_languages") }}</div></v-expansion-panel-header>
-            <v-expansion-panel-content>          
+            <v-expansion-panel-content>
               <div class="text-h6">{{i18n('options_sup_languages_desc')}}</div>
-              <Flag 
-                  v-for="lang in alllangs" 
-                  :key="lang.flag" 
+              <Flag
+                  v-for="lang in alllangs"
+                  :key="lang.flag"
                   :value="[lang.flag, isReadable(lang.flag)]"
                   v-on:toggleLanguageSelection="clickReadLanguage(lang.languages)"
                   big
@@ -375,7 +375,7 @@
                 <v-container fluid class="opt-container">
                   <v-row  >
                     <v-col cols="6" class="sel-title">
-                      {{ i18n("options_mangadex_image_server_label") }} : 
+                      {{ i18n("options_mangadex_image_server_label") }} :
                     </v-col>
                     <v-col cols="6">
                       <v-select v-model="mangadexImageServer" :items="mangadex_image_server_values"></v-select>
@@ -400,8 +400,8 @@
                 </template>
               </v-text-field>
               <v-card v-if="arrays.mangadexBlockedGroups.array.length">
-                <v-chip 
-                  v-for="(group, index) in arrays.mangadexBlockedGroups.array" 
+                <v-chip
+                  v-for="(group, index) in arrays.mangadexBlockedGroups.array"
                   :key="index"
                   close
                   @click:close="removeArrayEntry('mangadexBlockedGroups', index)"
@@ -412,7 +412,7 @@
               <!- - Preferred Groups - ->
               <div class="text-h6">{{i18n('options_mangadex_preferred_groups')}}</div>
               <div class="text-body-1">{{i18n('options_mangadex_preferred_groups_label')}}</div>
-              <v-text-field v-model="arrays.mangadexPreferredGroups.value" dense outlined> 
+              <v-text-field v-model="arrays.mangadexPreferredGroups.value" dense outlined>
                 <template v-slot:prepend>
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on }">
@@ -426,8 +426,8 @@
                 </template>
               </v-text-field>
               <v-card v-if="arrays.mangadexPreferredGroups.array.length">
-                <v-chip 
-                  v-for="(group, index) in arrays.mangadexPreferredGroups.array" 
+                <v-chip
+                  v-for="(group, index) in arrays.mangadexPreferredGroups.array"
                   :key="index"
                   close
                   @click:close="removeArrayEntry('mangadexPreferredGroups', index)"
@@ -777,7 +777,7 @@ export default {
             res = res || mirror.languages.split(",").includes(lang);
         }
         return res
-    }, 
+    },
     /**
      * Updates chapters lists
      */
@@ -821,7 +821,7 @@ export default {
             this.$store.dispatch("addRepository", r);
         }
         this.newRepositoryDialog = false;
-    }, 
+    },
     /**
      * Update activation state in store and db (value is already set on mirror object)
      */
@@ -835,13 +835,13 @@ export default {
         return this.$store.state.mangas.all.reduce((count, mg) => {
             return mg.mirror === mirrorName ? count + 1 : count;
         }, 0);
-    }, 
+    },
     /**
      * Determine if a mirror is displayed depending on the language filter
      */
     filterLanguage(mirror) {
         return this.selectedLang === "" || mirror.languages.split(",").includes(this.selectedLang);
-    }, 
+    },
     /**
      * Deactivate all visible mirrors (which can be deactivated)
      */
@@ -853,7 +853,7 @@ export default {
                 _self.changeActivation(mir);
             }
         })
-    }, 
+    },
     /**
      * Activate all visible mirrors (which can be activated)
      */

@@ -7,7 +7,7 @@ import i18n from "./i18n";
  */
 class Notification {
     constructor() {
-        // store current opened notifications 
+        // store current opened notifications
         this.notifications = {};
         // last id of notification
         this.currentId = 0;
@@ -57,14 +57,14 @@ class Notification {
                 // (no one would like to click a manga notification and ending up opening another manga)
                 let curId = this.currentId++;
                 this.notifications["amr_" + curId] = url;
-                
+
                 let notificationOptions = {
                     type: "basic",
                     title: title,
                     message: description,
                     iconUrl: icon
                 };
-                
+
                 // opens the notification.
                 browser.notifications.create("amr_" + curId, notificationOptions);
                 //Auto close notification if required

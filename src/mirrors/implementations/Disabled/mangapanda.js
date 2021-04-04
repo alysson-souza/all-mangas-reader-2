@@ -18,7 +18,7 @@ if (typeof registerMangaObject === 'function') {
             });
             return res
         },
-    
+
         getListChaps: async function (urlManga) {
             let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
             let res = [];
@@ -39,7 +39,7 @@ if (typeof registerMangaObject === 'function') {
             res = res.reverse();
             return res
         },
-    
+
         getInformationsFromCurrentPage: async function (doc, curUrl) {
             var name = $($("#mangainfo h2.c4 a", doc)[0]).text().replace("Manga", "").trim();
             var mangaurl = "http://www.mangapanda.com" + $($("#mangainfo h2.c4 a", doc)[0]).attr("href");
@@ -50,7 +50,7 @@ if (typeof registerMangaObject === 'function') {
                 "currentChapterURL": curChapUrl.trim()
             }
         },
-    
+
         getListImages: async function (doc, curUrl) {
             var res = [];
             $("#pageMenu option", doc).each(function (index) {
@@ -58,7 +58,7 @@ if (typeof registerMangaObject === 'function') {
             });
             return res;
         },
-    
+
         getImageFromPageAndWrite: async function (urlImg, image) {
             let doc = await amr.loadPage(urlImg)
             var src = $("#imgholder img", doc).attr("src");

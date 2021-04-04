@@ -15,6 +15,6 @@ if (typeof registerMangaObject === 'function') {
             chapters_a_sel: 'div.komik_info-chapters a.chapter-link-item',
             page_container_sel: '.main-reading-area',
             img_sel: '.main-reading-area img',
-        },      
+        },
     })
 }

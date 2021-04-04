@@ -1,6 +1,6 @@
 <template>
-    <v-dialog v-model="dialog" 
-    :max-width="800" @keydown.esc="dialog = false" 
+    <v-dialog v-model="dialog"
+    :max-width="800" @keydown.esc="dialog = false"
     v-bind:style="{ zIndex: 5 }">
         <v-card>
             <v-toolbar dark color="primary" dense flat>

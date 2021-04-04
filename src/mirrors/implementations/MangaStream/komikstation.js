@@ -1,5 +1,5 @@
 if (typeof registerMangaObject === 'function') {
-    
+
     registerMangaObject({
         mirrorName: "Komikstation",
         canListFullMangas: false,
@@ -16,6 +16,6 @@ if (typeof registerMangaObject === 'function') {
             search_option: "&post_type=manga",
             manga_title_attr: true,
             manga_url_sel: "div.chapterbody > div > article > div.headpost a"
-        },      
+        },
     })
 }

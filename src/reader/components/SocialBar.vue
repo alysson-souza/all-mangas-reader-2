@@ -51,15 +51,15 @@ export default {
     data() {
         return {
             social_direct: [
-                { icon: "mdi-patreon", tooltip: "reader_social_patreon", 
+                { icon: "mdi-patreon", tooltip: "reader_social_patreon",
                     url: "https://www.patreon.com/allmangasreader", color: "deep-orange lighten-1"},
-                { icon: "mdi-discord", tooltip: "reader_social_discord", 
+                { icon: "mdi-discord", tooltip: "reader_social_discord",
                     url: "https://discord.gg/bdzk9hR", color: "indigo lighten-2" }
             ],
             social_shared: [
-                { icon: "mdi-facebook", tooltip: "reader_social_facebook", 
+                { icon: "mdi-facebook", tooltip: "reader_social_facebook",
                     url: "https://www.facebook.com/allmangasreader/", color: "blue darken-3" },
-                { icon: "mdi-twitter", tooltip: "reader_social_twitter", 
+                { icon: "mdi-twitter", tooltip: "reader_social_twitter",
                     url: "https://twitter.com/AllMangasReader", color: "light-blue" }
             ]
         }

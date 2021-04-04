@@ -16,7 +16,7 @@ import '../flags.css';
 
 export default {
     props: {
-        value: undefined, 
+        value: undefined,
         big: Boolean
     },
     methods: {

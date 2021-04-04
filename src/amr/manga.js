@@ -9,12 +9,12 @@ export const MANGA_UPDATE_START = 1;
 export const MANGA_UPDATE_STOP= 0;
 
 /**
- * Manga entry followed in AMR 
+ * Manga entry followed in AMR
  */
 export default class {
     /**
      * Manga object constructor, copy properties and check validation
-     * @param {*} obj 
+     * @param {*} obj
      */
     constructor(obj) {
         /** key of the manga */

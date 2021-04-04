@@ -182,10 +182,10 @@ export default {
     displayedBookmarks: function() {
       return this.$store.state.bookmarks.all.filter(bm => {
         // filter bookmarks
-        // by type 
+        // by type
         if (bm.type === 'chapter' && !this.toggle_type.includes(1)) return false;
         if (bm.type === 'scan' && !this.toggle_type.includes(0)) return false;
-        
+
         // by manga
         let bmmgname = utils.formatMgName(bm.name);
         if (this.mangasUnSel[bmmgname]) return false;
@@ -198,7 +198,7 @@ export default {
         else if (utils.formatMgName(bm.chapterName).indexOf(sc) >= 0) contains = true;
 
         return contains;
-      }); 
+      });
     },
     nbBookmarks: function() {
       return this.$store.state.bookmarks.all.length;
@@ -222,7 +222,7 @@ export default {
     }));
     await Promise.all(init);
     this.loaded = true
-	}, 
+	},
   methods: {
     i18n: (message, ...args) => i18n(message, ...args),
     switchMgState: function(mg) {

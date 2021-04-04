@@ -14,6 +14,6 @@ if (typeof registerMangaObject === 'function') {
             chapter_information_selector: ".breadcrumb:first > p > :nth-child(3) a",
             images_selector: ".container-chapter-reader img"
         }
-        
+
     });
 }

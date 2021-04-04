@@ -1,6 +1,6 @@
 <template>
     <v-dialog v-model="dialog" max-width="500px">
-      <slot name="activator" 
+      <slot name="activator"
             slot="activator"></slot>
       <v-card>
         <v-card-title>
@@ -8,12 +8,12 @@
         </v-card-title>
         <v-card-text>
             {{
-              !scanName ? 
-                i18n("bookmark_chapter_text", 
-                  chapterName, 
-                  mangaName, 
+              !scanName ?
+                i18n("bookmark_chapter_text",
+                  chapterName,
+                  mangaName,
                   mirrorName) :
-                i18n("bookmark_chapter_scan", 
+                i18n("bookmark_chapter_scan",
                   scanName,
                   chapterName,
                   mangaName,

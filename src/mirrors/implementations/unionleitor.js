@@ -10,8 +10,8 @@ if (typeof registerMangaObject === 'function') {
 
         getMangaList: async function (search) {
             var urlManga = this.home + "busca"
-            let doc = await amr.loadPage(urlManga, { 
-                nocache: true, 
+            let doc = await amr.loadPage(urlManga, {
+                nocache: true,
                 preventimages: true,
                 post: true,
                 data: {
@@ -30,7 +30,7 @@ if (typeof registerMangaObject === 'function') {
             });
             return res
         },
-    
+
         getListChaps: async function (urlManga) {
             let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
             let res = []
@@ -42,7 +42,7 @@ if (typeof registerMangaObject === 'function') {
             })
             return res
         },
-    
+
         getInformationsFromCurrentPage: async function (doc, curUrl) {
             let mga = $('.breadcrumbs div div a:last', doc)
             return {
@@ -51,7 +51,7 @@ if (typeof registerMangaObject === 'function') {
                 "currentChapterURL": curUrl
             };
         },
-    
+
         getListImages: async function (doc, curUrl) {
             let res = []
 
@@ -60,11 +60,11 @@ if (typeof registerMangaObject === 'function') {
             })
             return res;
         },
-    
+
         getImageFromPageAndWrite: async function (urlImg, image) {
-            $(image).attr("src", urlImg); 
+            $(image).attr("src", urlImg);
         },
-        
+
         isCurrentPageAChapterPage: function (doc, curUrl) {
             return $('img.img-manga', doc).length > 0
         }

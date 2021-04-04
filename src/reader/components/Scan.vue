@@ -132,7 +132,7 @@ export default {
   },
   watch: {
     /* watch if loading, error or src changed, reload image */
-    mixed() {  
+    mixed() {
       this.$nextTick(() => this.insertScanInDOM())
     }
   },

@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ["www.scan-fr.co", "scan-fr.co", "www.scan-fr.cc"],
         home: "https://www.scan-fr.cc",
         chapter_url: /^\/manga\/.*\/.+$/g,
-        
+
         abstract: "MyMangaReaderCMS",
         abstract_options: {
             base_url: "https://www.scan-fr.cc",

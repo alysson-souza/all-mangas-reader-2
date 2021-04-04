@@ -42,7 +42,7 @@ class Updater {
      * Check latest version of stable and beta and keep it in localStorage
      */
     async checkLatestPublishedVersion() {
-        let vstable = await this.getVersionFromChromeUpdateFile("https://release.allmangasreader.com/update/chrome.xml"), 
+        let vstable = await this.getVersionFromChromeUpdateFile("https://release.allmangasreader.com/update/chrome.xml"),
             vbeta = await this.getVersionFromChromeUpdateFile("https://release.allmangasreader.com/update/chrome-beta.xml")
         if (vstable) {
             localStorage.latestStableVersion = vstable.version
@@ -55,7 +55,7 @@ class Updater {
     }
 
     async getVersionFromChromeUpdateFile(url) {
-        let config = {	
+        let config = {
             headers: {
                 'Cache-Control' : 'no-cache'
             }
@@ -74,7 +74,7 @@ class Updater {
         }
     }
     /**
-     * Refresh badge and icon 
+     * Refresh badge and icon
      */
     refreshBadgeAndIcon() {
         let nbnew = window['AMR_STORE'].getters.nbNewMangas;

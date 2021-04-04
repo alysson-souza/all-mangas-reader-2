@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ["reader.deathtollscans.net"],
         home: "https://reader.deathtollscans.net/",
         chapter_url: /^\/read\/.+$/g,
-        
+
         abstract: "FoolSlide",
         abstract_options: {
             base_url: "https://reader.deathtollscans.net",

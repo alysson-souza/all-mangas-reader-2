@@ -11,6 +11,6 @@ if (typeof registerMangaObject === 'function') {
         abstract_options: {
             reader_url: "https://read.ptscans.com"
         }
-        
+
     });
 }

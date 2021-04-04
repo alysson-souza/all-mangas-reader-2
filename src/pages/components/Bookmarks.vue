@@ -4,16 +4,16 @@
     <v-row  >
       <v-col cols="12" sm="6" :lg="getSize()" v-for="bm in sortBookmarkList" :key="bm.key">
         <v-card tile>
-          <BookmarkScan 
+          <BookmarkScan
               v-if="bm.type == 'scan'"
-              :bookmark="bm" 
-              @click-scan="setScan(bm)" 
+              :bookmark="bm"
+              @click-scan="setScan(bm)"
               @change-url="changeUrl"
               :height="getHeight()" />
           <v-row>
             <v-col>
               <div class="text-h6">
-                <img :src="getIcon(bm.mirror)" /> 
+                <img :src="getIcon(bm.mirror)" />
                 {{bm.name}} - {{bm.chapName}}
               </div>
               <p class="grey--text mb-0 text-subtitle-2" v-if="bm.scanUrl">{{i18n("bookmarks_scan_number", bm.scanName)}}</p>
@@ -110,7 +110,7 @@ export default {
                 }
             } else if (!a.scanName && b.scanName) cmps = -1;
             else if (a.scanName && !b.scanName) cmps = 1;
-            
+
             return cmp === 0 ? (
                 cmpc === 0 ? -cmps : -cmpc
             ) : cmp;
@@ -179,4 +179,3 @@ export default {
   letter-spacing: normal !important;
 }
 </style>
-

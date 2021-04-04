@@ -58,7 +58,7 @@ const getters = {
             }
         }
         return false;
-    }, 
+    },
     /**
      * Return true is there is unread chapters in manga list
      */
@@ -79,7 +79,7 @@ const getters = {
 const actions = {
     /**
      * Retrieve manga list from DB, initialize the store
-     * @param {*} param0 
+     * @param {*} param0
      */
     async initMangasFromDB({ commit }) {
         await storedb.getMangaList().then(mangasdb => {
@@ -88,8 +88,8 @@ const actions = {
     },
     /**
      * Update a manga in the store
-     * @param {*} param0 
-     * @param {*} manga 
+     * @param {*} param0
+     * @param {*} manga
      */
     async updateManga({ dispatch, commit }, manga) {
         await storedb.storeManga(manga);
@@ -101,10 +101,10 @@ const actions = {
             console.error(e)
         }
     },
-    
+
     /**
      * Change manga display mode
-     * @param {*} vuex object 
+     * @param {*} vuex object
      * @param {*} message containing url of the manga and new display mode
      */
     async setMangaDisplayMode({ dispatch, commit, getters }, message) {
@@ -114,7 +114,7 @@ const actions = {
     },
     /**
      * Change manga reader layout mode
-     * @param {*} vuex object 
+     * @param {*} vuex object
      * @param {*} message containing url of the manga and new layout mode
      */
     async setMangaLayoutMode({ dispatch, commit, getters }, message) {
@@ -124,7 +124,7 @@ const actions = {
     },
     /**
      * Change manga reader webtoon mode
-     * @param {*} vuex object 
+     * @param {*} vuex object
      * @param {*} message containing url of the manga and new webtoon mode
      */
     async setMangaWebtoonMode({ dispatch, commit, getters }, message) {
@@ -134,7 +134,7 @@ const actions = {
     },
     /**
      * Change manga display name
-     * @param {*} vuex object 
+     * @param {*} vuex object
      * @param {*} message containing manga object
      */
     async setMangaDisplayName({ dispatch, commit, getters }, message) {
@@ -143,7 +143,7 @@ const actions = {
     },
     /**
      * Reset manga reading for a manga to first chapter
-     * @param {*} vuex object 
+     * @param {*} vuex object
      * @param {*} message containing url of the manga
      */
     async resetManga({ dispatch, commit, getters }, message) {
@@ -157,7 +157,7 @@ const actions = {
     /**
      * Save the state of reading (currentChapter and currentScanUrl)
      * If the same chapter is reopened next time, it goes to currentScanUrl
-     * @param {*} vuex object 
+     * @param {*} vuex object
      * @param {*} message containing url of the manga
      */
     async saveCurrentState({ dispatch, commit, getters }, message) {
@@ -254,7 +254,7 @@ const actions = {
     /**
      * Called when a manga entry is consulted
      * Returns a Promise
-     * @param {*} vuex object 
+     * @param {*} vuex object
      * @param {*} message message contains info on a manga and flag fromSite
      */
     async consultManga({ dispatch, commit, getters }, message) {
@@ -264,7 +264,7 @@ const actions = {
             isNew = false,
             mg = state.all.find(manga => manga.key === key);
 
-        let mgchap = utils.chapPath(mg.lastChapterReadURL), 
+        let mgchap = utils.chapPath(mg.lastChapterReadURL),
             messchap = utils.chapPath(message.lastChapterReadURL);
         for (let i = 0; i < mg.listChaps.length; i++) {
             if (utils.chapPath(mg.listChaps[i][1]) === mgchap) posOld = i;
@@ -279,7 +279,7 @@ const actions = {
                     try {
                         let listChaps = await dispatch("getMangaListOfChapters", mg)
                         /**
-                         * Manage the case in which the returned list contains multiple chapters list 
+                         * Manage the case in which the returned list contains multiple chapters list
                          * for different languages
                          */
                         if (listChaps !== undefined && !Array.isArray(listChaps)) {
@@ -299,7 +299,7 @@ const actions = {
                         }
                         if (listChaps.length > 0) {
                             commit('updateMangaListChaps', { key: mg.key, listChaps: listChaps });
-                            let mgchap = utils.chapPath(mg.lastChapterReadURL), 
+                            let mgchap = utils.chapPath(mg.lastChapterReadURL),
                                 messchap = utils.chapPath(message.lastChapterReadURL);
                             for (let i = 0; i < listChaps.length; i++) {
                                 if (utils.chapPath(listChaps[i][1]) === mgchap) posOld = i;
@@ -470,8 +470,8 @@ const actions = {
 
     /**
      * Update all mangas chapters lists
-     * @param {*} param0 
-     * @param {*} force force update if true. If false, check last time manga has been updated and take parameter pause for a week into account 
+     * @param {*} param0
+     * @param {*} force force update if true. If false, check last time manga has been updated and take parameter pause for a week into account
      */
     async updateChaptersLists({ dispatch, commit, getters, state, rootState }, {force} = {force: true}) {
         let tsstopspin;
@@ -515,11 +515,11 @@ const actions = {
 
             // we update if it has been forced by the user (through option or timers page) or if we need to update
             if (force || utils.shouldCheckForUpdate(mg, rootState.options)) {
-                
+
                 if (!(mg.mirror in mirrorTasks)) {
                     mirrorTasks[mg.mirror] = []
                 }
-                
+
                 mirrorTasks[mg.mirror].push(() => mgupdate(mg, delay))
             }
         }
@@ -542,10 +542,10 @@ const actions = {
             }
         }
     },
-    
+
     /**
      * Change the read top on a manga
-     * @param {*} vuex object 
+     * @param {*} vuex object
      * @param {*} message message contains info on a manga
      */
     async markMangaReadTop({ dispatch, commit, getters, rootState }, message) {
@@ -558,8 +558,8 @@ const actions = {
             //     let titMg = utils.formatMgName(mg.name);
             //     let smgs = state.all.filter(manga => utils.formatMgName(manga.name) === titMg)
             //     for (let smg of smgs) {
-            //         commit('setMangaReadTop', { 
-            //             url: smg.url, 
+            //         commit('setMangaReadTop', {
+            //             url: smg.url,
             //             read: message.read,
             //             mirror: message.mirror,
             //             language: message.language
@@ -573,7 +573,7 @@ const actions = {
     },
     /**
      * Change the update top on a manga
-     * @param {*} vuex object 
+     * @param {*} vuex object
      * @param {*} message message contains info on a manga
      */
     async markMangaUpdateTop({ dispatch, commit, getters, rootState }, message) {
@@ -586,8 +586,8 @@ const actions = {
             //     let titMg = utils.formatMgName(mg.name);
             //     let smgs = state.all.filter(manga => utils.formatMgName(manga.name) === titMg)
             //     for (let smg of smgs) {
-            //         commit('setMangaUpdateTop', { 
-            //             url: smg.url, 
+            //         commit('setMangaUpdateTop', {
+            //             url: smg.url,
             //             update: message.update,
             //             mirror: message.mirror,
             //             language: message.language
@@ -617,8 +617,8 @@ const actions = {
     },
     /**
      * Given its key, deletes a manga from reading list
-     * @param {*} param0 
-     * @param {*} message 
+     * @param {*} param0
+     * @param {*} message
      */
     async deleteManga({ dispatch, commit, getters, rootState }, message) {
         let mg = state.all.find(manga => manga.key === message.key);
@@ -633,7 +633,7 @@ const actions = {
     },
     /**
      * Import sample mangas on user request
-     * @param {*} param0 
+     * @param {*} param0
      */
     importSamples({ dispatch }) {
         utils.debug("Importing samples manga in AMR (" + samples.length + " mangas to import)");
@@ -644,8 +644,8 @@ const actions = {
     },
     /**
      * Add category
-     * @param {*} param0 
-     * @param {*} obj containing key of the manga and name of the category 
+     * @param {*} param0
+     * @param {*} obj containing key of the manga and name of the category
      */
     addCategoryToManga({ commit, dispatch }, obj) {
         let mg = state.all.find(manga => manga.key === obj.key);
@@ -654,8 +654,8 @@ const actions = {
     },
     /**
      * Remove category
-     * @param {*} param0 
-     * @param {*} param0 
+     * @param {*} param0
+     * @param {*} param0
      */
     removeCategoryFromManga({ commit, dispatch }, obj) {
         let mg = state.all.find(manga => manga.key === obj.key);
@@ -664,18 +664,18 @@ const actions = {
     },
 
     /**
-     * Updates categories to add language categories if there is mangas in more 
+     * Updates categories to add language categories if there is mangas in more
      * than one different language
-     * @param {*} param0 
+     * @param {*} param0
      */
     updateLanguageCategories({ commit, dispatch, rootState }) {
         let catsLang = rootState.options.categoriesStates.filter(cat => cat.type === 'language')
         let langs = []
         for (let mg of state.all) {
             let l = utils.readLanguage(mg)
-            if (l !== "aa" && !langs.includes(l)) langs.push(l) // do not create a category for aa which corresponds to multiple languages possible 
+            if (l !== "aa" && !langs.includes(l)) langs.push(l) // do not create a category for aa which corresponds to multiple languages possible
         }
-        if (catsLang.length > 0 && langs.length <= 1) { 
+        if (catsLang.length > 0 && langs.length <= 1) {
             // remove language categories, only one language
             for (let cat of catsLang) {
                 dispatch("removeLanguageCategory", cat.name)
@@ -714,15 +714,15 @@ const actions = {
 const mutations = {
     /**
      * Set the list of mangas in the store
-     * @param {*} state 
-     * @param {*} mangas 
+     * @param {*} state
+     * @param {*} mangas
      */
     setMangas(state, mangas) {
         state.all = mangas
     },
     /**
      * Change manga display mode
-     * @param {*} state 
+     * @param {*} state
      * @param {*} param1 url of the manga and display mode
      */
     setMangaDisplayMode(state, { url, mirror, language, display }) {
@@ -732,7 +732,7 @@ const mutations = {
     },
     /**
      * Change manga reader layout mode
-     * @param {*} state 
+     * @param {*} state
      * @param {*} param1 url of the manga and layout mode
      */
     setMangaLayoutMode(state, { url, mirror, language, layout }) {
@@ -742,7 +742,7 @@ const mutations = {
     },
     /**
      * Change manga reader webtoon mode
-     * @param {*} state 
+     * @param {*} state
      * @param {*} param1 url of the manga and layout mode
      */
     setMangaWebtoonMode(state, { url, mirror, language, webtoon }) {
@@ -752,7 +752,7 @@ const mutations = {
     },
     /**
      * Change manga display name
-     * @param {*} state 
+     * @param {*} state
      * @param {*} param1 url of the manga and layout mode
      */
     setMangaDisplayName(state, { key, displayName }) {
@@ -761,7 +761,7 @@ const mutations = {
     },
     /**
      * Change manga read top
-     * @param {*} state 
+     * @param {*} state
      * @param {*} param1 url of the manga and read top
      */
     setMangaReadTop(state, { url, read, mirror, language }) {
@@ -771,7 +771,7 @@ const mutations = {
     },
     /**
      * Change manga update top
-     * @param {*} state 
+     * @param {*} state
      * @param {*} param1 url of the manga and update top
      */
     setMangaUpdateTop(state, { url, update, mirror, language }) {
@@ -781,8 +781,8 @@ const mutations = {
     },
     /**
      * Set upts to now (means : 'last time we found a new chapter is now');
-     * @param {*} state 
-     * @param {*} param1 
+     * @param {*} state
+     * @param {*} param1
      */
     updateMangaLastChapTime(state, { key }) {
         let mg = state.all.find(manga => manga.key === key)
@@ -790,8 +790,8 @@ const mutations = {
     },
     /**
      * Update the list of chapters of a manga
-     * @param {*} state 
-     * @param {*} param1 
+     * @param {*} state
+     * @param {*} param1
      */
     updateMangaListChaps(state, { key, listChaps }) {
         let mg = state.all.find(manga => manga.key === key)
@@ -799,8 +799,8 @@ const mutations = {
     },
     /**
      * Update the list of languages supported of a manga
-     * @param {*} state 
-     * @param {*} param1 
+     * @param {*} state
+     * @param {*} param1
      */
     updateMangaListLangs(state, { key, langs }) {
         let mg = state.all.find(manga => manga.key === key)
@@ -808,8 +808,8 @@ const mutations = {
     },
     /**
      * Update the last read chapter of a manga
-     * @param {*} state 
-     * @param {*} param1 
+     * @param {*} state
+     * @param {*} param1
      */
     updateMangaLastChapter(state, { key, obj }) {
         let mg = state.all.find(manga => manga.key === key)
@@ -823,7 +823,7 @@ const mutations = {
     },
     /**
      * Change manga informations when a manga is consulted, update some of the properties
-     * @param {*} state 
+     * @param {*} state
      * @param {*} param1 key of the manga and informations
      */
     updateMangaEntryWithInfos(state, { key, obj }) {
@@ -862,7 +862,7 @@ const mutations = {
     },
     /**
      * Reset manga reading for a manga to first chapter
-     * @param {*} state 
+     * @param {*} state
      * @param {*} param1 url of the manga
      */
     resetManga(state, { url, mirror, language }) {
@@ -877,7 +877,7 @@ const mutations = {
     },
     /**
      * Save current state (currentChapter, currentScanUrl)
-     * @param {*} state 
+     * @param {*} state
      * @param {*} param1 url of the manga
      */
     saveCurrentState(state, { url, mirror, language, currentChapter, currentScanUrl }) {
@@ -890,7 +890,7 @@ const mutations = {
     },
     /**
      * Create a new manga
-     * @param {*} state 
+     * @param {*} state
      * @param {*} mgdef object containing manga info
      */
     createManga(state, mgdef) {
@@ -907,10 +907,10 @@ const mutations = {
         }
         mg.cats = [...(new Set(mg.cats))]
         state.all.push(mg);
-    }, 
+    },
     /**
      * Create a new manga
-     * @param {*} state 
+     * @param {*} state
      * @param {*} mgdef object containing manga info
      */
     deleteManga(state, key) {
@@ -918,10 +918,10 @@ const mutations = {
         if (mgindex >= 0) {
             state.all.splice(mgindex, 1);
         }
-    }, 
+    },
     /**
      * Links a category to a manga
-     * @param {*} state 
+     * @param {*} state
      * @param {*} param1 containing key of the manga and name of the category to add
      */
     addCategoryToManga(state, {key, name}) {
@@ -934,7 +934,7 @@ const mutations = {
     },
     /**
      * Unlink a category from a manga
-     * @param {*} state 
+     * @param {*} state
      * @param {*} param1 containing key of the manga and name of the category to remove
      */
     removeCategoryFromManga(state, {key, name}) {

@@ -17,19 +17,19 @@ export default class ChapterLoader {
         this.scansProvider = null
     }
     /**
-     * Initialize the Chapter loading : 
+     * Initialize the Chapter loading :
      *  - if this.url is not null, load the chapter in background
      *  - check if it is a chapter page through implementation
      *  - get informations from page using implementation
      *  - get images from page
-     * @param {*} url 
+     * @param {*} url
      */
     async checkAndLoadInfos() {
         let url = this.url
         if (!url) url = window.location.href
 
         let data = await browser.runtime.sendMessage({
-            action: "getChapterData", 
+            action: "getChapterData",
             url: url,
             mirrorName: mirrorImpl.get().mirrorName, // assuming we read on the same mirror (no other possibilities for now...)
             language: pageData.state.language // and in the same language...
@@ -40,8 +40,8 @@ export default class ChapterLoader {
         this.title = data.title
     }
 
-    /** 
-     * This method allows to pre load the scans without switching to this chapter in the current state 
+    /**
+     * This method allows to pre load the scans without switching to this chapter in the current state
      */
     loadScans() {
         console.log((this.url ? this.url : 'current page') + " --> " + this.images.length + " images to load in background");
@@ -51,7 +51,7 @@ export default class ChapterLoader {
     }
 
     /**
-     * Once checkAndLoadInfos has been called, 
+     * Once checkAndLoadInfos has been called,
      * loadInReader switch the current state to this specific chapter to read
      */
     loadInReader(options) {

@@ -24,7 +24,7 @@ const default_options = {
 
     addauto: 1, // automatically mark chapters as read while reading
     markwhendownload: 0, // mark mangas as read when all images downloaded
-    prefetch: 1, // load next chapter in background while reading 
+    prefetch: 1, // load next chapter in background while reading
     load: 1, //See loading progression in the title bar
     imgorder: 0, //Load scans in order
 
@@ -32,7 +32,7 @@ const default_options = {
 
     thinscan: THINSCAN.default,
     webtoonDefault: 0, // Should webtoon mode be the default or not
-    
+
     resize: 1, // resize scans to fit in viewport  // DEPRECATED WITH NEW READER (A search for this term gives lots of results so removing it later)
 
     /**
@@ -65,7 +65,7 @@ const default_options = {
     notifynewversion: isFirefox() ? 0 : 1, //do we notify in the popup if the app is not the latest published version
     allowtracking: 0, // send informations to tracking tool
     allowtrackingdone: 0, // user has chosen to let amr track his reading / or not
-    
+
     /** Sync options */
     syncEnabled: 0,
     gistSyncEnabled: 0,
@@ -74,7 +74,7 @@ const default_options = {
 
     /** Search Options */
     searchOpenSeries: 0,
-    
+
 
     /** Language options */
     readlanguages: ["en", "gb"], // default language is english. On install, the user language is added to this list
@@ -82,9 +82,9 @@ const default_options = {
 
     /**
      * Categories states, each custom category is stored in localStorage in this array
-     * states are 
-     *  - include (include mangas from this cat), 
-     *  - exclude (exclude manga from this cat), 
+     * states are
+     *  - include (include mangas from this cat),
+     *  - exclude (exclude manga from this cat),
      *  - <empty> (does not care of this cat)
      */
     categoriesStates: [
@@ -141,7 +141,7 @@ const getters = {
 const actions = {
     /**
      * Override default options with options values in localStorage
-     * @param {*} param0 
+     * @param {*} param0
      */
     initOptions({ commit, dispatch, state }) {
         for (let key of Object.keys(state)) {
@@ -159,7 +159,7 @@ const actions = {
     },
     /**
      * Set an option
-     * @param {*} param0 
+     * @param {*} param0
      * @param {*} keyValObj object with key and value fields
      */
     setOption({ commit, dispatch }, keyValObj) {
@@ -168,8 +168,8 @@ const actions = {
     },
     /**
      * Adds a category in categories states and save
-     * @param {*} param0 
-     * @param {*} name 
+     * @param {*} param0
+     * @param {*} name
      */
     addCategory({ commit, dispatch, state }, name) {
         commit('addCategory', name);
@@ -177,8 +177,8 @@ const actions = {
     },
     /**
      * Remove a non native category from categories states and save
-     * @param {*} param0 
-     * @param {*} name 
+     * @param {*} param0
+     * @param {*} name
      */
     removeCategory({ commit, dispatch, state, rootState }, name) {
         commit('removeCategory', name);
@@ -209,8 +209,8 @@ const actions = {
     },
     /**
      * Adds a language category in categories states and save
-     * @param {*} param0 
-     * @param {*} name 
+     * @param {*} param0
+     * @param {*} name
      */
     addLanguageCategory({ commit, dispatch, state }, name) {
         commit('addLanguageCategory', name);
@@ -218,8 +218,8 @@ const actions = {
     },
     /**
      * Remove a language category from categories states and save
-     * @param {*} param0 
-     * @param {*} name 
+     * @param {*} param0
+     * @param {*} name
      */
     removeLanguageCategory({ commit, dispatch, state, rootState }, name) {
         commit('removeLanguageCategory', name);
@@ -227,8 +227,8 @@ const actions = {
     },
     /**
      * Updates a categories state and save
-     * @param {*} param0 
-     * @param {*} catObj 
+     * @param {*} param0
+     * @param {*} catObj
      */
     updateCategory({ commit, dispatch, state }, catObj) {
         commit('updateCategory', catObj);
@@ -245,8 +245,8 @@ const actions = {
     },
     /**
      * Add a language to readable languages list
-     * @param {*} param0 
-     * @param {*} lang 
+     * @param {*} param0
+     * @param {*} lang
      */
     addReadLanguage({ commit, state }, lang) {
         commit('addReadLanguage', lang);
@@ -254,8 +254,8 @@ const actions = {
     },
     /**
      * Remove a language from readable languages list
-     * @param {*} param0 
-     * @param {*} lang 
+     * @param {*} param0
+     * @param {*} lang
      */
     removeReadLanguage({ commit, state }, lang) {
         commit('removeReadLanguage', lang);
@@ -273,15 +273,15 @@ const actions = {
 const mutations = {
     /**
      * Update options
-     * @param {*} state 
-     * @param {*} opts object ovveriding defaults 
+     * @param {*} state
+     * @param {*} opts object ovveriding defaults
      */
     extendOptions(state, opts) {
         Object.assign(state, opts);
     },
     /**
      * Set {key, value} option
-     * @param {*} state 
+     * @param {*} state
      * @param {*} obj containing key and value
      */
     setOption(state, { key, value }) {
@@ -290,7 +290,7 @@ const mutations = {
     },
     /**
      * Set {key, value} option
-     * @param {*} state 
+     * @param {*} state
      * @param {*} obj containing key and value
      */
     setMangadexOption(state, { key, value }) {
@@ -299,8 +299,8 @@ const mutations = {
     },
     /**
      * Adds a category in categories states
-     * @param {*} state 
-     * @param {*} name 
+     * @param {*} state
+     * @param {*} name
      */
     addCategory(state, name) {
         let toadd = {
@@ -311,8 +311,8 @@ const mutations = {
     },
     /**
      * Remove a non native category from categories states
-     * @param {*} state 
-     * @param {*} name 
+     * @param {*} state
+     * @param {*} name
      */
     removeCategory(state, name) {
         let index = state.categoriesStates.findIndex(cat => cat.type !== "native" && cat.type !== "language" && cat.name === name);
@@ -320,8 +320,8 @@ const mutations = {
     },
     /**
      * Adds a language category in categories states
-     * @param {*} state 
-     * @param {*} name 
+     * @param {*} state
+     * @param {*} name
      */
     addLanguageCategory(state, name) {
         let toadd = {
@@ -333,8 +333,8 @@ const mutations = {
     },
     /**
      * Remove a language category from categories states
-     * @param {*} state 
-     * @param {*} name 
+     * @param {*} state
+     * @param {*} name
      */
     removeLanguageCategory(state, name) {
         let index = state.categoriesStates.findIndex(cat => cat.type === "language" && cat.name === name);
@@ -342,8 +342,8 @@ const mutations = {
     },
     /**
      * Updates a categories state
-     * @param {*} state 
-     * @param {*} param1 
+     * @param {*} state
+     * @param {*} param1
      */
     updateCategory(state, { name, catstate }) {
         let cat = state.categoriesStates.find(cat => cat.name === name);
@@ -351,8 +351,8 @@ const mutations = {
     },
     /**
      * Updates a categories name
-     * @param {*} state 
-     * @param {*} param1 
+     * @param {*} state
+     * @param {*} param1
      */
     updateCategoryName(state, { oldname, newname }) {
         let cat = state.categoriesStates.find(cat => cat.name === oldname);
@@ -360,16 +360,16 @@ const mutations = {
     },
     /**
      * Adds a readable language to the list
-     * @param {*} state 
-     * @param {*} lang 
+     * @param {*} state
+     * @param {*} lang
      */
     addReadLanguage(state, lang) {
         state.readlanguages.push(lang);
     },
     /**
      * Removes a readable language from the list
-     * @param {*} state 
-     * @param {*} lang 
+     * @param {*} state
+     * @param {*} lang
      */
     removeReadLanguage(state, lang) {
         let index = state.readlanguages.indexOf(lang);

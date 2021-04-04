@@ -2,7 +2,7 @@ import Vue from "vue";
 
 /**
  * Encapsulate data collected from mirror implementation to be retrieved everywhere
- */ 
+ */
 export default {
     state: {},
     load(object) {

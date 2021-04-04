@@ -24,7 +24,7 @@ const getters = {
 const actions = {
     /**
      * Get bookmarks from local database
-     * @param {*} param0 
+     * @param {*} param0
      */
     async initBookmarksFromDB({ commit, dispatch }) {
         let bookmarks = await storedb.getBookmarks(); // Get bookmarks from local database
@@ -33,8 +33,8 @@ const actions = {
     },
     /**
      * Create a bookmark in the store
-     * @param {*} param0 
-     * @param {*} bm 
+     * @param {*} param0
+     * @param {*} bm
      */
     async createBookmark({ commit }, bm) {
         commit('createBookmark', bm);
@@ -43,7 +43,7 @@ const actions = {
     },
     /**
      * Updates the note on a bookmark
-     * @param {*} param0 
+     * @param {*} param0
      * @param {*} bm bookmark with new note
      */
     async updateBookmarkNote({ commit }, bm) {
@@ -52,8 +52,8 @@ const actions = {
     },
     /**
      * Delete a bookmark in the store
-     * @param {*} param0 
-     * @param {*} key 
+     * @param {*} param0
+     * @param {*} key
      */
     async deleteBookmark({ commit }, {chapUrl, scanUrl, mirror}) {
         let key = utils.mangaKey(chapUrl, mirror) + (scanUrl ? "_" + utils.mangaKey(scanUrl, mirror) : "")
@@ -75,8 +75,8 @@ const actions = {
 const mutations = {
     /**
      * Set the list of bookmarks in the store
-     * @param {*} state 
-     * @param {*} bookmarks 
+     * @param {*} state
+     * @param {*} bookmarks
      */
     setBookmarks(state, bookmarks) {
         state.all = []
@@ -84,7 +84,7 @@ const mutations = {
     },
     /**
      * Create a new bookmark
-     * @param {*} state 
+     * @param {*} state
      * @param {*} bm object containing bookmark info
      */
     createBookmark(state, bm) {
@@ -92,10 +92,10 @@ const mutations = {
             bm.key = utils.mangaKey(bm.chapUrl, bm.mirror) + (bm.scanUrl ? "_" + utils.mangaKey(bm.scanUrl, bm.mirror) : "")
         }
         state.all.push(bm)
-    }, 
+    },
     /**
      * Updates the note on a bookmark
-     * @param {*} state 
+     * @param {*} state
      * @param {*} bm bookmark with new note
      */
     async updateBookmarkNote(state, bm) {
@@ -107,7 +107,7 @@ const mutations = {
     },
     /**
      * Delete a bookmark
-     * @param {*} state 
+     * @param {*} state
      * @param {*} key key of the bookmark to delete
      */
     deleteBookmark(state, key) {
@@ -115,7 +115,7 @@ const mutations = {
         if (bmindex >= 0) {
             state.all.splice(bmindex, 1);
         }
-    }, 
+    },
 }
 
 export default {

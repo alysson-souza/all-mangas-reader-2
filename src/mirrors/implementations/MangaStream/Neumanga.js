@@ -1,5 +1,5 @@
 if (typeof registerMangaObject === 'function') {
-    
+
     registerMangaObject({
         mirrorName: "Neumanga",
         canListFullMangas: false,
@@ -23,7 +23,7 @@ if (typeof registerMangaObject === 'function') {
             img_sel: "img.imagechap",
             img_src: "data-src",
             search_json: false
-            
-        },      
+
+        },
     })
 }

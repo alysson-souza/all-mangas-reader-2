@@ -7,10 +7,10 @@ if (typeof registerMangaObject === 'function') {
         domains: ["submanga.online", "submanga.com", "submanga.io"],
         home: "https://submanga.online/",
         chapter_url: /^\/manga\/.*\/.+$/g,
-        
+
         getMangaList: async function (search) {
             let doc = await amr.loadPage(
-                "https://submanga.online/mangas/buscar", 
+                "https://submanga.online/mangas/buscar",
                 {
                     preventimages: true,
                     data: {q:search},
@@ -23,7 +23,7 @@ if (typeof registerMangaObject === 'function') {
             });
             return res
         },
-    
+
         getListChaps: async function (urlManga) {
             let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
             let res = []
@@ -32,7 +32,7 @@ if (typeof registerMangaObject === 'function') {
             })
             return res
         },
-        
+
         getInformationsFromCurrentPage: async function (doc, curUrl) {
             if ($("#boton.anterior", doc).length > 0) { // reading from reader
                 let chapurl = $("meta[property='og:url']").attr("content");
@@ -57,7 +57,7 @@ if (typeof registerMangaObject === 'function') {
                 }
             }
         },
-    
+
         getListImages: async function(doc, curUrl) {
             let getimgs = function(doc, url) {
                 let res = []
@@ -75,13 +75,13 @@ if (typeof registerMangaObject === 'function') {
                 return getimgs(doc, $("meta[property='og:url']").attr("content"))
             }
         },
-    
+
         getImageFromPageAndWrite: async function(urlImg, image) {
             let doc = await amr.loadPage(urlImg)
             var src = $("#page_img", doc).attr("src");
             $(image).attr("src", "https://submanga.online" + src);
         },
-        
+
         isCurrentPageAChapterPage: function (doc, curUrl) {
             return $("a[href^='/mangas/leermanga/']", doc).length > 0 || $("#page_img", doc).length > 0;
         }
