@@ -115,15 +115,15 @@
                 <!-- Previous chapter button -->
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
-                    <v-btn v-on="on" icon v-show="(direction == 'ltr' || !invertKeys ? !firstChapter : !lastChapter)"
-                      @click.stop="direction == 'ltr' ? goPreviousChapter() : goNextChapter()" class="btn-huge">
+                    <v-btn v-on="on" icon v-show="(shouldInvertKeys ?  !lastChapter : !firstChapter)"
+                      @click.stop="shouldInvertKeys ?  goNextChapter() : goPreviousChapter()" class="btn-huge">
                       <v-icon>mdi-chevron-left</v-icon>
                     </v-btn>
                   </template>
                   <span>
-                    {{ direction == 'ltr' || !invertKeys ?
-                      i18n("list_mg_act_prev") :
-                      i18n("list_mg_act_next") + ' ' + (nextchapLoading ? i18n("reader_loading", Math.floor(nextchapProgress)) : '')
+                    {{ shouldInvertKeys ?
+                      i18n("list_mg_act_next") + ' ' + (nextchapLoading ? i18n("reader_loading", Math.floor(nextchapProgress)) : '') :
+                      i18n("list_mg_act_prev")
                     }}
                   </span>
                 </v-tooltip>
@@ -141,15 +141,15 @@
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
                     <!-- Next chapter button -->
-                    <v-btn v-on="on" icon v-show="(direction == 'ltr' || !invertKeys ? !lastChapter : !firstChapter)"
-                      @click.stop="direction == 'ltr' ? goNextChapter() : goPreviousChapter()" class="btn-huge">
+                    <v-btn v-on="on" icon v-show="(shouldInvertKeys ? !firstChapter : !lastChapter)"
+                      @click.stop="shouldInvertKeys ? goPreviousChapter() : goNextChapter()" class="btn-huge">
                       <v-icon>mdi-chevron-right</v-icon>
                     </v-btn>
                   </template>
                   <span>
-                    {{ direction == 'ltr' || !invertKeys ?
-                      i18n("list_mg_act_next") + ' ' + (nextchapLoading ? i18n("reader_loading", Math.floor(nextchapProgress)) : '') :
-                      i18n("list_mg_act_prev")
+                    {{ shouldInvertKeys ?
+                      i18n("list_mg_act_prev") :
+                      i18n("list_mg_act_next") + ' ' + (nextchapLoading ? i18n("reader_loading", Math.floor(nextchapProgress)) : '')
                     }}
                   </span>
                 </v-tooltip>
@@ -503,7 +503,8 @@
               :drawer="drawer"
               :webtoonMode="webtoonMode"
               :maxWidthValue="maxWidthValue"
-              :scaleUp="scaleUp" />
+              :scaleUp="scaleUp"
+              :shouldInvertKeys="shouldInvertKeys" />
     </v-main>
   </v-app>
 </template>
@@ -742,7 +743,13 @@
       /* Top telling if we already tried loading next chapter */
       nextchapLoading() {
         return this.nextChapterLoader && this.nextChapterLoader.scansProvider
-      }
+      },
+      /**
+       * If UI buttons and keys should be flipped
+       */
+      shouldInvertKeys() {
+        return this.direction === 'rtl' && this.invertKeys && !this.fullchapter;
+      },
     },
     components: { Reader, Scan, WizDialog, BookmarkPopup, ShortcutsPopup, SocialBar },
     methods: {

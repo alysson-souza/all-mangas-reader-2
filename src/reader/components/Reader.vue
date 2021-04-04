@@ -19,49 +19,13 @@
             :class="{display: hover, 'shrink-draw': drawer}"
             slot-scope="{ hover }">
             <!-- Current page state + previous next buttons -->
-            <v-row   class="amr-page-next-prev">
-                <v-col class="my-2" cols="12">
-                    <v-toolbar flat>
-                        <!-- Previous scan button -->
-                        <v-tooltip bottom>
-                            <template v-slot:activator="{ on }">
-                                <v-btn v-on="on" icon v-show="!firstScan" @click.stop="goPreviousScan" class="btn-huge">
-                                    <v-icon>mdi-chevron-left</v-icon>
-                                </v-btn>
-                            </template>
-                            <span>{{i18n("reader_go_previous_scan")}}</span>
-                        </v-tooltip>
-                        <!-- Current scan infos -->
-                        <div class="title">{{i18n("reader_page_progression", currentPage + 1, pages.length, pages.length > 0 ? Math.floor((currentPage + 1) / pages.length * 100) : 0)}}</div>
-                        <v-tooltip bottom v-show="!lastScan">
-                            <template v-slot:activator="{ on }">
-                            <!-- Next scan button -->
-                                <v-btn v-on="on" icon @click.stop="goNextScan" class="btn-huge">
-                                    <v-icon>mdi-chevron-right</v-icon>
-                                </v-btn>
-                            </template>
-                            <span>{{i18n("reader_go_next_scan")}}</span>
-                        </v-tooltip>
-                    </v-toolbar>
-                </v-col>
-            </v-row>
-            <div class="amr-thumbs-scrollable" ref="thumbs-scrollable" v-show="scansState.loaded" >
-              <v-tooltip top v-for="(scans, i) in thumbSorter(pages)" :key="i">
-                <template v-slot:activator="{ on }">
-                    <table v-on="on" class="amr-pages-page-cont"
-                    :class="{current: scans.index === currentPage}"
-                    @click.stop="goScan(scans.index)">
-                    <Page :index="scans.index"
-                        :scans="scans.page"
-                        :direction="direction"
-                        resize="container"
-                        ref="thumb"
-                        :bookmark="false" />
-                    </table>
-                </template>
-                <span>{{displayPageScansIndexes(scans.index)}}</span>
-              </v-tooltip>
-            </div>
+            <PageNavigator :current-page="currentPage" :first-scan="firstScan" :go-next-scan="goNextScan"
+                           :go-previous-scan="goPreviousScan" :i18n="i18n" :last-scan="lastScan" :pages="pages"
+                           :should-invert-keys="shouldInvertKeys"/>
+            <ThumbnailNavigator v-show="scansState.loaded" ref="page-navigator" :current-page="currentPage"
+                                :direction="direction" :display-page-scans-indexes="displayPageScansIndexes"
+                                :go-scan="goScan" :pages="pages" :scans-state="scansState"
+                                :should-invert-keys="shouldInvertKeys"/>
           </div>
         </v-hover>
     </v-container>
@@ -81,6 +45,8 @@ import util from "../helpers/util";
 import EventBus from "../helpers/EventBus";
 
 import Page from "./Page";
+import ThumbnailNavigator from "./ThumbnailNavigator";
+import PageNavigator from "./PageNavigator";
 
 /** Create a custom scroller (alias of $scrollTo method) to enable multiple scrollings (thumbs scroll simultaneously page scroll) */
 const thumbsScroller = scroller()
@@ -121,6 +87,7 @@ export default {
         scaleUp: Boolean, /* Does the image scale up larger than its native size */
         webtoonMode: Boolean, /* Removes whitespace between images */
         maxWidthValue: Number, /* Changes max width % of reader */
+        shouldInvertKeys: Boolean /* If keys and buttons should be flipped */
     },
     created() {
         /** Initialize key handlers */
@@ -159,9 +126,9 @@ export default {
             if (currentlyThumbsScrolling) return
             currentlyThumbsScrolling = true
             this.$nextTick(() => {
-                thumbsScroller(this.$refs.thumb[nVal].$el, this.animationDuration, {
-                    container: this.$refs["thumbs-scrollable"],
-                    offset: (-(window.innerWidth - (this.drawer ? 300 : 0 )) + this.$refs.thumb[nVal].$el.clientWidth) / 2,
+                thumbsScroller(this.$refs["page-navigator"].$refs.thumbnail[nVal].$el, this.animationDuration, {
+                    container: this.$refs["page-navigator"],
+                    offset: (-(window.innerWidth - (this.drawer ? 300 : 0 )) + this.$refs["page-navigator"].$refs.thumbnail[nVal].$el.clientWidth) / 2,
                     x: true,
                     y: false,
                     onDone: () => {currentlyThumbsScrolling = false}
@@ -251,23 +218,8 @@ export default {
             return n === cur
         }
     },
-    components: { Page },
+    components: { PageNavigator, ThumbnailNavigator, Page },
     methods: {
-        /**
-         * Sorts the thumbnails respecting the Invert Keys option
-         */
-        thumbSorter: function(pages) {
-            const res = new Array(pages.length);
-
-            for (let i = 0; i < pages.length; i++) {
-                res[i] = {
-                    index: i,
-                    page: pages[i]
-                };
-            }
-
-            return this.invertKeys && this.direction === 'rtl' && !this.fullchapter ? res.reverse() : res;
-        },
         /**
          * Click on the scans container, if single page mode, go to next or previous page
          */
@@ -422,7 +374,7 @@ export default {
         /** Go to next scan respecting the invert keys option */
         goNextScan(doubletap = false, clicked = false) {
             // If we are in Right to Left mode and the user set the option to also invert the keys, we invert the logic
-            if (this.direction === 'rtl' && this.invertKeys && !this.fullchapter) {
+            if (this.shouldInvertKeys) {
                 return this.goPreviousScanImpl(doubletap, clicked);
             }
 
@@ -469,7 +421,7 @@ export default {
         /** Go to previous scan respecting the invert keys option  */
         goPreviousScan(doubletap = false, clicked = false) {
             // If we are in Right to Left mode and the user set the option to also invert the keys, we invert the logic
-            if (this.direction === 'rtl' && this.invertKeys && !this.fullchapter) {
+            if (this.shouldInvertKeys) {
                 return this.goNextScanImpl(doubletap, clicked);
             }
 
@@ -751,18 +703,12 @@ html {
   overflow: auto;
 }
 /** Pages navigator */
-.amr-page-next-prev {
-    max-width: 400px;
-    margin: 0px auto!important;
-}
 .amr-page-next-prev .v-toolbar {
     opacity: 0.8;
     padding: 5px 10px;
     border-radius: 5px;
 }
-.amr-page-next-prev .title {
-    margin: 0px auto;
-}
+
 .amr-pages-nav {
   min-height: 110px;
   position: fixed;
@@ -778,44 +724,12 @@ html {
 .amr-pages-nav.display {
   opacity: 1; /* display navigator when hovered */
 }
-.amr-thumbs-scrollable { /* navigator container is horizontally scrollable for long chapters */
-  overflow: hidden;
-  white-space: nowrap;
-}
+
 .amr-pages-nav, .amr-pages-nav * {
   transition: all 0.2s;
   line-height: 0;
 }
-.amr-pages-page-cont {
-  margin: 0px 5px;
-  display: inline-block;
-  background-color: #424242;
-  border-radius: 2px;
-  opacity: 0.9;
-  cursor: pointer;
-  vertical-align: middle;
-  width: auto !important;
-}
-.amr-pages-page-cont td {
-  vertical-align: middle;
-}
-.amr-pages-page-cont td img {
-  max-height: 80px!important;
-  max-width: 110px!important;
-}
-.amr-pages-page-cont:hover {
-  background-color: #ef5350;
-}
-.amr-pages-page-cont:hover td img {
-  max-height: 90px!important;
-}
-.amr-pages-page-cont.current {
-  margin-top:0px;
-  background-color: #d32f2f;
-}
-.amr-pages-page-cont.current td img {
-  max-height: 100px!important;
-}
+
 .amr-bookmarked-scan {
   cursor: pointer;
 }
