@@ -19,7 +19,7 @@
     <v-hover>
       <div class="d-flex flex-column fab-container" slot-scope="{ hover }">
         <!-- Button to open side drawer -->
-        <v-btn 
+        <v-btn
           :class="`elevation-${hover ? 12 : 2} opacity-${hover || drawer ? 'full':'transparent'}`"
           color="red darken-2" dark small fab @click="drawer = !drawer">
           <v-icon>mdi-menu</v-icon>
@@ -115,14 +115,14 @@
                 <!-- Previous chapter button -->
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
-                    <v-btn v-on="on" icon v-show="(direction == 'ltr' ? !firstChapter : !lastChapter)" 
+                    <v-btn v-on="on" icon v-show="(direction == 'ltr' ? !firstChapter : !lastChapter)"
                       @click.stop="direction == 'ltr' ? goPreviousChapter() : goNextChapter()" class="btn-huge">
                       <v-icon>mdi-chevron-left</v-icon>
                     </v-btn>
                   </template>
                   <span>
-                    {{ direction == 'ltr' ? 
-                      i18n("list_mg_act_prev") : 
+                    {{ direction == 'ltr' ?
+                      i18n("list_mg_act_prev") :
                       i18n("list_mg_act_next") + ' ' + (nextchapLoading ? i18n("reader_loading", Math.floor(nextchapProgress)) : '')
                     }}
                   </span>
@@ -141,15 +141,15 @@
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
                     <!-- Next chapter button -->
-                    <v-btn v-on="on" icon v-show="(direction == 'ltr' ? !lastChapter : !firstChapter)" 
+                    <v-btn v-on="on" icon v-show="(direction == 'ltr' ? !lastChapter : !firstChapter)"
                       @click.stop="direction == 'ltr' ? goNextChapter() : goPreviousChapter()" class="btn-huge">
                       <v-icon>mdi-chevron-right</v-icon>
                     </v-btn>
                   </template>
                   <span>
-                    {{ direction == 'ltr' ? 
+                    {{ direction == 'ltr' ?
                       i18n("list_mg_act_next") + ' ' + (nextchapLoading ? i18n("reader_loading", Math.floor(nextchapProgress)) : '') :
-                      i18n("list_mg_act_prev") 
+                      i18n("list_mg_act_prev")
                     }}
                   </span>
                 </v-tooltip>
@@ -175,7 +175,7 @@
                 <template v-slot:activator="{ on: menu }">
                   <v-tooltip bottom class="ml-1">
                     <template v-slot:activator="{ on: tooltip }">
-                      <v-btn v-on="{...tooltip, ...menu}" icon 
+                      <v-btn v-on="{...tooltip, ...menu}" icon
                         :color="(bookstate.booked ? 'yellow' : 'yellow text--lighten-4')">
                           <v-icon>mdi-star</v-icon>
                       </v-btn>
@@ -191,11 +191,11 @@
                   </v-card-title>
                   <v-card-actions>
                     <!-- Action to update / delete bookmark for chapter > open popup -->
-                    <v-btn @click="bookmarkChapter" 
+                    <v-btn @click="bookmarkChapter"
                       :color="!darkreader ? (bookstate.booked ? 'yellow grey--text text--darken-3' : 'yellow grey--text') : (bookstate.booked ? 'yellow--text' : 'yellow--text text--lighten-4')">
                       <v-icon>mdi-star</v-icon>&nbsp;
-                      {{ bookstate.booked ? 
-                        i18n("reader_bookmark_update") :  
+                      {{ bookstate.booked ?
+                        i18n("reader_bookmark_update") :
                         i18n("reader_bookmark_create") }}
                     </v-btn>
                     <v-spacer></v-spacer>
@@ -219,14 +219,14 @@
                         <v-col cols="4" v-for="(scan, i) in bookedScans" :key="i" @click.stop="$refs.reader.goScan(scan.page)" class="amr-bookmarked-scan">
                           <v-tooltip bottom v-if="scan.note">
                             <template v-slot:activator="{ on }">
-                              <Scan v-on="on" :full="false" 
+                              <Scan v-on="on" :full="false"
                                 :src="scan.url"
                                 resize="container"
                                 :bookmark="false" />
                             </template>
                             <span>{{scan.note}}</span>
                           </v-tooltip>
-                          <Scan v-else slot="activator" :full="false" 
+                          <Scan v-else slot="activator" :full="false"
                               :src="scan.url"
                               resize="container"
                               :bookmark="false" />
@@ -239,7 +239,7 @@
               <!-- Mark as latest chapter read button -->
               <v-tooltip bottom class="ml-1">
                 <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon color="orange" 
+                  <v-btn v-on="on" icon color="orange"
                     v-show="showLatestRead" @click.stop="markAsLatest">
                       <v-icon>mdi-page-last</v-icon>
                   </v-btn>
@@ -249,7 +249,7 @@
               <!-- Add to reading list button -->
               <v-tooltip bottom class="ml-1">
                 <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon color="green" 
+                  <v-btn v-on="on" icon color="green"
                     v-show="!mangaExists && options.addauto === 0" @click.stop="addManga">
                       <v-icon>mdi-plus</v-icon>
                   </v-btn>
@@ -259,7 +259,7 @@
               <!-- Remove from reading list button -->
               <v-tooltip bottom class="ml-1">
                 <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon color="red" 
+                  <v-btn v-on="on" icon color="red"
                     v-show="mangaExists" @click.stop="deleteManga">
                       <v-icon>mdi-delete</v-icon>
                   </v-btn>
@@ -495,10 +495,10 @@
     <!-- End AMR Reader Side bar -->
     <v-main>
       <Reader ref="reader"
-              :book="book" 
-              :direction="direction" 
+              :book="book"
+              :direction="direction"
               :invertKeys="invertKeys"
-              :fullchapter="fullchapter" 
+              :fullchapter="fullchapter"
               :resize="resize"
               :drawer="drawer"
               :webtoonMode="webtoonMode"
@@ -530,7 +530,7 @@
   import ShortcutsPopup from "./components/ShortcutsPopup";
   import SocialBar from "./components/SocialBar";
   import { THINSCAN } from '../amr/options';
-  
+
   /** Possible values for resize (readable), the stored value is the corresponding index */
   const resize_values = ['width', 'height', 'container', 'none']
 
@@ -624,7 +624,7 @@
       this.loadChapters()
       /* Load mirror */
       this.loadMirror()
-      
+
       /** Handle first time reader is opened */
       this.handleFirstTime()
       /** Handle tips */
@@ -714,11 +714,11 @@
       },
       /** The layout value for this manga, a value containing all specific reading options */
       layoutValue() {
-        let cbook = this.book ? 1 : 0, 
+        let cbook = this.book ? 1 : 0,
             cdirection = this.direction === 'ltr' ? 0 : 1,
             cfullchapter = this.fullchapter ? 1 : 0,
             cresize = resize_values.findIndex(r => r === this.resize)
-        
+
         return 1000 * cbook + 100 * cdirection + 10 * cfullchapter + cresize
       },
       /** can you mark this chapter as latest read */
@@ -770,11 +770,11 @@
       async loadMangaInformations() {
         //Get specific informations for currentManga (layout mode, reading mode, lastest read chapter)
         let cbook = -1, cdirection = -1, cfullchapter = -1, cresize = -1
-        let specific = await browser.runtime.sendMessage({ 
-            action: "mangaInfos", 
-            url: this.pageData.currentMangaURL, 
+        let specific = await browser.runtime.sendMessage({
+            action: "mangaInfos",
+            url: this.pageData.currentMangaURL,
             mirror: mirrorImpl.get().mirrorName,
-            language: this.pageData.language 
+            language: this.pageData.language
         });
         // Save returned manga informations in state
         this.mangaInfos = specific
@@ -817,8 +817,8 @@
         // try to get list chap from background (already loaded in local db)
         let alreadyLoadedListChaps = await browser.runtime.sendMessage({
             action: "getListChaps",
-            url: this.pageData.currentMangaURL, 
-            language: this.pageData.language 
+            url: this.pageData.currentMangaURL,
+            language: this.pageData.language
         });
         if (alreadyLoadedListChaps && alreadyLoadedListChaps.length > 0) {
             this.chapters = alreadyLoadedListChaps.map(arr => { return { url: arr[1], title: arr[0] } })
@@ -828,8 +828,8 @@
             list = await browser.runtime.sendMessage({
                 action: "loadListChaps",
                 mirror: this.mirror.mirrorName,
-                url: this.pageData.currentMangaURL, 
-                language: this.pageData.language 
+                url: this.pageData.currentMangaURL,
+                language: this.pageData.language
             });
             if (list !== undefined && !Array.isArray(list)) { // case of returned list is an object keys are languages and values are list of mangas
               if (list[this.manga.language] && list[this.manga.language].length > 0) {
@@ -866,7 +866,7 @@
       /** Mark current chapter as latest read in reading list */
       async markAsLatest() {
         if (await this.$refs.wizdialog.confirm(
-            this.i18n("content_nav_mark_read"), 
+            this.i18n("content_nav_mark_read"),
             this.i18n("content_nav_mark_read_confirm"))) {
           await util.markAsLatest()
           this.loadMangaInformations()
@@ -880,7 +880,7 @@
       /** Remove the current manga from reading list */
       async deleteManga() {
         if (await this.$refs.wizdialog.confirm(
-          this.i18n("list_mg_act_delete"), 
+          this.i18n("list_mg_act_delete"),
           this.i18n("list_mg_delete_question", this.manga.name, mirrorImpl.get().mirrorName))) {
           await util.deleteManga()
           this.mangaExists = false
@@ -902,7 +902,7 @@
         this.loading = true
         console.log("Change Reader chapter : load chapter " + url)
         let chap = new ChapterLoader(url)
-        await chap.checkAndLoadInfos() // get is a chapter ?, infos (current manga, chapter) and scans urls 
+        await chap.checkAndLoadInfos() // get is a chapter ?, infos (current manga, chapter) and scans urls
         this.loadChapterInReaderUsingChapterLoader(chap)
       },
       /**
@@ -952,7 +952,7 @@
           // reinitialize all $data props so everything goes well
           this.loadMangaInformations()
 
-          // Reader 
+          // Reader
           let reader = this.$refs.reader
           reader.originalTitle = chapterloader.title
           document.title = chapterloader.title
@@ -1003,7 +1003,7 @@
           util.debug("Loading next chapter...");
           // instanciate a chapter loader for the next chapter
           this.nextChapterLoader = new ChapterLoader(this.nextChapter)
-          await this.nextChapterLoader.checkAndLoadInfos() // get is a chapter ?, infos (current manga, chapter) and scans urls 
+          await this.nextChapterLoader.checkAndLoadInfos() // get is a chapter ?, infos (current manga, chapter) and scans urls
           if (!this.nextChapterLoader.isAChapter) {
             this.nextChapterLoader = null // next is not recognized as a chapter
           } else {
@@ -1131,9 +1131,9 @@
                 let str = "**" + this.manga.name + "**\n"
                 str += (chapName === "" ? this.i18n("reader_display_chapname_none") : chapName) + "\n"
                 if (this.chapters.length > 0) {
-                  str += this.i18n("reader_display_chap_progression", 
-                    chapPos, 
-                    this.chapters.length, 
+                  str += this.i18n("reader_display_chap_progression",
+                    chapPos,
+                    this.chapters.length,
                     Math.floor(chapPos / this.chapters.length * 100))
                 }
 
@@ -1189,7 +1189,7 @@
       async saveOptionsAsDefault(force = false) {
         if (!force) {
           if (!await this.$refs.wizdialog.confirm(
-            this.i18n("reader_save_options_title"), 
+            this.i18n("reader_save_options_title"),
             this.i18n("reader_save_options_confirm"))) {
               return
           }
@@ -1245,13 +1245,13 @@
             elem.webkitRequestFullscreen()
           }
         }
-        this.fullscreen = ! this.fullscreen        
+        this.fullscreen = ! this.fullscreen
       },
       /** Called on reader's creation, display a welcome message first time reader is opened */
       async handleFirstTime() {
         let isfirst = await util.getStorage("reader_firsttime")
         if (!isfirst) {
-          // Button to set default layout with preferde choice : long strip 
+          // Button to set default layout with preferde choice : long strip
           let butlongstrip = {
             title: this.i18n("reader_firsttime_but_longstrip"),
             color: "primary",
@@ -1276,9 +1276,9 @@
             }
           }
           await this.$refs.wizdialog.open(
-            this.i18n("reader_firsttime_title"), 
-            this.i18n("reader_firsttime_description"), { 
-              cancel: false, 
+            this.i18n("reader_firsttime_title"),
+            this.i18n("reader_firsttime_description"), {
+              cancel: false,
               buttons: [butlongstrip, butsingle],
               important: true
             })
@@ -1361,7 +1361,7 @@
   vertical-align: middle;
 }
 /** Manga title link */
-.amr-manga-title a { 
+.amr-manga-title a {
   color: #424242;
   text-decoration: none;
   vertical-align: middle;

@@ -8,7 +8,7 @@ if (typeof registerMangaObject === 'function') {
         home: "http://www.mangareader.net",
         chapter_url: /\/.*\/[0-9]+.*/g,
         languages: "en",
-    
+
         getMangaList: async function (search) {
             let res = await this.searchPage(this.home + "/search/?nsearch=" + search + "&msearch=")
             return res
@@ -31,7 +31,7 @@ if (typeof registerMangaObject === 'function') {
             }
             return res
         },
-    
+
         getListChaps: async function (urlManga) {
             if (urlManga.indexOf("http://") == 0) urlManga = "http://" + urlManga.substring(7);
             let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
@@ -40,14 +40,14 @@ if (typeof registerMangaObject === 'function') {
             var mangaName = $(".d41 .name", doc).text().replace("Manga", "").trim();
             $(".d48 a", doc).each(function (index) {
                 res.push([
-                    $(this).text().replace(mangaName, "").trim(), 
+                    $(this).text().replace(mangaName, "").trim(),
                     self.home + $(this).attr("href")
                 ])
             })
             res = res.reverse()
             return res
         },
-    
+
         getInformationsFromCurrentPage: async function (doc, curUrl) {
             let nameLink = $($(".d43 a", doc)[0])
             var name = nameLink.text().replace("Manga", "").trim()
@@ -58,7 +58,7 @@ if (typeof registerMangaObject === 'function') {
                 "currentChapterURL": curUrl
             };
         },
-    
+
         getListImages: async function (doc, curUrl) {
             let res = []
             let regex = /<script>(.*?)<\/script>/g
@@ -67,11 +67,11 @@ if (typeof registerMangaObject === 'function') {
             console.log(json)
 
             json.im.forEach(elem => res.push(elem.u))
-            
+
             console.log(res)
             return res
         },
-    
+
         getImageFromPageAndWrite: async function (urlImg, image) {
             $(image).attr("src", urlImg)
         },

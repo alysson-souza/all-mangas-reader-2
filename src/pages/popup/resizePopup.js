@@ -13,13 +13,13 @@ class PopupResizer {
         this.stop = false;
         this.blocked = false;
     }
-    
+
     /**
      * This method is using requestAnimationFrame to watch for the bottom of the app to move. It resizes
      * the popup consequently. It runs for two seconds and then stops after registering a click listener.
-     * On click, it is restarted for workingTime milliseconds. Perhaps we will need to add other events 
+     * On click, it is restarted for workingTime milliseconds. Perhaps we will need to add other events
      * listeners which action could affect the popup's height
-     */ 
+     */
     checkHeight() {
         if (!this.bottomel) this.bottomel = document.getElementById("__bottom_app__");
         if (this.stop || this.starttime > 0 && Date.now() - this.starttime > this.workingTime) {

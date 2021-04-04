@@ -19,7 +19,7 @@ const config = {
   entry: {
     'background/background': './background/background.js',
     'reader/init-reading': './reader/init-reading.js',
-    'pages/popup/popup': './pages/popup/popup.js', 
+    'pages/popup/popup': './pages/popup/popup.js',
     'pages/lab/lab': './pages/lab/lab.js',
     'pages/options/options': './pages/options/options.js',
     'pages/bookmarks/bookmarks': './pages/bookmarks/bookmarks.js',

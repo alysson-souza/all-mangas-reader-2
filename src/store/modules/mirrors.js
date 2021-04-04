@@ -43,7 +43,7 @@ const getters = {
 const actions = {
     /**
      * Get mirrors from local database, fetch it from repository if empty
-     * @param {*} param0 
+     * @param {*} param0
      */
     async initMirrors({ commit, dispatch }) {
         let websites = await storedb.getWebsites(); // Get mirrors from local database
@@ -62,8 +62,8 @@ const actions = {
     },
     /**
      * Update a mirror in the store
-     * @param {*} param0 
-     * @param {*} manga 
+     * @param {*} param0
+     * @param {*} manga
      */
     async updateMirror({ commit }, mirror) {
         // utils.debug("update description of " + mirror.mirrorName + " in db");
@@ -116,7 +116,7 @@ const actions = {
             );
         }
         // do not wait that all implementations are in db... few seconds. as the stores have been updated instantly, we do not need to wait for it to be in db
-        Promise.all(updts); 
+        Promise.all(updts);
 
         if (!websites.length) { // hum should not happen now :)
             document.dispatchEvent(new CustomEvent("mirrorsError"));
@@ -126,7 +126,7 @@ const actions = {
             // set abstract mirrors list in store
             commit('setAbstractMirrors', websites);
         }
-        
+
         // remove deleted mirrors
         // TODO --> what do we do if there are mangas in list from these mirrors ?
 
@@ -137,15 +137,15 @@ const actions = {
     },
     /**
      * Reset mirrors manga lists from db
-     * @param {*} param0 
+     * @param {*} param0
      */
     async resetMirrorsMangaLists({ commit, dispatch, rootState }) {
         await storedb.deleteAllListOfManga()
     },
     /**
      * Set the activated / deactivated flag on a mirror
-     * @param {*} param0 
-     * @param {*} mirror 
+     * @param {*} param0
+     * @param {*} mirror
      */
     changeMirrorActivation({ commit, dispatch, rootState }, mirror) {
         commit('changeMirrorActivation', mirror);
@@ -163,8 +163,8 @@ const actions = {
 const mutations = {
     /**
      * Set the list of mirrors in the store
-     * @param {*} state 
-     * @param {*} mirrors 
+     * @param {*} state
+     * @param {*} mirrors
      */
     setMirrors(state, mirrors) {
         state.all = []
@@ -172,10 +172,10 @@ const mutations = {
     },
     /**
      * Set the list of abstract mirrors in the store
-     * Only call this commit with a mirror list coming from db, not from another 
+     * Only call this commit with a mirror list coming from db, not from another
      * thread mirror list because it does not contains the abstract mirrors
-     * @param {*} state 
-     * @param {*} mirrors 
+     * @param {*} state
+     * @param {*} mirrors
      */
     setAbstractMirrors(state, mirrors) {
         state.abstracts = []
@@ -184,8 +184,8 @@ const mutations = {
 
     /**
      * Reset implementations is called in a mutation to affect all js instances (background, lab)
-     * @param {*} state 
-     * @param {*} mirrors 
+     * @param {*} state
+     * @param {*} mirrors
      */
     resetImplementations(state, mirrors) {
         mirrorsImpl.resetImplementations();
@@ -193,8 +193,8 @@ const mutations = {
 
     /**
      * Set the activated / deactivated flag on a mirror
-     * @param {*} state 
-     * @param {*} mirror 
+     * @param {*} state
+     * @param {*} mirror
      */
     changeMirrorActivation(state, mirror) {
         let mir = state.all.find(m => m.mirrorName === mirror.mirrorName)

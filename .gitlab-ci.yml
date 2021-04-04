@@ -56,7 +56,7 @@ xpi-beta:
         - develop
     dependencies:
         - build
-        
+
 xpi-unsigned:
     stage: package
     script:
@@ -71,7 +71,7 @@ xpi-unsigned:
         - tags
     dependencies:
         - build
-        
+
 crx-beta:
     stage: package
     script:

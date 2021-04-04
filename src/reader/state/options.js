@@ -11,7 +11,7 @@ class Options {
     /**
      * When scripts are loaded in page, AMR options are injected too
      * This function is called to initialize options
-     * @param {*} name 
+     * @param {*} name
      */
     load(object) {
         Object.assign(this, object);

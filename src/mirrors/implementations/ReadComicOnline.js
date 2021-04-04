@@ -7,10 +7,10 @@ if (typeof registerMangaObject === 'function') {
         domains: ["readcomiconline.to"],
         home: "https://readcomiconline.to",
         chapter_url: /Issue-.*id=/g,
-        
+
         getMangaList: async function (search) {
-            let doc = await amr.loadPage(this.home + '/Search/Comic', { 
-                nocache: true, 
+            let doc = await amr.loadPage(this.home + '/Search/Comic', {
+                nocache: true,
                 preventimages: true,
                 post: true,
                 data: {
@@ -28,7 +28,7 @@ if (typeof registerMangaObject === 'function') {
             console.log(res)
             return res
         },
-    
+
         getListChaps: async function (urlManga) {
             let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
             let res = []
@@ -43,7 +43,7 @@ if (typeof registerMangaObject === 'function') {
             console.log(res)
             return res
         },
-    
+
         getInformationsFromCurrentPage: async function (doc, curUrl) {
             let comicUrl = $('#navsubbar a', doc)
             let nameParts = comicUrl.text().split('\n')
@@ -73,7 +73,7 @@ if (typeof registerMangaObject === 'function') {
             })
             return res
         },
-    
+
         getImageFromPageAndWrite: async function (urlImg, image) {
             $(image).attr('src', urlImg)
         },

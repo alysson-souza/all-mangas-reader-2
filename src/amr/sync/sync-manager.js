@@ -97,7 +97,7 @@ class SyncManager {
                             confObj[c] = this.config[c]
                         }
                     })
-                
+
                 triggerList.push({
                     name: v === '' ? 'BrowserStorage' : v.charAt(0).toUpperCase() + v.substr(1) + 'Storage',
                     config: confObj
@@ -106,8 +106,8 @@ class SyncManager {
         return triggerList
     }
     /**
-     * 
-     * @param {String} storageName 
+     *
+     * @param {String} storageName
      */
     async triggerSync(storageName) {
         const storage = this.remoteStorages.find((store) => store.constructor.name === storageName)
@@ -127,8 +127,8 @@ class SyncManager {
     }
 
     /**
-     * @param {Storage} storage 
-     * @returns 
+     * @param {Storage} storage
+     * @returns
      */
     async checkData(storage) {
         const storageName = storage.constructor.name.replace('Storage', '')
@@ -146,9 +146,9 @@ class SyncManager {
         return manga.deleted === syncUtils.DELETED || manga.key === syncUtils.FAIL_KEY
     }
     /**
-     * @param {[]} localList 
-     * @param {Storage} remoteStorage 
-     * @param {[]} remoteList 
+     * @param {[]} localList
+     * @param {Storage} remoteStorage
+     * @param {[]} remoteList
      */
     async processUpdatesToRemote(localList, remoteStorage, remoteList) {
         const remoteUpdates = [];
@@ -197,7 +197,7 @@ class SyncManager {
                 const localManga = localList.find(m => m.key === manga.key);
                 if (!localManga || localManga.ts < manga.ts) {
                     localUpdates.push({ ...manga });
-                }        
+                }
             }
         }
 
@@ -222,7 +222,7 @@ class SyncManager {
             await storage.delete(key, {
                 key,
                 ts: Math.round(Date.now() / 1000),
-                deleted: syncUtils.DELETED,            
+                deleted: syncUtils.DELETED,
             })
         }
     }

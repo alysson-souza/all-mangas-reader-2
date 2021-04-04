@@ -13,6 +13,6 @@ if (typeof registerMangaObject === 'function') {
             search_url: "https://www.komikindo.web.id/",
             search_a_sel: "div.chlf > h2 > a",
             manga_title_attr: true,
-        },      
+        },
     })
 }

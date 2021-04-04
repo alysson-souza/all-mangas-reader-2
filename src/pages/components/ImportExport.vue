@@ -28,27 +28,27 @@
                     ></v-textarea>
                     <span v-html="importmessage"></span>
                     <v-text-field v-if="hasmgs" v-model="importcat" :label="i18n('ie_import_defaultcat')" class="txtfield"></v-text-field>
-                    <v-btn 
-                        v-if="hasmgs" 
-                        @click="importMangas()" 
+                    <v-btn
+                        v-if="hasmgs"
+                        @click="importMangas()"
                         color="primary"
-                        :loading="importingmangas" 
+                        :loading="importingmangas"
                         :disabled="importingmangas">
                         {{i18n('ie_import_mangas')}}
                     </v-btn>
-                    <v-btn 
-                        v-if="hasbms" 
-                        @click="importBookmarks()" 
+                    <v-btn
+                        v-if="hasbms"
+                        @click="importBookmarks()"
                         color="primary"
-                        :loading="importingbookmarks" 
+                        :loading="importingbookmarks"
                         :disabled="importingbookmarks">
                         {{i18n('ie_import_bookmarks')}}
                     </v-btn>
-                    <v-btn 
-                        v-if="hasmgs && hasbms" 
-                        @click="importAll()" 
+                    <v-btn
+                        v-if="hasmgs && hasbms"
+                        @click="importAll()"
                         color="primary"
-                        :loading="importingmangas || importingbookmarks" 
+                        :loading="importingmangas || importingbookmarks"
                         :disabled="importingmangas || importingbookmarks">
                         {{i18n('ie_import_all')}}
                     </v-btn>
@@ -217,7 +217,7 @@ export default {
                   self.$store.state.options.categoriesStates
                 )
               } else { // do not export bookmarks from deleted mangas in viewable mode
-                return false; 
+                return false;
               }
             }
           );

@@ -33,10 +33,10 @@ if (typeof registerMangaObject === 'function') {
 
             return res
         },
-    
+
         getListChaps: async function (urlManga) {
-            let doc = await amr.loadPage(urlManga, { 
-                nocache: true, 
+            let doc = await amr.loadPage(urlManga, {
+                nocache: true,
                 preventimages: true,
             })
             let res = []
@@ -44,7 +44,7 @@ if (typeof registerMangaObject === 'function') {
 
             $('li.spl-list-item a', doc).each(function (index) {
                 res.push([
-                    $('span:first', $(this)).text().trim(), 
+                    $('span:first', $(this)).text().trim(),
                     $(this).attr("href")]);
             })
 
@@ -55,7 +55,7 @@ if (typeof registerMangaObject === 'function') {
 
             return res
         },
-    
+
         getInformationsFromCurrentPage: async function (doc, curUrl) {
             let mg = $($('div.rtm-logo a:last', doc)[0])
             let url = new URL(curUrl)
@@ -74,7 +74,7 @@ if (typeof registerMangaObject === 'function') {
             })
             return res
         },
-    
+
         getImageFromPageAndWrite: async function (urlImg, image) {
             $(image).attr("src", urlImg)
         },

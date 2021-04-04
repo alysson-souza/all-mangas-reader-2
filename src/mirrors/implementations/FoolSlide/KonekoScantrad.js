@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ["lel.koneko-scantrad.fr"],
         home: "https://koneko-scantrad.fr",
         chapter_url: /^\/read\/.+$/g,
-        
+
         abstract: "FoolSlide",
         abstract_options: {
             base_url: "https://lel.koneko-scantrad.fr",

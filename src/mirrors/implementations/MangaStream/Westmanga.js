@@ -17,6 +17,6 @@ if (typeof registerMangaObject === 'function') {
             chapters_a_sel: "div.cl > ul > li > span.leftoff > a",
             search_json: false
 
-        },      
+        },
     })
 }

@@ -16,6 +16,6 @@ if (typeof registerMangaObject === 'function') {
             chapter_information_selector: '.panel-breadcrumb:first a[href*="/manga/"]:first, .panel-breadcrumb:first a[href*="/manga-"]:first',
             images_selector: '.container-chapter-reader img'
         }
-        
+
     });
 }

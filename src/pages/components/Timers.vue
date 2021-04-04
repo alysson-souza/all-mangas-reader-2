@@ -3,9 +3,9 @@
     <v-row >
       <v-col cols="6" offset="3">
         <v-btn color="primary"
-              class="refresh-button" 
+              class="refresh-button"
               @click="updateChaps()"
-              :loading="loadingChapters" 
+              :loading="loadingChapters"
               :disabled="loadingChapters">
           <v-icon>mdi-book-open-variant</v-icon>
           {{i18n("refresh_chapters")}}
@@ -18,9 +18,9 @@
         <v-tooltip top>
           <template v-slot:activator="{ on }">
             <v-btn color="primary"
-                  class="refresh-button" 
+                  class="refresh-button"
                   @click="resetLists()"
-                  :loading="loadingLists" 
+                  :loading="loadingLists"
                   :disabled="loadingLists"
                   v-on="on">
               <v-icon>mdi-format-list-bulleted</v-icon>

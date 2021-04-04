@@ -20,11 +20,11 @@ export default {
         this.loadBookmark()
         // initialize scans
         this.state.scans.push(
-            ...scansUrl.map((url, i) => { 
+            ...scansUrl.map((url, i) => {
                 return {
                     index: i,
-                    url: url, 
-                    name: "" + (i + 1), 
+                    url: url,
+                    name: "" + (i + 1),
                     booked: false,
                     note: undefined
                 }
@@ -98,7 +98,7 @@ export default {
             }
         }
     },
-    
+
     /** Check data for a bookmark from server */
     async loadBookmark({ scanUrl } = {}) {
         let obj = {

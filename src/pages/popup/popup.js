@@ -11,7 +11,7 @@ import * as util from "../utils";
 // import 'vuetify/src/stylus/main.styl'
 
 (async function() {
-  
+
   window['AMR_STORE'] = store
 
 
@@ -57,7 +57,7 @@ import * as util from "../utils";
 
   async function waitForPopup(retries = 10, delay = 50) {
     const wait = (ms) => new Promise((func) => setTimeout(func, ms))
-    
+
     if (window.innerWidth !== 0 && window.innerHeight !== 0) {
       return Promise.resolve()
     }

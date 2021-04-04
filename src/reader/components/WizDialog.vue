@@ -5,8 +5,8 @@
 -->
 
 <template>
-  <v-dialog :persistent="options.persistent" v-model="dialog" 
-    :max-width="options.width" @keydown.esc="options.persistent ? () => {} : cancel()" 
+  <v-dialog :persistent="options.persistent" v-model="dialog"
+    :max-width="options.width" @keydown.esc="options.persistent ? () => {} : cancel()"
     v-bind:style="{ zIndex: options.zIndex }">
     <v-card>
       <v-toolbar dark :color="options.color" dense flat v-show="!!title">
@@ -20,8 +20,8 @@
         <v-btn v-if="options.cancel" color="grey" text @click.native="cancel">
           {{i18n("button_cancel")}}
         </v-btn>
-        <v-btn v-for="(but, i) in options.buttons" :key="i" 
-          :color="but.color || 'grey'" text 
+        <v-btn v-for="(but, i) in options.buttons" :key="i"
+          :color="but.color || 'grey'" text
           @click.native="clickButton(but)">
           {{but.title}}
         </v-btn>
@@ -43,8 +43,8 @@
           important: false, // if true and another popup comes, prevent the second one from being displayed
           buttons: [ // list of buttons (except cancel) displayed
           {
-            title: i18n("button_close"), 
-            color: "grey", 
+            title: i18n("button_close"),
+            color: "grey",
             click: ({ agree }) => agree()
           }
         ]
@@ -65,22 +65,22 @@
       /* Format markdown to html... not real markdown, just support bold (**text**), italic (_text_), lists, all line breaks are taken into account */
       messageHtml() {
         if (!this.message) return ""
-      
+
         let formatText = txt => {
           let boldify = (text => {
               let bold = /\*\*(\S(.*?\S)?)\*\*/gm
               let html = text.replace(bold, '<strong>$1</strong>')
               return html
           })
-          let italicify = (text => { 
+          let italicify = (text => {
               let italic = /_(\S(.*?\S)?)_/gm
-              let html = text.replace(italic, '<i>$1</i>')        
+              let html = text.replace(italic, '<i>$1</i>')
               return html
           })
           let linkify = (text => {
             let link = /\[([^\[\]]+)\]\(([^)]+)\)/gm
             let html = text.replace(link, '<a href="$2" target="_blank">$1</a>')
-            return html      
+            return html
           })
           return boldify(italicify(linkify(txt)))
         }
@@ -113,10 +113,10 @@
     methods: {
       /** An action button is clicked */
       clickButton(but) {
-        but.click({ 
-          agree: this.agree, 
-          cancel: this.cancel, 
-          changeMessage: this.changeMessage, 
+        but.click({
+          agree: this.agree,
+          cancel: this.cancel,
+          changeMessage: this.changeMessage,
           changeTitle: this.changeTitle
         })
       },
@@ -133,13 +133,13 @@
         options = Object.assign(Object.assign({}, default_options), options)
         options.buttons = [
           {
-            title: this.i18n("button_no"), 
-            color: "grey", 
+            title: this.i18n("button_no"),
+            color: "grey",
             click: ({ cancel }) => cancel()
           },
           {
-            title: this.i18n("button_yes"), 
-            color: "primary darken-1", 
+            title: this.i18n("button_yes"),
+            color: "primary darken-1",
             click: ({ agree }) => { agree() }
           }
         ]
@@ -150,8 +150,8 @@
         options = Object.assign(Object.assign({}, default_options), options)
         options.buttons = [
           {
-            title: this.i18n("button_yes"), 
-            color: "primary darken-1", 
+            title: this.i18n("button_yes"),
+            color: "primary darken-1",
             click: ({ agree }) => agree()
           }
         ]
@@ -176,7 +176,7 @@
       /** Open a temporary dialog */
       temporary(message, duration = 1000, options = {}) {
         options = Object.assign(
-          Object.assign(Object.assign({}, default_options), options), 
+          Object.assign(Object.assign({}, default_options), options),
           {center: true, buttons: []})
         setTimeout(() => this.agree(), duration)
         return this.open(undefined, message, options)

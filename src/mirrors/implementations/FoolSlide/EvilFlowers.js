@@ -7,7 +7,7 @@ if (typeof registerMangaObject === 'function') {
         home: "http://reader.evilflowers.com",
         canListFullMangas: false, /* to avoid loading 8 pages to load all mangas */
         chapter_url: /^\/read\/.+$/g,
-        
+
         abstract: "FoolSlide",
         abstract_options: {
             base_url: "http://reader.evilflowers.com",

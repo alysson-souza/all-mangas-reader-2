@@ -12,6 +12,6 @@ if (typeof registerMangaObject === 'function') {
         abstract_options: {
             search_url: "https://bacamanga.co/",
             chapters_a_sel: "div.bixbox.bxcl > ul > li > span.lchx a"
-        },      
+        },
     })
 }

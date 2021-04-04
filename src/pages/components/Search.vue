@@ -22,17 +22,17 @@
             show-arrows
         >
           <v-tabs-slider></v-tabs-slider>
-          <v-tab v-for="lang in langs" 
-                :key="lang" 
+          <v-tab v-for="lang in langs"
+                :key="lang"
                 :href="'#langtab-' + lang"
                 class="primary--text">
             <Flag v-if="lang != 'aa'" :value="lang" big />
             <v-btn color="primary" v-else>{{ i18n("search_multilang") }}</v-btn>
           </v-tab>
-          
-          <v-tab-item :id="'langtab-' + lang" 
-                  v-for="(res, lang) in results" 
-                  :key="lang" 
+
+          <v-tab-item :id="'langtab-' + lang"
+                  v-for="(res, lang) in results"
+                  :key="lang"
                   v-model="langtabs">
             <v-container fluid>
               <v-row  v-for="fmtkey in res['__SORTEDKEYS__']" :key="fmtkey">
@@ -47,7 +47,7 @@
                   <v-tooltip top content-class="icon-ttip" v-for="(mg, key) in res[fmtkey]" :key="key">
                     <template v-slot:activator="{on}">
                       <div class="mirror-result-cont" v-on="on">
-                        <img @click="handleIconClick(mg)" :src="getIcon(mg.mirror)" :class="'mirror-icon ' + (isInList(mg) || mg.adding ? 'added' : '')" /> 
+                        <img @click="handleIconClick(mg)" :src="getIcon(mg.mirror)" :class="'mirror-icon ' + (isInList(mg) || mg.adding ? 'added' : '')" />
                         <v-icon v-if="isInList(mg)" color="green">mdi-check</v-icon>
                         <v-progress-circular indeterminate size="18" v-if="mg.adding" color="grey darken-4"></v-progress-circular>
                       </div>
@@ -133,10 +133,10 @@ export default {
                     }
                 }
             }
-            
+
             if (Array.isArray(mgs)) { // normal use case, implementation returns list of mangas
                 addMgs(mgs, curmirlang)
-            } else { 
+            } else {
                 // implementation returns object which keys are languages : {"en" : [[]], "fr": [[]]}
                 for (let l in mgs) {
                     addMgs(mgs[l], utils.getUnifiedLang(l))
@@ -152,8 +152,8 @@ export default {
                 tmplst.sort(
                     (a, b) => {
                         if (!a[0].name) return -1
-                        return a.length === b.length ? 
-                            a[0].name.localeCompare(b[0].name) : 
+                        return a.length === b.length ?
+                            a[0].name.localeCompare(b[0].name) :
                             b.length - a.length
                     }
                 )
@@ -237,4 +237,3 @@ export default {
     font-size: 1.2rem;
 }
 </style>
-

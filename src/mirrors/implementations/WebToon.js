@@ -17,7 +17,7 @@ if (typeof registerMangaObject === 'function') {
         getMangaList : async function (search) {
             await this.setCookie()
             let doc = await amr.loadPage(
-                this.home + "/en/search?keyword=" + search, 
+                this.home + "/en/search?keyword=" + search,
                 { nocache: true, preventimages: true }
             )
             let self = this
@@ -40,7 +40,7 @@ if (typeof registerMangaObject === 'function') {
             }
             return res
         },
-    
+
         getListChaps : async function (urlManga) {
             await this.setCookie()
             let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
@@ -57,7 +57,7 @@ if (typeof registerMangaObject === 'function') {
             }
             return res
         },
-    
+
         getInformationsFromCurrentPage : async function (doc, curUrl) {
             var name = $(".subj_info a", doc).text();
             var url = $(".subj_info a", doc).attr("href");
@@ -67,7 +67,7 @@ if (typeof registerMangaObject === 'function') {
                 "currentChapterURL" : curUrl
             };
         },
-    
+
         getListImages : async function (doc, curUrl) {
             var res = [];
             $("#_imageList img", doc).each(function (index) {
@@ -75,7 +75,7 @@ if (typeof registerMangaObject === 'function') {
             });
             return res;
         },
-    
+
         getImageFromPageAndWrite : async function (urlImg, image) {
             $(image).attr("src", urlImg);
         },

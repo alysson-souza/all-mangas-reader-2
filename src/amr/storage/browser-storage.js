@@ -20,7 +20,7 @@ const ThrottleErrorMessages = Object.keys(LIMITS).filter(k => k.includes('OPERAT
  */
 export default class BrowserStorage extends Storage {
     /**
-     * @param {number} interval 
+     * @param {number} interval
      */
     constructor(config) {
         super(true)

@@ -33,7 +33,7 @@ class HandleBookmarks {
                             browser.tabs.executeScript(tab.id, {
                                 code: "clickOnBM(\"" + info.srcUrl + "\")"
                             });
-                        }, 
+                        },
                         targetUrlPatterns: [encodeURI(url), url]
                     });
                 }
@@ -62,7 +62,7 @@ class HandleBookmarks {
     }
     /**
      * Find a bookmark from store
-     * @param {*} obj 
+     * @param {*} obj
      */
     findBookmark(obj) {
         let key = utils.mangaKey(obj.chapUrl, obj.mirror) + (obj.scanUrl ? "_" + utils.mangaKey(obj.scanUrl, obj.mirror): "")
@@ -70,7 +70,7 @@ class HandleBookmarks {
     }
     /**
      * Retrieve a stored bookmark
-     * @param {*} obj 
+     * @param {*} obj
      */
     getBookmark(obj) {
         let bm = this.findBookmark(obj);
@@ -96,7 +96,7 @@ class HandleBookmarks {
 
     /**
      * Adds a bookmark in store
-     * @param {*} obj 
+     * @param {*} obj
      */
     addBookmark(obj) {
         let bm = this.findBookmark(obj);
@@ -122,7 +122,7 @@ class HandleBookmarks {
 
     /**
      * Deletes a bookmark from store
-     * @param {*} obj 
+     * @param {*} obj
      */
     deleteBookmark(obj) {
         // adds a new bookmark

@@ -16,7 +16,7 @@ if (typeof registerMangaObject === 'function') {
             });
            return res;
         },
-    
+
         getListChaps: async function (urlManga) {
             let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
             let res = [];
@@ -28,7 +28,7 @@ if (typeof registerMangaObject === 'function') {
             });
             return res;
         },
-    
+
         getInformationsFromCurrentPage: async function (doc, curUrl) {
             var mg = $("#topLEL a.tl-titre", doc)
             let mangaLink = mg.attr('href')
@@ -38,7 +38,7 @@ if (typeof registerMangaObject === 'function') {
                 "currentChapterURL": "https://scantrad.net/" + $("#selectCh option:selected", doc).val()
             }
         },
-    
+
         getListImages: async function (doc, curUrl) {
             let res = []
             $(".main_img img", doc).each(function() {
@@ -51,11 +51,11 @@ if (typeof registerMangaObject === 'function') {
             })
             return res
         },
-    
+
         getImageFromPageAndWrite: async function (urlImg, image) {
             $(image).attr("src", urlImg);
         },
-    
+
         isCurrentPageAChapterPage: function (doc, curUrl) {
             return $(".main_img img", doc).length > 0;
         }

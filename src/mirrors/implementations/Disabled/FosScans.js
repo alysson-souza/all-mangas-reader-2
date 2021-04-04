@@ -7,7 +7,7 @@ if (typeof registerMangaObject === 'function') {
         home: "http://fos-scans.com/",
         disabled: true,
         chapter_url: /^\/read\/.+$/g,
-        
+
         abstract: "FoolSlide",
         abstract_options: {
             base_url: "http://reader.fos-scans.com",

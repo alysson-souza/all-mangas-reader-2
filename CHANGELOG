@@ -4,7 +4,7 @@
     * Added ability to sync manga via gist. (Credit: @JiPai)
     * You can now change sort order to be ascending or descending order (Credit: @Robo)
     * Added zoom out option for reader. Can be used if the images on a page are too wide
-  
+
   Changes:
     * Changed how chapter refresh works to hit multiple sites at the same time but queue up series for each job for the delay
     * Mirror Labratory overhaul (Credit @alyssonsouza)
@@ -18,14 +18,14 @@
     * And error fixed with deleting manga (Credit: @kYem)
     * Fixed duplicating categories when adding a new series with the same name as one already on your list
     * Added some extra checks to remove elements/css that is added via javascript on mirror sites
-  
+
   New Mirrors:
     * Astral Library (www.astrallibrary.net) (Credit @alyssonsouza)
     * Vanguard Scans (https://vanguardbun.com/)
     * Glitchy Comics (https://glitchycomics.com/) (Credit @alyssonsouza)
     * Komga local server (https://komga.org) Note: This requires setting up options for url and username/password
     * Socal Weebs (https://socialweebs.in)
-  
+
   Mirror Fixes:
     * Marial Scans (https://martialscans.com/) (Credit: @alyssonsouza)
     * Flame Scans (https://flamescans.org)
@@ -57,7 +57,7 @@
   Changes:
     * The reader side menu has been condensed a little bit. Longer series names should no longer cause a scrollbar
 
-  Mirror Fixes: 
+  Mirror Fixes:
     * LHTranslations (https://lhtranslation.net) (Courtesy of @Robo)
     * Manhuaus (https://manhuaus.com/)
     * Komikcast (https://komikcast.com/)
@@ -78,18 +78,18 @@
 ### V2.3.8
   New Features:
     * Added download feature for current chapter (Courtesy of @Robo)
-  
+
   Fixes:
     * Export manga list fixed
     * The reader no longer tries to load unless it matches the pattern, preventing some issues when the website is restored (Courtesy of @Robo)
     * Edit Category now shows up properly in dark mode
     * Deleted chapters are no longer restored on sync (Courtesy of @kYem)
-  
+
   Changes:
     * Notifications and reader now show custom manga names
     * Sort Preference is now saved
     * Sort by newest now is split into two options, one is the former behaviour and the other shows the ones with the most unread chapters first
-  
+
   Mirror Fixes:
     * Manga4Life (https://manga4life.com)
     * MangaSee (https://mangasee123.com)
@@ -114,7 +114,7 @@
   Mirror Fixes:
     * Fixed Read Manhua chapter loading (https://readmanhua.net/)
     * Changed Mangadex api back to the new server, they claim it is working now
-  
+
   Disabled Mirrors:
     * Manga Panda
     * Manga Reader
@@ -132,7 +132,7 @@
 
   New Mirrors:
     * Seri Manga (https://serimanga.com/)
-  
+
   Mirror Fixes:
     * Asura Scans (https://asurascans.com/)
 
@@ -152,10 +152,10 @@
   Fixes:
     - The top bar for certain pages have had the max height fixed so they do not take up half the page
     - The bookmarks page (when you open in new tab) has been fixed
-  
+
   New Mirrors:
     - Manga Katana (https://mangakatana.com)
-  
+
   Mirror Fixes:
     - Scan Trad - Fixed image path so scans will load
     - Arang Scans - Fixing Manga list not populating
@@ -175,11 +175,11 @@
 ### V2.3.4
   Mirror Fixes:
     - Last time mangadex fix did not commit. Did it again
-    
+
 ### V2.3.3
   Mirror Fixes:
     - Reverted to old mangadex api url as that one seems to be working
-    
+
 ### V2.3.2
   Mirror Fixes:
     - Night Comic - Domain changed to force www.
@@ -194,7 +194,7 @@
   Fixes:
     - Updated the book offset icon so it appears
     - Changed add category input so it responds to dark mode properly
-    
+
   Changes:
     - Removed extra padding on reader options to condense those
     - Made the manga title text smaller
@@ -216,8 +216,8 @@
   New Mirrors:
     - Manga Llama (https://mangallama.com/)
     - Manga Freak (https://w11.mangafreak.net)
-  
-  Mirror Fixes: 
+
+  Mirror Fixes:
     - Asura Scans: Fixed broken images (they were only webscraper images not actual scans)
     - Mangakakalot: Updated image selection to fix the reader
     - Mangasee: Fixed image server path
@@ -225,10 +225,10 @@
 ### V2.2.14
   Fixes:
     - Changed cdn for material icons due to an outage (Thanks to @GameBurrow)
-  
+
   Mirror Fixes:
     - Scan Trad (https://scantrad.net)
-  
+
   New Mirrors:
     - Read Comic Online (https://readcomiconline.to) - Note ths site has periodic captchas which cause amr to fail, this cannot be avoided
 
@@ -267,7 +267,7 @@ Disabled Mirrors:
 ### V2.2.11
 Mirror Changes:
   - Changed MangaDex to not use cache busting on search and series updates
-  
+
 ### V2.2.10
 New Features:
   - Added Text filter to your manga list. A button press will show/hide the input
@@ -387,7 +387,7 @@ Mirrors :
  - Added LHTranslation
  - Added ReadM
  - Added MartialScans
- - Added Union Leitor 
+ - Added Union Leitor
 
 ### V2.2.1
 Mirrors:
@@ -400,7 +400,7 @@ After Mozilla disabled AMR from their store, a few changes, maily technical, hav
  - Avoid security issues by sanitizing loaded pages
 
 ### V2.1.1
-New features : 
+New features :
  - Sync your manga list over different instances of your favorite browser (option in general, and sync in your browser)
  - First working (usable) version on Firefox for Android
  - Option to check for new version of the extension, be notified right in the popup (option is enabled by default on Chromium based browsers)
@@ -427,11 +427,11 @@ Fixes :
  - Update Vuetify, fix a few css issues
 
 ### V2.0.3
-Websites implementation improvements (A lot of implementations have been added thanks to these improvements) : 
+Websites implementation improvements (A lot of implementations have been added thanks to these improvements) :
  - Abstract implementation for mirrors (A lot of websites are based on CMS like FoolSlide). Implement once for multiple websites
  - Add a global helper accessible from implementation to reduce implementation code and improve readability
  - Update the interface of websites implementation to be more modern (Promises and ES6 code)
- 
+
 Languages support, handle multi lingual mangas :
  - in search results, language is taken into account to display results (an implementation can return mangas in different languages on search request)
  - in manga list, some implementations manage manga chapters in different languages, in this case, a flag next to the manga is displayed and allow the user to add other languages for the same manga
@@ -446,8 +446,8 @@ Misc
  - Upgrade webpack to version 4
  - add a build mode build:dev-watch to hot reload extension in chrome while developing
  - Remove babel and regenerator runtime as browser now supports native ES6
- 
-Fixes : 
+
+Fixes :
  - load implementation scripts multiple times and do not free them from memory
  - Force table to be displayed correctly from content script (on some mirrors, scans were forced to the left)
  - Delete unused language categories if needed
@@ -457,14 +457,13 @@ Fixes :
  - css when displaying a "last time updated badge" on a manga
  - Firefox scrollbar in popup (keep it in detached popup, ie new tab popup)
  - border top radius of manga list if first item is a grouped manga
- 
+
 ### V2.0.2
 First released stable version of All Mangas Reader V2.
 This version aims to implement almost all functionnalities from V1.
-Missing functionnalities : 
+Missing functionnalities :
  - Synchronization
  - Personal statistics
 
-Improvements from V1 : 
+Improvements from V1 :
  - Websites implementation loading is more stable
- 

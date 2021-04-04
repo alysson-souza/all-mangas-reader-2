@@ -12,6 +12,6 @@ if (typeof registerMangaObject === 'function') {
             search_url: "https://ngomik.in/",
             search_a_sel: "div.luf > a",
             chapters_a_sel: "div.lch> a"
-        },      
+        },
     })
 }

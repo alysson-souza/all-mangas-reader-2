@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ["reader.serenade.moe"],
         home: "https://serenade.moe/",
         chapter_url: /^\/read\/.+$/g,
-        
+
         abstract: "FoolSlide",
         abstract_options: {
             base_url: "https://reader.serenade.moe",

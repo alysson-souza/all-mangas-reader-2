@@ -36,7 +36,7 @@ class MirrorsImpl {
 
     /**
      * Return mirror implementation object from mirrorName
-     * @param {*} mirrorName 
+     * @param {*} mirrorName
      */
     async getImpl(mirrorName) {
         if (Object.keys(this.implementations).length === 0) {

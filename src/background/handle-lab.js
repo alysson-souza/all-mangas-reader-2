@@ -9,7 +9,7 @@ import * as utils from '../amr/utils';
 class HandleLab {
     handle(message, sender) {
         if ("lab" === message.action) {
-            if (message.url && message.url.indexOf("//") === 0) 
+            if (message.url && message.url.indexOf("//") === 0)
                 message.url = "http:" + message.url;
             return this.runFunction(message);
         }
@@ -33,7 +33,7 @@ class HandleLab {
                 else if (message.torun === "loadChapterAndDo") {
                     let res = this.loadChapterAndDo(message, impl);
                     resolve(res);
-                } 
+                }
                 else if (message.torun === "getScanUrl") {
                     let img = new Image();
                     await impl.getImageFromPageAndWrite(message.url, img);
@@ -55,7 +55,7 @@ class HandleLab {
                 return new Promise(async (resolve, reject) => {
                     try {
                         let htmlDocument = domutils.sanitizeDom(resp.data)
-                        
+
                         //once the response has been parsed
                         if (message.task === "containScans") {
                             resolve(
@@ -63,7 +63,7 @@ class HandleLab {
                             );
                         } else if (message.task === "informations") {
                             let infos = await impl.getInformationsFromCurrentPage(
-                                htmlDocument, 
+                                htmlDocument,
                                 message.url
                             );
                             resolve(infos);

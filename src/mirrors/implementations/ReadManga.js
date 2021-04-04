@@ -10,7 +10,7 @@ if (typeof registerMangaObject === "function") {
 
 		getMangaList: async function (search) {
 			let json = await amr.loadJson(
-				this.home + "/search/suggestion", 
+				this.home + "/search/suggestion",
 				{
 					nocache: true,
 					preventimages: true,
@@ -27,7 +27,7 @@ if (typeof registerMangaObject === "function") {
 			}
 			return res
 		},
-	
+
 		getListChaps: async function (urlManga) {
 			let doc = await amr.loadPage(urlManga + "?mtr=1", { nocache: true, preventimages: true })
 			let res = []
@@ -46,7 +46,7 @@ if (typeof registerMangaObject === "function") {
 			})
 			return res
 		},
-	
+
 		passAdult: async function(doc, curUrl) {
             if ($("a[href='?mtr=1']").length > 0) {
 				doc = await amr.loadPage(curUrl + "?mtr=1")
@@ -63,7 +63,7 @@ if (typeof registerMangaObject === "function") {
 				"currentChapterURL": chapurl
 			}
 		},
-	
+
 		getListImages: async function (doc, curUrl) {
 			doc = await this.passAdult(doc, curUrl)
 
@@ -80,7 +80,7 @@ if (typeof registerMangaObject === "function") {
 			}
 			return res;
 		},
-	
+
 		getImageFromPageAndWrite: async function (urlImg, image) {
 			$(image).attr("src", urlImg);
 		},

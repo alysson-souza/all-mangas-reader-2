@@ -35,7 +35,7 @@ window["Madara"] = function (options) {
                     }
                 }
             )
-    
+
             if (json.success) {
                 for (let i in json.data) {
                     let item = json.data[i];
@@ -48,7 +48,7 @@ window["Madara"] = function (options) {
                 }
             }
         }else{
-        // Load search page 
+        // Load search page
         let urlManga = this.options.search_url + "?s=" + search + "&post_type=wp-manga";
         let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
 
@@ -70,8 +70,8 @@ window["Madara"] = function (options) {
         if (this.options.chapter_list_ajax) {
             let searchApiUrl = this.options.search_url + "wp-admin/admin-ajax.php"
             let mangaVar = amr.getVariable('manga', doc)
-            doc = await amr.loadPage(searchApiUrl, { 
-                nocache: true, 
+            doc = await amr.loadPage(searchApiUrl, {
+                nocache: true,
                 preventimages: true,
                 post: true,
                 data: {
@@ -119,7 +119,7 @@ window["Madara"] = function (options) {
     this.getListImages = async function (doc, curUrl) {
         res = [];
         let self = this;
-        
+
         let preloadImages = await amr.getVariable('chapter_preloaded_images', doc);
         if (preloadImages !== this.undefined) {
             return preloadImages;

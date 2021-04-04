@@ -23,7 +23,7 @@ export default {
         } else {
             this.scanUrl = this.bookmark.scanUrl; // default url to bookmark scanUrl
             this.$emit("change-url", {
-                key: this.bookmark.key, 
+                key: this.bookmark.key,
                 url: this.scanUrl
             });
             if ((this.scanUrl.match(/\.(jpeg|jpg|gif|png)$/) == null)) { // keep url matching image url
@@ -40,14 +40,14 @@ export default {
          */
         async getScanUrl() {
             let scan = await browser.runtime.sendMessage({
-                action: "getScanUrl", 
-                url: this.bookmark.scanUrl, 
-                mirror: this.bookmark.mirror 
+                action: "getScanUrl",
+                url: this.bookmark.scanUrl,
+                mirror: this.bookmark.mirror
             });
             //set scan url on image
             this.scanUrl = scan;
             this.$emit("change-url", {
-                key: this.bookmark.key, 
+                key: this.bookmark.key,
                 url: this.scanUrl
             });
         }

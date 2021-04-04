@@ -18,7 +18,7 @@ export function isFirefoxAndroid() {
 
 /**
  * Format manga name to test similarities
- * @param {*} name 
+ * @param {*} name
  */
 export function formatMgName(name) {
     if (name == undefined || name == null || name == "null")
@@ -30,7 +30,7 @@ export function formatMgName(name) {
 /**
  * Test if an url match an url pattern containing wildcards
  * @param {*} str a domain name
- * @param {*} rule 
+ * @param {*} rule
  */
 export function matchDomain(str, rule) {
     if (rule == 'komga') {
@@ -69,20 +69,20 @@ export function debug(message) {
 }
 /**
  * Serialize a vuex object.
- * Doing that because content script is not vue aware, the reactive vuex object needs to be 
+ * Doing that because content script is not vue aware, the reactive vuex object needs to be
  * converted to POJSO to work in non vue environment (else it will be {})
- * @param {*} obj 
+ * @param {*} obj
  */
 export function serializeVuexObject(obj) {
     return JSON.parse(JSON.stringify(obj)) // For an unknown reason, better than Object.assign({}, obj) in Firefox
 }
 /**
  * Extract the full host name
- * @param {*} url 
+ * @param {*} url
  */
 export function extractHostname(url) {
     let uid = new URL(url)
-    
+
 
     if(uid.hostname == 'localhost') {
         return uid.host
@@ -92,7 +92,7 @@ export function extractHostname(url) {
 }
 /**
  * Extract the root domain of a url without subdomain
- * @param {*} url 
+ * @param {*} url
  */
 const extractRootDomain = function(url) {
     var domain = extractHostname(url),
@@ -100,7 +100,7 @@ const extractRootDomain = function(url) {
         arrLen = splitArr.length;
 
     //extracting the root domain here
-    //if there is a subdomain 
+    //if there is a subdomain
     if (arrLen > 2) {
         domain = splitArr[arrLen - 2] + '.' + splitArr[arrLen - 1];
         //check to see if it's using a Country Code Top Level Domain (ccTLD) (i.e. ".me.uk")
@@ -113,7 +113,7 @@ const extractRootDomain = function(url) {
 }
 /**
  * Extract the part of a url following the domain
- * @param {*} url 
+ * @param {*} url
  */
 export function afterHostURL(url) {
     var after;
@@ -129,7 +129,7 @@ export function afterHostURL(url) {
 }
 /**
  * Calculate manga key for a url (just host name, without subdomain followed by url of manga)
- * @param {*} url 
+ * @param {*} url
  */
 export function mangaKey(url, forcedmirror, toconcat) {
     if (!url) {
@@ -150,7 +150,7 @@ export function mangaKey(url, forcedmirror, toconcat) {
         )
         if (mirror) mstr = safename(mirror.mirrorName)
     }
-    
+
     return mstr + "/" + afterHostURL(url) + (toconcat !== undefined ? "_" + toconcat : "")
 }
 
@@ -161,7 +161,7 @@ function safename(name) {
 }
 /**
  * Tells in human language how much time has been spent since this ts
- * @param {*} ts 
+ * @param {*} ts
  */
 export function lasttime(diffts) {
     let diff = Math.floor( (diffts) / 1000 );
@@ -174,7 +174,7 @@ export function lasttime(diffts) {
     diff = Math.floor(diff / 24);
     if (diff < 7) return i18n("options_days", diff)
     diff = Math.floor(diff / 7);
-    return i18n("options_weeks", diff) //TODO months , years ?  --> not needed in AMR yet  
+    return i18n("options_weeks", diff) //TODO months , years ?  --> not needed in AMR yet
 }
 const twodigits = function(i) {
     if (i < 10) return "0" + i;
@@ -196,7 +196,7 @@ export function chapPath(chap_url) {
     return chap_url.split("/").slice(3).join("/")//new URL(chap_url).pathname
 }
 /**
- * Return the list of pathname elements 
+ * Return the list of pathname elements
  */
 export function urlwords(url) {
     return url.split("/").slice(3)
@@ -233,7 +233,7 @@ export function findProbableChapter(lastReadURL, list) {
 }
 /**
  * List of supported languages in AMR, some are not traditional language codes
- * Multiple codes can match a same language, in this case, the entry is a list of 
+ * Multiple codes can match a same language, in this case, the entry is a list of
  * codes matching a language
  * Each code must have a css rule in flags.css to display the right flag for the language code
  * and a message code to display the language name

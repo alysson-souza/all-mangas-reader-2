@@ -17,7 +17,7 @@
 				</v-btn>
 			</v-toolbar>
 		</v-card>
-		
+
 		<!-- Default panel containing manga list -->
 		<v-main class="ma-3">
 			<v-alert class="mb-0" type="info" :value="true" icon="mdi-incognito" v-if="!trackingDone">
@@ -39,7 +39,7 @@
 			</v-tooltip>
 			<div id="__bottom_app__"></div>
 		</v-main>
-		
+
 		<!-- Options dialog -->
 		<v-dialog
 			v-model="options"
@@ -160,7 +160,7 @@ import * as utils from '../../amr/utils';
 export default {
   data() {
     return {
-		title: "All Mangas Reader", 
+		title: "All Mangas Reader",
 		options: false,
 		search: false,
 		rpanel: false,
@@ -187,7 +187,7 @@ export default {
 				this.alertmessage = this.i18n("amr_newversion")
 				this.tooltipalert = this.i18n("amr_newversion_long")
 		}
-	}, 
+	},
 	watch: {
 		rpanel: function(n) {
 			if (!n) this.closeRPanel();
@@ -199,13 +199,13 @@ export default {
 			if(window.location.href.indexOf("mode=tab") >= 0) {
 				return
 			} else {
-				return 'hidescrollbar' 
+				return 'hidescrollbar'
 			}
 		},
 		openOptions() {
 			this.options = true;
 			PopupResizer.setHeightToMax();
-		}, 
+		},
 		closeOptions() {
 			this.options = false;
 			PopupResizer.setHeightToCurrent();
@@ -224,7 +224,7 @@ export default {
 					this.toSearch = pstr;
 				})
 			}
-		}, 
+		},
 		closeSearch() {
 			this.search = false;
 			PopupResizer.setHeightToCurrent();
@@ -232,7 +232,7 @@ export default {
 		openRPanel() {
 			this.rpanel = true;
 			PopupResizer.setHeightToMax();
-		}, 
+		},
 		closeRPanel() {
 			PopupResizer.setHeightToCurrent();
 		},
@@ -262,7 +262,7 @@ export default {
 				});
 			}, 0)
 		}
-	}, 
+	},
 	mounted: function () {
   	this.$nextTick(function () {
     	PopupResizer.checkHeight();

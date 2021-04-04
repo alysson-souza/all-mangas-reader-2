@@ -7,7 +7,7 @@ if (typeof registerMangaObject === 'function') {
         home: "https://helveticascans.com/",
         disabled: true,
         chapter_url: /^\/r\/read\/.+$/g,
-        
+
         abstract: "FoolSlide",
         abstract_options: {
             base_url: "https://helveticascans.com/r",

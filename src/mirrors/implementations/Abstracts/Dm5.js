@@ -25,7 +25,7 @@ if (typeof registerMangaObject === 'function') {
             });
             return res;
         },
-    
+
         getListChaps : async function (urlManga) {
             let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
             if ($("#checkAdult", doc).length > 0) { // pass adult test
@@ -38,7 +38,7 @@ if (typeof registerMangaObject === 'function') {
                     expirationDate: new Date().getTime() + (24*60*60*1000)
                 })
                 doc = await amr.loadPage(urlManga, { // and reload the page
-                    nocache: true, 
+                    nocache: true,
                     preventimages: true
                 })
             }
@@ -52,7 +52,7 @@ if (typeof registerMangaObject === 'function') {
             if ($("#chapterlistload .cover", doc).length > 0) res = res.reverse()
             return res;
         },
-    
+
         getInformationsFromCurrentPage : async function (doc, curUrl) {
             let mg = $(".view-header-2 .title a[href!='/']", doc)
             return {
@@ -61,7 +61,7 @@ if (typeof registerMangaObject === 'function') {
                 "currentChapterURL" : "https://www.dm5.com" + amr.getVariable("DM5_CURL", doc)
             };
         },
-    
+
         getListImages : async function (doc, curUrl) {
             let lastpage = amr.getVariable("DM5_IMAGE_COUNT", doc),
                 curl = amr.getVariable("DM5_CURL", doc),
@@ -72,7 +72,7 @@ if (typeof registerMangaObject === 'function') {
             }
             return res;
         },
-    
+
         getImageFromPageAndWrite : async function (urlImg, image) {
             // loads the page containing the current scan
             let doc = await amr.loadPage(urlImg)
@@ -93,22 +93,22 @@ if (typeof registerMangaObject === 'function') {
                 curpage = parseInt(mat[1]) // set the current page depending on the scan to retrieve
             }
             let params = { // Build parameters for the request
-                cid: cid, 
-                page: curpage, 
-                key: mkey, 
-                language: 1, 
-                gtk: 6, 
-                _cid: cid, 
-                _mid: mid, 
-                _dt: dt, 
+                cid: cid,
+                page: curpage,
+                key: mkey,
+                language: 1,
+                gtk: 6,
+                _cid: cid,
+                _mid: mid,
+                _dt: dt,
                 _sign: sign
             }
             // get scan url (this function seems to work only within DM5, perhaps a control on Referer)
             let data = await amr.loadJson(
-                chapfunurl, 
+                chapfunurl,
                 {
-                    data: params, 
-                    nocontenttype: true, 
+                    data: params,
+                    nocontenttype: true,
                     headers: {"X-Requested-With": "XMLHttpRequest"},
                     referer: urlImg
                 }
@@ -117,7 +117,7 @@ if (typeof registerMangaObject === 'function') {
             // dm5 is unpacking the images url through an eval, we can't do that in AMR due to CSP
             // we do it manually (below is the unpack function shipped with the data to decode)
             let unpack = function(p,a,c,k,e,d){e=function(c){return(c<a?"":e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--)d[e(c)]=k[c]||e(c);k=[function(e){return d[e]}];e=function(){return'\\w+'};c=1;};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p;}
-            
+
             // regexp to parse the arguments to pass to the unpack function, just parse the 4 first arguments
             let regexpargs = /'(([^\\']|\\')*)',([0-9]+),([0-9]+),'(([^\\']|\\')*)'/g
             let match = regexpargs.exec(data)
@@ -127,14 +127,14 @@ if (typeof registerMangaObject === 'function') {
                 sc = sc.replace(/\\'/g, "'") // unquote the result
                 // the result is another js function containing the data, we mimic here what it does
                 // retrieve the variables
-                let cid = amr.getVariableFromScript("cid", sc), 
+                let cid = amr.getVariableFromScript("cid", sc),
                     key = amr.getVariableFromScript("key", sc),
                     pix = amr.getVariableFromScript("pix", sc),
                     pvalue = amr.getVariableFromScript("pvalue", sc) // array of scan urls (contains current one and next one)
                 pvalue = pvalue.map(img => pix + img + '?cid=' + cid + '&key=' + key) // mimic the returned function which rebuilds the url depending on its parts
                 $(image).attr("src", pvalue[0]); // set the image src
             } else {
-                $(image).attr("src", "error"); 
+                $(image).attr("src", "error");
             }
         },
         isCurrentPageAChapterPage : function (doc, curUrl) {
