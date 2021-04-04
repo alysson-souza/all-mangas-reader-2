@@ -27,7 +27,10 @@ export default class GistStorage extends Storage {
   }
 
   async getAll() {
-    const request = await this.axios.get(`gists/${this.gistSyncGitID}`).catch(this.handleSyncError)
+    if(!this.gistSyncGitID || !this.gistSyncSecret) throw new Error('Missing credentials. Skipping update')
+    if(!this.gistSyncSecret.startsWith('ghp_')) throw new Error('Missing PAT. Skipping update')
+    if(this.gistSyncSecret.length < 2) throw new Error('Missing ID. Skipping update')
+    const request = await this.axios.get(`gists/${this.gistSyncGitID}?cache=${Date.now()}`).catch(this.handleSyncError)
     const amr = request.data.files['amr.json']
     if(amr) {
       if(amr.truncated) {
@@ -63,7 +66,15 @@ export default class GistStorage extends Storage {
   async delete(key, value) {
     const data = await this.getAll()
     const updates = data.map(manga => manga.key === key ? value : manga)
-    return this.saveAll(updates)
+    this.axios.patch(`gists/${this.gistSyncGitID}`, this.getFileStruct(JSON.stringify(updates)))
+      .catch(e=> {
+        if(e.response.headers['x-ratelimit-remaining'] === "0") {
+          const timestamp = parseInt(e.response.headers['x-ratelimit-reset']) * 1000
+          setTimeout(() => {
+            this.delete(key, value)
+          }, new Date(timestamp).getTime() - Date.now());
+        }
+      })
   }
 
   getFileStruct(content) {
