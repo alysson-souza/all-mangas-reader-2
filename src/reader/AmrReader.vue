@@ -115,13 +115,13 @@
                 <!-- Previous chapter button -->
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
-                    <v-btn v-on="on" icon v-show="(direction == 'ltr' ? !firstChapter : !lastChapter)"
+                    <v-btn v-on="on" icon v-show="(direction == 'ltr' || !invertKeys ? !firstChapter : !lastChapter)"
                       @click.stop="direction == 'ltr' ? goPreviousChapter() : goNextChapter()" class="btn-huge">
                       <v-icon>mdi-chevron-left</v-icon>
                     </v-btn>
                   </template>
                   <span>
-                    {{ direction == 'ltr' ?
+                    {{ direction == 'ltr' || !invertKeys ?
                       i18n("list_mg_act_prev") :
                       i18n("list_mg_act_next") + ' ' + (nextchapLoading ? i18n("reader_loading", Math.floor(nextchapProgress)) : '')
                     }}
@@ -141,13 +141,13 @@
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
                     <!-- Next chapter button -->
-                    <v-btn v-on="on" icon v-show="(direction == 'ltr' ? !lastChapter : !firstChapter)"
+                    <v-btn v-on="on" icon v-show="(direction == 'ltr' || !invertKeys ? !lastChapter : !firstChapter)"
                       @click.stop="direction == 'ltr' ? goNextChapter() : goPreviousChapter()" class="btn-huge">
                       <v-icon>mdi-chevron-right</v-icon>
                     </v-btn>
                   </template>
                   <span>
-                    {{ direction == 'ltr' ?
+                    {{ direction == 'ltr' || !invertKeys ?
                       i18n("list_mg_act_next") + ' ' + (nextchapLoading ? i18n("reader_loading", Math.floor(nextchapProgress)) : '') :
                       i18n("list_mg_act_prev")
                     }}
