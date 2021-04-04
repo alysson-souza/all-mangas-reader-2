@@ -124,7 +124,11 @@
     "description": "Option Loading sans order"
   },
   "options_web_imgorder_desc": {
-    "message": "Charger les scans dans l'ordre du chapitre (Cette option implique que le chargement du chapitre complet sera plus long mais garanti que le premier scan qui sera chargé est le premier du chapitre et ainsi de suite... )",
+    "message": "Charger les scans dans l'ordre du chapitre",
+    "description": "Option Loading sans order description"
+  },
+  "options_web_imgorder_info": {
+    "message": "Cette option implique que le chargement du chapitre complet sera plus long mais garanti que le premier scan qui sera chargé est le premier du chapitre et ainsi de suite...",
     "description": "Option Loading sans order description"
   },
   "options_web_prefetch_opt": {
@@ -132,7 +136,11 @@
     "description": "Option prefetch next chapter"
   },
   "options_web_prefetch_desc": {
-    "message": "Précharger le chapitre suivant lors de la lecture. (Une barre de progression indiquant le niveau de chargement du chapitre suivant apparaitra sous le bouton \"Suivant\")",
+    "message": "Précharger le chapitre suivant lors de la lecture.",
+    "description": "Option prefetch next chapter description"
+  },
+  "options_web_prefetch_info": {
+    "message": "Une barre de progression indiquant le niveau de chargement du chapitre suivant apparaitra sous le bouton \"Suivant\"",
     "description": "Option prefetch next chapter description"
   },
   "options_web_markwhendownload_opt": {
@@ -152,7 +160,11 @@
     "description": "Option automatically add manga to list"
   },
   "options_web_addauto_desc": {
-    "message": "Ajouter automatiquement les mangas que je lis à a liste de lecture. Si vous dcochez cette option, un bouton '+' apparaitra dans la barre de navigation pour ajouter le manga courant à la liste de lecture.",
+    "message": "Ajouter automatiquement les mangas que je lis à a liste de lecture.",
+    "description": "Option automatically add manga to list description"
+  },
+  "options_web_addauto_info": {
+    "message": "Si vous décochez cette option, un bouton '+' apparaitra dans la barre de navigation pour ajouter le manga courant à la liste de lecture.",
     "description": "Option automatically add manga to list description"
   },
   "options_web_lrkeys_opt": {
@@ -234,7 +246,7 @@
     "description": "This is the title of the options page section updates"
   },
   "options_gen_update_chap_label": {
-    "message": "Mettre à jour les listes de chapitre tous les",
+    "message": "Mettre à jour les listes de chapitre tous les :",
     "description": "Option update chapters list"
   },
   "options_seconds": {
@@ -274,7 +286,11 @@
     "description": "Option to pause updates for a week after new chapter"
   },
   "options_gen_stopupdateforaweek_desc": {
-    "message": "Lorsqu'un nouveau chapitre est trouvé, le suivant sera publié au moins une semaine plus tard. Cochez la case ci dessous pour mettre en pause les mises à jour pour un manga durant une semaine après qu'un nouveau chapitre aie été trouvé. En faisant cela, les mises à jour reprennent pour deux jours (un avant et un après) la semaine suivant. Si aucun chapitre n'est trouvé durant cette période, les mises à jour sont en pause pour une nouvelle semaine et ainsi de suite.",
+    "message": "Mettre en pause les mises à jour pour un manga durant une semaine après qu'un nouveau chapitre ait été trouvé.",
+    "description": "Description of the functionning of the pause updates for a week after new chapter option"
+  },
+  "options_gen_stopupdateforaweek_info": {
+    "message": "Lorsqu'un nouveau chapitre est trouvé, le suivant sera publié au moins une semaine plus tard. Cochez la case ci-dessous pour que les mises à jour reprennent pour deux jours (un avant et un après) la semaine suivante. Si aucun chapitre n'est trouvé durant cette période, les mises à jour sont en pause pour une nouvelle semaine et ainsi de suite.",
     "description": "Description of the functionning of the pause updates for a week after new chapter option"
   },
   "options_gen_checkmgstart_opt": {
@@ -298,8 +314,12 @@
     "description": "Option Save bandwidth"
   },
   "options_gen_savebandwidth_desc": {
-    "message": "Economiser la bande passante lors de la mise à jour des chapitres (cette option permet d'attendre qu'un manga ai été mis à jour avant de mettre à jour le suivant. La mise à jour est plus lente.)",
+    "message": "Economiser la bande passante lors de la mise à jour des chapitres",
     "description": "Option Save bandwidth description"
+  },
+  "options_gen_savebandwidth_info": {
+    "message": "Cette option permet d'attendre qu'un manga ai été mis à jour avant de mettre à jour le suivant. La mise à jour est plus lente.",
+    "description": "Option Save bandwidth infobox"
   },
   "options_gen_displayzero_opt": {
     "message": "\"0\" gris sur l'icone",
@@ -330,7 +350,7 @@
     "description": "Option Notify on new chapter description"
   },
   "options_gen_notificationtimer_label": {
-    "message": "Temps avant que les notifications ne se ferment d'elles même.",
+    "message": "Temps avant que les notifications ne se ferment d'elles même :",
     "description": "Option select time before notif closes"
   },
   "options_gen_notificationtimer_def": {
@@ -1160,7 +1180,11 @@
     "description": "Button to choose option to read from right to left"
   },
   "option_read_fullchapter": {
-    "message": "Afficher le chapitre entier (sinon, afficher uniquement la page courante)",
+    "message": "Afficher le chapitre entier",
+    "description": "Option to display the the full chapter as a long strip (precise that if not, display only current page)"
+  },
+  "option_read_fullchapter_info": {
+    "message": "Si vous décochez cette option, seule la page courante est affichée",
     "description": "Option to display the the full chapter as a long strip (precise that if not, display only current page)"
   },
   "option_read_scaleup": {
@@ -1308,7 +1332,7 @@
     "description": "In the options page, label above options to choose reading direction"
   },
   "options_web_chapter_reading_direction_invert_keys_opt": {
-    "message": "Invert keys in Right to Left mode",
+    "message": "Inverser les touches en mode droite-gauche",
     "description": "In the options page, label below options to choose reading direction, inverts keys if Right to Left mode is enabled"
   },
   "options_web_chapter_display_full_chapter_opt": {
@@ -1332,19 +1356,19 @@
     "description": "In the options page, label of the dark reader option"
   },
   "options_web_chapter_thinscan_desc": {
-    "message": "Thin Scan behaviour",
+    "message": "Comportement des scans longs et fins",
     "description": "In the options page, description of the thin scan option"
   },
   "options_web_chapter_thinscan_ask": {
-    "message": "Always ask the user",
+    "message": "Toujours demander à l'utilisateur",
     "description": "In the options page, description of the thin scan option ask"
   },
   "options_web_chapter_thinscan_adjust": {
-    "message": "Always Adjust",
+    "message": "Toujours ajuster",
     "description": "In the options page, description of the thin scan option adjust"
   },
   "options_web_chapter_thinscan_no_adjust": {
-    "message": "Always Do not adjust",
+    "message": "Ne jamais ajuster",
     "description": "In the options page, description of the thin scan option no adjust"
   },
   "reader_button_saveoptions": {
@@ -1568,24 +1592,28 @@
     "description": "Action button label to stop showing help messages"
   },
   "options_sync_title": {
-    "message": "Synchronization",
+    "message": "Synchronisation",
     "description": "browser sync between different devices"
   },
   "options_sync_title_warning": {
-    "message": "It's highly recommended to create manga list export, before you enabled sync for the first time!",
+    "message": "Il est fortement recommandé de créer une liste de mangas à exporter avant d'activer la synchronisation pour la première fois !",
     "description": "create manga list export before enabling it"
   },
   "options_sync_manga_list_desc": {
-    "message": "Allow users to sync manga list",
+    "message": "Permettre aux utilisateurs de synchroniser la liste des mangas",
     "description": "browser sync between different devices"
   },
   "options_sync_checkbox": {
-    "message": "Enable browser sync",
+    "message": "Activer la synchronisation du navigateur",
     "description": "browser sync between different devices"
   },
   "options_sync_gist" : {
     "message": "Activer la synchronisation avec Gist",
     "description": "Synchroniser les données avec Gist"
+  },
+  "options_sync_gist_help" : {
+    "message": "Besoin d'aide ?",
+    "description": "Gist help infobox"
   },
   "option_sync_gist_secret" : {
     "message": "Personal access token",
@@ -1599,7 +1627,7 @@
     "message": "Just a filler to separate new labels from old ones"
   },
   "options_gen_waitbetweenupdates_opt": {
-    "message": "Attendre entre les mises à jour de chapitres",
+    "message": "Attendre entre les mises à jour de chapitres :",
     "description": "Option Wait between chapters updates "
   },
   "options_gen_waitbetweenupdates_desc": {
@@ -1680,6 +1708,10 @@
     "message": "Utilisez des images d'économiseur de données (images jpeg compressées pour moins de bande passante)",
     "description": "Option for datasaver toggle on mangadex"
   },
+  "options_mangadex_datasaver_info": {
+    "message": "Images jpeg compressées pour moins de bande passante",
+    "description": "Option for datasaver toggle on mangadex"
+  },
   "options_mangadex_datasaver_label": {
     "message": "Utiliser des images d'économiseur de données",
     "description": "Option for datasaver toggle on mangadex"
@@ -1740,7 +1772,7 @@
     "description": "Label for the manga per page select box"
   },
   "options_webtoon_mode_default": {
-    "message": "Turn on webtoon mode by default",
+    "message": "Activer le mode webtoon par défaut",
     "description": "webtoon mode default check box"
   },
   "options_webtoon_mode_default_option": {

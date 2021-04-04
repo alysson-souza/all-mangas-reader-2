@@ -124,7 +124,11 @@
     "description": "Option Loading sans order"
   },
   "options_web_imgorder_desc": {
-    "message": "Load scans in the order of the chapter (This option involve that the chapter's loading will be slower but guarantees that the first scan which will be loaded is the first of the chapter and so on...)",
+    "message": "Load scans in the order of the chapter",
+    "description": "Option Loading sans order description"
+  },
+  "options_web_imgorder_info": {
+    "message": "This option involve that the chapter's loading will be slower but guarantees that the first scan which will be loaded is the first of the chapter and so on...",
     "description": "Option Loading sans order description"
   },
   "options_web_prefetch_opt": {
@@ -132,7 +136,11 @@
     "description": "Option prefetch next chapter"
   },
   "options_web_prefetch_desc": {
-    "message": "Prefetch next chapter while reading manga. (A progress bar indicating the prefetch level of the next chapter appears inside the \"Next\" button)",
+    "message": "Prefetch next chapter while reading manga.",
+    "description": "Option prefetch next chapter description"
+  },
+  "options_web_prefetch_info": {
+    "message": "A progress bar indicating the prefetch level of the next chapter appears inside the \"Next\" button",
     "description": "Option prefetch next chapter description"
   },
   "options_web_markwhendownload_opt": {
@@ -152,7 +160,11 @@
     "description": "Option automatically add read manga to reading list"
   },
   "options_web_addauto_desc": {
-    "message": "Automatically add manga in my reading list when I read it. If you uncheck this option, you will have a '+' button in the navigation bar to add the current manga in the list.",
+    "message": "Automatically add manga in my reading list when I read it.",
+    "description": "Option automatically add manga to list description"
+  },
+  "options_web_addauto_info": {
+    "message": "If you uncheck this option, you will have a '+' button in the navigation bar to add the current manga in the list.",
     "description": "Option automatically add manga to list description"
   },
   "options_web_lrkeys_opt": {
@@ -234,7 +246,7 @@
     "description": "This is the title of the options page section updates"
   },
   "options_gen_update_chap_label": {
-    "message": "Update chapters list every",
+    "message": "Update chapters list every:",
     "description": "Option update chapters list"
   },
   "options_seconds": {
@@ -274,7 +286,11 @@
     "description": "Option to pause updates for a week after new chapter"
   },
   "options_gen_stopupdateforaweek_desc": {
-    "message": "When a new chapter is found, the next one will be released at least a week after. Check the box below to decide to pause updates for a manga during a week after a new chapter has been found. Doing that, updates will restart for two days (one before and one after) after a week. If no chapters are found, updates will be paused for another week and so on.",
+    "message": "Pause updates for one week after a new chapter has been found for a manga .",
+    "description": "Description of the functionning of the pause updates for a week after new chapter option"
+  },
+  "options_gen_stopupdateforaweek_info": {
+    "message": "When a new chapter is found, the next one will be published at least one week later. Check the box below to have updates resume for two days (one before and one after) the following week. If no chapters are found during this period, updates are paused for another week and so on.",
     "description": "Description of the functionning of the pause updates for a week after new chapter option"
   },
   "options_gen_checkmgstart_opt": {
@@ -298,8 +314,12 @@
     "description": "Option Save bandwidth"
   },
   "options_gen_savebandwidth_desc": {
-    "message": "Save bandwidth while loading chapter list (this options waits for one manga to be updated before updating the next one, update is slower)",
+    "message": "Save bandwidth while loading chapter list",
     "description": "Option Save bandwidth description"
+  },
+  "options_gen_savebandwidth_info": {
+    "message": "This options waits for one manga to be updated before updating the next one, update is slower.",
+    "description": "Option Save bandwidth infobox"
   },
   "options_gen_displayzero_opt": {
     "message": "Grey \"0\" on icon",
@@ -330,7 +350,7 @@
     "description": "Option Notify on new chapter description"
   },
   "options_gen_notificationtimer_label": {
-    "message": "Time before the notification close itself",
+    "message": "Time before the notification close itself:",
     "description": "Option select time before notif closes"
   },
   "options_gen_notificationtimer_def": {
@@ -1161,7 +1181,11 @@
     "description": "Button to choose option to read from right to left"
   },
   "option_read_fullchapter": {
-    "message": "Display full chapter as a long strip (if not, display only current page)",
+    "message": "Display full chapter as a long strip",
+    "description": "Option to display the the full chapter as a long strip (precise that if not, display only current page)"
+  },
+  "option_read_fullchapter_info": {
+    "message": "If you uncheck this option, only the current page is displayed",
     "description": "Option to display the the full chapter as a long strip (precise that if not, display only current page)"
   },
   "option_read_scaleup": {
@@ -1345,7 +1369,7 @@
     "description": "In the options page, description of the thin scan option adjust"
   },
   "options_web_chapter_thinscan_no_adjust": {
-    "message": "Always Do not adjust",
+    "message": "Never adjust",
     "description": "In the options page, description of the thin scan option no adjust"
   },
   "reader_button_saveoptions": {
@@ -1592,6 +1616,10 @@
     "message": "Enable gist sync",
     "description": "Synchronize using Gist from github"
   },
+  "options_sync_gist_help" : {
+    "message": "Need help ?",
+    "description": "Gist help infobox"
+  },
   "option_sync_gist_secret" : {
     "message": "Personal access token",
     "description": "token"
@@ -1604,7 +1632,7 @@
     "message": "Just a filler to separate new labels from old ones"
   },
   "options_gen_waitbetweenupdates_opt": {
-    "message": "Wait between chapters updates",
+    "message": "Wait between chapters updates:",
     "description": "Option Wait between chapters updates "
   },
   "options_gen_waitbetweenupdates_desc": {
@@ -1682,7 +1710,11 @@
     "description": "section header for mangadex options"
   },
   "options_mangadex_datasaver": {
-    "message": "Use datasaver images (Compressed jpeg images for less bandwidth)",
+    "message": "Use datasaver images",
+    "description": "Option for datasaver toggle on mangadex"
+  },
+  "options_mangadex_datasaver_info": {
+    "message": "Compressed jpeg images for less bandwidth",
     "description": "Option for datasaver toggle on mangadex"
   },
   "options_mangadex_datasaver_label": {
