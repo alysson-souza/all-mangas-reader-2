@@ -15,7 +15,6 @@ const defaultConfig = {
     syncInterval: 30 * 1000,
     syncEnabled: 0,
     gistSyncEnabled: 0,
-    gistSyncSecret: undefined,
 }
 
 class SyncManager {
@@ -120,6 +119,8 @@ class SyncManager {
                 .catch(e => {
                     if(e instanceof ThrottleError) {
                         storage.retryDate = e.getRetryAfterDate()
+                    } else if(e instanceof Error) {
+                        debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] ${e.message}`)
                     }
                 })
             }
@@ -192,12 +193,10 @@ class SyncManager {
     async processUpdatesToLocal(localList, remoteList) {
         const localUpdates = [];
         for(const manga of remoteList) {
-            if(!this.shouldSkipSync(manga)) {
-                // Check if need to be sync to remote
-                const localManga = localList.find(m => m.key === manga.key);
-                if (!localManga || localManga.ts < manga.ts) {
-                    localUpdates.push({ ...manga });
-                }
+            // Check if need to be sync to remote
+            const localManga = localList.find(m => m.key === manga.key);
+            if (!localManga || localManga.ts < manga.ts) {
+                localUpdates.push({ ...manga });
             }
         }
 
