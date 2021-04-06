@@ -2,11 +2,11 @@ if (typeof registerMangaObject === 'function') {
     registerMangaObject({
         mirrorName: "Seri Manga",
         mirrorIcon: "serimanga.png",
-        languages: "en",
+        languages: "tr",
         domains: ["serimanga.com"],
         home: "https://serimanga.com/",
         canListFullMangas: true,
-        chapter_url: /^\/mangas\/.*\/[0-9]+.+$/g,
+        chapter_url: /^\/manga(s)?\/.*\/[0-9]+.+$/g,
 
         getMangaList : async function (search) {
             let url = this.home + 'mangalar'

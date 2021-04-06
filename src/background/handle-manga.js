@@ -226,9 +226,9 @@ class HandleManga {
     async sendPushState(url, tabId) {
         browser.tabs
             .executeScript(tabId, { code: "window['__armreader__'] === undefined" })
-            .then(result => {
+            .then(async result => {
                 if (result[0]) {
-                    this.matchUrlAndLoadScripts(url, tabId)
+                    await this.matchUrlAndLoadScripts(url, tabId)
                 } else {
                     browser.tabs
                         .executeScript(tabId, { code: "if (typeof window['onPushState'] === 'function') window['onPushState']();" })
