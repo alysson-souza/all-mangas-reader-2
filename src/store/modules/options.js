@@ -27,7 +27,7 @@ const default_options = {
     prefetch: 1, // load next chapter in background while reading
     load: 1, //See loading progression in the title bar
     imgorder: 0, //Load scans in order
-    malSync: 0,
+    smoothNavigation: 1, // Should next/previous chapter load dynamically or force a page loag
 
     darkreader: 1, // Reader is in dark mode, if not --> light mode
 

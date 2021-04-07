@@ -1,7 +1,7 @@
 if (typeof registerMangaObject === 'function') {
     registerMangaObject({
         mirrorName: "Komga",
-        canListFullMangas: true,
+        canListFullMangas: false,
         mirrorIcon: "komga.webp",
         languages: "en",
         domains: ['komga'],
@@ -51,7 +51,7 @@ if (typeof registerMangaObject === 'function') {
             return res
         },
 
-        getInformationsFromCurrentPage: async function (_, curUrl) {
+        getInformationsFromCurrentPage: async function (doc, curUrl) {
             let id = curUrl.split("/")[4]
 
             let manga = await this.apiCall('books/' + id)
@@ -63,7 +63,7 @@ if (typeof registerMangaObject === 'function') {
             }
         },
 
-        getListImages: async function (_, curUrl) {
+        getListImages: async function (doc, curUrl) {
             let id = curUrl.split("/")[4]
 
             let pages = await this.apiCall('books/' + id + '/pages')
@@ -74,7 +74,7 @@ if (typeof registerMangaObject === 'function') {
             $(image).attr("src", urlImg)
         },
 
-        isCurrentPageAChapterPage: function (_, curUrl) {
+        isCurrentPageAChapterPage: function (doc, curUrl) {
             return curUrl.split("/")[5] === "read"
         }
     });

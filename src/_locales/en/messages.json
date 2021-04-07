@@ -1913,12 +1913,16 @@
     "message": "Zoom Out",
     "description": "Button to zoom out"
   },
-  "options_malSync_title": {
-    "message": "support for MAL-Sync, a extension for tracking manga (always loads the page from scratch)\ndo NOT use if you are not using mal-sync",
-    "description": "MAL-Sync option title text"
+  "options_reader_smooth_navigation": {
+    "message": "Smooth Navigation",
+    "description": "Smooth Navigation option"
   },
-  "options_malSync": {
-    "message": "MAL-Sync support",
-    "description": "MAL-Sync option checkbox text"
+  "options_reader_smooth_navigation_label": {
+    "message": "Smooth loading will change chapters dynamically.",
+    "description": "Smooth Navigation option label"
+  },
+  "options_reader_smooth_navigation_info": {
+    "message": "This setting should only be turned off if you have another extension tracking your progress (MAL-Sync for example).",
+    "description": "Smooth Navigation option label"
   }
 }

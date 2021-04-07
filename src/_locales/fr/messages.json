@@ -1908,12 +1908,16 @@
     "message": "Dézoomer",
     "description": "Button to zoom out"
   },
-  "options_malSync_title": {
-    "message": "prise en charge de MAL-Sync, une extension pour le suivi des mangas (charge toujours la page à partir de zéro)\nne pas utiliser si vous n'utilisez pas mal-sync",
-    "description": "MAL-Sync option title text"
+  "options_reader_smooth_navigation": {
+    "message": "Navigation fluide",
+    "description": "Smooth Navigation option"
   },
-  "options_malSync": {
-    "message": "Prise en charge de MAL-Sync",
-    "description": "MAL-Sync option checkbox text"
+  "options_reader_smooth_navigation_label": {
+    "message": "Un chargement fluide changera les chapitres de manière dynamique.",
+    "description": "Smooth Navigation option label"
+  },
+  "options_reader_smooth_navigation_info": {
+    "message": "Ce paramètre ne doit être désactivé que si une autre extension suit votre progression (MAL-Sync par exemple).",
+    "description": "Smooth Navigation option label"
   }
 }

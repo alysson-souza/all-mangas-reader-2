@@ -988,9 +988,9 @@
             this.$refs.wizdialog.temporary(this.i18n("content_nav_last_chap"), 1000, {important: true})
         }
         if (!this.nextChapter) return
-        if (this.options.malSync){
+        if (!this.options.smoothNavigation) {
           window.location.href = this.nextChapter
-        }else if (this.nextchapLoading) {
+        } else if (this.nextchapLoading) {
           this.loadChapterInReaderUsingChapterLoader(this.nextChapterLoader)
         } else {
           this.loadChapterInReader(this.nextChapter)
@@ -1004,7 +1004,11 @@
           return
         }
         let cur = this.chapters.findIndex(el => el.url === this.selchap)
-        this.loadChapterInReader(this.chapters[cur + 1].url)
+        if (!this.options.smoothNavigation) {
+          window.location.href = this.chapters[cur + 1].url
+        } else {
+          this.loadChapterInReader(this.chapters[cur + 1].url)
+        }
       },
       /** Preloads the next chapter scans */
       async preloadNextChapter() {
