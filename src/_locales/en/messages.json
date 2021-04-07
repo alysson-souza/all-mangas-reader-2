@@ -1912,5 +1912,13 @@
   "reader_zoom_minus": {
     "message": "Zoom Out",
     "description": "Button to zoom out"
+  },
+  "options_malSync_title": {
+    "message": "support for MAL-Sync, a extension for tracking manga (always loads the page from scratch)\ndo NOT use if you are not using mal-sync",
+    "description": "MAL-Sync option title text"
+  },
+  "options_malSync": {
+    "message": "MAL-Sync support",
+    "description": "MAL-Sync option checkbox text"
   }
 }

@@ -1907,5 +1907,13 @@
   "reader_zoom_minus": {
     "message": "Dézoomer",
     "description": "Button to zoom out"
+  },
+  "options_malSync_title": {
+    "message": "prise en charge de MAL-Sync, une extension pour le suivi des mangas (charge toujours la page à partir de zéro)\nne pas utiliser si vous n'utilisez pas mal-sync",
+    "description": "MAL-Sync option title text"
+  },
+  "options_malSync": {
+    "message": "Prise en charge de MAL-Sync",
+    "description": "MAL-Sync option checkbox text"
   }
 }
