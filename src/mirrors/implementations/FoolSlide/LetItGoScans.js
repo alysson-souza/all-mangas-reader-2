@@ -5,11 +5,12 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["reader.letitgo.scans.today"],
         home: "http://letitgo-scans.blogspot.com/",
-        chapter_url: /^\/read\/.*\/.+$/g,
+        chapter_url: /^\/read\/.+$/g,
 
-        abstract: "ComiCake",
+        abstract: "FoolSlide",
         abstract_options: {
-            reader_url: "http://reader.letitgo.scans.today"
+            base_url: "https://https://reader.letitgo.scans.today",
+            mglist_selector: ".title > a[href*='/series/']"
         }
     });
 }

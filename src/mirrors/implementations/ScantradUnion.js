@@ -56,7 +56,6 @@ if (typeof registerMangaObject === 'function') {
             $("#webtoon img", doc).each(function (index) {
                 res.push($(this).attr('data-src'))
             })
-            console.log(res)
             return res
         },
     
