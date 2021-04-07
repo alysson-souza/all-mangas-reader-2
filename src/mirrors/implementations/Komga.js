@@ -1,5 +1,5 @@
 if (typeof registerMangaObject === 'function') {
-	registerMangaObject({
+    registerMangaObject({
         mirrorName: "Komga",
         canListFullMangas: true,
         mirrorIcon: "komga.webp",
@@ -8,80 +8,73 @@ if (typeof registerMangaObject === 'function') {
         home: 'komga',
         chapter_url: /\/book\/.*?\/read/g,
 
-        apiUrl: function() {
-            return new URL('/api/v1/', amr.getOption('komgaUrl'))
+        apiUrl: function () {
+            return new URL('/api/v1/', new URL(amr.getOption('komgaUrl')).href)
         },
 
-        apiCall: async function(url) {
-            headers = new Headers()
-            headers.set('Authorization', 'Basic ' + 
-                btoa(amr.getOption('komgaUser') + ":" + amr.getOption('komgaPassword')))
-            
-            let resp = await fetch( this.apiUrl() + url)
-            return resp.json()
+        apiCall: async function (url) {
+            const options = {
+                headers:{
+                    'Authorization':'Basic ' + btoa(amr.getOption('komgaUser') + ":" + amr.getOption('komgaPassword'))
+                }
+            }
+            return await amr.loadJson(this.apiUrl() + url, options)
         },
-        
+
         getMangaList: async function (search) {
-            let list = await this.apiCall('series')
-            let res = []
-            let self = this
-            list.content.forEach(res => {
-                res.push([
+            let list = await this.apiCall('series?search=' + search)
+
+            return list.content.map(res => {
+                return [
                     res.name,
-                    amr.getOption('komgaUrl') + '/series/' + res.id
-                ])
-            })
-            return res
+                    new URL(amr.getOption('komgaUrl')).href + 'series/' + res.id
+                ];
+            });
         },
 
         getListChaps: async function (urlManga) {
             let id = urlManga.split("/").pop()
-            let res = []
-            let self = this
-
-            let list = await this.apiCall('series/' + id + '/books')
-            list.content.forEach(chap => {
-                res.push([
-                    chap.name,
-                    amr.getOption('komgaUrl') + '/book/' + chap.id + '/read'
-                ])
-            })
-            res.reverse()
-            console.log(res)
+            let res = [];
+            for (let page = 0, run = true; run; page++) {
+                let list = await this.apiCall('series/' + id + '/books?page=' + page + '&size=500&sort=metadata.numberSort%2Cdesc')
+                let mangas = list.content.map(chap => {
+                    return [
+                        chap.name,
+                        new URL(amr.getOption('komgaUrl')).href + 'book/' + chap.id + '/read'
+                    ]
+                })
+                res.push(...mangas)
+                if(list.last){
+                    run = false
+                }
+            }
             return res
         },
-    
-        getInformationsFromCurrentPage: async function (doc, curUrl) {
+
+        getInformationsFromCurrentPage: async function (_, curUrl) {
             let id = curUrl.split("/")[4]
 
             let manga = await this.apiCall('books/' + id)
             let series = await this.apiCall('series/' + manga.seriesId)
-            let res = {
+            return {
                 name: series.name,
-                currentMangaURL: amr.getOption('komgaUrl') + '/series/' + series.id,
-                currentChapterURL: amr.getOption('komgaUrl') + '/book/' + id + '/read'
+                currentMangaURL: new URL(amr.getOption('komgaUrl')).href + 'series/' + series.id,
+                currentChapterURL: new URL(amr.getOption('komgaUrl')).href + 'book/' + id + '/read'
             }
-            return res
         },
-    
-        getListImages: async function (doc, curUrl) {
+
+        getListImages: async function (_, curUrl) {
             let id = curUrl.split("/")[4]
-            let res = []
-            let self = this
 
             let pages = await this.apiCall('books/' + id + '/pages')
-            pages.forEach(page => {
-                res.push(self.apiUrl() + 'books/' + id + '/pages/' + page.number)
-            })
-            
-            return res
+            return pages.map(page => this.apiUrl() + 'books/' + id + '/pages/' + page.number)
         },
-    
+
         getImageFromPageAndWrite: function (urlImg, image) {
             $(image).attr("src", urlImg)
         },
-    
-        isCurrentPageAChapterPage: function (doc, curUrl) {
+
+        isCurrentPageAChapterPage: function (_, curUrl) {
             return curUrl.split("/")[5] === "read"
         }
     });
