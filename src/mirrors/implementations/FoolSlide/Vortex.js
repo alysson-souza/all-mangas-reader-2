@@ -1,7 +1,7 @@
 if (typeof registerMangaObject === 'function') {
 	registerMangaObject({
         mirrorName : "Vortex Scans",
-        mirrorIcon : "vortex.png",
+        mirrorIcon : "vortexscans.png",
         languages : "en",
         domains: ["reader.vortex-scans.com"],
         home: "https://vortex-scans.com/",

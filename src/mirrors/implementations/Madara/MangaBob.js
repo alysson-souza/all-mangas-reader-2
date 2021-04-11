@@ -1,7 +1,7 @@
 if (typeof registerMangaObject === 'function') {
     registerMangaObject({
         mirrorName: 'Manga Bob',
-        mirrorIcon: 'mangabob.webp',
+        mirrorIcon: 'mangabob.png',
         languages: 'en',
         domains: ['mangabob.com'],
         home: 'https://mangabob.com/',

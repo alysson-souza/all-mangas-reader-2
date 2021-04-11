@@ -2,7 +2,7 @@ if (typeof registerMangaObject === 'function') {
     registerMangaObject({
         mirrorName: "Manga Fast",
         canListFullMangas: false,
-        mirrorIcon: "mangafast.webp",
+        mirrorIcon: "mangafast.png",
         languages: "en",
         domains: ["mangafast.net"],
         home: "https://mangafast.net",

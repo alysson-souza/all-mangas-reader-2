@@ -2,7 +2,7 @@ if (typeof registerMangaObject === 'function') {
 	registerMangaObject({
         mirrorName : "Manga Hasu",
         canListFullMangas : false,
-        mirrorIcon : "mangahasu.webp",
+        mirrorIcon : "mangahasu.png",
         languages : "en",
         domains: ["mangahasu.se"],
         home: "http://mangahasu.se/",

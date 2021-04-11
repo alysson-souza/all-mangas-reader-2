@@ -2,7 +2,7 @@ if (typeof registerMangaObject === 'function') {
 	registerMangaObject({
         mirrorName : "Scantrad Union",
         canListFullMangas : true,
-        mirrorIcon : "scantrad-union.png",
+        mirrorIcon : "scantradunion.png",
         languages : "fr",
         domains: ["scantrad-union.com"],
         home: "https://scantrad-union.com/",

@@ -2,7 +2,7 @@ if (typeof registerMangaObject === 'function') {
 	registerMangaObject({
         mirrorName: "Read Comic Online",
         canListFullMangas: true,
-        mirrorIcon: "readcomiconline.webp",
+        mirrorIcon: "readcomiconline.png",
         languages: "en",
         domains: ["readcomiconline.to"],
         home: "https://readcomiconline.to",

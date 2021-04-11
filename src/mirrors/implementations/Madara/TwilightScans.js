@@ -1,7 +1,7 @@
 if (typeof registerMangaObject === 'function') {
     registerMangaObject({
         mirrorName: "Twilight Scans",
-        mirrorIcon: "twilightscans.jpg",
+        mirrorIcon: "twilightscans.png",
         languages: "en",
         domains: ["twilightscans.com"],
         home: "https://twilightscans.com/",
