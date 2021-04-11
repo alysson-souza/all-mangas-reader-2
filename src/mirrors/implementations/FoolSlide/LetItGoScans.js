@@ -1,7 +1,7 @@
 if (typeof registerMangaObject === 'function') {
 	registerMangaObject({
         mirrorName: "Let It Go Scans",
-        mirrorIcon: "letitgo.png",
+        mirrorIcon: "letitgoscans.png",
         languages: "en",
         domains: ["reader.letitgo.scans.today"],
         home: "http://letitgo-scans.blogspot.com/",

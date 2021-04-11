@@ -2,7 +2,7 @@ if (typeof registerMangaObject === 'function') {
     registerMangaObject({
         mirrorName: "Komga",
         canListFullMangas: false,
-        mirrorIcon: "komga.webp",
+        mirrorIcon: "komga.png",
         languages: "en",
         domains: ['komga'],
         home: 'komga',

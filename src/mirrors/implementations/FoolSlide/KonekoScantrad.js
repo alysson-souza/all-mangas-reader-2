@@ -1,7 +1,7 @@
 if (typeof registerMangaObject === 'function') {
 	registerMangaObject({
         mirrorName : "Koneko Scantrad",
-        mirrorIcon : "koneko-scantrad.png",
+        mirrorIcon : "konekoscantrad.png",
         languages : "fr",
         domains: ["lel.koneko-scantrad.fr"],
         home: "https://koneko-scantrad.fr",

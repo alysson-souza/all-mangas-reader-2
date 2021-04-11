@@ -1,7 +1,7 @@
 if (typeof registerMangaObject === 'function') {
     registerMangaObject({
         mirrorName: "PM Scans",
-        mirrorIcon: "pmscans.jpg",
+        mirrorIcon: "pmscans.png",
         languages: "en",
         domains: ["www.pmscans.com"],
         home: "http://www.pmscans.com/",

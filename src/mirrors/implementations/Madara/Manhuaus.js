@@ -1,7 +1,7 @@
 if (typeof registerMangaObject === 'function') {
     registerMangaObject({
         mirrorName: "Manhuaus",
-        mirrorIcon: "manhuaus.com.png",
+        mirrorIcon: "manhuaus.png",
         languages: "en",
         domains: ["manhuaus.com"],
         home: "https://manhuaus.com/",

@@ -1,7 +1,7 @@
 if (typeof registerMangaObject === 'function') {
 	registerMangaObject({
         mirrorName : "Kangaryu Team",
-        mirrorIcon : "kangaryu.png",
+        mirrorIcon : "kangaryuteam.png",
         languages : "fr",
         domains: ["kangaryu-team.fr"],
         home: "http://kangaryu-team.fr/",

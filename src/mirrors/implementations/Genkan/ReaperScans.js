@@ -1,7 +1,7 @@
 if (typeof registerMangaObject === 'function') {
     registerMangaObject({
         mirrorName: 'Reaper Scans',
-        mirrorIcon: 'reaperscans.webp',
+        mirrorIcon: 'reaperscans.png',
         languages: 'en',
         domains: ['reaperscans.com'],
         home: 'https://reaperscans.com/',

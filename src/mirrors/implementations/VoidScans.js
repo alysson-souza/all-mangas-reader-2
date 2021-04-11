@@ -1,7 +1,7 @@
 if (typeof registerMangaObject === 'function') {
     registerMangaObject({
         mirrorName: "Void Scans",
-        mirrorIcon: "voidscans.webp",
+        mirrorIcon: "voidscans.png",
         languages: "en",
         domains: ["voidscans.net"],
         home: "https://voidscans.net/",
