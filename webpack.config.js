@@ -125,9 +125,7 @@ if (process.env.NODE_ENV === 'production') {
   config.mode = "production";
 
   config.plugins = (config.plugins || []).concat([
-    new CleanWebpackPlugin({
-      cleanOnceBeforeBuildPatterns: ['./dist/', './dist-zip/']
-    }),
+    new CleanWebpackPlugin(),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: '"production"'
