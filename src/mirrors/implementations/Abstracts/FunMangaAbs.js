@@ -34,7 +34,7 @@ window["FunMangaAbs"] = function (options) {
             opts.headers = {}
             opts.headers["X-Requested-With"] = "XMLHttpRequest"
         }
-        
+
         let doc = await amr.loadPage(this.options.search_url, opts)
         let res = [];
         $(this.options.search_a_sel, doc).each(function (index) {

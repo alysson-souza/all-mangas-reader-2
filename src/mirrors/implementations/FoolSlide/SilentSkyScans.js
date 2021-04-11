@@ -1,7 +1,7 @@
 if (typeof registerMangaObject === 'function') {
 	registerMangaObject({
         mirrorName : "Silent Sky Scans",
-        mirrorIcon : "silentsky.png",
+        mirrorIcon : "silentskyscans.png",
         languages : "en",
         domains: ["reader.silentsky-scans.net"],
         home: "https://reader.silentsky-scans.net/",

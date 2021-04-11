@@ -1,7 +1,7 @@
 if (typeof registerMangaObject === 'function') {
     registerMangaObject({
         mirrorName: 'Manga Turf',
-        mirrorIcon: 'mangaturf.webp',
+        mirrorIcon: 'mangaturf.png',
         languages: 'en',
         domains: ['mangaturf.com'],
         home: 'https://mangaturf.com/',

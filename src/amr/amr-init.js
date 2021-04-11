@@ -9,8 +9,8 @@ import storedb from './storedb';
 
  /**
  * Do things when app is installed
- * @param {*} ancVersion 
- * @param {*} curVersion 
+ * @param {*} ancVersion
+ * @param {*} curVersion
  */
 let installApp = async function(curVersion) {
     // check if user language is in readable list of languages add it if not
@@ -19,8 +19,8 @@ let installApp = async function(curVersion) {
 }
 /**
  * Do things when version is updated
- * @param {*} ancVersion 
- * @param {*} curVersion 
+ * @param {*} ancVersion
+ * @param {*} curVersion
  */
 let updateApp = async function(ancVersion, curVersion) {
     let afterCalls = []
@@ -29,7 +29,7 @@ let updateApp = async function(ancVersion, curVersion) {
         // update localStorage to change stored url if necessary
         console.log("Update main repository url to v4")
         await window['AMR_STORE'].dispatch("updateRepository", {
-            old_repo: "https://mirrors.allmangasreader.com/v3/", 
+            old_repo: "https://mirrors.allmangasreader.com/v3/",
             new_repo: "https://mirrors.allmangasreader.com/v4/"
         })
         console.log("Reinitialize mirrors entries")
@@ -103,7 +103,7 @@ export default async function () {
 
     let url = manifest.homepage_url;
     let beta = false;
-    
+
     let afterLoading = () => {}
 
     if (manifest.name.indexOf("Beta") > 0) {

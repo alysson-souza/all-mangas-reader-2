@@ -1,7 +1,7 @@
 if (typeof registerMangaObject === 'function') {
     registerMangaObject({
         mirrorName: 'Edelgarde Scans',
-        mirrorIcon: 'edelgardescans.webp',
+        mirrorIcon: 'edelgardescans.png',
         languages: 'en',
         domains: ['edelgardescans.com'],
         home: 'https://edelgardescans.com/home',

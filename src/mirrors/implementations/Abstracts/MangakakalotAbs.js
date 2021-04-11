@@ -30,7 +30,7 @@ window["MangakakalotAbs"] = function(options) {
                 res.push( ...this.searchPage(doc))
             }
         }
-        
+
         return res
     }
 
@@ -56,11 +56,11 @@ window["MangakakalotAbs"] = function(options) {
         let res = []
         $(this.options.chapter_list_selector, doc).each(function (index) {
             res.push([
-                $(this).text(), 
+                $(this).text(),
                 $(this).attr("href")
             ])
         })
-        
+
         return res
     }
 

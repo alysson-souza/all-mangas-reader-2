@@ -14,7 +14,7 @@
           <span>{{i18n("list_cat_donotcare_all")}}</span>
       </v-tooltip>
       <!-- Display all categories -->
-      <div v-for="(cat, key) in sortedCategories" 
+      <div v-for="(cat, key) in sortedCategories"
         :class="'cat-chip ' + (staticCats ? 'include' : cat.state)"
         :key="key"
         @click="switchState(cat)">
@@ -127,7 +127,7 @@ export default {
         if (typeof a === 'string') {
           return a.localeCompare(b);
         }
-        let at = types_order.findIndex(t => t === a.type), 
+        let at = types_order.findIndex(t => t === a.type),
             bt = types_order.findIndex(t => t === b.type)
         return at === bt ? a.name.localeCompare(b.name) : at - bt
       })

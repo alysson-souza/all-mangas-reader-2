@@ -1,29 +1,29 @@
 <template>
     <tr>
         <!-- Displayed when one scan in page -->
-        <Scan :full="true" 
-            :src="scans[0].src" 
-            :name="scans[0].name" 
-            :resize="resize" 
-            v-if="scans.length === 1" 
+        <Scan :full="true"
+            :src="scans[0].src"
+            :name="scans[0].name"
+            :resize="resize"
+            v-if="scans.length === 1"
             :bookmark="bookmark"
             :scaleUp="scaleUp" />
 
         <!-- Displayed when two scans in page -->
-        <Scan :full="false" 
-            :src="scans[direction === 'ltr' ? 0 : 1].src" 
-            :name="scans[direction === 'ltr' ? 0 : 1].name" 
-            :resize="resize" 
-            class="amr-left-page" 
-            v-if="scans.length === 2" 
+        <Scan :full="false"
+            :src="scans[direction === 'ltr' ? 0 : 1].src"
+            :name="scans[direction === 'ltr' ? 0 : 1].name"
+            :resize="resize"
+            class="amr-left-page"
+            v-if="scans.length === 2"
             :bookmark="bookmark"
             :scaleUp="scaleUp" />
-        <Scan :full="false" 
-            :src="scans[direction === 'ltr' ? 1 : 0].src" 
-            :name="scans[direction === 'ltr' ? 1 : 0].name" 
-            :resize="resize" 
-            class="amr-right-page" 
-            v-if="scans.length === 2"  
+        <Scan :full="false"
+            :src="scans[direction === 'ltr' ? 1 : 0].src"
+            :name="scans[direction === 'ltr' ? 1 : 0].name"
+            :resize="resize"
+            class="amr-right-page"
+            v-if="scans.length === 2"
             :bookmark="bookmark"
             :scaleUp="scaleUp" />
     </tr>
@@ -104,9 +104,9 @@ export default {
 
             /* Compute visible proportion */
             if (this.bottomInViewport && this.topInViewport) this.visibleProportion = height
-            else if (!this.bottomInViewport && this.topInViewport) 
+            else if (!this.bottomInViewport && this.topInViewport)
                 this.visibleProportion = window.pageYOffset + window.innerHeight - top
-            else if (this.bottomInViewport && !this.topInViewport) 
+            else if (this.bottomInViewport && !this.topInViewport)
                 this.visibleProportion = top + height - window.pageYOffset
             else this.visibleProportion = window.innerHeight
 

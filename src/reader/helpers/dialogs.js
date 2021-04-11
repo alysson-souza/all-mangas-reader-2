@@ -2,7 +2,7 @@ import util from "./util";
 import { i18n } from "../../mixins/i18n-mixin";
 import browser from "webextension-polyfill";
 
-/** 
+/**
  * Display tips
  *  - user can choose to display tips once a day or to stop it
  *  - button next go to next tip
@@ -90,7 +90,7 @@ function isFirefox() {
  * Display messages once in a while to give support to AMR
  *  - link to patreon
  *  - link to leave a comment on Firefox
- * @param {} $ref 
+ * @param {} $ref
  */
 export const handleHelps = async function ($ref) {
     // number of read chapters with the extension since v2.1
@@ -112,7 +112,7 @@ export const handleHelps = async function ($ref) {
             title: i18n("reader_help_rate_title"),
             message: i18n("reader_help_rate_message"),
             action_name: i18n("reader_help_rate_action"),
-            action: () => { 
+            action: () => {
                 browser.runtime.sendMessage({
                     action: "opentab",
                     url: "https://addons.mozilla.org/firefox/addon/all-mangas-reader/"
@@ -128,7 +128,7 @@ export const handleHelps = async function ($ref) {
             title: i18n("reader_help_patreon_title"),
             message: i18n("reader_help_patreon_message"),
             action_name: i18n("reader_help_patreon_action"),
-            action: () => { 
+            action: () => {
                 browser.runtime.sendMessage({
                     action: "opentab",
                     url: "https://www.patreon.com/allmangasreader"
@@ -190,7 +190,7 @@ export const handleHelps = async function ($ref) {
         }
         dispbuts.push(butcustom)
     }
-    // display dialog     
+    // display dialog
     await $ref.open(
         to_display.title,
         to_display.message, {

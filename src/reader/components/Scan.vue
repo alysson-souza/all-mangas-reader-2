@@ -132,7 +132,7 @@ export default {
   },
   watch: {
     /* watch if loading, error or src changed, reload image */
-    mixed() {  
+    mixed() {
       this.$nextTick(() => this.insertScanInDOM())
     }
   },
@@ -229,5 +229,11 @@ td.scanContainer.xs12 {
   position: relative;
   text-align: center;
   transition: all 0.2s;
+}
+.amr-left-page.scale-up img {
+  object-position: right;
+}
+.amr-right-page.scale-up img {
+  object-position: left;
 }
 </style>

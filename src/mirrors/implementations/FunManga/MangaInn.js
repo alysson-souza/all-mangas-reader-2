@@ -7,7 +7,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ["www.mangainn.net"],
         home: "http://www.mangainn.net",
         chapter_url: /^\/.*\/[0-9]+\/.+$/g,
-        
+
         abstract: "FunMangaAbs",
         abstract_options: {
             search_url: "http://www.mangainn.net/service/advanced_search",

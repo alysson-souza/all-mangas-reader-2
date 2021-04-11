@@ -100,8 +100,8 @@
     </v-row>
     <br />
     <!-- Manga List -->
-    <v-data-table 
-      :items="groupedMangas" 
+    <v-data-table
+      :items="groupedMangas"
       :loading="!loaded"
       :headers="[{value: 'name'}]"
       :page.sync="pagination.currentPage"
@@ -163,7 +163,7 @@
       <template v-slot:item="{item, index}">
         <tr class="m-2">
           <td>
-            <MangaGroup 
+            <MangaGroup
               :group="item"
               :group-index="index"
               @search-request="propagateSR"
@@ -234,7 +234,7 @@ import * as utilsamr from '../../amr/utils';
 import * as utils from '../utils';
 
 const default_sort = (a, b) => {
-    let af = utilsamr.formatMgName((a.displayName && a.displayName !== '') ? a.displayName : a.name), 
+    let af = utilsamr.formatMgName((a.displayName && a.displayName !== '') ? a.displayName : a.name),
       bf = utilsamr.formatMgName((b.displayName && b.displayName !== '') ? b.displayName : b.name)
     let res = af === undefined ? -1 : af.localeCompare(bf)
     if (res === 0) {
@@ -246,7 +246,7 @@ const default_sort = (a, b) => {
     return res
 }
 const num_chapters_to_read_sort = (a, b) => {
-    let af = a.listChaps.findIndex(ele => ele[1] == a.lastChapterReadURL), 
+    let af = a.listChaps.findIndex(ele => ele[1] == a.lastChapterReadURL),
       bf = b.listChaps.findIndex(ele => ele[1] == b.lastChapterReadURL)
     if (bf-af == 0){
       return default_sort(a, b)
@@ -255,7 +255,7 @@ const num_chapters_to_read_sort = (a, b) => {
     }
 }
 const sort_chapters_upts = (a, b) => {
-    let af = a.upts, 
+    let af = a.upts,
       bf = b.upts
     if (bf-af == 0){//this should never happen
       return default_sort(a, b)
@@ -346,7 +346,7 @@ export default {
         mg => utils.displayFilterCats(mg, this.options.categoriesStates)
       )
     },
-    /** 
+    /**
      * Returns a list of all mirrors that have series
      */
     usedMirrors: function() {
@@ -416,7 +416,7 @@ export default {
     importSamples() {
       // we don't do this.$store.dispatch("importSamples"); because to load list of chapters, implementations rely on jQuery, which is not loaded in pages, rely on background page to do so
       browser.runtime.sendMessage({ action: "importSamples" });
-    }, 
+    },
     markAllAsRead() {
       this.dialogTitle = i18n("list_global_read_title");
       this.dialogText = i18n("list_global_read_text", this.visNewMangas.length);
@@ -449,7 +449,7 @@ export default {
         })
       }
       this.showDialog = true;
-    }, 
+    },
     /**
      * Propagate search request event from MangaGroup to parent
      */
@@ -498,7 +498,7 @@ export default {
       this.pageNavigationPosition = newDir
       this.$store.dispatch("setOption", { key: 'pageNavigationPosition', value: newDir })
     },
-    /** 
+    /**
      * Pull up the dialog for renaming a manga
      */
     renameManga(manga) {
@@ -515,7 +515,7 @@ export default {
       })
       this.renameMangaCancel() // Why copy the logic when I need the same things?
     },
-    /** 
+    /**
      * Cancel button action that resets the form / variables
      */
     renameMangaCancel() {
@@ -548,7 +548,7 @@ export default {
     this.$eventBus.$on('multi-manga:deselect-manga', key => {
       this.selectedManga = this.selectedManga.filter(k => k != key)
     })
-    
+
   }
 }
 </script>

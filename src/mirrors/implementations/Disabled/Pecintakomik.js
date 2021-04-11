@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {    
+if (typeof registerMangaObject === 'function') {
     registerMangaObject({
         mirrorName: "Pecintakomik",
         canListFullMangas: false,
@@ -16,7 +16,7 @@ if (typeof registerMangaObject === 'function') {
             search_option: "&post_type=manga",
             manga_title_attr: true,
             chapters_a_sel: "div.bxcl > ul > li > span.lchx > a"
-            
-        },      
+
+        },
     })
 }

@@ -6,11 +6,12 @@ if (typeof registerMangaObject === 'function') {
         domains: ["read.ptscans.com"],
         home: "https://ptscans.com/",
         chapter_url: /^\/read\/.*\/.+$/g,
+        disabled: true,
 
         abstract: "ComiCake",
         abstract_options: {
             reader_url: "https://read.ptscans.com"
         }
-        
+
     });
 }

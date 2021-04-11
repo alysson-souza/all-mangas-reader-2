@@ -1,15 +1,15 @@
 <template>
-    <v-container class="text-center pa-0 pb-4" fluid 
+    <v-container class="text-center pa-0 pb-4" fluid
         :class="{'no-full-chapter': !fullchapter}" @click="pageChange" @dblclick="tryChapterChange" ref="scancontainer">
         <!-- Scans -->
         <table ref="scantable" :style="'max-width: ' + maxWidthValue + '%;'" class="amr-scan-container" :class="{'webtoon': webtoonMode}" border="0" cellspacing="0" cellpadding="0">
           <Page v-for="(scans, i) in pages" :key="i"
-              :index="i" 
-              :scans="scans" 
+              :index="i"
+              :scans="scans"
               :direction="direction"
               :resize="resize"
               :scaleUp="scaleUp"
-              ref="page" 
+              ref="page"
               v-show="isVisible(i)"
               @become-current="becomeCurrent" />
         </table>
@@ -19,49 +19,13 @@
             :class="{display: hover, 'shrink-draw': drawer}"
             slot-scope="{ hover }">
             <!-- Current page state + previous next buttons -->
-            <v-row   class="amr-page-next-prev">
-                <v-col class="my-2" cols="12">
-                    <v-toolbar flat>
-                        <!-- Previous scan button -->
-                        <v-tooltip bottom>
-                            <template v-slot:activator="{ on }">
-                                <v-btn v-on="on" icon v-show="!firstScan" @click.stop="goPreviousScan" class="btn-huge">
-                                    <v-icon>mdi-chevron-left</v-icon>
-                                </v-btn>
-                            </template>
-                            <span>{{i18n("reader_go_previous_scan")}}</span>
-                        </v-tooltip>
-                        <!-- Current scan infos -->
-                        <div class="title">{{i18n("reader_page_progression", currentPage + 1, pages.length, pages.length > 0 ? Math.floor((currentPage + 1) / pages.length * 100) : 0)}}</div>
-                        <v-tooltip bottom v-show="!lastScan">
-                            <template v-slot:activator="{ on }">
-                            <!-- Next scan button -->
-                                <v-btn v-on="on" icon @click.stop="goNextScan" class="btn-huge">
-                                    <v-icon>mdi-chevron-right</v-icon>
-                                </v-btn>
-                            </template>
-                            <span>{{i18n("reader_go_next_scan")}}</span>
-                        </v-tooltip>
-                    </v-toolbar>
-                </v-col>
-            </v-row>
-            <div class="amr-thumbs-scrollable" ref="thumbs-scrollable" v-show="scansState.loaded" >
-              <v-tooltip top v-for="(scans, i) in pages" :key="i">
-                <template v-slot:activator="{ on }">
-                    <table v-on="on" class="amr-pages-page-cont"  
-                    :class="{current: i === currentPage}"
-                    @click.stop="goScan(i)">
-                    <Page :index="i" 
-                        :scans="scans" 
-                        :direction="direction"
-                        resize="container" 
-                        ref="thumb" 
-                        :bookmark="false" />
-                    </table>
-                </template>
-                <span>{{displayPageScansIndexes(i)}}</span>
-              </v-tooltip>
-            </div>
+            <PageNavigator :current-page="currentPage" :first-scan="firstScan" :go-next-scan="goNextScan"
+                           :go-previous-scan="goPreviousScan" :i18n="i18n" :last-scan="lastScan" :pages="pages"
+                           :should-invert-keys="shouldInvertKeys"/>
+            <ThumbnailNavigator v-show="scansState.loaded" ref="page-navigator" :current-page="currentPage"
+                                :direction="direction" :display-page-scans-indexes="displayPageScansIndexes"
+                                :go-scan="goScan" :pages="pages" :scans-state="scansState"
+                                :should-invert-keys="shouldInvertKeys"/>
           </div>
         </v-hover>
     </v-container>
@@ -81,6 +45,8 @@ import util from "../helpers/util";
 import EventBus from "../helpers/EventBus";
 
 import Page from "./Page";
+import ThumbnailNavigator from "./ThumbnailNavigator";
+import PageNavigator from "./PageNavigator";
 
 /** Create a custom scroller (alias of $scrollTo method) to enable multiple scrollings (thumbs scroll simultaneously page scroll) */
 const thumbsScroller = scroller()
@@ -95,7 +61,7 @@ export default {
             currentPage: 0, /* Current displayed page */
 
             originalTitle: document.title, /* Original title of the page */
-            
+
             animationDuration: 250, /* Duration of scrolls animation when navigating with keys */
             scrollStepWithKeys: 50, /* Scroll step with keys when need to scroll by steps */
             lastKeyPressTime: 0, /* Last time a key was pressed (to detect double tap) */
@@ -107,12 +73,13 @@ export default {
 
             scansState: scansProvider.state, /** the provider of scan images */
             pageData: pageData.state, /* reactive pageData state (current manga chapter infos) */
-            
+
             scanClickTimeout: -1, /* When clicking for next scan, if this is the last scan, wait for dblclick, this is the associated timeout, we need to clear it if going next chapter */
         }
     },
     props: {
         direction: String, /* Reading from left to right or right to left */
+        invertKeys: Boolean, /* Invert keys in right to left mode */
         book: Boolean, /* Do we display side by side pages */
         resize: String, /* Mode of resize : width, height, container */
         fullchapter: Boolean, /* Do we display whole chapter or just current page */
@@ -120,6 +87,7 @@ export default {
         scaleUp: Boolean, /* Does the image scale up larger than its native size */
         webtoonMode: Boolean, /* Removes whitespace between images */
         maxWidthValue: Number, /* Changes max width % of reader */
+        shouldInvertKeys: Boolean /* If keys and buttons should be flipped */
     },
     created() {
         /** Initialize key handlers */
@@ -158,9 +126,9 @@ export default {
             if (currentlyThumbsScrolling) return
             currentlyThumbsScrolling = true
             this.$nextTick(() => {
-                thumbsScroller(this.$refs.thumb[nVal].$el, this.animationDuration, {
-                    container: this.$refs["thumbs-scrollable"],
-                    offset: (-(window.innerWidth - (this.drawer ? 300 : 0 )) + this.$refs.thumb[nVal].$el.clientWidth) / 2,
+                thumbsScroller(this.$refs["page-navigator"].$refs.thumbnail[nVal].$el, this.animationDuration, {
+                    container: this.$refs["page-navigator"],
+                    offset: (-(window.innerWidth - (this.drawer ? 300 : 0 )) + this.$refs["page-navigator"].$refs.thumbnail[nVal].$el.clientWidth) / 2,
                     x: true,
                     y: false,
                     onDone: () => {currentlyThumbsScrolling = false}
@@ -187,9 +155,9 @@ export default {
         book(nVal, oVal) { // keep the scrolling ratio when changing book mode / not really relevant but better than nothing...
             this.keepScrollPos(100)
         },
-        /** 
+        /**
          * When pages change (from not fully loaded to loaded and booked or when book property is changed),
-         * try to keep the old visible scan still visible.  
+         * try to keep the old visible scan still visible.
          */
         pages(nVal, oVal) {
             if (nVal.length === oVal.length) return // pages didn't change that much :)
@@ -198,7 +166,7 @@ export default {
                 furl = this.scansState.scans[this.currentPage].url // retrieve it from images cause old book value was false, so one page per image
             } else {
                 if (this.regroupablePages[this.currentPage] && this.regroupablePages[this.currentPage].length > 0) {
-                    furl = this.regroupablePages[this.currentPage][0].src // retrieve it from rearrange pages cause old book value was true 
+                    furl = this.regroupablePages[this.currentPage][0].src // retrieve it from rearrange pages cause old book value was true
                 }
             }
             if (furl) {
@@ -238,7 +206,7 @@ export default {
             } else {
                 return this.regroupablePages
             }
-        }, 
+        },
         firstScan() {
             let cur = this.currentPage, n = cur
             if (cur - 1 >= 0) n = cur - 1
@@ -250,7 +218,7 @@ export default {
             return n === cur
         }
     },
-    components: { Page },
+    components: { PageNavigator, ThumbnailNavigator, Page },
     methods: {
         /**
          * Click on the scans container, if single page mode, go to next or previous page
@@ -273,10 +241,10 @@ export default {
                 } else {
                     this.goPreviousScan(false, true)
                 }
-            }            
+            }
         },
-        /** 
-         * Double click on the scans container : 
+        /**
+         * Double click on the scans container :
          *  - if first scan and click left --> go to previous chapter
          *  - if last scan and click right --> go to next chapter
          */
@@ -296,7 +264,7 @@ export default {
                 }
             }
         },
-        /** 
+        /**
          * Determine if a page should be shown.
          * Always true if fullChapter mode, just current page if not
          */
@@ -313,7 +281,7 @@ export default {
                     document.title = this.originalTitle
                 }
             }
-        }, 
+        },
 
         /** Called when all scans from chapter have been loaded */
         loadedChapter() {
@@ -403,8 +371,17 @@ export default {
                 this.$scrollTo(this.$refs.page[index].$el, this.animationDuration)
             }
         },
-        /** Go to next scan */
+        /** Go to next scan respecting the invert keys option */
         goNextScan(doubletap = false, clicked = false) {
+            // If we are in Right to Left mode and the user set the option to also invert the keys, we invert the logic
+            if (this.shouldInvertKeys) {
+                return this.goPreviousScanImpl(doubletap, clicked);
+            }
+
+            return this.goNextScanImpl(doubletap, clicked);
+        },
+        /** Go to next scan */
+        goNextScanImpl(doubletap = false, clicked = false) {
             let cur = this.currentPage, n = cur
             if (cur + 1 < this.pages.length) n = cur + 1
 
@@ -412,14 +389,14 @@ export default {
                 EventBus.$emit('go-next-chapter')
                 return
             }
-            
+
             if (!this.fullchapter) {
                 // just change the visibility of current page and next page
                 if (cur === n) {
                     // this is latest scan of the chapter
-                    EventBus.$emit('temporary-dialog', { 
-                        message: clicked ? this.i18n("reader_alert_lastscan_clicked") : 
-                                           this.i18n("reader_alert_lastscan"), 
+                    EventBus.$emit('temporary-dialog', {
+                        message: clicked ? this.i18n("reader_alert_lastscan_clicked") :
+                                           this.i18n("reader_alert_lastscan"),
                         duration: 2000})
                     return
                 }
@@ -441,8 +418,17 @@ export default {
                 }
             }
         },
-        /** Go to previous scan */
+        /** Go to previous scan respecting the invert keys option  */
         goPreviousScan(doubletap = false, clicked = false) {
+            // If we are in Right to Left mode and the user set the option to also invert the keys, we invert the logic
+            if (this.shouldInvertKeys) {
+                return this.goNextScanImpl(doubletap, clicked);
+            }
+
+            return this.goPreviousScanImpl(doubletap, clicked);
+        },
+        /** Go to previous scan */
+        goPreviousScanImpl(doubletap = false, clicked = false) {
             let cur = this.currentPage, n = cur
             if (cur - 1 >= 0) n = cur - 1
 
@@ -455,9 +441,9 @@ export default {
                 // just change the visibility of current page and previous page
                 if (cur === n) {
                     // this is first scan of the chapter
-                    EventBus.$emit('temporary-dialog', { 
-                        message: clicked ? this.i18n("reader_alert_firstscan_clicked") : 
-                                           this.i18n("reader_alert_firstscan"), 
+                    EventBus.$emit('temporary-dialog', {
+                        message: clicked ? this.i18n("reader_alert_firstscan_clicked") :
+                                           this.i18n("reader_alert_firstscan"),
                         duration: 2000})
                     return
                 }
@@ -512,7 +498,7 @@ export default {
                     if (!e.shiftKey && !e.altKey) {
                         // Handle double tap events
                         let doubletap = false
-                        if (this.lastKeyPress === e.which && 
+                        if (this.lastKeyPress === e.which &&
                         Date.now() - this.lastKeyPressTime <= this.doubleTapDuration) {
                             doubletap = true
                         }
@@ -553,7 +539,7 @@ export default {
                         }
                         //Left key or A
                         if ((e.which === 37) || (e.which === 65)) {
-                            if (window.pageXOffset > 0) { 
+                            if (window.pageXOffset > 0) {
                                 // scroll horizontally if it is possible
                                 window.scrollBy(-this.scrollStepWithKeys, 0);
                             } else {
@@ -567,7 +553,7 @@ export default {
                         //Right key or D
                         if ((e.which === 39) || (e.which === 68)) {
                             // go to next scan
-                            if ((window.innerWidth + window.pageXOffset) < this.$refs.scantable.offsetWidth) { 
+                            if ((window.innerWidth + window.pageXOffset) < this.$refs.scantable.offsetWidth) {
                                 // scroll horizontally if it is possible
                                 window.scrollBy(this.scrollStepWithKeys, 0);
                             } else {
@@ -591,7 +577,7 @@ export default {
                                 } else {
                                     // Prepare for next chapter
                                     this.autoNextChapter = true;
-                                    // gotta press spacebar again within 4s 
+                                    // gotta press spacebar again within 4s
                                     // im doing this rather than using this.goNextScan(doubletap) cause i don't like how that works
                                     setTimeout(function(){ this.autoNextChapter=false; }, 4000);
                                 }
@@ -640,12 +626,12 @@ export default {
                         }
                         // Jump to last scan
                         if ((e.which === 39) || (e.which === 68)) { // alt + d or alt + right arrow
-                            this.goScan(this.pages.length - 1)
+                            this.shouldInvertKeys ? this.goScan(0) : this.goScan(this.pages.length - 1)
                             prevent()
                         }
                         // Jump to first scan
                         if ((e.which === 37) || (e.which === 65)) { // alt + a or alt + left arrow
-                            this.goScan(0)
+                            this.shouldInvertKeys ? this.goScan(this.pages.length - 1) : this.goScan(0)
                             prevent()
                         }
                         // Jump to random page
@@ -717,18 +703,12 @@ html {
   overflow: auto;
 }
 /** Pages navigator */
-.amr-page-next-prev {
-    max-width: 400px;
-    margin: 0px auto!important;
-}
 .amr-page-next-prev .v-toolbar {
     opacity: 0.8;
     padding: 5px 10px;
     border-radius: 5px;
 }
-.amr-page-next-prev .title {
-    margin: 0px auto;
-}
+
 .amr-pages-nav {
   min-height: 110px;
   position: fixed;
@@ -744,44 +724,12 @@ html {
 .amr-pages-nav.display {
   opacity: 1; /* display navigator when hovered */
 }
-.amr-thumbs-scrollable { /* navigator container is horizontally scrollable for long chapters */
-  overflow: hidden;
-  white-space: nowrap;
-}
+
 .amr-pages-nav, .amr-pages-nav * {
   transition: all 0.2s;
   line-height: 0;
 }
-.amr-pages-page-cont {
-  margin: 0px 5px;
-  display: inline-block;
-  background-color: #424242;
-  border-radius: 2px;
-  opacity: 0.9;
-  cursor: pointer;
-  vertical-align: middle;
-  width: auto !important;
-}
-.amr-pages-page-cont td {
-  vertical-align: middle;
-}
-.amr-pages-page-cont td img {
-  max-height: 80px!important;
-  max-width: 110px!important;
-}
-.amr-pages-page-cont:hover {
-  background-color: #ef5350;
-}
-.amr-pages-page-cont:hover td img {
-  max-height: 90px!important;
-}
-.amr-pages-page-cont.current {
-  margin-top:0px;
-  background-color: #d32f2f;
-}
-.amr-pages-page-cont.current td img {
-  max-height: 100px!important;
-}
+
 .amr-bookmarked-scan {
   cursor: pointer;
 }

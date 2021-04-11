@@ -7,7 +7,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ["www.readmng.com"],
         home: "https://www.readmng.com/",
         chapter_url: /^\/.*\/[0-9]+\/.+$/g,
-        
+
         abstract: "FunMangaAbs",
         abstract_options: {
             search_url: "https://www.readmng.com/search",

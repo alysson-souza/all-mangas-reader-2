@@ -124,7 +124,11 @@
     "description": "Option Loading sans order"
   },
   "options_web_imgorder_desc": {
-    "message": "Charger les scans dans l'ordre du chapitre (Cette option implique que le chargement du chapitre complet sera plus long mais garanti que le premier scan qui sera chargé est le premier du chapitre et ainsi de suite... )",
+    "message": "Charger les scans dans l'ordre du chapitre",
+    "description": "Option Loading sans order description"
+  },
+  "options_web_imgorder_info": {
+    "message": "Cette option implique que le chargement du chapitre complet sera plus long mais garanti que le premier scan qui sera chargé est le premier du chapitre et ainsi de suite...",
     "description": "Option Loading sans order description"
   },
   "options_web_prefetch_opt": {
@@ -132,7 +136,11 @@
     "description": "Option prefetch next chapter"
   },
   "options_web_prefetch_desc": {
-    "message": "Précharger le chapitre suivant lors de la lecture. (Une barre de progression indiquant le niveau de chargement du chapitre suivant apparaitra sous le bouton \"Suivant\")",
+    "message": "Précharger le chapitre suivant lors de la lecture.",
+    "description": "Option prefetch next chapter description"
+  },
+  "options_web_prefetch_info": {
+    "message": "Une barre de progression indiquant le niveau de chargement du chapitre suivant apparaitra sous le bouton \"Suivant\"",
     "description": "Option prefetch next chapter description"
   },
   "options_web_markwhendownload_opt": {
@@ -152,7 +160,11 @@
     "description": "Option automatically add manga to list"
   },
   "options_web_addauto_desc": {
-    "message": "Ajouter automatiquement les mangas que je lis à a liste de lecture. Si vous dcochez cette option, un bouton '+' apparaitra dans la barre de navigation pour ajouter le manga courant à la liste de lecture.",
+    "message": "Ajouter automatiquement les mangas que je lis à a liste de lecture.",
+    "description": "Option automatically add manga to list description"
+  },
+  "options_web_addauto_info": {
+    "message": "Si vous décochez cette option, un bouton '+' apparaitra dans la barre de navigation pour ajouter le manga courant à la liste de lecture.",
     "description": "Option automatically add manga to list description"
   },
   "options_web_lrkeys_opt": {
@@ -215,15 +227,15 @@
   "options_gen_dark_desc": {
     "message": "Appliquer un fond sombre aux pages de All Mangas Reader.",
     "description": "Option Dark popup description"
-  }, 
+  },
   "options_gen_colors_new": {
     "message": "Couleur des manga avec des chapitres non lus",
     "description": "Option color of mangas new"
-  }, 
+  },
   "options_gen_colors_read": {
     "message": "Couleur des manga dont tous les chapitres ont été lus",
     "description": "Option color of mangas read"
-  }, 
+  },
   "options_gen_colors_notfollow": {
     "message": "Couleur des mangas que vous avez choisi de ne plus suivre",
     "description": "Option color of mangas not followed"
@@ -234,29 +246,29 @@
     "description": "This is the title of the options page section updates"
   },
   "options_gen_update_chap_label": {
-    "message": "Mettre à jour les listes de chapitre tous les",
+    "message": "Mettre à jour les listes de chapitre tous les :",
     "description": "Option update chapters list"
   },
   "options_seconds": {
-    "message": "$1 secondes", 
+    "message": "$1 secondes",
     "description": "Display a number of seconds"
   },
   "options_minutes": {
-    "message": "$1 minutes", 
+    "message": "$1 minutes",
     "description": "Display a number of minutes"
   },
   "options_hours": {
-    "message": "$1 heures", 
+    "message": "$1 heures",
     "description": "Display a number of hours"
   },
   "options_days": {
-    "message": "$1 jours", 
+    "message": "$1 jours",
     "description": "Display a number of days"
   },
   "options_week": {
-    "message": "$1 semaines", 
+    "message": "$1 semaines",
     "description": "Display a number of week"
-  }, 
+  },
   "options_update_chap_btn": {
     "message": "Actualiser maintenant",
     "description": "Button refresh chapters list now"
@@ -274,7 +286,11 @@
     "description": "Option to pause updates for a week after new chapter"
   },
   "options_gen_stopupdateforaweek_desc": {
-    "message": "Lorsqu'un nouveau chapitre est trouvé, le suivant sera publié au moins une semaine plus tard. Cochez la case ci dessous pour mettre en pause les mises à jour pour un manga durant une semaine après qu'un nouveau chapitre aie été trouvé. En faisant cela, les mises à jour reprennent pour deux jours (un avant et un après) la semaine suivant. Si aucun chapitre n'est trouvé durant cette période, les mises à jour sont en pause pour une nouvelle semaine et ainsi de suite.",
+    "message": "Mettre en pause les mises à jour pour un manga durant une semaine après qu'un nouveau chapitre ait été trouvé.",
+    "description": "Description of the functionning of the pause updates for a week after new chapter option"
+  },
+  "options_gen_stopupdateforaweek_info": {
+    "message": "Lorsqu'un nouveau chapitre est trouvé, le suivant sera publié au moins une semaine plus tard. Cochez la case ci-dessous pour que les mises à jour reprennent pour deux jours (un avant et un après) la semaine suivante. Si aucun chapitre n'est trouvé durant cette période, les mises à jour sont en pause pour une nouvelle semaine et ainsi de suite.",
     "description": "Description of the functionning of the pause updates for a week after new chapter option"
   },
   "options_gen_checkmgstart_opt": {
@@ -298,8 +314,12 @@
     "description": "Option Save bandwidth"
   },
   "options_gen_savebandwidth_desc": {
-    "message": "Economiser la bande passante lors de la mise à jour des chapitres (cette option permet d'attendre qu'un manga ai été mis à jour avant de mettre à jour le suivant. La mise à jour est plus lente.)",
+    "message": "Economiser la bande passante lors de la mise à jour des chapitres",
     "description": "Option Save bandwidth description"
+  },
+  "options_gen_savebandwidth_info": {
+    "message": "Cette option permet d'attendre qu'un manga ai été mis à jour avant de mettre à jour le suivant. La mise à jour est plus lente.",
+    "description": "Option Save bandwidth infobox"
   },
   "options_gen_displayzero_opt": {
     "message": "\"0\" gris sur l'icone",
@@ -316,7 +336,7 @@
   "options_gen_nocount_desc": {
     "message": "Ne pas afficher de badge avec le nombre de manga ayant des chapitres non lus mais afficher l'icone de All Mangas Reader en couleur s'il y a des chapitres non lus et en gris sinon.",
     "description": "Option grey sharingan as icon description"
-  }, 
+  },
   "options_gen_notifs": {
     "message": "Notifications",
     "description": "This is the title of the options page section notifications"
@@ -330,7 +350,7 @@
     "description": "Option Notify on new chapter description"
   },
   "options_gen_notificationtimer_label": {
-    "message": "Temps avant que les notifications ne se ferment d'elles même.",
+    "message": "Temps avant que les notifications ne se ferment d'elles même :",
     "description": "Option select time before notif closes"
   },
   "options_gen_notificationtimer_def": {
@@ -340,11 +360,11 @@
   "options_sup_desc": {
     "message": "All Mangas Reader permet de lire sur de nombreux lecteurs en ligne. Vous pouvez désactiver les sites que vous n'utilisez pas. Seuls les sites pour lesquels vous ne lisez actuellement aucun manga peuvent être désactivés. Vous pouvez filtrer les sites proposant une langue spécifique pour vous aider. Cliquer sur une case à cocher dans la liste désactive le site correspondant.",
     "description": "Description of the supported websites tab"
-  }, 
+  },
   "options_sup_repos": {
     "message": "Test des sites supportés",
     "description": "Options page section mirrors repositories"
-  }, 
+  },
   "options_sup_repos_desc": {
     "message": "Pour tester les différents sites supportés par All Mangas Reader, vous pouvez utiliser notre laboratoire."
   },
@@ -391,7 +411,7 @@
   "options_gen_mirrors_filter_all": {
     "message": "Toutes les langues",
     "description": "Label of the option in filter languages list for no filter (display all languages)"
-  }, 
+  },
 
   "list_global_read": {
     "message": "Marquer tous les manga visibles comme lus",
@@ -600,60 +620,60 @@
   "notif_message": {
     "message": "... a de nouveaux chapitre(s) sur $1! Cliquez pour ouvrir le prochain chapitre non lu.",
     "description": "Text from notification. The notification title is the manga name, $1 is the website on which the manga to notify is read"
-  }, 
+  },
   "content_nav_hidebar": {
     "message": "Cacher la barre de navigation",
     "description": "Tooltip to hide AMR bar in navigation bar"
-  }, 
+  },
   "content_nav_showbar": {
     "message": "Afficher la barre de navigation",
     "description": "Tooltip to show AMR bar when icon clicked and bar hidden"
-  },  
+  },
   "content_nav_click_bm": {
     "message": "Ajouter ce chapitre aux signets",
     "description": "Tooltip on button to bookmark a chapter"
-  },  
+  },
   "content_nav_note_bm": {
     "message": "Note : $1",
     "description": "Text to display the note for a bookmark. $1 is the note"
-  }, 
+  },
   "background_bookmark_menu": {
     "message": "Ajouter ce scan aux signets",
     "description": "Context menu when right click on a scan"
   },
-  
+
   "bookmark_popup_title": {
     "message": "Signet",
     "description": "Title of the bookmark popup"
-  }, 
+  },
   "bookmark_popup_note": {
     "message": "Note",
     "description": "Label of the note textfield in the bookmarks popup"
-  }, 
+  },
   "bookmark_popup_delete": {
     "message": "Supprimer le signet",
     "description": "Delete bookmark button in the bookmark popup in content script"
-  }, 
+  },
   "bookmark_popup_tip": {
     "message": "<span>Pour ajouter un scan aux signets, cliquez droit dessus uis choisissez 'Ajouter ce scan aux signets'.</span><br /><span>Pour gérer les signets, allez à la page des </span><a href='#'>Signets de All Mangas Reader</a>",
     "description": "In bookmark popup in content script, tip on how to manage bookmarks, contains a link to AMR bookmarks page"
-  }, 
+  },
   "content_nav_previous": {
     "message": "Précédent",
     "description": "Previous button in AMR toolbar in websites"
-  }, 
+  },
   "content_nav_next": {
     "message": "Suivant",
     "description": "Next button in AMR toolbar in websites"
-  }, 
+  },
   "content_nav_stopfollow": {
     "message": "Arrêter de suivre les publications de ce manga",
     "description": "Tooltip of the stop following updates for this manga button"
-  }, 
+  },
   "content_nav_follow": {
     "message": "Suivre les publications de ce manga",
     "description": "Tooltip of the follow updates for this manga button"
-  }, 
+  },
   "content_nav_reload": {
     "message": "Recharger les scans erronés",
     "description": "Tooltip of the reload errored scans button"
@@ -665,39 +685,39 @@
   "content_nav_chapmode_1": {
     "message": "Afficher les scans les uns au dessus des autres (cliquer pour changer le mode uniquement pour ce manga)",
     "description": "Tooltip of the chapter mode button when value is 1 (Scans displayed on top of each other)"
-  }, 
+  },
   "content_nav_chapmode_2": {
     "message": "Afficher les scans deux par deux en mode de lecture occidentale (de gauche à droite) (cliquer pour changer le mode uniquement pour ce manga)",
     "description": "Tooltip of the chapter mode button when value is 2 (Scans displayed as a book in occidental mode (left to right))"
-  }, 
+  },
   "content_nav_chapmode_3": {
     "message": "Afficher les scans deux par deux en mode de lecture japonaise (de droite à gauche) (cliquer pour changer le mode uniquement pour ce manga)",
     "description": "Tooltip of the chapter mode button when value is 3 (Scans displayed as a book in japanese mode (right to left))"
-  }, 
+  },
   "content_nav_mark_read": {
     "message": "Marquer ce chapitre comme tant le dernier lu",
     "description": "Tooltip of the mark chapter as read button"
-  }, 
+  },
   "content_nav_mark_read_confirm": {
     "message": "Cette action va réinitialiser l'état de votre lecture pour ce manga et ce chapitre sera considéré comme le dernier que vous avez lu. Confirmez vous cette action ?",
     "description": "Text of the confirmation popup when marking a chapter as latest read"
-  }, 
+  },
   "content_nav_add_list": {
     "message": "Ajouter ce manga à votre liste de lecture",
     "description": "Tooltip of the add manga to reading list button if not automatic"
-  }, 
+  },
   "content_nav_last_chap": {
     "message": "C'est le dernier chapitre publié !",
     "description": "Panel at bottom of page to tell that the chapter is the latest published"
-  }, 
+  },
   "bookmark_chapter_text": {
     "message": "Ajouter le chapitre $1 de $2 sur $3 aux signets. La note ci dessous sera associée au signet.",
     "description": "Text in the bookmark popup to bookmark current chapter. $1 is chapter name, $2 manga name and $3 website name"
-  }, 
+  },
   "bookmark_chapter_scan": {
     "message": "Ajouter le scan $1 du chapitre $2 de $3 sur $4 aux signets. La note ci dessous sera associée au signet.",
     "description": "Text in the bookmark popup to bookmark a scan. $1 is scan name/id, $2 is chapter name, $3 manga name and $4 website name"
-  }, 
+  },
   "content_read_reload": {
     "message": "Essayer de recharger",
     "description": "Message displayed on a scan if it failed to be loaded so the user can try to force its reload"
@@ -927,7 +947,7 @@
     "message": "Ajouter une categorie",
     "description": "Placeholder of input to add a category in categories list"
   },
-  
+
   "__V2_0_3__": {
     "message": "Just a filler to separate new labels from old ones"
   },
@@ -1153,14 +1173,18 @@
   },
   "option_read_book_ltr": {
     "message": "Lire les scans du livre de gauche à droite",
-    "description": "Button to choose option to read side by side pages from left to right"
+    "description": "Button to choose option to read from left to right"
   },
   "option_read_book_rtl": {
     "message": "Lire les scans du livre de droite à gauche",
-    "description": "Button to choose option to read side by side pages from right to left"
+    "description": "Button to choose option to read from right to left"
   },
   "option_read_fullchapter": {
-    "message": "Afficher le chapitre entier (sinon, afficher uniquement la page courante)",
+    "message": "Afficher le chapitre entier",
+    "description": "Option to display the the full chapter as a long strip (precise that if not, display only current page)"
+  },
+  "option_read_fullchapter_info": {
+    "message": "Si vous décochez cette option, seule la page courante est affichée",
     "description": "Option to display the the full chapter as a long strip (precise that if not, display only current page)"
   },
   "option_read_scaleup": {
@@ -1262,11 +1286,11 @@
   "reader_tips_6": {
     "message": "Ce scan est tellement cool que vous souhaitez pouvoir le retrouver rapidemment ? Cliquez sur le bandeau jaune pale en haut à droite et sauvegardez, le scan est **ajouté à vos signets !**\n Un scan ajouté aux signets a un bandeau jaune en haut à droite. Cliquez dessus pour ajouter / éditer une note associée à ce scan. \n Vous pouvez voir tous les scans d'un chapitre en cliquant sur l'étoile dans le menu. Cliquez sur un scan pour le voir dans le chapitre !\nPour consulter tous vos signets, allez dans la page des signets de All Mangas Reader (depuis la popup, cliquer sur les points verticaux puis sur l'étoile)",
     "description": "Tips popup, tip n°6"
-  }, 
+  },
   "reader_tips_7": {
     "message": "Vous pouvez changer la façon dont **vos scans sont redimensionnés** depuis le menu ! Choisissez entre : \n* Largeur : vos scans sont entièrement visibles en largeur dans l'écran (une barre de défilement verticals peut apparaitre)\n* Hauteur : vos scans sont entièrement visibles en hauteur dans l'écran (une barre de défilement horizontals peut apparaitre). Cette option n'est disponible que si une seule page est affichée\n* Ecran : **vos scans entrent en entier dans l'écran** (pas de barre de défilement). Cette option n'est disponible que si une seule page est affichée\n* Aucun : pas de redimensionnement (les deux barres de défilement peuvent apparaitre)\nUtilisez votre clavier pour changer le mode de redimensionnement : _Ctrl + w_ pour largeur, _Ctrl + h_ pour hauteur et _Ctrl + e_ pour écran. Utilisez _les touches + and -_ pour redimensionner les scans si vous avez choisi _Aucun_.",
     "description": "Tips popup, tip n°7"
-  }, 
+  },
   "reader_tips_8": {
     "message": "Vous lisez un manga ayant de nombreux chapitres et vous ne voulez plus voir **les notifications de nouveau chapitre** ? \n Cliquez sur le bouton _pause_ dans le menu. Cliquez sur le bouton _jouer_ pour retrouver vos notifications.",
     "description": "Tips popup, tip n°8"
@@ -1307,6 +1331,10 @@
     "message": "Sens de lecture",
     "description": "In the options page, label above options to choose reading direction"
   },
+  "options_web_chapter_reading_direction_invert_keys_opt": {
+    "message": "Inverser les touches en mode droite-gauche",
+    "description": "In the options page, label below options to choose reading direction, inverts keys if Right to Left mode is enabled"
+  },
   "options_web_chapter_display_full_chapter_opt": {
     "message": "Afficher le chapitre entier",
     "description": "Label of the option Display full chapter in the options page"
@@ -1328,19 +1356,19 @@
     "description": "In the options page, label of the dark reader option"
   },
   "options_web_chapter_thinscan_desc": {
-    "message": "Thin Scan behaviour",
+    "message": "Comportement des scans longs et fins",
     "description": "In the options page, description of the thin scan option"
   },
   "options_web_chapter_thinscan_ask": {
-    "message": "Always ask the user",
+    "message": "Toujours demander à l'utilisateur",
     "description": "In the options page, description of the thin scan option ask"
   },
   "options_web_chapter_thinscan_adjust": {
-    "message": "Always Adjust",
+    "message": "Toujours ajuster",
     "description": "In the options page, description of the thin scan option adjust"
   },
   "options_web_chapter_thinscan_no_adjust": {
-    "message": "Always Do not adjust",
+    "message": "Ne jamais ajuster",
     "description": "In the options page, description of the thin scan option no adjust"
   },
   "reader_button_saveoptions": {
@@ -1564,24 +1592,28 @@
     "description": "Action button label to stop showing help messages"
   },
   "options_sync_title": {
-    "message": "Synchronization",
+    "message": "Synchronisation",
     "description": "browser sync between different devices"
   },
   "options_sync_title_warning": {
-    "message": "It's highly recommended to create manga list export, before you enabled sync for the first time!",
+    "message": "Il est fortement recommandé de créer une liste de mangas à exporter avant d'activer la synchronisation pour la première fois !",
     "description": "create manga list export before enabling it"
   },
   "options_sync_manga_list_desc": {
-    "message": "Allow users to sync manga list",
+    "message": "Permettre aux utilisateurs de synchroniser la liste des mangas",
     "description": "browser sync between different devices"
   },
   "options_sync_checkbox": {
-    "message": "Enable browser sync",
+    "message": "Activer la synchronisation du navigateur",
     "description": "browser sync between different devices"
   },
   "options_sync_gist" : {
     "message": "Activer la synchronisation avec Gist",
     "description": "Synchroniser les données avec Gist"
+  },
+  "options_sync_gist_help" : {
+    "message": "Besoin d'aide ?",
+    "description": "Gist help infobox"
   },
   "option_sync_gist_secret" : {
     "message": "Personal access token",
@@ -1595,7 +1627,7 @@
     "message": "Just a filler to separate new labels from old ones"
   },
   "options_gen_waitbetweenupdates_opt": {
-    "message": "Attendre entre les mises à jour de chapitres",
+    "message": "Attendre entre les mises à jour de chapitres :",
     "description": "Option Wait between chapters updates "
   },
   "options_gen_waitbetweenupdates_desc": {
@@ -1621,7 +1653,7 @@
   "options_gen_allowtracking_desc": {
     "message": "Autoriser All Mangas Reader à collecter des informations à des fins statistiques, toutes les données envoyées sont anonymisées",
     "description": "Option  allow tracking description"
-  }, 
+  },
   "amr_newversion": {
     "message": "Une nouvelle version d'AMR est disponible",
     "description": "Notification when a new version is available"
@@ -1638,6 +1670,10 @@
     "message": "Just a filler to separate new labels from old ones"
   },
   "reader_book_offset": {
+    "message": "Compenser la première page",
+    "description": "Offset first page button label"
+  },
+  "reader_book_offset_description": {
     "message": "Cela compensera la première page en mode livre au cas où une page de titre serait présente.",
     "description": "Message displayed on button if book mode is active"
   },
@@ -1670,6 +1706,10 @@
   },
   "options_mangadex_datasaver": {
     "message": "Utilisez des images d'économiseur de données (images jpeg compressées pour moins de bande passante)",
+    "description": "Option for datasaver toggle on mangadex"
+  },
+  "options_mangadex_datasaver_info": {
+    "message": "Images jpeg compressées pour moins de bande passante",
     "description": "Option for datasaver toggle on mangadex"
   },
   "options_mangadex_datasaver_label": {
@@ -1732,7 +1772,7 @@
     "description": "Label for the manga per page select box"
   },
   "options_webtoon_mode_default": {
-    "message": "Turn on webtoon mode by default",
+    "message": "Activer le mode webtoon par défaut",
     "description": "webtoon mode default check box"
   },
   "options_webtoon_mode_default_option": {
@@ -1867,5 +1907,17 @@
   "reader_zoom_minus": {
     "message": "Dézoomer",
     "description": "Button to zoom out"
+  },
+  "options_reader_smooth_navigation": {
+    "message": "Navigation fluide",
+    "description": "Smooth Navigation option"
+  },
+  "options_reader_smooth_navigation_label": {
+    "message": "Un chargement fluide changera les chapitres de manière dynamique.",
+    "description": "Smooth Navigation option label"
+  },
+  "options_reader_smooth_navigation_info": {
+    "message": "Ce paramètre ne doit être désactivé que si une autre extension suit votre progression (MAL-Sync par exemple).",
+    "description": "Smooth Navigation option label"
   }
 }

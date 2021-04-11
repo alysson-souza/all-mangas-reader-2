@@ -29,7 +29,7 @@ IconHelper.setBlueIcon();
      * Initialize extension versioning --> after options because versionning update can affect options
      */
     let afterLoadingCall = await amrInit()
-    
+
     /**
      * Initialize mirrors list in store from DB or repo
      */
@@ -97,14 +97,36 @@ IconHelper.setBlueIcon();
             HandleManga.matchUrlAndLoadScripts(tabInfo.url, tabId)
         }
     });*/
+    
+    let timers = [] // This is used to keep websites from spamming with calls. It fucks up the reader
+
     browser.webNavigation.onCommitted.addListener((args) => {
         if ("auto_subframe" === args.transitionType) return; // do not reload amr on embedded iframes
+
+        timers.push(args.tabId)
+
+        setTimeout(() => {
+            timers = timers.filter(id => id != args.tabId)
+        }, 500)
+
         HandleManga.matchUrlAndLoadScripts(args.url, args.tabId)
     })
+
+    
     // pushstate events are listened from content script (if from background, we reload the page on amr navigation)
     browser.webNavigation.onHistoryStateUpdated.addListener((args) => {
         if ("auto_subframe" === args.transitionType) return; // do not reload amr on embedded iframes
+        
+        if (timers.includes(args.tabId)) return // History spam
+
+        timers.push(args.tabId)
+
+        setTimeout(() => {
+            timers = timers.filter(id => id != args.tabId)
+        }, 500)
+
         HandleManga.sendPushState(args.url, args.tabId)
+
     })
 
     /**

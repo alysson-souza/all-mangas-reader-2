@@ -61,7 +61,7 @@ export default {
     }));
     await Promise.all(init);
     this.loaded = true
-	}, 
+	},
   methods: {
     i18n: (message, ...args) => i18n(message, ...args),
   },

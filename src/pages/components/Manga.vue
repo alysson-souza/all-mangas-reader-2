@@ -6,9 +6,9 @@
       </v-col>
       <!-- Name, Last Updated -->
       <v-col :cols="selectable ? '3' : '4'">
-        
-        <v-card :color="color(0)" class="back-card amr-manga-title-cont"> 
-          
+
+        <v-card :color="color(0)" class="back-card amr-manga-title-cont">
+
            <!-- + / - icon if group of mangas  -->
           <v-icon v-show="isInGroup && isFirst && !groupExpanded" @click="emitExpand()">mdi-plus</v-icon>
           <v-icon v-show="isInGroup && isFirst && groupExpanded" @click="emitExpand()">mdi-minus</v-icon>
@@ -43,7 +43,7 @@
               </span>
             </template>
             {{ manga.name }}
-          </v-tooltip>          
+          </v-tooltip>
         </v-card>
       </v-col>
       <!-- Select List -->
@@ -92,7 +92,7 @@
             <span>{{i18n("list_mg_act_read")}}</span>
           </v-tooltip>
           <!-- Empty icon if all read -->
-          <v-icon v-show="!hasNew" class="empty-icon"></v-icon> 
+          <v-icon v-show="!hasNew" class="empty-icon"></v-icon>
           <!-- Previous chapter -->
           <v-tooltip top content-class="icon-ttip">
             <template v-slot:activator="{ on }">
@@ -101,7 +101,7 @@
             <span>{{i18n("list_mg_act_prev")}}</span>
           </v-tooltip>
           <!-- Empty icon if no previous -->
-          <v-icon v-show="posInChapList === manga.listChaps.length - 1" class="empty-icon"></v-icon> 
+          <v-icon v-show="posInChapList === manga.listChaps.length - 1" class="empty-icon"></v-icon>
           <!-- Current chapter play -->
           <v-icon v-show="!isMirrorEnabled" class="empty-icon"></v-icon>
           <v-tooltip top content-class="icon-ttip">
@@ -118,7 +118,7 @@
             <span>{{i18n("list_mg_act_next")}}</span>
           </v-tooltip>
           <!-- Empty icon if no next chapter -->
-          <v-icon v-show="posInChapList <= 0" class="empty-icon"></v-icon> 
+          <v-icon v-show="posInChapList <= 0" class="empty-icon"></v-icon>
           <!-- Last chapter play -->
           <v-icon v-show="!isMirrorEnabled" class="empty-icon"></v-icon>
           <v-tooltip top content-class="icon-ttip">
@@ -134,7 +134,7 @@
             </template>
             <span>{{i18n("list_mg_act_delete")}}</span>
           </v-tooltip>
-          
+
           <v-icon @click="expanded = !expanded">mdi-dots-vertical</v-icon>
           <!-- Delete manga dialog -->
           <v-dialog v-model="deleteManga" max-width="500px">
@@ -156,16 +156,16 @@
       <!-- Categories -->
       <v-col cols="6">
         <span>{{i18n("list_details_cats")}} : </span>
-        <Categories 
-          :categories="manga.cats" 
-          :static-cats="true" 
-          :delegate-delete="true" 
+        <Categories
+          :categories="manga.cats"
+          :static-cats="true"
+          :delegate-delete="true"
           @delete-category="deleteCategory" />
         <div class="det-sel-wrapper">
           <select dark v-model="newCat" @change="addCategory()" :class="color(2)">
             <option value="">{{i18n("list_details_cats_select")}}</option>
-            <option v-for="(cat, key) of selectableCategory" 
-                    :key="key" 
+            <option v-for="(cat, key) of selectableCategory"
+                    :key="key"
                     :value="cat.name">
                 {{cat.name}}
             </option>
@@ -176,8 +176,8 @@
       <v-col cols="6">
         <span>{{i18n("list_details_books")}} : </span>
         <select v-if="bookmarks.length" dark v-model="curBm" @change="openBookmark()" :class="color(2)">
-          <option v-for="(bm, key) of bookmarks" 
-                  :key="key" 
+          <option v-for="(bm, key) of bookmarks"
+                  :key="key"
                   :value="bm.chapUrl">
               {{bm.type === 'scan' ? i18n("bookmarks_scan_title", bm.chapName, bm.scanName) : i18n("bookmarks_chapter_title", bm.chapName)}}
           </option>
@@ -476,7 +476,7 @@ export default {
     emitExpand() {
       this.$emit("expand-group");
     },
-    /** 
+    /**
      * Emit the event for renaming this manga
      */
     renameManga() {

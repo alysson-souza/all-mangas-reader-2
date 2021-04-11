@@ -25,11 +25,11 @@ class HandleNavigation {
             case "get_storage":
                 return Promise.resolve(localStorage[message.key]);
             // set a Value in localStorage
-            case "set_storage": 
+            case "set_storage":
                 localStorage[message.key] = message.value;
                 return Promise.resolve();
             // set a Value in localStorage
-            case "save_option": 
+            case "save_option":
             window['AMR_STORE'].dispatch("setOption", { key: message.key, value: message.value });
                 return Promise.resolve();
         }

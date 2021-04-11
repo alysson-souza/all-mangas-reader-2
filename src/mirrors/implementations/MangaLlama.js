@@ -2,7 +2,7 @@ if (typeof registerMangaObject === 'function') {
     registerMangaObject({
         mirrorName: "Manga Llama",
         canListFullMangas: false,
-        mirrorIcon: "mangallama.webp",
+        mirrorIcon: "mangallama.png",
         languages: "en",
         domains: ["mangallama.com"],
         home: "https://mangallama.com/",

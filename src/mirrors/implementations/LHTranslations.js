@@ -2,7 +2,7 @@ if (typeof registerMangaObject === 'function') {
 	registerMangaObject({
         mirrorName : "LHTranslations",
         canListFullMangas : true,
-        mirrorIcon : "lhtranslation.png",
+        mirrorIcon : "lhtranslations.png",
         languages : "en",
         domains: ["lhtranslation.net"],
         home: "https://lhtranslation.net",

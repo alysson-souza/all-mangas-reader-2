@@ -27,7 +27,7 @@ class Util {
      */
     async mangaExists() {
         return await browser.runtime.sendMessage({
-            action: "mangaExists", 
+            action: "mangaExists",
             url: pageData.state.currentMangaURL,
             mirror: mirrorImpl.get().mirrorName,
             language: pageData.state.language
@@ -64,28 +64,28 @@ class Util {
             mirror: mirrorImpl.get().mirrorName,
             lastChapterReadName: pageData.state.currentChapter,
             lastChapterReadURL: pageData.state.currentChapterURL,
-            name: pageData.state.name, 
+            name: pageData.state.name,
             language: pageData.state.language
         })
     }
-    /** 
-     * Change updating mode for this manga (1 : stop updating, 0 : check updates) 
+    /**
+     * Change updating mode for this manga (1 : stop updating, 0 : check updates)
      */
     async markReadTop(nTop) {
         return await browser.runtime.sendMessage({
             action: "markReadTop",
             url: pageData.state.currentMangaURL,
             read: nTop,
-            updatesamemangas: true, 
+            updatesamemangas: true,
             language: pageData.state.language
         })
     }
-    /** 
-     * Remove the current manga from reading list 
+    /**
+     * Remove the current manga from reading list
      */
     async deleteManga() {
         return await browser.runtime.sendMessage({
-            action: "deleteManga", 
+            action: "deleteManga",
             url: pageData.state.currentMangaURL,
             mirror: mirrorImpl.get().mirrorName,
             language: pageData.state.language

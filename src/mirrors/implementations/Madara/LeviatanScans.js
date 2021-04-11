@@ -1,7 +1,7 @@
 if (typeof registerMangaObject === 'function') {
     registerMangaObject({
         mirrorName: 'Leviatan Scans',
-        mirrorIcon: 'leviatan.png',
+        mirrorIcon: 'leviatanscans.png',
         languages: 'en',
         domains: ['leviatanscans.com'],
         home: 'https://leviatanscans.com/',

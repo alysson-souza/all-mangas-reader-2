@@ -89,7 +89,7 @@ class HandleManga {
 
     /**
      * Loads chapters list
-     * @param {*} message 
+     * @param {*} message
      */
     async loadListChaps(message) {
         let impl = await mirrorsImpl.getImpl(message.mirror);
@@ -99,7 +99,7 @@ class HandleManga {
 
     /**
      * Search mangas on a mirror from search phrase
-     * @param {*} message 
+     * @param {*} message
      */
     async searchList(message) {
         return new Promise(async (resolve, reject) => {
@@ -124,7 +124,7 @@ class HandleManga {
                         message.mirror));
                 }
             } else {
-                // let website search 
+                // let website search
                 resolve(this.resultSearchFromArray(
                     await this.searchListRemote(message.search, impl),
                     message.mirror));
@@ -133,8 +133,8 @@ class HandleManga {
     }
     /**
      * Convert array of array (standard result from implementation) in proper result
-     * @param {*} list 
-     * @param {*} mirror 
+     * @param {*} list
+     * @param {*} mirror
      */
     resultSearchFromArray(list, mirror) {
         return list.map(arr => {
@@ -147,8 +147,8 @@ class HandleManga {
     }
     /**
      * Return entries matching the search phrase from a list of results
-     * @param {*} list 
-     * @param {*} search 
+     * @param {*} list
+     * @param {*} search
      */
     filterSearchList(list, search) {
         return list.filter(arr => utils.formatMgName(arr[0]).indexOf(utils.formatMgName(search)) !== -1);
@@ -164,10 +164,10 @@ class HandleManga {
     }
 
     /**
-     * Test if the url matches a mirror implementation. 
+     * Test if the url matches a mirror implementation.
      * If so, inject content script to transform the page and the mirror implementation inside the tab
-     * @param {*} url 
-     * @param {*} tabId 
+     * @param {*} url
+     * @param {*} tabId
      */
     async matchUrlAndLoadScripts(url, tabId) {
         const mir = utils.currentPageMatch(url)
@@ -220,17 +220,26 @@ class HandleManga {
     }
     /**
      * Send an event to the tab telling that url has been changed. If it's done by AMR, nothing to do, if it's inner website navigation, load amr
-     * @param {*} url 
-     * @param {*} tabId 
+     * @param {*} url
+     * @param {*} tabId
      */
     async sendPushState(url, tabId) {
         browser.tabs
-            .executeScript(tabId, { code: "if (typeof window['onPushState'] === 'function') window['onPushState']();" })
+            .executeScript(tabId, { code: "window['__armreader__'] === undefined" })
+            .then(async result => {
+                if (result[0]) {
+                    await this.matchUrlAndLoadScripts(url, tabId)
+                } else {
+                    browser.tabs
+                        .executeScript(tabId, { code: "if (typeof window['onPushState'] === 'function') window['onPushState']();" })
+                        .catch(utils.debug)
+                }
+            })
             .catch(utils.debug)
     }
     /**
      * Return the list of images urls from a chapter
-     * @param {*} message 
+     * @param {*} message
      */
     async getChapterData(message) {
         return Axios.get(message.url)
@@ -280,7 +289,7 @@ class HandleManga {
     }
     /**
      * Imports a list of mangas (only the long async part is in there)
-     * @param {*} message 
+     * @param {*} message
      */
     async importMangas(message) {
         let importcat = message.importcat

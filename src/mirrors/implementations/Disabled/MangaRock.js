@@ -12,15 +12,15 @@ if (typeof registerMangaObject === 'function') {
 
         getMangaList: async function (search) {
             let json = await amr.loadJson(
-                this.api + "mrs_quick_search", 
-                { 
+                this.api + "mrs_quick_search",
+                {
                     post: true,
-                    nocache: true, 
+                    nocache: true,
                     dataType: "text",
                     data: search
                 })
             let series = json.data.series,
-                reqs = [], 
+                reqs = [],
                 res = [];
             for (let serie of series) {
                 reqs.push(
@@ -35,7 +35,7 @@ if (typeof registerMangaObject === 'function') {
             await Promise.all(reqs)
             return res;
         },
-    
+
         getListChaps: async function (urlManga) {
             let oid = urlManga.split("/")[4];
             let json = await amr.loadJson(this.api + "info?oid=" + oid, { nocache: true })
@@ -46,7 +46,7 @@ if (typeof registerMangaObject === 'function') {
             }
             return res.reverse()
         },
-    
+
         getInformationsFromCurrentPage: async function (doc, curUrl) {
             let oid = curUrl.split("/")[4];
             let choid = curUrl.split("/")[6];
@@ -58,14 +58,14 @@ if (typeof registerMangaObject === 'function') {
             res.currentChapterURL = "https://mangarock.com/manga/" + oid + "/chapter/" + choid;
             return res;
         },
-    
+
         getListImages: async function (doc, curUrl) {
             let choid = curUrl.split("/")[6];
             if (choid.indexOf("#") > 0) choid = choid.substr(0, choid.indexOf("#"));
             let chapter = await amr.loadJson(this.api + "pages?oid=" + choid)
             return chapter.data
         },
-    
+
         getImageFromPageAndWrite: function (urlImg, image) {
             var xhr = new XMLHttpRequest();
             if (urlImg.indexOf("//") === 0) urlImg = location.protocol + urlImg
@@ -80,11 +80,11 @@ if (typeof registerMangaObject === 'function') {
 
             xhr.send();
         },
-    
+
         isCurrentPageAChapterPage: function (doc, curUrl) {
             return curUrl.split("/").length === 7 && curUrl.split("/")[5] === "chapter";
         },
-    
+
         webPDecode: function(t) {
             let u = function(t) {
                 var e = function(t) {

@@ -19,7 +19,7 @@ if (typeof registerMangaObject === 'function') {
             });
             return res;
         },
-    
+
         getListChaps : async function (urlManga) {
             let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
             let res = [];
@@ -29,7 +29,7 @@ if (typeof registerMangaObject === 'function') {
             res.reverse();
             return res;
         },
-    
+
         getInformationsFromCurrentPage : async function (doc, curUrl) {
             var name = $("select[name='manga'] option:selected", doc).text(),
                 currentMangaURL = "http://read.egscans.com/" + $("select[name='manga'] option:selected", doc).attr('value'),
@@ -40,7 +40,7 @@ if (typeof registerMangaObject === 'function') {
                 "currentChapterURL" : currentChapterURL
             };
         },
-    
+
         getListImages : async function (doc, curUrl) {
             var res = [],
                 img = [],
@@ -54,7 +54,7 @@ if (typeof registerMangaObject === 'function') {
             }
             return res;
         },
-    
+
         getImageFromPageAndWrite : async function (urlImg, image) {
             $(image).attr("src", urlImg);
         },

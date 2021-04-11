@@ -10,7 +10,7 @@ import vuetifyOptions from '../vuetifyOptions';
 
   window['AMR_STORE'] = store
 
-  
+
   // Load options in store before everything
   await store.dispatch("getStateFromReference", {
     module: "options",

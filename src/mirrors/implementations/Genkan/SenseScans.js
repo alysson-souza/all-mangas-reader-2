@@ -1,7 +1,7 @@
 if (typeof registerMangaObject === 'function') {
 	registerMangaObject({
         mirrorName : "Senses Scans",
-        mirrorIcon : "sensescans.png",
+        mirrorIcon : "sensesscans.png",
         languages : "en",
         domains: ["sensescans.com"],
         home: "http://sensescans.com/",

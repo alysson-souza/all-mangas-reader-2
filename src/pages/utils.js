@@ -57,8 +57,8 @@ export function convertIcons(input) {
 
 /**
  * Calculates color to colorize mangas entries in list depending on options and manga state
- * @param {*} manga 
- * @param {*} param1 
+ * @param {*} manga
+ * @param {*} param1
  * @param {*} light a parameter indicating how much lighter the color must be
  */
 export function getColor(manga, { colornotfollow, colornew, colorread }, light) {
@@ -89,8 +89,8 @@ export function computeColorLight(color, light) {
 
 /**
  * Return true if we need a dark text
- * @param {} manga 
- * @param {*} options 
+ * @param {} manga
+ * @param {*} options
  */
 export function darkText(manga, { colornotfollow, colornew, colorread }) {
     if (manga.read !== 0) return isLight(colornotfollow);

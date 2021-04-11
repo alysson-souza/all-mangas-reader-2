@@ -15,7 +15,6 @@ const defaultConfig = {
     syncInterval: 30 * 1000,
     syncEnabled: 0,
     gistSyncEnabled: 0,
-    gistSyncSecret: undefined,
 }
 
 class SyncManager {
@@ -97,7 +96,7 @@ class SyncManager {
                             confObj[c] = this.config[c]
                         }
                     })
-                
+
                 triggerList.push({
                     name: v === '' ? 'BrowserStorage' : v.charAt(0).toUpperCase() + v.substr(1) + 'Storage',
                     config: confObj
@@ -106,8 +105,8 @@ class SyncManager {
         return triggerList
     }
     /**
-     * 
-     * @param {String} storageName 
+     *
+     * @param {String} storageName
      */
     async triggerSync(storageName) {
         const storage = this.remoteStorages.find((store) => store.constructor.name === storageName)
@@ -120,6 +119,8 @@ class SyncManager {
                 .catch(e => {
                     if(e instanceof ThrottleError) {
                         storage.retryDate = e.getRetryAfterDate()
+                    } else if(e instanceof Error) {
+                        debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] ${e.message}`)
                     }
                 })
             }
@@ -127,8 +128,8 @@ class SyncManager {
     }
 
     /**
-     * @param {Storage} storage 
-     * @returns 
+     * @param {Storage} storage
+     * @returns
      */
     async checkData(storage) {
         const storageName = storage.constructor.name.replace('Storage', '')
@@ -146,9 +147,9 @@ class SyncManager {
         return manga.deleted === syncUtils.DELETED || manga.key === syncUtils.FAIL_KEY
     }
     /**
-     * @param {[]} localList 
-     * @param {Storage} remoteStorage 
-     * @param {[]} remoteList 
+     * @param {[]} localList
+     * @param {Storage} remoteStorage
+     * @param {[]} remoteList
      */
     async processUpdatesToRemote(localList, remoteStorage, remoteList) {
         const remoteUpdates = [];
@@ -192,12 +193,10 @@ class SyncManager {
     async processUpdatesToLocal(localList, remoteList) {
         const localUpdates = [];
         for(const manga of remoteList) {
-            if(!this.shouldSkipSync(manga)) {
-                // Check if need to be sync to remote
-                const localManga = localList.find(m => m.key === manga.key);
-                if (!localManga || localManga.ts < manga.ts) {
-                    localUpdates.push({ ...manga });
-                }        
+            // Check if need to be sync to remote
+            const localManga = localList.find(m => m.key === manga.key);
+            if (!localManga || localManga.ts < manga.ts) {
+                localUpdates.push({ ...manga });
             }
         }
 
@@ -222,7 +221,7 @@ class SyncManager {
             await storage.delete(key, {
                 key,
                 ts: Math.round(Date.now() / 1000),
-                deleted: syncUtils.DELETED,            
+                deleted: syncUtils.DELETED,
             })
         }
     }

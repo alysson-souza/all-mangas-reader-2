@@ -1,15 +1,17 @@
 if (typeof registerMangaObject === 'function') {
     registerMangaObject({
-        mirrorName: "Void Scans",
-        mirrorIcon: "voidscans.webp",
+        mirrorName: "Setsu Scans",
+        mirrorIcon: "setsuscans.png",
         languages: "en",
-        domains: ["voidscans.com"],
-        home: "https://voidscans.com/",
+        domains: ["setsuscans.com"],
+        home: "https://setsuscans.com/",
         chapter_url: /^\/manga\/.*\/.+$/g,
         canListFullMangas: false,
         abstract: "Madara",
         abstract_options: {
-            search_url: "https://voidscans.com/"
+            search_url: "https://setsuscans.com/",
+            chapter_list_ajax: true
         }
     })
 }
+

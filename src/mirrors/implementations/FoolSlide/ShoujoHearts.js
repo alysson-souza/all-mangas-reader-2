@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ["shoujohearts.com"],
         home: "http://shoujohearts.com/",
         chapter_url: /^\/reader\/read\/.+$/g,
-        
+
         abstract: "FoolSlide",
         abstract_options: {
             base_url: "http://shoujohearts.com/reader",

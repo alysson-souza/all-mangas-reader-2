@@ -31,7 +31,7 @@ export default {
             this.searching = true;
             let searchinit = this.searchPhrase;
             let mgs = await browser.runtime.sendMessage({
-                action: "searchList", 
+                action: "searchList",
                 mirror: this.mirror.mirrorName,
                 search: searchinit
             });
@@ -77,4 +77,3 @@ export default {
     opacity: 0.3;
 }
 </style>
-

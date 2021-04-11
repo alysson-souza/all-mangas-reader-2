@@ -24,7 +24,7 @@ window["FoolSlide"] = function(options) {
         let res = []
         let self = this
 
-        if (this.options.search_all) { // search all pages, 
+        if (this.options.search_all) { // search all pages,
             res = await this.searchPage(this.options.base_url + this.options.series_list_url)
         } else {
             res = await this.searchPage(this.options.base_url + '/search/', {post: true, data: {search: search}})
@@ -36,12 +36,12 @@ window["FoolSlide"] = function(options) {
         let res = []
         let self = this
         let doc = await amr.loadPage(
-            url, 
+            url,
             Object.assign({ nocache: true, preventimages: true }, options)
         )
         $(this.options.mglist_selector, doc).each(function (index) {
             res[res.length] = [
-                self.options.mglist_look_title_from_a(this).trim(), 
+                self.options.mglist_look_title_from_a(this).trim(),
                 $(this).attr("href")
             ]
         })
@@ -59,7 +59,7 @@ window["FoolSlide"] = function(options) {
         let self = this
         $("a[href*='/read/']", doc).each(function (index) {
             res[res.length] = [
-                self.options.listchaps_look_title_from_a(this).trim(), 
+                self.options.listchaps_look_title_from_a(this).trim(),
                 $(this).attr("href")
             ]
         })
@@ -90,8 +90,8 @@ window["FoolSlide"] = function(options) {
 
     /**
      * For some manga, adult reading confirmation is required, lets do it
-     * @param {*} doc 
-     * @param {*} curUrl 
+     * @param {*} doc
+     * @param {*} curUrl
      */
     this.passAdult = async function(doc, curUrl) {
         if ($("input[name='adult']", doc).length > 0) {

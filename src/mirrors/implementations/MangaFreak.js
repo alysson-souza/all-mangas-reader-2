@@ -2,7 +2,7 @@ if (typeof registerMangaObject === 'function') {
     registerMangaObject({
         mirrorName: "Manga-Freak",
         canListFullMangas: false,
-        mirrorIcon: "mangafreak.webp",
+        mirrorIcon: "mangafreak.png",
         domains: ["w11.mangafreak.net"],
         languages: "en",
         home: "https://w11.mangafreak.net",

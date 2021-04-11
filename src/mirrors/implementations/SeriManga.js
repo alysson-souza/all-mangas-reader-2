@@ -2,11 +2,11 @@ if (typeof registerMangaObject === 'function') {
     registerMangaObject({
         mirrorName: "Seri Manga",
         mirrorIcon: "serimanga.png",
-        languages: "en",
+        languages: "tr",
         domains: ["serimanga.com"],
         home: "https://serimanga.com/",
         canListFullMangas: true,
-        chapter_url: /^\/mangas\/.*\/[0-9]+.+$/g,
+        chapter_url: /^\/manga(s)?\/.*\/[0-9]+.+$/g,
 
         getMangaList : async function (search) {
             let url = this.home + 'mangalar'
@@ -33,10 +33,10 @@ if (typeof registerMangaObject === 'function') {
 
             return res
         },
-    
+
         getListChaps: async function (urlManga) {
-            let doc = await amr.loadPage(urlManga, { 
-                nocache: true, 
+            let doc = await amr.loadPage(urlManga, {
+                nocache: true,
                 preventimages: true,
             })
             let res = []
@@ -44,7 +44,7 @@ if (typeof registerMangaObject === 'function') {
 
             $('li.spl-list-item a', doc).each(function (index) {
                 res.push([
-                    $('span:first', $(this)).text().trim(), 
+                    $('span:first', $(this)).text().trim(),
                     $(this).attr("href")]);
             })
 
@@ -55,7 +55,7 @@ if (typeof registerMangaObject === 'function') {
 
             return res
         },
-    
+
         getInformationsFromCurrentPage: async function (doc, curUrl) {
             let mg = $($('div.rtm-logo a:last', doc)[0])
             let url = new URL(curUrl)
@@ -74,7 +74,7 @@ if (typeof registerMangaObject === 'function') {
             })
             return res
         },
-    
+
         getImageFromPageAndWrite: async function (urlImg, image) {
             $(image).attr("src", urlImg)
         },

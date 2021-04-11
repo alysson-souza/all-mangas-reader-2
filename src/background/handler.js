@@ -16,12 +16,12 @@ class Handler {
         browser.runtime.onMessage.addListener((message, sender) => {
             let result;
             let handlers = [
-                HandleVueInit, 
-                HandleMisc, 
-                HandleManga, 
-                HandleOptions, 
-                HandleNavigation, 
-                HandleBookmarks, 
+                HandleVueInit,
+                HandleMisc,
+                HandleManga,
+                HandleOptions,
+                HandleNavigation,
+                HandleBookmarks,
                 HandleLab,
                 HandleSync
             ];

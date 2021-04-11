@@ -46,7 +46,7 @@ if (window["__armreader__"] === undefined) { // avoid loading script twice
     /**
      * Every mirror implementation ends by a call to registerMangaObject
      * This function is defined here.
-     * This script is injected by background script if the page could be a manga page. 
+     * This script is injected by background script if the page could be a manga page.
      * Once loaded, the mirror implementation is called and results in this function call
      */
     window["registerMangaObject"] = async function (object) {
@@ -61,7 +61,7 @@ if (window["__armreader__"] === undefined) { // avoid loading script twice
         }
         // initialize current chapter from data collected from current page
         let chap = new ChapterLoader()
-        await chap.checkAndLoadInfos() // get is a chapter ?, infos (current manga, chapter) and scans urls 
+        await chap.checkAndLoadInfos() // get is a chapter ?, infos (current manga, chapter) and scans urls
         let done = chap.loadInReader(options, true) // load chapter data in states
         if (!done) {
             restorePage()
@@ -102,7 +102,7 @@ function initReader() {
     metaview.content = "width=device-width, initial-scale=1"
     document.getElementsByTagName( "head" )[0].appendChild( metaview )
 
-    // document is the only node we keep from the page, ensure it won't break our css : 
+    // document is the only node we keep from the page, ensure it won't break our css :
     document.body.style.padding = "0px"
     document.body.style.margin = "0px"
     document.body.style.setProperty("max-width", "none", "important")
@@ -111,9 +111,9 @@ function initReader() {
     // if (options.darkreader === 1) document.body.style.backgroundColor = "#303030"
     // else document.body.style.backgroundColor = "white"
 
-    for (let css of ourCss) 
+    for (let css of ourCss)
         loadCss(css)
-    
+
     // Load vue
     Vue.config.productionTip = false
     Vue.use(Vuetify)
@@ -136,8 +136,8 @@ function removeJsAddedStuff(times = 10) {
     document.body.style.setProperty("min-width", "auto", "important")
     document.body.style.setProperty("width", "auto", "important")
 
-    for (child of document.body.children) { 
-        if (child.getAttribute('id') !== 'amrapp') 
+    for (child of document.body.children) {
+        if (child.getAttribute('id') !== 'amrapp')
             child.remove()
     }
 
@@ -185,9 +185,9 @@ function loadCss(file) {
 
     document.getElementsByTagName( "head" )[0].appendChild( link )
 }
-/** 
- * Restore the page as it was before we included our scripts tags and code 
- * The best would be not to load it but : 
+/**
+ * Restore the page as it was before we included our scripts tags and code
+ * The best would be not to load it but :
  *  - this script is only included in manga websites pages
  *  - we have to load the implementation in the page to know if the reader needs to be loaded. If we do that in a separate script, we will have to reload implementation another time and this will result in more loading time...
  */

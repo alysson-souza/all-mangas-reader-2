@@ -19,7 +19,7 @@ const config = {
   entry: {
     'background/background': './background/background.js',
     'reader/init-reading': './reader/init-reading.js',
-    'pages/popup/popup': './pages/popup/popup.js', 
+    'pages/popup/popup': './pages/popup/popup.js',
     'pages/lab/lab': './pages/lab/lab.js',
     'pages/options/options': './pages/options/options.js',
     'pages/bookmarks/bookmarks': './pages/bookmarks/bookmarks.js',
@@ -101,7 +101,7 @@ const config = {
         blocking: true
       },
       onBuildEnd: {
-        scripts: ['node scripts/remove-evals.js']
+        scripts: ['node scripts/remove-evals.js', 'node scripts/supportedWebsites.js']
       }
     }),
     new CircularDependencyPlugin({
@@ -125,9 +125,7 @@ if (process.env.NODE_ENV === 'production') {
   config.mode = "production";
 
   config.plugins = (config.plugins || []).concat([
-    new CleanWebpackPlugin({
-      cleanOnceBeforeBuildPatterns: ['./dist/', './dist-zip/']
-    }),
+    new CleanWebpackPlugin(),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: '"production"'

@@ -49,6 +49,8 @@ global.registerMangaObject = function(object) {
         console.error(mirrorName + " : mirrorIcon is required !")
     }
     website.mirrorIcon = base64_encode(iconDir + object.mirrorIcon)
+
+    website.iconName = object.mirrorIcon
     
     if (object.abstract !== undefined) {
         website.abstract = object.abstract

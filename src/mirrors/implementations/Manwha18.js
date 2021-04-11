@@ -2,7 +2,7 @@ if (typeof registerMangaObject === 'function') {
 	registerMangaObject({
         mirrorName: "Manwha 18",
         canListFullMangas: true,
-        mirrorIcon: "manhwa18.webp",
+        mirrorIcon: "manwha18.png",
         languages: "en",
         domains: ["manhwa18.com"],
         home: "https://manhwa18.com/",

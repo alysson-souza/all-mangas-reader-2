@@ -8,7 +8,7 @@ if (typeof registerMangaObject === 'function') {
         chapter_url: /^\/read\/.+$/g,
         canListFullMangas: false, /* to avoid loading 8 pages to load all mangas */
         disabled: true,
-        
+
         abstract: "FoolSlide",
         abstract_options: {
             base_url: "http://leitor.mangascenter.com.br",
