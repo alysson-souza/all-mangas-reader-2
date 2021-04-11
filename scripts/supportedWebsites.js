@@ -3,13 +3,16 @@ const fs = require('fs')
 const JSDOM = require('jsdom').JSDOM
 const readmePath = path.resolve(__dirname, '../', 'README.md')
 const iconPath = path.resolve(__dirname, '../', 'src', 'mirrors', 'icons')
+
+console.log('Start writing supported websites')
+
 dom = new JSDOM()
 window = {}
 document = dom.window.document
 const mirrors = require('../src/mirrors/register_implementations').websitesDescription
 let list = mirrors.filter(m=>!m.disabled && m.mirrorIcon)
 list = list.map(m=> {
-  return {name: m.mirrorName, icon:m.mirrorIcon} 
+  return {name: m.mirrorName, icon:m.iconName} 
 })
 
 const tbody = document.createElement('tbody')
@@ -25,10 +28,7 @@ for(const [i, v] of list.entries()) {
   }
   const newTD = document.createElement('td')
   const newIMG = document.createElement('img')
-  let icon = v.name.toLowerCase()
-  const format = /data:image\/(.*);base64,/.exec(v.icon)[1]
-  icon = icon.replace(/\W/g, '')
-  icon = 'src/mirrors/icons/' + icon + '.' + format
+  let icon = 'src/mirrors/icons/' + v.icon
 
 
   newIMG.src = icon
@@ -49,3 +49,5 @@ readme = readme.replace(/<tbody title=\"supportedws\">(.|\n|\r\n)*?<\/tbody>/g, 
 
 
 fs.writeFileSync(readmePath, readme)
+
+console.log('Writing supported websites complete')

@@ -4,8 +4,8 @@
   "description": "All Mangas Reader",
   "author": "Pierre-Louis Duhoux <pl.duhoux@gmail.com>",
   "scripts": {
-    "build": "cross-env NODE_ENV=production webpack --config webpack.config.js --progress && node scripts/supportedWebsites.js",
-    "build:dev": "cross-env NODE_ENV=development webpack --config webpack.config.js --progress && node scripts/supportedWebsites.js",
+    "build": "cross-env NODE_ENV=production webpack --config webpack.config.js --progress",
+    "build:dev": "cross-env NODE_ENV=development webpack --config webpack.config.js --progress",
     "build-zip": "node scripts/build-zip.js",
     "manifest:specify": "node scripts/update-manifest.js",
     "watch": "yarn run build --watch",
