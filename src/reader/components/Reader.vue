@@ -626,12 +626,12 @@ export default {
                         }
                         // Jump to last scan
                         if ((e.which === 39) || (e.which === 68)) { // alt + d or alt + right arrow
-                            this.goScan(this.pages.length - 1)
+                            this.shouldInvertKeys ? this.goScan(0) : this.goScan(this.pages.length - 1)
                             prevent()
                         }
                         // Jump to first scan
                         if ((e.which === 37) || (e.which === 65)) { // alt + a or alt + left arrow
-                            this.goScan(0)
+                            this.shouldInvertKeys ? this.goScan(this.pages.length - 1) : this.goScan(0)
                             prevent()
                         }
                         // Jump to random page

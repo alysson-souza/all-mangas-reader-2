@@ -36,7 +36,7 @@
               v-show="!lastChapter && nextchapLoading && !drawer && hover"
             >
               <v-btn small fab @click.stop="goNextChapter" class="green--text">
-                <v-icon>mdi-chevron-right</v-icon>
+                <v-icon>{{shouldInvertKeys ? 'mdi-chevron-left' : 'mdi-chevron-right'}}</v-icon>
               </v-btn>
             </v-progress-circular>
             <v-progress-circular v-on="on" class=" mt-2 amr-floting-progress"
@@ -49,7 +49,7 @@
               v-show="!lastChapter && !nextchapLoading && !drawer && hover"
             >
               <v-btn small fab @click.stop="goNextChapter" class="red--text">
-                <v-icon>mdi-chevron-right</v-icon>
+                <v-icon>{{shouldInvertKeys ? 'mdi-chevron-left' : 'mdi-chevron-right'}}</v-icon>
               </v-btn>
             </v-progress-circular>
           </template>
@@ -1059,12 +1059,12 @@
             if (e.shiftKey && !e.altKey) {
               // Go to next chapter
               if ((e.which === 39) || (e.which === 68)) { // shift + d or shift + right arrow
-                  this.goNextChapter()
+                  this.shouldInvertKeys ? this.goPreviousChapter() : this.goNextChapter()
                   prevent()
               }
               // Go to previous chapter
               if ((e.which === 37) || (e.which === 65)) { // shift + a or shift + left arrow
-                  this.goPreviousChapter()
+                  this.shouldInvertKeys ? this.goNextChapter() : this.goPreviousChapter()
                   prevent()
               }
               // Toggle drawer
