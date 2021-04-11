@@ -230,4 +230,10 @@ td.scanContainer.xs12 {
   text-align: center;
   transition: all 0.2s;
 }
+.amr-left-page.scale-up img {
+  object-position: right;
+}
+.amr-right-page.scale-up img {
+  object-position: left;
+}
 </style>
