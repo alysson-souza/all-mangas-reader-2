@@ -1,3 +1,32 @@
+### V2.3.11
+  New Features:
+    * Option added to allow keyboard shortcuts / buttons to follow RTL reading mode (Credit: @EqualDepth)
+    * Option to disable smooth chapter navigation, chapter changes will force a page reload. Only disable this for use with MAL-Sync or other related trackers
+
+  Fixes:
+    * Changes made to handle SPA (Single Page Application) sites better
+    * Gist Sync was not correctly handling deleted manga (Credit @JiPai)
+    * Scale image up option fixed (Credit: @EqualDepth)
+
+  Changes:
+    * RTL reading mode no longer requires book mode to be active (Credit: @EqualDepth)
+    * Update gist-sync instructions in readme (Credit: @JiPai and @Bubo Mortis)
+    * Update options page to improve readability (Credit: @JiPai)
+    * Readme rewritten for clartity and added supported mirrors table on build (Credit: @JiPai)
+
+  New Mirrors:
+    * Koneko Scantrad (https://koneko-scantrad.fr)
+    * Scantrad Union (https://scantrad-union.com/)
+    * Cat Manga (https://catmanga.org/) (Credit @EqualDepth)
+    * Azure Manga (https://azuremanga.com/)
+    * Manga 1st (https://manga1st.com/)
+    * Setsu Scans (https://setsuscans.com/)
+
+  Mirror Fixes:
+    * Seri Manga (https://serimanga.com/)
+    * Komga Local Library (Credit: @Robo)
+    * Void Scans (https://voidscans.net/)
+
 ### V2.3.10
   New Features:
     * Multi Select has been reworked and now offers the option to open latest read and next new chapter for selected series
