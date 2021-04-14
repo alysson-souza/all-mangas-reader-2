@@ -1,4 +1,5 @@
 window["NextJs"] = function (options) {
+    this.canListFullMangas = false
     this.defaultOptions = {
         nextDataRegex: /&lt;script\s+id="__NEXT_DATA__"\s+type="application\/json"&gt;(.*?)&lt;\/script&gt;/m,
         getTitle: (json) => "",
@@ -9,8 +10,8 @@ window["NextJs"] = function (options) {
     };
     this.options = Object.assign(this.defaultOptions, options);
 
-    this.getMangaList = async function (url) {
-        const doc = await amr.loadPage(url, {
+    this.getMangaList = async function (serch) {
+        const doc = await amr.loadPage(this.home, {
             nocache: true,
             preventimages: true
         });

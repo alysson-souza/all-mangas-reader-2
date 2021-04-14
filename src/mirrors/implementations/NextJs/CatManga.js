@@ -7,14 +7,16 @@ if (typeof registerMangaObject === "function") {
         home: "https://catmanga.org",
         chapter_url: /^\/series\/.*?\/\d+$/g,
         abstract: 'NextJs',
+        canListFullMangas: true,
+
         abstract_options: {
             getTitle: (json) => {
-                return `${json.props['pageProps']['chapter']['number']} - ${json.props['pageProps']['chapter']['title'] ?? 'N/A'}`;
+                return json.props['pageProps']['series']['title'];
             },
             getMangaList: (json) => {
                 let res = [];
                 json.props['pageProps']['series'].forEach(series => {
-                    res.push([series.title, `https://catmanga.org/series${series['series_id']}`]);
+                    res.push([series.title, `https://catmanga.org/series/${series['series_id']}`]);
                 });
                 return res;
             },
