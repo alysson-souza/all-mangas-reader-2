@@ -132,6 +132,7 @@ function initReader() {
 function removeJsAddedStuff(times = 10) {
     document.body.style.padding = "0px"
     document.body.style.margin = "0px"
+    document.body.style.position = ""
     document.body.style.setProperty("max-width", "none", "important")
     document.body.style.setProperty("min-width", "auto", "important")
     document.body.style.setProperty("width", "auto", "important")
