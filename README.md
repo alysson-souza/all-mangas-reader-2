@@ -32,7 +32,7 @@ All Mangas Reader is a browser extension which is designed to help you read and 
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Opera_2015_icon.svg/200px-Opera_2015_icon.svg.png" width="16" title="Opera"/>
         </td>
         <td>
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Microsoft_Edge_Logo.svg/200px-Microsoft_Edge_Logo.svg.png" width="16" title="Edge Chromium"/>
+            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/9/98/Microsoft_Edge_logo_%282019%29.svg/240px-Microsoft_Edge_logo_%282019%29.svg.png" width="16" title="Edge Chromium"/>
         </td>
         <td>
             <img src="https://upload.wikimedia.org/wikipedia/commons/c/c4/Brave_lion.png" width="18" title="Brave"/>
