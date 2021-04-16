@@ -1,7 +1,10 @@
 const fs = require('fs')
 const fspromise = require('fs').promises
 const path = require('path')
-
+const JSDOM = require('jsdom').JSDOM
+const beautify = require('js-beautify').html
+const dom = new JSDOM()
+const document = dom.window.document
 // @TODO should be replaced by webpack imports
 // Ensure all dirs are relative to current file
 const baseDir = path.join(process.cwd(), 'src', 'mirrors')
@@ -49,7 +52,6 @@ global.registerMangaObject = function(object) {
         console.error(mirrorName + " : mirrorIcon is required !")
     }
     website.mirrorIcon = base64_encode(iconDir + object.mirrorIcon)
-
     website.iconName = object.mirrorIcon
     
     if (object.abstract !== undefined) {
@@ -162,9 +164,43 @@ async function main() {
 
     // console.log(allMirrors)
     writeWebsites(allAbstracts, allMirrors)
-    
+    writeReadme()
     console.info("Mirror Rebuild Complete")
 }
+
+function writeReadme() {
+    const readmeDir = path.resolve(__dirname, '../', 'README.md')
+    let readme = fs.readFileSync(readmeDir).toString()
+    const tbody = document.createElement('tbody')
+    let currentTr = document.createElement('tr')
+    const sites = websites.filter(w=>typeof w.iconName !== 'undefined')
+    for(const [i, w] of sites.entries()) {
+        if(i % 10 == 0 && i !== 0) {
+            tbody.appendChild(currentTr)
+            currentTr = document.createElement('tr')
+        }
+        const td = document.createElement('td')
+        const img = document.createElement('img')
+        img.src = "src/mirrors/icons/"+w.iconName
+        img.width = "16"
+        img.title = w.mirrorName
+        td.appendChild(img)
+        currentTr.appendChild(td)
+        if(i % 10 !== 0 && i+1 === sites.length) {
+            tbody.appendChild(currentTr)
+        } 
+    }
+    const table = document.createElement('table')
+    table.appendChild(tbody)
+    const sum = document.createElement('summary')
+    sum.appendChild(document.createTextNode('Click to unfold'))
+    const details = document.createElement('details')
+    details.appendChild(sum)
+    details.appendChild(table)
+    const pretty = readme.replace(/<details>(.|\n|\r\n)*?<\/details>/, beautify(details.outerHTML))
+    fs.writeFileSync(readmeDir, pretty)
+}
+
 (async () => {
     main()
 })().catch(e => {
