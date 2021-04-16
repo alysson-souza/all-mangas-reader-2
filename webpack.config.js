@@ -101,7 +101,7 @@ const config = {
         blocking: true
       },
       onBuildEnd: {
-        scripts: ['node scripts/remove-evals.js', 'node scripts/supportedWebsites.js']
+        scripts: ['node scripts/remove-evals.js']
       }
     }),
     new CircularDependencyPlugin({
