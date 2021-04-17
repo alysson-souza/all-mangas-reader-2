@@ -4,8 +4,8 @@ if (typeof registerMangaObject === 'function') {
         canListFullMangas: true,
         mirrorIcon: "readcomiconline.png",
         languages: "en",
-        domains: ["readcomiconline.to"],
-        home: "https://readcomiconline.to",
+        domains: ["readcomiconline.to", "readcomiconline.li"],
+        home: "https://readcomiconline.li",
         chapter_url: /Issue-.*id=/g,
 
         getMangaList: async function (search) {
@@ -24,8 +24,6 @@ if (typeof registerMangaObject === 'function') {
                     res.push([$(this).text().trim(), self.home + $(this).attr('href')])
                 }
             })
-            console.log('Search Results')
-            console.log(res)
             return res
         },
 
@@ -39,8 +37,6 @@ if (typeof registerMangaObject === 'function') {
                     res.push([$(this).text().replace(comicName, '').trim(), self.home + $(this).attr('href')])
                 }
             })
-            console.log('Chapter List')
-            console.log(res)
             return res
         },
 
