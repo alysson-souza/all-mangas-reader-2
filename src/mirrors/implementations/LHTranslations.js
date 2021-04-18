@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         languages : "en",
         domains: ["lhtranslation.net"],
         home: "https://lhtranslation.net",
-        chapter_url: /^\/read-.+$/g,
+        chapter_url: /\/read-.+$/g,
 
         getMangaList : async function (search) {
             // "manga-list.html?listType=pagination&page=2&artist=&author=&group=&m_status=&name=&genre=&ungenre=&sort=name&sort_type=ASC"

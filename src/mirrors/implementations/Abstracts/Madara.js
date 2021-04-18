@@ -7,6 +7,7 @@ window["Madara"] = function (options) {
         chapters_a_sel: "li.wp-manga-chapter > a",
         page_container_sel: "div.reading-content",
         img_sel: "div.reading-content img",
+        path_length: 2,
         search_json: true,
         chapter_list_ajax: false,
         img_src: "src",
@@ -96,7 +97,7 @@ window["Madara"] = function (options) {
         let url = new URL(curUrl);
         let path = url.pathname;
         let pathSplitted = path.split('/').filter(p => p != '');
-        let mangaPath = pathSplitted.slice(0, 2);
+        let mangaPath = pathSplitted.slice(0, this.options.path_length);
         let mangaurl = url.origin + '/' + mangaPath.join('/') + '/';
         let mgname;
         if ($(`a[href="${mangaurl}"]:not(:contains("Manga Info"))`, doc).length > 0) {
