@@ -7,7 +7,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ["mangahosted.com", "mangahost-br.cc", "mangahost1.com", "mangahost2.com"],
         home: "https://mangahost2.com/",
         chapter_url: /\/manga\/.*\/.+/g,
-
+        disabled: true,
         getMangaList: async function (search) {
             let doc = await amr.loadPage(this.home + "find/" + search, {
                 nocache: true,

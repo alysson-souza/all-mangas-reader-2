@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ["sorcererweekly.com"],
         home: "https://sorcererweekly.com/",
         chapter_url: /^\/read\/.+$/g,
-
+        disabled: true,
         abstract: "FoolSlide",
         abstract_options: {
             base_url: "https://sorcererweekly.com/reader",

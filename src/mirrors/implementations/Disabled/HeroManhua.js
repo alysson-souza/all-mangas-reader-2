@@ -9,6 +9,7 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         search_json: false,
         abstract: "Madara",
+        disabled:true,
         abstract_options: {
             search_url: "https://heromanhua.com/",
             img_src: "data-src",

@@ -173,7 +173,7 @@ function writeReadme() {
     let readme = fs.readFileSync(readmeDir).toString()
     const tbody = document.createElement('tbody')
     let currentTr = document.createElement('tr')
-    const sites = websites.filter(w=>typeof w.iconName !== 'undefined')
+    const sites = websites.filter(w=>typeof w.iconName !== 'undefined' && !w.disabled)
     for(const [i, w] of sites.entries()) {
         if(i % 10 == 0 && i !== 0) {
             tbody.appendChild(currentTr)
