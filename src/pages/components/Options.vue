@@ -685,7 +685,7 @@ export default {
   components: {Flag},
   computed: {
       supportedWebsites() {
-          return this.$store.state.mirrors.all
+          return this.$store.state.mirrors.all.filter(m => !m.disabled)
       },
       distinctLangs() {
           let dis = [];

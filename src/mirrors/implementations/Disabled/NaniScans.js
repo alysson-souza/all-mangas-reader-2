@@ -7,7 +7,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ["naniscans.xyz"],
         home: "https://naniscans.xyz",
         chapter_url: /^\/chapters\/\/read\/.+$/g,
-
+        disabled: true,
         getMangaList : async function (search) {
             let doc = await amr.loadPage(this.home + "/titles", { nocache: true, preventimages: true })
             let res = []
