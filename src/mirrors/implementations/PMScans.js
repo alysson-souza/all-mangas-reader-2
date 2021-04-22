@@ -3,12 +3,20 @@ if (typeof registerMangaObject === 'function') {
         mirrorName: "PM Scans",
         mirrorIcon: "pmscans.png",
         languages: "en",
-        domains: ["www.pmscans.com"],
-        home: "http://www.pmscans.com/",
-        chapter_url: /^\/manga\/.*\/.+$/g,
+        domains: ["reader.pmscans.com"],
+        home: "https://reader.pmscans.com/",
+        chapter_url: /^\/(.*?)chapter-(.*?)$/g,
 
-        options:  {
-            search_url: "http://www.pmscans.com/",
+        abstract: "MangastreamAbs",
+        abstract_options: {
+            search_json: false,
+            search_url: "https://reader.pmscans.com/",
+            chapters_a_sel: "div.bixbox.bxcl ul li div.eph-num a",
+            chapters_text_sel: "span.chapternum"
+        },
+
+        /*options:  {
+            search_url: "http://reader.pmscans.com/",
             search_a_sel: "div.post-title > h4 > a",
             chapters_a_sel: "li.wp-manga-chapter > a",
             page_container_sel: "div.reading-content",
@@ -157,6 +165,6 @@ if (typeof registerMangaObject === 'function') {
                 url = url.substring(0, url.length - 1);
             }
             return url
-        }
+        }*/
     })
 }
