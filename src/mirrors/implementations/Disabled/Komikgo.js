@@ -5,6 +5,7 @@ if (typeof registerMangaObject === 'function') {
         mirrorIcon: "komikgo.png",
         domains: ["komikgo.com"],
         home: "https://komikgo.com/",
+        disabled: true,
         chapter_url: /^\/manga\/.*\/.+$/g,
         languages: "id",
         abstract: "Madara",

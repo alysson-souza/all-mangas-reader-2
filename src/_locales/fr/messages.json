@@ -1919,5 +1919,12 @@
   "options_reader_smooth_navigation_info": {
     "message": "Ce paramètre ne doit être désactivé que si une autre extension suit votre progression (MAL-Sync par exemple).",
     "description": "Smooth Navigation option label"
+  },
+  "__V2_3_12": {
+    "message": "Just a filler to separate new labels from old ones"
+  },
+  "category_disabled_mirrors": {
+    "message": "Miroir désactivé",
+    "description": "Label of the native category for mangas which have disabled mirrors"
   }
 }

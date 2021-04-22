@@ -8,6 +8,7 @@ if (typeof registerMangaObject === 'function') {
         home: "https://www.mangadex.org/",
         chapter_url: /\/chapter\/.*/g,
         api: "https://api.mangadex.org/v2/",
+        disabled: true,
         // api: "https://mangadex.org/api/v2/",
 
         getMangaList: async function (search) {

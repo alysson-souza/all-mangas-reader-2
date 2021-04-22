@@ -1,3 +1,42 @@
+### V2.3.12
+  New Features:
+    * Added category for series with disabled mirrors
+
+  Changes:
+    * Scale up option is now saved (Credit: @EqualDepth)
+    * Mirror images optimized to reduce file size (Credit @EqualDepth)
+    * Disabled Mirrors are now hidden in Gitlab Readme and options page (Credit: @JiPai)
+  
+  Fixes:
+    * Fixed edge icon in readme (Credit: @JiPai)
+  
+  Disabled Mirrors:
+    * Mangadex (This will be enabled again once it is back up in a manner AMR can work with)
+    * Hero Manhua
+    * Komikgo
+    * Love Heaven
+    * Manga Host
+    * Mangaichi Scans
+    * Mangashiro
+    * Manga Turk
+    * Nani Scans
+    * OT Scans
+    * Phoenix Serenade
+    * Sorcerer Weekly
+
+  New Mirrors:
+    * Reset Scans (https://reset-scans.com/)
+    * White Cloud Pavilion (https://whitecloudpavilion.com/) (Credit: @EqualDepth)
+
+  Mirror Fixes:
+    * Cat Manga (https://catmanga.org/)
+    * Mangafox - Fix for martial scans (http://fanfox.net)
+    * Read Comic (https://readcomiconline.li)
+    * ReadM (https://readm.org/)
+    * leviatanscans (https://leviatanscans.com/)
+    * LHTranslations (https://lhtranslation.net)
+    * PM Scans (https://reader.pmscans.com/)
+
 ### V2.3.11
   New Features:
     * Option added to allow keyboard shortcuts / buttons to follow RTL reading mode (Credit: @EqualDepth)

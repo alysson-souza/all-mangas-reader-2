@@ -7,7 +7,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ["www.mangaoku.net"],
         home: "http://www.mangaoku.net/",
         /*no chapter_url, all urls are /any/ will be loaded everywhere... */
-        
+        disabled: true,
         getMangaList: async function (search) {
             let doc = await amr.loadPage("http://www.mangaoku.net/", { nocache: true, preventimages: true })
             let res = []

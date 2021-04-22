@@ -13,7 +13,7 @@ export function hasBeenRead(manga) {
         amrutils.chapPath(manga.lastChapterReadURL) === amrutils.chapPath(manga.listChaps[0][1]));
 }
 
-export function displayFilterCats(manga, categories) {
+export function displayFilterCats(manga, categories, mirror) {
     let include = false, exclude = false;
     let needInclude = false, needExclude = false;
     let incexc = (cat, include, exclude) => {
@@ -25,6 +25,7 @@ export function displayFilterCats(manga, categories) {
             if (cat.name === "category_read" && hasBeenRead(manga)) [include, exclude] = incexc(cat, include, exclude);
             if (cat.name === "category_unread" && !hasBeenRead(manga)) [include, exclude] = incexc(cat, include, exclude);
             if (cat.name === "category_oneshots" && manga.listChaps.length === 1) [include, exclude] = incexc(cat, include, exclude);
+            if (cat.name === "category_disabled_mirrors" && mirror.disabled) [include, exclude] = incexc(cat, include, exclude);
         }
         if (cat.type === 'language') {
             if (cat.name === amrutils.readLanguage(manga)) [include, exclude] = incexc(cat, include, exclude);

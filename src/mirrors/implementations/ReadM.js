@@ -6,6 +6,7 @@ if (typeof registerMangaObject === 'function') {
         languages: 'en',
         domains: ['readm.org'],
         home: 'https://readm.org/',
+        chapter_url: /^\/manga\/.*\/.*/g,
 
         getMangaList: async function(search) {
             let json = await amr.loadJson('https://readm.org/service/search', {

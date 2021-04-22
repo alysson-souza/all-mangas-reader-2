@@ -7,7 +7,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ["loveheaven.net"],
         home: "https://loveheaven.net/",
         chapter_url: /\/read-.*chapter-/g,
-        
+        disabled: true,
         getMangaList: async function (search) {
             let doc = await amr.loadPage(this.home + "manga-list.html?listType=allABC", { nocache: true, preventimages: true })
             let res = []

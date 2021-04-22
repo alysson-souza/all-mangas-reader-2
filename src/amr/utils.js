@@ -64,7 +64,8 @@ export function currentPageMatch(url) {
  */
 export function debug(message) {
     if (window['AMR_STORE'].state.options.debug === 1) {
-        console.log(message);
+        let t = new Date()
+        console.log(t.getHours() + ':' + t.getMinutes() + ':' + t.getSeconds() + ' ' + t.getMilliseconds() + ': ' + message);
     }
 }
 /**

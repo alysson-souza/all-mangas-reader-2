@@ -333,6 +333,10 @@ export default {
     categories: function() {
       return this.options.categoriesStates;
     },
+
+    mirrors: function() {
+      return this.$store.state.mirrors.all;
+    },
     /**
      * Return all visible mangas
      */
@@ -343,7 +347,7 @@ export default {
         )
       }
       return this.allMangas.filter(
-        mg => utils.displayFilterCats(mg, this.options.categoriesStates)
+        mg => utils.displayFilterCats(mg, this.options.categoriesStates, this.mirrors.find(mir => mir.mirrorName === mg.mirror))
       )
     },
     /**
