@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ["mangaichiscans.mokkori.fr"],
         home: "http://mangaichiscans.mokkori.fr/",
         chapter_url: /^\/fs\/read\/.+$/g,
-
+        disabled: true,
         abstract: "FoolSlide",
         abstract_options: {
             base_url: "http://mangaichiscans.mokkori.fr/fs",

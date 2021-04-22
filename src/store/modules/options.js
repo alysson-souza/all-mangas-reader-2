@@ -93,7 +93,8 @@ const default_options = {
         { name: "category_new", state: "include", type: "native" },
         { name: "category_read", state: "include", type: "native" },
         { name: "category_unread", state: "include", type: "native" },
-        { name: "category_oneshots", state: "include", type: "native" }
+        { name: "category_oneshots", state: "include", type: "native" },
+        { name: "category_disabled_mirrors", state: "include", type: "native" }
     ],
 
     /** Internal timestamps and state booleans */
@@ -219,6 +220,15 @@ const actions = {
         localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates);
     },
     /**
+     * Adds a native category in categories states and save
+     * @param {*} param0
+     * @param {*} name
+     */
+     addNativeCategory({ commit, dispatch, state }, name) {
+        commit('addNativeCategory', name);
+        localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates);
+    },
+    /**
      * Remove a language category from categories states and save
      * @param {*} param0
      * @param {*} name
@@ -319,6 +329,19 @@ const mutations = {
     removeCategory(state, name) {
         let index = state.categoriesStates.findIndex(cat => cat.type !== "native" && cat.type !== "language" && cat.name === name);
         if (index >= 0) state.categoriesStates.splice(index, 1);
+    },
+    /**
+     * Adds a native category in categories states
+     * @param {*} state
+     * @param {*} name
+     */
+     addNativeCategory(state, name) {
+        let toadd = {
+            name: name,
+            type: "native",
+            state: "include"
+        }
+        state.categoriesStates.push(toadd);
     },
     /**
      * Adds a language category in categories states

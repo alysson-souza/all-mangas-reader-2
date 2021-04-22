@@ -550,7 +550,7 @@
       book: true, /* Do we display side by side pages */
       resize: 'width', /* Mode of resize : width, height, container */
       fullchapter: true, /* Do we display whole chapter or just current page */
-      scaleUp: false, /* Does the image scale up larger than its native size */
+      scaleUp: options.scaleUp, /* Does the image scale up larger than its native size */
       webtoonMode: options.webtoonDefault === 1, /* Removes whitespace between images for webtoons */
 
       mangaExists: null, /* Does manga exists in reading list */
@@ -718,7 +718,8 @@
         let cbook = this.book ? 1 : 0,
             cdirection = this.direction === 'ltr' ? 0 : 1,
             cfullchapter = this.fullchapter ? 1 : 0,
-            cresize = resize_values.findIndex(r => r === this.resize)
+            cresize = resize_values.findIndex(r => r === this.resize),
+            cscaleup = this.scaleUp ? 1 : 0
 
         return 1000 * cbook + 100 * cdirection + 10 * cfullchapter + cresize
       },
@@ -738,6 +739,7 @@
         if (this.direction !== (this.options.readingDirection === 0 ? 'ltr' : 'rtl')) return true
         if (this.fullchapter !== (this.options.displayFullChapter === 1)) return true
         if (this.resize !== (resize_values[this.options.resizeMode])) return true
+        if (this.scaleUp !== (this.options.scaleUp === 1)) return true
         return false
       },
       /* Top telling if we already tried loading next chapter */
@@ -776,7 +778,7 @@
       /** Load current manga preferences (layout mode, read top, latest read chapter) */
       async loadMangaInformations() {
         //Get specific informations for currentManga (layout mode, reading mode, lastest read chapter)
-        let cbook = -1, cdirection = -1, cfullchapter = -1, cresize = -1
+        let cbook = -1, cdirection = -1, cfullchapter = -1, cresize = -1, cscaleup = -1
         let specific = await browser.runtime.sendMessage({
             action: "mangaInfos",
             url: this.pageData.currentMangaURL,
@@ -789,6 +791,8 @@
         // Compute current layout
         if (specific && specific.layout) { // check specific layout for the current manga
             let l = specific.layout;
+            cscaleup = Math.floor(l / 10000)
+            l -= 10000 * cscaleup
             cbook = Math.floor(l / 1000)
             l -= 1000 * cbook
             cdirection = Math.floor(l / 100)
@@ -798,11 +802,13 @@
             cresize = l
         }
         //If not use default options mode
+        if (cscaleup === -1) cscaleup = this.options.scaleUp
         if (cbook === -1) cbook = this.options.displayBook
         if (cdirection === -1) cdirection = this.options.readingDirection
         if (cfullchapter === -1) cfullchapter = this.options.displayFullChapter
         if (cresize === -1) cresize = this.options.resizeMode
         // Set current layout
+        this.scaleUp = cscaleup === 1
         this.book = cbook === 1
         this.direction = cdirection === 0 ? 'ltr': 'rtl'
         this.fullchapter = cfullchapter === 1
@@ -1211,10 +1217,12 @@
         this.options.readingDirection = this.direction === "ltr" ? 0 : 1
         this.options.displayFullChapter = this.fullchapter ? 1 : 0
         this.options.resizeMode = resize_values.findIndex(val => val === this.resize)
+        this.options.scaleUp = this.scaleUp ? 1 : 0;
         util.saveOption("displayBook", this.options.displayBook)
         util.saveOption("readingDirection", this.options.readingDirection)
         util.saveOption("displayFullChapter", this.options.displayFullChapter)
         util.saveOption("resizeMode", this.options.resizeMode)
+        util.saveOption("scaleUp", this.options.scaleUp)
         if (!force) this.$refs.wizdialog.temporary(this.i18n("action_done"))
       },
       /** Reset current layout options to the default ones */
@@ -1223,6 +1231,7 @@
         this.direction = this.options.readingDirection === 0 ? 'ltr' : 'rtl'
         this.fullchapter = this.options.displayFullChapter === 1
         this.resize = resize_values[this.options.resizeMode]
+        this.scaleUp = this.options.scaleUp === 1
         this.$refs.wizdialog.temporary(this.i18n("action_done"))
       },
       offsetBook() {

@@ -169,7 +169,8 @@ export default {
         mgs = mgs.filter(mg =>
           mgutils.displayFilterCats(
             mg,
-            self.$store.state.options.categoriesStates
+            self.$store.state.options.categoriesStates,
+            self.$store.state.mirrors.all.find(mir => mir.mirrorName === mg.name)
           )
         );
       }
@@ -214,7 +215,8 @@ export default {
               if (mgbm !== undefined) {
                 return mgutils.displayFilterCats( // check if manga is viewable
                   mgbm,
-                  self.$store.state.options.categoriesStates
+                  self.$store.state.options.categoriesStates,
+                  self.$store.state.mirrors.all.find(mir => mir.mirrorName === mgbm.name)
                 )
               } else { // do not export bookmarks from deleted mangas in viewable mode
                 return false;

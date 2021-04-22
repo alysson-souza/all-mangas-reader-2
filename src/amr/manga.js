@@ -55,6 +55,9 @@ export default class {
         // Webtoon mode (no whitespace between images)
         this.webtoon = obj.webtoon || false;
 
+        // Scale Up images
+        this.scaleUp = obj.scaleUp || 0;
+
         // Display name (so mangas can be renamed)
         this.displayName = obj.displayName || ''
 

@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ["reader.otscans.com"],
         home: "https://otscans.com/",
         chapter_url: /^\/read\/.+$/g,
-
+        disabled: true,
         abstract: "FoolSlide",
         abstract_options: {
             base_url: "https://reader.otscans.com",
