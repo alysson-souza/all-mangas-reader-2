@@ -23,7 +23,7 @@ if (typeof registerMangaObject === "function") {
             getChapterList: (json, mangaUrl) => {
                 const res = [];
                 json.props['pageProps']['series']['chapters'].forEach(chapter => {
-                    res.push([`${chapter.number} - ${chapter.title ?? 'N/A'}`, `${mangaUrl}/${chapter.number}`]);
+                    res.push([`${chapter.number} - ${chapter.title ? chapter.title : 'N/A'}`, `${mangaUrl}/${chapter.number}`]);
                 });
                 return res.reverse();
             },
