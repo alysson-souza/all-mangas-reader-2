@@ -33,7 +33,12 @@
        />
 			<v-tooltip top v-if="alertmessage !== ''">
 				<template v-slot:activator="{ on }">
-					<v-alert class="mb-0" type="warning" v-on="on" :value="true" icon="mdi-alert-decagram" slot="activator">{{alertmessage}}</v-alert>
+					<v-alert class="mb-0" type="warning" v-on="on" :value="true" icon="mdi-alert-decagram" slot="activator">
+						{{alertmessage}}
+						<v-btn light class="ml-2" x-small @v-if="!utils.isFirefox()" @click="DownloadAMR()">
+							<v-icon>mdi-cloud-download</v-icon>
+						</v-btn>
+						</v-alert>
 				</template>
 				<span>{{tooltipalert}}</span>
 			</v-tooltip>
@@ -252,6 +257,13 @@ export default {
 				window.close();
 			}
 		},
+		DownloadAMR() {
+			if(!utils.isFirefox()) {
+				browser.runtime.sendMessage({
+					action: "DownloadAMR",
+				})
+			}
+		},
 		async saveAllowTracking(doAllow) {
 			await this.$store.dispatch("setOption", { key: "allowtrackingdone", value: 1});
 			this.trackingDone = true
@@ -267,7 +279,8 @@ export default {
   	this.$nextTick(function () {
     	PopupResizer.checkHeight();
 		})
-	}
+	},
+
 };
 </script>
 <style>
