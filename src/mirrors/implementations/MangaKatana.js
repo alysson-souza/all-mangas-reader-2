@@ -41,7 +41,7 @@ if (typeof registerMangaObject === 'function') {
             })
             let res = []
 
-            $('.chapter a', doc).each(function (index) {
+            $('td .chapter a', doc).each(function (index) {
                 res.push([
                     $(this).text().trim(), 
                     $(this).attr("href")]);
