@@ -26,7 +26,7 @@ class HandleMisc {
             case "reloadStats":
                 return Promise.resolve(statsEvents.reloadStats())
             case "DownloadAMR":
-                return this.DownloadAMR()
+                return this.DownloadAMR(message)
             case "DownloadChapter":
                 return this.DownloadChapter(message)
         }
@@ -46,10 +46,14 @@ class HandleMisc {
         saveAs(content, name);
         return Promise.resolve()
     }
-    async DownloadAMR() {
-        const data = await fetch('https://release.allmangasreader.com/all-mangas-reader-latest.crx').then(data => data.blob())
-        saveAs(data, 'all-mangas-reader-latest.zip');
-        return Promise.resolve()
+    async DownloadAMR(message) {
+        let url = 'https://release.allmangasreader.com/all-mangas-reader-latest.crx';
+        let filename = 'all-mangas-reader-latest.zip'
+        if(message.beta) {
+            url = 'https://release.allmangasreader.com/all-mangas-reader-beta-latest.crx';
+            filename = 'all-mangas-reader-beta-latest.zip'
+        }
+        return fetch(url).then(data => saveAs(data.blob(), filename))
     }
 }
 export default (new HandleMisc)

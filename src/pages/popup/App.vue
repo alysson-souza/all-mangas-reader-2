@@ -258,9 +258,10 @@ export default {
 			}
 		},
 		DownloadAMR() {
-			if(!utils.isFirefox()) {
+			if(!utils.isFirefox() || (utils.isFirefox() && localStorage.beta === 1)) {
 				browser.runtime.sendMessage({
 					action: "DownloadAMR",
+					beta: localStorage.beta
 				})
 			}
 		},
