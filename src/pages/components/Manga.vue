@@ -232,6 +232,7 @@ export default {
       curBm: null,
       selectable: false, // Should we show the multi select checkbox
       selected: false,
+      canOpenTab: true // This is used for a timer to hopefully eliminate weird duping issue
     };
   },
   // property to load the component with --> the manga it represents
@@ -488,6 +489,9 @@ export default {
         key: this.manga.key,
         displayName: ''
       })
+    },
+    setOpenTrue() {
+      this.canOpenTab = true
     }
   },
   watch: {
@@ -505,14 +509,20 @@ export default {
   },
   created() {
     this.$eventBus.$on('multi-manga:open-latest:' + this.manga.key, () => {
+      if (!this.canOpenTab) return
       if (this.isMirrorEnabled) {
         this.play(0)
       }
+      this.canOpenTab = false
+      setTimeout(this.setOpenTrue, 500) 
     })
     this.$eventBus.$on('multi-manga:open-first-new:' + this.manga.key, () => {
+      if (!this.canOpenTab) return
       if (this.isMirrorEnabled && this.posInChapList > 0) {
         this.play(1)
       }
+      this.canOpenTab = false
+      setTimeout(this.setOpenTrue, 500)
     })
     this.$eventBus.$on('multi-manga:show-multiselect', () => {
       this.selectable = true

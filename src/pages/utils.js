@@ -25,7 +25,7 @@ export function displayFilterCats(manga, categories, mirror) {
             if (cat.name === "category_read" && hasBeenRead(manga)) [include, exclude] = incexc(cat, include, exclude);
             if (cat.name === "category_unread" && !hasBeenRead(manga)) [include, exclude] = incexc(cat, include, exclude);
             if (cat.name === "category_oneshots" && manga.listChaps.length === 1) [include, exclude] = incexc(cat, include, exclude);
-            if (cat.name === "category_disabled_mirrors" && mirror.disabled) [include, exclude] = incexc(cat, include, exclude);
+            if (cat.name === "category_disabled_mirrors" && (mirror && mirror.disabled)) [include, exclude] = incexc(cat, include, exclude);
         }
         if (cat.type === 'language') {
             if (cat.name === amrutils.readLanguage(manga)) [include, exclude] = incexc(cat, include, exclude);

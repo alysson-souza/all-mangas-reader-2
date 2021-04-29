@@ -546,7 +546,8 @@ export default {
     setTimeout(() => this.$emit("manga-loaded"), 1000)
 
     this.$eventBus.$on('multi-manga:select-manga', key => {
-      this.selectedManga.push(key)
+      if (!this.selectedManga.includes(key))
+        this.selectedManga.push(key)
     })
 
     this.$eventBus.$on('multi-manga:deselect-manga', key => {

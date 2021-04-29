@@ -10,7 +10,7 @@ All Mangas Reader is a browser extension which is designed to help you read and 
 * A lot of supported websites
 * Synchronization across multiple devices
 
-### Browser compatibilty
+### Browser compatibility
 <table>
     <thead>
         <tr align="center">
@@ -236,20 +236,17 @@ All Mangas Reader do not comply with Google Chrome Extensions terms of services,
 ### Chromium installation
 
 1. Navigate to **[All Mangas Reader's main website](https://v2.allmangasreader.com)** and click the download link for Opera and Chrome.
-2. In the popup window right click the download button and click Save link as (in chrome) or Saved linked content as (Opera) and download the .crx file to somewhere on your computer.
-3. Change the extension of the file from .crx to .zip (Optional for windows if you do not have winrar or 7zip installed which will unpack the file with a crx extension)
-4. Extract the file using either the native archive program on your os or winrar/7zip.
-5. Move this extracted folder to a location you wish to use for this extension, you will need to remember where this folder is in order to update the extension.
-6. Open the extensions page in your browser, enable developer mode, and click load unpacked extension.
-7. Select the folder you unpacked and you will have AMR installed.
+2. In the popup window right click the download button and click Save link as (in chrome) or Save link content as (Opera) and download the .crx file to somewhere on your computer.
+3. Change the extension of the file from .crx to .zip
+4. Open the extensions page in your browser, enable developer mode.
+5. Drag-and-drop the extension file into the extensions page.
+
 
 ### Chromium updates
-1. Follow the steps in the [installation directions](#chromium-installation) to download and unpack the file (step 4).
-2. Locate the folder you selected when you installed the extension.
-3. Copy the contents from the updated folder into the folder you have located, Select to override the files if you get a prompt.
-4. Open the extensions page on your browser and click the circle icon with an arrow in it to reload the extension with the latest updates.
-
-
+1. Download the lasted version of All Mangas Reader directly from within the extension when prompted  
+![](/images/new_version.PNG)
+2. Open the extensions page in your browser.
+3. Drag-and-drop the extension file your just downloaded into the extensions page.
 
 ### Synchronization
 

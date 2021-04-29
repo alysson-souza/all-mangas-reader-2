@@ -902,8 +902,8 @@ const mutations = {
         for (let sim of smgs) {
             mg.cats.push(...sim.cats)
             mg.layout = sim.layout
-            if (sim.read === 1) mg.read = 1
-            if (sim.update === 0) mg.update = 0
+            // if (sim.read === 1) mg.read = 1
+            // if (sim.update === 0) mg.update = 0
         }
         mg.cats = [...(new Set(mg.cats))]
         state.all.push(mg);
