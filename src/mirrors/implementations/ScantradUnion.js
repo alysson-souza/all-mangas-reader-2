@@ -1,15 +1,14 @@
 if (typeof registerMangaObject === 'function') {
-	registerMangaObject({
-        mirrorName : "Scantrad Union",
-        canListFullMangas : true,
-        mirrorIcon : "scantradunion.png",
-        languages : "fr",
+    registerMangaObject({
+        mirrorName: "Scantrad Union",
+        mirrorIcon: "scantradunion.png",
+        languages: "fr",
         domains: ["scantrad-union.com"],
         home: "https://scantrad-union.com/",
         chapter_url: /^\/read\/.+\/chapter-.+/g,
 
-        getMangaList : async function (search) {
-            let doc = await amr.loadPage(this.home + "wp-admin/admin-ajax.php",{
+        getMangaList: async function(search) {
+            let doc = await amr.loadPage(this.home + "wp-admin/admin-ajax.php", {
                 nocache: true,
                 preventimages: true,
                 post: true,
@@ -20,50 +19,54 @@ if (typeof registerMangaObject === 'function') {
                     asp_inst_id: "1_1",
                     options: "current_page_id=7944&qtranslate_lang=0&asp_gen%5B%5D=title&customset%5B%5D=manga"
                 }
-            })
-            let res = []
-            $("a.asp_res_url", doc).each(function () {
+            });
+            let res = [];
+            $("a.asp_res_url", doc).each(function() {
                 res.push([
                     $(this).text().trim(),
                     $(this).attr('href')
-                ])
-            })
-            return res
+                ]);
+            });
+            return res;
         },
-    
-        getListChaps : async function (urlManga) {
-            let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
-            let res = []
-            $(".accordionItemContent li", doc).each(function (index) {
+
+        getListChaps: async function(urlManga) {
+            let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true });
+            let res = [];
+            $(".accordionItemContent li, .accordionItem li", doc).each(function(index) {
                 res.push([
                     $('.chapter-number', this).text().replace('#', '').trim(),
                     $('a:contains("Lire")', this).attr('href')
-                ])
-            })
-            return res
+                ]);
+            });
+            return res;
         },
-    
-        getInformationsFromCurrentPage : async function (doc, curUrl) {
+
+        getInformationsFromCurrentPage: async function(doc, curUrl) {
             return {
-                "name" : $('#manga-title', doc).text().trim(),
-                "currentMangaURL" : this.home + 'manga/' + curUrl.split('/')[4] + '/',
-                "currentChapterURL" : curUrl.split("/").slice(0, 8).join("/")
+                "name": $('#manga-title', doc).text().trim(),
+                "currentMangaURL": this.home + 'manga/' + curUrl.split('/')[4] + '/',
+                "currentChapterURL": curUrl.split("/").slice(0, 8).join("/")
             };
         },
-    
-        getListImages : async function (doc, curUrl) {
+
+        getListImages: async function(doc, curUrl) {
             let res = []
-            $("#webtoon img", doc).each(function (index) {
-                res.push($(this).attr('data-src'))
-            })
-            return res
+            $("#webtoon img", doc).each(function(index) {
+                let imageURL = $(this).attr('data-src');
+                if (typeof imageURL === 'undefined') { //some pages don't use the data-src atttribute for url image
+                    imageURL = $(this).attr("src");
+                }
+                res.push(imageURL);
+            });
+            return res;
         },
-    
-        getImageFromPageAndWrite : async function (urlImg, image) {
+
+        getImageFromPageAndWrite: async function(urlImg, image) {
             $(image).attr("src", urlImg);
         },
-        
-        isCurrentPageAChapterPage : function (doc, curUrl) {
+
+        isCurrentPageAChapterPage: function(doc, curUrl) {
             return $("#webtoon img", doc).length > 0;
         }
     })
