@@ -1,3 +1,19 @@
+### V2.3.14
+  New Features:
+    * Added download button for new updates for chrome users, this will download a .zip file for easier install (Credit: @JiPai)
+
+  Changes:
+    * New series that are added will no longer default to "Stop Updating" and "Dont follow updates" when those series exist already in those states
+
+  Fixes:
+    * Fixed an issue with multi-select opening duplicate tabs under certain circumstances
+    * Possibly fixed an issue that caused manga list not to load when you have invalid manga series entries
+
+  Mirror Fixes:
+    * MangaKatana (https://mangakatana.com) (Credit: @Robo)
+    * Scan Trad (https://scantrad.net/) (Credit: @tarul)
+    * Scan Trad Union (https://scantrad-union.com/) (Credit: @tarul)
+
 ### V2.3.13
   This is a hotfix release to solve an issue with Waterfox Classic. No functionality has changed    
 
