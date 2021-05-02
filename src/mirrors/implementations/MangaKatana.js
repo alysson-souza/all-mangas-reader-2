@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["mangakatana.com"],
         home: "https://mangakatana.com",
-        chapter_url: /\/manga\/.*\/c/g,
+        chapter_url: /\/manga\/.*\/(c|v)/g,
 
         getMangaList : async function (search) {
             let url = this.home + "/?search=" + search
