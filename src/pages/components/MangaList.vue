@@ -320,8 +320,8 @@ export default {
       else
         this.$eventBus.$emit('multi-manga:hide-multiselect')
     },
-    asc_desc: function(newValue) {
-      this.$store.dispatch("setOption", { key: 'asc_desc', value: newValue })
+    alpha_asc_desc: function(newValue) {
+      this.$store.dispatch("setOption", { key: 'alpha_asc_desc', value: newValue })
     }
   },
   computed: {
