@@ -127,6 +127,7 @@ async function main() {
     files.sort((a, b) => path.basename(a.toLowerCase()).localeCompare(path.basename(b.toLowerCase())))
 
     await files.forEach(async file => {
+        if (!file.endsWith('.js')) return
         require(file)
         index++
         await new Promise((resolve, reject) => {

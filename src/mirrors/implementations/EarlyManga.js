@@ -29,9 +29,6 @@ if (typeof registerMangaObject === 'function') {
             let res = []
             let self = this
 
-            console.log(doc)
-            console.log($("#chapters .col-lg-5 a[style!='display:none']:contains('Chapter')", doc))
-
             $("#chapters .col-lg-5 a[style!='display:none']:contains('Chapter')", doc).each(function (index) {
                 res.push([
                     $("div[style!='display:none']",this).text().trim(), 
