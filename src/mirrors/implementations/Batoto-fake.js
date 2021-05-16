@@ -59,7 +59,7 @@ if (typeof registerMangaObject === 'function') {
             matches = regex.exec(doc.innerText)
             let key = eval(matches[1])
 
-            let cdnPath =  amr.crypto.AES.decrypt(server, key).toString(amr.crypto.enc.Utf8).replace("\"", "").trim()
+            let cdnPath =  JSON.parse(amr.crypto.AES.decrypt(server, key).toString(amr.crypto.enc.Utf8))
             return images.map(image => cdnPath + image)
         },
     
