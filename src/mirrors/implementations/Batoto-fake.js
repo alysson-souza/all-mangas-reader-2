@@ -60,7 +60,7 @@ if (typeof registerMangaObject === 'function') {
             let key = matches[1]
             console.log('Key: ' + key)
 
-            let cdnPath = CryptoJS.AES.decrypt(server, key).toString(CryptoJS.enc.Utf8).replace("\"", "")
+            let cdnPath =  amr.crypto.AES.decrypt(server, key).toString( amr.crypto.enc.Utf8).replace("\"", "")
             return pages.map(page => cdnPath + page)
         },
     
