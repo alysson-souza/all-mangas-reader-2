@@ -728,7 +728,10 @@ const mutations = {
     setMangaDisplayMode(state, { url, mirror, language, display }) {
         let key = utils.mangaKey(url, mirror, language);
         let mg = state.all.find(manga => manga.key === key)
-        if (mg !== undefined) mg.display = display;
+        if (mg !== undefined) {
+            mg.display = display;
+            mg.ts = Math.round(Date.now() / 1000)
+        }
     },
     /**
      * Change manga reader layout mode
@@ -738,7 +741,10 @@ const mutations = {
     setMangaLayoutMode(state, { url, mirror, language, layout }) {
         let key = utils.mangaKey(url, mirror, language);
         let mg = state.all.find(manga => manga.key === key)
-        if (mg !== undefined) mg.layout = layout;
+        if (mg !== undefined) {
+            mg.layout = layout;
+            mg.ts = Math.round(Date.now() / 1000)
+        }
     },
     /**
      * Change manga reader webtoon mode
@@ -748,7 +754,10 @@ const mutations = {
     setMangaWebtoonMode(state, { url, mirror, language, webtoon }) {
         let key = utils.mangaKey(url, mirror, language);
         let mg = state.all.find(manga => manga.key === key)
-        if (mg !== undefined) mg.webtoon = webtoon;
+        if (mg !== undefined) {
+            mg.webtoon = webtoon;
+            mg.ts = Math.round(Date.now() / 1000)
+        }
     },
     /**
      * Change manga display name
@@ -757,7 +766,10 @@ const mutations = {
      */
     setMangaDisplayName(state, { key, displayName }) {
         let mg = state.all.find(manga => manga.key === key)
-        if (mg !== undefined) mg.displayName = displayName;
+        if (mg !== undefined) {
+            mg.displayName = displayName;
+            mg.ts = Math.round(Date.now() / 1000)
+        }
     },
     /**
      * Change manga read top
@@ -767,7 +779,10 @@ const mutations = {
     setMangaReadTop(state, { url, read, mirror, language }) {
         let key = utils.mangaKey(url, mirror, language),
             mg = state.all.find(manga => manga.key === key)
-        if (mg !== undefined) mg.read = read;
+        if (mg !== undefined) {
+            mg.read = read;
+            mg.ts = Math.round(Date.now() / 1000)
+        }
     },
     /**
      * Change manga update top
@@ -795,7 +810,10 @@ const mutations = {
      */
     updateMangaListChaps(state, { key, listChaps }) {
         let mg = state.all.find(manga => manga.key === key)
-        if (mg !== undefined) mg.listChaps = listChaps;
+        if (mg !== undefined) {
+            mg.listChaps = listChaps;
+            mg.ts = Math.round(Date.now() / 1000)
+        }
     },
     /**
      * Update the list of languages supported of a manga
@@ -804,7 +822,10 @@ const mutations = {
      */
     updateMangaListLangs(state, { key, langs }) {
         let mg = state.all.find(manga => manga.key === key)
-        if (mg !== undefined) mg.languages = langs;
+        if (mg !== undefined) {
+            mg.languages = langs;
+            mg.ts = Math.round(Date.now() / 1000)
+        }
     },
     /**
      * Update the last read chapter of a manga

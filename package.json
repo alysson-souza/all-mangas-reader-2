@@ -1,6 +1,6 @@
 {
   "name": "all-mangas-reader",
-  "version": "2.3.14",
+  "version": "2.3.15",
   "description": "All Mangas Reader",
   "author": "Pierre-Louis Duhoux <pl.duhoux@gmail.com>",
   "scripts": {
@@ -20,11 +20,11 @@
     "axios": "^0.21.0",
     "dompurify": "^2.2.6",
     "ejs": "^3.1.5",
-    "file-saver": "^2.0.5",
     "jquery": "^3.5.1",
     "jsdom": "^16.5.2",
-    "jszip": "^3.6.0",
     "mime-db": "^1.46.0",
+    "stream-zip": "^1.0.6",
+    "streamsaver": "^2.0.5",
     "v-clipboard": "^2.2.3",
     "vue": "^2.6.4",
     "vue-gallery": "^2.0.1",

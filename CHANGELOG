@@ -1,4 +1,23 @@
 ### V2.3.14
+  Changes:
+    * Small update to help out the sync system
+    * Optimized chapter download for memory usage (Credit: @JiPai)
+
+  Fixes:
+    * Alpha Sort fixed (Credit: @Robo)
+
+  New Mirrors:
+    * Manga Kawaii (www.mangakawaii.com) (Credit @tarul)
+    * Lignica Scans (https://lugnica-scans.com/) (Credit @tarul)
+    * Le Cercle du Scan (https://lel.lecercleduscan.com) (Credit @tarul)
+    * Manhua Fast (https://manhuafast.com/) (Credit: @EqualDepth)
+    * Webtoon.xyz (https://www.webtoon.xyz/)
+
+  Mirror Fixes:
+    * Manga Katana (https://mangakatana.com)
+    * Scan FR (https://www.scan-fr.cc) (Credit @tarul)
+
+### V2.3.14
   New Features:
     * Added download button for new updates for chrome users, this will download a .zip file for easier install (Credit: @JiPai)
 

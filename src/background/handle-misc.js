@@ -1,8 +1,8 @@
 import browser from "webextension-polyfill";
 import statsEvents from '../amr/stats-events';
-import saveAs from 'file-saver';
-import JSZip from 'jszip';
-import mime from 'mime-db';
+import mimedb from 'mime-db';
+import streamSaver from 'streamsaver'
+import 'streamsaver/examples/zip-stream'
 
 class HandleMisc {
     handle(message, sender) {
@@ -31,20 +31,38 @@ class HandleMisc {
                 return this.DownloadChapter(message)
         }
     }
-
     async DownloadChapter(message) {
         let urls = message.urls
-        let zip = new JSZip();
         let name = message.seriesName + ' - ' + message.chapterName
-        await Promise.all(urls.map(async (url,int) =>{
-            let data = await fetch(url,message.requestOptions).then(data => data.blob())
-            console.log('hi')
-            let imgData = new File([data], 'filename.jpg');
-            return zip.file(int+'.'+mime[data.type].extensions[0], imgData,  {binary:true});
-        }));
-        let content = await zip.generateAsync({type:'blob'})
-        saveAs(content, name);
-        return Promise.resolve()
+        const fileStream = streamSaver.createWriteStream(name)
+        const readableZipStream = new ZIP({
+            start(ctrl) {},
+            async pull(ctrl) {
+                let url = urls.shift()
+                const res = await fetch(url)
+                const stream = () => res.body
+                let ext = 'jpg'
+                const mime = res.headers.get('content-type')
+                if(mime.indexOf('image') > -1) {
+                    if(mimedb[mime].extensions) {
+                        ext = mimedb[mime].extensions[0]
+                    }
+                } else {
+                    const match = url.match(/(\.\w{2,4})(?![^?])/)
+                    if(match) {
+                        ext = match[1].replace('.', '')
+                    }
+                }
+                const name = (urls.length+1)+'.'+ext
+                ctrl.enqueue({name, stream})
+                if(urls.length === 0) ctrl.close()
+            }
+        })
+
+        if(window.WritableStream && readableZipStream.pipeTo) {
+            return await readableZipStream.pipeTo(fileStream);
+        }
+        this.pump(fileStream.getWriter(), readableZipStream.getReader())
     }
     async DownloadAMR(message) {
         let url = 'https://release.allmangasreader.com/all-mangas-reader-latest.crx';
@@ -53,7 +71,21 @@ class HandleMisc {
             url = 'https://release.allmangasreader.com/all-mangas-reader-beta-latest.crx';
             filename = 'all-mangas-reader-beta-latest.zip'
         }
-        return fetch(url).then(data => saveAs(data.blob(), filename))
+        const res = await fetch(url)
+        const fileStream = streamSaver.createWriteStream(filename, {
+            size: res.headers.get('content-length')
+        })
+        const readableStream = res.body
+        if(window.WritableStream && readableStream.pipeTo) {
+            return await readableStream.pipeTo(fileStream);
+        }
+        return this.pump(fileStream.getWriter(), res.body.getReader())
+    }
+    async pump(writer, reader) {
+        const res = await reader.read()
+        if(res.done) return await writer.close()
+        await writer.write(res.value)
+        return this.pump(writer, reader)
     }
 }
 export default (new HandleMisc)
