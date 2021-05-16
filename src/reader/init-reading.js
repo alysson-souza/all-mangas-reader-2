@@ -20,7 +20,6 @@ import store from '../store'
 
 /** DO NOT REMOVE, not used here but define a global object used in loaded implementation */
 import mirrorHelper from '../amr/mirrors-helper';
-var CryptoJS = require("crypto-js")
 
 let ourCss = [
     'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700',
