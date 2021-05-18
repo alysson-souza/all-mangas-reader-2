@@ -53,15 +53,14 @@ if (typeof registerMangaObject === 'function') {
         },
     
         getListImages : async function (doc, curUrl) {
-            let pages = amr.getVariable("images", doc)
+            let images = amr.getVariable("images", doc)
             let server = amr.getVariable('server', doc)
-            regex = /const batojs =(.*?);/g
+            regex = /const batojs = (.*?);/g
             matches = regex.exec(doc.innerText)
-            let key = matches[1]
-            console.log('Key: ' + key)
+            let key = eval(matches[1])
 
-            let cdnPath = CryptoJS.AES.decrypt(server, key).toString(CryptoJS.enc.Utf8).replace("\"", "")
-            return pages.map(page => cdnPath + page)
+            let cdnPath =  JSON.parse(amr.crypto.AES.decrypt(server, key).toString(amr.crypto.enc.Utf8))
+            return images.map(image => cdnPath + image)
         },
     
         getImageFromPageAndWrite : async function (urlImg, image) {

@@ -7,7 +7,6 @@ import amrInit from '../amr/amr-init';
 import browser from "webextension-polyfill";
 import HandleManga from './handle-manga';
 import mirrorsHelper from '../amr/mirrors-helper';
-var CryptoJS = require("crypto-js")
 import { getSyncManager } from '../amr/sync/sync-manager'
 
 // Blue icon while loading

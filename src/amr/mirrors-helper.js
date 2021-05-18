@@ -1,5 +1,6 @@
 import browser from "webextension-polyfill";
 import * as domutils from '../amr/domutils';
+import CryptoJS from 'crypto-js'
 
 /**
  * Mirrors implementation helper
@@ -210,6 +211,8 @@ class MirrorsHelper {
             amr.getOption = function(option) {
                 return window['AMR_STORE'].state.options[option] || ''
             }
+
+            amr.crypto = CryptoJS
         })(this);
     }
 }
