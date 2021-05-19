@@ -4,8 +4,8 @@ if (typeof registerMangaObject === "function") {
 		canListFullMangas: false,
 		mirrorIcon: "readmanga.png",
 		languages: "ru",
-		domains: ["readmanga.me", "readmanga.live"],
-		home: "http://readmanga.live",
+		domains: ["readmanga.live"],
+		home: "https://readmanga.live",
 		chapter_url: /^\/.*\/vol.*\/[0-9]+.+$/g,
 
 		getMangaList: async function (search) {
@@ -48,7 +48,7 @@ if (typeof registerMangaObject === "function") {
 		},
 
 		passAdult: async function(doc, curUrl) {
-            if ($("a[href='?mtr=1']").length > 0) {
+			if ($("a[href$='?mtr=1']", doc).length > 0) {
 				doc = await amr.loadPage(curUrl + "?mtr=1")
 			}
 			return doc
@@ -75,7 +75,7 @@ if (typeof registerMangaObject === "function") {
 				matches = matches.split("'").join('"');
 				var b = JSON.parse(matches);
 				for (var i = 0; i < b.length; i++) {
-					res[i] = b[i][1] + b[i][0] + b[i][2];
+					res[i] = b[i][0] + b[i][2];
 				}
 			}
 			return res;

@@ -4,14 +4,13 @@ if (typeof registerMangaObject === "function") {
 		canListFullMangas: false,
 		mirrorIcon: "mintmanga.png",
 		languages: "ru",
-		domains: ["mintmanga.com"],
-		home: "http://mintmanga.com/",
+		domains: ["mintmanga.live"],
+		home: "https://mintmanga.live",
 		chapter_url: /^\/.*\/vol.*\/[0-9]+.+$/g,
-		disabled: true,
 
 		getMangaList: async function (search) {
 			let json = await amr.loadJson(
-				"http://mintmanga.com/search/suggestion", 
+				this.home + "/search/suggestion", 
 				{
 					nocache: true,
 					preventimages: true,
@@ -23,7 +22,7 @@ if (typeof registerMangaObject === "function") {
 			let res = [];
 			for (let sug of json.suggestions) {
 				if (!sug.link.includes("/", 1)) {
-					res[res.length] = [sug.value, "http://mintmanga.com" + sug.link]
+					res[res.length] = [sug.value, this.home + sug.link]
 				}
 			}
 			return res
@@ -33,13 +32,15 @@ if (typeof registerMangaObject === "function") {
 			let doc = await amr.loadPage(urlManga + "?mtr=1", { nocache: true, preventimages: true })
 			let res = []
 			var mng_nm = (urlManga.split("/")).pop();
+			let self = this
+
 			$("div.expandable td > a", doc).each(function (index) {
 				var str = $(this).attr("href");
 				str = str.split("/")[1];
 				if (str === mng_nm) {
 					res[res.length] = [
 						this.innerText.match(/\u000a\s+(.*)/g)[1].trim(),
-						"http://mintmanga.com" + $(this).attr("href")
+						self.home + $(this).attr("href")
 					];
 				}
 			})
@@ -47,14 +48,14 @@ if (typeof registerMangaObject === "function") {
 		},
 	
 		passAdult: async function(doc, curUrl) {
-            if ($("a[href='?mtr=1']").length > 0) {
+			if ($("a[href$='?mtr=1']", doc).length > 0) {
 				doc = await amr.loadPage(curUrl + "?mtr=1")
 			}
 			return doc
 		},
 		getInformationsFromCurrentPage: async function (doc, curUrl) {
 			var name = $($("#mangaBox h1 a:first-child", doc).contents()[0]).text();
-			var nameurl = "http://mintmanga.com" + $("#mangaBox h1 a:first-child", doc).attr("href");
+			var nameurl = this.home + $("#mangaBox h1 a:first-child", doc).attr("href");
 			var chapurl = curUrl.split("?")[0] + "?mtr=1";
 			return {
 				"name": name,
@@ -67,14 +68,14 @@ if (typeof registerMangaObject === "function") {
 			doc = await this.passAdult(doc, curUrl)
 
 			var res = [];
-			var matches = $.map($("script", doc), el => $(el).text()).join(";") //doc.documentElement.innerHTML; --> replace to work in JSDOM
+			var matches = $.map($("#__amr_text_dom__", doc), el => $(el).text()).join(";") //doc.documentElement.innerHTML; --> replace to work in JSDOM
 			matches = matches.match(/rm_h\.init\(.*?\]\]/);
 			if (matches) {
 				matches = matches[0].slice(10);
 				matches = matches.split("'").join('"');
 				var b = JSON.parse(matches);
 				for (var i = 0; i < b.length; i++) {
-					res[i] = b[i][1] + b[i][0] + b[i][2];
+					res[i] = b[i][0] + b[i][2];
 				}
 			}
 			return res;
