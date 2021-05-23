@@ -1363,7 +1363,7 @@
   }
 </script>
 
-<style>
+<style data-amr="true">
 #amrapp {
   width: 100%;
 }

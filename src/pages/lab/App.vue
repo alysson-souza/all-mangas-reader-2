@@ -444,7 +444,7 @@ export default {
   }
 };
 </script>
-<style>
+<style data-amr="true">
 .v-dialog .v-card__title,
 .v-dialog .v-card__text {
   padding: 4px 16px;

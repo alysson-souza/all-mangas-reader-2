@@ -1,4 +1,29 @@
-### V2.3.14
+### V2.3.16
+  Changes:
+    * Made import/export link not close current tab in Firefox
+
+  Fixes:
+    * Fixed style for import/export page
+    * Made some changes to how we remove styles, it should now get all of them (I hope)
+
+  New Mirrors:
+    * Batoto (https://bato.to) * See note
+    * Comic Kiba (https://comickiba.com/)
+    * Lily Manga (https://lilymanga.com/)
+
+  Mangafox/Fanfox Change:
+    Changed the chapter list sorting to actually read the chapter title to get a sort based on the chapter number that is in the name.
+    
+    This worked for martial peak previously due to chapters going into the volume section after breaking the 999 chapter limit on the normal list, this
+    was done now because there are several series that are being split into including volume number or not, this solves the ordering for those but may have
+    impacts on other series, this has run in beta for a week with no issues being reported so I am releasing this. Please report any issues
+
+  Note:
+    The mirror added as batoto has been labeled in AMR as "Batoto (fake)". This has been done because this is not the original site, the domain was
+    purchased and an aggregator site has been released under the name. This site appears just like any other aggregator so I have no issue adding it 
+    to AMR but I wanted to note that it is a different site before anyone blindly trusts it as the old batoto.
+
+### V2.3.15
   Changes:
     * Small update to help out the sync system
     * Optimized chapter download for memory usage (Credit: @JiPai)

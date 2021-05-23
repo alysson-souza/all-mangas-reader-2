@@ -203,7 +203,7 @@ export default {
     components: { SearchMirror, Flag }
 }
 </script>
-<style>
+<style data-amr="true">
 .searchpanel {
     overflow: auto;
 }

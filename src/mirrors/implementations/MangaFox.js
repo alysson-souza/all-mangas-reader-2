@@ -47,7 +47,7 @@ if (typeof registerMangaObject === 'function') {
                 res.push([title, url]);
             });
 
-            if (urlManga.includes('martial_peak')) { // Only doing this shit for this manga because they do something goofy
+            // if (urlManga.includes('martial_peak')) { // Only doing this shit for this manga because they do something goofy
                 res.sort((a, b) => {
                     let aM = a[0].match(/Ch\.([0-9]+\.?[0-9]+?)/)
                     let bM = b[0].match(/Ch\.([0-9]+\.?[0-9]+?)/)
@@ -56,7 +56,7 @@ if (typeof registerMangaObject === 'function') {
                     }
                     return 0
                 })
-            }
+            // }
             return res
         },
     

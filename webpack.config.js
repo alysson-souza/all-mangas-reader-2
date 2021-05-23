@@ -36,7 +36,11 @@ const config = {
     alias: {
       vue$: 'vue/dist/vue.runtime.esm.js',
     },
-    extensions: ['*', '.js', '.vue', '.json']
+    extensions: ['*', '.js', '.vue', '.json'],
+    fallback: {
+      "crypto": require.resolve("crypto-browserify"),
+      "stream": require.resolve("stream-browserify")
+    }
   },
   module: {
     rules: [

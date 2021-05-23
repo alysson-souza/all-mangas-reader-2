@@ -55,7 +55,7 @@ export default {
 }
 </script>
 
-<style>
+<style data-amr="true">
 .amr-scan {
     cursor: pointer;
 }

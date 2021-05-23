@@ -46,7 +46,7 @@ export default {
   components: { Options }
 };
 </script>
-<style>
+<style data-amr="true">
 .amr-loader {
   margin: 20px;
   text-align: center;

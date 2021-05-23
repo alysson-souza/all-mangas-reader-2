@@ -346,7 +346,7 @@ export default {
   }
 };
 </script>
-<style>
+<style data-amr="true">
 .import-text textarea {
   font-size: 0.85rem;
 }

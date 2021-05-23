@@ -80,7 +80,3 @@ Manga actions
  - play pause notifications for manga ^p
 */
 </script>
-
-<style>
-
-</style>
