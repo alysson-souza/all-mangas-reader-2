@@ -118,7 +118,7 @@ export default {
 }
 </script>
 
-<style>
+<style data-amr="true">
 .amr-scan-container td.amr-right-page {
     text-align: left;
     padding-left: 4px;

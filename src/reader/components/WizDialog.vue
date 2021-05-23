@@ -194,7 +194,7 @@
     }
   }
 </script>
-<style>
+<style data-amr="true">
 a, a:link, a:visited {
     color: #f44336;
 }

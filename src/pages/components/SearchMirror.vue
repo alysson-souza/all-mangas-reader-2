@@ -54,7 +54,7 @@ export default {
     name: "SearchMirror",
 }
 </script>
-<style>
+<style data-amr="true">
 .mirror-search {
     display : inline-block;
     margin: 5px;

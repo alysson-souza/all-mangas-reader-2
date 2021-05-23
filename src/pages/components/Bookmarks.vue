@@ -172,7 +172,7 @@ export default {
   }
 };
 </script>
-<style>
+<style data-amr="true">
 .subtitle {
   font-size: 1.3rem !important;
   line-height: 24px !important;

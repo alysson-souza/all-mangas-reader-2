@@ -99,26 +99,26 @@
 				<v-row >
 					<v-col cols="6">
 						<v-row >
-              <v-col cols="3">
-                <v-btn text icon color="red darken-2" @click="opentab('https://allmangasreader.com')">
-                  <img src="/icons/icon_32.png" width="24" alt="All Mangas Reader">
-                </v-btn>
-              </v-col>
-              <v-col cols="3">
-                <v-btn text icon color="yellow" @click="opentab('/pages/bookmarks/bookmarks.html')">
-                  <v-icon>mdi-star</v-icon>
-                </v-btn>
-              </v-col>
-              <v-col cols="3">
-                <v-btn text icon color="blue" @click="opentab('https://gitlab.com/all-mangas-reader/all-mangas-reader-2/wikis/home')">
-                  <v-icon>mdi-help</v-icon>
-                </v-btn>
-              </v-col>
-              <v-col cols="3">
-                <v-btn text icon color="blue lighten-2" @click="opentab('/pages/popup/popup.html?mode=tab')">
-                  <v-icon>mdi-open-in-new</v-icon>
-                </v-btn>
-              </v-col>
+							<v-col cols="3">
+							<v-btn text icon color="red darken-2" @click="opentab('https://allmangasreader.com')">
+								<img src="/icons/icon_32.png" width="24" alt="All Mangas Reader">
+							</v-btn>
+							</v-col>
+							<v-col cols="3">
+							<v-btn text icon color="yellow" @click="opentab('/pages/bookmarks/bookmarks.html')">
+								<v-icon>mdi-star</v-icon>
+							</v-btn>
+							</v-col>
+							<v-col cols="3">
+							<v-btn text icon color="blue" @click="opentab('https://gitlab.com/all-mangas-reader/all-mangas-reader-2/wikis/home')">
+								<v-icon>mdi-help</v-icon>
+							</v-btn>
+							</v-col>
+							<v-col cols="3">
+							<v-btn text icon color="blue lighten-2" @click="opentab('/pages/popup/popup.html?mode=tab')">
+								<v-icon>mdi-open-in-new</v-icon>
+							</v-btn>
+							</v-col>
 						</v-row>
 					</v-col>
 					<v-col cols="6">
@@ -126,14 +126,14 @@
 							v-model="tabs"
 							right
 					  >
-              <v-tabs-slider></v-tabs-slider>
-              <v-tab key="refresh">
-                <v-icon>mdi-refresh</v-icon>
-              </v-tab>
-              <v-tab @click="openImportExport()" key="importexport">
-                <v-icon>mdi-content-save</v-icon>
-              </v-tab>
-            </v-tabs>
+							<v-tabs-slider></v-tabs-slider>
+							<v-tab key="refresh">
+								<v-icon>mdi-refresh</v-icon>
+							</v-tab>
+							<v-tab @click="openImportExport()" key="importexport">
+								<v-icon>mdi-content-save</v-icon>
+							</v-tab>
+						</v-tabs>
 					</v-col>
 				</v-row>
 			</v-container>
@@ -242,19 +242,20 @@ export default {
 			PopupResizer.setHeightToCurrent();
 		},
 		/**
-     * Opens a url
-     */
-    opentab(url) {
-        browser.runtime.sendMessage({
-            action: "opentab",
-            url: url
-        });
+		 * Opens a url
+		 */
+		opentab(url) {
+			browser.runtime.sendMessage({
+				action: "opentab",
+				url: url
+			});
 		},
 		/** Opens import export tab. If Firefox, opens it in a new tab because file input closes the extension : https://bugzilla.mozilla.org/show_bug.cgi?id=1292701 */
 		openImportExport() {
 			if (utils.isFirefox()) {
+				setTimeout( () => this.tabs = 'refresh', 150)
 				this.opentab("/pages/importexport/importexport.html");
-				window.close();
+				// window.close();
 			}
 		},
 		DownloadAMR() {
@@ -284,7 +285,7 @@ export default {
 
 };
 </script>
-<style>
+<style data-amr="true">
 
 /* Disable Webkit */
 .hidescrollbar::-webkit-scrollbar {

@@ -51,7 +51,7 @@ export default {
   }
 }
 </script>
-<style>
+<style data-amr="true">
 /** Pages navigator */
 .amr-thumbs-scrollable { /* navigator container is horizontally scrollable for long chapters */
   overflow: hidden;

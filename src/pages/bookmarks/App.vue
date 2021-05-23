@@ -253,5 +253,3 @@ export default {
   components: { Bookmarks }
 };
 </script>
-<style>
-</style>
