@@ -1,6 +1,6 @@
 if (typeof registerMangaObject === 'function') {
 	registerMangaObject({
-        mirrorName: "Manganelo/manganato",
+        mirrorName: "Manganelo",
         mirrorIcon: "manganelo.png",
         languages: "en",
         domains: ["manganato.com", "chap.manganato.com", "m.manganato.com", "readmanganato.com"],
