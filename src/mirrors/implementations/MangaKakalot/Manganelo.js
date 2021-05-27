@@ -3,13 +3,13 @@ if (typeof registerMangaObject === 'function') {
         mirrorName: "Manganelo",
         mirrorIcon: "manganelo.png",
         languages: "en",
-        domains: ["manganelo.com", "chap.manganelo.com", "m.manganelo.com"],
-        home: "https://manganelo.com/",
-        chapter_url: /^\/chapter\/.*\/.+$/g,
+        domains: ["manganato.com", "chap.manganato.com", "m.manganato.com", "readmanganato.com"],
+        home: "https://manganato.com/",
+        chapter_url: /^\/manga-.*\/chapter-\d+.*$/g,
 
         abstract: "MangakakalotAbs",
         abstract_options: {
-            base_url: "https://manganelo.com/",
+            base_url: "https://manganato.com/",
             search_url: 'search/story/',
             series_list_selector: '.search-story-item a.item-title',
             chapter_list_selector: '.row-content-chapter a',
