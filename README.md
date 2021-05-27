@@ -147,7 +147,7 @@ All Mangas Reader is a browser extension which is designed to help you read and 
                 <td><img src="src/mirrors/icons/mangakatana.png" width="16" title="Manga Katana"></td>
                 <td><img src="src/mirrors/icons/mangakawaii.png" width="16" title="MangaKawaii"></td>
                 <td><img src="src/mirrors/icons/mangallama.png" width="16" title="Manga Llama"></td>
-                <td><img src="src/mirrors/icons/manganelo.png" width="16" title="Manganelo/manganato"></td>
+                <td><img src="src/mirrors/icons/manganelo.png" width="16" title="Manganelo"></td>
                 <td><img src="src/mirrors/icons/mangasee.png" width="16" title="MangaSee"></td>
                 <td><img src="src/mirrors/icons/mangastream.png" width="16" title="MangaStream"></td>
                 <td><img src="src/mirrors/icons/mangasushi.png" width="16" title="Manga Sushi"></td>
