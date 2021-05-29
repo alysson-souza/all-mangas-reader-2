@@ -53,7 +53,7 @@ export default {
   }
 }
 </script>
-<style>
+<style data-amr="true">
 /** Pages navigator */
 .amr-page-next-prev {
   max-width: 400px;

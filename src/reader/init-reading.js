@@ -165,7 +165,7 @@ function removeStyles(withInline = false, times = 10) {
         for(i in inline) {
             if (inline.hasOwnProperty(i)) {
                 sheet = inline[i];
-                if((sheet.getAttribute('type') && sheet.getAttribute('type').toLowerCase() == 'text/css')) {
+                if(!sheet.getAttribute('data-amr') && (sheet.getAttribute('type') && sheet.getAttribute('type').toLowerCase() == 'text/css')) {
                     sheet.parentNode.removeChild(sheet);
                 }
             }
@@ -173,7 +173,7 @@ function removeStyles(withInline = false, times = 10) {
     }
 
     if (times > 0) {
-        setTimeout(() => removeStyles(false, times - 1), 1500)
+        setTimeout(() => removeStyles(true, times - 1), 1500)
     }
 }
 /** Load css in the page for AMR reader needs */

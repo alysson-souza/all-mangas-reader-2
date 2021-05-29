@@ -202,7 +202,7 @@ export default {
 };
 </script>
 
-<style>
+<style data-amr="true">
 td.scanContainer.xs6 {
   width: 50%;
 }

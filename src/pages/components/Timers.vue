@@ -101,7 +101,7 @@ export default {
   name: "Timers"
 };
 </script>
-<style>
+<style data-amr="true">
 .refresh-button {
   margin: 6px;
 }

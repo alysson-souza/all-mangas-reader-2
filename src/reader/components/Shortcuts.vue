@@ -27,7 +27,7 @@ export default {
 }
 </script>
 
-<style>
+<style data-amr="true">
     .amr-shortcut-line {
         align-items: center;
         justify-content: center;

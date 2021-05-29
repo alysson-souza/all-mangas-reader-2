@@ -666,7 +666,7 @@ export default {
 }
 </script>
 
-<style>
+<style data-amr="true">
 /** Scans container table */
 .amr-scan-container {
   margin-left: auto;

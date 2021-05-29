@@ -215,7 +215,7 @@ export default {
   components: {Flag}
 };
 </script>
-<style>
+<style data-amr="true">
 /** Categories */
 .cat-cont {
   padding: 5px 10px;

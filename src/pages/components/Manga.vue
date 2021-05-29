@@ -551,7 +551,7 @@ export default {
 };
 </script>
 
-<style lang="css" scoped>
+<style lang="css" scoped data-amr="true">
 .dark-text * {
   color: #424242 !important;
 }

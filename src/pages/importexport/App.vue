@@ -12,6 +12,7 @@
       dark
       app
       fixed
+      max-height="64"
     >
       <v-toolbar-title style="width: 300px" class="ml-0 pl-3">
         <v-btn icon large color="white" class="hidden-sm-and-down">
@@ -69,7 +70,7 @@ export default {
   components: { ImportExport }
 };
 </script>
-<style>
+<style data-amr="true">
 .amr-loader {
   margin: 20px;
   text-align: center;

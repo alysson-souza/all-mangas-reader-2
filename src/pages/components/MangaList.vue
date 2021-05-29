@@ -557,7 +557,7 @@ export default {
   }
 }
 </script>
-<style>
+<style data-amr="true">
 
 .amr-filter {
     color:grey;
