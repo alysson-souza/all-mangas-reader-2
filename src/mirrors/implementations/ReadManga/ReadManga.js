@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ['readmanga.live'],
         home: 'https://readmanga.live',
         canListFullMangas: false,
-        chapter_url: /^\/.*\/vol.*\/[0-9]+.+$/g,
+        chapter_url: /^\/.*\/vol.*\/[0-9]+.*$/g,
         abstract: 'ReadMangaAbs',
         abstract_options: {
             base_url: 'https://readmanga.live'
