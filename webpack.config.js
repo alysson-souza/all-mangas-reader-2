@@ -39,7 +39,8 @@ const config = {
     extensions: ['*', '.js', '.vue', '.json'],
     fallback: {
       "crypto": require.resolve("crypto-browserify"),
-      "stream": require.resolve("stream-browserify")
+      "stream": require.resolve("stream-browserify"),
+      "buffer": false
     }
   },
   module: {
