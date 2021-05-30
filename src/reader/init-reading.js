@@ -165,8 +165,12 @@ function removeStyles(withInline = false, times = 10) {
         for(i in inline) {
             if (inline.hasOwnProperty(i)) {
                 sheet = inline[i];
-                if(!sheet.getAttribute('data-amr') && (sheet.getAttribute('type') && sheet.getAttribute('type').toLowerCase() == 'text/css')) {
+                if(!sheet.getAttribute('data-amr') 
+                    && (sheet.getAttribute('type') && sheet.getAttribute('type').toLowerCase() == 'text/css')
+                    && sheet.getAttribute('id') !== 'vuetify-theme-stylesheet') {
                     sheet.parentNode.removeChild(sheet);
+                    console.log('Removing Sheet')
+                    console.log(sheet)
                 }
             }
         }
