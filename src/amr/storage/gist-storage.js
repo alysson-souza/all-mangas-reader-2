@@ -73,7 +73,9 @@ export default class GistStorage extends Storage {
           setTimeout(() => {
             this.delete(key, value)
           }, new Date(timestamp).getTime() - Date.now());
+          throw new ThrottleError(e.response.data.message, new Date(timestamp))
         }
+        throw new Error(e.response.data.message)
       })
   }
 

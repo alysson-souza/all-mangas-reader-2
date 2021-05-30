@@ -212,9 +212,9 @@ class SyncManager {
 
 
     /**
-     * Cant actually delete it due to sync, need to mark it as deleted
+     * Can't actually delete it due to sync, need to mark it as deleted
      * @param {string} key
-     * @return {Promise<*>}
+     * @return {Promise<void>}
      */
     async deleteManga(key) {
         for (const storage of this.remoteStorages) {
@@ -222,6 +222,12 @@ class SyncManager {
                 key,
                 ts: Math.round(Date.now() / 1000),
                 deleted: syncUtils.DELETED,
+            }).catch(e => {
+                if(e instanceof ThrottleError) {
+                    storage.retryDate = e.getRetryAfterDate()
+                } else if(e instanceof Error) {
+                    debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] ${e.message}`)
+                }
             })
         }
     }
