@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ['mintmanga.live'],
         home: 'https://mintmanga.live',
         canListFullMangas: false,
-        chapter_url: /^\/.*\/vol.*\/[0-9]+.+$/g,
+        chapter_url: /^\/.*\/vol.*\/[0-9]+.*$/g,
         abstract: 'ReadMangaAbs',
         abstract_options: {
             base_url: 'https://mintmanga.live'
