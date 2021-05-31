@@ -1,3 +1,24 @@
+### V2.3.17
+  Fixes:
+    * Error handling in sync for deleting manga (Credit: @JiPai)
+    * Fixed reader removing its own style sheet by accident
+  
+  Mirror Fixes:
+    * Flame Scans chapter loading (https://flamescans.org)
+  
+  New Mirrors:
+    * Luminous Scans (https://www.luminousscans.com/)
+  
+  Re-enabled mirror:
+    * Mint Manga has returned and has been updated (https://mintmanga.live) (Credit @NoneDark)
+
+  Manganelo Change:
+    Manganelo has rebranded itself as Manganato, this comes with a new url and unfortunately a new series url format. This means
+    that any series you were following was reset and cannot be migrated automatically. You will need to re-add all series manually.
+    You can do this by clicking the series link which *should* redirect you to the new one so you do not have to actually search
+    for it. Sorry for this inconvienience but unfortunately there is little that can be done in this situation.
+    New url: https://manganato.com/
+
 ### V2.3.16
   Changes:
     * Made import/export link not close current tab in Firefox

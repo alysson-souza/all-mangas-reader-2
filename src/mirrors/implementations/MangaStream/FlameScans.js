@@ -10,7 +10,7 @@ if (typeof registerMangaObject === 'function') {
         abstract: "MangastreamAbs",
         abstract_options: {
             search_url: "https://flamescans.org",
-            chapters_a_sel: "div.bixbox.bxcl ul li div.eph-num a",
+            chapters_a_sel: "div.bixbox.bxcl ul li a",
             chapters_text_sel: "span.chapternum",
             search_json: false,
             img_sel: `#readerarea img[width!="1px"][class*="size-full"]`,
