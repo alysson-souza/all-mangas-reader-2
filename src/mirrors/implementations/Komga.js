@@ -75,7 +75,7 @@ if (typeof registerMangaObject === 'function') {
         },
 
         isCurrentPageAChapterPage: function (doc, curUrl) {
-            return curUrl.split("/")[5].included("read")
+            return curUrl.split("/")[5].includes("read")
         }
     });
 }
