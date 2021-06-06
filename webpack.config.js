@@ -43,6 +43,11 @@ const config = {
       "buffer": false
     }
   },
+  optimization: {
+    splitChunks: {
+      chunks: 'all'
+    }
+  },
   module: {
     rules: [
       {
