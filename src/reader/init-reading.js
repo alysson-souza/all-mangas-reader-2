@@ -167,8 +167,9 @@ function removeStyles(withInline = false, times = 10) {
                 sheet = inline[i];
                 if(!sheet.getAttribute('data-amr') 
                     && (sheet.getAttribute('type') && sheet.getAttribute('type').toLowerCase() == 'text/css')
-                    && sheet.getAttribute('id') !== 'vuetify-theme-stylesheet') {
-                    // && sheet.getAttribute('id') !== 'custom-scrollbar-css') {
+                    && sheet.getAttribute('id') !== 'vuetify-theme-stylesheet'
+                    && sheet.getAttribute('id') !== 'custom-scrollbar-css'
+                ) {
                     sheet.parentNode.removeChild(sheet);
                     console.log('Removing Sheet')
                     console.log(sheet)
