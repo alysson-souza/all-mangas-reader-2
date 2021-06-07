@@ -67,7 +67,6 @@ if (window["__armreader__"] === undefined) { // avoid loading script twice
             restorePage()
         } else {
             initReader() // create the reader if this is the first chapter loaded in this environment, else, the state mutation will be enough to load new chapter
-            
         }
         window["__current_chapterloader__"] = chap // keep a reference to delete it later
     }
@@ -168,8 +167,8 @@ function removeStyles(withInline = false, times = 10) {
                 sheet = inline[i];
                 if(!sheet.getAttribute('data-amr') 
                     && (sheet.getAttribute('type') && sheet.getAttribute('type').toLowerCase() == 'text/css')
-                    && sheet.getAttribute('id') !== 'vuetify-theme-stylesheet'
-                    && sheet.getAttribute('id') !== 'custom-scrollbar-css') {
+                    && sheet.getAttribute('id') !== 'vuetify-theme-stylesheet') {
+                    // && sheet.getAttribute('id') !== 'custom-scrollbar-css') {
                     sheet.parentNode.removeChild(sheet);
                     console.log('Removing Sheet')
                     console.log(sheet)

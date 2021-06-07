@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ['komga'],
         home: 'komga',
-        chapter_url: /\/book\/.*?\/read.*/g,
+        chapter_url: /\/book\/.*?\/read/g,
 
         apiUrl: function () {
             return new URL('/api/v1/', new URL(amr.getOption('komgaUrl')).href)
@@ -75,7 +75,7 @@ if (typeof registerMangaObject === 'function') {
         },
 
         isCurrentPageAChapterPage: function (doc, curUrl) {
-            return curUrl.split("/")[5].includes("read")
+            return curUrl.split("/")[5] === "read"
         }
     });
 }
