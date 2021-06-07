@@ -161,7 +161,7 @@ All Mangas Reader is a browser extension which is designed to help you read and 
                 <td><img src="src/mirrors/icons/mangazuki.png" width="16" title="Mangazuki"></td>
                 <td><img src="src/mirrors/icons/manhuafast.png" width="16" title="ManhuaFast"></td>
                 <td><img src="src/mirrors/icons/manhuaplus.png" width="16" title="ManhuaPlus"></td>
-                <td><img src="src/mirrors/icons/toonily.png" width="16" title="Manhuas"></td>
+                <td><img src="src/mirrors/icons/manhuas.png" width="16" title="Manhuas"></td>
                 <td><img src="src/mirrors/icons/manhuaus.png" width="16" title="Manhuaus"></td>
                 <td><img src="src/mirrors/icons/manhwaclub.png" width="16" title="ManhwaClub"></td>
                 <td><img src="src/mirrors/icons/manwha18.png" width="16" title="Manwha 18"></td>

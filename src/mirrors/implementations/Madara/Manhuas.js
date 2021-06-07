@@ -1,7 +1,7 @@
 if (typeof registerMangaObject === 'function') {
     registerMangaObject({
         mirrorName: "Manhuas",
-        mirrorIcon: "toonily.png",
+        mirrorIcon: "manhuas.png",
         languages: "en",
         domains: ["manhuas.net"],
         home: "https://manhuas.net/",
@@ -10,9 +10,9 @@ if (typeof registerMangaObject === 'function') {
         abstract: "Madara",
         abstract_options: {
             search_url: "https://manhuas.net/",
-            img_src: "src",
+            img_src: "data-src",
             chapter_list_ajax: true,
-            secondary_img_src: "data-src"
+            secondary_img_src: "src"
         }
     })
 }
