@@ -44,6 +44,7 @@ xpi-beta:
     script:
         - yarn run manifest:specify -firefox -checkver $VERSION -patch $PATCH
         - npx web-ext sign --channel=unlisted --source-dir=dist --api-key="$SIGN_FF_API_KEY" --api-secret="$SIGN_FF_API_SECRET" --artifacts-dir=dist-zip
+    artifacts:
         paths:
             - dist-zip/*.xpi
         expire_in: 1 week
