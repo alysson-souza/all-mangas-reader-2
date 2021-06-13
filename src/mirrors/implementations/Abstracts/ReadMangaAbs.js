@@ -28,16 +28,20 @@ window["ReadMangaAbs"] = function (options) {
     
     this.getListChaps = async function (urlManga) {
         let doc = await amr.loadPage(urlManga + "?mtr=1", { nocache: true, preventimages: true });
+        let mangaIdFromUrl = (urlManga.split("/")).pop();
         let res = [];
-        var mng_nm = (urlManga.split("/")).pop();
         let self = this;
-
+        
         $("div.expandable td > a", doc).each(function (index) {
             var str = $(this).attr("href");
             str = str.split("/")[1];
-            if (str === mng_nm) {
+            if (str === mangaIdFromUrl) {
+                let nameParts = this.innerText.match(/^\s*\S.*$/gm).map(name => name.trim());
+                if (nameParts[nameParts.length - 1] === "новое")
+                    nameParts.pop();
+                let chapterName = nameParts[nameParts.length - 1];
                 res[res.length] = [
-                    this.innerText.match(/\u000a\s+(.*)/g)[1].trim(),
+                    chapterName,
                     self.options.base_url + $(this).attr("href")
                 ];
             }
