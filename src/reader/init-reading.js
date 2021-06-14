@@ -137,7 +137,7 @@ function removeJsAddedStuff(times = 10) {
     document.body.style.setProperty("min-width", "auto", "important")
     document.body.style.setProperty("width", "auto", "important")
 
-    for (child of document.body.children) {
+    for (let child of document.body.children) {
         if (child.getAttribute('id') !== 'amrapp')
             child.remove()
     }
