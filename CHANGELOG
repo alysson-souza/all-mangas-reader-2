@@ -1,3 +1,14 @@
+### V2.3.19
+  Fixes:
+    * Fix console error (Credit: @NoneDark)
+  Mirror Fixes:
+    * Read Manga and Mint Manga, empty chapter names (Credit: @NoneDark)
+
+  New Mirrors:
+    * Manga Pill (https://mangapill.com)
+    * Sad Scans (https://sadscans.com/)
+    * ZA Hard Top (https://zahard.top)
+
 ### V2.3.18
   Mirror Fixes:
     * Komga - Fixed issue with newer versions of komga messing up the reader
