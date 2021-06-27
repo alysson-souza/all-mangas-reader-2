@@ -12,6 +12,7 @@ window["Madara"] = function (options) {
         chapter_list_ajax: false,
         img_src: "src",
         secondary_img_src: "data-src",
+        sort_chapters: false,
         doBefore: () => { }
     },
     this.options = Object.assign(this.default_options, options)
@@ -89,6 +90,17 @@ window["Madara"] = function (options) {
                 self.makeChapterUrl($(this).attr("href")) // add ?style=list to load chapter in long strip mode, remove it if it already there and add it again,
             ])
         })
+
+        if (this.options.sort_chapters) {
+            res.sort((a, b) => {
+                let aM = a[0].replace(/chapter/gi, '').replace(/volume/gi, '').replace(/chap/gi, '').replace(/volume/gi, '')
+                let bM = b[0].replace(/chapter/gi, '').replace(/volume/gi, '').replace(/chap/gi, '').replace(/volume/gi, '')
+                if (aM && bM) {
+                    return parseFloat(aM) > parseFloat(bM) ? -1 : 1
+                }
+                return 0
+            })
+        }
 
         return res
     }
