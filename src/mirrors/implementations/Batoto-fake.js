@@ -3,7 +3,7 @@ if (typeof registerMangaObject === 'function') {
         mirrorName : "Batoto (fake)",
         mirrorIcon : "batoto.png",
         languages : "en",
-        domains: ["bato.to"],
+        domains: ["bato.to", "batotoo.com", "comiko.net"],
         home: "https://bato.to",
         chapter_url: /^\/chapter\/.+$/g,
 
