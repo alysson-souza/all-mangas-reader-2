@@ -171,8 +171,8 @@ function removeStyles(withInline = false, times = 10) {
                     && sheet.getAttribute('id') !== 'custom-scrollbar-css'
                 ) {
                     sheet.parentNode.removeChild(sheet);
-                    console.log('Removing Sheet')
-                    console.log(sheet)
+                    // console.log('Removing Sheet')
+                    // console.log(sheet)
                 }
             }
         }
