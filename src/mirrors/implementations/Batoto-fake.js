@@ -34,7 +34,7 @@ if (typeof registerMangaObject === 'function') {
             let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
             let res = []
             let self = this
-            $(".main a", doc).each(function (index) {
+            $(".main a.chapt", doc).each(function (index) {
                 res.push([
                     $(this).text(),
                     self.home + $(this).attr('href')
