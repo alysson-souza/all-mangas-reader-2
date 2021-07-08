@@ -68,10 +68,13 @@ let updateApp = async function(ancVersion, curVersion) {
         })
     }
     if (versionAfter(ancVersion, "2.3.11")) { // Just checking if it exists for those who skip versions of AMR
-        if (!window['AMR_STORE'].state.options.categoriesStates.find(cat => cat.name === 'category_disabled_mirrors')) {
-            await await window['AMR_STORE'].dispatch("addNativeCategory", "category_disabled_mirrors")
-        }
+        afterCalls.push(async () => {
+            if (!window['AMR_STORE'].state.options.categoriesStates.find(cat => cat.name === 'category_disabled_mirrors')) {
+                await window['AMR_STORE'].dispatch("addNativeCategory", "category_disabled_mirrors")
+            }
+        })
     }
+
     /**
      * Return a function wrapping all functions to call once all db is initialized
      */

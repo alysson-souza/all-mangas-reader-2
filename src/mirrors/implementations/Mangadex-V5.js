@@ -98,6 +98,8 @@ if (typeof registerMangaObject === 'function') {
 
                 if (parseInt(jsonChapFeed.limit) + parseInt(jsonChapFeed.offset) >= parseInt(jsonChapFeed.total) || page > 15) {
                     finished = true
+                } else {
+                    await new Promise(r => setTimeout(r, 250))
                 }
             }
             
