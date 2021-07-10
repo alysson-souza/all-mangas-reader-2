@@ -80,6 +80,7 @@ if (typeof registerMangaObject === 'function') {
                 jsonChapFeed = await amr.loadJson(
                     `${this.api}/manga/${id}/feed?limit=${this.pageLimit}&order[chapter]=desc&offset=${page * this.pageLimit}`
                 )
+                
                 jsonChapFeed.results
                     .filter(data => data.result === "ok")
                     .map(data => data.data)
