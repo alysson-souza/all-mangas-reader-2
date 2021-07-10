@@ -81,20 +81,29 @@ if (typeof registerMangaObject === 'function') {
                     `${this.api}/manga/${id}/feed?limit=${this.pageLimit}&order[chapter]=desc&offset=${page * this.pageLimit}`
                 )
                 jsonChapFeed.results
-                    .filter(data => data.result === "ok").map(data => data.data)
+                    .filter(data => data.result === "ok")
+                    .map(data => data.data)
                     .forEach(chap => {
                         let attributes = chap.attributes;
                         let lang = attributes.translatedLanguage;
 
                         if (done.indexOf(lang + attributes.chapter) >= 0) return;
                         if (!res[lang]) res[lang] = []
+
+                        let titleParts = []
+
+                        if (attributes.chapter && attributes.chapter.length > 0)
+                            titleParts.push(attributes.chapter)
+
+                        if (attributes.title && attributes.title.length > 0)
+                            titleParts.push(attributes.title)
+
                         res[lang].push([
-                            (attributes.chapter.length > 0 ? attributes.chapter + ' - ' : '')  + attributes.title,
+                            titleParts.length > 0 ? titleParts.join(' - ') : 'Untitled',
                             `${this.home}chapter/${chap.id}`
                         ])
                     })
                 page++
-
 
                 if (parseInt(jsonChapFeed.limit) + parseInt(jsonChapFeed.offset) >= parseInt(jsonChapFeed.total) || page > 15) {
                     finished = true
@@ -102,7 +111,6 @@ if (typeof registerMangaObject === 'function') {
                     await new Promise(r => setTimeout(r, 250))
                 }
             }
-            
             
             return res
         },
