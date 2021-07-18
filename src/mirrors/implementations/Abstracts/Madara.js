@@ -10,6 +10,8 @@ window["Madara"] = function (options) {
         path_length: 2,
         search_json: true,
         chapter_list_ajax: false,
+        chapter_list_ajax_selctor: 'manga',
+        chapter_list_ajax_selctor_type: 'variable',
         img_src: "src",
         secondary_img_src: "data-src",
         sort_chapters: false,
@@ -71,14 +73,20 @@ window["Madara"] = function (options) {
 
         if (this.options.chapter_list_ajax) {
             let searchApiUrl = this.options.search_url + "wp-admin/admin-ajax.php"
-            let mangaVar = amr.getVariable('manga', doc)
+            let mangaVar
+            
+            if (this.options.chapter_list_ajax_selctor_type == 'variable')
+                mangaVar = amr.getVariable(this.options.chapter_list_ajax_selctor, doc).manga_id
+            else
+                mangaVar = $(this.options.chapter_list_ajax_selctor, doc).attr('data-id')
+
             doc = await amr.loadPage(searchApiUrl, {
                 nocache: true,
                 preventimages: true,
                 post: true,
                 data: {
                     action: "manga_get_chapters",
-                    manga: mangaVar.manga_id
+                    manga: mangaVar
                 }
             })
         }
