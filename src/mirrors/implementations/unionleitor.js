@@ -19,8 +19,8 @@ if (typeof registerMangaObject === 'function') {
                 }
             })
             var res = []
-            $(".bloco-manga", doc).each(function (index, a) {
-                let link = $('a:last')
+            $(".bloco-manga", doc).each(function (index, bloc) {
+                let link = $(bloc).find('a:last')
                 if (link) {
                     res.push([
                         link.text(),
@@ -34,7 +34,7 @@ if (typeof registerMangaObject === 'function') {
         getListChaps: async function (urlManga) {
             let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
             let res = []
-            $('.col-md-8 .lancamento-linha a[href*="/leitor/"]', doc).each(function () {
+            $('.col-md-8 .capitulos a[href*="/leitor/"]', doc).each(function () {
                 res.push([
                     $(this).text(),
                     $(this).attr('href')
