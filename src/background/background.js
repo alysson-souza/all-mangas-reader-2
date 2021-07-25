@@ -6,6 +6,7 @@ import amrUpdater from '../amr/amr-updater';
 import amrInit from '../amr/amr-init';
 import browser from "webextension-polyfill";
 import HandleManga from './handle-manga';
+import converToMangadexV5 from './misc/mangedex-v5-converter'
 import mirrorsHelper from '../amr/mirrors-helper';
 import { getSyncManager } from '../amr/sync/sync-manager'
 
@@ -90,6 +91,9 @@ IconHelper.setBlueIcon();
     amrUpdater.load();
     // Check the latest published version of AMR
     amrUpdater.checkLatestPublishedVersion();
+
+    utils.debug('Running mangadex converter')
+    converToMangadexV5()
 
     // content script included, test if a mirror match the page and load AMR in tab
     /*browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {

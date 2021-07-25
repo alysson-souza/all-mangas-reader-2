@@ -1,3 +1,24 @@
+### V2.3.20
+  New Mirrors:
+    * Manga Cultivator (https://mangacultivator.com/)
+    * GD Scans (https://gdegenscans.xyz/)
+    * Unemployed Scans (https://unemployedscans.com/)
+
+  Mirror Fixes:
+    * Batoto - Added multiple domains
+    * Leviatan Scans - Added sort by chapter number due to weird volume ordering
+    * Manganelo - Added old domains for a few series that were not switched yet
+    * Manga Pill - Chapter list changed
+    * Reaper Scans - Switched site software, all old series will need readded
+
+
+  Mangadex is back!
+    This version introduces a "new" mirror labeled Mangadex V5, this was needed due to breaking changes in how the old mangadex series and title urls worked.
+    
+    When you launch your browser or reload the extension AMR will automatically try and convert any existing mangadex series you have followed to the new format,
+    so you will not need to do this manually. This can sometimes cause an out of memory error which will force you to reload the extension or your browser window
+    to continue, but I have not been able to reproduce it to find out why and test, since this is a one time thing I am not going to put any more time into trying.
+
 ### V2.3.19
   Fixes:
     * Fix console error (Credit: @NoneDark)

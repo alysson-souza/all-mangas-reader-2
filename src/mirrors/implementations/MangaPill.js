@@ -26,7 +26,7 @@ if (typeof registerMangaObject === 'function') {
             let res = []
             let self = this
 
-            $(".mb-3 a", doc).each(function (index) {
+            $('a[href*="/chapters/"]', doc).each(function (index) {
                 res.push([
                     $(this).text(),
                     self.home + $(this).attr('href')
