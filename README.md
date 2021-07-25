@@ -220,14 +220,15 @@ All Mangas Reader is a browser extension which is designed to help you read and 
                 <td><img src="src/mirrors/icons/tritiniascans.png" width="16" title="Tritinia Scans"></td>
                 <td><img src="src/mirrors/icons/twilightscans.png" width="16" title="Twilight Scans"></td>
                 <td><img src="src/mirrors/icons/ultmanga.jpg" width="16" title="Ult Manga"></td>
+                <td><img src="src/mirrors/icons/unemployed-scans.jpg" width="16" title="Unemployed Scans"></td>
                 <td><img src="src/mirrors/icons/unionleitor.png" width="16" title="Union Leitor"></td>
                 <td><img src="src/mirrors/icons/vanguard.png" width="16" title="Vanguard Scans"></td>
                 <td><img src="src/mirrors/icons/voidscans.png" width="16" title="Void Scans"></td>
                 <td><img src="src/mirrors/icons/vortexscans.png" width="16" title="Vortex Scans"></td>
                 <td><img src="src/mirrors/icons/webtoons.png" width="16" title="WebToons"></td>
-                <td><img src="src/mirrors/icons/webtoon-xyz.png" width="16" title="Webtoon.xyz"></td>
             </tr>
             <tr>
+                <td><img src="src/mirrors/icons/webtoon-xyz.png" width="16" title="Webtoon.xyz"></td>
                 <td><img src="src/mirrors/icons/westmanga.png" width="16" title="Westmanga"></td>
                 <td><img src="src/mirrors/icons/whitecloudpavilion.png" width="16" title="White Cloud Pavilion"></td>
                 <td><img src="src/mirrors/icons/worldthree.png" width="16" title="World Three"></td>
