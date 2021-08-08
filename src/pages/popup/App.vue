@@ -27,6 +27,15 @@
 					<v-btn flat @click="saveAllowTracking(false)">{{i18n('button_no')}}</v-btn>
 				</div>
 			</v-alert>
+			<v-alert class="mb-0" type="info" :value="true" icon="mdi-cookie-alert" v-if="!cookiesDone">
+				{{i18n("options_gen_allowcookies_desc")}}
+				<br /><br />
+				{{i18n("options_gen_allowcookies_warning")}}
+				<div>
+					<v-btn @click="saveAllowCookies(true)">{{i18n('button_yes')}}</v-btn>
+					<v-btn flat @click="saveAllowCookies(false)">{{i18n('button_no')}}</v-btn>
+				</div>
+			</v-alert>
 			<MangaList
         @search-request="openSearch"
         @manga-loaded="handleLoaded()"
@@ -173,13 +182,15 @@ export default {
 		toSearch: "", // phrase to search in search panel (used to load search from manga)
 		alertmessage: "", // alert to display at the bottom of the popup
 		tooltipalert: "",
-		trackingDone: false
+		trackingDone: false,
+		cookiesDone: false,
     };
   },
   name: "App",
   components: { MangaList, Options, Search, Timers, ImportExport },
   created() {
-	this.trackingDone = this.$store.state.options.allowtrackingdone == 1;
+	this.trackingDone = true //this.$store.state.options.allowtrackingdone == 1; // Forced to true to disable this
+	this.cookiesDone = this.$store.state.options.allowcookiesdone == 1;
 	document.title = i18n("page_popup_title");
     // initialize state for store in popup from background
     this.$store.dispatch("getStateFromReference", {
@@ -275,6 +286,11 @@ export default {
 					action: "reloadStats"
 				});
 			}, 0)
+		},
+		async saveAllowCookies(doAllow) {
+			await this.$store.dispatch("setOption", { key: "allowcookiesdone", value: 1});
+			this.cookiesDone = true
+			await this.$store.dispatch("setOption", { key: "allowcookies", value: doAllow ? 1 : 0 });
 		}
 	},
 	mounted: function () {

@@ -220,7 +220,7 @@ const actions = {
 
         // Ignore sync updates for stats
         if (message.isSync !== 1) {
-            statsEvents.trackReadManga(mg);
+            // statsEvents.trackReadManga(mg);
         }
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();

@@ -1931,5 +1931,20 @@
   "category_disabled_mirrors": {
     "message": "Mirror Disabled",
     "description": "Label of the native category for mangas which have disabled mirrors"
+  },
+  "__V2_3_21": {
+    "message": "Just a filler to separate new labels from old ones"
+  },
+  "options_gen_allowcookies_opt": {
+    "message": "Allow creation and reading of cookies",
+    "description": "Option allow cookie create/read "
+  },
+  "options_gen_allowcookies_desc": {
+    "message": "Allow All Mangas Reader to read and create cookies for mirror websites. We use this to make certain websites work properly.",
+    "description": "Option allow cookie read/create description"
+  },
+  "options_gen_allowcookies_warning": {
+    "message": "Warning: If this option is turned off certain websites will not function properly in All Mangas Reader.",
+    "description": "cookie read/create functional warning"
   }
 }

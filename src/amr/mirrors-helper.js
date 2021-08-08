@@ -205,7 +205,9 @@ class MirrorsHelper {
              * Set a cookie on a domain
              */
             amr.setCookie = async function(setCookieObj) {
-                await browser.cookies.set(setCookieObj)
+                if (window['AMR_STORE'].state.options.allowcookies) {
+                    await browser.cookies.set(setCookieObj)
+                }
             }
 
             amr.getOption = function(option) {

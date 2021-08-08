@@ -65,7 +65,9 @@ const default_options = {
     notificationtimer: 0, //time to clear notification auto
     notifynewversion: isFirefox() ? 0 : 1, //do we notify in the popup if the app is not the latest published version
     allowtracking: 0, // send informations to tracking tool
-    allowtrackingdone: 0, // user has chosen to let amr track his reading / or not
+    allowtrackingdone: 1, // user has chosen to let amr track his reading / or not
+    allowcookies: 0, // read/create cookies
+    allowcookiesdone: 0, // user has chosen to let amr read/create cookies / or not
 
     /** Sync options */
     syncEnabled: 0,
