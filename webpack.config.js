@@ -25,7 +25,7 @@ const config = {
     'pages/bookmarks/bookmarks': './pages/bookmarks/bookmarks.js',
     'pages/importexport/importexport': './pages/importexport/importexport.js',
     'backup/index': './backup/amr-backup.js',
-    'stats/piwik': './stats/piwik.js',
+    // 'stats/piwik': './stats/piwik.js',
     'mirrors/register_implementations': './mirrors/register_implementations.js'
   },
   output: {

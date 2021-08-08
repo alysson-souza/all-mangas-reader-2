@@ -24,7 +24,7 @@ class HandleMisc {
                     mirrorName: mirror.mirrorName
                 });
             case "reloadStats":
-                return Promise.resolve(statsEvents.reloadStats())
+                return Promise.resolve(/*statsEvents.reloadStats()*/)
             case "DownloadAMR":
                 return this.DownloadAMR(message)
             case "DownloadChapter":

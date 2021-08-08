@@ -262,6 +262,11 @@
               <div class="text-h6">{{i18n('options_gen_allowtracking_desc')}}</div>
               <v-checkbox v-model="allowtracking" @change="setOption('allowtracking')"
                       :label="i18n('options_gen_allowtracking_opt')"></v-checkbox>
+              
+              <!--Allow read/create cookies -->
+              <div class="text-h6">{{i18n('options_gen_allowcookies_desc')}}</div>
+              <v-checkbox v-model="allowcookies" @change="setOption('allowcookies')"
+                      :label="i18n('options_gen_allowcookies_opt')"></v-checkbox>
             </v-expansion-panel-content>
           </v-expansion-panel>
           <v-expansion-panel>

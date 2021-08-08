@@ -1,3 +1,15 @@
+### V2.3.21
+  Changes:
+    * Statistics collection has been removed for the time being. It will probably be re-added at a later date
+    * There is now a confirmation box and option under settings menu to allow AMR to read / create cookies **
+
+  New Mirrors:
+    * Sawamics (https://sawamics.com/)
+
+  Note **: AMR creates cookies to force English on the Webtoons website, and pass an "I am adult" cookie to websites that have verifications
+  for more explicit content. Not allowing AMR to read / create cookies will hinder or break compatibility with these websites. This option can
+  be turned off / on at any time from the settings menu.
+  
 ### V2.3.20
   New Mirrors:
     * Manga Cultivator (https://mangacultivator.com/)

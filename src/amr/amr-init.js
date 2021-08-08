@@ -124,10 +124,10 @@ export default async function () {
     if (!ancVersion || curVersion !== ancVersion) {
         localStorage.version = curVersion;
         if (!ancVersion) {
-            statsEvents.trackInstall(curVersion, beta, browserdetect());
+            // statsEvents.trackInstall(curVersion, beta, browserdetect());
             afterLoading = await installApp(curVersion)
         } else {
-            statsEvents.trackUpdate(curVersion, beta, browserdetect());
+            // statsEvents.trackUpdate(curVersion, beta, browserdetect());
             afterLoading = await updateApp(ancVersion, curVersion)
         }
     }
