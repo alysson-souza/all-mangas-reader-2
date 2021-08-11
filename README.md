@@ -84,8 +84,8 @@ All Mangas Reader is a browser extension which is designed to help you read and 
                 <td><img src="src/mirrors/icons/chibimanga.png" width="16" title="ChibiManga"></td>
             </tr>
             <tr>
-                <td><img src="src/mirrors/icons/comickiba.png" width="16" title="Comic Kiba"></td>
                 <td><img src="src/mirrors/icons/comic-dom.jpg" width="16" title="Comic Dom"></td>
+                <td><img src="src/mirrors/icons/comickiba.png" width="16" title="Comic Kiba"></td>
                 <td><img src="src/mirrors/icons/deathtollscans.png" width="16" title="Death Toll Scans"></td>
                 <td><img src="src/mirrors/icons/disasterscans.png" width="16" title="Disaster Scans"></td>
                 <td><img src="src/mirrors/icons/dm5.png" width="16" title="DM5"></td>
