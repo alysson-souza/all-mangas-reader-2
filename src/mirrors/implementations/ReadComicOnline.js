@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["readcomiconline.to", "readcomiconline.li"],
         home: "https://readcomiconline.li",
-        chapter_url: /Issue-.*id=/g,
+        chapter_url: /Comic\/.*\/.*\?id=/g,
 
         getMangaList: async function (search) {
             let doc = await amr.loadPage(this.home + '/Search/Comic', {
