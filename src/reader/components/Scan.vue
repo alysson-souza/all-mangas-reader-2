@@ -23,6 +23,11 @@
             {{ i18n('reader_context_menu_copy_url') }}
           </v-list-item-title>
         </v-list-item>
+        <v-list-item link>
+          <v-list-item-title @click="reloadScan(true)">
+            {{ i18n('reader_context_menu_reload_image') }}
+          </v-list-item-title>
+        </v-list-item>
       </v-list>
     </v-menu>
 
@@ -157,8 +162,8 @@ export default {
       return ["height", "container"].includes(this.resize)
     },
     /** Tell scansProvider to retry scan */
-    reloadScan() {
-      if (this.error) this.scan.load()
+    reloadScan(force = false) {
+      if (this.error || force) this.scan.load()
     },
     /* Loads the scan, only called on nexttick so all computed properties have been refreshed */
     insertScanInDOM() {
