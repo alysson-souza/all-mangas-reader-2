@@ -88,7 +88,9 @@ if (typeof registerMangaObject === 'function') {
                         let attributes = chap.attributes;
                         let lang = attributes.translatedLanguage;
 
-                        if (done.indexOf(lang + attributes.chapter) >= 0) return;
+                        if (attributes.chapter && done.indexOf(lang + attributes.chapter) >= 0) return;
+                        done.push(lang + attributes.chapter)
+
                         if (!res[lang]) res[lang] = []
 
                         let titleParts = []
@@ -103,6 +105,8 @@ if (typeof registerMangaObject === 'function') {
                             titleParts.length > 0 ? titleParts.join(' - ') : 'Untitled',
                             `${this.home}chapter/${chap.id}`
                         ])
+
+                        
                     })
                 page++
 
