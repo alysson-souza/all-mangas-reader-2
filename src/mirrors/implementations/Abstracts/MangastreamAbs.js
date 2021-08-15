@@ -16,6 +16,7 @@ window["MangastreamAbs"] = function (options) {
         manga_name_replace: "",
         img_src: "src",
         search_json: true,
+        flame_scans_fuckery: false,
         doBefore: () => { }
     }
     this.options = Object.assign(this.default_options, options)
@@ -76,9 +77,15 @@ window["MangastreamAbs"] = function (options) {
             if (self.options.chapters_text_sel !== "") {
                 chapter_text = $(self.options.chapters_text_sel, this).text().trim()
             }
+
+            let chapter_url = $(this).attr("href") + self.options.chapter_url_suffix
+
+            if (self.flame_scans_fuckery) {
+                url = self.options.flame_scans_chapter_url(url)
+            }
             res.push([
                 chapter_text,
-                $(this).attr("href") + self.options.chapter_url_suffix
+                chapter_url
             ]);
         });
         return res;
@@ -88,6 +95,10 @@ window["MangastreamAbs"] = function (options) {
 
         let manga_url = $(this.options.manga_url_sel, doc).attr("href");
         let manga_name = $(this.options.manga_url_sel, doc).text();
+
+        if (this.options.flame_scans_fuckery) {
+            curUrl = this.flame_scans_chapter_url(curUrl)
+        }
         return {
             "name": manga_name.replace(this.options.manga_name_replace, "").trim(),
             "currentMangaURL": manga_url,
@@ -110,6 +121,19 @@ window["MangastreamAbs"] = function (options) {
 
     this.isCurrentPageAChapterPage = function (doc, curUrl) {
         return $(this.options.page_container_sel, doc).length > 0
+    }
+
+    /* This function removes the random integer from flame scans chapter links. */
+    this.flame_scans_chapter_url = function (origUrl) {
+        let parts = origUrl.split('/')
+
+        let parts2 = parts[3].split('-')
+
+        if (!isNaN(parts2[0]) && !isNaN(parseFloat(parts2[0])))
+            parts2.shift()
+
+        parts[3] = parts2.join('-')
+        return parts.join('/')
     }
 }
 
