@@ -81,14 +81,13 @@ window["MangastreamAbs"] = function (options) {
             let chapter_url = $(this).attr("href") + self.options.chapter_url_suffix
 
             if (self.options.flame_scans_fuckery) {
-                url = self.flame_scans_chapter_url(url)
+                chapter_url = self.flame_scans_chapter_url(chapter_url)
             }
             res.push([
                 chapter_text,
                 chapter_url
             ]);
         });
-        console.log(res)
         return res;
     }
 
