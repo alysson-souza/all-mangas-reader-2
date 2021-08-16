@@ -536,6 +536,8 @@ const converters = {
       "darkreader",
       "syncEnabled",
       "gistSyncEnabled",
+      "isSyncing",
+      "isUpdatingChapterLists",
       "searchOpenSeries",
       "mangadexDataSaver",
       "webtoonDefault",
