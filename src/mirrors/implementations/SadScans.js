@@ -46,18 +46,27 @@ if (typeof registerMangaObject === 'function') {
     
         getListImages : async function (doc, curUrl) {
             let res = []
-            $(".swiper-wrapper img", doc).each(function (index) {
-                res.push($(this).attr('data-src'))
+            let id = curUrl.split('/')[4]
+            let self = this
+            $(".swiper-wrapper .swiper-slide", doc).each(function (index) {
+                let hash = $(this).attr('data-hash')
+                // let url = self.home + 'config.json?_cid=' + id + '&' + hash
+                res.push(id + '|' + hash)
             })
             return res
         },
     
         getImageFromPageAndWrite : async function (urlImg, image) {
-            $(image).attr("src", urlImg)
+            let parts = urlImg.split('|')
+            let url = this.home + 'config.json?_cid=' + parts[0] + '&' + parts[1]
+            await fetch(url).then(
+                blob =>blob.json().then(
+                    dat => $(image).attr("src", 'data:image/;base64,' + dat[0])
+            ))
         },
         
         isCurrentPageAChapterPage : function (doc, curUrl) {
-            return $(".swiper-wrapper img", doc).length > 0
+            return $(".swiper-wrapper .swiper-slide", doc).length > 0
         }
     })
 }
