@@ -56,6 +56,8 @@ class SyncManager {
                 }
             }
         }
+        
+        this.localStorage.vuexStore.dispatch("setOption", {key: 'isSyncing', value: 0})
     }
 
     updateSync(key, value) {
@@ -111,12 +113,23 @@ class SyncManager {
     async triggerSync(storageName) {
         const storage = this.remoteStorages.find((store) => store.constructor.name === storageName)
         if(storage) {
+            if(this.localStorage.vuexStore.state.options.isUpdatingChapterLists) {
+                debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] Skipping sync due to chapter lists being updated`)
+                return;
+            }
             if(storage.retryDate && storage.retryDate.getTime() > Date.now()) {
                 debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] Skipping sync due to present retry date until ${storage.retryDate.toISOString()}`)
             } else {
+                debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] Starting sync`)
+                this.localStorage.vuexStore.dispatch("setOption", {key: 'isSyncing', value: 1})
                 this.checkData(storage)
-                .then(debug)
+                .then(res => {
+                    this.localStorage.vuexStore.dispatch("setOption", {key: 'isSyncing', value: 0})
+                    debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] Done`)
+                    debug(res)
+                })
                 .catch(e => {
+                    this.localStorage.vuexStore.dispatch("setOption", {key: 'isSyncing', value: 0})
                     if(e instanceof ThrottleError) {
                         storage.retryDate = e.getRetryAfterDate()
                     } else if(e instanceof Error) {
@@ -234,6 +247,12 @@ class SyncManager {
 }
 
 let instance;
+/**
+ * 
+ * @param {*} config 
+ * @param {*} vuexStore 
+ * @returns {SyncManager} 
+ */
 export const getSyncManager = (config, vuexStore) => {
     if (!instance) {
         instance = new SyncManager();
