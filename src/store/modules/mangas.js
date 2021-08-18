@@ -474,23 +474,25 @@ const actions = {
      * @param {*} force force update if true. If false, check last time manga has been updated and take parameter pause for a week into account
      */
     async updateChaptersLists({ dispatch, commit, getters, state, rootState }, {force} = {force: true}) {
-        dispatch("setOption", {key: "isUpdatingChapterLists", value: 1});
+        // get sync and convert watchers
+        const isConverting = rootState.options.isConverting
         const isSyncEnabled = (rootState.options.syncEnabled || rootState.options.gistSyncEnabled)
         const isSyncing = rootState.options.isSyncing === 1
-        let timeout = 0;
 
+        // retry later if sync or convert is running
+        let timeout = 0;
         if(isSyncEnabled) {
             if(isSyncing) timeout = 10*1000
         }
-
+        if(isConverting) timeout = 60*100
         if(timeout > 0) {
             utils.debug('Skipped chapter lists update')
-            dispatch("setOption", {key: "isUpdatingChapterLists", value: 0});
             setTimeout(() => {
                actions.updateChaptersLists({ dispatch, commit, getters, state, rootState }, {force} = {force: true})
             }, timeout);
             return
         }
+        dispatch("setOption", {key: "isUpdatingChapterLists", value: 1}); // Set watcher
         utils.debug('Starting chapter lists update')
         let tsstopspin;
         if (rootState.options.refreshspin === 1) {
@@ -551,7 +553,7 @@ const actions = {
         })
 
         await Promise.all(mirrorTasks2.map(t => t()))
-        dispatch("setOption", {key: "isUpdatingChapterLists", value: 0});
+        dispatch("setOption", {key: "isUpdatingChapterLists", value: 0}); // Unset watcher when done
         utils.debug('Done updating chapter lists')
         if (rootState.options.refreshspin === 1) {
             //stop the spinning
