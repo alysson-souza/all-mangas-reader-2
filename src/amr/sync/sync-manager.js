@@ -56,7 +56,7 @@ class SyncManager {
                 }
             }
         }
-        
+        // unset watcher
         this.localStorage.vuexStore.dispatch("setOption", {key: 'isSyncing', value: 0})
     }
 
@@ -113,23 +113,29 @@ class SyncManager {
     async triggerSync(storageName) {
         const storage = this.remoteStorages.find((store) => store.constructor.name === storageName)
         if(storage) {
-            if(this.localStorage.vuexStore.state.options.isUpdatingChapterLists) {
+            // Get update chapter and convert watchers
+            const isUpdating = this.localStorage.vuexStore.state.options.isUpdatingChapterLists
+            const isConverting = this.localStorage.vuexStore.state.options.isConverting
+
+            // skip if one of these is running (sync-manager will retry by itself)
+            if(isUpdating || isConverting) {
                 debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] Skipping sync due to chapter lists being updated`)
                 return;
             }
+
             if(storage.retryDate && storage.retryDate.getTime() > Date.now()) {
                 debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] Skipping sync due to present retry date until ${storage.retryDate.toISOString()}`)
             } else {
                 debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] Starting sync`)
-                this.localStorage.vuexStore.dispatch("setOption", {key: 'isSyncing', value: 1})
+                this.localStorage.vuexStore.dispatch("setOption", {key: 'isSyncing', value: 1}) // Set watcher
                 this.checkData(storage)
                 .then(res => {
-                    this.localStorage.vuexStore.dispatch("setOption", {key: 'isSyncing', value: 0})
+                    this.localStorage.vuexStore.dispatch("setOption", {key: 'isSyncing', value: 0}) // Unset watcher when done
                     debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] Done`)
                     debug(res)
                 })
                 .catch(e => {
-                    this.localStorage.vuexStore.dispatch("setOption", {key: 'isSyncing', value: 0})
+                    this.localStorage.vuexStore.dispatch("setOption", {key: 'isSyncing', value: 0}) // Unset watcher on errors
                     if(e instanceof ThrottleError) {
                         storage.retryDate = e.getRetryAfterDate()
                     } else if(e instanceof Error) {
