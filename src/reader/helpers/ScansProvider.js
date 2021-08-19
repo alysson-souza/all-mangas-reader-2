@@ -109,6 +109,7 @@ class ScanLoader {
     load() {
         this.loading = true
         this.error = false
+        this.retried = false /* Has an auto retry of errors been attempted */
 
         // The code below introduce a loading error for a quarter of the scans
         // think about updating the this.url at the bottom of the function and replace it with just url
@@ -138,6 +139,10 @@ class ScanLoader {
                 console.error(e)
                 this.loading = false
                 this.error = true
+                if (!this.retried) {
+                    this.retried = true
+                    this.load()
+                }
                 resolve()
             }
             this.scan.addEventListener('error', (e) => {
