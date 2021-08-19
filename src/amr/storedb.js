@@ -240,7 +240,7 @@ class StoreDB {
                 });
             });
     }
-    // Accessors for reading storage
+    // add an entry
     storeManga(manga) {
         let store = this;
         return this.checkInit()
@@ -279,6 +279,31 @@ class StoreDB {
                     };
                 });
             });
+    }
+    // update an existing entry
+    findAndUpdate(manga) {
+        let store = this;
+        return this.checkInit()
+            .then(() => {
+                return new Promise((resolve, result) => {
+                    let transaction = store.db.transaction(["mangas"], "readwrite");
+
+                    transaction.onerror = function (event) {
+                        reject("Impossible to store manga " + manga.key + ". Error code : " + event.target.errorCode);
+                    };
+
+                    let objectStore = transaction.objectStore("mangas");
+                    let request = objectStore.get(manga.key);
+                    request.onsuccess = function (event) {
+                        if(event.target.result) {
+                            store.storeManga(manga)
+                            resolve(event.target.result)
+                        } else {
+                            reject("Impossible to update manga "+ manga.key + ". Couldn't find a matching entry")
+                        }
+                    };
+                });
+            });   
     }
     /**
      * Return the stored list of manga (reading list)

@@ -87,11 +87,11 @@ const actions = {
         })
     },
     /**
-     * Update a manga in the store
+     * Add a manga in the store
      * @param {*} param0
      * @param {*} manga
      */
-    async updateManga({ dispatch, commit }, manga) {
+    async addManga({ dispatch, commit }, manga) {
         await storedb.storeManga(manga);
         try {
             dispatch("setOption", {key: "updated", value: Date.now()});
@@ -101,7 +101,21 @@ const actions = {
             console.error(e)
         }
     },
-
+    /**
+     * Update a manga in the store
+     * @param {*} param0 
+     * @param {*} manga 
+     */
+    async findAndUpdateManga({dispatch, commit}, manga) {
+        await storedb.findAndUpdate(manga)
+        try {
+            dispatch("setOption", {key: "updated", value: Date.now()});
+            dispatch("setOption", {key: "changesSinceSync", value: 1});
+        } catch (e) {
+            console.error("Error while updating sync timestamp")
+            console.error(e)
+        }
+    },
     /**
      * Change manga display mode
      * @param {*} vuex object
@@ -110,7 +124,7 @@ const actions = {
     async setMangaDisplayMode({ dispatch, commit, getters }, message) {
         let key = utils.mangaKey(message.url, message.mirror, message.language);
         commit('setMangaDisplayMode', message);
-        dispatch('updateManga', state.all.find(manga => manga.key === key));
+        dispatch('findAndUpdate', state.all.find(manga => manga.key === key));
     },
     /**
      * Change manga reader layout mode
@@ -120,7 +134,7 @@ const actions = {
     async setMangaLayoutMode({ dispatch, commit, getters }, message) {
         let key = utils.mangaKey(message.url, message.mirror, message.language);
         commit('setMangaLayoutMode', message);
-        dispatch('updateManga', state.all.find(manga => manga.key === key));
+        dispatch('findAndUpdate', state.all.find(manga => manga.key === key));
     },
     /**
      * Change manga reader webtoon mode
@@ -130,7 +144,7 @@ const actions = {
     async setMangaWebtoonMode({ dispatch, commit, getters }, message) {
         let key = utils.mangaKey(message.url, message.mirror, message.language);
         commit('setMangaWebtoonMode', message);
-        dispatch('updateManga', state.all.find(manga => manga.key === key));
+        dispatch('findAndUpdate', state.all.find(manga => manga.key === key));
     },
     /**
      * Change manga display name
@@ -139,7 +153,7 @@ const actions = {
      */
     async setMangaDisplayName({ dispatch, commit, getters }, message) {
         commit('setMangaDisplayName', message);
-        dispatch('updateManga', state.all.find(manga => manga.key === message.key));
+        dispatch('findAndUpdate', state.all.find(manga => manga.key === message.key));
     },
     /**
      * Reset manga reading for a manga to first chapter
@@ -150,7 +164,7 @@ const actions = {
         let key = utils.mangaKey(message.url, message.mirror, message.language);
         commit('resetManga', message);
         let mg = state.all.find(manga => manga.key === key);
-        dispatch('updateManga', mg);
+        dispatch('findAndUpdate', mg);
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();
     },
@@ -164,7 +178,7 @@ const actions = {
         let key = utils.mangaKey(message.url, message.mirror, message.language);
         commit('saveCurrentState', message);
         let mg = state.all.find(manga => manga.key === key);
-        dispatch('updateManga', mg);
+        dispatch('findAndUpdate', mg);
     },
 
     async createUnlistedManga({ dispatch, commit }, message) {
@@ -185,7 +199,7 @@ const actions = {
         }
 
         utils.debug("saving new manga to database");
-        dispatch('updateManga', mg);
+        dispatch('addManga', mg);
         // update native language categories
         dispatch("updateLanguageCategories")
     },
@@ -216,7 +230,7 @@ const actions = {
             console.error(e); // ignore error if manga list can't be updated
         }
 
-        dispatch('updateManga', mg);
+        dispatch('findAndUpdate', mg);
 
         // Ignore sync updates for stats
         if (message.isSync !== 1) {
@@ -248,7 +262,7 @@ const actions = {
     async disabledManga({ dispatch }, manga) {
         manga.update = MANGA_UPDATE_STOP;
         manga.read = MANGA_READ_STOP;
-        await dispatch('updateManga', manga);
+        await dispatch('findAndUpdate', manga);
     },
 
     /**
@@ -514,7 +528,7 @@ const actions = {
             return new Promise(resolve => {
                 setTimeout(async () => {
                     await dispatch("refreshLastChapters", mg).then(() => {
-                            dispatch('updateManga', mg); //save updated manga do not wait
+                            dispatch('findAndUpdateManga', mg); //save updated manga do not wait
                             amrUpdater.refreshBadgeAndIcon();
                         }).catch(e => {
                             if (e !== ABSTRACT_MANGA_MSG) {
@@ -574,7 +588,7 @@ const actions = {
             mg = state.all.find(manga => manga.key === key);
         if (mg !== undefined) {
             commit('setMangaReadTop', message);
-            dispatch('updateManga', mg);
+            dispatch('findAndUpdate', mg);
             // if (message.updatesamemangas && rootState.options.groupmgs === 1) {
             //     let titMg = utils.formatMgName(mg.name);
             //     let smgs = state.all.filter(manga => utils.formatMgName(manga.name) === titMg)
@@ -602,7 +616,7 @@ const actions = {
             mg = state.all.find(manga => manga.key === key);
         if (mg !== undefined) {
             commit('setMangaUpdateTop', message);
-            dispatch('updateManga', mg);
+            dispatch('findAndUpdate', mg);
             // if (message.updatesamemangas && rootState.options.groupmgs === 1) {
             //     let titMg = utils.formatMgName(mg.name);
             //     let smgs = state.all.filter(manga => utils.formatMgName(manga.name) === titMg)
@@ -671,7 +685,7 @@ const actions = {
     addCategoryToManga({ commit, dispatch }, obj) {
         let mg = state.all.find(manga => manga.key === obj.key);
         commit("addCategoryToManga", obj);
-        dispatch('updateManga', mg);
+        dispatch('findAndUpdate', mg);
     },
     /**
      * Remove category
@@ -681,7 +695,7 @@ const actions = {
     removeCategoryFromManga({ commit, dispatch }, obj) {
         let mg = state.all.find(manga => manga.key === obj.key);
         commit("removeCategoryFromManga", obj);
-        dispatch('updateManga', mg);
+        dispatch('findAndUpdate', mg);
     },
 
     /**
