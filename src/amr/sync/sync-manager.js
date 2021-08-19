@@ -211,11 +211,10 @@ class SyncManager {
 
     async processUpdatesToLocal(localList, remoteList) {
         const localUpdates = [];
-        for(const manga of remoteList) {
-            // Check if need to be sync to remote
-            const localManga = localList.find(m => m.key === manga.key);
-            if (!localManga || localManga.ts < manga.ts) {
-                localUpdates.push({ ...manga });
+        for (const remoteManga of remoteList) {
+            const localManga = localList.find(m => m.key === remoteManga.key);
+            if (this.shouldSyncToLocal({ localManga, remoteManga })) {
+                localUpdates.push({ ...remoteManga });
             }
         }
 
@@ -229,6 +228,26 @@ class SyncManager {
         return localUpdates;
     }
 
+
+    /**
+     * Don't have local copy and remote manga is not skipped
+     * or remote manga have newer timestamp
+     *
+     * @param localManga
+     * @param remoteManga
+     * @return {boolean}
+     */
+    shouldSyncToLocal({ localManga, remoteManga }) {
+        // Don't have local copy, but remote manga is skipped.
+        // Should not sync as there are no reason to added *new* deleted entry,
+        // that will try to delete non existing local entry forever.
+        if (!localManga && this.shouldSkipSync(remoteManga)) {
+            return false;
+        }
+
+        // Don't have it or remote manga have newer timestamp
+        return !localManga || localManga.ts < remoteManga.ts;
+    }
 
     /**
      * Can't actually delete it due to sync, need to mark it as deleted
