@@ -498,7 +498,7 @@ const actions = {
         if(isSyncEnabled) {
             if(isSyncing) timeout = 10*1000
         }
-        if(isConverting) timeout = 60*100
+        if(isConverting) timeout = 60*1000
         if(timeout > 0) {
             utils.debug('Skipped chapter lists update')
             setTimeout(() => {
