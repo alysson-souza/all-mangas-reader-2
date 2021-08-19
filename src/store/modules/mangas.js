@@ -561,12 +561,13 @@ const actions = {
         let mirrorTasks2 = Object.values(mirrorTasks).map(list => {
             return () => new Promise(async (resolve) => {
                 for (let seriesUpdate of list) {
-                    await seriesUpdate()
+                    await seriesUpdate().catch(utils.debug)
                 }
+                resolve()
             })
         })
 
-        await Promise.all(mirrorTasks2.map(t => t()))
+        await Promise.all(mirrorTasks2.map(t => t())).catch(utils.debug)
         dispatch("setOption", {key: "isUpdatingChapterLists", value: 0}); // Unset watcher when done
         utils.debug('Done updating chapter lists')
         if (rootState.options.refreshspin === 1) {
