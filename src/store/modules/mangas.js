@@ -488,6 +488,8 @@ const actions = {
      * @param {*} force force update if true. If false, check last time manga has been updated and take parameter pause for a week into account
      */
     async updateChaptersLists({ dispatch, commit, getters, state, rootState }, {force} = {force: true}) {
+        // avoid overlapping updates
+        if(rootState.options.isUpdatingChapterLists) return
         // get sync and convert watchers
         const isConverting = rootState.options.isConverting
         const isSyncEnabled = (rootState.options.syncEnabled || rootState.options.gistSyncEnabled)
