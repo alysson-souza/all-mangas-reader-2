@@ -29,17 +29,20 @@ if (typeof registerMangaObject === 'function') {
             let res = []
             let self = this
 
-            $("#chapters .col-lg-5 a[style!='display:none']:contains('Chapter')", doc).each(function (index) {
+            $("#chapters .col-lg-5 a[style!='display:none']:contains('Chapter'):not('.d-none')", doc).each(function (index) {
+                if ($(this).text().includes('You need to open'))
+                    return
+                
                 res.push([
                     $("div[style!='display:none']",this).text().trim(), 
-                    self.home + $(this).attr("href")]);
+                    self.home + $(this).attr("href")
+                ])
             })
 
             if ($('ul.pagination', doc).length && $('ul.pagination .page-item:last a[href!=""]', doc).length) {
                 let nextPage = $($('ul.pagination .page-item:last a[href!=""]', doc)[0]).attr('href')
                 res.push(...await self.getListChaps(nextPage))
             }
-
             
             return res
         },

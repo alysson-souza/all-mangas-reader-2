@@ -15,6 +15,7 @@ window["Madara"] = function (options) {
         img_src: "src",
         secondary_img_src: "data-src",
         sort_chapters: false,
+        isekai_chapter_url: false,
         doBefore: () => { }
     },
     this.options = Object.assign(this.default_options, options)
@@ -74,6 +75,9 @@ window["Madara"] = function (options) {
         if (this.options.chapter_list_ajax) {
             let searchApiUrl = this.options.search_url + "wp-admin/admin-ajax.php"
             let mangaVar
+
+            if (this.options.isekai_chapter_url) 
+                searchApiUrl = (urlManga.endsWith('/') ? urlManga : urlManga + '/') + 'ajax/chapters/'
             
             if (this.options.chapter_list_ajax_selctor_type == 'variable')
                 mangaVar = amr.getVariable(this.options.chapter_list_ajax_selctor, doc).manga_id
@@ -164,7 +168,8 @@ window["Madara"] = function (options) {
     }
 
     this.makeChapterUrl = function (url) {
-        return this.stripLastSlash(url.replace("?style=list", "")) + "?style=list"
+        let t = new URL(url)
+        return this.stripLastSlash(t.origin + t.pathname) + "?style=list"
     }
 
     this.stripLastSlash = function(url) {
