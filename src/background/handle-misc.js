@@ -66,10 +66,11 @@ class HandleMisc {
     }
     async DownloadAMR(message) {
         let url = 'https://release.allmangasreader.com/all-mangas-reader-latest.crx';
-        let filename = 'all-mangas-reader-latest.zip'
+        let filename = navigator.platform === 'Win32' ? 'all-mangas-reader-latest.7z' : 'all-mangas-reader-latest.crx'
         if(message.beta) {
             url = 'https://release.allmangasreader.com/all-mangas-reader-beta-latest.crx';
-            filename = 'all-mangas-reader-beta-latest.zip'
+            filename = navigator.platform === 'Win32' ? 'all-mangas-reader-beta-latest.7z' : 'all-mangas-reader-beta-latest.crx'
+
         }
         const res = await fetch(url)
         const fileStream = streamSaver.createWriteStream(filename, {
