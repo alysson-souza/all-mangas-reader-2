@@ -247,73 +247,76 @@ All Mangas Reader is a browser extension which is designed to help you read and 
     </table>
 </details>
 
+Your favorite website not listed yet? [Submit a request on discord](https://discord.gg/bdzk9hR)  
 
-#### 🔐 Privacy
-All Mangas Reader can collect data for statistics purpose only. It keeps track of the manga you are reading and on which website you read it. These data are anonymized and are stored for at most 6 months on our own server, no google inside :). You can optout from this tracking by answering no to the question asked in the app at first time or from the options page.
-
-## Installation
+### 🔐 Privacy
+All Mangas Reader creates cookies to force English on the Webtoons website, and pass an "I am adult" cookie to websites that have verifications
+for more explicit content. Not allowing AMR to read / create cookies will hinder or break compatibility with these websites. This option can
+be turned off / on at any time from the settings menu.
 
 ### Download
+⚠️ **Chromium based browsers** (opera/brave/vivaldi/edge) **[needs additional steps](#chromium)** in order to install All Mangas Reader.  
+**Check [Browser compatibilty](#browser-compatibility) if your not sure.**
+
+  - **[Stable](https://addons.mozilla.org/fr/firefox/addon/all-mangas-reader/)**
+  - **[Beta](https://release.allmangasreader.com/all-mangas-reader-beta-latest.xpi)**
+
+## Chromium
 All Mangas Reader do not comply with Google Chrome Extensions terms of services, thus cannot be downloaded directly from their store.  
-  - Stable : **[All Mangas Reader's main website](https://v2.allmangasreader.com)**
-  - Beta
-    - **[Firefox](https://release.allmangasreader.com/all-mangas-reader-beta-latest.xpi)**
-    - **[Chromium](https://release.allmangasreader.com/all-mangas-reader-beta-latest.crx)**
- 
-⚠️ **Chromium based browsers [need an additional step](#chromium-installation)** in order to install All Mangas Reader.  
-**See [Browser compatibilty](#browser-compatibility) to check if your browser's based on Chromium.**
-
-### Chromium installation
-
+### Install AMR on a chromium browser
 1. Navigate to **[All Mangas Reader's main website](https://v2.allmangasreader.com)** and click the download link for Opera and Chrome.
-2. In the popup window right click the download button and click Save link as (in chrome) or Save link content as (Opera) and download the .crx file to somewhere on your computer.
-3. Change the extension of the file from .crx to .zip
-4. Open the extensions page in your browser, enable developer mode.
-5. Drag-and-drop the extension file into the extensions page.
+2. In the popup window right click the download button and click `Save link` or `Save link content as` depending on your browser.
+3. Extract the file .crx file you just downloaded.
+  * Windows: Change the file extension from to `.7z` and use [7zip](https://www.7-zip.org/download.html) to extract the file. ([how to extract file with 7z](https://www.webhostinghub.com/help/learn/website/managing-files/extract-file))
+  * MacOS X / Linux: open a terminal and use [unzip](https://superuser.com/a/1026504)
+4. Move this extracted folder to a location you wish to use for this extension, you will need to remember where this folder is in order to update the extension
+5. Open the extensions page in your browser, enable developer mode and click `Load unpacked extension`.
+6. Select the folder you unpacked to install AMR.
 
-
-### Chromium updates
+### Update AMR on a chromium browser
 1. Download the lasted version of All Mangas Reader directly from within the extension when prompted  
 ![](/images/new_version.PNG)
-2. Open the extensions page in your browser.
-3. Drag-and-drop the extension file your just downloaded into the extensions page.
+2. Repeat the [installation process](#install-amr-on-a-chromium-browser) from step#3
 
-### Synchronization
+## Synchronization
+### Browser Sync
+*Browser sync* uses your browser capabilities to synchronize your manga list:  
+⚠️**only works with Firefox**.
 
-#### Browser Sync
+- ✔️ 🖥️💻📱 <small>(Firefox)</small> **⬌** 🖥️💻📱 <small>(Firefox)</small>
 
-*Browser sync* can be enabled under `Settings > General > Enable browser sync checkbox`
+Enable *Browser sync* in All Mangas Reader under `Settings > General > Synchronization > Enable browser sync`
 
-It uses your browser capabilities to synchronize your manga list:
-- ✔️ 🖥️💻 <small>(Firefox)</small> **⬌** 🖥️💻 <small>(Firefox)</small>
-- ✔️ 🖥️💻 <small>(Chrome)</small> **⬌** 🖥️💻 <small>(Chrome)</small>
-- ❌ 🖥️💻 <small>(Chrome)</small> **⬌** 🖥️💻 <small>(Firefox)</small>
-- etc ..
+### Synchronization with Gist (3rd-party)
+*Gist Sync* is an alernative method to synchornize your manga list using a third party service.  
+:information_source: Although more [difficult to setup](#enable-gist-sync), this synchronization method is compatible with all (chromium/firefox) browsers.
 
-#### Synchronization with Gist (Github)
-*Gist Sync* is an alernative method to synchornize your manga list. Useful when you need to synchronize across different browsers and operating systems :
 - ✔️ 🖥️💻📱 <small>(any browser)</small> **⬌** 🖥️💻📱 <small>(any browser)</small>
 
-##### In order to use the Gist Sync feature for All Mangas Reader, follow these instructions:  
+##### Enable Gist Sync
 
 1. If you do not have a GitHub account create one at [github.com](https://github.com/)
 2. Create a Gist at [gist.github.com](https://gist.github.com/)
     1. In order to create a Gist you have to fill in a description, a file name and its content. It does not matter what the values are.
-    2. Once created the URL will change to `gist.github.com/<username>/<Gist ID>`, capture the Gist ID from the URL
+    2. Once created the URL will change to `gist.github.com/<username>/<Gist ID>`, copy the Gist ID from the URL.
 3. Create a Personal Access Token
     1. Go to [github.com/settings/tokens](https://github.com/settings/tokens) and click on "Generate new token".
     2. Fill in the "Note" field with what you want, e.g. "AMR".
     3. Check the "gist" checkbox
-    4. Click "Generate Token". **BE SURE TO CAPTURE THE TOKEN** when it is generated as you will not be able to review the token later.  If you did not capture the token, then you will need to generate a new token.
+    4. Click "Generate Token" and copy it.
+      - Generate as much token as you need (1 per device)
+      - Make sure you capture/copy token before regenerating new ones as they are shown only once.
 4. Enable Gist Sync in All Mangas Reader
-    1. Personal access token is the code captured in Step 3 above.
-    2. Gist ID is the ID captured from Step 2 above
-5. Once all of the Gist Sync fields are populated, All Mangas Reader will initiate a synch with Gist.
-    1. There should be a new file named "amr.json" in your Gist which contain your sync data.
-    2. If you need to verify that data has been transfered, then open the Gist and review the Revision history.
-6. Enable Gist Sync in All Mangas Reader for all other devices. Use the same Personal Access Token and Gist ID that were captured earlier.
+    1. In AMR go to `Settings (cog icon) > General > Synchronization` and check `Enable Gist Sync`
+    2. Past corresponding informations:
+        - Personal access token is the generated token.
+        - Gist ID is the ID extracted from the gist URL
+5. Once all of the fields are populated, All Mangas Reader will initiate the synchronization automatically (initlization might take up to 30s).
+  - Your data is stored at `https://gist.github.com/<username>/<Gist ID>#file-amr-json`
+  - You can use `Revision` to see/restore past version of your synced data
+6. Enable Gist Sync in All Mangas Reader for all other devices, make sure they each have their own token and use the same Gist ID.
 
-ℹ️ ***Browser Sync* doesn't need to be enabled for *Gist Sync* to work.**
+:information_source: ***Browser Sync* doesn't need to be enabled for *Gist Sync* to work.**
 
 ## Contribute
 **❗ Before contributing to the project, please read our [Contribution guide](CONTRIBUTING.md).**
