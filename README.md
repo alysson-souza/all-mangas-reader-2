@@ -32,7 +32,7 @@ All Mangas Reader is a browser extension which is designed to help you read and 
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Opera_2015_icon.svg/200px-Opera_2015_icon.svg.png" width="16" title="Opera"/>
         </td>
         <td>
-            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/9/98/Microsoft_Edge_logo_%282019%29.svg/240px-Microsoft_Edge_logo_%282019%29.svg.png" width="16" title="Edge Chromium"/>
+            <img src="https://upload.wikimedia.org/wikipedia/fr/2/20/Logo_Microsoft_Edge.png" width="16" title="Edge Chromium"/>
         </td>
         <td>
             <img src="https://upload.wikimedia.org/wikipedia/commons/c/c4/Brave_lion.png" width="18" title="Brave"/>
@@ -58,9 +58,9 @@ All Mangas Reader is a browser extension which is designed to help you read and 
         <td>✔️</td>
         <td>❌</td>
         <td>❌</td>
-        <td>❓</td>
-        <td>❓</td>
-        <td>❓</td>
+        <td>❌</td>
+        <td>❌</td>
+        <td>❌</td>
         <td>✔️</td>
     </tr>
     </tbody>
@@ -254,17 +254,21 @@ All Mangas Reader creates cookies to force English on the Webtoons website, and 
 for more explicit content. Not allowing AMR to read / create cookies will hinder or break compatibility with these websites. This option can
 be turned off / on at any time from the settings menu.
 
-### Download
-⚠️ **Chromium based browsers** (opera/brave/vivaldi/edge) **[needs additional steps](#chromium)** in order to install All Mangas Reader.  
-**Check [Browser compatibilty](#browser-compatibility) if your not sure.**
+<h2 id="#firefox-install"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Firefox_logo.png/255px-Firefox_logo.png" width="30" title="Firefox"/> Firefox</h2>
 
+- Download the latest stable version from the Mozilla add-ons explorer
   - **[Stable](https://addons.mozilla.org/fr/firefox/addon/all-mangas-reader/)**
+- Beta versions for firefox are currently on hold but still available here :
   - **[Beta](https://release.allmangasreader.com/all-mangas-reader-beta-latest.xpi)**
 
-## Chromium
-All Mangas Reader do not comply with Google Chrome Extensions terms of services, thus cannot be downloaded directly from their store.  
+<h2 id="#chromium-install"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Chromium_Material_Icon.svg/langfr-1024px-Chromium_Material_Icon.svg.png" width="30" title="Chromium"/> Chromium</h2>
+ 
+⚠️ **Chromium based browsers** need the following additional steps in order to install All Mangas Reader.  
+If you are not sure your browser is based on chromium you can check our [Browser compatibilty](#browser-compatibility) list (or google it).
+ 
 ### Install AMR on a chromium browser
-1. Navigate to **[All Mangas Reader's main website](https://v2.allmangasreader.com)** and click the download link for Opera and Chrome.
+All Mangas Reader do not comply with Google Chrome Extensions terms of services, thus cannot be downloaded directly from their store.
+1. Navigate to **[All Mangas Reader's main website](https://v2.allmangasreader.com)** and click the download link for Opera and Chrome (you can chose between stable or beta releases).
 2. In the popup window right click the download button and click `Save link` or `Save link content as` depending on your browser.
 3. Extract the file .crx file you just downloaded.
   * Windows: Change the file extension from to `.7z` and use [7zip](https://www.7-zip.org/download.html) to extract the file. ([how to extract file with 7z](https://www.webhostinghub.com/help/learn/website/managing-files/extract-file))
@@ -278,14 +282,14 @@ All Mangas Reader do not comply with Google Chrome Extensions terms of services,
 ![](/images/new_version.PNG)
 2. Repeat the [installation process](#install-amr-on-a-chromium-browser) from step#3
 
-## Synchronization
+## 📡 Synchronization
 ### Browser Sync
 *Browser sync* uses your browser capabilities to synchronize your manga list:  
 ⚠️**only works with Firefox**.
 
 - ✔️ 🖥️💻📱 <small>(Firefox)</small> **⬌** 🖥️💻📱 <small>(Firefox)</small>
 
-Enable *Browser sync* in All Mangas Reader under `Settings > General > Synchronization > Enable browser sync`
+Enable *Browser sync* in All Mangas Reader under `Settings (cog icon in the top-right corner) > General > Synchronization > Enable browser sync`
 
 ### Synchronization with Gist (3rd-party)
 *Gist Sync* is an alernative method to synchornize your manga list using a third party service.  
@@ -307,7 +311,7 @@ Enable *Browser sync* in All Mangas Reader under `Settings > General > Synchroni
       - Generate as much token as you need (1 per device)
       - Make sure you capture/copy token before regenerating new ones as they are shown only once.
 4. Enable Gist Sync in All Mangas Reader
-    1. In AMR go to `Settings (cog icon) > General > Synchronization` and check `Enable Gist Sync`
+    1. In AMR go to `Settings (cog icon in the top-right corner) > General > Synchronization` and check `Enable Gist Sync`
     2. Past corresponding informations:
         - Personal access token is the generated token.
         - Gist ID is the ID extracted from the gist URL
