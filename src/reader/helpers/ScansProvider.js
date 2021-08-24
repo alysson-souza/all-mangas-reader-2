@@ -104,12 +104,12 @@ class ScanLoader {
         this.doublepage = false /* is the scan a double page */
         this.thinscan = false /* is the scan super thin (height > 3 * width) */
         this.scan = document.createElement("img") /* Image containing the loaded scan, will be cloned to be displayed */
+        this.retried = false /* Has an auto retry of errors been attempted */
     }
     /** Loads the scan */
     load() {
         this.loading = true
         this.error = false
-        this.retried = false /* Has an auto retry of errors been attempted */
 
         // The code below introduce a loading error for a quarter of the scans
         // think about updating the this.url at the bottom of the function and replace it with just url
@@ -139,10 +139,10 @@ class ScanLoader {
                 console.error(e)
                 this.loading = false
                 this.error = true
-                if (!this.retried) {
-                    this.retried = true
-                    this.load()
-                }
+                // if (!this.retried) {
+                //     this.retried = true
+                //     this.load()
+                // }
                 resolve()
             }
             this.scan.addEventListener('error', (e) => {
