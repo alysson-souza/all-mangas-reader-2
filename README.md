@@ -308,8 +308,8 @@ Enable *Browser sync* in All Mangas Reader under `Settings (cog icon in the top-
     2. Fill in the "Note" field with what you want, e.g. "AMR".
     3. Check the "gist" checkbox
     4. Click "Generate Token" and copy it.
-      - Generate as much token as you need (1 per device)
-      - Make sure you capture/copy token before regenerating new ones as they are shown only once.
+        - Generate as much token as you need (1 per device)
+        - Make sure you capture/copy token before regenerating new ones as they are shown only once.
 4. Enable Gist Sync in All Mangas Reader
     1. In AMR go to `Settings (cog icon in the top-right corner) > General > Synchronization` and check `Enable Gist Sync`
     2. Past corresponding informations:
