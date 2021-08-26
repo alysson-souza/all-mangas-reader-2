@@ -72,7 +72,6 @@ if (typeof registerMangaObject === 'function') {
             let id = urlManga.split('/')[4]
             let jsonChapFeed
             let res = {}
-            let done = [] // to avoid duplicate chapters. pick randomly a version
             let finished = false
             let page = 0
 
@@ -80,16 +79,30 @@ if (typeof registerMangaObject === 'function') {
                 jsonChapFeed = await amr.loadJson(
                     `${this.api}/manga/${id}/feed?limit=${this.pageLimit}&order[chapter]=desc&offset=${page * this.pageLimit}`
                 )
-                
+
+                // Create Object representing results
+                const uniq = jsonChapFeed.results.filter(data => data.result === "ok").reduce((acc,o)=>{
+                    if (!acc[o.data.attributes.chapter + o.data.attributes.translatedLanguage]) {
+                        acc[o.data.attributes.chapter + o.data.attributes.translatedLanguage] = [];
+                    }
+                    acc[o.data.attributes.chapter + o.data.attributes.translatedLanguage].push(o);
+                    return acc;
+                }, {});
+                // When chapter has multiple groups, only keep the oldest entry
+                jsonChapFeed.results = Object.values(uniq).reduce((acc,list)=>{
+                    list.sort((a,b)=>
+                    new Date(b.data.attributes.publishAt) - new Date(a.data.attributes.publishAt) && b.data.attributes.chapter - a.data.attributes.chapter
+                    );
+                    acc.push(list[0]);
+                    return acc;
+                }, []);
+
+
                 jsonChapFeed.results
-                    .filter(data => data.result === "ok")
                     .map(data => data.data)
                     .forEach(chap => {
                         let attributes = chap.attributes;
                         let lang = attributes.translatedLanguage;
-
-                        if (attributes.chapter && done.indexOf(lang + attributes.chapter) >= 0) return;
-                        done.push(lang + attributes.chapter)
 
                         if (!res[lang]) res[lang] = []
 
