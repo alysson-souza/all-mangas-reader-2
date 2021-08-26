@@ -89,37 +89,25 @@ if (typeof registerMangaObject === 'function') {
                     return acc;
                 }, {});
                 // When chapter has multiple groups, only keep the oldest entry
-                jsonChapFeed.results = Object.values(uniq).reduce((acc,list)=>{
-                    list.sort((a,b)=>
-                    new Date(b.data.attributes.publishAt) - new Date(a.data.attributes.publishAt) && b.data.attributes.chapter - a.data.attributes.chapter
-                    );
-                    acc.push(list[0]);
-                    return acc;
-                }, []);
-
-
-                jsonChapFeed.results
+                jsonChapFeed.results = Object.values(uniq)
+                    .reduce((acc,list)=>{
+                        list.sort((a,b)=>new Date(b.data.attributes.publishAt) - new Date(a.data.attributes.publishAt) && b.data.attributes.chapter - a.data.attributes.chapter);
+                        acc.push(list[0]);
+                        return acc;
+                    }, [])
+                    // Format data to be consumed
                     .map(data => data.data)
                     .forEach(chap => {
-                        let attributes = chap.attributes;
-                        let lang = attributes.translatedLanguage;
-
-                        if (!res[lang]) res[lang] = []
-
-                        let titleParts = []
-
-                        if (attributes.chapter && attributes.chapter.length > 0)
-                            titleParts.push(attributes.chapter)
-
-                        if (attributes.title && attributes.title.length > 0)
-                            titleParts.push(attributes.title)
-
+                        const lang = chap.attributes.translatedLanguage
+                        const attributes = chap.attributes
+                        if(!res[lang]) res[lang] = []
+                        const titleParts = []
+                        if(attributes.chapter && attributes.chapter.length > 0) titleParts.push(attributes.chapter)
+                        if(attributes.title) titleParts.push(attributes.title)
                         res[lang].push([
                             titleParts.length > 0 ? titleParts.join(' - ') : 'Untitled',
                             `${this.home}chapter/${chap.id}`
                         ])
-
-                        
                     })
                 page++
 
