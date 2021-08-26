@@ -69,17 +69,14 @@ if (typeof registerMangaObject === 'function') {
         getListChaps: async function(urlManga) {
             // let blockedGroups = amr.getOption('mangadexBlockedGroups').split(',') || []
             // let mangadexDataSaver = amr.getOption('mangadexDataSaver')
-            let id = urlManga.split('/')[4]
-            let jsonChapFeed
-            let res = {}
-            let finished = false
-            let page = 0
-
-            while (!finished) {
-                jsonChapFeed = await amr.loadJson(
+            const id = urlManga.split('/')[4]
+            const res = {}
+            // Loop with 15 iterations at most
+            for(const [page, emptyVal] of Array(15).entries()) {
+                // fetch data
+                const jsonChapFeed = await amr.loadJson(
                     `${this.api}/manga/${id}/feed?limit=${this.pageLimit}&order[chapter]=desc&offset=${page * this.pageLimit}`
                 )
-
                 // Create Object representing results
                 const uniq = jsonChapFeed.results.filter(data => data.result === "ok").reduce((acc,o)=>{
                     if (!acc[o.data.attributes.chapter + o.data.attributes.translatedLanguage]) {
@@ -109,15 +106,14 @@ if (typeof registerMangaObject === 'function') {
                             `${this.home}chapter/${chap.id}`
                         ])
                     })
-                page++
-
-                if (parseInt(jsonChapFeed.limit) + parseInt(jsonChapFeed.offset) >= parseInt(jsonChapFeed.total) || page > 15) {
-                    finished = true
-                } else {
-                    await new Promise(r => setTimeout(r, 250))
-                }
-            }
-            
+                // Do we need to fetch the next page ?
+                const current = parseInt(jsonChapFeed.limit) + parseInt(jsonChapFeed.offset)
+                const total = parseInt(jsonChapFeed.total)
+                // no => break;
+                if(current >= total) break;
+                // yes => wait 250ms before next iteration
+                await new Promise(r => setTimeout(r, 250))
+            }           
             return res
         },
 
