@@ -415,16 +415,6 @@ const actions = {
      * @return void
      */
     async refreshLastChapters({ dispatch, commit, getters, rootState }, message) {
-        // retry later if syncing is happening or if entries from mangadex are converted to v5
-        if(rootState.options.isConverting || rootState.state.options.isSyncing) {
-            setTimeout(() => {
-                refreshLastChapters({ dispatch, commit, getters, rootState }, message)
-            }, 30*1000);
-            return;
-        }
-        // skip if we are already updating chapter list globally
-        if(rootState.options.isUpdatingChapterLists) return;
-
         const key = utils.mangaKey(message.url, message.mirror, message.language);
         const mg = state.all.find(manga => manga.key === key);
         if (mg.update !== 1) {
@@ -436,7 +426,6 @@ const actions = {
             return;
         }
 
-        dispatch('setOption', {key: "isUpdatingChapterLists", value:1}) // set watcher
         const oldLastChap = (typeof mg.listChaps[0] === 'object' ? mg.listChaps[0][1] : undefined);
 
         utils.debug(listChaps.length + " chapters found for " + mg.name + " on " + mg.mirror)
@@ -458,7 +447,6 @@ const actions = {
                     fromSite: false
                 }
             });
-            dispatch('setOption', {key: "isUpdatingChapterLists", value:0}) // unset watcher
             return;
         }
 
@@ -466,7 +454,6 @@ const actions = {
         const lastReadPath = utils.chapPath(mg.lastChapterReadURL);
         const lastRead = mg.listChaps.find(arr => utils.chapPath(arr[1]) === lastReadPath);
         if (lastRead) {
-            dispatch('setOption', {key: "isUpdatingChapterLists", value:0}) // unset watcher
             return;
         }
 
@@ -482,7 +469,6 @@ const actions = {
                     fromSite: false
                 }
             });
-            dispatch('setOption', {key: "isUpdatingChapterLists", value:0}) // unset watcher
             return;
         }
 
@@ -494,7 +480,6 @@ const actions = {
                 fromSite: false
             }
         });
-        dispatch('setOption', {key: "isUpdatingChapterLists", value:0}) // unset watcher
     },
 
     /**
