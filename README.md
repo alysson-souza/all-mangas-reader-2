@@ -268,19 +268,21 @@ If you are not sure your browser is based on chromium you can check our [Browser
  
 ### Install AMR on a chromium browser
 All Mangas Reader do not comply with Google Chrome Extensions terms of services, thus cannot be downloaded directly from their store.
-1. Navigate to **[All Mangas Reader's main website](https://v2.allmangasreader.com)** and click the download link for Opera and Chrome (you can chose between stable or beta releases).
-2. In the popup window right click the download button and click `Save link` or `Save link content as` depending on your browser.
-3. Extract the file .crx file you just downloaded.
-  * Windows: Change the file extension from to `.7z` and use [7zip](https://www.7-zip.org/download.html) to extract the file. ([how to extract file with 7z](https://www.webhostinghub.com/help/learn/website/managing-files/extract-file))
-  * MacOS X / Linux: open a terminal and use [unzip](https://superuser.com/a/1026504)
-4. Move this extracted folder to a location you wish to use for this extension, you will need to remember where this folder is in order to update the extension
-5. Open the extensions page in your browser, enable developer mode and click `Load unpacked extension`.
-6. Select the folder you unpacked to install AMR.
+
+1.  **Right-click -> `Save Link` or `Save link content as`** on the version you wish to use
+    - **[Stable](https://release.allmangasreader.com/all-mangas-reader-latest.crx)**
+    - **[Beta](https://release.allmangasreader.com/all-mangas-reader-beta-latest.crx)**
+2. Extract the file .crx file you just downloaded to a location you wish to use for this extension, you will need to remember where this folder is in order to update the extension.
+    - **Windows**: Change the file extension from `.crx`to `.7z` and use [7zip](https://www.7-zip.org/download.html) to extract the file. ([how to extract file with 7z](https://www.webhostinghub.com/help/learn/website/managing-files/extract-file))
+    - **MacOS X** / **Linux**: open a terminal and use [unzip](https://superuser.com/a/1026504)
+3. Open the extensions page in your browser, enable developer mode and click `Load unpacked extension`.
+4. Select the folder you extracted to install AMR.
 
 ### Update AMR on a chromium browser
 1. Download the lasted version of All Mangas Reader directly from within the extension when prompted  
 ![](/images/new_version.PNG)
-2. Repeat the [installation process](#install-amr-on-a-chromium-browser) from step#3
+2. Extract the file .crx file you just downloaded into your (already existing) All Mangas Reader's installation folder 
+3. Restart browser
 
 ## 📡 Synchronization
 ### Browser Sync
@@ -308,16 +310,16 @@ Enable *Browser sync* in All Mangas Reader under `Settings (cog icon in the top-
     2. Fill in the "Note" field with what you want, e.g. "AMR".
     3. Check the "gist" checkbox
     4. Click "Generate Token" and copy it.
-      - Generate as much token as you need (1 per device)
-      - Make sure you capture/copy token before regenerating new ones as they are shown only once.
+        - Generate as much token as you need (1 per device)
+        - Make sure you capture/copy token before regenerating new ones as they are shown only once.
 4. Enable Gist Sync in All Mangas Reader
     1. In AMR go to `Settings (cog icon in the top-right corner) > General > Synchronization` and check `Enable Gist Sync`
     2. Past corresponding informations:
         - Personal access token is the generated token.
         - Gist ID is the ID extracted from the gist URL
 5. Once all of the fields are populated, All Mangas Reader will initiate the synchronization automatically (initlization might take up to 30s).
-  - Your data is stored at `https://gist.github.com/<username>/<Gist ID>#file-amr-json`
-  - You can use `Revision` to see/restore past version of your synced data
+    - Your data is stored at `https://gist.github.com/<username>/<Gist ID>#file-amr-json`
+    - You can use `Revision` to see/restore past version of your synced data
 6. Enable Gist Sync in All Mangas Reader for all other devices, make sure they each have their own token and use the same Gist ID.
 
 :information_source: ***Browser Sync* doesn't need to be enabled for *Gist Sync* to work.**
