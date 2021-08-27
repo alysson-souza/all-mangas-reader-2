@@ -19,8 +19,8 @@
       <v-tab-item value="onwebsites" v-if="tabs === 'onwebsites'" transition="false">
         <v-expansion-panels accordion focusable>
           <v-expansion-panel>
-            <v-expansion-panel-header><div class="text-h5 indigo--text lighten-4">{{ i18n("options_web_chapter_display_mode") }}</div></v-expansion-panel-header>
-            <v-expansion-panel-content class="mt-6">
+            <v-expansion-panel-header><div class="text-h5 blue--text lighten-4">{{ i18n("options_web_chapter_display_mode") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-content class="pt-6" color="slight-overlay">
               <!-- Display options -->
               <v-alert dense value="true" color="info" icon="mdi-information" text elevation="1">
                 {{i18n('options_web_chapter_desc')}}
@@ -86,8 +86,8 @@
           </v-expansion-panel>
           <v-expansion-panel>
             <!-- Loading options -->
-            <v-expansion-panel-header><div class="text-h5 indigo--text lighten-4">{{ i18n("options_web_loading") }}</div></v-expansion-panel-header>
-            <v-expansion-panel-content class="mt-6">
+            <v-expansion-panel-header><div class="text-h5 blue--text lighten-4">{{ i18n("options_web_loading") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-content class="pt-6" color="slight-overlay">
               <!-- Loading progression -->
               <div class="text-h6">{{i18n('options_web_load_desc')}}</div>
               <v-checkbox v-model="load" @change="setOption('load')"
@@ -125,8 +125,8 @@
         <v-expansion-panels accordion focusable>
           <v-expansion-panel>
             <!-- AMR aspect -->
-            <v-expansion-panel-header><div class="text-h5 indigo--text lighten-4">{{ i18n("options_gen_aspect") }}</div></v-expansion-panel-header>
-            <v-expansion-panel-content class="mt-6">
+            <v-expansion-panel-header><div class="text-h5 blue--text lighten-4">{{ i18n("options_gen_aspect") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-content class="pt-6" color="slight-overlay">
               <!-- Open in new tab -->
               <div class="text-h6">{{i18n('options_gen_newTab_desc')}}</div>
               <v-checkbox v-model="newTab" @change="setOption('newTab')"
@@ -168,8 +168,8 @@
           </v-expansion-panel>
           <v-expansion-panel>
             <!-- Updates -->
-            <v-expansion-panel-header><div class="text-h5 indigo--text lighten-4">{{ i18n("options_gen_updates") }}</div></v-expansion-panel-header>
-            <v-expansion-panel-content class="mt-6">
+            <v-expansion-panel-header><div class="text-h5 blue--text lighten-4">{{ i18n("options_gen_updates") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-content class="pt-6" color="slight-overlay">
 
 
               <!-- Update chapters list -->
@@ -237,8 +237,8 @@
           </v-expansion-panel>
           <v-expansion-panel>
             <!-- Notifications -->
-            <v-expansion-panel-header><div class="text-h5 indigo--text lighten-4">{{ i18n("options_gen_notifs") }}</div></v-expansion-panel-header>
-            <v-expansion-panel-content class="mt-6">
+            <v-expansion-panel-header><div class="text-h5 blue--text lighten-4">{{ i18n("options_gen_notifs") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-content class="pt-6" color="slight-overlay">
               <!-- Notify on new chapter -->
               <div class="text-h6">{{i18n('options_gen_shownotifications_desc')}}</div>
               <v-checkbox v-model="shownotifications" @change="setOption('shownotifications')"
@@ -270,8 +270,8 @@
           </v-expansion-panel>
           <v-expansion-panel>
             <!-- Synchronization -->
-            <v-expansion-panel-header><div class="text-h5 indigo--text lighten-4">{{ i18n("options_sync_title") }}</div></v-expansion-panel-header>
-            <v-expansion-panel-content class="mt-6">
+            <v-expansion-panel-header><div class="text-h5 blue--text lighten-4">{{ i18n("options_sync_title") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-content class="pt-6" color="slight-overlay">
               <div class="text-h6">{{i18n('options_sync_manga_list_desc')}}</div>
               <v-alert dense v-if="!syncEnabled"  :value="true" color="error" icon="mdi-alert-octagon" text elevation="1">
                 {{i18n('options_sync_title_warning')}}
@@ -291,8 +291,8 @@
           </v-expansion-panel>
           <v-expansion-panel>
             <!-- Search -->
-            <v-expansion-panel-header><div class="text-h5 indigo--text lighten-4">{{ i18n("options_search_title") }}</div></v-expansion-panel-header>
-              <v-expansion-panel-content class="mt-6">
+            <v-expansion-panel-header><div class="text-h5 blue--text lighten-4">{{ i18n("options_search_title") }}</div></v-expansion-panel-header>
+              <v-expansion-panel-content class="pt-6" color="slight-overlay">
               <div class="text-h6">{{i18n('options_search_open_series_desc')}}</div>
               <v-checkbox v-model="searchOpenSeries" @change="setOption('searchOpenSeries')"
                           :label="i18n('options_search_open_series_checkbox')"></v-checkbox>
@@ -304,8 +304,8 @@
         <v-expansion-panels accordion focusable>
           <v-expansion-panel>
             <!-- Languages -->
-            <v-expansion-panel-header><div class="text-h5 indigo--text lighten-4">{{ i18n("options_sup_languages") }}</div></v-expansion-panel-header>
-            <v-expansion-panel-content class="mt-6">
+            <v-expansion-panel-header><div class="text-h5 blue--text lighten-4">{{ i18n("options_sup_languages") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-content class="pt-6" color="slight-overlay">
               <div class="text-h6">{{i18n('options_sup_languages_desc')}}</div>
               <Flag
                   v-for="lang in alllangs"
@@ -322,8 +322,8 @@
           </v-expansion-panel>
           <v-expansion-panel>
             <!-- Supported websites -->
-            <v-expansion-panel-header><div class="text-h5 indigo--text lighten-4">{{ i18n("options_supported") }}</div></v-expansion-panel-header>
-            <v-expansion-panel-content class="mt-6">
+            <v-expansion-panel-header><div class="text-h5 blue--text lighten-4">{{ i18n("options_supported") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-content class="pt-6" color="slight-overlay">
               <div class="text-h6">{{i18n('options_sup_desc')}}</div>
               <!-- Filters -->
               <v-row class="mt-2 flex">
@@ -379,8 +379,8 @@
           </v-expansion-panel>
           <v-expansion-panel>
             <!-- Laboratory -->
-            <v-expansion-panel-header><div class="text-h5 indigo--text lighten-4">{{ i18n("options_sup_repos") }}</div></v-expansion-panel-header>
-            <v-expansion-panel-content class="mt-6">
+            <v-expansion-panel-header><div class="text-h5 blue--text lighten-4">{{ i18n("options_sup_repos") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-content class="pt-6" color="slight-overlay">
               <div class="text-h6">{{i18n('options_sup_repos_desc')}}</div>
               <v-row >
                 <v-col cols="12">
@@ -395,8 +395,8 @@
          <v-expansion-panels accordion focusable>
           <!-- Mangadex Options -->
           <v-expansion-panel>
-            <v-expansion-panel-header><div class="text-h5 indigo--text lighten-4">{{ i18n("options_mirror_specific_mangadex") }}</div></v-expansion-panel-header>
-            <v-expansion-panel-content class="mt-6">
+            <v-expansion-panel-header><div class="text-h5 blue--text lighten-4">{{ i18n("options_mirror_specific_mangadex") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-content class="pt-6" color="slight-overlay">
               <!-- Datasaver option -->
               <div class="text-h6">{{i18n('options_mangadex_datasaver')}}</div>
               <v-alert dense value="true" color="info" icon="mdi-information" text elevation="1">
@@ -474,8 +474,8 @@
           </v-expansion-panel>
           <!-- Komga Options -->
           <v-expansion-panel>
-            <v-expansion-panel-header><div class="text-h5 indigo--text lighten-4">{{ i18n("options_mirror_specific_komga") }}</div></v-expansion-panel-header>
-            <v-expansion-panel-content class="mt-6">
+            <v-expansion-panel-header><div class="text-h5 blue--text lighten-4">{{ i18n("options_mirror_specific_komga") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-content class="pt-6" color="slight-overlay">
               <!-- Komga Domain -->
               <div class="text-h6">{{i18n('options_komga_server')}}</div>
               <v-text-field v-model="komgaUrl" @change="setOption('komgaUrl')" :label="i18n('options_komga_server_label')" />
@@ -1000,5 +1000,8 @@ export default {
 }
 .v-alert {
   font-size: 0.8rem!important;
+}
+.slight-overlay {
+  background-color:rgba(168, 83, 57, 0.06)
 }
 </style>
