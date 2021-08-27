@@ -22,7 +22,7 @@
             <v-expansion-panel-header><div class="text-h5 light-blue--text darken-3">{{ i18n("options_web_chapter_display_mode") }}</div></v-expansion-panel-header>
             <v-expansion-panel-content>
               <!-- Display options -->
-              <v-alert value="true" color="info" icon="mdi-information" outlined>
+              <v-alert dense value="true" color="info" icon="mdi-information" text elevation="2">
                 {{i18n('options_web_chapter_desc')}}
               </v-alert>
                   
@@ -44,7 +44,7 @@
 
               <!-- Display full chapter option -->
               <div class="text-h6">{{i18n('option_read_fullchapter')}}</div>
-              <v-alert value="true" color="info" icon="mdi-information" outlined>
+              <v-alert dense value="true" color="info" icon="mdi-information" text elevation="2">
                 {{i18n('option_read_fullchapter_info')}}
               </v-alert>
               <v-checkbox v-model="displayFullChapter" @change="setOption('displayFullChapter')"
@@ -77,7 +77,7 @@
                       :label="i18n('options_webtoon_mode_default_option')"></v-checkbox>
               <!-- Smooth navigation toggle (dynamially load next/previous chapters) -->
               <div class="text-h6">{{i18n('options_reader_smooth_navigation_label')}}</div>
-              <v-alert value="true" color="info" icon="mdi-information" outlined>
+              <v-alert dense value="true" color="info" icon="mdi-information" text elevation="2">
                 {{i18n('options_reader_smooth_navigation_info')}}
               </v-alert>
               <v-checkbox v-model="smoothNavigation" @change="setOption('smoothNavigation')"
@@ -94,14 +94,14 @@
                       :label="i18n('options_web_load_opt')"></v-checkbox>
               <!-- Loading images in the order -->
               <div class="text-h6">{{i18n('options_web_imgorder_desc')}}</div>
-              <v-alert value="true" color="info" icon="mdi-information" outlined>
+              <v-alert dense value="true" color="info" icon="mdi-information" text elevation="2">
                 {{i18n('options_web_imgorder_info')}}
               </v-alert>
               <v-checkbox v-model="imgorder" @change="setOption('imgorder')"
                       :label="i18n('options_web_imgorder_opt')"></v-checkbox>
               <!-- Prefetch next chapter -->
               <div class="text-h6">{{i18n('options_web_prefetch_desc')}}</div>
-              <v-alert value="true" color="info" icon="mdi-information" outlined>
+              <v-alert dense value="true" color="info" icon="mdi-information" text elevation="2">
                 {{i18n('options_web_prefetch_info')}}
               </v-alert>
               <v-checkbox v-model="prefetch" @change="setOption('prefetch')"
@@ -112,7 +112,7 @@
                       :label="i18n('options_web_markwhendownload_opt')"></v-checkbox>
               <!-- Automatically add manga to updates list -->
               <div class="text-h6">{{i18n('options_web_addauto_desc')}}</div>
-              <v-alert value="true" color="info" icon="mdi-information" outlined>
+              <v-alert dense value="true" color="info" icon="mdi-information" text elevation="2">
                 {{i18n('options_web_addauto_info')}}
               </v-alert>
               <v-checkbox v-model="addauto" @change="setOption('addauto')"
@@ -192,7 +192,7 @@
 
               <!-- Stop updates for a week -->
               <div class="text-h6">{{i18n('options_gen_stopupdateforaweek_desc')}}</div>
-               <v-alert value="true" color="info" icon="mdi-information" outlined>
+               <v-alert dense value="true" color="info" icon="mdi-information" text elevation="2">
                 {{i18n('options_gen_stopupdateforaweek_info')}}
               </v-alert>
               <v-checkbox v-model="stopupdateforaweek" @change="setOption('stopupdateforaweek')"
@@ -207,14 +207,14 @@
                       :label="i18n('options_gen_refreshspin_opt')"></v-checkbox>
               <!-- Save bandwidth while loading chapters -->
               <div class="text-h6">{{i18n('options_gen_savebandwidth_desc')}}</div>
-              <v-alert value="true" color="info" icon="mdi-information" outlined>
+              <v-alert dense value="true" color="info" icon="mdi-information" text elevation="2">
                 {{i18n('options_gen_savebandwidth_info')}}
               </v-alert>
               <v-checkbox v-model="savebandwidth" @change="setOption('savebandwidth')"
                       :label="i18n('options_gen_savebandwidth_opt')"></v-checkbox>
               <!-- Wait for n seconds between two chapters update request -->
               <div class="text-h6">{{i18n("options_gen_waitbetweenupdates_opt")}}</div>
-              <v-alert value="true" color="info" icon="mdi-information" outlined>
+              <v-alert dense value="true" color="info" icon="mdi-information" text elevation="2">
                 {{i18n('options_gen_waitbetweenupdates_desc')}}
               </v-alert>
                 <v-container fluid class="opt-container">
@@ -273,14 +273,14 @@
             <v-expansion-panel-header><div class="text-h5 light-blue--text darken-3">{{ i18n("options_sync_title") }}</div></v-expansion-panel-header>
             <v-expansion-panel-content>
               <div class="text-h6">{{i18n('options_sync_manga_list_desc')}}</div>
-              <v-alert v-if="!syncEnabled"  :value="true" color="error" icon="mdi-alert-octagon" outlined>
+              <v-alert dense v-if="!syncEnabled"  :value="true" color="error" icon="mdi-alert-octagon" text elevation="2">
                 {{i18n('options_sync_title_warning')}}
               </v-alert>
               <v-checkbox v-model="syncEnabled" @change="setOption('syncEnabled')"
                           :label="i18n('options_sync_checkbox')"></v-checkbox>
               <v-checkbox v-model="gistSyncEnabled" @change="setOption('gistSyncEnabled')"
                           :label="i18n('options_sync_gist')"></v-checkbox>
-              <v-alert v-if="gistSyncEnabled" value="true" color="info" icon="mdi-information" outlined>
+              <v-alert dense v-if="gistSyncEnabled" value="true" color="info" icon="mdi-information" text elevation="2">
                 <a class="info--text" href="https://gitlab.com/all-mangas-reader/all-mangas-reader-2#synchronisation-with-gist-github" target="__blank">{{i18n('options_sync_gist_help')}}</a>
               </v-alert>
               <v-text-field v-if="gistSyncEnabled" v-model="gistSyncSecret" @change="setOption('gistSyncSecret')"
@@ -399,7 +399,7 @@
             <v-expansion-panel-content>
               <!-- Datasaver option -->
               <div class="text-h6">{{i18n('options_mangadex_datasaver')}}</div>
-              <v-alert value="true" color="info" icon="mdi-information" outlined>
+              <v-alert dense value="true" color="info" icon="mdi-information" text elevation="2">
                 {{i18n('options_mangadex_datasaver_info')}}
               </v-alert>
               <v-checkbox v-model="mangadexDataSaver" @change="setOption('mangadexDataSaver')"
@@ -997,5 +997,8 @@ export default {
 }
 .flag-disabled {
     opacity: 0.4;
+}
+.v-alert {
+  font-size: 0.8rem!important;
 }
 </style>
