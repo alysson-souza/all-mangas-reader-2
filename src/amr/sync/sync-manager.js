@@ -56,6 +56,8 @@ class SyncManager {
                 }
             }
         }
+        // unset watcher
+        this.localStorage.vuexStore.dispatch("setOption", {key: 'isSyncing', value: 0})
     }
 
     updateSync(key, value) {
@@ -111,12 +113,29 @@ class SyncManager {
     async triggerSync(storageName) {
         const storage = this.remoteStorages.find((store) => store.constructor.name === storageName)
         if(storage) {
+            // Get update chapter and convert watchers
+            const isUpdating = this.localStorage.vuexStore.state.options.isUpdatingChapterLists
+            const isConverting = this.localStorage.vuexStore.state.options.isConverting
+
+            // skip if one of these is running (sync-manager will retry by itself)
+            if(isUpdating || isConverting) {
+                debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] Skipping sync due to chapter lists being updated`)
+                return;
+            }
+
             if(storage.retryDate && storage.retryDate.getTime() > Date.now()) {
                 debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] Skipping sync due to present retry date until ${storage.retryDate.toISOString()}`)
             } else {
+                debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] Starting sync`)
+                this.localStorage.vuexStore.dispatch("setOption", {key: 'isSyncing', value: 1}) // Set watcher
                 this.checkData(storage)
-                .then(debug)
+                .then(res => {
+                    this.localStorage.vuexStore.dispatch("setOption", {key: 'isSyncing', value: 0}) // Unset watcher when done
+                    debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] Done`)
+                    debug(res)
+                })
                 .catch(e => {
+                    this.localStorage.vuexStore.dispatch("setOption", {key: 'isSyncing', value: 0}) // Unset watcher on errors
                     if(e instanceof ThrottleError) {
                         storage.retryDate = e.getRetryAfterDate()
                     } else if(e instanceof Error) {
@@ -192,11 +211,10 @@ class SyncManager {
 
     async processUpdatesToLocal(localList, remoteList) {
         const localUpdates = [];
-        for(const manga of remoteList) {
-            // Check if need to be sync to remote
-            const localManga = localList.find(m => m.key === manga.key);
-            if (!localManga || localManga.ts < manga.ts) {
-                localUpdates.push({ ...manga });
+        for (const remoteManga of remoteList) {
+            const localManga = localList.find(m => m.key === remoteManga.key);
+            if (this.shouldSyncToLocal({ localManga, remoteManga })) {
+                localUpdates.push({ ...remoteManga });
             }
         }
 
@@ -210,6 +228,26 @@ class SyncManager {
         return localUpdates;
     }
 
+
+    /**
+     * Don't have local copy and remote manga is not skipped
+     * or remote manga have newer timestamp
+     *
+     * @param localManga
+     * @param remoteManga
+     * @return {boolean}
+     */
+    shouldSyncToLocal({ localManga, remoteManga }) {
+        // Don't have local copy, but remote manga is skipped.
+        // Should not sync as there are no reason to added *new* deleted entry,
+        // that will try to delete non existing local entry forever.
+        if (!localManga && this.shouldSkipSync(remoteManga)) {
+            return false;
+        }
+
+        // Don't have it or remote manga have newer timestamp
+        return !localManga || localManga.ts < remoteManga.ts;
+    }
 
     /**
      * Can't actually delete it due to sync, need to mark it as deleted
@@ -234,6 +272,12 @@ class SyncManager {
 }
 
 let instance;
+/**
+ * 
+ * @param {*} config 
+ * @param {*} vuexStore 
+ * @returns {SyncManager} 
+ */
 export const getSyncManager = (config, vuexStore) => {
     if (!instance) {
         instance = new SyncManager();

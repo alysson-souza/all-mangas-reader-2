@@ -1946,5 +1946,12 @@
   "options_gen_allowcookies_warning": {
     "message": "Warning: If this option is turned off certain websites will not function properly in All Mangas Reader.",
     "description": "cookie read/create functional warning"
+  },
+  "__V2_3_22": {
+    "message": "Just a filler to separate new labels from old ones"
+  },
+  "reader_context_menu_reload_image": {
+    "message": "Reload Image",
+    "description": "Context Menu link for reloading a single image"
   }
 }

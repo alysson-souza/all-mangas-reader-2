@@ -74,7 +74,12 @@ const default_options = {
     gistSyncEnabled: 0,
     gistSyncSecret: "",
     gistSyncGitID: "",
-
+    /**
+     * Sync/Update/Convert safener
+     */
+    isUpdatingChapterLists: 0,
+    isSyncing: 0,
+    isConverting: 0,
     /** Search Options */
     searchOpenSeries: 0,
     

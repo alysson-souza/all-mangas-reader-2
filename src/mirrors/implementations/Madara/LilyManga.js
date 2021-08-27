@@ -10,7 +10,7 @@ if (typeof registerMangaObject === 'function') {
         abstract: "Madara",
         abstract_options: {
             search_url: 'https://lilymanga.com/',
-            chapter_list_ajax: true
+            chapter_list_ajax: false
         },
     });
 }

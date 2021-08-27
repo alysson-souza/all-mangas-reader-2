@@ -44,6 +44,12 @@ IconHelper.setBlueIcon();
     await store.dispatch('initMangasFromDB');
 
     /**
+     * Reset watchers for components that can collide.
+     */
+    await store.dispatch("setOption", {key: 'isSyncing', value: 0})
+    await store.dispatch("setOption", {key: 'isUpdatingChapterLists', value: 0})
+    await store.dispatch('setOption', {key: "isConverting", value:0})
+    /**
      * Start sync process between local and remote storage
      */
 

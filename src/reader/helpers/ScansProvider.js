@@ -104,6 +104,7 @@ class ScanLoader {
         this.doublepage = false /* is the scan a double page */
         this.thinscan = false /* is the scan super thin (height > 3 * width) */
         this.scan = document.createElement("img") /* Image containing the loaded scan, will be cloned to be displayed */
+        this.retried = false /* Has an auto retry of errors been attempted */
     }
     /** Loads the scan */
     load() {
@@ -138,6 +139,10 @@ class ScanLoader {
                 console.error(e)
                 this.loading = false
                 this.error = true
+                // if (!this.retried) {
+                //     this.retried = true
+                //     this.load()
+                // }
                 resolve()
             }
             this.scan.addEventListener('error', (e) => {

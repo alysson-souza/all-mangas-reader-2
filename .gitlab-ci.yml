@@ -52,7 +52,7 @@ xpi-beta:
         variables:
             - $SIGN_FF_API_KEY == null
             - $CI_COMMIT_MESSAGE =~ /NO-CI/
-            - $CI_COMMIT_MESSAGE =~ /NO-FF/
+            - $CI_COMMIT_MESSAGE !~ /WITH-FF/
     only:
         - develop
     dependencies:

@@ -42,7 +42,7 @@
        />
 			<v-tooltip top v-if="alertmessage !== ''">
 				<template v-slot:activator="{ on }">
-					<v-alert class="mb-0" type="warning" v-on="on" :value="true" icon="mdi-alert-decagram" slot="activator">
+					<v-alert class="mb-0" type="warning" dismissible v-on="on" :value="true" icon="mdi-alert-decagram" slot="activator">
 						{{alertmessage}}
 						<v-btn light class="ml-2" x-small @v-if="!utils.isFirefox()" @click="DownloadAMR()">
 							<v-icon>mdi-cloud-download</v-icon>

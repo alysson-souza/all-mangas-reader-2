@@ -15,6 +15,7 @@ window["Madara"] = function (options) {
         img_src: "src",
         secondary_img_src: "data-src",
         sort_chapters: false,
+        isekai_chapter_url: false,
         doBefore: () => { }
     },
     this.options = Object.assign(this.default_options, options)
@@ -69,11 +70,14 @@ window["Madara"] = function (options) {
     this.getListChaps = async function (urlManga) {
         let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
         let self = this
-        var mangaName = $(this.options.search_a_sel, doc).text().trim()
+        let mangaName = $(this.options.search_a_sel, doc).text().trim()
 
         if (this.options.chapter_list_ajax) {
             let searchApiUrl = this.options.search_url + "wp-admin/admin-ajax.php"
             let mangaVar
+
+            if (this.options.isekai_chapter_url) 
+                searchApiUrl = (urlManga.endsWith('/') ? urlManga : urlManga + '/') + 'ajax/chapters/'
             
             if (this.options.chapter_list_ajax_selctor_type == 'variable')
                 mangaVar = amr.getVariable(this.options.chapter_list_ajax_selctor, doc).manga_id
@@ -93,8 +97,16 @@ window["Madara"] = function (options) {
 
         var res = []
         $(this.options.chapters_a_sel, doc).each(function (index) {
+            let chapterName = $(this).text()
+            let stringsToStrip = [
+                mangaName,
+                $('.chapter-release-date', this).text()
+            ]
+            
+            stringsToStrip.forEach(x => chapterName = chapterName.replace(x, ''))
+            
             res.push([
-                $(this).text().replace(mangaName, "").trim(),
+                chapterName.trim(),
                 self.makeChapterUrl($(this).attr("href")) // add ?style=list to load chapter in long strip mode, remove it if it already there and add it again,
             ])
         })
@@ -150,7 +162,7 @@ window["Madara"] = function (options) {
             if (self.options.hasOwnProperty('secondary_img_src') && img === undefined) {
                 img = $(this).attr(self.options.secondary_img_src)
             }
-            res[res.length] = img
+            res.push(img)
         });
         return res;
     }
@@ -164,7 +176,8 @@ window["Madara"] = function (options) {
     }
 
     this.makeChapterUrl = function (url) {
-        return this.stripLastSlash(url.replace("?style=list", "")) + "?style=list"
+        let t = new URL(url)
+        return this.stripLastSlash(t.origin + t.pathname) + "?style=list"
     }
 
     this.stripLastSlash = function(url) {

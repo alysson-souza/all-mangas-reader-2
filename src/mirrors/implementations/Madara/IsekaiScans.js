@@ -11,7 +11,8 @@ if (typeof registerMangaObject === 'function') {
         abstract_options: {
             search_url: "https://isekaiscan.com/",
             img_src: "data-src",
-            chapter_list_ajax: true
+            chapter_list_ajax: true,
+            isekai_chapter_url: true
         }
     })
 }

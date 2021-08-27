@@ -10,7 +10,7 @@ if (typeof registerMangaObject === 'function') {
         abstract: 'Madara',
         abstract_options: {
             search_url: 'https://reaperscans.com/',
-            chapter_list_ajax: true,
+            chapter_list_ajax: false,
             // chapter_list_ajax_selctor: 'div#manga-chapters-holder',
             // chapter_list_ajax_selctor_type: 'html',
             chapters_a_sel: 'li.wp-manga-chapter > a'

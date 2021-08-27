@@ -1,9 +1,17 @@
 import * as utils from '../../amr/utils';
 
 async function converToMangadexV5() {
+    // retry later if one of these is running
+    if(window['AMR_STORE'].state.options.isUpdatingChapterLists || window['AMR_STORE'].state.options.isSyncing) {
+        setTimeout(() => {
+            converToMangadexV5()
+        }, 30*1000);
+        return;
+    }
+
+    window['AMR_STORE'].dispatch('setOption', {key: "isConverting", value:1}) // Set watcher
     let mangaToUpdate = window['AMR_STORE'].state.mangas.all
         .filter(manga => manga.mirror == 'MangaDex')
-
 
     for (const manga of mangaToUpdate) {
         try {
@@ -68,6 +76,7 @@ async function converToMangadexV5() {
 
         await new Promise(r => setTimeout(r, 2000)) // Pause to give mangadex servers a rest
     }
+    window['AMR_STORE'].dispatch('setOption', {key: "isConverting", value:0}) // Unset watcher
 }
 
 
