@@ -1,3 +1,40 @@
+### V2.3.22
+  New Features:
+    * Added reload image option to right click context menu, this should be used for images that load but are corrupted
+
+  Changes:
+    * Scans that fail to load will automatically retry 1 time
+    * Windows users on chromium browsers will now get the option to download a .7z file instead of .zip due to issues unpacking them (Credit: @JiPai)
+    * The new version alert can now be closed
+
+  Fixes:
+    * Issues with timing of sync and update chapter lists have been solved (Credit: @JiPai & @kYem)
+
+  New Mirrors:
+    * Comic Dom (https://comicdom.org/)
+    * 247 Manga (https://247manga.com/)
+    * Imperfect Comics (https://imperfectcomic.com/)
+    * Manga 347 (https://manga347.com/)
+    * Asura Scans Turkish (https://tr.asurascans.com/)
+    * Kun Manga (https://kunmanga.com/)
+    * Manga 1st Online (https://manga1st.online/)
+    * Mixed Manga (https://mixedmanga.com/)
+    * S2 Manga (https://s2manga.com/)
+    * Sam Manga (https://sammanga.com/)
+    * Zin Manga (https://zinmanga.com/)
+
+  Mirror Fixes:
+    * Lily Manga
+    * Reaper Scans
+    * Reset Scans
+    * Read Comic Online
+    * Mangadex - No longer has duplicate chapters and series with multiple groups released will only show the oldest chapter (Credit: @JiPai)
+    * Flame Scans - Possibly fixed the constant resetting of reading status, no promises because they constantly change it up
+    * Sad Scans
+    * Isekai Scans
+    * Early Manga
+    * Setsu Scans
+
 ### V2.3.21
   Changes:
     * Statistics collection has been removed for the time being. It will probably be re-added at a later date
