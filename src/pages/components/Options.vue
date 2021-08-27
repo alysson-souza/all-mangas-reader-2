@@ -406,7 +406,7 @@
               <v-checkbox v-model="mangadexDataSaver" @change="setOption('mangadexDataSaver')"
                     :label="i18n('options_mangadex_datasaver_label')"></v-checkbox>
               <!-- Image Server option -->
-              <div class="text-h6">{{i18n('options_mangadex_image_server')}}</div>
+              <!-- <div class="text-h6">{{i18n('options_mangadex_image_server')}}</div>
               <div class="text-body-1">
                 <v-container fluid class="opt-container">
                   <v-row  >
@@ -418,7 +418,7 @@
                     </v-col>
                   </v-row>
                 </v-container>
-              </div>
+              </div> -->
               <!-- Blocked Groups - ->
               <div class="text-h6">{{i18n('options_mangadex_blocked_groups')}}</div>
               <div class="text-body-1">{{i18n('options_mangadex_blocked_groups_label')}}</div>
