@@ -17,7 +17,7 @@
     </v-tabs>
     <v-tabs-items v-model="tabs" class="elevation-1">
       <v-tab-item value="onwebsites" v-if="tabs === 'onwebsites'" transition="false">
-        <v-expansion-panels accordion>
+        <v-expansion-panels accordion focusable>
           <v-expansion-panel>
             <v-expansion-panel-header><div class="text-h5 light-blue--text darken-3">{{ i18n("options_web_chapter_display_mode") }}</div></v-expansion-panel-header>
             <v-expansion-panel-content>
@@ -122,7 +122,7 @@
         </v-expansion-panels>
       </v-tab-item>
       <v-tab-item value="general" v-if="tabs === 'general'" transition="false">
-        <v-expansion-panels accordion>
+        <v-expansion-panels accordion focusable>
           <v-expansion-panel>
             <!-- AMR aspect -->
             <v-expansion-panel-header><div class="text-h5 light-blue--text darken-3">{{ i18n("options_gen_aspect") }}</div></v-expansion-panel-header>
@@ -301,7 +301,7 @@
         </v-expansion-panels>
       </v-tab-item>
       <v-tab-item value="supported" transition="false">
-        <v-expansion-panels accordion>
+        <v-expansion-panels accordion focusable>
           <v-expansion-panel>
             <!-- Languages -->
             <v-expansion-panel-header><div class="text-h5 light-blue--text darken-3">{{ i18n("options_sup_languages") }}</div></v-expansion-panel-header>
@@ -392,7 +392,7 @@
         </v-expansion-panels>
       </v-tab-item>
       <v-tab-item value="mirror" transition="false">
-         <v-expansion-panels accordion>
+         <v-expansion-panels accordion focusable>
           <!-- Mangadex Options -->
           <v-expansion-panel>
             <v-expansion-panel-header><div class="text-h5 light-blue--text darken-3">{{ i18n("options_mirror_specific_mangadex") }}</div></v-expansion-panel-header>
