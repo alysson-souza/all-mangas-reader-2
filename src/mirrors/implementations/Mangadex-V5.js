@@ -154,11 +154,12 @@ if (typeof registerMangaObject === 'function') {
             }
 
             const chapData = chapterJson.data.attributes
-            const url = `${serverInfo.baseUrl}/data/${chapData.hash}`
-    
+            
             if(mangadexDataSaver) {
+                const url = `${serverInfo.baseUrl}/data-saver/${chapData.hash}`
                 return chapData.dataSaver.map(id => `${url}/${id}`)
             } else {
+                const url = `${serverInfo.baseUrl}/data/${chapData.hash}`
                 return chapData.data.map(id => `${url}/${id}`)
             }
         },
