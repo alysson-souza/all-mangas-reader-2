@@ -1,10 +1,6 @@
 import * as utils from '../../amr/utils';
 
 async function converToMangadexV5() {
-    // Get sync and chapter lists update watchers
-    const isUpdating = window['AMR_STORE'].state.options.isUpdatingChapterLists
-    const isSyncing = window['AMR_STORE'].state.options.isSyncing
-
     // retry later if one of these is running
     if(window['AMR_STORE'].state.options.isUpdatingChapterLists || window['AMR_STORE'].state.options.isSyncing) {
         setTimeout(() => {

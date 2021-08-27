@@ -68,55 +68,51 @@ if (typeof registerMangaObject === 'function') {
 
         getListChaps: async function(urlManga) {
             // let blockedGroups = amr.getOption('mangadexBlockedGroups').split(',') || []
-            // let mangadexDataSaver = amr.getOption('mangadexDataSaver')
-            let id = urlManga.split('/')[4]
-            let jsonChapFeed
-            let res = {}
-            let done = [] // to avoid duplicate chapters. pick randomly a version
-            let finished = false
-            let page = 0
-
-            while (!finished) {
-                jsonChapFeed = await amr.loadJson(
+            const id = urlManga.split('/')[4]
+            const res = {}
+            // Loop with 15 iterations at most
+            for(const [page, emptyVal] of Array(15).entries()) {
+                // fetch data
+                const jsonChapFeed = await amr.loadJson(
                     `${this.api}/manga/${id}/feed?limit=${this.pageLimit}&order[chapter]=desc&offset=${page * this.pageLimit}`
                 )
-                
-                jsonChapFeed.results
-                    .filter(data => data.result === "ok")
+                // Create Object representing results
+                const uniq = jsonChapFeed.results.filter(data => data.result === "ok").reduce((acc,o)=>{
+                    if (!acc[o.data.attributes.chapter + o.data.attributes.translatedLanguage]) {
+                        acc[o.data.attributes.chapter + o.data.attributes.translatedLanguage] = [];
+                    }
+                    acc[o.data.attributes.chapter + o.data.attributes.translatedLanguage].push(o);
+                    return acc;
+                }, {});
+                // When chapter has multiple groups, only keep the oldest entry
+                jsonChapFeed.results = Object.values(uniq)
+                    .reduce((acc,list)=>{
+                        list.sort((a,b)=>new Date(b.data.attributes.publishAt) - new Date(a.data.attributes.publishAt) && b.data.attributes.chapter - a.data.attributes.chapter);
+                        acc.push(list[0]);
+                        return acc;
+                    }, [])
+                    // Format data to be consumed
                     .map(data => data.data)
                     .forEach(chap => {
-                        let attributes = chap.attributes;
-                        let lang = attributes.translatedLanguage;
-
-                        if (attributes.chapter && done.indexOf(lang + attributes.chapter) >= 0) return;
-                        done.push(lang + attributes.chapter)
-
-                        if (!res[lang]) res[lang] = []
-
-                        let titleParts = []
-
-                        if (attributes.chapter && attributes.chapter.length > 0)
-                            titleParts.push(attributes.chapter)
-
-                        if (attributes.title && attributes.title.length > 0)
-                            titleParts.push(attributes.title)
-
+                        const lang = chap.attributes.translatedLanguage
+                        const attributes = chap.attributes
+                        if(!res[lang]) res[lang] = []
+                        const titleParts = []
+                        if(attributes.chapter && attributes.chapter.length > 0) titleParts.push(attributes.chapter)
+                        if(attributes.title) titleParts.push(attributes.title)
                         res[lang].push([
                             titleParts.length > 0 ? titleParts.join(' - ') : 'Untitled',
                             `${this.home}chapter/${chap.id}`
                         ])
-
-                        
                     })
-                page++
-
-                if (parseInt(jsonChapFeed.limit) + parseInt(jsonChapFeed.offset) >= parseInt(jsonChapFeed.total) || page > 15) {
-                    finished = true
-                } else {
-                    await new Promise(r => setTimeout(r, 250))
-                }
-            }
-            
+                // Do we need to fetch the next page ?
+                const current = parseInt(jsonChapFeed.limit) + parseInt(jsonChapFeed.offset)
+                const total = parseInt(jsonChapFeed.total)
+                // no => break;
+                if(current >= total) break;
+                // yes => wait 250ms before next iteration
+                await new Promise(r => setTimeout(r, 250))
+            }           
             return res
         },
 
@@ -145,25 +141,27 @@ if (typeof registerMangaObject === 'function') {
         },
 
         getListImages: async function(doc, curUrl) {
-            let chapterId = curUrl.split('/')[4]
+            const mangadexDataSaver = amr.getOption('mangadexDataSaver')
+            const chapterId = curUrl.split('/')[4]
 
-            let chapterJson = await amr.loadJson(`${this.api}/chapter/${chapterId}`)
-            let serverInfo = await amr.loadJson(`${this.api}/at-home/server/${chapterId}`)
+            const chapterJson = await amr.loadJson(`${this.api}/chapter/${chapterId}`)
+            const serverInfo = await amr.loadJson(`${this.api}/at-home/server/${chapterId}`)
 
             if (chapterJson.result !== "ok") {
                 console.error("error during call url", curUrl)
                 console.log(chapterJson)
                 return [];
             }
-            let chapData = chapterJson.data
-            let res = []
-            let url = `${serverInfo.baseUrl}/data/${chapData.attributes.hash}`
-            
-            chapData.attributes.data.forEach(id => {
-                res.push(`${url}/${id}`)
-            })
 
-            return res
+            const chapData = chapterJson.data.attributes
+            
+            if(mangadexDataSaver) {
+                const url = `${serverInfo.baseUrl}/data-saver/${chapData.hash}`
+                return chapData.dataSaver.map(id => `${url}/${id}`)
+            } else {
+                const url = `${serverInfo.baseUrl}/data/${chapData.hash}`
+                return chapData.data.map(id => `${url}/${id}`)
+            }
         },
 
         getImageFromPageAndWrite: function(urlImg, image) {
