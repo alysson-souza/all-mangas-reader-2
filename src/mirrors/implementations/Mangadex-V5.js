@@ -68,7 +68,6 @@ if (typeof registerMangaObject === 'function') {
 
         getListChaps: async function(urlManga) {
             // let blockedGroups = amr.getOption('mangadexBlockedGroups').split(',') || []
-            // let mangadexDataSaver = amr.getOption('mangadexDataSaver')
             const id = urlManga.split('/')[4]
             const res = {}
             // Loop with 15 iterations at most
@@ -142,25 +141,26 @@ if (typeof registerMangaObject === 'function') {
         },
 
         getListImages: async function(doc, curUrl) {
-            let chapterId = curUrl.split('/')[4]
+            const mangadexDataSaver = amr.getOption('mangadexDataSaver')
+            const chapterId = curUrl.split('/')[4]
 
-            let chapterJson = await amr.loadJson(`${this.api}/chapter/${chapterId}`)
-            let serverInfo = await amr.loadJson(`${this.api}/at-home/server/${chapterId}`)
+            const chapterJson = await amr.loadJson(`${this.api}/chapter/${chapterId}`)
+            const serverInfo = await amr.loadJson(`${this.api}/at-home/server/${chapterId}`)
 
             if (chapterJson.result !== "ok") {
                 console.error("error during call url", curUrl)
                 console.log(chapterJson)
                 return [];
             }
-            let chapData = chapterJson.data
-            let res = []
-            let url = `${serverInfo.baseUrl}/data/${chapData.attributes.hash}`
-            
-            chapData.attributes.data.forEach(id => {
-                res.push(`${url}/${id}`)
-            })
 
-            return res
+            const chapData = chapterJson.data.attributes
+            const url = `${serverInfo.baseUrl}/data/${chapData.hash}`
+    
+            if(mangadexDataSaver) {
+                return chapData.dataSaver.map(id => `${url}/${id}`)
+            } else {
+                return chapData.data.map(id => `${url}/${id}`)
+            }
         },
 
         getImageFromPageAndWrite: function(urlImg, image) {
