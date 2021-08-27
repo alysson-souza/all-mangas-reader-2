@@ -281,7 +281,7 @@
               <v-checkbox v-model="gistSyncEnabled" @change="setOption('gistSyncEnabled')"
                           :label="i18n('options_sync_gist')"></v-checkbox>
               <v-alert dense v-if="gistSyncEnabled" value="true" color="info" icon="mdi-information" text elevation="1">
-                <a class="info--text" href="https://gitlab.com/all-mangas-reader/all-mangas-reader-2#synchronisation-with-gist-github" target="__blank">{{i18n('options_sync_gist_help')}}</a>
+                <a class="info--text" href="https://gitlab.com/all-mangas-reader/all-mangas-reader-2#synchronization-with-gist-3rd-party" target="__blank">{{i18n('options_sync_gist_help')}}</a>
               </v-alert>
               <v-text-field v-if="gistSyncEnabled" v-model="gistSyncSecret" @change="setOption('gistSyncSecret')"
                           :label="i18n('option_sync_gist_secret')"></v-text-field>
