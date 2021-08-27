@@ -10,7 +10,9 @@ if (typeof registerMangaObject === 'function') {
         abstract: "Madara",
         abstract_options: {
             search_url: "https://setsuscans.com/",
-            chapter_list_ajax: true
+            chapter_list_ajax: true,
+            chapter_list_ajax_selctor_type: 'html',
+            chapter_list_ajax_selctor: '#manga-chapters-holder'
         }
     })
 }
