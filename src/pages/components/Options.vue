@@ -19,7 +19,7 @@
       <v-tab-item value="onwebsites" v-if="tabs === 'onwebsites'" transition="false">
         <v-expansion-panels accordion focusable>
           <v-expansion-panel>
-            <v-expansion-panel-header><div class="text-h5 light-blue--text darken-3">{{ i18n("options_web_chapter_display_mode") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-header><div class="text-h5 indigo--text lighten-4">{{ i18n("options_web_chapter_display_mode") }}</div></v-expansion-panel-header>
             <v-expansion-panel-content>
               <!-- Display options -->
               <v-alert dense value="true" color="info" icon="mdi-information" text elevation="1">
@@ -86,7 +86,7 @@
           </v-expansion-panel>
           <v-expansion-panel>
             <!-- Loading options -->
-            <v-expansion-panel-header><div class="text-h5 light-blue--text darken-3">{{ i18n("options_web_loading") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-header><div class="text-h5 indigo--text lighten-4">{{ i18n("options_web_loading") }}</div></v-expansion-panel-header>
             <v-expansion-panel-content>
               <!-- Loading progression -->
               <div class="text-h6">{{i18n('options_web_load_desc')}}</div>
@@ -125,7 +125,7 @@
         <v-expansion-panels accordion focusable>
           <v-expansion-panel>
             <!-- AMR aspect -->
-            <v-expansion-panel-header><div class="text-h5 light-blue--text darken-3">{{ i18n("options_gen_aspect") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-header><div class="text-h5 indigo--text lighten-4">{{ i18n("options_gen_aspect") }}</div></v-expansion-panel-header>
             <v-expansion-panel-content>
               <!-- Open in new tab -->
               <div class="text-h6">{{i18n('options_gen_newTab_desc')}}</div>
@@ -168,7 +168,7 @@
           </v-expansion-panel>
           <v-expansion-panel>
             <!-- Updates -->
-            <v-expansion-panel-header><div class="text-h5 light-blue--text darken-3">{{ i18n("options_gen_updates") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-header><div class="text-h5 indigo--text lighten-4">{{ i18n("options_gen_updates") }}</div></v-expansion-panel-header>
             <v-expansion-panel-content>
 
 
@@ -237,7 +237,7 @@
           </v-expansion-panel>
           <v-expansion-panel>
             <!-- Notifications -->
-            <v-expansion-panel-header><div class="text-h5 light-blue--text darken-3">{{ i18n("options_gen_notifs") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-header><div class="text-h5 indigo--text lighten-4">{{ i18n("options_gen_notifs") }}</div></v-expansion-panel-header>
             <v-expansion-panel-content>
               <!-- Notify on new chapter -->
               <div class="text-h6">{{i18n('options_gen_shownotifications_desc')}}</div>
@@ -270,7 +270,7 @@
           </v-expansion-panel>
           <v-expansion-panel>
             <!-- Synchronization -->
-            <v-expansion-panel-header><div class="text-h5 light-blue--text darken-3">{{ i18n("options_sync_title") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-header><div class="text-h5 indigo--text lighten-4">{{ i18n("options_sync_title") }}</div></v-expansion-panel-header>
             <v-expansion-panel-content>
               <div class="text-h6">{{i18n('options_sync_manga_list_desc')}}</div>
               <v-alert dense v-if="!syncEnabled"  :value="true" color="error" icon="mdi-alert-octagon" text elevation="1">
@@ -291,7 +291,7 @@
           </v-expansion-panel>
           <v-expansion-panel>
             <!-- Search -->
-            <v-expansion-panel-header><div class="text-h5 light-blue--text darken-3">{{ i18n("options_search_title") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-header><div class="text-h5 indigo--text lighten-4">{{ i18n("options_search_title") }}</div></v-expansion-panel-header>
               <v-expansion-panel-content>
               <div class="text-h6">{{i18n('options_search_open_series_desc')}}</div>
               <v-checkbox v-model="searchOpenSeries" @change="setOption('searchOpenSeries')"
@@ -304,7 +304,7 @@
         <v-expansion-panels accordion focusable>
           <v-expansion-panel>
             <!-- Languages -->
-            <v-expansion-panel-header><div class="text-h5 light-blue--text darken-3">{{ i18n("options_sup_languages") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-header><div class="text-h5 indigo--text lighten-4">{{ i18n("options_sup_languages") }}</div></v-expansion-panel-header>
             <v-expansion-panel-content>
               <div class="text-h6">{{i18n('options_sup_languages_desc')}}</div>
               <Flag
@@ -322,7 +322,7 @@
           </v-expansion-panel>
           <v-expansion-panel>
             <!-- Supported websites -->
-            <v-expansion-panel-header><div class="text-h5 light-blue--text darken-3">{{ i18n("options_supported") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-header><div class="text-h5 indigo--text lighten-4">{{ i18n("options_supported") }}</div></v-expansion-panel-header>
             <v-expansion-panel-content>
               <div class="text-h6">{{i18n('options_sup_desc')}}</div>
               <!-- Filters -->
@@ -379,7 +379,7 @@
           </v-expansion-panel>
           <v-expansion-panel>
             <!-- Laboratory -->
-            <v-expansion-panel-header><div class="text-h5 light-blue--text darken-3">{{ i18n("options_sup_repos") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-header><div class="text-h5 indigo--text lighten-4">{{ i18n("options_sup_repos") }}</div></v-expansion-panel-header>
             <v-expansion-panel-content>
               <div class="text-h6">{{i18n('options_sup_repos_desc')}}</div>
               <v-row >
@@ -395,7 +395,7 @@
          <v-expansion-panels accordion focusable>
           <!-- Mangadex Options -->
           <v-expansion-panel>
-            <v-expansion-panel-header><div class="text-h5 light-blue--text darken-3">{{ i18n("options_mirror_specific_mangadex") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-header><div class="text-h5 indigo--text lighten-4">{{ i18n("options_mirror_specific_mangadex") }}</div></v-expansion-panel-header>
             <v-expansion-panel-content>
               <!-- Datasaver option -->
               <div class="text-h6">{{i18n('options_mangadex_datasaver')}}</div>
@@ -474,7 +474,7 @@
           </v-expansion-panel>
           <!-- Komga Options -->
           <v-expansion-panel>
-            <v-expansion-panel-header><div class="text-h5 light-blue--text darken-3">{{ i18n("options_mirror_specific_komga") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-header><div class="text-h5 indigo--text lighten-4">{{ i18n("options_mirror_specific_komga") }}</div></v-expansion-panel-header>
             <v-expansion-panel-content>
               <!-- Komga Domain -->
               <div class="text-h6">{{i18n('options_komga_server')}}</div>
