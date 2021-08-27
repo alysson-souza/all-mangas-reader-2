@@ -71,11 +71,17 @@
                   <v-select v-model="thinscan" :items="thinscan_values" @change="setOption('thinscan')"></v-select>
                 </v-col>
               </v-row>
-
               <!-- Default to webtoon mode -->
               <div class="text-h6">{{i18n('options_webtoon_mode_default')}}</div>
               <v-checkbox v-model="webtoonDefault" @change="setOption('webtoonDefault')"
                       :label="i18n('options_webtoon_mode_default_option')"></v-checkbox>
+              <!-- Smooth navigation toggle (dynamially load next/previous chapters) -->
+              <div class="text-h6">{{i18n('options_reader_smooth_navigation_label')}}</div>
+              <v-alert value="true" color="info" icon="mdi-information" outlined>
+                {{i18n('options_reader_smooth_navigation_info')}}
+              </v-alert>
+              <v-checkbox v-model="smoothNavigation" @change="setOption('smoothNavigation')"
+                      :label="i18n('options_reader_smooth_navigation')"></v-checkbox>
             </v-expansion-panel-content>
           </v-expansion-panel>
           <v-expansion-panel>
@@ -111,13 +117,6 @@
               </v-alert>
               <v-checkbox v-model="addauto" @change="setOption('addauto')"
                       :label="i18n('options_web_addauto_opt')"></v-checkbox>
-              <!-- Smooth navigation toggle (dynamially load next/previous chapters) -->
-              <div class="text-h6">{{i18n('options_reader_smooth_navigation_label')}}</div>
-              <v-alert value="true" color="info" icon="mdi-information" outlined>
-                {{i18n('options_reader_smooth_navigation_info')}}
-              </v-alert>
-              <v-checkbox v-model="smoothNavigation" @change="setOption('smoothNavigation')"
-                      :label="i18n('options_reader_smooth_navigation')"></v-checkbox>
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
