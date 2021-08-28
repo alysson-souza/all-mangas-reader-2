@@ -87,7 +87,7 @@ if (typeof registerMangaObject === 'function') {
                 // When chapter has multiple groups, only keep the oldest entry
                 jsonChapFeed.results = Object.values(uniq)
                     .reduce((acc,list)=>{
-                        list.sort((a,b)=>new Date(b.data.attributes.publishAt) - new Date(a.data.attributes.publishAt) && b.data.attributes.chapter - a.data.attributes.chapter);
+                        list.sort((a,b)=>new Date(a.data.attributes.publishAt) - new Date(b.data.attributes.publishAt) && b.data.attributes.chapter - a.data.attributes.chapter);
                         acc.push(list[0]);
                         return acc;
                     }, [])
