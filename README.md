@@ -263,7 +263,7 @@ be turned off / on at any time from the settings menu.
 <h2 id="#firefox-install"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Firefox_logo.png/255px-Firefox_logo.png" width="30" title="Firefox"/> Firefox</h2>
 
 - Download the latest stable version from the Mozilla add-ons explorer
-  - **[Stable](https://addons.mozilla.org/fr/firefox/addon/all-mangas-reader/)**
+  - **[Stable](https://addons.mozilla.org/firefox/addon/all-mangas-reader/)**
 - Beta versions for firefox are currently on hold but still available here :
   - **[Beta](https://release.allmangasreader.com/all-mangas-reader-beta-latest.xpi)**
 
