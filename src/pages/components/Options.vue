@@ -333,24 +333,6 @@
 
               <v-checkbox v-model="smoothNavigation" @change="setOption('smoothNavigation')"
                       :label="i18n('options_webtoon_mode_default')"></v-checkbox>
-              <!-- Smooth navigation toggle (dynamially load next/previous chapters) -->
-              <v-checkbox v-model="displayFullChapter" @change="setOption('displayFullChapter')">
-                <template v-slot:label>
-                  <div>
-                    {{ i18n('options_reader_smooth_navigation') }}
-                    <v-tooltip bottom>
-                      <template v-slot:activator="{ on }">
-                        <v-icon v-on="on" color="blue darken-2" class="superscript" small>
-                          mdi-information
-                        </v-icon>
-                      </template>
-                      {{ i18n('options_reader_smooth_navigation_label') }}
-                      <br/>
-                      {{ i18n('options_reader_smooth_navigation_info') }}
-                    </v-tooltip>
-                  </div>
-                </template>
-              </v-checkbox>
             </v-expansion-panel-content>
           </v-expansion-panel>
           <v-expansion-panel>
@@ -407,6 +389,24 @@
                         </v-icon>
                       </template>
                       {{ i18n('options_web_addauto_info') }}
+                    </v-tooltip>
+                  </div>
+                </template>
+              </v-checkbox>
+              <!-- Smooth navigation toggle (dynamially load next/previous chapters) -->
+              <v-checkbox v-model="displayFullChapter" @change="setOption('displayFullChapter')">
+                <template v-slot:label>
+                  <div>
+                    {{ i18n('options_reader_smooth_navigation') }}
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on }">
+                        <v-icon v-on="on" color="blue darken-2" class="superscript" small>
+                          mdi-information
+                        </v-icon>
+                      </template>
+                      {{ i18n('options_reader_smooth_navigation_label') }}
+                      <br/>
+                      {{ i18n('options_reader_smooth_navigation_info') }}
                     </v-tooltip>
                   </div>
                 </template>
