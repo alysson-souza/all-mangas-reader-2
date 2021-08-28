@@ -1542,7 +1542,7 @@
   },
   "options_sync_gist_info" : {
     "message": "Works with any browser, a Github account is required",
-    "description": "Synchroniser les données avec Gist"
+    "description": "Synchronize using Gist from github"
   },
   "options_sync_gist_help" : {
     "message": "Need help ?",
