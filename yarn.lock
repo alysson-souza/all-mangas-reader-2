@@ -4462,11 +4462,6 @@ stream-to-promise@3.0.0:
     end-of-stream "~1.4.1"
     stream-to-array "~2.3.0"
 
-stream-zip@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/stream-zip/-/stream-zip-1.0.6.tgz#ae4f80e6285bd729666163862977a7ed85a26143"
-  integrity sha1-rk+A5ihb1ylmYWOGKXen7YWiYUM=
-
 streamsaver@^2.0.5:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/streamsaver/-/streamsaver-2.0.5.tgz#3212f0e908fcece5b3a65591094475cf87850d00"
@@ -5067,6 +5062,11 @@ web-ext@6.1.0:
     ws "7.4.3"
     yargs "16.2.0"
     zip-dir "2.0.0"
+
+web-streams-polyfill@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/web-streams-polyfill/-/web-streams-polyfill-3.1.0.tgz#86f983b4f44745502b0d8563d9ef3afc609d4465"
+  integrity sha512-wO9r1YnYe7kFBLHyyVEhV1H8VRWoNiNnuP+v/HUUmSTaRF8F93Kmd3JMrETx0f11GXxRek6OcL2QtjFIdc5WYw==
 
 webextension-polyfill@^0.5.0:
   version "0.5.0"
