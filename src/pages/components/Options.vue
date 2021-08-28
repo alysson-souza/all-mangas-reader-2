@@ -207,7 +207,7 @@
                   </v-row>
                 </v-container>
               <!-- Notify on new version of the app -->
-              <v-checkbox v-model="notifynewversion" @change="setOption('notifynewversion')"
+              <v-checkbox v-if="!isFirefox()" v-model="notifynewversion" @change="setOption('notifynewversion')"
                       :label="i18n('options_gen_notifynewversion_desc')"></v-checkbox>
               <!--Allow tracking of reading -->
               <!-- <v-checkbox v-model="allowtracking" @change="setOption('allowtracking')"
