@@ -26,7 +26,6 @@
     "jsdom": "^16.5.2",
     "mime-db": "^1.46.0",
     "stream-browserify": "^3.0.0",
-    "stream-zip": "^1.0.6",
     "streamsaver": "^2.0.5",
     "v-clipboard": "^2.2.3",
     "vue": "^2.6.4",
@@ -35,6 +34,7 @@
     "vuetify": "^2.4.2",
     "vuex": "^3.6.0",
     "vuex-shared-mutations": "^1.0.2",
+    "web-streams-polyfill": "^3.1.0",
     "webextension-polyfill": "^0.7.0"
   },
   "devDependencies": {

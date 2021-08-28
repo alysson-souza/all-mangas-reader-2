@@ -532,6 +532,11 @@
   import SocialBar from "./components/SocialBar";
   import { THINSCAN } from '../amr/options';
 
+  import streamSaver from 'streamsaver'
+  import 'streamsaver/examples/zip-stream'
+  import mimedb from 'mime-db';
+  import * as ponyfill from 'web-streams-polyfill/ponyfill'
+  streamSaver.WritableStream = ponyfill.WritableStream
   /** Possible values for resize (readable), the stored value is the corresponding index */
   const resize_values = ['width', 'height', 'container', 'none']
 
@@ -1339,13 +1344,47 @@
       reloadErrors() {
         EventBus.$emit('reload-all-errors')
       },
-      DownloadChapter() {
-        browser.runtime.sendMessage({
-            action: "DownloadChapter",
-            urls: this.$refs.reader.pages.map(ele => ele[0].src),
-            chapterName: this.pageData.currentChapter +".cbz",
-            seriesName: this.mangaInfos && this.mangaInfos.displayName ? this.mangaInfos.displayName : this.manga.name
-        });
+      async DownloadChapter() {
+        const urls = this.$refs.reader.pages.map(ele => ele[0].src).reverse()
+        const chapterName = this.pageData.currentChapter +".cbz"
+        const seriesName = this.mangaInfos && this.mangaInfos.displayName ? this.mangaInfos.displayName : this.manga.name
+        const name = seriesName + ' - ' + chapterName
+        
+        const fileStream = streamSaver.createWriteStream(name)
+        const readableZipStream = new ZIP({
+            start(ctrl) {},
+            async pull(ctrl) {
+                let url = urls.shift()
+                const res = await fetch(url)
+                const stream = () => res.body
+                let ext = 'jpg'
+                const mime = res.headers.get('content-type')
+                if(mime.indexOf('image') > -1) {
+                    if(mimedb[mime].extensions) {
+                        ext = mimedb[mime].extensions[0]
+                    }
+                } else {
+                    const match = url.match(/(\.\w{2,4})(?![^?])/)
+                    if(match) {
+                        ext = match[1].replace('.', '')
+                    }
+                }
+                const name = String(urls.length+1).padStart(3, '0') + '.' + ext
+                ctrl.enqueue({name, stream})
+                if(urls.length === 0) ctrl.close()
+            }
+        })
+
+        if(window.WritableStream && readableZipStream.pipeTo) {
+            return await readableZipStream.pipeTo(fileStream);
+        }
+        this.pump(fileStream.getWriter(), readableZipStream.getReader())
+      },
+      async pump(writer, reader) {
+        const res = await reader.read()
+        if(res.done) return await writer.close()
+        await writer.write(res.value)
+        return this.pump(writer, reader)
       },
       changeMaxWidth(type) {
         if (type == 'more') {
