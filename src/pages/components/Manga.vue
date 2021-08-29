@@ -151,7 +151,7 @@
       <v-row v-if="expanded" dense>
         <!-- Categories -->
         <v-col cols="4" class="d-flex justify-start">
-          <v-menu offset-x>
+          <v-menu offset-x v-if="selectableCategory.length">
             <template v-slot:activator="{ on, attrs }">
               <v-btn
                 :color="color(0)"
