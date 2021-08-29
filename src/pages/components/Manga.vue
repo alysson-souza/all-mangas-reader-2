@@ -1,212 +1,347 @@
 <template>
+
   <v-card v-if="shouldShow" :class="color(3, true) + ' amr-manga-row' + (manga.update === 0 ? ' amr-noupdates' : '')">
-    <v-row :class="isDarkText ? 'dark-text' : 'light-text'">
-      <v-col v-show="selectable" cols="auto">
-        <v-checkbox v-model="selected" hide-details dense class="shrink mr-2 mt-0"></v-checkbox>
-      </v-col>
-      <!-- Name, Last Updated -->
-      <v-col :cols="selectable ? '3' : '4'">
-
-        <v-card :color="color(0)" class="back-card amr-manga-title-cont">
-
-           <!-- + / - icon if group of mangas  -->
-          <v-icon v-show="isInGroup && isFirst && !groupExpanded" @click="emitExpand()">mdi-plus</v-icon>
-          <v-icon v-show="isInGroup && isFirst && groupExpanded" @click="emitExpand()">mdi-minus</v-icon>
-          <v-tooltip top content-class="icon-ttip">
-            <template v-slot:activator="{ on }">
-              <img v-if="isMirrorEnabled" :src="mirror.mirrorIcon" class="mirror-icon" v-on="on" />
-              <v-icon v-if="!isMirrorEnabled" v-on="on">mdi-cancel</v-icon>
-            </template>
-            <span>{{ isMirrorEnabled ? mirror.mirrorName : i18n("list_mirror_disabled_tooltip", manga.mirror) }}</span>
-          </v-tooltip>
-          <v-tooltip top content-class="icon-ttip">
-            <template v-slot:activator="{ on }">
-              <v-card v-show="options.displastup === 1 && manga.upts != 0 && timeUpdated < 50" dark :class="color(-2) + ' amr-calendar-badge'" v-on="on">
-                <v-icon>mdi-calendar-clock</v-icon>
-                <span v-show="timeUpdated > 0">{{ timeUpdated }}</span>
-              </v-card>
-            </template>
-            <span v-if="timeUpdated === 0">{{i18n("list_calendar_today")}}</span>
-            <span v-else>{{i18n("list_calendar_days_found", timeUpdated)}}</span>
-          </v-tooltip>
-          <!-- Display a timer off if the manga is not updating anymore -->
-          <v-tooltip top content-class="icon-ttip">
-            <template v-slot:activator="{ on }">
-              <v-icon v-show="manga.update === 0" class="amr-timeroff-badge" v-on="on">mdi-timer-off</v-icon>
-            </template>
-            <span>{{i18n("list_stopped_updating")}}</span>
-          </v-tooltip>
-          <v-tooltip top :disabled="!(manga.displayName && manga.displayName !== '')">
-            <template v-slot:activator="{on}">
-              <span class="amr-manga-title" v-on="on" @click="openManga">
-                {{ manga.displayName && manga.displayName !== '' ? manga.displayName : manga.name }}
-              </span>
-            </template>
-            {{ manga.name }}
-          </v-tooltip>
-        </v-card>
-      </v-col>
-      <!-- Select List -->
-      <v-col>
-        <v-card :color="color(3, true)" tile flat class="back-card">
-          <v-row no-gutters>
-            <v-col cols="auto">
-              <!-- Flag of the language of chapters if multiple languages available -->
-              <Flag v-if="manga.language" :value="manga.language" @toggleLanguageSelection="displayLangs = !displayLangs"/>
-            </v-col>
-            <v-col>
-              <!-- List of chapters -->
-              <div v-if="manga.listChaps.length" class="amr-prog-cont">
-                <div class="amr-select-wrapper">
-                  <select :value="selValue" v-on:input="selChapter = urlFromValue($event.target.value)" :class="color(0) + ' amr-chap-sel'" @change="playChap()">
-                    <option v-for="chap in chapsForSelect" :key="chap.value" :value="chap.value">{{chap.text}}</option>
-                  </select>
-                </div>
-                <!-- Reading progress -->
-                <v-tooltip top content-class="icon-ttip">
-                  <template v-slot:activator="{ on }">
-                    <v-progress-linear :value="progress" height="5" :color="color(-2)" :background-color="color(2)" v-on="on"></v-progress-linear>
-                  </template>
-                  <span>{{ i18n("list_progress_reading", Math.floor(progress)) }}</span>
-                </v-tooltip>
-              </div>
-              <div v-else>
-                <!-- Loading bar if chapters list is not loaded yet-->
-                <v-progress-linear v-show="isMirrorEnabled" :indeterminate="true" height="4" class="amr-manga-waiting" :color="color(2)"></v-progress-linear>
-                <span v-show="!isMirrorEnabled">
-                  {{ isMirrorEnabled ? mirror.mirrorName : i18n("list_mirror_disabled", manga.mirror) }}
-                </span>
-              </div>
-            </v-col>
-          </v-row>
-        </v-card>
-      </v-col>
-      <!-- Actions -->
-      <v-col cols="4" md="3" class="amr-list-actions text-center">
-        <v-card :color="color(0)" class="back-card">
-          <!-- Mark as read -->
-          <v-tooltip top content-class="icon-ttip">
-            <template v-slot:activator="{ on }">
-              <v-icon v-show="hasNew" v-on="on" @click="markAsRead()">mdi-eye</v-icon>
-            </template>
-            <span>{{i18n("list_mg_act_read")}}</span>
-          </v-tooltip>
-          <!-- Empty icon if all read -->
-          <v-icon v-show="!hasNew" class="empty-icon"></v-icon>
-          <!-- Previous chapter -->
-          <v-tooltip top content-class="icon-ttip">
-            <template v-slot:activator="{ on }">
-              <v-icon v-show="posInChapList < manga.listChaps.length - 1" v-on="on" @click="play(-1)">mdi-chevron-left</v-icon>
-            </template>
-            <span>{{i18n("list_mg_act_prev")}}</span>
-          </v-tooltip>
-          <!-- Empty icon if no previous -->
-          <v-icon v-show="posInChapList === manga.listChaps.length - 1" class="empty-icon"></v-icon>
-          <!-- Current chapter play -->
-          <v-icon v-show="!isMirrorEnabled" class="empty-icon"></v-icon>
-          <v-tooltip top content-class="icon-ttip">
-            <template v-slot:activator="{ on }">
-              <v-icon v-show="isMirrorEnabled" v-on="on" @click="play(0)">mdi-play</v-icon>
-            </template>
-            <span>{{i18n("list_mg_act_cur")}}</span>
-          </v-tooltip>
-          <!-- Next chapter play -->
-          <v-tooltip top content-class="icon-ttip">
-            <template v-slot:activator="{ on }">
-              <v-icon v-show="posInChapList > 0" v-on="on" @click="play(1)">mdi-chevron-right</v-icon>
-            </template>
-            <span>{{i18n("list_mg_act_next")}}</span>
-          </v-tooltip>
-          <!-- Empty icon if no next chapter -->
-          <v-icon v-show="posInChapList <= 0" class="empty-icon"></v-icon>
-          <!-- Last chapter play -->
-          <v-icon v-show="!isMirrorEnabled" class="empty-icon"></v-icon>
-          <v-tooltip top content-class="icon-ttip">
-            <template v-slot:activator="{ on }">
-              <v-icon v-show="isMirrorEnabled" v-on="on" @click="play(Infinity)">mdi-page-last</v-icon>
-            </template>
-            <span>{{i18n("list_mg_act_latest")}}</span>
-          </v-tooltip>
-          <!-- Delete manga -->
-          <v-tooltip top content-class="icon-ttip">
-            <template v-slot:activator="{ on }">
-              <v-icon v-on="on" @click="deleteManga = true">mdi-delete</v-icon>
-            </template>
-            <span>{{i18n("list_mg_act_delete")}}</span>
-          </v-tooltip>
-
-          <v-icon @click="expanded = !expanded">mdi-dots-vertical</v-icon>
-          <!-- Delete manga dialog -->
-          <v-dialog v-model="deleteManga" max-width="500px">
-            <v-card>
-              <v-card-title>
-                <h3>{{i18n("list_mg_delete_question", manga.name, manga.mirror)}}</h3>
-              </v-card-title>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" elevation="1" @click.native="deleteManga = false">{{i18n("button_no")}}</v-btn>
-                <v-btn color="blue darken-1" elevation="1" @click.native="trash()">{{i18n("button_yes")}}</v-btn>
-              </v-card-actions>
+    <v-item-group>
+      <v-row :class="isDarkText ? 'dark-text' : 'light-text'">
+        <v-item>
+          <v-col v-show="selectable" cols="1" class="align-self-center">
+            <v-checkbox v-model="selected" hide-details dense class="shrink"></v-checkbox>
+          </v-col>
+        </v-item>
+        <v-item>
+          <v-col md="3" :lg="selectable ? '4': '5'" class="align-self-center" style="height:45px;">
+            <v-card :color="color(0)" class="back-card amr-manga-title-cont px-2 ellips w-100 pt-md-05">
+              <!-- + / - icon if group of mangas  -->
+              <v-icon v-show="isInGroup && isFirst && !groupExpanded" @click="emitExpand()">mdi-plus</v-icon>
+              <v-icon v-show="isInGroup && isFirst && groupExpanded" @click="emitExpand()">mdi-minus</v-icon>
+              <v-tooltip top content-class="icon-ttip">
+                <template v-slot:activator="{ on }">
+                  <img v-if="isMirrorEnabled" :src="mirror.mirrorIcon" class="mirror-icon" v-on="on" />
+                  <v-icon v-if="!isMirrorEnabled" v-on="on">mdi-cancel</v-icon>
+                </template>
+                <span>{{ isMirrorEnabled ? mirror.mirrorName : i18n("list_mirror_disabled_tooltip", manga.mirror) }}</span>
+              </v-tooltip>
+              <v-tooltip top content-class="icon-ttip">
+                <template v-slot:activator="{ on }">
+                  <v-card v-show="options.displastup === 1 && manga.upts != 0 && timeUpdated < 50" dark :class="color(-2) + ' amr-calendar-badge'" v-on="on">
+                    <v-icon>mdi-calendar-clock</v-icon>
+                    <span v-show="timeUpdated > 0">{{ timeUpdated }}</span>
+                  </v-card>
+                </template>
+                <span v-if="timeUpdated === 0">{{i18n("list_calendar_today")}}</span>
+                <span v-else>{{i18n("list_calendar_days_found", timeUpdated)}}</span>
+              </v-tooltip>
+              <!-- Display a timer off if the manga is not updating anymore -->
+              <v-tooltip top content-class="icon-ttip">
+                <template v-slot:activator="{ on }">
+                  <v-icon v-show="manga.update === 0" class="amr-timeroff-badge" v-on="on">mdi-timer-off</v-icon>
+                </template>
+                <span>{{i18n("list_stopped_updating")}}</span>
+              </v-tooltip>
+              <v-tooltip top :disabled="!(manga.displayName && manga.displayName !== '')">
+                <template v-slot:activator="{on}">
+                  <span class="amr-manga-title" v-on="on" @click="openManga">
+                    {{ manga.displayName && manga.displayName !== '' ? manga.displayName : manga.name }}
+                  </span>
+                </template>
+                {{ manga.name }}
+              </v-tooltip>
             </v-card>
-          </v-dialog>
-        </v-card>
-      </v-col>
-    </v-row>
-    <v-row v-if="expanded" dense>
-      <!-- Categories -->
-      <v-col cols="6">
-        <span>{{i18n("list_details_cats")}} : </span>
-        <Categories
-          :categories="manga.cats"
-          :static-cats="true"
-          :delegate-delete="true"
-          @delete-category="deleteCategory" />
-        <div class="det-sel-wrapper">
-          <select dark v-model="newCat" @change="addCategory()" :class="color(2)">
-            <option value="">{{i18n("list_details_cats_select")}}</option>
-            <option v-for="(cat, key) of selectableCategory"
-                    :key="key"
-                    :value="cat.name">
-                {{cat.name}}
-            </option>
-          </select>
-        </div>
-      </v-col>
-      <!-- Manage manga bookmarks -->
-      <v-col cols="6">
-        <span>{{i18n("list_details_books")}} : </span>
-        <select v-if="bookmarks.length" dark v-model="curBm" @change="openBookmark()" :class="color(2)">
-          <option v-for="(bm, key) of bookmarks"
-                  :key="key"
-                  :value="bm.chapUrl">
-              {{bm.type === 'scan' ? i18n("bookmarks_scan_title", bm.chapName, bm.scanName) : i18n("bookmarks_chapter_title", bm.chapName)}}
-          </option>
-        </select>
-        <span v-if="!bookmarks.length">{{i18n("list_details_no_bookmarks")}}</span>
-      </v-col>
-      <v-col cols="12" class="text-center">
-        <v-btn @click='searchElsewhere()' :color="color(-1)" small>{{i18n("list_details_act_search")}}</v-btn>
-        <v-btn @click='resetManga()' :color="color(-1)" small>{{i18n("list_details_act_reset")}}</v-btn>
-        <v-btn v-if="manga.read === 0" @click='toggleFollow()' :color="color(-1)" small>{{i18n("list_details_act_stop_follow")}}</v-btn>
-        <v-btn v-if="manga.read === 1" @click='toggleFollow()' :color="color(-1)" small>{{i18n("list_details_act_follow")}}</v-btn>
-        <v-btn v-if="manga.update === 1" @click='toggleUpdate()' :color="color(-1)" small>{{i18n("list_details_act_stop_updating")}}</v-btn>
-        <v-btn v-if="manga.update === 0" @click='toggleUpdate()' :color="color(-1)" small>{{i18n("list_details_act_restart_updating")}}</v-btn>
-        <v-btn @click='refreshMangaNow()' :color="color(-1)" small>{{ i18n("refresh_chapters") }}</v-btn>
-        <v-btn @click='renameManga()' :color="color(-1)" small>{{ i18n("list_details_rename_manga") }}</v-btn>
-        <v-btn v-if="manga.displayName && manga.displayName !== ''" @click='resetName()' :color="color(-1)" small>{{ i18n("list_details_reset_name") }}</v-btn>
-      </v-col>
-    </v-row>
-    <v-row  v-if="displayLangs">
-      <v-col cols="3"><v-card dark tile flat class="back-card" :color="color(3)"></v-card></v-col>
-      <v-col cols="6">
-        <v-card dark tile flat class="back-card" :color="color(3)">
-          <p class="mb-0">{{i18n("popup_language_pick")}} :</p>
-          <Flag v-for="lang in languages" :key="lang" :value="lang" big @click.native="readMangaInLang(lang)"/>
-        </v-card>
-      </v-col>
-      <v-col cols="3"><v-card dark tile flat class="back-card" :color="color(3)"></v-card></v-col>
-    </v-row>
+          </v-col>
+        </v-item>
+        <v-item>
+          <v-col :md="selectable ? '4': '5'" lg="5" class="align-self-center">
+            <div class="d-flex">
+              <div class="align-self-center">
+                <Flag v-if="manga.language" :value="manga.language" @toggleLanguageSelection="displayLangs = !displayLangs"/>
+              </div>
+              <div class="align-self-center w-100">
+                <v-card :color="color(3, true)" tile flat class="back-card amr-manga-title-cont px-2">
+                  <div v-if="manga.listChaps.length" class="amr-prog-cont">
+                    <div class="amr-select-wrapper">
+                      <select rounded :value="selValue" v-on:input="selChapter = urlFromValue($event.target.value)" :class="color(0) + ' amr-chap-sel'" @change="playChap()">
+                        <option v-for="chap in chapsForSelect" :key="chap.value" :value="chap.value">{{chap.text}}</option>
+                      </select>
+                    </div>
+                    <!-- Reading progress -->
+                    <v-tooltip top content-class="icon-ttip">
+                      <template v-slot:activator="{ on }">
+                        <v-progress-linear :value="progress" height="5" :color="color(-2)" :background-color="color(2)" v-on="on"></v-progress-linear>
+                      </template>
+                      <span>{{ i18n("list_progress_reading", Math.floor(progress)) }}</span>
+                    </v-tooltip>
+                  </div>
+                </v-card>
+              </div>
+            </div>
+          </v-col>
+        </v-item>
+        <v-item>
+          <v-col md="4" lg="2" class="amr-list-actions align-self-center">
+            <v-card :color="color(0)" class="back-card px-2 d-flex justify-center">
+              <!-- Mark as read -->
+              <v-tooltip top content-class="icon-ttip space-between">
+                <template v-slot:activator="{ on }">
+                  <v-icon v-show="hasNew" v-on="on" @click="markAsRead()">mdi-eye</v-icon>
+                </template>
+                <span>{{i18n("list_mg_act_read")}}</span>
+              </v-tooltip>
+              <!-- Empty icon if all read -->
+              <v-icon v-show="!hasNew" class="empty-icon"></v-icon>
+              <!-- Previous chapter -->
+              <v-tooltip top content-class="icon-ttip">
+                <template v-slot:activator="{ on }">
+                  <v-icon v-show="posInChapList < manga.listChaps.length - 1" v-on="on" @click="play(-1)">mdi-chevron-left</v-icon>
+                </template>
+                <span>{{i18n("list_mg_act_prev")}}</span>
+              </v-tooltip>
+              <!-- Empty icon if no previous -->
+              <v-icon v-show="posInChapList === manga.listChaps.length - 1" class="empty-icon"></v-icon>
+              <!-- Current chapter play -->
+              <v-icon v-show="!isMirrorEnabled" class="empty-icon"></v-icon>
+              <v-tooltip top content-class="icon-ttip">
+                <template v-slot:activator="{ on }">
+                  <v-icon v-show="isMirrorEnabled" v-on="on" @click="play(0)">mdi-play</v-icon>
+                </template>
+                <span>{{i18n("list_mg_act_cur")}}</span>
+              </v-tooltip>
+              <!-- Next chapter play -->
+              <v-tooltip top content-class="icon-ttip">
+                <template v-slot:activator="{ on }">
+                  <v-icon v-show="posInChapList > 0" v-on="on" @click="play(1)">mdi-chevron-right</v-icon>
+                </template>
+                <span>{{i18n("list_mg_act_next")}}</span>
+              </v-tooltip>
+              <!-- Empty icon if no next chapter -->
+              <v-icon v-show="posInChapList <= 0" class="empty-icon"></v-icon>
+              <!-- Last chapter play -->
+              <v-icon v-show="!isMirrorEnabled" class="empty-icon"></v-icon>
+              <v-tooltip top content-class="icon-ttip">
+                <template v-slot:activator="{ on }">
+                  <v-icon v-show="isMirrorEnabled" v-on="on" @click="play(Infinity)">mdi-page-last</v-icon>
+                </template>
+                <span>{{i18n("list_mg_act_latest")}}</span>
+              </v-tooltip>
+              <!-- Delete manga -->
+              <v-tooltip top content-class="icon-ttip">
+                <template v-slot:activator="{ on }">
+                  <v-icon v-on="on" @click="deleteManga = true">mdi-delete</v-icon>
+                </template>
+                <span>{{i18n("list_mg_act_delete")}}</span>
+              </v-tooltip>
+
+              <v-icon @click="expanded = !expanded">mdi-dots-vertical</v-icon>
+              <!-- Delete manga dialog -->
+              <v-dialog v-model="deleteManga" max-width="500px">
+                <v-card>
+                  <v-card-title>
+                    <h3>{{i18n("list_mg_delete_question", manga.name, manga.mirror)}}</h3>
+                  </v-card-title>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" elevation="1" @click.native="deleteManga = false">{{i18n("button_no")}}</v-btn>
+                    <v-btn color="blue darken-1" elevation="1" @click.native="trash()">{{i18n("button_yes")}}</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </v-card>
+          </v-col>        
+        </v-item>
+      </v-row>
+      <v-row v-if="expanded" dense>
+        <!-- Categories -->
+        <v-col cols="4" class="d-flex justify-start">
+          <v-menu offset-x>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                :color="color(0)"
+                dark
+                v-bind="attrs"
+                v-on="on"
+                x-small
+                
+              >
+                {{i18n('list_details_cats')}}
+                <v-icon right>
+                  mdi-menu-down
+                </v-icon>
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item
+                v-for="(item, index) in selectableCategory"
+                :key="index"
+                dense
+              >
+                <v-list-item-title>
+                  <div class="d-flex justify-space-between py-2">
+                    {{ item }}
+                    <v-spacer></v-spacer>
+                    <v-btn class="ml-6" v-if="manga.cats.includes(item)" color="transparent" x-small depressed right @click.stop="deleteCategory(item)">
+                      <v-icon>
+                        mdi-close
+                      </v-icon>
+                    </v-btn>
+                    <v-btn class="ml-6" v-else color="transparent" x-small depressed right @click.stop="addCategory(item)">
+                      <v-icon color="light-blue">
+                        mdi-plus
+                      </v-icon>
+                    </v-btn>
+                  </div>
+                </v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </v-col>
+        <!-- Manage manga bookmarks -->
+        <v-col cols="4" class="d-flex justify-center">
+          <v-menu offset-x>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                :color="color(0)"
+                dark
+                v-bind="attrs"
+                v-on="on"
+                x-small
+                
+              >
+                {{i18n('list_details_books')}}
+                <v-icon right>
+                  mdi-menu-down
+                </v-icon>
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item
+                v-for="(item, index) in bookmarks"
+                :key="index"
+                link
+                dense
+              >
+                <v-list-item-title>
+                  <span @click="openBookmark(item.chapUrl)">
+                    {{item.type === 'scan' ? i18n("bookmarks_scan_title", item.chapName, item.scanName) : i18n("bookmarks_chapter_title", item.chapName)}}
+                  </span>
+                </v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </v-col>
+        <v-col cols="4" class="d-flex justify-end">
+          <v-menu offset-x>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                :color="color(0)"
+                dark
+                v-bind="attrs"
+                v-on="on"
+                x-small
+                
+              >
+                {{i18n('list_details_act')}}
+                <v-icon right>
+                  mdi-menu-down
+                </v-icon>
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item link dense>
+                <v-list-item-title>
+                  <span @click='searchElsewhere()'>
+                    <v-icon left>
+                      mdi-magnify
+                    </v-icon>
+                    {{i18n("list_details_act_search")}}
+                  </span>
+                </v-list-item-title>
+              </v-list-item>
+              <v-list-item link dense>
+                <v-list-item-title>
+                  <span @click='resetManga()'>
+                    <v-icon left>
+                      mdi-restore
+                    </v-icon>
+                    {{i18n("list_details_act_reset")}}
+                  </span>
+                </v-list-item-title>
+              </v-list-item>
+              <v-list-item link dense v-if="manga.read === 0">
+                <v-list-item-title>
+                  <span @click='toggleFollow()'>
+                    <v-icon left>
+                      mdi-bell-off
+                    </v-icon>
+                    {{i18n("list_details_act_stop_follow")}}
+                  </span>
+                </v-list-item-title>
+              </v-list-item>
+              <v-list-item link dense v-if="manga.read === 1">
+                <v-list-item-title>
+                  <span @click='toggleFollow()'>
+                    <v-icon left>
+                      mdi-bell-ring
+                    </v-icon>
+                    {{i18n("list_details_act_follow")}}
+                  </span>
+                </v-list-item-title>
+              </v-list-item>
+              <v-list-item dense link v-if="manga.update === 1">
+                <v-list-item-title>
+                  <span @click='toggleUpdate()'>
+                    <v-icon left>
+                      mdi-timer-off-outline
+                    </v-icon>
+                    {{i18n("list_details_act_stop_updating")}}
+                  </span>
+                </v-list-item-title>
+              </v-list-item>
+              <v-list-item dense link v-if="manga.update === 0">
+                <v-list-item-title>
+                  <span @click='toggleUpdate()'>
+                    <v-icon left>
+                      mdi-timer-outline
+                    </v-icon>
+                    {{i18n("list_details_act_restart_updating")}}
+                  </span>
+                </v-list-item-title>
+              </v-list-item>
+              <v-list-item dense link>
+                <v-list-item-title>
+                  <span @click='refreshMangaNow()'>
+                    <v-icon left>
+                      mdi-update
+                    </v-icon>
+                    {{i18n("refresh_chapters")}}
+                  </span>
+                </v-list-item-title>
+              </v-list-item>
+              <v-list-item dense link>
+                <v-list-item-title>
+                  <span @click='renameManga()'>
+                    <v-icon left>
+                      mdi-pencil
+                    </v-icon>
+                    {{i18n("list_details_rename_manga")}}
+                  </span>
+                </v-list-item-title>
+              </v-list-item>
+              <v-list-item dense link v-if="manga.displayName && manga.displayName !== ''">
+                <v-list-item-title>
+                  <span @click='resetName()'>
+                    <v-icon left>
+                      mdi-pencil-off
+                    </v-icon>
+                    {{i18n("list_details_reset_name")}}
+                  </span>
+                </v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </v-col>
+      </v-row>
+    </v-item-group>
   </v-card>
+
 </template>
 
 <script>
@@ -228,8 +363,8 @@ export default {
       displayLangs: false,
       // category to add to this group of mangas
       newCat: "",
-      // selected bookmark
-      curBm: null,
+      // selected bookmarks
+      curBm: [],
       selectable: false, // Should we show the multi select checkbox
       selected: false,
       canOpenTab: true // This is used for a timer to hopefully eliminate weird duping issue
@@ -324,7 +459,7 @@ export default {
       return utils.darkText(this.manga, this.options)
     },
     selectableCategory() {
-      return this.options.categoriesStates.filter(cat => cat.type !== 'native' && cat.type != 'language' && !this.manga.cats.includes(cat.name))
+      return this.options.categoriesStates.filter(cat => cat.type !== 'native' && cat.type != 'language').map(c => c.name)
     },
     // bookmarks for this group
     bookmarks: function() {
@@ -334,6 +469,10 @@ export default {
     },
   },
   methods: {
+    test: function (item) {
+      console.log(item)
+      return 'ok'
+    },
     i18n: (message, ...args) => i18n(message, ...args),
     /**
      * Return the right color for this manga, depending if it updates (you can stop following udates for a manga), if it has unread chapters or not
@@ -461,18 +600,18 @@ export default {
         name: cat
       })
     },
-    addCategory: function() {
+    addCategory: function(cat) {
       this.$store.dispatch("addCategoryToManga", {
         key: this.manga.key,
-        name: this.newCat
+        name: cat
       })
-      this.newCat = ""
+
     },
     /**
      * Open bookmark in a new tab (the chapter corresponding to bookmark)
      */
-    openBookmark: function() {
-      browser.runtime.sendMessage({ action: "opentab", url: this.curBm });
+    openBookmark: function(bm) {
+      browser.runtime.sendMessage({ action: "opentab", url: bm });
     },
     emitExpand() {
       this.$emit("expand-group");
@@ -577,8 +716,14 @@ export default {
 }
 .back-card {
   height: 100% !important;
-}
 
+}
+.ellips {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: inline-block;
+  white-space: nowrap;
+}
 .v-progress-linear {
   margin: 0;
   margin-top: -1px;
@@ -683,10 +828,19 @@ select.amr-chap-sel {
 .cat-cont {
   display: inline-block;
 }
-
+.w-100 {
+  width:100%!important;
+}
 .amr-noupdates {
   opacity: 0.75;
 }
-
-
+@media (max-width: 960px) {
+  .pt-md-05 {
+    padding-top:2px;
+  }
+}
+.mangaSelect .v-label {
+  padding-right: 4px!important;
+  padding-left: 4px!important;
+}
 </style>

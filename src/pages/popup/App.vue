@@ -1,5 +1,5 @@
 <template>
-	<v-app>
+	<v-app :style="{background: $vuetify.theme.themes[theme].background}">
 		<!-- Main toolbar in popup -->
 		<v-card>
 			<v-toolbar>
@@ -20,29 +20,16 @@
 
 		<!-- Default panel containing manga list -->
 		<v-main class="ma-3">
-			<v-alert class="mb-0" type="info" :value="true" icon="mdi-incognito" v-if="!trackingDone">
+			<!-- <v-alert class="mb-0" type="info" :value="true" icon="mdi-incognito" v-if="!trackingDone">
 				{{i18n("options_gen_allowtracking_desc")}}
 				<div>
 					<v-btn @click="saveAllowTracking(true)">{{i18n('button_yes')}}</v-btn>
 					<v-btn flat @click="saveAllowTracking(false)">{{i18n('button_no')}}</v-btn>
 				</div>
-			</v-alert>
-			<v-alert class="mb-0" type="info" :value="true" icon="mdi-cookie-alert" v-if="!cookiesDone">
-				{{i18n("options_gen_allowcookies_desc")}}
-				<br /><br />
-				{{i18n("options_gen_allowcookies_warning")}}
-				<div>
-					<v-btn @click="saveAllowCookies(true)">{{i18n('button_yes')}}</v-btn>
-					<v-btn flat @click="saveAllowCookies(false)">{{i18n('button_no')}}</v-btn>
-				</div>
-			</v-alert>
-			<MangaList
-        @search-request="openSearch"
-        @manga-loaded="handleLoaded()"
-       />
+			</v-alert> -->
 			<v-tooltip top v-if="alertmessage !== ''">
 				<template v-slot:activator="{ on }">
-					<v-alert class="mb-0" type="warning" dismissible v-on="on" :value="true" icon="mdi-alert-decagram" slot="activator">
+					<v-alert class="col-lg-6 offset-lg-3 px-2" type="warning" dismissible v-on="on" :value="true" icon="mdi-alert-decagram" slot="activator" elevation="2">
 						{{alertmessage}}
 						<v-btn light class="ml-2" x-small @v-if="!utils.isFirefox()" @click="DownloadAMR()">
 							<v-icon>mdi-cloud-download</v-icon>
@@ -51,6 +38,19 @@
 				</template>
 				<span>{{tooltipalert}}</span>
 			</v-tooltip>
+			<v-alert class="col-lg-6 offset-lg-3 px-2 py-2" type="info" :value="true" icon="mdi-cookie-alert" v-if="!cookiesDone">
+				<span>{{i18n("options_gen_allowcookies_desc")}}</span>
+				<br/><br/>
+				<span class="font-weight-bold">{{i18n("options_gen_allowcookies_warning")}}</span>
+				<div>
+					<v-btn flat small color="green lighten-1" @click="saveAllowCookies(true)">{{i18n('button_allow')}}</v-btn>
+					<v-btn flat small @click="saveAllowCookies(false)">{{i18n('button_refuse')}}</v-btn>
+				</div>
+			</v-alert>
+			<MangaList
+        @search-request="openSearch"
+        @manga-loaded="handleLoaded()"
+       />
 			<div id="__bottom_app__"></div>
 		</v-main>
 
@@ -319,7 +319,11 @@ export default {
     	PopupResizer.checkHeight();
 		})
 	},
-
+	computed: {
+	theme() {
+      return (this.$vuetify.theme.dark) ? 'dark' : 'light'
+    }
+	}
 };
 </script>
 <style data-amr="true">

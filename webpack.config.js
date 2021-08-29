@@ -46,6 +46,10 @@ const config = {
   module: {
     rules: [
       {
+        test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+        loader: 'file-loader'
+      },
+      {
         test: /\.vue$/,
         loader: 'vue-loader'
       },
@@ -60,7 +64,8 @@ const config = {
           limit: 8000,
           name: 'img/[name].[ext]'
         }
-      }
+      },
+      
     ],
   },
   plugins: [

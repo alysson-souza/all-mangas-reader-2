@@ -1,38 +1,109 @@
 <template>
   <div>
     <!-- Manage manga categories -->
-    <v-row >
+    <v-row>
       <v-col>
-        <v-chip :color="selected.length ? 'green' : 'gray'" label close @click:close="clearSelect()">
+        <v-chip
+          :color="selected.length ? 'grey lighten-1' : 'gray'"
+          label
+          text-color="white"
+        >
           {{ i18n("list_multi_action_currently_selected", selected.length) }}
+          <v-icon right @click="clearSelect()">
+            mdi-refresh
+          </v-icon>
         </v-chip>
-        <v-btn @click='selectAll()' outlined small color="info">
-          {{ i18n("button_multi_manga_select_all") }}
-        </v-btn>
-        <v-btn @click='selectUnread()' outlined small color="info">
-          {{ i18n("button_multi_manga_select_unread") }}
-        </v-btn>
-
+          <v-btn
+          tile
+          small
+          color="info"
+          @click='selectAll()'
+          >
+            <v-icon left>
+              mdi-bookmark-multiple
+            </v-icon>
+            {{ i18n("button_multi_manga_select_all") }}
+          </v-btn>
+          <v-btn
+          tile
+          small
+          color="info"
+          @click='selectUnread()'
+          >
+            <v-icon left>
+              mdi-bookmark-multiple-outline
+            </v-icon>
+            {{ i18n("button_multi_manga_select_unread") }}
+          </v-btn>
       </v-col>
-      <v-col>
-        <v-select :items="categories" dense outlined v-model="selectedCategory" item-text="name" item-value="name" :label="i18n('list_multi_action_select_category')"></v-select>
+    </v-row>
+    <v-row>
+      <v-col class="col-12">
+        <v-btn
+            outlined
+            small
+            color="info"
+            @click='openNew()'
+            :disabled="!selected.length || selected.length > 15"
+            >
+              <v-icon left x-small>
+                mdi-play
+              </v-icon>
+              {{ i18n("button_multi_manga_open_new") }}
+        </v-btn>
+        <v-btn
+            outlined
+            small
+            color="info"
+            @click='openLatest()'
+            :disabled="!selected.length || selected.length > 15"
+            >
+              <v-icon left x-small>
+                mdi-skip-next
+              </v-icon>
+              {{ i18n("button_multi_manga_open_latest") }}
+        </v-btn>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="5">
+        <v-select 
+        :items="categories"
+        dense
+        v-model="selectedCategory"
+        item-text="name"
+        item-value="name"
+        :label="i18n('list_multi_action_select_category')"
+        :disabled="!selected.length || selected.length > 15"
+        >
+        </v-select>
+      </v-col>
+      <v-col cols="7">
         <!-- Actions buttons -->
         <div v-if="selectedCategory">
-          <v-btn @click='addCategory()' class="green" small>
-            {{ i18n("button_add") }}
+          <v-btn
+            color="blue"
+            @click='addCategory()'
+            small
+            dark
+          >
+            <v-icon>
+              mdi-plus
+            </v-icon>
+            <!-- {{ i18n("button_add") }} -->
           </v-btn>
-          <v-btn @click='deleteCategory()' class="red" small>
-            {{ i18n("button_remove") }}
+          <v-btn
+            color="red"
+            @click='deleteCategory()'
+            small
+            dark
+          >
+            <v-icon>
+              mdi-minus
+            </v-icon>
+            <!-- {{ i18n("button_remove") }} -->
           </v-btn>
         </div>
-      </v-col>
-      <v-col>
-        <v-btn @click='openLatest()' :disabled="!selected.length || selected.length > 15" outlined small color="info">
-          {{ i18n("button_multi_manga_open_latest") }}
-        </v-btn>
-        <v-btn @click='openNew()' :disabled="!selected.length || selected.length > 15" outlined small color="info">
-          {{ i18n("button_multi_manga_open_new") }}
-        </v-btn>
       </v-col>
     </v-row>
   </div>

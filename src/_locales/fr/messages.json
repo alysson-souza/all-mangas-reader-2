@@ -43,6 +43,14 @@
     "message": "Non",
     "description": "No button label"
   },
+  "button_allow": {
+    "message": "Accepter",
+    "description": "Accept button label"
+  },
+  "button_refuse": {
+    "message": "Refuser",
+    "description": "Refuse button label"
+  },
   "button_save": {
     "message": "Enregistrer",
     "description": "Save button label"
@@ -426,7 +434,7 @@
     "description": "Please select category"
   },
   "list_multi_action_select_category": {
-    "message": "Please select category",
+    "message": "Ajouter ou supprimer une catégorie aux élements sélectionnés",
     "description": "Please select category"
   },
   "list_multi_action_currently_selected": {
@@ -440,6 +448,10 @@
   "list_details_no_bookmarks": {
     "message": "Pas de signets",
     "description": "In manga detail, information to tell that there is no bookmarks for this manga / group of mangas"
+  },
+  "list_details_act": {
+    "message": "Autres actions",
+    "description": "Menu button for actions"
   },
   "list_details_act_search": {
     "message": "Chercher ce manga ailleurs",
@@ -538,8 +550,12 @@
     "description": "Tooltip on category when not selected"
   },
   "list_cat_only": {
-    "message": "Voir seulement les manga de cette catégorie",
+    "message": "Voir seulement les manga des catégorie selectionnées",
     "description": "Tooltip on category button view only from this category"
+  },
+  "list_cat_and_more": {
+    "message": "autres",
+    "description": "Tooltip which indicate there is more selected categories than the one shown"
   },
   "list_cat_delete": {
     "message": "Supprimer cette catégorie",

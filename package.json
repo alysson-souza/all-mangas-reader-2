@@ -17,11 +17,13 @@
     "discord:beta": "node scripts/discord-notify.js"
   },
   "dependencies": {
+    "@mdi/font": "^5.9.55",
     "axios": "^0.21.0",
     "crypto-browserify": "^3.12.0",
     "crypto-js": "^4.0.0",
     "dompurify": "^2.2.6",
     "ejs": "^3.1.5",
+    "file-loader": "^6.2.0",
     "jquery": "^3.5.1",
     "jsdom": "^16.5.2",
     "mime-db": "^1.46.0",

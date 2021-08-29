@@ -35,6 +35,14 @@
     "message": "Cancel",
     "description": "Cancel button label"
   },
+  "button_allow": {
+    "message": "Allow",
+    "description": "Yes button label"
+  },
+  "button_refuse": {
+    "message": "Refuse",
+    "description": "No button label"
+  },
   "button_yes": {
     "message": "Yes",
     "description": "Yes button label"
@@ -427,7 +435,7 @@
     "description": "Please select category"
   },
   "list_multi_action_select_category": {
-    "message": "Please select category",
+    "message": "Add or Remove category to selected items",
     "description": "Please select category"
   },
   "list_multi_action_currently_selected": {
@@ -441,6 +449,10 @@
   "list_details_no_bookmarks": {
     "message": "No bookmarks",
     "description": "In manga detail, information to tell that there is no bookmarks for this manga / group of mangas"
+  },
+  "list_details_act": {
+    "message": "Other actions",
+    "description": "Menu button for actions"
   },
   "list_details_act_search": {
     "message": "Search this manga elsewhere",
@@ -539,8 +551,12 @@
     "description": "Tooltip on category when not selected"
   },
   "list_cat_only": {
-    "message": "View only mangas from this category",
-    "description": "Tooltip on category button view only from this category"
+    "message": "View only mangas from selected categories",
+    "description": "Tooltip on category button view only from these categories"
+  },
+  "list_cat_and_more": {
+    "message": "others",
+    "description": "Tooltip which indicate there is more selected categories than the one shown"
   },
   "list_cat_delete": {
     "message": "Delete this category",

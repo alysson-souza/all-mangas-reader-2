@@ -2,101 +2,14 @@
   <div>
     <!-- Categories and filters -->
     <v-row no-gutters>
-      <!-- Categories -->
-      <v-col cols="6" lg="9">
-        <Categories :categories="categories" :static-cats="false" :delegate-delete="false" />
-      </v-col>
-      <!-- Filters -->
-      <v-col cols="6" lg="3" class="d-flex align-center justify-end filter-container">
-        <v-card v-if="visMangas.length" class="hover-card">
-          <v-tooltip v-if="visNewMangas.length" top content-class="icon-ttip">
-            <template v-slot:activator="{ on }">
-              <v-icon v-on="on" @click="markAllAsRead()">mdi-eye</v-icon>
-            </template>
-            <span>{{i18n("list_global_read")}}</span>
-          </v-tooltip>
-          <v-tooltip top content-class="icon-ttip">
-            <template v-slot:activator="{ on }">
-              <v-icon v-on="on" @click="deleteAll()">mdi-delete</v-icon>
-            </template>
-            <span>{{i18n("list_global_delete")}}</span>
-          </v-tooltip>
-        </v-card>
-        <v-card v-if="visMangas.length" class="hover-card">
-          <v-icon class="filters-icon">mdi-filter</v-icon>
-          <v-tooltip top content-class="icon-ttip">
-            <template v-slot:activator="{ on }">
-              <v-icon v-on="on" @click="sort = 'az'" :class="['amr-filter', {activated: sort === 'az'}]">mdi-sort-alphabetical-ascending</v-icon>
-            </template>
-            <span>{{i18n("list_sort_alpha")}}</span>
-          </v-tooltip>
-          <v-tooltip top content-class="icon-ttip">
-            <template v-slot:activator="{ on }">
-              <v-icon v-on="on" @click="sort = 'updates'" :class="['amr-filter', {activated: sort === 'updates'}]">mdi-flash-auto</v-icon>
-            </template>
-            <span>{{i18n("list_sort_new")}}</span>
-          </v-tooltip>
-          <v-tooltip top content-class="icon-ttip">
-            <template v-slot:activator="{ on }">
-              <v-icon v-on="on" @click="sort = 'updates-mostunread'" :class="['amr-filter', {activated: sort === 'updates-mostunread'}]">mdi-flash</v-icon>
-            </template>
-            <span>{{i18n("list_sort_new_most_unread")}}</span>
-          </v-tooltip>
-          <v-tooltip top content-class="icon-ttip">
-            <template v-slot:activator="{ on }">
-              <v-icon v-on="on" @click="sort = 'uptime'" :class="['amr-filter', {activated: sort === 'uptime'}]">mdi-sort-calendar-ascending</v-icon>
-            </template>
-            <span>{{i18n("list_sort_upts")}}</span>
-          </v-tooltip>
-          <!-- ascending/decending toggle -->
-          <v-tooltip top content-class="icon-ttip">
-            <template v-slot:activator="{ on }">
-              <v-icon v-on="on" @click="alpha_asc_desc = !alpha_asc_desc" :class="['amr-filter', {activated: alpha_asc_desc}]">mdi-swap-vertical</v-icon>
-            </template>
-            <span>{{i18n("list_asc_desc")}}</span>
-          </v-tooltip>
-          <v-tooltip top content-class="icon-ttip">
-            <template v-slot:activator="{ on }">
-              <v-icon v-on="on" @click="selectable = !selectable" :class="['amr-filter', {activated: selectable}]">mdi-order-bool-ascending-variant</v-icon>
-            </template>
-            <span>{{i18n("list_select_action")}}</span>
-          </v-tooltip>
-          <v-tooltip top content-class="icon-ttip">
-            <template v-slot:activator="{ on }">
-              <v-icon v-on="on" @click="showFilter = !showFilter" :class="['amr-filter', {activated: showFilter}]">mdi-magnify</v-icon>
-            </template>
-            <span>{{i18n("list_filter")}}</span>
-          </v-tooltip>
-          <v-tooltip top content-class="icon-ttip">
-            <template v-slot:activator="{ on }">
-              <v-icon v-on="on" @click="showMirrorSelection = !showMirrorSelection" :class="['amr-filter', {activated: showMirrorSelection}]">mdi-image-multiple-outline</v-icon>
-            </template>
-            <span>{{i18n("list_mirror_filter_icon")}}</span>
-          </v-tooltip>
-        </v-card>
-      </v-col>
-      <v-col cols="6" v-show="showFilter">
-        <!-- Search Field -->
-        <v-text-field
-            v-model="searchText"
-            prepend-icon="mdi-magnify"
-            :label="i18n('list_search_label')"
-            dense
-            single-line
-            filled
-            rounded
-            hide-details
-            clearable
-            autofocus
-          ></v-text-field>
-      </v-col>
-      <v-col cols="6" v-show="showMirrorSelection">
-        <!-- Search Field -->
-        <v-select v-model="mirrorSelection" :items="usedMirrors" dense :label="i18n('list_mirror_filter_label')"></v-select>
-      </v-col>
-      <v-col cols="12" v-if="selectable">
-        <MultiMangaAction :selected="selectedMangaExpanded" />
-      </v-col>
+      <v-item-group>
+        <v-item>
+          <!-- Categories -->
+          <v-col lg="9" cols="10">
+            <Categories :categories="categories" :static-cats="false" :delegate-delete="false" />
+          </v-col>
+        </v-item>
+      </v-item-group>
     </v-row>
     <br />
     <!-- Manga List -->
@@ -112,24 +25,134 @@
       @page-count="pagination.pageCount = $event"
     >
       <template v-if="pageNavigationPosition == 'top'" v-slot:top>
-        <v-row class="mx-2">
-          <v-col cols="3">
-            <v-select dense outlined :items="pagination.pageOptions" v-model="itemsPerPage" :label="i18n('list_page_label')"></v-select>
-          </v-col>
-          <v-col>
-            <v-pagination :total-visible="$isPopup ? 5 : 10" v-model="pagination.currentPage" :length="pagination.pageCount"></v-pagination>
-          </v-col>
-          <v-col cols="1">
-            <v-tooltip top content-class="icon-ttip">
-            <template v-slot:activator="{ on }">
-              <v-btn color="blue" icon x-large @click="moveNavigation()" v-on="on">
-                <v-icon>mdi-arrow-down-box</v-icon>
-              </v-btn>
-            </template>
-            <span>{{i18n("list_move_navigation")}}</span>
-          </v-tooltip>
-          </v-col>
-        </v-row>
+        <v-item-group>
+          <v-row class="mx-2">
+            <v-item>
+              <v-col cols="3">
+                <v-select dense outlined :items="pagination.pageOptions" v-model="itemsPerPage" :label="i18n('list_page_label')"></v-select>
+              </v-col>
+            </v-item>
+            <v-item>
+              <v-col>
+                <v-pagination :total-visible="$isPopup ? 5 : 10" v-model="pagination.currentPage" :length="pagination.pageCount"></v-pagination>
+              </v-col>
+            </v-item>
+            <v-item>
+              <v-col cols="1">
+                <v-tooltip top content-class="icon-ttip">
+                <template v-slot:activator="{ on }">
+                  <v-btn color="blue" icon x-large @click="moveNavigation()" v-on="on">
+                    <v-icon>mdi-arrow-down-box</v-icon>
+                  </v-btn>
+                </template>
+                <span>{{i18n("list_move_navigation")}}</span>
+              </v-tooltip>
+              </v-col>
+            </v-item>
+          </v-row>
+        </v-item-group>
+        <!-- Filters -->
+        <v-item-group>
+          <v-row class="mx-2 ">
+            <v-item>
+              <v-col cols="12" lg="6" class="pt-0 mt-2 pb-5">
+                <v-card v-if="visMangas.length" class="hover-card py-1 mr-3 px-2">
+                  <v-tooltip v-if="visNewMangas.length" top content-class="icon-ttip">
+                    <template v-slot:activator="{ on }">
+                      <v-icon v-on="on" @click="markAllAsRead()">mdi-eye</v-icon>
+                    </template>
+                    <span>{{i18n("list_global_read")}}</span>
+                  </v-tooltip>
+                  <v-tooltip top content-class="icon-ttip">
+                    <template v-slot:activator="{ on }">
+                      <v-icon class="ml-2" v-on="on" @click="deleteAll()">mdi-delete</v-icon>
+                    </template>
+                    <span>{{i18n("list_global_delete")}}</span>
+                  </v-tooltip>
+                </v-card>
+                <v-card v-if="visMangas.length" class="hover-card pl-0 pr-2">
+                  <v-icon dense class="filters-icon prepended pa-2">mdi-filter</v-icon>
+                  <v-tooltip top content-class="icon-ttip">
+                    <template v-slot:activator="{ on }">
+                      <v-icon class="ml-2" v-on="on" @click="sort = 'az'" :class="['amr-filter', {activated: sort === 'az'}]">mdi-sort-alphabetical-ascending</v-icon>
+                    </template>
+                    <span>{{i18n("list_sort_alpha")}}</span>
+                  </v-tooltip>
+                  <v-tooltip top content-class="icon-ttip">
+                    <template v-slot:activator="{ on }">
+                      <v-icon class="ml-2" v-on="on" @click="sort = 'updates'" :class="['amr-filter', {activated: sort === 'updates'}]">mdi-flash-auto</v-icon>
+                    </template>
+                    <span>{{i18n("list_sort_new")}}</span>
+                  </v-tooltip>
+                  <v-tooltip top content-class="icon-ttip">
+                    <template v-slot:activator="{ on }">
+                      <v-icon class="ml-2" v-on="on" @click="sort = 'updates-mostunread'" :class="['amr-filter', {activated: sort === 'updates-mostunread'}]">mdi-flash</v-icon>
+                    </template>
+                    <span>{{i18n("list_sort_new_most_unread")}}</span>
+                  </v-tooltip>
+                  <v-tooltip top content-class="icon-ttip">
+                    <template v-slot:activator="{ on }">
+                      <v-icon class="ml-2" v-on="on" @click="sort = 'uptime'" :class="['amr-filter', {activated: sort === 'uptime'}]">mdi-sort-calendar-ascending</v-icon>
+                    </template>
+                    <span>{{i18n("list_sort_upts")}}</span>
+                  </v-tooltip>
+                  <!-- ascending/decending toggle -->
+                  <v-tooltip top content-class="icon-ttip">
+                    <template v-slot:activator="{ on }">
+                      <v-icon class="ml-2" v-on="on" @click="alpha_asc_desc = !alpha_asc_desc" :class="['amr-filter', {activated: alpha_asc_desc}]">mdi-swap-vertical</v-icon>
+                    </template>
+                    <span>{{i18n("list_asc_desc")}}</span>
+                  </v-tooltip>
+                  <v-tooltip top content-class="icon-ttip">
+                    <template v-slot:activator="{ on }">
+                      <v-icon class="ml-2" v-on="on" @click="selectable = !selectable;showMirrorSelection = false;showFilter = false" :class="['amr-filter', {activated: selectable}]">mdi-order-bool-ascending-variant</v-icon>
+                    </template>
+                    <span>{{i18n("list_select_action")}}</span>
+                  </v-tooltip>
+                  <v-tooltip top content-class="icon-ttip">
+                    <template v-slot:activator="{ on }">
+                      <v-icon class="ml-2" v-on="on" @click="showFilter = !showFilter; showMirrorSelection = false; selectable = false" :class="['amr-filter', {activated: showFilter}]">mdi-magnify</v-icon>
+                    </template>
+                    <span>{{i18n("list_filter")}}</span>
+                  </v-tooltip>
+                  <v-tooltip top content-class="icon-ttip">
+                    <template v-slot:activator="{ on }">
+                      <v-icon class="ml-2" v-on="on" @click="showMirrorSelection = !showMirrorSelection; showFilter = false;selectable = false" :class="['amr-filter', {activated: showMirrorSelection}]">mdi-image-multiple-outline</v-icon>
+                    </template>
+                    <span>{{i18n("list_mirror_filter_icon")}}</span>
+                  </v-tooltip>
+                </v-card>
+              </v-col>
+            </v-item>
+            <v-item>
+            <!-- Search Field -->
+              <v-col cols="12" lg="6" md="12" class="pr-3 pt-0 mt-md-2" v-show="showFilter">
+                <v-text-field
+                    v-model="searchText"
+                    prepend-icon="mdi-magnify"
+                    :label="i18n('list_search_label')"
+                    dense
+                    single-line
+                    hide-details
+                    clearable
+                    autofocus
+                  ></v-text-field>
+              </v-col>
+            </v-item>
+            <!-- Mirror selection -->
+            <v-item>
+              <v-col cols="12" lg="6" md="12" class="pr-3 py-0 mt-md-2" v-show="showMirrorSelection">
+                <v-select v-model="mirrorSelection" :items="usedMirrors" dense :label="i18n('list_mirror_filter_label')"></v-select>
+              </v-col>
+            </v-item>
+            <v-item>
+              <v-col cols="12" v-if="selectable" class="mt-2">
+                <MultiMangaAction :selected="selectedMangaExpanded" />
+              </v-col>
+            </v-item>
+          </v-row>
+        </v-item-group>
+
       </template>
       <template v-if="pageNavigationPosition == 'bottom'" v-slot:footer>
         <v-row class="mx-2 pt-5">
@@ -494,7 +517,7 @@ export default {
     },
     moveNavigation: function() {
       let newDir = ''
-      if (this.pageNavigationPosition == 'top') {
+      if (this.pageNavigationPosition === 'top') {
         newDir = 'bottom'
       } else {
         newDir = 'top'

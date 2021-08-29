@@ -1,61 +1,86 @@
 <template>
   <div class="cat-cont">
-      <!-- Eye button to include all / do not care about all -->
-      <v-tooltip v-if="!staticCats && !allincluded" top content-class="icon-ttip">
-          <template v-slot:activator="{ on }">
-            <v-icon class="cat-act" @click.stop="stateAll('include')" v-on="on">mdi-eye</v-icon>
-          </template>
-          <span>{{i18n("list_cat_include_all")}}</span>
-      </v-tooltip>
-      <v-tooltip v-if="!staticCats && allincluded" top content-class="icon-ttip">
-          <template v-slot:activator="{ on }">
-            <v-icon class="cat-act" @click.stop="stateAll('')" v-on="on">mdi-eye-off</v-icon>
-          </template>
-          <span>{{i18n("list_cat_donotcare_all")}}</span>
-      </v-tooltip>
-      <!-- Display all categories -->
-      <div v-for="(cat, key) in sortedCategories"
-        :class="'cat-chip ' + (staticCats ? 'include' : cat.state)"
-        :key="key"
-        @click="switchState(cat)">
-        <!-- Category name and tooltip -->
-        <v-tooltip v-if="!staticCats && cat.type !== 'language'" top content-class="icon-ttip" class="cat-name">
-          <template v-slot:activator="{ on }">
-            <span class="cat-name" v-on="on">{{cat.type === 'native' ? i18n(cat.name) : cat.name}}</span>
-          </template>
-          <span v-if="cat.state==='include'" v-html='i18n("list_cat_include", cat.type === "native" ? i18n(cat.name) : cat.name)'></span>
-          <span v-if="cat.state==='exclude'" v-html='i18n("list_cat_exclude", cat.type === "native" ? i18n(cat.name) : cat.name)'></span>
-          <span v-if="!cat.state" v-html='i18n("list_cat_no", cat.type === "native" ? i18n(cat.name) : cat.name)'></span>
-        </v-tooltip>
-        <Flag v-if="!staticCats && cat.type === 'language'" :value='cat.name' />
-        <span v-if="staticCats" class="cat-name">{{cat}}</span>
-        <!-- Icon only me -->
-        <v-tooltip v-if="!staticCats" top content-class="icon-ttip">
-          <template v-slot:activator="{ on }">
-            <v-icon class="cat-act" @click.stop="onlyMe(cat)" v-on="on">mdi-eye</v-icon>
-          </template>
-          <span>{{i18n("list_cat_only")}}</span>
-        </v-tooltip>
-        <!-- Trash icon -->
-        <v-tooltip top content-class="icon-ttip">
-          <template v-slot:activator="{ on }">
-            <v-icon v-if="cat.type !== 'native' && cat.type !== 'language'" class="cat-act" @click.stop="deleteCat(cat)" v-on="on">mdi-close</v-icon>
-          </template>
-          <span>{{i18n("list_cat_delete")}}</span>
-        </v-tooltip>
-        <!-- Edit icon -->
-        <v-tooltip top content-class="icon-ttip">
-          <template v-slot:activator="{ on }">
-            <v-icon v-if="cat.type !== 'native' && cat.type !== 'language'" class="cat-act" @click.stop="displayEditCategoryModal(cat)" v-on="on">mdi-pencil</v-icon>
-          </template>
-          <span>{{i18n("list_cat_edit")}}</span>
-        </v-tooltip>
-        <!-- badge nb mangas -->
-        <span v-if="countUsed(cat) > 0" class="cat-badge grey darken-1">{{countUsed(cat)}}</span>
-      </div>
-      <!-- Input text to add a category -->
-      <v-text-field v-if="!staticCats" dense v-model="newCat" :placeholder="i18n('list_cat_add')" class="cat-add"
-        @keyup.enter="addCategory()" />
+     <v-select
+        v-model="selectedCats"
+        :items="catList"
+        :item-text="item => item.type === 'native' ? i18n(item.name) : item.name"
+        item-value="name" 
+        attach
+        chips
+        multiple
+        dense
+      >
+        <template v-slot:prepend-item>
+          <v-list-item ripple>
+            <v-list-item-action>
+                <v-icon @click="addCategory()" :color="selectedCats.length > 0 ? 'light-blue' : ''">
+                  mdi-plus
+                </v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-text-field :label="i18n('list_cat_add')" v-if="!staticCats" dense v-model="newCat" class="cat-add mt-2"/>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item
+            v-model="selectedCats"
+            ripple
+            @click="toggleAllCats"
+          >
+            <v-list-item-action>
+              <v-icon :color="selectedCats.length > 0 ? 'light-blue' : ''">
+                {{ icon }}
+              </v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>
+                {{i18n("list_cat_include_all")}}
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-divider class="mt-2"></v-divider>
+        </template>
+        <template v-slot:item="{ active, item, attrs, on }">
+          <v-list-item v-on="on" v-bind="attrs" #default="{ active }">
+            <v-list-item-action>
+            <v-checkbox :input-value="active"></v-checkbox>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>
+                <v-row no-gutters align="center" class="py-2">
+                  <v-badge :value="countUsed(item) > 0" :content="countUsed(item)" class="pr-2">
+                    {{ item.type === 'native' ? i18n(item.name) : item.name }}
+                  </v-badge>
+
+                  <v-spacer></v-spacer>
+                  <v-btn color="transparent" v-if="item.type !== 'native'" x-small depressed right @click.stop="displayEditCategoryModal(item)">
+                    <v-icon>
+                      mdi-pencil
+                    </v-icon>
+                  </v-btn>
+                  <v-btn color="transparent" v-if="item.type !== 'native'" x-small depressed right @click.stop="deleteCat(item)">
+                    <v-icon>
+                      mdi-close
+                    </v-icon>
+                  </v-btn>
+                </v-row>
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </template>
+        <!-- Categories Chips -->
+        <template v-slot:selection="{ item, index }">
+          <v-chip small v-if="index < 5">
+            <span>{{ item.type === 'native' ? i18n(item.name) : item.name }}</span>
+          </v-chip>
+          <span
+            v-if="index === 5"
+            class="grey--text text-caption"
+          >
+            (+{{ selectedCats.length - index }} {{ i18n('list_cat_and_more') }} )
+          </span>
+        </template>
+      </v-select>
+    <!-- Delete Category Dialog -->
     <v-dialog v-model="deleteCatDialog" max-width="290">
       <v-card>
         <v-card-title class="headline">{{i18n("list_cat_delete_title", catToDelete.name)}}</v-card-title>
@@ -77,7 +102,6 @@
             <v-text-field solo outlined dense v-model="updateCatName" />
           </label>
         </v-card-text>
-
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="red darken-1" :disabled="!isValidEditName" flat @click.native="submitEditCategory()">
@@ -104,7 +128,9 @@ export default {
       catToEdit: { name: "" },
       updateCatName: "",
       deleteCatDialog: false, // display delete category dialog
-      catToDelete: {} // category to dele inside dialog
+      catToDelete: {}, // category to dele inside dialog
+      selectedCats: this.categories.filter(c => c.state === 'include'),
+      catList: this.categories
     };
   },
   props: [
@@ -134,23 +160,21 @@ export default {
     },
     isValidEditName: function () {
       return this.updateCatName.length >= 1 && this.updateCatName !== this.catToEdit.name;
-    }
+    },
+    icon () {
+      if (this.selectedCats.length === this.catList.length) return 'mdi-close-box'
+      if (this.selectedCats.length) return 'mdi-minus-box'
+      return 'mdi-checkbox-blank-outline'
+    },
   },
   methods: {
     i18n: (message, ...args) => i18n(message, ...args),
-    switchState(cat) {
-      let nstate = "";
-      if (cat.state === "include") nstate = "exclude";
-      else if (cat.state === "exclude") nstate = "";
-      else if (!cat.state || cat.state === "") nstate = "include";
-      this.$store.dispatch("updateCategory", {
-        name: cat.name,
-        catstate: nstate
-      });
-    },
     addCategory() {
-      this.$store.dispatch("addCategory", this.newCat);
-      this.newCat = "";
+      if(this.newCat.length) {
+        this.$store.dispatch("addCategory", this.newCat);
+        this.newCat = "";
+        this.catList = this.categories
+      }
     },
     deleteCat(cat) {
       if (this.delegateDelete) {
@@ -163,6 +187,7 @@ export default {
           this.$store.dispatch("removeCategory", cat.name);
         }
       }
+      this.catList = this.categories
     },
     displayEditCategoryModal(cat) {
       this.catToEdit = cat;
@@ -179,38 +204,59 @@ export default {
       this.editCatDialog = false;
       this.catToEdit = {};
       this.updateCatName = ""
+      this.catList = this.categories
     },
     reallyDeleteCat() {
       this.$store.dispatch("removeCategory", this.catToDelete.name);
       this.deleteCatDialog = false;
     },
-    onlyMe(cat) {
-      for (let c of this.categories) {
-        if (c.name === cat.name) {
-          this.$store.dispatch("updateCategory", {
-            name: c.name,
-            catstate: "include"
-          });
-        } else {
-          this.$store.dispatch("updateCategory", {
-            name: c.name,
-            catstate: ""
-          });
-        }
-      }
-    },
     countUsed(cat) {
       return utils.countUsed(cat, this.$store.state.mangas.all);
     },
-    stateAll(state) {
-      for (let c of this.categories) {
+    toggleAllCats() {
+      this.$nextTick(() => {
+        if(this.selectedCats.length === this.catList.length) {
+          this.selectedCats = []
+        } else {
+          this.selectedCats = this.catList.slice()
+        }
+      })
+    },
+    updateCategory(name, include = true) {
         this.$store.dispatch("updateCategory", {
-          name: c.name,
-          catstate: state
+          name: name,
+          catstate: include ? 'include' : 'exclude'
         });
-      }
-    }
+    },
   },
+watch: {
+  selectedCats: function (selectedCats)  {
+    const catListName = this.catList.map(item=>item.name)
+    const selectedCatsName = this.selectedCats.map(item=>item.name)
+
+    if(selectedCatsName.length === catListName.length) {
+      selectedCatsName.forEach(c => {
+        this.updateCategory(c)
+      })
+      return
+    }
+
+    if(!selectedCats.length) {
+      catListName.forEach(c => {
+        this.updateCategory(c, false)
+      })
+      return
+    }
+
+    catListName.forEach(l => {
+      if(selectedCats.includes(l)) {
+        this.updateCategory(l)
+      } else {
+        this.updateCategory(l, false)
+      }
+    })
+  }
+},
   name: "Categories",
   components: {Flag}
 };
@@ -286,4 +332,11 @@ export default {
   font-size: 0.9rem;
   padding: 0px 3px;
 }
+.v-badge__badge {
+  font-size:8px!important;
+  height: 10px!important;
+  min-width: 10px!important;
+  padding:1px 6px!important;
+}
+
 </style>

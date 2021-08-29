@@ -1,6 +1,6 @@
 import 'vuetify/dist/vuetify.min.css';
 import './popup.css';
-
+import '@mdi/font/css/materialdesignicons.css'
 import browser from "webextension-polyfill";
 import Vue from 'vue';
 import Vuetify from 'vuetify';
@@ -45,6 +45,7 @@ import * as util from "../utils";
   Vue.config.productionTip = false
   Vue.prototype.$isPopup = popup
   Vue.prototype.$eventBus = new Vue()
+  vuetifyOptions.icons.iconfont = 'mdi'
   Vue.use(Vuetify)
   vuetifyOptions.theme.dark = window['AMR_STORE'].state.options.dark === 1
   new Vue({
