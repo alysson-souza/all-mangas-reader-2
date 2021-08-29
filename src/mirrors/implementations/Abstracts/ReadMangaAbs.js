@@ -72,10 +72,9 @@ window["ReadMangaAbs"] = function (options) {
 
         var res = [];
         var matches = $.map($("#__amr_text_dom__", doc), el => $(el).text()).join(";");
-        matches = matches.match(/rm_h\.init\(.*?\]\]/);
+        matches = matches.match(/rm_h\.initReader\(.*?(\[\[.*?\]\])/);
         if (matches) {
-            matches = matches[0].slice(10);
-            matches = matches.split("'").join('"');
+            matches = matches[1].replace(/'/g, "\"");
             var b = JSON.parse(matches);
             for (var i = 0; i < b.length; i++) {
                 res[i] = b[i][0] + b[i][2];
