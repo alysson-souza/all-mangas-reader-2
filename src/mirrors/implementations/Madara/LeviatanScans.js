@@ -13,7 +13,8 @@ if (typeof registerMangaObject === 'function') {
             search_url: 'https://leviatanscans.com/',
             chapter_list_ajax: true,
             path_length: 3,
-            sort_chapters: true
+            sort_chapters: true,
+            isekai_chapter_url: true
         },
     });
 }
