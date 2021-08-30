@@ -55,7 +55,7 @@
         <v-item-group>
           <v-row class="mx-2 ">
             <v-item>
-              <v-col cols="12" lg="6" class="pt-0 mt-2 pb-5">
+              <v-col cols="12" lg="6" class="pt-0 mt-2" :class="selectable ? '': 'pb-5'">
                 <v-card v-if="visMangas.length" class="hover-card py-1 mr-3 px-2">
                   <v-tooltip v-if="visNewMangas.length" top content-class="icon-ttip">
                     <template v-slot:activator="{ on }">
@@ -146,7 +146,7 @@
               </v-col>
             </v-item>
             <v-item>
-              <v-col cols="12" v-if="selectable" class="mt-2">
+              <v-col cols="12" v-if="selectable">
                 <MultiMangaAction :selected="selectedMangaExpanded" />
               </v-col>
             </v-item>
