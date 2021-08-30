@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Manage manga categories -->
-    <v-row>
+    <v-row no-gutters>
       <v-col>
         <v-chip
           :color="selected.length ? 'grey lighten-1' : 'gray'"
@@ -37,7 +37,7 @@
           </v-btn>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row no-gutters>
       <v-col class="col-12">
         <v-btn
             outlined
@@ -66,7 +66,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="5">
+      <v-col cols="7">
         <v-select 
         :items="categories"
         dense
@@ -74,11 +74,11 @@
         item-text="name"
         item-value="name"
         :label="i18n('list_multi_action_select_category')"
-        :disabled="!selected.length || selected.length > 15"
+        :disabled="!selected.length || selected.length > 15 || !categories.filter(c => c.type !== 'native').length"
         >
         </v-select>
       </v-col>
-      <v-col cols="7">
+      <v-col cols="5">
         <!-- Actions buttons -->
         <div v-if="selectedCategory">
           <v-btn
