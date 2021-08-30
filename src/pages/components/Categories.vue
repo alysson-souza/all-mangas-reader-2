@@ -18,7 +18,7 @@
                 </v-icon>
             </v-list-item-action>
             <v-list-item-content>
-              <v-text-field :label="i18n('list_cat_add')" v-if="!staticCats" dense v-model="newCat" class="cat-add mt-2"/>
+              <v-text-field @keypress.enter="addCategory()" :label="i18n('list_cat_add')" v-if="!staticCats" dense v-model="newCat" class="cat-add mt-2"/>
             </v-list-item-content>
           </v-list-item>
           <v-list-item
