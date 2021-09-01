@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ['unemployedscans.com'],
         home: 'https://unemployedscans.com/',
         canListFullMangas: false,
-        // chapter_url: /^\/manga\/.*\/.+$/g,
+        chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
         abstract: 'Madara',
         abstract_options: {
             search_url: 'https://unemployedscans.com/',

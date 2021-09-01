@@ -21,7 +21,6 @@ window["Madara"] = function (options) {
     this.options = Object.assign(this.default_options, options)
     this.mirrorName = "Madara"
     this.canListFullMangas = false
-    this.chapter_url= /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
     this.getMangaList = async function (search) {
         let searchApiUrl = this.options.search_url + "wp-admin/admin-ajax.php";
         var res = [];
