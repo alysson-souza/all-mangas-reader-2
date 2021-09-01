@@ -167,13 +167,17 @@
                 </v-icon>
               </v-btn>
             </template>
-            <v-list>
+            <v-list
+              dense
+              style="max-height: 180px"
+              class="overflow-y-auto"
+            >
               <v-list-item
                 v-for="(item, index) in selectableCategory"
                 :key="index"
                 dense
               >
-                <v-list-item-title>
+                <v-list-item-title >
                   <div class="d-flex justify-space-between py-2">
                     {{ item }}
                     <v-spacer></v-spacer>
@@ -211,7 +215,11 @@
                 </v-icon>
               </v-btn>
             </template>
-            <v-list>
+            <v-list
+              dense
+              style="max-height: 180px"
+              class="overflow-y-auto"
+            >
               <v-list-item
                 v-for="(item, index) in bookmarks"
                 :key="index"
