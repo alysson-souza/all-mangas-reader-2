@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["reset-scans.com"],
         home: "https://reset-scans.com/",
-        chapter_url: /^\/manga\/.*\/.+$/g,
+        // chapter_url: /^\/manga\/.*\/.+$/g,
         canListFullMangas: false,
         abstract: "Madara",
         abstract_options: {

@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["manga1st.com"],
         home: "https://manga1st.com/",
-        chapter_url: /^\/manga\/.*\/.+$/g,
+        // chapter_url: /^\/manga\/.*\/.+$/g,
         canListFullMangas: false,
         abstract: "Madara",
         abstract_options: {

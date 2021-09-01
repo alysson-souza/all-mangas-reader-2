@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["www.mangasy.com"],
         home: "https://www.mangasy.com/",
-        chapter_url: /^\/manga\/.*\/.+$/g,
+        // chapter_url: /^\/manga\/.*\/.+$/g,
         canListFullMangas: false,
         abstract: "Madara",
         abstract_options: {

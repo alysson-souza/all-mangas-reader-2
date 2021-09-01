@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["mm-scans.com"],
         home: "https://mm-scans.com/",
-        chapter_url: /^\/manga\/.*\/.+$/g,
+        // chapter_url: /^\/manga\/.*\/.+$/g,
         canListFullMangas: false,
         abstract: "Madara",
         abstract_options: {

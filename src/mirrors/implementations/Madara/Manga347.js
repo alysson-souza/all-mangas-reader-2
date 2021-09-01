@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["manga347.com"],
         home: "https://manga347.com/",
-        chapter_url: /^\/manga\/.*\/.+$/g,
+        // chapter_url: /^\/manga\/.*\/.+$/g,
         canListFullMangas: false,
         abstract: "Madara",
         abstract_options: {

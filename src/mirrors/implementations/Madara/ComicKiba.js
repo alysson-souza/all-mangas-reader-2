@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ['comickiba.com'],
         home: 'https://comickiba.com/',
         canListFullMangas: true,
-        chapter_url: /^\/manga\/.*\/.+$/g,
+        // chapter_url: /^\/manga\/.*\/.+$/g,
         abstract: "Madara",
         abstract_options: {
             search_url: 'https://comickiba.com/',

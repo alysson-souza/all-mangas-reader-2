@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["247manga.com"],
         home: "https://247manga.com/",
-        chapter_url: /^\/manhwa\/.*\/.+$/g,
+        // chapter_url: /^\/manhwa\/.*\/.+$/g,
         canListFullMangas: false,
         abstract: "Madara",
         abstract_options: {

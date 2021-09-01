@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["www.astrallibrary.net"],
         home: "https://www.astrallibrary.net/",
-        chapter_url: /^\/manga\/.+\/.+$/g,
+        // chapter_url: /^\/manga\/.+\/.+$/g,
         canListFullMangas: true,
         abstract: "Madara",
         abstract_options: {

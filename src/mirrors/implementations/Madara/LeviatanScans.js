@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ['leviatanscans.com'],
         home: 'https://leviatanscans.com/',
         canListFullMangas: true,
-        chapter_url: /\/manga\/.*\/.+$/g,
+        // chapter_url: /\/manga\/.*\/.+$/g,
 
         abstract: 'Madara',
         abstract_options: {
