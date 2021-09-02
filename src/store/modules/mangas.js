@@ -768,7 +768,6 @@ const mutations = {
         let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.display = display;
-            mg.ts = Math.round(Date.now() / 1000)
         }
     },
     /**
@@ -781,7 +780,6 @@ const mutations = {
         let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.layout = layout;
-            mg.ts = Math.round(Date.now() / 1000)
         }
     },
     /**
@@ -794,7 +792,6 @@ const mutations = {
         let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.webtoon = webtoon;
-            mg.ts = Math.round(Date.now() / 1000)
         }
     },
     /**
@@ -806,7 +803,6 @@ const mutations = {
         let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.displayName = displayName;
-            mg.ts = Math.round(Date.now() / 1000)
         }
     },
     /**
@@ -830,7 +826,10 @@ const mutations = {
     setMangaUpdateTop(state, { url, update, mirror, language }) {
         let key = utils.mangaKey(url, mirror, language),
             mg = state.all.find(manga => manga.key === key)
-        if (mg !== undefined) mg.update = update;
+        if (mg !== undefined) {
+            mg.update = update;
+            mg.ts = Math.round(Date.now() / 1000)
+        }
     },
     /**
      * Set upts to now (means : 'last time we found a new chapter is now');
@@ -861,7 +860,6 @@ const mutations = {
         let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.languages = langs;
-            mg.ts = Math.round(Date.now() / 1000)
         }
     },
     /**
