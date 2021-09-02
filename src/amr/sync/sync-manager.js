@@ -213,9 +213,9 @@ class SyncManager {
         const localUpdates = [];
         for (const remoteManga of remoteList) {
             const localManga = localList.find(m => m.key === remoteManga.key);
-            // force update local entry before mergin it with remote data.
-            if(localManga) await dispatch("refreshLastChapters", localManga) 
             if (this.shouldSyncToLocal({ localManga, remoteManga })) {
+                // force update local entry before mergin it with remote data.
+                if(localManga) await dispatch("refreshLastChapters", localManga)
                 localUpdates.push({ ...remoteManga });
             }
         }
