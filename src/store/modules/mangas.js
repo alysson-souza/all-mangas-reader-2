@@ -850,7 +850,6 @@ const mutations = {
         let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.listChaps = listChaps;
-            mg.ts = Math.round(Date.now() / 1000)
         }
     },
     /**
