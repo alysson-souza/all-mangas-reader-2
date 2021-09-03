@@ -928,6 +928,7 @@ const mutations = {
             if (mg.listChaps.length > 0) {
                 mg.lastChapterReadURL = mg.listChaps[mg.listChaps.length - 1][1];
                 mg.lastChapterReadName = mg.listChaps[mg.listChaps.length - 1][0];
+                mg.ts = Math.round(Date.now() / 1000)
             }
         }
     },
