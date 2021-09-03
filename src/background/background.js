@@ -70,7 +70,7 @@ IconHelper.setBlueIcon();
         if (!syncMutation) return
         if (!syncMutation.type) return
         if (syncMutation.type === 'deleteManga') syncManager.deleteManga(mutation.payload)
-        else syncManager.set(mutation)
+        else syncManager.setToRemote(mutation)
     })
     /**
      * Initialize bookmarks list in store from DB

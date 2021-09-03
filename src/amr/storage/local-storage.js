@@ -15,7 +15,9 @@ class LocalStorage {
     async loadMangaList() {
         return this.indexedDb.getMangaList();
     }
-
+    commit(key, payload) {
+        return this.vuexStore.commit(key, payload)
+    }
     syncLocal(mangaUpdates) {
         const storeUpdates = mangaUpdates.map(manga => {
             if (manga.deleted === syncUtils.DELETED) {

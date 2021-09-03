@@ -158,11 +158,13 @@ class SyncManager {
         const localList = await this.localStorage.loadMangaList();
         const remoteList = await storage.getAll()
         debug(`[SYNC-${storageName}] Comparing local and remote list`);
+        this.processOptionsUpdatesToLocal(localList, remoteList)
         const remote = await this.processUpdatesToRemote(localList, storage, remoteList)
         const local = await this.processUpdatesToLocal(localList, remoteList)
         debug(`[SYNC-${storageName}] Completed sync data check`);
         return { local, remote };
     }
+
 
     shouldSkipSync(manga) {
         return manga.deleted === syncUtils.DELETED || manga.key === syncUtils.FAIL_KEY
@@ -210,7 +212,19 @@ class SyncManager {
         }
         return remoteUpdates;
     }
-
+    processOptionsUpdatesToLocal(localList, remoteList) {
+        for(const remoteManga of remoteList) {
+            const localManga = localList.find(m => m.key === remoteManga.key)
+            if(localManga && !this.shouldSkipSync(localManga)) {
+                if(localManga.read !== remoteManga.read) this.localStorage.commit('setMangaReadTop', localManga)
+                if(localManga.update !== remoteManga.update) this.localStorage.commit('setMangaUpdateTop', localManga)
+                if(localManga.display !== remoteManga.display) this.localStorage.commit('setMangaDisplayMode', localManga)
+                if(localManga.layout !== remoteManga.layout) this.localStorage.commit('setMangaLayoutMode', localManga)
+                if(localManga.webtoon !== remoteManga.webtoon) this.localStorage.commit('setMangaWebtoonMode', localManga)
+                if(localManga.displayName !== remoteManga.displayName) this.localStorage.commit('setMangaDisplayName', localManga)
+            }
+        }
+    }
     async processUpdatesToLocal(localList, remoteList) {
         const localUpdates = [];
         for (const remoteManga of remoteList) {
@@ -277,19 +291,16 @@ class SyncManager {
             })
         }
     }
-    async set(mutation) {
+    async setToRemote(mutation) {
         let { url, mirror, language, key } = mutation.payload
         if(!key) key = utils.mangaKey(url, mirror, language)
         for(const storage of this.remoteStorages) {
             const remoteList = await storage.getAll()
             let mg = remoteList.find(m => m.key === key)
-            if(!mg) {
-                console.log('no mg')
-                return
-            }
+            if(!mg) return
             const mutationActions = mutations.find(m => m.type === mutation.type)
             if(!mutationActions) return
-            mg = mutationActions.set(mg, mutation.payload)
+            mg = mutationActions.setToRemote(mg, mutation.payload)
 
             if(storage.isdb) {
                 storage.set(mg)

@@ -123,6 +123,7 @@ const actions = {
      */
     async setMangaDisplayMode({ dispatch, commit, getters }, message) {
         let key = utils.mangaKey(message.url, message.mirror, message.language);
+        message.key = key
         commit('setMangaDisplayMode', message);
         dispatch('findAndUpdateManga', state.all.find(manga => manga.key === key));
     },
@@ -133,6 +134,7 @@ const actions = {
      */
     async setMangaLayoutMode({ dispatch, commit, getters }, message) {
         let key = utils.mangaKey(message.url, message.mirror, message.language);
+        message.key = key
         commit('setMangaLayoutMode', message);
         dispatch('findAndUpdateManga', state.all.find(manga => manga.key === key));
     },
@@ -143,6 +145,7 @@ const actions = {
      */
     async setMangaWebtoonMode({ dispatch, commit, getters }, message) {
         let key = utils.mangaKey(message.url, message.mirror, message.language);
+        message.key = key
         commit('setMangaWebtoonMode', message);
         dispatch('findAndUpdateManga', state.all.find(manga => manga.key === key));
     },
@@ -590,6 +593,7 @@ const actions = {
         let key = utils.mangaKey(message.url, message.mirror, message.language),
             mg = state.all.find(manga => manga.key === key);
         if (mg !== undefined) {
+            message.key = key
             commit('setMangaReadTop', message);
             dispatch('findAndUpdateManga', mg);
             // if (message.updatesamemangas && rootState.options.groupmgs === 1) {
@@ -618,6 +622,7 @@ const actions = {
         let key = utils.mangaKey(message.url, message.mirror, message.language),
             mg = state.all.find(manga => manga.key === key);
         if (mg !== undefined) {
+            message.key = key
             commit('setMangaUpdateTop', message);
             dispatch('findAndUpdateManga', mg);
             // if (message.updatesamemangas && rootState.options.groupmgs === 1) {
@@ -763,8 +768,7 @@ const mutations = {
      * @param {*} state
      * @param {*} param1 url of the manga and display mode
      */
-    setMangaDisplayMode(state, { url, mirror, language, display }) {
-        let key = utils.mangaKey(url, mirror, language);
+    setMangaDisplayMode(state, { key, url, mirror, language, display }) {
         let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.display = display;
@@ -775,8 +779,7 @@ const mutations = {
      * @param {*} state
      * @param {*} param1 url of the manga and layout mode
      */
-    setMangaLayoutMode(state, { url, mirror, language, layout }) {
-        let key = utils.mangaKey(url, mirror, language);
+    setMangaLayoutMode(state, { key, url, mirror, language, layout }) {
         let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.layout = layout;
@@ -787,8 +790,7 @@ const mutations = {
      * @param {*} state
      * @param {*} param1 url of the manga and layout mode
      */
-    setMangaWebtoonMode(state, { url, mirror, language, webtoon }) {
-        let key = utils.mangaKey(url, mirror, language);
+    setMangaWebtoonMode(state, { key, url, mirror, language, webtoon }) {
         let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.webtoon = webtoon;
@@ -810,9 +812,8 @@ const mutations = {
      * @param {*} state
      * @param {*} param1 url of the manga and read top
      */
-    setMangaReadTop(state, { url, read, mirror, language }) {
-        let key = utils.mangaKey(url, mirror, language),
-            mg = state.all.find(manga => manga.key === key)
+    setMangaReadTop(state, { key, url, read, mirror, language }) {
+        let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.read = read;
         }
@@ -822,9 +823,8 @@ const mutations = {
      * @param {*} state
      * @param {*} param1 url of the manga and update top
      */
-    setMangaUpdateTop(state, { url, update, mirror, language }) {
-        let key = utils.mangaKey(url, mirror, language),
-            mg = state.all.find(manga => manga.key === key)
+    setMangaUpdateTop(state, { key, url, update, mirror, language }) {
+        let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.update = update;
         }
