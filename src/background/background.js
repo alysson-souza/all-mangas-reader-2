@@ -65,13 +65,6 @@ IconHelper.setBlueIcon();
     // Need to complete sync before we refresh chapters to clean up deleted entries
     await syncManager.start()
 
-    store.subscribe((mutation) => {
-        const syncMutation = mutation.type === 'deleteManga' ? {type:'deleteManga'} : syncMutations.find(m => m.type === mutation.type)
-        if (!syncMutation) return
-        if (!syncMutation.type) return
-        if (syncMutation.type === 'deleteManga') syncManager.deleteManga(mutation.payload)
-        else syncManager.setToRemote(mutation)
-    })
     /**
      * Initialize bookmarks list in store from DB
      */

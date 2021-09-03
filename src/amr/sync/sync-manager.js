@@ -216,12 +216,12 @@ class SyncManager {
         for(const remoteManga of remoteList) {
             const localManga = localList.find(m => m.key === remoteManga.key)
             if(localManga && !this.shouldSkipSync(localManga)) {
-                if(localManga.read !== remoteManga.read) this.localStorage.commit('setMangaReadTop', localManga)
-                if(localManga.update !== remoteManga.update) this.localStorage.commit('setMangaUpdateTop', localManga)
-                if(localManga.display !== remoteManga.display) this.localStorage.commit('setMangaDisplayMode', localManga)
-                if(localManga.layout !== remoteManga.layout) this.localStorage.commit('setMangaLayoutMode', localManga)
-                if(localManga.webtoon !== remoteManga.webtoon) this.localStorage.commit('setMangaWebtoonMode', localManga)
-                if(localManga.displayName !== remoteManga.displayName) this.localStorage.commit('setMangaDisplayName', localManga)
+                if(localManga.read !== remoteManga.read) this.localStorage.commit('setMangaReadTop', remoteManga)
+                if(localManga.update !== remoteManga.update) this.localStorage.commit('setMangaUpdateTop', remoteManga)
+                if(localManga.display !== remoteManga.display) this.localStorage.commit('setMangaDisplayMode', remoteManga)
+                if(localManga.layout !== remoteManga.layout) this.localStorage.commit('setMangaLayoutMode', remoteManga)
+                if(localManga.webtoon !== remoteManga.webtoon) this.localStorage.commit('setMangaWebtoonMode', remoteManga)
+                if(localManga.displayName !== remoteManga.displayName) this.localStorage.commit('setMangaDisplayName', remoteManga)
             }
         }
     }
@@ -298,8 +298,10 @@ class SyncManager {
             const remoteList = await storage.getAll()
             let mg = remoteList.find(m => m.key === key)
             if(!mg) return
+            // check if we really need to update remote.
             const mutationActions = mutations.find(m => m.type === mutation.type)
             if(!mutationActions) return
+            if(!mutationActions.isDifferent(mg, mutation.payload)) return
             mg = mutationActions.setToRemote(mg, mutation.payload)
 
             if(storage.isdb) {

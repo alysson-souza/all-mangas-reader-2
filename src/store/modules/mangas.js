@@ -9,7 +9,8 @@ import samples from "../../amr/samples";
 import amrUpdater from '../../amr/amr-updater';
 import iconHelper from '../../amr/icon-helper';
 import * as syncUtils from '../../amr/sync/utils';
-
+import { getSyncManager } from '../../amr/sync/sync-manager';
+const syncManager = getSyncManager()
 // @TODO replace with actual error
 // actually have specific meaning, does not get saved to db
 const ABSTRACT_MANGA_MSG = "abstract_manga";
@@ -126,6 +127,7 @@ const actions = {
         message.key = key
         commit('setMangaDisplayMode', message);
         dispatch('findAndUpdateManga', state.all.find(manga => manga.key === key));
+        await syncManager.setToRemote({type: 'setMangaDisplayMode', payload: message})
     },
     /**
      * Change manga reader layout mode
@@ -137,6 +139,7 @@ const actions = {
         message.key = key
         commit('setMangaLayoutMode', message);
         dispatch('findAndUpdateManga', state.all.find(manga => manga.key === key));
+        await syncManager.setToRemote({type: 'setMangaLayoutMode', payload: message})
     },
     /**
      * Change manga reader webtoon mode
@@ -148,6 +151,7 @@ const actions = {
         message.key = key
         commit('setMangaWebtoonMode', message);
         dispatch('findAndUpdateManga', state.all.find(manga => manga.key === key));
+        await syncManager.setToRemote({type: 'setMangaWebtoonMode', payload: message})
     },
     /**
      * Change manga display name
@@ -157,6 +161,7 @@ const actions = {
     async setMangaDisplayName({ dispatch, commit, getters }, message) {
         commit('setMangaDisplayName', message);
         dispatch('findAndUpdateManga', state.all.find(manga => manga.key === message.key));
+        await syncManager.setToRemote({type: 'setMangaDisplayName', payload: message})
     },
     /**
      * Reset manga reading for a manga to first chapter
@@ -596,19 +601,7 @@ const actions = {
             message.key = key
             commit('setMangaReadTop', message);
             dispatch('findAndUpdateManga', mg);
-            // if (message.updatesamemangas && rootState.options.groupmgs === 1) {
-            //     let titMg = utils.formatMgName(mg.name);
-            //     let smgs = state.all.filter(manga => utils.formatMgName(manga.name) === titMg)
-            //     for (let smg of smgs) {
-            //         commit('setMangaReadTop', {
-            //             url: smg.url,
-            //             read: message.read,
-            //             mirror: message.mirror,
-            //             language: message.language
-            //         });
-            //         dispatch('updateManga', smg);
-            //     }
-            // }
+            await syncManager.setToRemote({type: 'setMangaReadTop', payload: mg})
         }
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();
@@ -625,6 +618,7 @@ const actions = {
             message.key = key
             commit('setMangaUpdateTop', message);
             dispatch('findAndUpdateManga', mg);
+            await syncManager.setToRemote({type: 'setMangaUpdateTop', payload: mg})
             // if (message.updatesamemangas && rootState.options.groupmgs === 1) {
             //     let titMg = utils.formatMgName(mg.name);
             //     let smgs = state.all.filter(manga => utils.formatMgName(manga.name) === titMg)
@@ -668,6 +662,7 @@ const actions = {
         if (mg !== undefined) {
             commit('deleteManga', message.key);
             storedb.deleteManga(message.key);
+            syncManager.deleteManga(message.key)
         }
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();
