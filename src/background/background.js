@@ -9,6 +9,7 @@ import HandleManga from './handle-manga';
 import converToMangadexV5 from './misc/mangedex-v5-converter'
 import mirrorsHelper from '../amr/mirrors-helper';
 import { getSyncManager } from '../amr/sync/sync-manager'
+import syncMutations from '../amr/sync/mutation'
 
 // Blue icon while loading
 IconHelper.setBlueIcon();
@@ -65,9 +66,11 @@ IconHelper.setBlueIcon();
     await syncManager.start()
 
     store.subscribe((mutation) => {
-        if (mutation.type === 'deleteManga') {
-            syncManager.deleteManga(mutation.payload)
-        }
+        const syncMutation = mutation.type === 'deleteManga' ? {type:'deleteManga'} : syncMutations.find(m => m.type === mutation.type)
+        if (!syncMutation) return
+        if (!syncMutation.type) return
+        if (syncMutation.type === 'deleteManga') syncManager.deleteManga(mutation.payload)
+        else syncManager.set(mutation)
     })
     /**
      * Initialize bookmarks list in store from DB

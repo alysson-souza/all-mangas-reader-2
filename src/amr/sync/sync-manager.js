@@ -3,8 +3,10 @@ import GistStorage from '../storage/gist-storage'
 import BrowserStorage from '../storage/browser-storage';
 import { createLocalStorage } from '../storage/local-storage';
 import * as syncUtils from './utils'
+import * as utils from "../../amr/utils";
 import { debug } from '../utils'
 import Storage from '../storage/model-storage';
+import mutations from './mutation';
 
 const remoteStorages = {
     GistStorage,
@@ -265,10 +267,45 @@ class SyncManager {
             }).catch(e => {
                 if(e instanceof ThrottleError) {
                     storage.retryDate = e.getRetryAfterDate()
+                    const later = storage.retryDate.getTime() - Date.now() + 2000
+                    setTimeout(() => {
+                        this.deleteManga(key)
+                    }, later)
                 } else if(e instanceof Error) {
                     debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] ${e.message}`)
                 }
             })
+        }
+    }
+    async set(mutation) {
+        let { url, mirror, language, key } = mutation.payload
+        if(!key) key = utils.mangaKey(url, mirror, language)
+        for(const storage of this.remoteStorages) {
+            const remoteList = await storage.getAll()
+            let mg = remoteList.find(m => m.key === key)
+            if(!mg) {
+                console.log('no mg')
+                return
+            }
+            const mutationActions = mutations.find(m => m.type === mutation.type)
+            if(!mutationActions) return
+            mg = mutationActions.set(mg, mutation.payload)
+
+            if(storage.isdb) {
+                storage.set(mg)
+            } else {
+                await storage.saveAll(remoteList).catch(e => {
+                    if(e instanceof ThrottleError) {
+                        storage.retryDate = e.getRetryAfterDate()
+                        const later = storage.retryDate.getTime() - Date.now() + 2000
+                        setTimeout(() => {
+                            this.set(mutation)
+                        }, later)
+                    } else if(e instanceof Error) {
+                        debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] ${e.message}`)
+                    }
+                })
+            }
         }
     }
 }

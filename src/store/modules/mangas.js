@@ -815,7 +815,6 @@ const mutations = {
             mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.read = read;
-            mg.ts = Math.round(Date.now() / 1000)
         }
     },
     /**
@@ -828,7 +827,6 @@ const mutations = {
             mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.update = update;
-            mg.ts = Math.round(Date.now() / 1000)
         }
     },
     /**
