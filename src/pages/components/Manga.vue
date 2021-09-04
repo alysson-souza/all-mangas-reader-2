@@ -54,9 +54,9 @@
             <div class="align-self-center d-flex">
                 <v-select
                 :style="cssProps"
-                v-model="selChapter"
+                v-model="selValue"
                 :items="chapsForSelect"
-                @change="playChap()"
+                @change="playChap($event)"
                 dense
                 solo
                 class="align-self-center progress-border"
@@ -359,8 +359,6 @@ export default {
       selectable: false, // Should we show the multi select checkbox
       selected: false,
       canOpenTab: true, // This is used for a timer to hopefully eliminate weird duping issue
-      currentChapter: this.manga,
-      
       currentLastChapter: this.manga.lastChapterReadURL,
     };
   },
@@ -385,9 +383,6 @@ export default {
       }
 
       return show
-    },
-    selChapter: function() {
-      return amrutils.chapPath(this.manga.lastChapterReadURL)
     },
     // current selected value
     selValue: function() {
@@ -584,8 +579,8 @@ export default {
     /**
      * Opens a chapter from select
      */
-    playChap() {
-      browser.runtime.sendMessage({ action: "opentab", url: this.urlFromValue(this.selChapter) });
+    playChap(chapterValue) {
+      browser.runtime.sendMessage({ action: "opentab", url: this.urlFromValue(chapterValue) });
     },
     /**
      * Opens manga main page
