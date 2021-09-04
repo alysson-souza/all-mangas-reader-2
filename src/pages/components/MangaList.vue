@@ -153,7 +153,7 @@
       </template>
       <template v-if="pageNavigationPosition == 'bottom'" v-slot:footer>
         <v-item-group>
-          <v-row class="mx-2">
+          <v-row class="mx-2 mt-1">
             <v-item>
               <v-col>
                 <v-pagination :total-visible="$isPopup ? 5 : 10" v-model="pagination.currentPage" :length="pagination.pageCount"></v-pagination>
