@@ -26,7 +26,7 @@
 						text
 						outlined
 						dismissible
-						class="col-lg-6 offset-lg-3 px-2 mx-0 pl-0 align-self-center"
+						class="col-lg-6 offset-lg-3 align-self-center px-5"
 						type="warning"
 						icon="mdi-alert-decagram"
 						v-on="on"
@@ -44,13 +44,13 @@
 				</template>
 				<span>{{tooltipalert}}</span>
 			</v-tooltip>
-			<v-alert class="col-lg-6 offset-lg-3 px-2 py-2" type="info" :value="true" icon="mdi-cookie-alert" v-if="!cookiesDone">
+			<v-alert text class="col-lg-6 offset-lg-3 px-2 py-2" type="info" :value="true" icon="mdi-cookie-alert" v-if="!cookiesDone">
 				<span>{{i18n("options_gen_allowcookies_desc")}}</span>
 				<br/><br/>
 				<span class="font-weight-bold">{{i18n("options_gen_allowcookies_warning")}}</span>
 				<div>
-					<v-btn small color="green lighten-3" @click="saveAllowCookies(true)">{{i18n('button_allow')}}</v-btn>
-					<v-btn small color="blue" @click="saveAllowCookies(false)">{{i18n('button_refuse')}}</v-btn>
+					<v-btn small color="blue" @click="saveAllowCookies(true)">{{i18n('button_allow')}}</v-btn>
+					<v-btn small color="dismiss" @click="saveAllowCookies(false)">{{i18n('button_refuse')}}</v-btn>
 				</div>
 			</v-alert>
 			<MangaList
