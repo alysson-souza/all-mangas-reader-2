@@ -122,46 +122,50 @@ const actions = {
      * @param {*} vuex object
      * @param {*} message containing url of the manga and new display mode
      */
-    async setMangaDisplayMode({ dispatch, commit, getters }, message) {
+    async setMangaDisplayMode({ dispatch, commit, getters }, message, fromSync) {
         let key = utils.mangaKey(message.url, message.mirror, message.language);
         message.key = key
+        const mg = state.all.find(manga => manga.key === key)
         commit('setMangaDisplayMode', message);
-        dispatch('findAndUpdateManga', state.all.find(manga => manga.key === key));
-        await syncManager.setToRemote({type: 'setMangaDisplayMode', payload: message})
+        dispatch('findAndUpdateManga', mg);
+        if(!fromSync) await syncManager.setToRemote(mg, 'display')
     },
     /**
      * Change manga reader layout mode
      * @param {*} vuex object
      * @param {*} message containing url of the manga and new layout mode
      */
-    async setMangaLayoutMode({ dispatch, commit, getters }, message) {
+    async setMangaLayoutMode({ dispatch, commit, getters }, message, fromSync) {
         let key = utils.mangaKey(message.url, message.mirror, message.language);
         message.key = key
+        const mg = state.all.find(manga => manga.key === key)
         commit('setMangaLayoutMode', message);
-        dispatch('findAndUpdateManga', state.all.find(manga => manga.key === key));
-        await syncManager.setToRemote({type: 'setMangaLayoutMode', payload: message})
+        dispatch('findAndUpdateManga', mg);
+        if(!fromSync) await syncManager.setToRemote(mg, 'layout')
     },
     /**
      * Change manga reader webtoon mode
      * @param {*} vuex object
      * @param {*} message containing url of the manga and new webtoon mode
      */
-    async setMangaWebtoonMode({ dispatch, commit, getters }, message) {
+    async setMangaWebtoonMode({ dispatch, commit, getters }, message, fromSync) {
         let key = utils.mangaKey(message.url, message.mirror, message.language);
         message.key = key
+        const mg = state.all.find(manga => manga.key === key)
         commit('setMangaWebtoonMode', message);
-        dispatch('findAndUpdateManga', state.all.find(manga => manga.key === key));
-        await syncManager.setToRemote({type: 'setMangaWebtoonMode', payload: message})
+        dispatch('findAndUpdateManga', mg);
+        if(!fromSync) await syncManager.setToRemote(mg, 'webtoon')
     },
     /**
      * Change manga display name
      * @param {*} vuex object
      * @param {*} message containing manga object
      */
-    async setMangaDisplayName({ dispatch, commit, getters }, message) {
+    async setMangaDisplayName({ dispatch, commit, getters }, message, fromSync) {
+        const mg = state.all.find(manga => manga.key === message.key)
         commit('setMangaDisplayName', message);
-        dispatch('findAndUpdateManga', state.all.find(manga => manga.key === message.key));
-        await syncManager.setToRemote({type: 'setMangaDisplayName', payload: message})
+        dispatch('findAndUpdateManga', mg);
+        if(!fromSync) await syncManager.setToRemote(mg, 'displayName')
     },
     /**
      * Reset manga reading for a manga to first chapter
@@ -173,6 +177,7 @@ const actions = {
         commit('resetManga', message);
         let mg = state.all.find(manga => manga.key === key);
         dispatch('findAndUpdateManga', mg);
+        await syncManager.setToRemote(mg, 'ts')
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();
     },
@@ -329,6 +334,7 @@ const actions = {
                             }
                             if (posNew !== -1 && (message.fromSite || (posNew < posOld || posOld === -1))) {
                                 commit('updateMangaLastChapter', { key: mg.key, obj: message });
+                                syncManager.setToRemote(mg, 'ts')
                             }
                         }
                         resolve();
@@ -341,6 +347,7 @@ const actions = {
             } else {
                 if (message.fromSite || (posNew < posOld || posOld === -1)) {
                     commit('updateMangaLastChapter', { key: mg.key, obj: message });
+                    syncManager.setToRemote(mg, 'ts')
                 }
                 resolve();
             }
@@ -422,7 +429,7 @@ const actions = {
      * @param {*} message message contains info on a manga
      * @return void
      */
-    async refreshLastChapters({ dispatch, commit, getters, rootState }, message) {
+    async refreshLastChapters({ dispatch, commit, getters, rootState }, message, fromSync) {
         const key = utils.mangaKey(message.url, message.mirror, message.language);
         const mg = state.all.find(manga => manga.key === key);
         if (mg.update !== 1) {
@@ -441,7 +448,7 @@ const actions = {
 
         const newLastChap = mg.listChaps[0][1];
 
-        if ((newLastChap !== oldLastChap) && (oldLastChap !== undefined)) {
+        if ((newLastChap !== oldLastChap) && (oldLastChap !== undefined) && !fromSync) {
             notifications.notifyNewChapter(mg);
             commit('updateMangaLastChapTime', { key: mg.key });
         }
@@ -594,14 +601,14 @@ const actions = {
      * @param {*} vuex object
      * @param {*} message message contains info on a manga
      */
-    async markMangaReadTop({ dispatch, commit, getters, rootState }, message) {
+    async markMangaReadTop({ dispatch, commit, getters, rootState }, message, fromSync) {
         let key = utils.mangaKey(message.url, message.mirror, message.language),
             mg = state.all.find(manga => manga.key === key);
         if (mg !== undefined) {
             message.key = key
-            commit('setMangaReadTop', message);
+            commit('setMangaReadTop', message, mg);
             dispatch('findAndUpdateManga', mg);
-            await syncManager.setToRemote({type: 'setMangaReadTop', payload: mg})
+            if(!fromSync) await syncManager.setToRemote(mg, 'read')
         }
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();
@@ -611,27 +618,14 @@ const actions = {
      * @param {*} vuex object
      * @param {*} message message contains info on a manga
      */
-    async markMangaUpdateTop({ dispatch, commit, getters, rootState }, message) {
+    async markMangaUpdateTop({ dispatch, commit, getters, rootState }, message, fromSync) {
         let key = utils.mangaKey(message.url, message.mirror, message.language),
             mg = state.all.find(manga => manga.key === key);
         if (mg !== undefined) {
             message.key = key
             commit('setMangaUpdateTop', message);
             dispatch('findAndUpdateManga', mg);
-            await syncManager.setToRemote({type: 'setMangaUpdateTop', payload: mg})
-            // if (message.updatesamemangas && rootState.options.groupmgs === 1) {
-            //     let titMg = utils.formatMgName(mg.name);
-            //     let smgs = state.all.filter(manga => utils.formatMgName(manga.name) === titMg)
-            //     for (let smg of smgs) {
-            //         commit('setMangaUpdateTop', {
-            //             url: smg.url,
-            //             update: message.update,
-            //             mirror: message.mirror,
-            //             language: message.language
-            //         });
-            //         dispatch('updateManga', smg);
-            //     }
-            // }
+            if(!fromSync) await syncManager.setToRemote(mg, 'update')
         }
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();
@@ -657,12 +651,12 @@ const actions = {
      * @param {*} param0
      * @param {*} message
      */
-    async deleteManga({ dispatch, commit, getters, rootState }, message) {
+    async deleteManga({ dispatch, commit, getters, rootState }, message, fromSync = false) {
         let mg = state.all.find(manga => manga.key === message.key);
         if (mg !== undefined) {
             commit('deleteManga', message.key);
             storedb.deleteManga(message.key);
-            syncManager.deleteManga(message.key)
+            if(!fromSync) syncManager.deleteManga(key)
         }
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();
