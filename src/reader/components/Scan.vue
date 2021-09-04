@@ -24,6 +24,11 @@
           </v-list-item-title>
         </v-list-item>
         <v-list-item link>
+          <v-list-item-title @click="copyIMG">
+            {{ i18n('reader_context_menu_copy_img') }}
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item link>
           <v-list-item-title @click="reloadScan(true)">
             {{ i18n('reader_context_menu_reload_image') }}
           </v-list-item-title>
@@ -153,6 +158,23 @@ export default {
     EventBus.$off('reload-all-errors', this.reloadScan)
   },
   methods: {
+    async copyIMG() {
+      const img = await fetch(this.src)
+      const blob = await img.blob()
+      navigator.clipboard.write([
+            new ClipboardItem({
+              [blob.type]: blob
+            })
+          ]).then(() => {
+            this.snackbarText = i18n('reader_snackbar_img_success')
+            this.snackbarColor = 'success'
+            this.snackbarShow = true   
+          }).catch(() => {
+            this.snackbarText = i18n('reader_snackbar_img_error')
+            this.snackbarColor = 'error'
+            this.snackbarShow = true
+          })
+    },
     /* check if we need to fit width */
     resizeW() {
       return ["width", "container"].includes(this.resize)

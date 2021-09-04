@@ -1781,6 +1781,14 @@
     "message": "URL Failed to Copy",
     "description": "Notification for url copy error"
   },
+  "reader_snackbar_img_success": {
+    "message": "Image Copied!",
+    "description": "Notification for url copy success"
+  },
+  "reader_snackbar_img_error": {
+    "message": "Image Failed to Copy",
+    "description": "Notification for url copy error"
+  },
   "reader_context_menu_manage_bookmark": {
     "message": "Manage Bookmark",
     "description": "Context Menu link for mangaging existing bookmark"
@@ -1793,6 +1801,10 @@
     "message": "Copy Image URL",
     "description": "Context Menu link for copying image url"
   },
+  "reader_context_menu_copy_img": {
+    "message": "Copy Image to Clipboard",
+    "description": "Context Menu link for copying image url"
+  }, 
   "reader_zoom_show": {
     "message": "Show Zoom Control",
     "description": "Button to show zoom controls"
