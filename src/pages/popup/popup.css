@@ -14,4 +14,19 @@ body.popup {
 }
 body {
     font-size: 14px;
+
+}
+
+/* Chrome, Edge, and Safari */
+html::-webkit-scrollbar {
+    width: 5px;
+}
+
+html::-webkit-scrollbar-track {
+    background: #ffffff;
+}
+
+html::-webkit-scrollbar-thumb {
+    background-color: #6b6b6b;
+    border: 2px none #ffffff;
 }
