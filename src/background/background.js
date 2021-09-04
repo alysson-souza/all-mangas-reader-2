@@ -9,7 +9,6 @@ import HandleManga from './handle-manga';
 import converToMangadexV5 from './misc/mangedex-v5-converter'
 import mirrorsHelper from '../amr/mirrors-helper';
 import { getSyncManager } from '../amr/sync/sync-manager'
-import syncMutations from '../amr/sync/mutation'
 
 // Blue icon while loading
 IconHelper.setBlueIcon();
