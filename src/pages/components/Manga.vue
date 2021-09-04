@@ -3,34 +3,35 @@
     <v-item-group>
       <v-row :class="isDarkText ? 'dark-text' : 'light-text'">
         <v-item>
-          <div v-show="selectable" class="align-self-center ml-2">
+          <div v-show="selectable" class="align-self-center ml-4">
             <v-checkbox v-model="selected" hide-details dense class="shrink"></v-checkbox>
           </div>
         </v-item>
         <v-item>
-          <v-col :sm="selectable ? '4' : '5'" md="5" class="align-self-center">
-            <v-card :color="color(0)" class="back-card amr-manga-title-cont px-2 ellips w-100 d-flex">
+          <v-col :sm="selectable ? '4' : '5'" md="5" class="align-self-center rounded" :class="selectable ? 'pl-0' : ''">
+            <div :class="color(-1)" class="back-card amr-manga-title-cont px-2 ellips w-100 d-flex rounded elevation-3">
               <!-- + / - icon if group of mangas  -->
               <v-icon v-show="isInGroup && isFirst && !groupExpanded" @click="emitExpand()">mdi-plus</v-icon>
               <v-icon v-show="isInGroup && isFirst && groupExpanded" @click="emitExpand()">mdi-minus</v-icon>
               <v-tooltip top content-class="icon-ttip">
                 <template v-slot:activator="{ on }">
-                  <img :class="manga.language ? 'mx-1' : ''" v-if="isMirrorEnabled" :src="mirror.mirrorIcon" class="mirror-icon align-self-center" v-on="on" />
-                  <v-icon :class="manga.language ? 'mx-1' : ''" class="align-self-center" v-if="!isMirrorEnabled" v-on="on">mdi-cancel</v-icon>
-                  <Flag v-if="manga.language" :value="manga.language" @toggleLanguageSelection="displayLangs = !displayLangs"/>
+                  <div class="wrapper align-self-center" :class="getMargin">
+                    <img :class="manga.language ? 'mx-1' : ''" v-if="isMirrorEnabled" :src="mirror.mirrorIcon" class="mirror-icon align-self-center" v-on="on" />
+                    <v-icon :class="manga.language ? 'mx-1' : ''" class="align-self-center" v-if="!isMirrorEnabled" v-on="on">mdi-cancel</v-icon>
+                    <Flag v-if="manga.language" :value="manga.language" @toggleLanguageSelection="displayLangs = !displayLangs"/>
+                  </div>
                 </template>
                 <span>{{ isMirrorEnabled ? mirror.mirrorName : i18n("list_mirror_disabled_tooltip", manga.mirror) }}</span>
-              </v-tooltip>
-              <v-tooltip top content-class="icon-ttip">
-                <template v-slot:activator="{ on }">
-                  <v-card v-show="options.displastup === 1 && manga.upts != 0 && timeUpdated < 50" dark :class="color(-2) + ' amr-calendar-badge'" v-on="on">
-                    <v-icon class="align-self-center">mdi-calendar-clock</v-icon>
-                    <span v-show="timeUpdated > 0">{{ timeUpdated }}</span>
-                  </v-card>
+              </v-tooltip>             
+              <v-tooltip top :disabled="!(manga.displayName && manga.displayName !== '')">
+                <template v-slot:activator="{on}">
+                  <span :class="getTitleMargin" class="amr-manga-title align-self-center ellips" v-on="on" @click="openManga">
+                    {{ manga.displayName && manga.displayName !== '' ? manga.displayName : manga.name }}
+                  </span>
                 </template>
-                <span v-if="timeUpdated === 0">{{i18n("list_calendar_today")}}</span>
-                <span v-else>{{i18n("list_calendar_days_found", timeUpdated)}}</span>
+                {{ manga.name }}
               </v-tooltip>
+
               <!-- Display a timer off if the manga is not updating anymore -->
               <v-tooltip top content-class="icon-ttip">
                 <template v-slot:activator="{ on }">
@@ -38,28 +39,20 @@
                 </template>
                 <span>{{i18n("list_stopped_updating")}}</span>
               </v-tooltip>
-              <v-tooltip top :disabled="!(manga.displayName && manga.displayName !== '')">
-                <template v-slot:activator="{on}">
-                  <span class="amr-manga-title align-self-center ellips" v-on="on" @click="openManga">
-                    {{ manga.displayName && manga.displayName !== '' ? manga.displayName : manga.name }}
-                  </span>
-                </template>
-                {{ manga.name }}
-              </v-tooltip>
-            </v-card>
+            </div>
           </v-col>
         </v-item>
         <v-item>
           <v-col sm="3" :md="selectable ? '4': '5'">
             <div class="align-self-center d-flex">
                 <v-select
-                :style="cssProps"
                 v-model="selValue"
                 :items="chapsForSelect"
                 @change="playChap($event)"
                 dense
+                
                 solo
-                class="align-self-center progress-border"
+                class="align-self-center chap-select"
                 hide-details
                 :background-color="color(0)"
                 :class="isDarkText ? 'dark-text' : 'light-text'"
@@ -70,8 +63,8 @@
           </v-col>
         </v-item>
         <v-item>
-          <v-col sm="4" md="2" class="amr-list-actions align-self-center ml-auto">
-            <v-card :color="color(0)" class="back-card px-1 d-flex justify-space-between">
+          <v-col sm="4" md="2" class="amr-list-actions align-self-center ml-auto rounded">
+            <div :class="color(-1)" class="back-card px-1 d-flex justify-space-between rounded elevation-3">
               <!-- Mark as read -->
               <v-tooltip top content-class="icon-ttip space-between">
                 <template v-slot:activator="{ on }">
@@ -129,11 +122,11 @@
                   </v-card-actions>
                 </v-card>
               </v-dialog>
-            </v-card>
+            </div>
           </v-col>        
         </v-item>
       </v-row>
-      <v-row v-if="expanded" dense>
+      <v-row v-if="expanded" dense class="mb-1">
         <!-- Categories -->
         <v-col cols="4" class="d-flex justify-start">
           <v-menu offset-x v-if="selectableCategory.length">
@@ -144,7 +137,6 @@
                 v-bind="attrs"
                 v-on="on"
                 x-small
-
               >
                 {{i18n('list_details_cats')}}
                 <v-icon right>
@@ -184,7 +176,7 @@
         </v-col>
         <!-- Manage manga bookmarks -->
         <v-col cols="4" class="d-flex justify-center">
-          <v-menu offset-x>
+          <v-menu offset-x v-if="bookmarks.length">
             <template v-slot:activator="{ on, attrs }">
               <v-btn
                 :color="color(0)"
@@ -383,6 +375,21 @@ export default {
       }
 
       return show
+    },
+    getMargin: function() {
+      if(this.isInGroup && this.manga.language) return ''
+      if(this.isInGroup && !this.manga.language) return 'ml-1'
+      if(!this.isInGroup && this.manga.language) return 'ml-6'
+      if(!this.isInGroup && !this.manga.language) return 'ml-7'
+      return ''
+    },
+    getTitleMargin: function() {
+      if(this.manga.language) return 'ml-1'
+      return 'ml-6'
+      manga.language ? 'ml-1':'ml-7'
+      // if(manga.language) return 'ml-1'
+      // if(!this.isInGroup) 'ml-6'
+      // manga.language ? 'ml-1':'ml-7'
     },
     // current selected value
     selValue: function() {
@@ -712,7 +719,7 @@ export default {
 }
 .amr-manga-title {
   font-weight: bold;
-  font-size:16px!important;
+  font-size:14px!important;
   cursor: pointer;
 }
 .amr-manga-title-cont .select-checkbox {
@@ -731,8 +738,7 @@ export default {
   display: inline-block;
 }
 .back-card {
-  height: 38px !important;
-
+  height: 30px !important;
 }
 .ellips {
   text-overflow: ellipsis;
@@ -802,7 +808,9 @@ select.amr-chap-sel {
 
 .amr-manga-row {
   height: auto !important;
-  padding: 6px !important;
+  padding: 2px !important;
+  padding-top:4px!important;
+  padding-bottom:4px!important;
 }
 
 .det-sel-wrapper {
@@ -858,6 +866,7 @@ select.amr-chap-sel {
 .progress-border {
   border-bottom:var(--border-bottom);
   position: relative;
+  font-size: 14px;
 }
 .progress-border:after {
   padding:0;margin:0;display:block;/* probably not really needed? */
@@ -868,5 +877,8 @@ select.amr-chap-sel {
   position: absolute;
   right:0;
   bottom:-1px;
+}
+.v-text-field.v-text-field--solo.v-input--dense>.v-input__control {
+  min-height: 30px;
 }
 </style>

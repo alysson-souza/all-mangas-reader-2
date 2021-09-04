@@ -117,17 +117,18 @@
       </v-row>
     </v-item-group>
     <!-- Manga List -->
-    <v-data-table
-      :items="groupedMangas"
-      :loading="!loaded"
-      :headers="[{value: 'name'}]"
-      :page.sync="pagination.currentPage"
-      :items-per-page="itemsPerPage"
-      hide-default-header
-      hide-default-footer
-      :search="searchText"
-      @page-count="pagination.pageCount = $event"
-    >
+      <v-data-table
+        :items="groupedMangas"
+        :loading="!loaded"
+        :headers="[{value: 'name'}]"
+        :page.sync="pagination.currentPage"
+        :items-per-page="itemsPerPage"
+        hide-default-header
+        hide-default-footer
+        :search="searchText"
+        @page-count="pagination.pageCount = $event"
+      >
+
       <template v-if="pageNavigationPosition == 'top'" v-slot:top>
         <v-item-group>
           <v-row class="mx-2">
@@ -210,6 +211,7 @@
         <p v-html="i18n('list_no_manga_search_message')"></p>
       </template>
     </v-data-table>
+
     <v-dialog v-model="showDialog" max-width="500px">
       <v-card>
         <v-card-title>
@@ -619,5 +621,10 @@ export default {
 }
 td {
   height: auto !important;
+  border: none!important;
+}
+td .v-sheet.v-card {
+  border-radius: 0px!important;
+  box-shadow: none!important;
 }
 </style>
