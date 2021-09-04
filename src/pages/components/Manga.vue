@@ -31,33 +31,55 @@
                 </template>
                 {{ manga.name }}
               </v-tooltip>
-
-              <!-- Display a timer off if the manga is not updating anymore -->
-              <v-tooltip top content-class="icon-ttip">
-                <template v-slot:activator="{ on }">
-                  <v-icon v-show="manga.update === 0" class="amr-timeroff-badge align-self-center" v-on="on">mdi-timer-off</v-icon>
-                </template>
-                <span>{{i18n("list_stopped_updating")}}</span>
-              </v-tooltip>
+              <div class="ml-auto align-self-center">
+                <v-tooltip top content-class="icon-ttip">
+                  <template v-slot:activator="{ on }">
+                      <v-icon right v-show="options.displastup === 1 && manga.upts != 0 && timeUpdated < 50" v-on="on">mdi-calendar-clock</v-icon>
+                  </template>
+                  <span v-if="timeUpdated === 0">{{i18n("list_calendar_today")}}</span>
+                  <span v-else>{{i18n("list_calendar_days_found", timeUpdated)}}</span>
+                </v-tooltip>
+                <!-- Display a timer off if the manga is not updating anymore -->
+                <v-tooltip top content-class="icon-ttip">
+                  <template v-slot:activator="{ on }">
+                    <v-icon right v-show="manga.update === 0" v-on="on">mdi-timer-off</v-icon>
+                  </template>
+                  <span>{{i18n("list_stopped_updating")}}</span>
+                </v-tooltip>
+              </div>
             </div>
           </v-col>
         </v-item>
         <v-item>
-          <v-col sm="3" :md="selectable ? '4': '5'">
+          <v-col sm="3" class="col-lg">
             <div class="align-self-center d-flex">
                 <v-select
                 v-model="selValue"
                 :items="chapsForSelect"
                 @change="playChap($event)"
                 dense
-                
                 solo
                 class="align-self-center chap-select"
                 hide-details
                 :background-color="color(0)"
-                :class="isDarkText ? 'dark-text' : 'light-text'"
+                :color="isDarkText ? 'dark-text' : 'light-text'"
                 :menu-props="{ auto: true }"
                 >
+                
+              <template v-slot:prepend-inner>
+                <v-tooltip top content-class="icon-ttip">
+                  <template v-slot:activator="{ on }">
+                    <div class="align-self-center">
+                      <v-progress-circular v-on="on" color="red" style="color:red!important;"  :value="progress > 90 && progress < 100 ? '90' : progress" :size="12" :width="2" :rotate="90" class="align-self-center"></v-progress-circular>
+                    </div>
+                  </template>
+                  <span>{{i18n("list_progress_reading", progress)}}</span>
+                </v-tooltip>
+                <v-divider
+                  class="mx-2"
+                  vertical
+                ></v-divider>
+              </template>
                 </v-select>
             </div>
           </v-col>
@@ -423,16 +445,9 @@ export default {
         return { value: amrutils.chapPath(arr[1]), text: arr[0], url: arr[1] };
       });
     },
-    cssProps() {
-      return {
-        '--progress': (1 - this.posInChapList / this.manga.listChaps.length) * 100 + '%',
-        '--border-bottom': '1px solid red '+this.colorRaw(-2),
-        '--default-border-bottom': this.colorRaw(4)
-      }
-    },
     // calculate reading progress
     progress: function() {
-      return (1 - this.posInChapList / this.manga.listChaps.length) * 100;
+      return Math.floor((1 - this.posInChapList / this.manga.listChaps.length) * 100);
     },
     // position of current chapter in chapters list
     posInChapList() {
@@ -863,21 +878,6 @@ select.amr-chap-sel {
 }
 .chap-select {
   font-size:14px;
-}
-.progress-border {
-  border-bottom:var(--border-bottom);
-  position: relative;
-  font-size: 14px;
-}
-.progress-border:after {
-  padding:0;margin:0;display:block;/* probably not really needed? */
-  content: "";
-  width:var(--progress);
-  height:1.1px;/* slight higher to work around rounding errors(?) on some zoom levels in some browsers. */
-  background-color:var(--default-border-bottom);
-  position: absolute;
-  right:0;
-  bottom:-1px;
 }
 .v-text-field.v-text-field--solo.v-input--dense>.v-input__control {
   min-height: 30px;
