@@ -70,7 +70,7 @@
         </v-item>
         <v-item>
           <v-col sm="4" md="2" class="amr-list-actions align-self-center ml-auto">
-            <v-card :color="color(2)" class="back-card px-1 d-flex justify-space-between">
+            <v-card :color="color(0)" class="back-card px-1 d-flex justify-space-between">
               <!-- Mark as read -->
               <v-tooltip top content-class="icon-ttip space-between">
                 <template v-slot:activator="{ on }">
