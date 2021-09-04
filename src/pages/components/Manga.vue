@@ -51,7 +51,7 @@
           </v-col>
         </v-item>
         <v-item>
-          <v-col sm="3" class="col-lg">
+          <v-col sm="4" class="col-lg">
             <div class="align-self-center d-flex">
                 <v-select
                 v-model="selValue"
@@ -85,7 +85,7 @@
           </v-col>
         </v-item>
         <v-item>
-          <v-col sm="4" md="2" class="amr-list-actions align-self-center ml-auto rounded">
+          <v-col sm="3" md="2" class="amr-list-actions align-self-center ml-auto rounded">
             <div :class="color(-1)" class="back-card px-1 d-flex justify-space-between rounded elevation-3">
               <!-- Mark as read -->
               <v-tooltip top content-class="icon-ttip space-between">
