@@ -53,12 +53,13 @@
           <v-col sm="3" :md="selectable ? '4': '5'">
             <div class="align-self-center d-flex">
                 <v-select
+                :style="cssProps"
                 v-model="selChapter"
                 :items="chapsForSelect"
                 @change="playChap()"
                 dense
                 solo
-                class="align-self-center chap-select"
+                class="align-self-center progress-border"
                 hide-details
                 :background-color="color(0)"
                 :class="isDarkText ? 'dark-text' : 'light-text'"
@@ -341,7 +342,6 @@ import browser from "webextension-polyfill";
 import * as utils from "../utils";
 import * as amrutils from "../../amr/utils";
 import Flag from "./Flag";
-import Categories from "./Categories";
 
 export default {
   data() {
@@ -420,6 +420,13 @@ export default {
         return { value: amrutils.chapPath(arr[1]), text: arr[0], url: arr[1] };
       });
     },
+    cssProps() {
+      return {
+        '--progress': (1 - this.posInChapList / this.manga.listChaps.length) * 100 + '%',
+        '--border-bottom': '1px solid red '+this.colorRaw(-2),
+        '--default-border-bottom': this.colorRaw(4)
+      }
+    },
     // calculate reading progress
     progress: function() {
       return (1 - this.posInChapList / this.manga.listChaps.length) * 100;
@@ -476,6 +483,13 @@ export default {
         light += odd ? -2 : 1
       }
       return utils.getColor(this.manga, this.options, light);
+    },
+    colorRaw: function(light, invertable = false) {
+      if (this.options.alternateColors && invertable) {
+        let odd = (this.groupIndex + 1) % 2 == 1
+        light += odd ? -2 : 1
+      }
+      return utils.getColor(this.manga, this.options, light, true);
     },
     /** get the real url from the value (url path used in select) in the manga list */
     urlFromValue: function(val) {
@@ -703,6 +717,7 @@ export default {
 }
 .amr-manga-title {
   font-weight: bold;
+  font-size:16px!important;
   cursor: pointer;
 }
 .amr-manga-title-cont .select-checkbox {
@@ -844,5 +859,19 @@ select.amr-chap-sel {
 }
 .chap-select {
   font-size:14px;
+}
+.progress-border {
+  border-bottom:var(--border-bottom);
+  position: relative;
+}
+.progress-border:after {
+  padding:0;margin:0;display:block;/* probably not really needed? */
+  content: "";
+  width:var(--progress);
+  height:1.1px;/* slight higher to work around rounding errors(?) on some zoom levels in some browsers. */
+  background-color:var(--default-border-bottom);
+  position: absolute;
+  right:0;
+  bottom:-1px;
 }
 </style>

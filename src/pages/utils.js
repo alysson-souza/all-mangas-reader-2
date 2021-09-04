@@ -1,4 +1,5 @@
 import * as amrutils from '../amr/utils'
+import colors from 'vuetify/es5/util/colors'
 
 export function hasNew(manga) {
     return (
@@ -55,19 +56,39 @@ export function countUsed(category, mangas) {
 export function convertIcons(input) {
     return input.replace(/\[mdi-(.+)\]/g, '<i aria-hidden="true" class="v-icon mdi mdi-$1"></i>');
 }
-
+function objectByString(o, s) {
+    s = s.replace(/\[(\w+)\]/g, '.$1'); // convert indexes to properties
+    s = s.replace(/^\./, '');           // strip a leading dot
+    var a = s.split('.');
+    for (var i = 0, n = a.length; i < n; ++i) {
+        var k = a[i];
+        if (k in o) {
+            o = o[k];
+        } else {
+            return;
+        }
+    }
+    return o;
+  }
 /**
  * Calculates color to colorize mangas entries in list depending on options and manga state
  * @param {*} manga
  * @param {*} param1
  * @param {*} light a parameter indicating how much lighter the color must be
  */
-export function getColor(manga, { colornotfollow, colornew, colorread }, light) {
+export function getColor(manga, { colornotfollow, colornew, colorread }, light, raw = false) {
     if (manga.read !== 0) return computeColorLight(colornotfollow, light);
     else if (hasNew(manga)) {
-        return computeColorLight(colornew, light);
+        if(!raw) return computeColorLight(colornew, light);
+        let newString = computeColorLight(colornew, light)
+        newString = newString.replace(/\s/g, '.').replace(/-/g, '')
+        if(isNaN(newString.charAt(newString.length-1))) {
+            newString = newString+'.base'
+        }
+        console.log(newString)
+        return objectByString(colors, newString)
     } else {
-        return computeColorLight(colorread, light);
+        if(!raw) return computeColorLight(colorread, light);
     }
 }
 
