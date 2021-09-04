@@ -377,6 +377,7 @@ export default {
       return show
     },
     getMargin: function() {
+      if(this.isInGroup && !this.isFirst) return 'ml-6'
       if(this.isInGroup && this.manga.language) return ''
       if(this.isInGroup && !this.manga.language) return 'ml-1'
       if(!this.isInGroup && this.manga.language) return 'ml-6'
