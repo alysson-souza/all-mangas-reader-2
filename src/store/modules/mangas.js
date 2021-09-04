@@ -448,8 +448,8 @@ const actions = {
 
         const newLastChap = mg.listChaps[0][1];
 
-        if ((newLastChap !== oldLastChap) && (oldLastChap !== undefined) && !fromSync) {
-            notifications.notifyNewChapter(mg);
+        if ((newLastChap !== oldLastChap) && (oldLastChap !== undefined)) {
+            if(!fromSync) notifications.notifyNewChapter(mg);
             commit('updateMangaLastChapTime', { key: mg.key });
         }
 
