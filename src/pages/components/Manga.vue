@@ -64,9 +64,10 @@
                 :background-color="color(0)"
                 :color="isDarkText ? 'dark-text' : 'light-text'"
                 :menu-props="{ auto: true }"
+                :loading="chapsForSelect.length ? '' : color(-2)"
+                :disabled="chapsForSelect.length ? false : true"
                 >
-                
-              <template v-slot:prepend-inner>
+              <template v-slot:prepend-inner v-if="chapsForSelect.length">
                 <v-tooltip top content-class="icon-ttip">
                   <template v-slot:activator="{ on }">
                     <div class="align-self-center">
