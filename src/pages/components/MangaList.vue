@@ -627,4 +627,7 @@ td .v-sheet.v-card {
   border-radius: 0px!important;
   box-shadow: none!important;
 }
+  tbody tr:hover {
+    background-color: transparent !important;
+  }
 </style>
