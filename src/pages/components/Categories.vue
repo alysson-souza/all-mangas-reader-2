@@ -87,8 +87,8 @@
         <v-card-text>{{i18n("list_cat_delete_desc", countUsed(catToDelete))}}</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red darken-1" flat @click.native="reallyDeleteCat()">{{i18n("button_yes")}}</v-btn>
-          <v-btn color="grey darken-1" flat @click.native="deleteCatDialog = false">{{i18n("button_no")}}</v-btn>
+          <v-btn color="blue" flat @click.native="reallyDeleteCat()">{{i18n("button_yes")}}</v-btn>
+          <v-btn color="dimiss" flat @click.native="deleteCatDialog = false">{{i18n("button_no")}}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -104,10 +104,10 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red darken-1" :disabled="!isValidEditName" flat @click.native="submitEditCategory()">
+          <v-btn color="blue" :disabled="!isValidEditName" flat @click.native="submitEditCategory()">
             {{i18n("button_yes")}}
           </v-btn>
-          <v-btn color="grey darken-1" flat @click.native="editCatDialog = false">{{i18n("button_no")}}</v-btn>
+          <v-btn color="dismiss" flat @click.native="editCatDialog = false">{{i18n("button_no")}}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

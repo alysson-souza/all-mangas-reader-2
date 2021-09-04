@@ -20,19 +20,25 @@
 
 		<!-- Default panel containing manga list -->
 		<v-main class="ma-3">
-			<!-- <v-alert class="mb-0" type="info" :value="true" icon="mdi-incognito" v-if="!trackingDone">
-				{{i18n("options_gen_allowtracking_desc")}}
-				<div>
-					<v-btn @click="saveAllowTracking(true)">{{i18n('button_yes')}}</v-btn>
-					<v-btn flat @click="saveAllowTracking(false)">{{i18n('button_no')}}</v-btn>
-				</div>
-			</v-alert> -->
-			<v-tooltip top v-if="alertmessage !== ''">
+			<v-tooltip top v-if="alertmessage !== ''" @v-if="!utils.isFirefox()">
 				<template v-slot:activator="{ on }">
-					<v-alert class="col-lg-6 offset-lg-3 px-2" type="warning" dismissible v-on="on" :value="true" icon="mdi-alert-decagram" slot="activator" elevation="2">
+					<v-alert
+						text
+						outlined
+						dismissible
+						class="col-lg-6 offset-lg-3 px-2 mx-0 pl-0 align-self-center"
+						type="warning"
+						icon="mdi-alert-decagram"
+						v-on="on"
+						:value="true"
+						slot="activator"
+					>
 						{{alertmessage}}
-						<v-btn light class="ml-2" x-small @v-if="!utils.isFirefox()" @click="DownloadAMR()">
-							<v-icon>mdi-cloud-download</v-icon>
+						<v-btn text class="ml-5 mr-0 pr-0" color="teal lighten-3" x-small @click="DownloadAMR()">
+							<v-icon link right>mdi-download-circle-outline</v-icon>
+						</v-btn>
+						<v-btn text link color="blue" class="ml-0 pl-0" x-small @click="downloadAMRhelp()">
+							<v-icon right>mdi-help-circle-outline</v-icon>
 						</v-btn>
 						</v-alert>
 				</template>
@@ -43,8 +49,8 @@
 				<br/><br/>
 				<span class="font-weight-bold">{{i18n("options_gen_allowcookies_warning")}}</span>
 				<div>
-					<v-btn flat small color="green lighten-1" @click="saveAllowCookies(true)">{{i18n('button_allow')}}</v-btn>
-					<v-btn flat small @click="saveAllowCookies(false)">{{i18n('button_refuse')}}</v-btn>
+					<v-btn small color="green lighten-3" @click="saveAllowCookies(true)">{{i18n('button_allow')}}</v-btn>
+					<v-btn small color="blue" @click="saveAllowCookies(false)">{{i18n('button_refuse')}}</v-btn>
 				</div>
 			</v-alert>
 			<MangaList
@@ -273,6 +279,13 @@ export default {
 				setTimeout( () => this.tabs = 'refresh', 150)
 				this.opentab("/pages/importexport/importexport.html");
 				// window.close();
+			}
+		},
+		downloadAMRhelp() {
+			if(localStorage.beta) {
+				this.opentab("https://gitlab.com/all-mangas-reader/all-mangas-reader-2/-/tree/develop#install-amr-on-a-chromium-browser")
+			} else {
+				this.opentab("https://gitlab.com/all-mangas-reader/all-mangas-reader-2/-/tree/master#install-amr-on-a-chromium-browser")
 			}
 		},
 		async DownloadAMR() {

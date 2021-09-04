@@ -93,7 +93,7 @@
             <!-- {{ i18n("button_add") }} -->
           </v-btn>
           <v-btn
-            color="red"
+            color="dismiss"
             @click='deleteCategory()'
             small
             dark
