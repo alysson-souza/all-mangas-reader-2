@@ -1780,6 +1780,14 @@
     "message": "Échec de la copie de l'URL",
     "description": "Notification for url copy error"
   },
+  "reader_snackbar_img_success": {
+    "message": "Image Copiée!",
+    "description": "Notification for url copy success"
+  },
+  "reader_snackbar_img_error": {
+    "message": "L'image n'a pas pu être copiée",
+    "description": "Notification for url copy error"
+  },
   "reader_context_menu_manage_bookmark": {
     "message": "Gérer le signet",
     "description": "Context Menu link for mangaging existing bookmark"
@@ -1792,6 +1800,10 @@
     "message": "Copier l'URL de l'image",
     "description": "Context Menu link for copying image url"
   },
+  "reader_context_menu_copy_img": {
+    "message": "Copier l'image dans le presse-papier",
+    "description": "Context Menu link for copying image url"
+  }, 
   "reader_zoom_show": {
     "message": "Afficher la commande de zoom",
     "description": "Button to show zoom controls"
