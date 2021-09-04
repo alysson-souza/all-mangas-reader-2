@@ -1122,14 +1122,16 @@ export default {
 .flag-disabled {
     opacity: 0.4;
 }
-.v-alert {
-  font-size: 0.8rem!important;
-}
 .slight-overlay {
   background-color:rgba(168, 83, 57, 0.06)
 }
 .v-icon.v-icon.superscript {
   vertical-align: super;
   line-height: 0;
+}
+</style>
+<style scoped>
+.v-alert {
+  font-size: 0.8rem!important;
 }
 </style>
