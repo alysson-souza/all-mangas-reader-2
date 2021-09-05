@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         mirrorIcon: "asurascans.png",
         domains: ["www.asurascans.com"],
         home: "https://www.asurascans.com/",
-        chapter_url: /\/.*?chapter-[0-9]+\//g,
+        chapter_url: /\/.*?(chapter|ch)-[0-9]+\//g,
         languages: "en",
         abstract: "MangastreamAbs",
         abstract_options: {
