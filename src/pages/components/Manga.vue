@@ -636,27 +636,6 @@ export default {
   height: 100% !important;
 }
 
-.v-progress-linear {
-  margin: 0;
-  margin-top: -1px;
-}
-/*Selects*/
-.amr-select-wrapper {
-  display: inline-block;
-  position: relative;
-  width: 100%;
-}
-
-.tip-icon-grouped {
-  float: left;
-  width: 20px;
-  height: 20px;
-}
-.flag-container {
-  float: left;
-  margin: 0px 2px;
-  cursor: pointer;
-}
 .amr-prog-cont {
   margin-left: 0px;
 }
@@ -709,9 +688,6 @@ export default {
 }
 .amr-list-actions .v-icon.v-icon{
   font-size: 22px;
-}
-.cat-cont {
-  display: inline-block;
 }
 
 .amr-noupdates {
