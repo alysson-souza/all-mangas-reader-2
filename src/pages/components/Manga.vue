@@ -123,7 +123,7 @@
       </v-col>
       <!-- Actions -->
       <v-col cols="4" lg="2" class="amr-list-actions text-center ml-auto">
-        <v-card :color="color(0)" class="back-card">
+        <v-card :color="color(0)" class="back-card d-flex justify-space-between px-3">
           <!-- Mark as read -->
           <v-tooltip top content-class="icon-ttip">
             <template v-slot:activator="{ on }">
@@ -627,8 +627,7 @@ export default {
     height: 20px;
 }
 .empty-icon {
-  width: 18px;
-  height: 18x;
+  width: 22px;
 }
 
 .back-card {
