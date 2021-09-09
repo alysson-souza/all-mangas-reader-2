@@ -8,7 +8,7 @@
       <v-col cols="4" lg="5">
 
         <v-card :color="color(0)" class="back-card amr-manga-title-cont">
-          <v-row no-gutters align="center" class="min-h-24">
+          <v-row no-gutters align="center" class="min-h-26">
             
               <!-- + / - icon if group of mangas  -->
               <v-icon small v-show="isInGroup && isFirst && !groupExpanded" @click="emitExpand()">mdi-plus</v-icon>
@@ -123,7 +123,7 @@
       </v-col>
       <!-- Actions -->
       <v-col cols="4" lg="2" class="amr-list-actions text-center ml-auto">
-        <v-card :color="color(0)" class="back-card d-flex justify-space-between px-3">
+        <v-card :color="color(0)" class="back-card d-flex justify-space-between px-3 min-h-26">
           <!-- Mark as read -->
           <v-tooltip top content-class="icon-ttip">
             <template v-slot:activator="{ on }">
@@ -717,8 +717,8 @@ export default {
 .amr-noupdates {
   opacity: 0.75;
 }
-.min-h-24 {
- min-height: 24px;
+.min-h-26 {
+ min-height: 26px;
 }
 
 @media screen and (max-width: 1263px) {
@@ -737,6 +737,6 @@ export default {
 </style>
 <style lang="css">
   .v-text-field.v-text-field--solo.v-input--dense>.v-input__control {
-    min-height: 24px!important;
+    min-height: 26px!important;
   }
 </style>
