@@ -37,19 +37,21 @@
               </v-tooltip>
             </v-col>
             <div class="d-flex align-center ml-auto">
+              <v-divider
+                class="mx-1"
+                vertical
+              ></v-divider>
               <!-- Display a timer off if the manga is not updating anymore -->
               <v-tooltip top content-class="icon-ttip">
                 <template v-slot:activator="{ on }">
-                  <v-icon small v-show="manga.update === 0" class="amr-timeroff-badge" v-on="on">mdi-timer-off</v-icon>
+                  <v-icon small v-show="manga.update === 0" class="mx-1" v-on="on">mdi-timer-off</v-icon>
                 </template>
                 <span>{{i18n("list_stopped_updating")}}</span>
               </v-tooltip>
               <!-- Display last update time -->
               <v-tooltip top content-class="icon-ttip">
                 <template v-slot:activator="{ on }">
-                  <v-card v-show="options.displastup === 1 && manga.upts != 0 && timeUpdated < 50" dark :class="color(-2) + ' amr-calendar-badge'" v-on="on">
-                    <v-icon small>mdi-calendar-clock</v-icon>
-                  </v-card>
+                    <v-icon small v-show="options.displastup === 1 && manga.upts != 0 && timeUpdated < 50" class="ml-1 mr-2" v-on="on">mdi-calendar-clock</v-icon>
                 </template>
                 <span v-if="timeUpdated === 0">{{i18n("list_calendar_today")}}</span>
                 <span v-else>{{i18n("list_calendar_days_found", timeUpdated)}}</span>
@@ -645,10 +647,8 @@ export default {
 .amr-manga-waiting {
   margin-top: 7px;
 }
-.amr-calendar-badge,
-.amr-timeroff-badge {
-  padding: 2px 4px;
-}
+
+
 
 .amr-manga-row {
   height: auto !important;
@@ -689,7 +689,9 @@ export default {
 .amr-list-actions .v-icon.v-icon{
   font-size: 22px;
 }
-
+.chap-title {
+  font-size:13px;
+}
 .amr-noupdates {
   opacity: 0.75;
 }
@@ -706,9 +708,6 @@ export default {
   .m-icon {
     margin-left: 4px!important;
   }
-}
-.chap-title {
-  font-size:13px;
 }
 </style>
 <style lang="css">
