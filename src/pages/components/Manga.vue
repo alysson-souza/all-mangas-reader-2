@@ -10,10 +10,10 @@
         <v-card :color="color(0)" class="back-card amr-manga-title-cont">
           <v-row no-gutters align="center" class="min-h-24">
             
-            <!-- + / - icon if group of mangas  -->
+              <!-- + / - icon if group of mangas  -->
               <v-icon small v-show="isInGroup && isFirst && !groupExpanded" @click="emitExpand()">mdi-plus</v-icon>
               <v-icon small v-show="isInGroup && isFirst && groupExpanded" @click="emitExpand()">mdi-minus</v-icon>
-            
+              <v-icon small v-show="isInGroup && !isFirst && groupExpanded" class="padding-group"></v-icon>
               <!-- Mirror icons -->
               <v-tooltip top content-class="icon-ttip">
                 <template v-slot:activator="{ on }">
@@ -629,7 +629,9 @@ export default {
 .empty-icon {
   width: 22px;
 }
-
+.padding-group {
+  width: 16px;
+}
 .back-card {
   height: 100% !important;
 }
