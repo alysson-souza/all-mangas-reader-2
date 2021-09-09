@@ -29,7 +29,7 @@
                 <template v-slot:activator="{on}">
                   <div class="text-truncate ml-1">
                     <span class="amr-manga-title" v-on="on" @click="openManga">
-                      {{ manga.displayName && manga.displayName !== '' ? manga.displayName : manga.name }}
+                      {{ manga.displayName && manga.displayName !== '' ? truncateTitle(manga.displayName) : truncateTitle(manga.name) }}
                     </span>
                   </div>
                 </template>
@@ -415,6 +415,13 @@ export default {
       return this.manga.listChaps.find(
         arr => amrutils.chapPath(arr[1]) === val
       )[1];
+    },
+    truncateTitle: function (str) {
+      if (str.length > 100) {
+        return str.slice(0, 100) + '...';
+      } else {
+        return str;
+      }
     },
     /**
      * Mark last chapter as read
