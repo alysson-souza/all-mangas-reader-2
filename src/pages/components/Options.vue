@@ -472,8 +472,9 @@
                   <tr v-if="filterLanguage(item)">
                     <td>
                       <img :src="item.mirrorIcon" class="mirror-icon" />
-                      {{ item.mirrorName }}
                       <v-btn icon :href=item.home target="_blank"><v-icon color="primary">mdi-open-in-new</v-icon></v-btn>
+                      {{ item.mirrorName }}
+                      
                       <!-- Badge with number of mangas read -->
                       <v-card v-if="nbMangas(item.mirrorName) > 0" color="primary" dark class="mirror-manga-info">
                         {{ i18n('options_gen_mirrornbmangas', nbMangas(item.mirrorName)) }}
