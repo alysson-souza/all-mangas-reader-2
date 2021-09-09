@@ -371,7 +371,7 @@ export default {
       return cols
     },
     title_sm_col() {
-      let cols = 11
+      let cols = 10
       if(this.options.displastup === 1 && this.manga.upts != 0 && this.timeUpdated < 50) {
         cols = cols - 2
       }
