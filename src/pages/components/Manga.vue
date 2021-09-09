@@ -36,23 +36,23 @@
                 {{ manga.name }}
               </v-tooltip>
             </v-col>
-            <div class="ml-auto">
+            <div class="d-flex align-center ml-auto">
+              <!-- Display a timer off if the manga is not updating anymore -->
+              <v-tooltip top content-class="icon-ttip">
+                <template v-slot:activator="{ on }">
+                  <v-icon small v-show="manga.update === 0" class="amr-timeroff-badge" v-on="on">mdi-timer-off</v-icon>
+                </template>
+                <span>{{i18n("list_stopped_updating")}}</span>
+              </v-tooltip>
               <!-- Display last update time -->
               <v-tooltip top content-class="icon-ttip">
                 <template v-slot:activator="{ on }">
                   <v-card v-show="options.displastup === 1 && manga.upts != 0 && timeUpdated < 50" dark :class="color(-2) + ' amr-calendar-badge'" v-on="on">
-                    <v-icon>mdi-calendar-clock</v-icon>
+                    <v-icon small>mdi-calendar-clock</v-icon>
                   </v-card>
                 </template>
                 <span v-if="timeUpdated === 0">{{i18n("list_calendar_today")}}</span>
                 <span v-else>{{i18n("list_calendar_days_found", timeUpdated)}}</span>
-              </v-tooltip>
-              <!-- Display a timer off if the manga is not updating anymore -->
-              <v-tooltip top content-class="icon-ttip">
-                <template v-slot:activator="{ on }">
-                  <v-icon v-show="manga.update === 0" class="amr-timeroff-badge" v-on="on">mdi-timer-off</v-icon>
-                </template>
-                <span>{{i18n("list_stopped_updating")}}</span>
               </v-tooltip>
             </div>
           </v-row>
@@ -378,6 +378,9 @@ export default {
       if(this.isInGroup && this.isFirst) {
         cols = cols - 1
       }
+      if(this.manga.update === 0) {
+        cols = cols - 1
+      }
       return cols
     },
     isDarkText: function() {
@@ -644,12 +647,9 @@ export default {
 }
 .amr-calendar-badge,
 .amr-timeroff-badge {
-  float: right;
-  padding: 0px 4px;
+  padding: 2px 4px;
 }
-.amr-timeroff-badge {
-  margin-top: 2px;
-}
+
 .amr-manga-row {
   height: auto !important;
   padding: 6px !important;
