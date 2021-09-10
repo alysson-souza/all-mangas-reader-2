@@ -28,7 +28,7 @@
                 <template v-slot:activator="{on}">
                   <div class="text-truncate ml-1">
                     <span class="amr-manga-title" v-on="on" @click="openManga">
-                      {{ manga.displayName && manga.displayName !== '' ? truncateTitle(manga.displayName) : truncateTitle(manga.name) }}
+                      {{ manga.displayName && manga.displayName !== '' ? truncText(manga.displayName) : truncText(manga.name) }}
                     </span>
                   </div>
                 </template>
@@ -106,8 +106,7 @@
                     <div class="d-flex align-center text-truncate">
                       <div v-on="on" class="text-truncate">
                         <Flag v-if="manga.language" :value="manga.language" @toggleLanguageSelection="displayLangs = !displayLangs"/>
-                        <span class="chap-title">{{item.text}}</span>
-                        
+                        <span class="chap-title">{{truncText(item.text)}}</span>
                       </div>
                     </div>
                   </template>
@@ -415,7 +414,7 @@ export default {
         arr => amrutils.chapPath(arr[1]) === val
       )[1];
     },
-    truncateTitle: function (str) {
+    truncText: function (str) {
       if (str.length > 100) {
         return str.slice(0, 100) + '...';
       } else {
