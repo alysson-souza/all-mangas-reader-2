@@ -7,13 +7,12 @@
       <!-- Name, Last Updated -->
       <v-col cols="4" lg="5">
 
-        <v-card :color="color(0)" class="back-card amr-manga-title-cont">
+        <v-card :color="color(0)" class="back-card amr-manga-title-cont" :class="isInGroup && !isFirst && groupExpanded ? 'ml-4':''">
           <v-row no-gutters align="center" class="min-h-26">
             
               <!-- + / - icon if group of mangas  -->
               <v-icon small v-show="isInGroup && isFirst && !groupExpanded" @click="emitExpand()">mdi-plus</v-icon>
               <v-icon small v-show="isInGroup && isFirst && groupExpanded" @click="emitExpand()">mdi-minus</v-icon>
-              <v-icon small v-show="isInGroup && !isFirst && groupExpanded" class="padding-group"></v-icon>
               <!-- Mirror icons -->
               <v-tooltip top content-class="icon-ttip">
                 <template v-slot:activator="{ on }">
@@ -367,7 +366,7 @@ export default {
       if(this.options.displastup === 1 && this.manga.upts != 0 && this.timeUpdated < 50) {
         cols = 10
       }
-      if(this.isInGroup && this.isFirst) {
+      if(this.isInGroup) {
         cols = 10
       }
       return cols
@@ -377,7 +376,7 @@ export default {
       if(this.options.displastup === 1 && this.manga.upts != 0 && this.timeUpdated < 50) {
         cols = cols - 2
       }
-      if(this.isInGroup && this.isFirst) {
+      if(this.isInGroup) {
         cols = cols - 1
       }
       if(this.manga.update === 0) {
