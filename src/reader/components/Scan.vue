@@ -159,21 +159,37 @@ export default {
   },
   methods: {
     async copyIMG() {
-      const img = await fetch(this.src)
-      const blob = await img.blob()
+      const img = await this.imageToBlob(this.scan.scan.currentSrc)
       navigator.clipboard.write([
             new ClipboardItem({
-              [blob.type]: blob
+              [img.type]: img
             })
           ]).then(() => {
             this.snackbarText = i18n('reader_snackbar_img_success')
             this.snackbarColor = 'success'
             this.snackbarShow = true   
-          }).catch(() => {
-            this.snackbarText = i18n('reader_snackbar_img_error')
+          }).catch((e) => {
+            this.snackbarText = i18n('reader_snackbar_img_error', e)
             this.snackbarColor = 'error'
             this.snackbarShow = true
           })
+    },
+    imageToBlob(imageURL) {
+      const img = new Image;
+      const c = document.createElement("canvas");
+      const ctx = c.getContext("2d");
+      img.crossOrigin = "";
+      img.src = imageURL;
+      return new Promise(resolve => {
+        img.onload = function () {
+          c.width = this.naturalWidth;
+          c.height = this.naturalHeight;
+          ctx.drawImage(this, 0, 0);
+          c.toBlob((blob) => {
+            resolve(blob)
+          }, "image/png", 1);
+        };
+      })
     },
     /* check if we need to fit width */
     resizeW() {

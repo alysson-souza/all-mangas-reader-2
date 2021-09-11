@@ -1785,7 +1785,7 @@
     "description": "Notification for url copy success"
   },
   "reader_snackbar_img_error": {
-    "message": "L'image n'a pas pu être copiée",
+    "message": "L'image n'a pas pu être copiée: $1",
     "description": "Notification for url copy error"
   },
   "reader_context_menu_manage_bookmark": {
