@@ -297,7 +297,8 @@
               <v-tooltip bottom class="ml-1">
                 <template v-slot:activator="{ on }">
                   <v-btn v-on="on" icon color="red" @click.stop="DownloadChapter">
-                      <v-icon>mdi-download-outline</v-icon>
+                      <v-progress-circular indeterminate v-if="!zip" />
+                      <v-icon v-if="zip">mdi-download-outline</v-icon>
                   </v-btn>
                 </template>
                 <span>{{i18n("content_nav_downlaod")}}</span>
@@ -510,7 +511,6 @@
 </template>
 
 <script>
-  import Vue from "vue"
   import browser from "webextension-polyfill";
   import { i18nmixin } from "../mixins/i18n-mixin"
 
@@ -531,18 +531,16 @@
   import ShortcutsPopup from "./components/ShortcutsPopup";
   import SocialBar from "./components/SocialBar";
   import { THINSCAN } from '../amr/options';
-
-  import streamSaver from 'streamsaver'
-  import 'streamsaver/examples/zip-stream'
   import mimedb from 'mime-db';
-  import * as ponyfill from 'web-streams-polyfill/ponyfill'
-  streamSaver.WritableStream = ponyfill.WritableStream
+  import {downloadZip} from 'client-zip'
+  import { saveAs } from 'file-saver';
   /** Possible values for resize (readable), the stored value is the corresponding index */
   const resize_values = ['width', 'height', 'container', 'none']
 
   export default {
     mixins: [i18nmixin],
     data: () => ({
+      zip: false,
       drawer: false, /* Display the side drawer or not */
       loading: false, /* Display the loading cover */
 
@@ -1346,45 +1344,35 @@
       },
       async DownloadChapter() {
         const urls = this.$refs.reader.pages.map(ele => ele[0].src).reverse()
-        const chapterName = this.pageData.currentChapter +".cbz"
+        const chapterName = this.pageData.currentChapter
         const seriesName = this.mangaInfos && this.mangaInfos.displayName ? this.mangaInfos.displayName : this.manga.name
-        const name = seriesName + ' - ' + chapterName
-        
-        const fileStream = streamSaver.createWriteStream(name)
-        const readableZipStream = new ZIP({
-            start(ctrl) {},
-            async pull(ctrl) {
-                let url = urls.shift()
-                const res = await fetch(url)
-                const stream = () => res.body
-                let ext = 'jpg'
-                const mime = res.headers.get('content-type')
-                if(mime.indexOf('image') > -1) {
-                    if(mimedb[mime].extensions) {
-                        ext = mimedb[mime].extensions[0]
-                    }
-                } else {
-                    const match = url.match(/(\.\w{2,4})(?![^?])/)
-                    if(match) {
-                        ext = match[1].replace('.', '')
-                    }
-                }
-                const name = String(urls.length+1).padStart(3, '0') + '.' + ext
-                ctrl.enqueue({name, stream})
-                if(urls.length === 0) ctrl.close()
+        const files = []
+        this.zip = true
+        for(const [i, url] of urls.entries()) {
+          let ext = '.jpg'
+          const res = await fetch(url).catch(e=> this.zip = false)
+          const blob = await res.blob().catch(e=> this.zip = false)
+          const mime = res.headers.get('content-type')
+          if(mime.indexOf('image') > -1) {
+            if(mimedb[mime].extensions) {
+              ext = mimedb[mime].extensions[0]
+            } else {
+              const match = url.match(/(\.\w{2,4})(?![^?])/)
+              if(match) {
+                ext = match[1].replace('.', '')
+              }
             }
-        })
-
-        if(window.WritableStream && readableZipStream.pipeTo) {
-            return await readableZipStream.pipeTo(fileStream);
+          }
+          files.push({
+            name: String(i+1).padStart(3, '0') + '.' + ext,
+            lastModified: new Date(),
+            input: blob
+          })
         }
-        this.pump(fileStream.getWriter(), readableZipStream.getReader())
-      },
-      async pump(writer, reader) {
-        const res = await reader.read()
-        if(res.done) return await writer.close()
-        await writer.write(res.value)
-        return this.pump(writer, reader)
+        const blob = await downloadZip(files).blob().catch(e=> this.zip = false)
+        this.zip = false
+        saveAs(blob, `${seriesName} - ${chapterName}.cbz`)
+        
       },
       changeMaxWidth(type) {
         if (type == 'more') {
