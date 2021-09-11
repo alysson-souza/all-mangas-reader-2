@@ -219,17 +219,24 @@
                         <v-col cols="4" v-for="(scan, i) in bookedScans" :key="i" @click.stop="$refs.reader.goScan(scan.page)" class="amr-bookmarked-scan">
                           <v-tooltip bottom v-if="scan.note">
                             <template v-slot:activator="{ on }">
-                              <Scan v-on="on" :full="false"
+                              <Scan 
+                                v-on="on"
+                                :full="false"
                                 :src="scan.url"
                                 resize="container"
-                                :bookmark="false" />
+                                :bookmark="false"
+                              />
                             </template>
                             <span>{{scan.note}}</span>
                           </v-tooltip>
-                          <Scan v-else slot="activator" :full="false"
-                              :src="scan.url"
-                              resize="container"
-                              :bookmark="false" />
+                          <Scan 
+                            v-else
+                            slot="activator"
+                            :full="false"
+                            :src="scan.url"
+                            resize="container"
+                            :bookmark="false"
+                          />
                         </v-col>
                       </v-row>
                     </v-container>
@@ -297,8 +304,8 @@
               <v-tooltip bottom class="ml-1">
                 <template v-slot:activator="{ on }">
                   <v-btn v-on="on" icon color="red" @click.stop="DownloadChapter">
-                      <v-progress-circular indeterminate v-if="!zip" />
-                      <v-icon v-if="zip">mdi-download-outline</v-icon>
+                      <v-progress-circular indeterminate v-if="zip" />
+                      <v-icon v-if="!zip">mdi-download-outline</v-icon>
                   </v-btn>
                 </template>
                 <span>{{i18n("content_nav_downlaod")}}</span>
@@ -532,8 +539,11 @@
   import SocialBar from "./components/SocialBar";
   import { THINSCAN } from '../amr/options';
   import mimedb from 'mime-db';
-  import {downloadZip} from 'client-zip'
   import { saveAs } from 'file-saver';
+  import * as zip from "@zip.js/zip.js";
+  zip.configure({
+    useWebWorkers: false
+  })
   /** Possible values for resize (readable), the stored value is the corresponding index */
   const resize_values = ['width', 'height', 'container', 'none']
 
@@ -1343,15 +1353,17 @@
         EventBus.$emit('reload-all-errors')
       },
       async DownloadChapter() {
-        const urls = this.$refs.reader.pages.map(ele => ele[0].src).reverse()
+        this.zip = true
+        const urls = this.$refs.reader.scansState.scans.map(ele => ele.scan.currentSrc).reverse()
         const chapterName = this.pageData.currentChapter
         const seriesName = this.mangaInfos && this.mangaInfos.displayName ? this.mangaInfos.displayName : this.manga.name
-        const files = []
-        this.zip = true
+        // setup zip
+        const blobWriter = new zip.BlobWriter("application/zip");
+        const writer = new zip.ZipWriter(blobWriter);
         for(const [i, url] of urls.entries()) {
           let ext = '.jpg'
           const res = await fetch(url).catch(e=> this.zip = false)
-          const blob = await res.blob().catch(e=> this.zip = false)
+          const content = await res.blob().catch(e=> this.zip = false)
           const mime = res.headers.get('content-type')
           if(mime.indexOf('image') > -1) {
             if(mimedb[mime].extensions) {
@@ -1363,16 +1375,12 @@
               }
             }
           }
-          files.push({
-            name: String(i+1).padStart(3, '0') + '.' + ext,
-            lastModified: new Date(),
-            input: blob
-          })
+          await writer.add(String(i+1).padStart(3, '0') + '.' + ext, new zip.BlobReader(content))
         }
-        const blob = await downloadZip(files).blob().catch(e=> this.zip = false)
-        this.zip = false
+        const blob = await blobWriter.getData();
+
         saveAs(blob, `${seriesName} - ${chapterName}.cbz`)
-        
+        this.zip = false
       },
       changeMaxWidth(type) {
         if (type == 'more') {

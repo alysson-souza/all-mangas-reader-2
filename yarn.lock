@@ -403,6 +403,11 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
 
+"@zip.js/zip.js@^2.3.15":
+  version "2.3.15"
+  resolved "https://registry.yarnpkg.com/@zip.js/zip.js/-/zip.js-2.3.15.tgz#1effbebd0837be12e5c72b04a6d011316784b5ef"
+  integrity sha512-WZC6sIwyoTLimuAG+PYv3FlLjubznvRp7rbE9+/LZSFjy+DBsrWPlAnLtjAVXFcY09lwMLmLmL6JxENM0VUHog==
+
 abab@^2.0.3, abab@^2.0.5:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/abab/-/abab-2.0.5.tgz#c0b678fb32d60fc1219c784d6a826fe385aeb79a"
@@ -1043,11 +1048,6 @@ cli-boxes@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/cli-boxes/-/cli-boxes-2.2.1.tgz#ddd5035d25094fce220e9cab40a45840a440318f"
   integrity sha512-y4coMcylgSCdVinjiDBuR8PCC2bLjyGTwEmPb9NHR/QaNU6EUOXcTY/s6VjGMD6ENSEaeQYHCY0GNGS5jfMwPw==
-
-client-zip@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/client-zip/-/client-zip-2.0.0.tgz#c93676c92ddb40c858da83517c27297a53874f8d"
-  integrity sha512-JFd4zdhxk5F01NmNnBq3+iMgJkkh0ku9NsI1wZlUjZ52inPJX92vR5TlSkjxRhmHJBPI7YqanD71wDEiKhdWtw==
 
 cliui@^7.0.2:
   version "7.0.4"
