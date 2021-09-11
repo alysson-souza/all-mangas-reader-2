@@ -105,7 +105,7 @@
                   <template v-slot:selection="{on, item}">
                     <div class="d-flex align-center text-truncate">
                       <div v-on="on" class="text-truncate">
-                        <Flag v-if="manga.language" :value="manga.language" @toggleLanguageSelection="displayLangs = !displayLangs"/>
+                        <Flag v-if="manga.language" :value="manga.language"/>
                         <span class="chap-title">{{truncText(item.text)}}</span>
                       </div>
                     </div>
@@ -236,16 +236,6 @@
         <v-btn v-if="manga.displayName && manga.displayName !== ''" @click='resetName()' :color="color(-1)" small>{{ i18n("list_details_reset_name") }}</v-btn>
       </v-col>
     </v-row>
-    <v-row  v-if="displayLangs">
-      <v-col cols="3"><v-card dark tile flat class="back-card" :color="color(3)"></v-card></v-col>
-      <v-col cols="6">
-        <v-card dark tile flat class="back-card" :color="color(3)">
-          <p class="mb-0">{{i18n("popup_language_pick")}} :</p>
-          <Flag v-for="lang in languages" :key="lang" :value="lang" big @click.native="readMangaInLang(lang)"/>
-        </v-card>
-      </v-col>
-      <v-col cols="3"><v-card dark tile flat class="back-card" :color="color(3)"></v-card></v-col>
-    </v-row>
   </v-card>
 </template>
 
@@ -264,8 +254,6 @@ export default {
       expanded: false,
       // delete manga popup state
       deleteManga: false,
-      // list of languages state
-      displayLangs: false,
       // category to add to this group of mangas
       newCat: "",
       // selected bookmark
