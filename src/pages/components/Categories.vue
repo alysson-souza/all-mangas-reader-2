@@ -58,7 +58,7 @@
         @keyup.enter="addCategory()" />
     <v-dialog v-model="deleteCatDialog" max-width="290">
       <v-card>
-        <v-card-title class="headline">{{i18n("list_cat_delete_title", catToDelete.name)}}</v-card-title>
+        <v-card-title class="text-h5">{{i18n("list_cat_delete_title", catToDelete.name)}}</v-card-title>
         <v-card-text>{{i18n("list_cat_delete_desc", countUsed(catToDelete))}}</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -70,7 +70,7 @@
     <!-- Edit Category Dialog -->
     <v-dialog v-model="editCatDialog" max-width="290">
       <v-card>
-        <v-card-title class="headline">{{i18n("list_cat_edit_title", catToEdit.name)}}</v-card-title>
+        <v-card-title class="text-h5">{{i18n("list_cat_edit_title", catToEdit.name)}}</v-card-title>
         <v-card-text>
           <label>
             {{i18n("list_cat_edit_desc", countUsed(catToEdit))}} <br />
