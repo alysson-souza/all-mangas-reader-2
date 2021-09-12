@@ -161,7 +161,7 @@
       </template>
       <!-- Table Body, manga entries -->
       <template v-slot:item="{item, index}">
-        <tr class="m-2">
+        <tr class="">
           <td>
             <MangaGroup
               :group="item"
@@ -594,7 +594,15 @@ export default {
 .filter-container.v-icon {
   font-size: 20px;
 }
+tr:hover {
+  background-color: transparent !important;
+}
 td {
   height: auto !important;
+  border-bottom: none!important;
+}
+.v-data-table__wrapper {
+  padding-right: 4px!important;
+  padding-left: 4px!important;
 }
 </style>

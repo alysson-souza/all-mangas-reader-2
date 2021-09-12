@@ -4,7 +4,7 @@
             <i
             v-on="on"
             :class='"flag flag-" + (Array.isArray(value) ? value[0] : value) + (big ? " big" : "") + ((Array.isArray(value) ? value[1] : value) ? "" : " flag-disabled")'
-            @click="$emit('toggleLanguageSelection')" />
+            />
         </template>
         <span>{{i18n("language_" +  (Array.isArray(value) ? value[0] : value))}}</span>
     </v-tooltip>
