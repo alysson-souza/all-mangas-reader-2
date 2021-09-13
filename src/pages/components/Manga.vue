@@ -50,7 +50,10 @@
               <!-- Display last update time -->
               <v-tooltip top content-class="icon-ttip">
                 <template v-slot:activator="{ on }">
-                    <v-icon small v-show="options.displastup === 1 && manga.upts != 0 && timeUpdated < 50" class="ml-1 mr-2" v-on="on">mdi-calendar-clock</v-icon>
+                    <v-card flat v-show="options.displastup === 1 && manga.upts != 0 && timeUpdated < 50" dark :class="color(0)" v-on="on">
+                      <span v-show="timeUpdated > 0" class="pl-1">{{ timeUpdated }}</span>
+                      <v-icon dense class="pr-1">mdi-calendar-clock</v-icon>
+                    </v-card>
                 </template>
                 <span v-if="timeUpdated === 0">{{i18n("list_calendar_today")}}</span>
                 <span v-else>{{i18n("list_calendar_days_found", timeUpdated)}}</span>
