@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["readmanhua.net"],
         home: "https://readmanhua.net/",
-        chapter_url: /^\/manga\/.*\/.+$/g,
+        chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
         canListFullMangas: true,
 
         abstract: "Madara",

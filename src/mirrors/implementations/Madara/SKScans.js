@@ -5,7 +5,7 @@ if (typeof registerMangaObject === 'function') {
         languages: 'en',
         domains: ['skscans.com'],
         home: 'https://skscans.com/home',
-        chapter_url: /^\/manga\/.*\/.+$/g,
+        chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
 
         abstract: 'Madara',
         abstract_options: {

@@ -40,15 +40,15 @@ if (typeof registerMangaObject === 'function') {
         },
 
         getMangaInfo: function(json) {
-            let title = json.data.attributes.title.en;
+            let title = json.attributes.title.en;
             if (title === undefined) {
-                title = Object.entries(json.data.attributes.title)[0][1]
+                title = Object.entries(json.attributes.title)[0][1]
                 console.debug("no title en, using the default language")
             }
             title = $("<div>" + title + "</div>").text(); //html entites conversion
             return {
                 title,
-                url: `${this.home}title/${json.data.id}`
+                url: `${this.home}title/${json.id}`
             }
         },
 
@@ -56,7 +56,7 @@ if (typeof registerMangaObject === 'function') {
             let jsonSearch = await amr.loadJson(
                 `${this.api}/manga/?title=${search}`
             )
-            let res = jsonSearch.results.map(mangaJson => {
+            let res = jsonSearch.data.map(mangaJson => {
                 let info  = this.getMangaInfo(mangaJson)
                 return [
                     info.title,
@@ -77,22 +77,22 @@ if (typeof registerMangaObject === 'function') {
                     `${this.api}/manga/${id}/feed?limit=${this.pageLimit}&order[chapter]=desc&offset=${page * this.pageLimit}`
                 )
                 // Create Object representing results
-                const uniq = jsonChapFeed.results.filter(data => data.result === "ok").reduce((acc,o)=>{
-                    if (!acc[o.data.attributes.chapter + o.data.attributes.translatedLanguage]) {
-                        acc[o.data.attributes.chapter + o.data.attributes.translatedLanguage] = [];
+                const uniq = jsonChapFeed.data./*filter(data => data.result === "ok").*/reduce((acc,o)=>{
+                    if (!acc[o.attributes.chapter + o.attributes.translatedLanguage]) {
+                        acc[o.attributes.chapter + o.attributes.translatedLanguage] = [];
                     }
-                    acc[o.data.attributes.chapter + o.data.attributes.translatedLanguage].push(o);
+                    acc[o.attributes.chapter + o.attributes.translatedLanguage].push(o);
                     return acc;
                 }, {});
                 // When chapter has multiple groups, only keep the oldest entry
-                jsonChapFeed.results = Object.values(uniq)
+                jsonChapFeed.data = Object.values(uniq)
                     .reduce((acc,list)=>{
-                        list.sort((a,b)=>new Date(b.data.attributes.publishAt) - new Date(a.data.attributes.publishAt) && b.data.attributes.chapter - a.data.attributes.chapter);
+                        list.sort((a,b)=>new Date(a.attributes.publishAt) - new Date(b.data.attributes.publishAt) && b.data.attributes.chapter - a.data.attributes.chapter);
                         acc.push(list[0]);
                         return acc;
                     }, [])
                     // Format data to be consumed
-                    .map(data => data.data)
+                    // .map(data => data.data)
                     .forEach(chap => {
                         const lang = chap.attributes.translatedLanguage
                         const attributes = chap.attributes
@@ -127,11 +127,11 @@ if (typeof registerMangaObject === 'function') {
                 return []
             }
             let chapData = chapterJson.data
-            let mangaId = chapterJson.relationships.filter(rel => rel.type === "manga")[0].id
+            let mangaId = chapData.relationships.filter(rel => rel.type === "manga")[0].id
             let mangaJson = await amr.loadJson(`${this.api}/manga/${mangaId}`)
             let res = {}
 
-            let mangaInfo = this.getMangaInfo(mangaJson)
+            let mangaInfo = this.getMangaInfo(mangaJson.data)
             
             res.name = mangaInfo.title
             res.currentMangaURL = mangaInfo.url

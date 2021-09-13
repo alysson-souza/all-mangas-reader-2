@@ -219,17 +219,24 @@
                         <v-col cols="4" v-for="(scan, i) in bookedScans" :key="i" @click.stop="$refs.reader.goScan(scan.page)" class="amr-bookmarked-scan">
                           <v-tooltip bottom v-if="scan.note">
                             <template v-slot:activator="{ on }">
-                              <Scan v-on="on" :full="false"
+                              <Scan 
+                                v-on="on"
+                                :full="false"
                                 :src="scan.url"
                                 resize="container"
-                                :bookmark="false" />
+                                :bookmark="false"
+                              />
                             </template>
                             <span>{{scan.note}}</span>
                           </v-tooltip>
-                          <Scan v-else slot="activator" :full="false"
-                              :src="scan.url"
-                              resize="container"
-                              :bookmark="false" />
+                          <Scan 
+                            v-else
+                            slot="activator"
+                            :full="false"
+                            :src="scan.url"
+                            resize="container"
+                            :bookmark="false"
+                          />
                         </v-col>
                       </v-row>
                     </v-container>
@@ -297,7 +304,8 @@
               <v-tooltip bottom class="ml-1">
                 <template v-slot:activator="{ on }">
                   <v-btn v-on="on" icon color="red" @click.stop="DownloadChapter">
-                      <v-icon>mdi-download-outline</v-icon>
+                      <v-progress-circular indeterminate v-if="zip" />
+                      <v-icon v-if="!zip">mdi-download-outline</v-icon>
                   </v-btn>
                 </template>
                 <span>{{i18n("content_nav_downlaod")}}</span>
@@ -510,7 +518,6 @@
 </template>
 
 <script>
-  import Vue from "vue"
   import browser from "webextension-polyfill";
   import { i18nmixin } from "../mixins/i18n-mixin"
 
@@ -531,13 +538,19 @@
   import ShortcutsPopup from "./components/ShortcutsPopup";
   import SocialBar from "./components/SocialBar";
   import { THINSCAN } from '../amr/options';
-
+  import mimedb from 'mime-db';
+  import { saveAs } from 'file-saver';
+  import * as zip from "@zip.js/zip.js";
+  zip.configure({
+    useWebWorkers: false
+  })
   /** Possible values for resize (readable), the stored value is the corresponding index */
   const resize_values = ['width', 'height', 'container', 'none']
 
   export default {
     mixins: [i18nmixin],
     data: () => ({
+      zip: false,
       drawer: false, /* Display the side drawer or not */
       loading: false, /* Display the loading cover */
 
@@ -1339,13 +1352,35 @@
       reloadErrors() {
         EventBus.$emit('reload-all-errors')
       },
-      DownloadChapter() {
-        browser.runtime.sendMessage({
-            action: "DownloadChapter",
-            urls: this.$refs.reader.pages.map(ele => ele[0].src),
-            chapterName: this.pageData.currentChapter +".cbz",
-            seriesName: this.mangaInfos && this.mangaInfos.displayName ? this.mangaInfos.displayName : this.manga.name
-        });
+      async DownloadChapter() {
+        this.zip = true
+        const urls = this.$refs.reader.scansState.scans.map(ele => ele.scan.currentSrc).reverse()
+        const chapterName = this.pageData.currentChapter
+        const seriesName = this.mangaInfos && this.mangaInfos.displayName ? this.mangaInfos.displayName : this.manga.name
+        // setup zip
+        const blobWriter = new zip.BlobWriter("application/zip");
+        const writer = new zip.ZipWriter(blobWriter);
+        for(const [i, url] of urls.entries()) {
+          let ext = '.jpg'
+          const res = await fetch(url).catch(e=> this.zip = false)
+          const content = await res.blob().catch(e=> this.zip = false)
+          const mime = res.headers.get('content-type')
+          if(mime.indexOf('image') > -1) {
+            if(mimedb[mime].extensions) {
+              ext = mimedb[mime].extensions[0]
+            } else {
+              const match = url.match(/(\.\w{2,4})(?![^?])/)
+              if(match) {
+                ext = match[1].replace('.', '')
+              }
+            }
+          }
+          await writer.add(String(i+1).padStart(3, '0') + '.' + ext, new zip.BlobReader(content))
+        }
+        const blob = await blobWriter.getData();
+
+        saveAs(blob, `${seriesName} - ${chapterName}.cbz`)
+        this.zip = false
       },
       changeMaxWidth(type) {
         if (type == 'more') {

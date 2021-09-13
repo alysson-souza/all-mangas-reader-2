@@ -3,8 +3,10 @@ import GistStorage from '../storage/gist-storage'
 import BrowserStorage from '../storage/browser-storage';
 import { createLocalStorage } from '../storage/local-storage';
 import * as syncUtils from './utils'
+import * as utils from "../../amr/utils";
 import { debug } from '../utils'
 import Storage from '../storage/model-storage';
+import Manga from '../manga';
 
 const remoteStorages = {
     GistStorage,
@@ -107,7 +109,7 @@ class SyncManager {
         return triggerList
     }
     /**
-     *
+     * Start the sync subprocess
      * @param {String} storageName
      */
     async triggerSync(storageName) {
@@ -148,7 +150,7 @@ class SyncManager {
 
     /**
      * @param {Storage} storage
-     * @returns
+     * @returns {Promise<{local: Manga[], remote: Manga[]}>}
      */
     async checkData(storage) {
         const storageName = storage.constructor.name.replace('Storage', '')
@@ -156,88 +158,61 @@ class SyncManager {
         const localList = await this.localStorage.loadMangaList();
         const remoteList = await storage.getAll()
         debug(`[SYNC-${storageName}] Comparing local and remote list`);
-        const remote = await this.processUpdatesToRemote(localList, storage, remoteList)
-        const local = await this.processUpdatesToLocal(localList, remoteList)
+        const {local, remote} = await this.processUpdatesToLocal(localList, remoteList)
         debug(`[SYNC-${storageName}] Completed sync data check`);
         return { local, remote };
     }
 
+    /**
+     * Checks if entry is deleted or corrupted
+     * @param {Manga} manga 
+     * @returns {boolean}
+     */
     shouldSkipSync(manga) {
         return manga.deleted === syncUtils.DELETED || manga.key === syncUtils.FAIL_KEY
     }
+
     /**
-     * @param {[]} localList
-     * @param {Storage} remoteStorage
-     * @param {[]} remoteList
+     * Compare remote and local version of manga list
+     * updates each entries when it's needed 
+     * 
+     * @param {Manga[]} localList 
+     * @param {Manga[]} remoteList 
+     * @returns {Promise<{local: Manga[], remote: Manga[]}>}
      */
-    async processUpdatesToRemote(localList, remoteStorage, remoteList) {
-        const remoteUpdates = [];
-        for (const local of localList) {
-            if(!this.shouldSkipSync(local)) {
-                const remoteManga = remoteList.find(m => m.key === local.key);
-                if (!remoteManga || remoteManga.ts < local.ts) {
-                    remoteUpdates.push({ ...local, listChaps: [] });
-                }
-            }
-        }
-
-        if (remoteUpdates.length === 0) {
-            debug(`[SYNC-${remoteStorage.constructor.name.replace('Storage', '')}] nothing to update`)
-            return remoteUpdates;
-        }
-
-        debug(`[SYNC-${remoteStorage.constructor.name.replace('Storage', '')}] Syncing ${remoteUpdates.length} keys to remote storage`)
-        try {
-            if(remoteStorage.isdb) {
-                await remoteStorage.saveAll(remoteUpdates)
-            } else {
-                const updatesMap = new Map(remoteUpdates.map(u => [u.key, u]));
-                const updates = remoteList.map(r => {
-                  const update = updatesMap.get(r.key);
-                  if (update) {
-                    updatesMap.delete(r.key);
-                    return update
-                  }
-                  return { ...r, listChaps: [] };
-                });
-                await remoteStorage.saveAll([...updates, ...Array.from(updatesMap.values())]);
-            }
-        } catch (e) {
-            debug(`[SYNC-${remoteStorage.constructor.name.replace('Storage', '')}] Failed to sync keys to storage: ${e.message}`, e);
-            throw e;
-        }
-        return remoteUpdates;
-    }
-
     async processUpdatesToLocal(localList, remoteList) {
-        const localUpdates = [];
-        for (const remoteManga of remoteList) {
-            const localManga = localList.find(m => m.key === remoteManga.key);
-            if (this.shouldSyncToLocal({ localManga, remoteManga })) {
-                localUpdates.push({ ...remoteManga });
+        const local = []
+        const remote = []
+        for(const remoteManga of remoteList) {
+            const localManga = localList.find(m => m.key === remoteManga.key)
+            if(localManga && !this.shouldSkipSync(localManga)) {
+                if(localManga.read !== remoteManga.read) this.localStorage.dispatch('setMangaReadTop', remoteManga)
+                if(localManga.update !== remoteManga.update) this.localStorage.dispatch('setMangaUpdateTop', remoteManga)
+                if(localManga.display !== remoteManga.display) this.localStorage.dispatch('setMangaDisplayMode', remoteManga)
+                if(localManga.layout !== remoteManga.layout) this.localStorage.dispatch('setMangaLayoutMode', remoteManga)
+                if(localManga.webtoon !== remoteManga.webtoon) this.localStorage.dispatch('setMangaWebtoonMode', remoteManga)
+                if(localManga.displayName !== remoteManga.displayName) this.localStorage.dispatch('setMangaDisplayName', remoteManga)
+            }
+            if(this.shouldSyncToLocal(localManga, remoteManga)) {
+                local.push(localManga)
+                remote.push(remoteManga)
+                if(localManga) await this.localStorage.dispatch("refreshLastChapters", localManga)
+                this.localStorage.syncLocal(remoteManga)
+                localUpdates.push(localManga)
             }
         }
-
-        if (localUpdates.length === 0) {
-            debug('[SYNC-LocalStorage] nothing to update')
-            return localUpdates;
-        }
-
-        debug(`[SYNC-LocalStorage] Syncing ${localUpdates.length} keys to storage`)
-        await this.localStorage.syncLocal(localUpdates);
-        return localUpdates;
+        return {local, remote}
     }
-
 
     /**
      * Don't have local copy and remote manga is not skipped
      * or remote manga have newer timestamp
      *
-     * @param localManga
-     * @param remoteManga
+     * @param {Manga} localManga
+     * @param {Manga} remoteManga
      * @return {boolean}
      */
-    shouldSyncToLocal({ localManga, remoteManga }) {
+    shouldSyncToLocal(localManga, remoteManga) {
         // Don't have local copy, but remote manga is skipped.
         // Should not sync as there are no reason to added *new* deleted entry,
         // that will try to delete non existing local entry forever.
@@ -263,10 +238,64 @@ class SyncManager {
             }).catch(e => {
                 if(e instanceof ThrottleError) {
                     storage.retryDate = e.getRetryAfterDate()
+                    const later = storage.retryDate.getTime() - Date.now() + 2000
+                    setTimeout(() => {
+                        this.deleteManga(key)
+                    }, later)
                 } else if(e instanceof Error) {
                     debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] ${e.message}`)
                 }
             })
+        }
+    }
+    /**
+     * Change the value of a specified key
+     * 
+     * @param {Manga} localManga
+     * @param {string} mutatedKey
+     * @return {Promise<void>}
+     */
+    async setToRemote(localManga, mutatedKey) {
+        for(const storage of this.remoteStorages) {
+            // get remote Manga
+            const remoteList = await storage.getAll()
+            let remoteManga = remoteList.find(m => m.key === localManga.key)
+            
+            if(mutatedKey === 'ts') {
+                // No remote manga (new manga to add)
+                if(!remoteManga) remoteManga = localManga 
+                else if(remoteManga.ts < localManga.ts) {
+                    // Mutations for:
+                    // resetManga, updateMangaLastChapter
+                    remoteManga.lastChapterReadURL = localManga.lastChapterReadURL
+                    remoteManga.lastChapterReadName = localManga.lastChapterReadName
+                    remoteManga.ts = localManga.ts
+                }                
+            } else if(remoteManga[mutatedKey] !== localManga[mutatedKey]) {
+                // Mutations for:
+                // setMangaDisplayMode, setMangaLayoutMode, setMangaWebtoonMode
+                // setMangaDisplayName, setMangaReadTop, setMangaUpdateTop
+                remoteManga[mutatedKey] = localManga[mutatedKey]
+            } else {
+                 // skip if there's nothing to update (unlikely to happen)
+                continue
+            }
+            // save changes
+            if(storage.isdb) {
+                storage.set(remoteManga)
+            } else {
+                await storage.saveAll(remoteList).catch(e => {
+                    if(e instanceof ThrottleError) {
+                        storage.retryDate = e.getRetryAfterDate()
+                        const later = storage.retryDate.getTime() - Date.now() + 2000
+                        setTimeout(() => {
+                            this.setToRemote(localManga, mutatedKey)
+                        }, later)
+                    } else if(e instanceof Error) {
+                        debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] ${e.message}`)
+                    }
+                })
+            }
         }
     }
 }

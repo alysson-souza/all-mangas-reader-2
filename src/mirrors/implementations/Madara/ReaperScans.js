@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ['reaperscans.com'],
         home: 'https://reaperscans.com/',
         canListFullMangas: false,
-        chapter_url: /^\/series\/.*\/.+$/g,
+        chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
         abstract: 'Madara',
         abstract_options: {
             search_url: 'https://reaperscans.com/',

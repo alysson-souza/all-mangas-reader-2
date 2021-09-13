@@ -6,11 +6,12 @@ if (typeof registerMangaObject === 'function') {
         domains: ['mangacultivator.com'],
         home: 'https://mangacultivator.com/',
         canListFullMangas: true,
-        chapter_url: /^\/manga\/.*\/.+$/g,
+        chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
         abstract: "Madara",
         abstract_options: {
             search_url: 'https://mangacultivator.com/',
-            chapter_list_ajax: true
+            chapter_list_ajax: true,
+            isekai_chapter_url: true
         },
     });
 }

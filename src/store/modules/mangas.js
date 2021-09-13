@@ -9,7 +9,8 @@ import samples from "../../amr/samples";
 import amrUpdater from '../../amr/amr-updater';
 import iconHelper from '../../amr/icon-helper';
 import * as syncUtils from '../../amr/sync/utils';
-
+import { getSyncManager } from '../../amr/sync/sync-manager';
+const syncManager = getSyncManager()
 // @TODO replace with actual error
 // actually have specific meaning, does not get saved to db
 const ABSTRACT_MANGA_MSG = "abstract_manga";
@@ -121,39 +122,50 @@ const actions = {
      * @param {*} vuex object
      * @param {*} message containing url of the manga and new display mode
      */
-    async setMangaDisplayMode({ dispatch, commit, getters }, message) {
+    async setMangaDisplayMode({ dispatch, commit, getters }, message, fromSync) {
         let key = utils.mangaKey(message.url, message.mirror, message.language);
+        message.key = key
+        const mg = state.all.find(manga => manga.key === key)
         commit('setMangaDisplayMode', message);
-        dispatch('findAndUpdateManga', state.all.find(manga => manga.key === key));
+        dispatch('findAndUpdateManga', mg);
+        if(!fromSync) await syncManager.setToRemote(mg, 'display')
     },
     /**
      * Change manga reader layout mode
      * @param {*} vuex object
      * @param {*} message containing url of the manga and new layout mode
      */
-    async setMangaLayoutMode({ dispatch, commit, getters }, message) {
+    async setMangaLayoutMode({ dispatch, commit, getters }, message, fromSync) {
         let key = utils.mangaKey(message.url, message.mirror, message.language);
+        message.key = key
+        const mg = state.all.find(manga => manga.key === key)
         commit('setMangaLayoutMode', message);
-        dispatch('findAndUpdateManga', state.all.find(manga => manga.key === key));
+        dispatch('findAndUpdateManga', mg);
+        if(!fromSync) await syncManager.setToRemote(mg, 'layout')
     },
     /**
      * Change manga reader webtoon mode
      * @param {*} vuex object
      * @param {*} message containing url of the manga and new webtoon mode
      */
-    async setMangaWebtoonMode({ dispatch, commit, getters }, message) {
+    async setMangaWebtoonMode({ dispatch, commit, getters }, message, fromSync) {
         let key = utils.mangaKey(message.url, message.mirror, message.language);
+        message.key = key
+        const mg = state.all.find(manga => manga.key === key)
         commit('setMangaWebtoonMode', message);
-        dispatch('findAndUpdateManga', state.all.find(manga => manga.key === key));
+        dispatch('findAndUpdateManga', mg);
+        if(!fromSync) await syncManager.setToRemote(mg, 'webtoon')
     },
     /**
      * Change manga display name
      * @param {*} vuex object
      * @param {*} message containing manga object
      */
-    async setMangaDisplayName({ dispatch, commit, getters }, message) {
+    async setMangaDisplayName({ dispatch, commit, getters }, message, fromSync) {
+        const mg = state.all.find(manga => manga.key === message.key)
         commit('setMangaDisplayName', message);
-        dispatch('findAndUpdateManga', state.all.find(manga => manga.key === message.key));
+        dispatch('findAndUpdateManga', mg);
+        if(!fromSync) await syncManager.setToRemote(mg, 'displayName')
     },
     /**
      * Reset manga reading for a manga to first chapter
@@ -165,6 +177,7 @@ const actions = {
         commit('resetManga', message);
         let mg = state.all.find(manga => manga.key === key);
         dispatch('findAndUpdateManga', mg);
+        await syncManager.setToRemote(mg, 'ts')
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();
     },
@@ -321,6 +334,7 @@ const actions = {
                             }
                             if (posNew !== -1 && (message.fromSite || (posNew < posOld || posOld === -1))) {
                                 commit('updateMangaLastChapter', { key: mg.key, obj: message });
+                                syncManager.setToRemote(mg, 'ts')
                             }
                         }
                         resolve();
@@ -333,6 +347,7 @@ const actions = {
             } else {
                 if (message.fromSite || (posNew < posOld || posOld === -1)) {
                     commit('updateMangaLastChapter', { key: mg.key, obj: message });
+                    syncManager.setToRemote(mg, 'ts')
                 }
                 resolve();
             }
@@ -414,7 +429,7 @@ const actions = {
      * @param {*} message message contains info on a manga
      * @return void
      */
-    async refreshLastChapters({ dispatch, commit, getters, rootState }, message) {
+    async refreshLastChapters({ dispatch, commit, getters, rootState }, message, fromSync) {
         const key = utils.mangaKey(message.url, message.mirror, message.language);
         const mg = state.all.find(manga => manga.key === key);
         if (mg.update !== 1) {
@@ -434,7 +449,7 @@ const actions = {
         const newLastChap = mg.listChaps[0][1];
 
         if ((newLastChap !== oldLastChap) && (oldLastChap !== undefined)) {
-            notifications.notifyNewChapter(mg);
+            if(!fromSync) notifications.notifyNewChapter(mg);
             commit('updateMangaLastChapTime', { key: mg.key });
         }
 
@@ -586,25 +601,14 @@ const actions = {
      * @param {*} vuex object
      * @param {*} message message contains info on a manga
      */
-    async markMangaReadTop({ dispatch, commit, getters, rootState }, message) {
+    async markMangaReadTop({ dispatch, commit, getters, rootState }, message, fromSync) {
         let key = utils.mangaKey(message.url, message.mirror, message.language),
             mg = state.all.find(manga => manga.key === key);
         if (mg !== undefined) {
-            commit('setMangaReadTop', message);
+            message.key = key
+            commit('setMangaReadTop', message, mg);
             dispatch('findAndUpdateManga', mg);
-            // if (message.updatesamemangas && rootState.options.groupmgs === 1) {
-            //     let titMg = utils.formatMgName(mg.name);
-            //     let smgs = state.all.filter(manga => utils.formatMgName(manga.name) === titMg)
-            //     for (let smg of smgs) {
-            //         commit('setMangaReadTop', {
-            //             url: smg.url,
-            //             read: message.read,
-            //             mirror: message.mirror,
-            //             language: message.language
-            //         });
-            //         dispatch('updateManga', smg);
-            //     }
-            // }
+            if(!fromSync) await syncManager.setToRemote(mg, 'read')
         }
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();
@@ -614,25 +618,14 @@ const actions = {
      * @param {*} vuex object
      * @param {*} message message contains info on a manga
      */
-    async markMangaUpdateTop({ dispatch, commit, getters, rootState }, message) {
+    async markMangaUpdateTop({ dispatch, commit, getters, rootState }, message, fromSync) {
         let key = utils.mangaKey(message.url, message.mirror, message.language),
             mg = state.all.find(manga => manga.key === key);
         if (mg !== undefined) {
+            message.key = key
             commit('setMangaUpdateTop', message);
             dispatch('findAndUpdateManga', mg);
-            // if (message.updatesamemangas && rootState.options.groupmgs === 1) {
-            //     let titMg = utils.formatMgName(mg.name);
-            //     let smgs = state.all.filter(manga => utils.formatMgName(manga.name) === titMg)
-            //     for (let smg of smgs) {
-            //         commit('setMangaUpdateTop', {
-            //             url: smg.url,
-            //             update: message.update,
-            //             mirror: message.mirror,
-            //             language: message.language
-            //         });
-            //         dispatch('updateManga', smg);
-            //     }
-            // }
+            if(!fromSync) await syncManager.setToRemote(mg, 'update')
         }
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();
@@ -658,11 +651,12 @@ const actions = {
      * @param {*} param0
      * @param {*} message
      */
-    async deleteManga({ dispatch, commit, getters, rootState }, message) {
+    async deleteManga({ dispatch, commit, getters, rootState }, message, fromSync = false) {
         let mg = state.all.find(manga => manga.key === message.key);
         if (mg !== undefined) {
             commit('deleteManga', message.key);
             storedb.deleteManga(message.key);
+            if(!fromSync) syncManager.deleteManga(key)
         }
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();
@@ -763,12 +757,10 @@ const mutations = {
      * @param {*} state
      * @param {*} param1 url of the manga and display mode
      */
-    setMangaDisplayMode(state, { url, mirror, language, display }) {
-        let key = utils.mangaKey(url, mirror, language);
+    setMangaDisplayMode(state, { key, url, mirror, language, display }) {
         let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.display = display;
-            mg.ts = Math.round(Date.now() / 1000)
         }
     },
     /**
@@ -776,12 +768,10 @@ const mutations = {
      * @param {*} state
      * @param {*} param1 url of the manga and layout mode
      */
-    setMangaLayoutMode(state, { url, mirror, language, layout }) {
-        let key = utils.mangaKey(url, mirror, language);
+    setMangaLayoutMode(state, { key, url, mirror, language, layout }) {
         let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.layout = layout;
-            mg.ts = Math.round(Date.now() / 1000)
         }
     },
     /**
@@ -789,12 +779,10 @@ const mutations = {
      * @param {*} state
      * @param {*} param1 url of the manga and layout mode
      */
-    setMangaWebtoonMode(state, { url, mirror, language, webtoon }) {
-        let key = utils.mangaKey(url, mirror, language);
+    setMangaWebtoonMode(state, { key, url, mirror, language, webtoon }) {
         let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.webtoon = webtoon;
-            mg.ts = Math.round(Date.now() / 1000)
         }
     },
     /**
@@ -806,7 +794,6 @@ const mutations = {
         let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.displayName = displayName;
-            mg.ts = Math.round(Date.now() / 1000)
         }
     },
     /**
@@ -814,12 +801,10 @@ const mutations = {
      * @param {*} state
      * @param {*} param1 url of the manga and read top
      */
-    setMangaReadTop(state, { url, read, mirror, language }) {
-        let key = utils.mangaKey(url, mirror, language),
-            mg = state.all.find(manga => manga.key === key)
+    setMangaReadTop(state, { key, url, read, mirror, language }) {
+        let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.read = read;
-            mg.ts = Math.round(Date.now() / 1000)
         }
     },
     /**
@@ -827,10 +812,11 @@ const mutations = {
      * @param {*} state
      * @param {*} param1 url of the manga and update top
      */
-    setMangaUpdateTop(state, { url, update, mirror, language }) {
-        let key = utils.mangaKey(url, mirror, language),
-            mg = state.all.find(manga => manga.key === key)
-        if (mg !== undefined) mg.update = update;
+    setMangaUpdateTop(state, { key, url, update, mirror, language }) {
+        let mg = state.all.find(manga => manga.key === key)
+        if (mg !== undefined) {
+            mg.update = update;
+        }
     },
     /**
      * Set upts to now (means : 'last time we found a new chapter is now');
@@ -850,7 +836,6 @@ const mutations = {
         let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.listChaps = listChaps;
-            mg.ts = Math.round(Date.now() / 1000)
         }
     },
     /**
@@ -862,7 +847,6 @@ const mutations = {
         let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.languages = langs;
-            mg.ts = Math.round(Date.now() / 1000)
         }
     },
     /**
@@ -931,6 +915,7 @@ const mutations = {
             if (mg.listChaps.length > 0) {
                 mg.lastChapterReadURL = mg.listChaps[mg.listChaps.length - 1][1];
                 mg.lastChapterReadName = mg.listChaps[mg.listChaps.length - 1][0];
+                mg.ts = Math.round(Date.now() / 1000)
             }
         }
     },

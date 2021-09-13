@@ -111,17 +111,9 @@
     "message": "Loading options",
     "description": "This is the title of the options page section loading"
   },
-  "options_web_load_opt": {
-    "message": "Loading progression",
-    "description": "Option Loading progression"
-  },
   "options_web_load_desc": {
     "message": "See loading progression in the title bar",
     "description": "Option Loading progression description"
-  },
-  "options_web_imgorder_opt": {
-    "message": "Load scans in order",
-    "description": "Option Loading sans order"
   },
   "options_web_imgorder_desc": {
     "message": "Load scans in the order of the chapter",
@@ -131,10 +123,6 @@
     "message": "This option involve that the chapter's loading will be slower but guarantees that the first scan which will be loaded is the first of the chapter and so on...",
     "description": "Option Loading sans order description"
   },
-  "options_web_prefetch_opt": {
-    "message": "Prefetch next chapter",
-    "description": "Option prefetch next chapter"
-  },
   "options_web_prefetch_desc": {
     "message": "Prefetch next chapter while reading manga.",
     "description": "Option prefetch next chapter description"
@@ -143,10 +131,6 @@
     "message": "A progress bar indicating the prefetch level of the next chapter appears inside the \"Next\" button",
     "description": "Option prefetch next chapter description"
   },
-  "options_web_markwhendownload_opt": {
-    "message": "Update once fully loaded",
-    "description": "Option Update once fully loaded"
-  },
   "options_web_markwhendownload_desc": {
     "message": "Mark chapter as read when the full chapter has been downloaded",
     "description": "Option Update once fully loaded description"
@@ -154,10 +138,6 @@
   "options_web_facilities": {
     "message": "Facilities",
     "description": "This is the title of the options page section facilities"
-  },
-  "options_web_addauto_opt": {
-    "message": "Automatically add read manga to reading list",
-    "description": "Option automatically add read manga to reading list"
   },
   "options_web_addauto_desc": {
     "message": "Automatically add manga in my reading list when I read it.",
@@ -196,10 +176,6 @@
     "message": "Customization",
     "description": "This is the title of the options page section customization"
   },
-  "options_gen_newTab_opt": {
-    "message": "Open popup in new tab",
-    "description": "Option Open popup in new tab"
-  },
   "options_gen_newTab_desc": {
     "message": "Open my manga reading list in a new tab when i click on the All Mangas Reader's icon",
     "description": "Option Open popup in new tab description"
@@ -219,10 +195,6 @@
   "options_gen_displastup_desc": {
     "message": "Display a badge with a calendar icon and the last time in days a new chapter has been published (badge will be removed if last chapter is more than 50 days old)",
     "description": "Option Badge with last time updated description"
-  },
-  "options_gen_dark_opt": {
-    "message": "Dark background",
-    "description": "Option Dark popup"
   },
   "options_gen_dark_desc": {
     "message": "Display a dark background in All Mangas Reader pages",
@@ -281,10 +253,6 @@
     "message": "Refresh now",
     "description": "Button refresh mirrors list now"
   },
-  "options_gen_stopupdateforaweek_opt": {
-    "message": "Pause updates for a week after new chapter",
-    "description": "Option to pause updates for a week after new chapter"
-  },
   "options_gen_stopupdateforaweek_desc": {
     "message": "Pause updates for one week after a new chapter has been found for a manga .",
     "description": "Description of the functionning of the pause updates for a week after new chapter option"
@@ -293,25 +261,13 @@
     "message": "When a new chapter is found, the next one will be published at least one week later. Check the box below to have updates resume for two days (one before and one after) the following week. If no chapters are found during this period, updates are paused for another week and so on.",
     "description": "Description of the functionning of the pause updates for a week after new chapter option"
   },
-  "options_gen_checkmgstart_opt": {
-    "message": "Update on startup",
-    "description": "Option Update on startup"
-  },
   "options_gen_checkmgstart_desc": {
     "message": "Update chapters list on browser startup",
     "description": "Option Update on startup description"
   },
-  "options_gen_refreshspin_opt": {
-    "message": "Spin icon",
-    "description": "Option Spin icon"
-  },
   "options_gen_refreshspin_desc": {
     "message": "Spin the sharingan icon when All Mangas Reader is updating chapters list.",
     "description": "Option Spin icon description"
-  },
-  "options_gen_savebandwidth_opt": {
-    "message": "Save bandwidth",
-    "description": "Option Save bandwidth"
   },
   "options_gen_savebandwidth_desc": {
     "message": "Save bandwidth while loading chapter list",
@@ -321,17 +277,9 @@
     "message": "This options waits for one manga to be updated before updating the next one, update is slower.",
     "description": "Option Save bandwidth infobox"
   },
-  "options_gen_displayzero_opt": {
-    "message": "Grey \"0\" on icon",
-    "description": "Option grey 0 on icon"
-  },
   "options_gen_displayzero_desc": {
     "message": "Display a grey \"0\" on AMR's icon when there is no new manga.",
     "description": "Option grey 0 on icon description"
-  },
-  "options_gen_nocount_opt": {
-    "message": "Grey sharingan as icon",
-    "description": "Option grey sharingan as icon"
   },
   "options_gen_nocount_desc": {
     "message": "Do not display a badge with the number of unread manga but display AMR's icon in color if there are new mangas and in grey if not.",
@@ -965,10 +913,6 @@
     "message": "Select languages in which you can read mangas",
     "description": "Description of the languages section in options page, how to select readable languages"
   },
-  "options_sup_deactivate_unreadable": {
-    "message": "Deactivate unreadable websites",
-    "description": "Title of the option to deactivate mirrors containing only unreadable languages"
-  },
   "options_sup_deactivate_unreadable_desc": {
     "message": "Deactivate websites proposing only languages in which you can't read",
     "description": "Description of the option to deactivate mirrors containing only unreadable languages"
@@ -1324,25 +1268,9 @@
     "message": "Show me tips later",
     "description": "Tips popup, button to close for now but open next tip tomorrow"
   },
-  "options_web_chapter_display_book_opt": {
-    "message": "Display as a book",
-    "description": "Label of the option Display as a book in the options page"
-  },
-  "options_web_chapter_reading_direction_opt": {
-    "message": "Reading direction",
-    "description": "In the options page, label above options to choose reading direction"
-  },
   "options_web_chapter_reading_direction_invert_keys_opt": {
     "message": "Invert keys in Right to Left mode",
     "description": "In the options page, label below options to choose reading direction, inverts keys if Right to Left mode is enabled"
-  },
-  "options_web_chapter_display_full_chapter_opt": {
-    "message": "Display full chapter",
-    "description": "Label of the option Display full chapter in the options page"
-  },
-  "options_web_chapter_resize_mode_opt": {
-    "message": "Scaling mode",
-    "description": "In the options page, label above options to choose scaling mode"
   },
   "options_web_chapter_desc": {
     "message": "The options below are the global default options to display mangas. While reading, you can change these same options in the side menu. When changing display while reading, your reading preference will only be applied to the current manga.",
@@ -1351,10 +1279,6 @@
   "options_web_chapter_darkreader_desc": {
     "message": "Display a dark background while reading manga",
     "description": "In the options page, description of the dark reader option"
-  },
-  "options_web_chapter_darkreader_opt": {
-    "message": "Dark background",
-    "description": "In the options page, label of the dark reader option"
   },
   "options_web_chapter_thinscan_desc": {
     "message": "Thin Scan behaviour",
@@ -1604,16 +1528,20 @@
     "message": "It's highly recommended to create manga list export, before you enabled sync for the first time!",
     "description": "create manga list export before enabling it"
   },
-  "options_sync_manga_list_desc": {
-    "message": "Allow users to sync manga list",
+  "options_sync_checkbox": {
+    "message": "Sync using my Firefox account",
     "description": "browser sync between different devices"
   },
-  "options_sync_checkbox": {
-    "message": "Enable browser sync",
+  "options_sync_checkbox_info": {
+    "message": "Only sync with firefox browsers",
     "description": "browser sync between different devices"
   },
   "options_sync_gist" : {
-    "message": "Enable gist sync",
+    "message": "Sync using gist",
+    "description": "Synchronize using Gist from github"
+  },
+  "options_sync_gist_info" : {
+    "message": "Works with any browser, a Github account is required",
     "description": "Synchronize using Gist from github"
   },
   "options_sync_gist_help" : {
@@ -1643,17 +1571,9 @@
     "message": "Do not wait",
     "description": "Option  Wait between chapters updates description -> do not wait"
   },
-  "options_gen_notifynewversion_opt": {
-    "message": "Notify on new version",
-    "description": "Option Wait between chapters updates "
-  },
   "options_gen_notifynewversion_desc": {
     "message": "Be notified when a new version of AMR is published. This notification will appear at the bottom of the popup",
     "description": "Option  Wait between chapters updates description"
-  },
-  "options_gen_allowtracking_opt": {
-    "message": "Allow sending information",
-    "description": "Option allow tracking "
   },
   "options_gen_allowtracking_desc": {
     "message": "Allow All MAngas Reader to collect reading data for statistics purpose. Your privacy is respected, every piece of data is collected anonymously.",
@@ -1694,10 +1614,6 @@
     "message": "Switches search screen to open series list in new tab instead of adding the series",
     "description": "search open series in new tab"
   },
-  "options_search_open_series_checkbox": {
-    "message": "Enable open in new tab",
-    "description": "search open series in new tab"
-  },
   "__V2_3_0": {
     "message": "Just a filler to separate new labels from old ones"
   },
@@ -1715,10 +1631,6 @@
   },
   "options_mangadex_datasaver_info": {
     "message": "Compressed jpeg images for less bandwidth",
-    "description": "Option for datasaver toggle on mangadex"
-  },
-  "options_mangadex_datasaver_label": {
-    "message": "Use datasaver images",
     "description": "Option for datasaver toggle on mangadex"
   },
   "options_mangadex_blocked_groups": {
@@ -1780,17 +1692,9 @@
     "message": "Turn on webtoon mode by default",
     "description": "webtoon mode default check box"
   },
-  "options_webtoon_mode_default_option": {
-    "message": "Default to Webtoon mode",
-    "description": "Label for webtoon mode default check box"
-  },
   "options_invert_color_scheme": {
-    "message": "Turn on alternative alternating color scheme for manga list",
+    "message": "Turn on alternating color scheme for manga list",
     "description": "alternating color scheme check box"
-  },
-  "options_invert_color_scheme_option": {
-    "message": "Alternating color scheme",
-    "description": "Label for alternating color scheme check box"
   },
   "__V2_3_5": {
     "message": "Just a filler to separate new labels from old ones"
@@ -1858,26 +1762,14 @@
     "description": "Option panel header komga"
   },
   "options_komga_server_label": {
-    "message": "Url for Komga Server",
-    "description": "Option for komga url"
-  },
-  "options_komga_server": {
-    "message": "Base url for Komga server. Default is http://localhost:8080",
+    "message": "Komga Server URL",
     "description": "Option for komga url"
   },
   "options_komga_username_label": {
-    "message": "Komga Username",
-    "description": "Option for komga username"
-  },
-  "options_komga_username": {
-    "message": "Enter your username/email for Komga",
+    "message": "Komga Username/Email",
     "description": "Option for komga username"
   },
   "options_komga_password_label": {
-    "message": "Komga Password",
-    "description": "Option for komga password"
-  },
-  "options_komga_password": {
     "message": "Password for your Komga account",
     "description": "Option for komga password"
   },
@@ -1887,6 +1779,14 @@
   },
   "reader_snackbar_copyurl_error": {
     "message": "URL Failed to Copy",
+    "description": "Notification for url copy error"
+  },
+  "reader_snackbar_img_success": {
+    "message": "Image Copied!",
+    "description": "Notification for url copy success"
+  },
+  "reader_snackbar_img_error": {
+    "message": "Image Failed to Copy: $1",
     "description": "Notification for url copy error"
   },
   "reader_context_menu_manage_bookmark": {
@@ -1901,6 +1801,10 @@
     "message": "Copy Image URL",
     "description": "Context Menu link for copying image url"
   },
+  "reader_context_menu_copy_img": {
+    "message": "Copy Image to Clipboard",
+    "description": "Context Menu link for copying image url"
+  }, 
   "reader_zoom_show": {
     "message": "Show Zoom Control",
     "description": "Button to show zoom controls"

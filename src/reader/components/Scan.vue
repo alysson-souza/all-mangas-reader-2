@@ -24,6 +24,11 @@
           </v-list-item-title>
         </v-list-item>
         <v-list-item link>
+          <v-list-item-title @click="copyIMG">
+            {{ i18n('reader_context_menu_copy_img') }}
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item link>
           <v-list-item-title @click="reloadScan(true)">
             {{ i18n('reader_context_menu_reload_image') }}
           </v-list-item-title>
@@ -153,6 +158,39 @@ export default {
     EventBus.$off('reload-all-errors', this.reloadScan)
   },
   methods: {
+    async copyIMG() {
+      const img = await this.imageToBlob(this.scan.scan.currentSrc)
+      navigator.clipboard.write([
+            new ClipboardItem({
+              [img.type]: img
+            })
+          ]).then(() => {
+            this.snackbarText = i18n('reader_snackbar_img_success')
+            this.snackbarColor = 'success'
+            this.snackbarShow = true   
+          }).catch((e) => {
+            this.snackbarText = i18n('reader_snackbar_img_error', e)
+            this.snackbarColor = 'error'
+            this.snackbarShow = true
+          })
+    },
+    imageToBlob(imageURL) {
+      const img = new Image;
+      const c = document.createElement("canvas");
+      const ctx = c.getContext("2d");
+      img.crossOrigin = "";
+      img.src = imageURL;
+      return new Promise(resolve => {
+        img.onload = function () {
+          c.width = this.naturalWidth;
+          c.height = this.naturalHeight;
+          ctx.drawImage(this, 0, 0);
+          c.toBlob((blob) => {
+            resolve(blob)
+          }, "image/png", 1);
+        };
+      })
+    },
     /* check if we need to fit width */
     resizeW() {
       return ["width", "container"].includes(this.resize)

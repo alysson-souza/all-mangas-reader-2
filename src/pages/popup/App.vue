@@ -171,6 +171,12 @@ import ImportExport from '../components/ImportExport';
 import browser from "webextension-polyfill";
 import * as utils from '../../amr/utils';
 
+import streamSaver from 'streamsaver'
+import 'streamsaver/examples/zip-stream'
+import mimedb from 'mime-db';
+import * as ponyfill from 'web-streams-polyfill/ponyfill'
+streamSaver.WritableStream = ponyfill.WritableStream
+
 export default {
   data() {
     return {
@@ -269,13 +275,28 @@ export default {
 				// window.close();
 			}
 		},
-		DownloadAMR() {
-			if(!utils.isFirefox()) {
-				browser.runtime.sendMessage({
-					action: "DownloadAMR",
-					beta: localStorage.beta
-				})
+		async DownloadAMR() {
+			let url = 'https://release.allmangasreader.com/all-mangas-reader-latest.crx';
+			let filename = navigator.platform === 'Win32' ? 'all-mangas-reader-latest.7z' : 'all-mangas-reader-latest.zip'
+			if(localStorage.beta) {
+					url = 'https://release.allmangasreader.com/all-mangas-reader-beta-latest.crx';
+					filename = navigator.platform === 'Win32' ? 'all-mangas-reader-beta-latest.7z' : 'all-mangas-reader-beta-latest.zip'
 			}
+			const res = await fetch(url)
+			const fileStream = streamSaver.createWriteStream(filename, {
+					size: res.headers.get('content-length')
+			})
+			const readableStream = res.body
+			if(window.WritableStream && readableStream.pipeTo) {
+					return await readableStream.pipeTo(fileStream);
+			}
+			return this.pump(fileStream.getWriter(), res.body.getReader())
+		},
+		async pump(writer, reader) {
+			const res = await reader.read()
+			if(res.done) return await writer.close()
+			await writer.write(res.value)
+			return this.pump(writer, reader)
 		},
 		async saveAllowTracking(doAllow) {
 			await this.$store.dispatch("setOption", { key: "allowtrackingdone", value: 1});

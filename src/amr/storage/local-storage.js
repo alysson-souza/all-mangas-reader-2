@@ -15,18 +15,14 @@ class LocalStorage {
     async loadMangaList() {
         return this.indexedDb.getMangaList();
     }
-
-    syncLocal(mangaUpdates) {
-        const storeUpdates = mangaUpdates.map(manga => {
-            if (manga.deleted === syncUtils.DELETED) {
-                return this.vuexStore.dispatch('deleteManga', { key: manga.key })
-            }
-
-            // fromSite 1 ensure ts and last chapters read are updated
-            return this.vuexStore.dispatch('readManga', { ...manga, fromSite: 1, isSync: 1 })
-        })
-
-        return Promise.all(storeUpdates);
+    dispatch(key, payload) {
+        return this.vuexStore.dispatch(key, payload, true)
+    }
+    syncLocal(manga) {
+        if(manga.delete === syncUtils.DELETED) {
+            return this.vuexStore.dispatch('deleteManga', { key: manga.key }, true)
+        }
+        return this.vuexStore.dispatch('readManga', { ...manga, fromSite: 1, isSync: 1})
     }
 }
 

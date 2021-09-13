@@ -285,7 +285,7 @@ class StoreDB {
         let store = this;
         return this.checkInit()
             .then(() => {
-                return new Promise((resolve, result) => {
+                return new Promise((resolve, reject) => {
                     let transaction = store.db.transaction(["mangas"], "readwrite");
 
                     transaction.onerror = function (event) {
@@ -299,7 +299,7 @@ class StoreDB {
                             store.storeManga(manga)
                             resolve(event.target.result)
                         } else {
-                            reject("Impossible to update manga "+ manga.key + ". Couldn't find a matching entry")
+                            reject("Impossible to update manga "+ manga.key + ". Couldn't find a matching entry", manga)
                         }
                     };
                 });
