@@ -378,7 +378,7 @@
               <v-checkbox v-model="markwhendownload" @change="setOption('markwhendownload')"
                       :label="i18n('options_web_markwhendownload_desc')"></v-checkbox>
               <!-- Automatically add manga to updates list -->
-              <v-checkbox v-model="options_web_addauto_desc" @change="setOption('options_web_addauto_desc')">
+              <v-checkbox v-model="addauto" @change="setOption('addauto')">
                 <template v-slot:label>
                   <div>
                     {{ i18n('options_web_addauto_desc') }}
