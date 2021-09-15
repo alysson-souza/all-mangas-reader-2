@@ -28,52 +28,36 @@ class SyncManager {
         this.remoteStorages = []
     }
 
-   init(config, vuexStore) {
+   init(config, vuexStore, dispatch) {
         this.config = { ...defaultConfig, ...config };
-        this.localStorage = createLocalStorage(vuexStore)
-        this.start()
-        return this
-    }
-
-    start() {
+        this.vuexStore = vuexStore
+        this.localStorage = createLocalStorage(dispatch)
+        this.dispatch = dispatch
         for(const storage of this.getStorageConf()) {
             if(storage.config.enabled) {
                 if(!this.remoteStorages.find(s => s.constructor.name === storage.name)) {
                     const store = new remoteStorages[storage.name](storage.config)
-                    store.syncInterval = setInterval(this.triggerSync.bind(this, store.constructor.name), store.interval)
                     this.remoteStorages.push(store)
-                    this.triggerSync(store.name)
                 }
             }
+        }
+        return this
+    }
+
+    start() {
+        for(const storage of this.remoteStorages) {
+            this.triggerSync(storage.constructor.name)
+            storage.syncInterval = setInterval(this.triggerSync.bind(this, storage.constructor.name), storage.interval)
         }
     }
 
     stop() {
-        for(const storage of this.getStorageConf()) {
-            if(!storage.config.enabled) {
-                let store = this.remoteStorages.find(s=> s.constructor.name === storage.name)
-                if(store) {
-                    clearInterval(store.syncInterval)
-                    this.remoteStorages = this.remoteStorages.filter(s => s.constructor.name !== storage.name)
-                }
-            }
+        for(const storage of this.remoteStorages) {
+            clearInterval(storage.syncInterval)
+            this.remoteStorages = []
         }
         // unset watcher
-        this.localStorage.vuexStore.dispatch("setOption", {key: 'isSyncing', value: 0})
-    }
-
-    updateSync(key, value) {
-        this.config[key] = value;
-        this.config[key] ? this.start() : this.stop();
-    }
-
-    updateStorageConf(key, value) {
-        const provider = key.replace(/Sync.*|sync.*/, '')
-        for(const storage of this.remoteStorages) {
-            if(storage.constructor.name.toLowerCase().includes(provider)) {
-                storage.reconfig(key, value)
-            }
-        }
+        this.dispatch("setOption", {key: 'isSyncing', value: 0})
     }
 
     getStorageConf() {
@@ -116,28 +100,28 @@ class SyncManager {
         const storage = this.remoteStorages.find((store) => store.constructor.name === storageName)
         if(storage) {
             // Get update chapter and convert watchers
-            const isUpdating = this.localStorage.vuexStore.state.options.isUpdatingChapterLists
-            const isConverting = this.localStorage.vuexStore.state.options.isConverting
+            const isUpdating = this.vuexStore.options.isUpdatingChapterLists
+            const isConverting = this.vuexStore.options.isConverting
+            const isSyncing = this.vuexStore.options.isSyncing // in case user triggers a sync-out
 
             // skip if one of these is running (sync-manager will retry by itself)
-            if(isUpdating || isConverting) {
+            if(isUpdating || isConverting || isSyncing) {
                 debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] Skipping sync due to chapter lists being updated`)
                 return;
             }
-
             if(storage.retryDate && storage.retryDate.getTime() > Date.now()) {
                 debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] Skipping sync due to present retry date until ${storage.retryDate.toISOString()}`)
             } else {
                 debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] Starting sync`)
-                this.localStorage.vuexStore.dispatch("setOption", {key: 'isSyncing', value: 1}) // Set watcher
+                this.dispatch("setOption", {key: 'isSyncing', value: 1}) // Set watcher
                 this.checkData(storage)
                 .then(res => {
-                    this.localStorage.vuexStore.dispatch("setOption", {key: 'isSyncing', value: 0}) // Unset watcher when done
+                    this.dispatch("setOption", {key: 'isSyncing', value: 0}) // Unset watcher when done
                     debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] Done`)
                     debug(res)
                 })
                 .catch(e => {
-                    this.localStorage.vuexStore.dispatch("setOption", {key: 'isSyncing', value: 0}) // Unset watcher on errors
+                    this.dispatch("setOption", {key: 'isSyncing', value: 0}) // Unset watcher on errors
                     if(e instanceof ThrottleError) {
                         storage.retryDate = e.getRetryAfterDate()
                     } else if(e instanceof Error) {
@@ -158,9 +142,10 @@ class SyncManager {
         const localList = await this.localStorage.loadMangaList();
         const remoteList = await storage.getAll()
         debug(`[SYNC-${storageName}] Comparing local and remote list`);
-        const {local, remote} = await this.processUpdatesToLocal(localList, remoteList)
+        const incoming = await this.processUpdatesToLocal(localList, remoteList)
+        const outgoing = await this.processUpdatesToRemote(localList, remoteList, storage)
         debug(`[SYNC-${storageName}] Completed sync data check`);
-        return { local, remote };
+        return { incoming, outgoing };
     }
 
     /**
@@ -171,7 +156,6 @@ class SyncManager {
     shouldSkipSync(manga) {
         return manga.deleted === syncUtils.DELETED || manga.key === syncUtils.FAIL_KEY
     }
-
     /**
      * Compare remote and local version of manga list
      * updates each entries when it's needed 
@@ -186,22 +170,52 @@ class SyncManager {
         for(const remoteManga of remoteList) {
             const localManga = localList.find(m => m.key === remoteManga.key)
             if(localManga && !this.shouldSkipSync(localManga)) {
-                if(localManga.read !== remoteManga.read) this.localStorage.dispatch('setMangaReadTop', remoteManga)
-                if(localManga.update !== remoteManga.update) this.localStorage.dispatch('setMangaUpdateTop', remoteManga)
-                if(localManga.display !== remoteManga.display) this.localStorage.dispatch('setMangaDisplayMode', remoteManga)
-                if(localManga.layout !== remoteManga.layout) this.localStorage.dispatch('setMangaLayoutMode', remoteManga)
-                if(localManga.webtoon !== remoteManga.webtoon) this.localStorage.dispatch('setMangaWebtoonMode', remoteManga)
-                if(localManga.displayName !== remoteManga.displayName) this.localStorage.dispatch('setMangaDisplayName', remoteManga)
+                if(remoteManga.deleted === syncUtils.DELETED && remoteManga.ts > localManga.ts) {
+                    this.localStorage.dispatch('deleteManga', localManga, true)
+                    local.push(localManga)
+                    remote.push(remoteManga)
+                    continue
+                }
+                if(remoteManga.tsOpts > localManga.tsOpts) {
+                    if(localManga.read !== remoteManga.read) this.localStorage.dispatch('setMangaReadTop', remoteManga, true)
+                    if(localManga.update !== remoteManga.update) this.localStorage.dispatch('setMangaUpdateTop', remoteManga, true)
+                    if(localManga.display !== remoteManga.display) this.localStorage.dispatch('setMangaDisplayMode', remoteManga, true)
+                    if(localManga.layout !== remoteManga.layout) this.localStorage.dispatch('setMangaLayoutMode', remoteManga, true)
+                    if(localManga.webtoon !== remoteManga.webtoon) this.localStorage.dispatch('setMangaWebtoonMode', remoteManga, true)
+                    if(localManga.displayName !== remoteManga.displayName) this.localStorage.dispatch('setMangaDisplayName', remoteManga, true)
+                }
             }
             if(this.shouldSyncToLocal(localManga, remoteManga)) {
-                local.push(localManga)
-                remote.push(remoteManga)
                 if(localManga) await this.localStorage.dispatch("refreshLastChapters", localManga)
                 this.localStorage.syncLocal(remoteManga)
-                localUpdates.push(localManga)
             }
         }
         return {local, remote}
+    }
+    /**
+     * @param {[]} localList
+     * @param {[]} remoteList
+     * @param {Storage} remoteStorage
+     */
+    async processUpdatesToRemote(localList, remoteList, remoteStorage) {
+        const remoteUpdates = [];
+        for (const local of localList) {
+            if(!this.shouldSkipSync(local)) {
+                const remoteManga = remoteList.find(m => m.key === local.key);
+                if (!remoteManga || remoteManga.ts < local.ts) {
+                    await this.setToRemote(local, 'ts', remoteStorage)
+                }
+                if(remoteManga && remoteManga.tsOpts < local.tsOpts) {
+                    if(local.read !== remoteManga.read) await this.setToRemote(local, 'read', remoteStorage)
+                    if(local.update !== remoteManga.update) await this.setToRemote(local, 'update', remoteStorage)
+                    if(local.display !== remoteManga.display) await this.setToRemote(local, 'display', remoteStorage)
+                    if(local.layout !== remoteManga.layout) await this.setToRemote(local, 'layout', remoteStorage)
+                    if(local.webtoon !== remoteManga.webtoon) await this.setToRemote(local, 'webtoon', remoteStorage)
+                    if(local.displayName !== remoteManga.displayName) await this.setToRemote(local, 'displayName', remoteStorage)
+                }
+            }
+        }
+        return remoteUpdates;
     }
 
     /**
@@ -255,12 +269,26 @@ class SyncManager {
      * @param {string} mutatedKey
      * @return {Promise<void>}
      */
-    async setToRemote(localManga, mutatedKey) {
-        for(const storage of this.remoteStorages) {
+    async setToRemote(localManga, mutatedKey, remoteStorage) {
+        if(this.vuexStore.options.isSyncing && !remoteStorage) {
+            // retry in 5s if we are already syncing-in
+            setTimeout(() => {
+                this.setToRemote(localManga, mutatedKey, remoteStorage)
+            }, 1000*5)
+            return
+        }
+        if(remoteStorage) {
+            this.setToRemoteInternal(localManga ,mutatedKey, remoteStorage)
+        } else {
+            for(const storage of this.remoteStorages) {
+                this.setToRemoteInternal(localManga ,mutatedKey, storage)
+            }
+        }
+    }
+    async setToRemoteInternal(localManga, mutatedKey, storage) {
             // get remote Manga
             const remoteList = await storage.getAll()
             let remoteManga = remoteList.find(m => m.key === localManga.key)
-            
             if(mutatedKey === 'ts') {
                 // No remote manga (new manga to add)
                 if(!remoteManga) remoteManga = localManga 
@@ -276,9 +304,14 @@ class SyncManager {
                 // setMangaDisplayMode, setMangaLayoutMode, setMangaWebtoonMode
                 // setMangaDisplayName, setMangaReadTop, setMangaUpdateTop
                 remoteManga[mutatedKey] = localManga[mutatedKey]
+                remoteManga.tsOpts = localManga.tsOpts
             } else {
-                 // skip if there's nothing to update (unlikely to happen)
-                continue
+                 // skip if there's nothing to update
+                return
+            }
+
+            if(remoteManga.deleted = syncUtils.DELETED) {
+                delete remoteManga.deleted
             }
             // save changes
             if(storage.isdb) {
@@ -296,7 +329,6 @@ class SyncManager {
                     }
                 })
             }
-        }
     }
 }
 
@@ -307,12 +339,12 @@ let instance;
  * @param {*} vuexStore 
  * @returns {SyncManager} 
  */
-export const getSyncManager = (config, vuexStore) => {
+export const getSyncManager = (config, vuexStore, dispatch) => {
     if (!instance) {
         instance = new SyncManager();
     }
     if(config && vuexStore) {
-        return instance.init(config, vuexStore)
+        return instance.init(config, vuexStore, dispatch)
     } else {
         return instance
     }

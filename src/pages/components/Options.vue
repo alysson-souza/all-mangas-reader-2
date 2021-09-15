@@ -219,7 +219,7 @@
             <!-- Synchronization -->
             <v-expansion-panel-header><div class="text-h5 blue--text lighten-4">{{ i18n("options_sync_title") }}</div></v-expansion-panel-header>
             <v-expansion-panel-content class="pt-6" color="slight-overlay">
-              <v-alert dense v-if="!syncEnabled"  :value="true" color="error" icon="mdi-alert-octagon" text elevation="1">
+              <v-alert dense v-if="isFirefox() ? !syncEnabled || !gistSyncEnabled : !gistSyncEnabled"  :value="true" color="error" icon="mdi-alert-octagon" text elevation="1">
                 {{i18n('options_sync_title_warning')}}
               </v-alert>
               <v-checkbox v-if="isFirefox()" v-model="syncEnabled" @change="setOption('syncEnabled')">
@@ -889,12 +889,10 @@ export default {
           this.deactivateUnreadable();
       }
       // retrieve Sync options, must follow current naming convention : providerSyncEnabled
-      if (optstr.toLowerCase().includes('syncenabled')) {
+      if (optstr.toLowerCase().includes('syncenabled') || optstr.toLowerCase().includes('sync')) {
         this.updateSync(optstr, val)
-      } else if(optstr.toLowerCase().includes('sync')) {
-        this.updateStorageConf(optstr, val)
+        this.dispatch("updateSync", false);
       }
-
     },
 
     addArrayEntry(optstr) {
@@ -923,10 +921,7 @@ export default {
         })
     },
     async updateSync(key, value) {
-        await browser.runtime.sendMessage({ action: "sync_update", key, value });
-    },
-    async updateStorageConf(key, value) {
-      await browser.runtime.sendMessage({ action: 'sync_config_update', key, value })
+        await browser.runtime.sendMessage({ action: "sync_update" });
     },
     /**
      * Determine if a mirror is displayed depending on the language filter
