@@ -102,7 +102,6 @@ const actions = {
         syncManager.start()
     },
     async updateSync({getters, rootState, dispatch}, backgroundjs = false) {
-
         if(backgroundjs) {
             // wait 1s, helps commit from popup.js propagate.
             setTimeout(() => {
@@ -154,6 +153,11 @@ const actions = {
             console.error("Error while updating sync timestamp")
             console.error(e)
         }
+    },
+    async setMangaTsOpts ({commit, dispatch}, {key}) {
+        const mg = state.all.find(manga => manga.key === key)
+        commit('setMangaTsOpts', mg.key)
+        await dispatch('findAndUpdateManga', mg);
     },
     /**
      * Change manga display mode
@@ -811,6 +815,13 @@ const mutations = {
      */
     setMangas(state, mangas) {
         state.all = mangas
+    },
+    setMangaTsOpts(state, key) {
+        let mg = state.all.find(manga => manga.key === key)
+        if (mg !== undefined) {
+            mg.tsOpts = Date.now()
+        }
+        
     },
     /**
      * Change manga display mode

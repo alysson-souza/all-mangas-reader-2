@@ -202,6 +202,12 @@ class SyncManager {
         for (const local of localList) {
             if(!this.shouldSkipSync(local)) {
                 const remoteManga = remoteList.find(m => m.key === local.key);
+                if(typeof(local.tsOpts) === 'undefined') {
+                    await this.dispatch('setMangaTsOpts', local)
+                }
+                if(typeof(remoteManga.tsOpts) === 'undefined') {
+                    await this.setToRemote(local, 'tsOpts', remoteStorage)
+                }
                 if (!remoteManga || remoteManga.ts < local.ts) {
                     await this.setToRemote(local, 'ts', remoteStorage)
                 }

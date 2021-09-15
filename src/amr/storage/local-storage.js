@@ -26,5 +26,5 @@ class LocalStorage {
     }
 }
 
-export const createLocalStorage = (vuexStore) => new LocalStorage(storedb, vuexStore)
+export const createLocalStorage = (dispatch) => new LocalStorage(storedb, dispatch)
 
