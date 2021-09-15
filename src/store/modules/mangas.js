@@ -252,7 +252,6 @@ const actions = {
         commit('createManga', message);
         const key = utils.mangaKey(message.url, message.mirror, message.language);
         const mg = state.all.find(manga => manga.key === key);
-
         try {
             await dispatch("refreshLastChapters", message);
         } catch (e) {
@@ -715,12 +714,12 @@ const actions = {
     async deleteManga({ dispatch, commit, getters, rootState }, message, fromSync = false) {
         let mg = state.all.find(manga => manga.key === message.key);
         if (mg !== undefined) {
+            commit('deleteManga', message.key);
+            storedb.deleteManga(message.key);
             if(!fromSync) {
                 if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
                 await syncManager.deleteManga(message.key)
             }
-            storedb.deleteManga(message.key);
-            commit('deleteManga', message.key);
         }
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();
