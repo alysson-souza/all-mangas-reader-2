@@ -46,9 +46,12 @@ export default class {
             this.cats = obj.cats;
         }
 
-        // Update the last read chapter of a manga (last updated?)
+        // Update the last read chapter of a manga
         this.ts = obj.ts || Math.round(Date.now() / 1000);
 
+        // Update the last options
+        this.tsOpts = obj.tsOpts || Math.round(Date.now() / 1000);
+        
         // last time we found a new chapter
         this.upts = obj.upts || 0;
 
