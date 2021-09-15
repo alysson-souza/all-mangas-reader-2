@@ -333,7 +333,6 @@ export default {
     categories: function() {
       return this.options.categoriesStates;
     },
-
     mirrors: function() {
       return this.$store.state.mirrors.all;
     },

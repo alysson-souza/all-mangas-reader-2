@@ -415,12 +415,8 @@
     "description": "Link to import samples mangas when reading list is empty"
   },
   "list_details_cats": {
-    "message": "Categories",
+    "message": "Edit categories",
     "description": "Title of categories list in manga detail"
-  },
-  "list_details_cats_select": {
-    "message": "Category to add",
-    "description": "Default otion in categories list select in manga details"
   },
   "list_multi_action_select_manga": {
     "message": "Please select manga for multi action",
@@ -433,6 +429,10 @@
   "list_multi_action_currently_selected": {
     "message": "Currently selected $1",
     "description": "Currently selected $1"
+  },
+  "list_details_more_actions": {
+    "message": "More actions",
+    "description": "Select other actions"
   },
   "list_details_books": {
     "message": "Bookmarks",

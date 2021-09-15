@@ -1,5 +1,5 @@
 <template>
-  <div class="cat-cont">
+  <div>
       <!-- Eye button to include all / do not care about all -->
       <v-tooltip v-if="!staticCats && !allincluded" top content-class="icon-ttip">
           <template v-slot:activator="{ on }">
