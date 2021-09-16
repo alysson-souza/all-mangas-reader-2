@@ -161,10 +161,15 @@ class SyncManager {
             for(const localManga of local) {
                 if(typeof(localManga.tsOpts) === 'undefined') await this.dispatch('setMangaTsOpts', localManga, d)
             }
+            let upgrade = false
             const upgradedRemote = remote.map(r => {
-                if(typeof(r.tsOpts) === 'undefined') r.tsOpts = d
+                if(typeof(r.tsOpts) === 'undefined') {
+                    r.tsOpts = d
+                    upgrade = true
+                }
                 return r
             })
+            if(!upgrade) return debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] Nothing to update.`);
             if(storage.isdb) {
                 storage.set(upgradedRemote)
             } else {
@@ -262,26 +267,29 @@ class SyncManager {
                 if(save) remoteUpdates.push({ ...remoteManga, listChaps: [] })
             }
         }
-        try {
-            if(remoteStorage.isdb) {
-                await remoteStorage.saveAll(remoteUpdates)
-            } else {
-                const updatesMap = new Map(remoteUpdates.map(u => [u.key, u]));
-                const updates = remoteList.map(r => {
-                  const update = updatesMap.get(r.key);
-                  if (update) {
-                    updatesMap.delete(r.key);
-                    return update
-                  }
-                  return { ...r, listChaps: [] };
-                });
-                await remoteStorage.saveAll([...updates, ...Array.from(updatesMap.values())]);
+        if(remoteUpdates.length) {
+            try {
+                if(remoteStorage.isdb) {
+                    await remoteStorage.saveAll(remoteUpdates)
+                } else {
+                    const updatesMap = new Map(remoteUpdates.map(u => [u.key, u]));
+                    const updates = remoteList.map(r => {
+                      const update = updatesMap.get(r.key);
+                      if (update) {
+                        updatesMap.delete(r.key);
+                        return update
+                      }
+                      return { ...r, listChaps: [] };
+                    });
+                    await remoteStorage.saveAll([...updates, ...Array.from(updatesMap.values())]);
+                }
+            } catch (e) {
+                debug(`[SYNC-${remoteStorage.constructor.name.replace('Storage', '')}] Failed to sync keys to storage: ${e.message}`, e);
+                throw e;
             }
-        } catch (e) {
-            debug(`[SYNC-${remoteStorage.constructor.name.replace('Storage', '')}] Failed to sync keys to storage: ${e.message}`, e);
-            throw e;
+        } else {
+            debug(`[SYNC-${remoteStorage.constructor.name.replace('Storage', '')}] Nothing to update.`);
         }
-
         return remoteUpdates;
     }
 
@@ -337,10 +345,6 @@ class SyncManager {
      * @return {Promise<void>}
      */
     async setToRemote(localManga, mutatedKey, remoteStorage) {
-        if(remoteStorage.retryDate && remoteStorage.retryDate.getTime() > Date.now()) {
-            debug(`[SYNC-${remoteStorage.constructor.name.replace('Storage', '')}] Skipping sync due to present retry date until ${remoteStorage.retryDate.toISOString()}`)
-            return
-        }
         if(this.vuexStore.options.isSyncing && !remoteStorage) {
             // retry in 5s if we are already syncing-in
             setTimeout(() => {
@@ -371,6 +375,7 @@ class SyncManager {
                         remoteManga.lastChapterReadURL = localManga.lastChapterReadURL
                         remoteManga.lastChapterReadName = localManga.lastChapterReadName
                         remoteManga.ts = localManga.ts
+                        
                     }                
                 } else if(remoteManga[mutatedKey] !== localManga[mutatedKey]) {
                     // Mutations for:
@@ -382,8 +387,13 @@ class SyncManager {
                      // skip if there's nothing to update
                     return
                 }
+                // if manga was deleted and re-added it needs to be repopulated
                 if(remoteManga.deleted === syncUtils.DELETED) {
+                    for(const rm in localManga) {
+                        remoteManga[rm] = localManga[rm]
+                    }
                     delete remoteManga.deleted
+                    remoteManga.listChaps = []
                 }
             }
 
