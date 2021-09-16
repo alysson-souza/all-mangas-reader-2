@@ -5,6 +5,7 @@ import mirrorsImpl from '../../amr/mirrors-impl';
 import notifications from '../../amr/notifications';
 import statsEvents from '../../amr/stats-events';
 import * as utils from "../../amr/utils";
+import { debug } from "../../amr/utils"
 import samples from "../../amr/samples";
 import amrUpdater from '../../amr/amr-updater';
 import iconHelper from '../../amr/icon-helper';
@@ -127,10 +128,12 @@ const actions = {
      * @param {*} param0
      * @param {*} manga
      */
-    async addManga({ dispatch, commit }, manga) {
+    async addManga({ dispatch, commit }, {manga, fromSync}) {
         await storedb.storeManga(manga);
-        if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
-        await syncManager.setToRemote(manga, 'ts')
+        if(!fromSync) {
+            if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
+            await syncManager.setToRemote(manga, 'ts')
+        }
         try {
             dispatch("setOption", {key: "updated", value: Date.now()});
             dispatch("setOption", {key: "changesSinceSync", value: 1});
@@ -154,10 +157,17 @@ const actions = {
             console.error(e)
         }
     },
-    async setMangaTsOpts ({commit, dispatch}, {key}) {
-        const mg = state.all.find(manga => manga.key === key)
-        commit('setMangaTsOpts', mg.key)
-        await dispatch('findAndUpdateManga', mg);
+    async setMangaTsOpts ({commit, dispatch}, manga, date) {
+        if(manga) {
+            const mg = state.all.find(m => m.key === manga.key)
+            commit('setMangaTsOpts', mg.key, date)
+        } else {
+            const mgs = state.all.filter(m => typeof(m.tsOpts) === 'undefined')
+            for(const mg of mgs) {
+                commit('setMangaTsOpts', mg.key)
+                await dispatch('findAndUpdateManga', mg);
+            }
+        }
     },
     /**
      * Change manga display mode
@@ -264,8 +274,8 @@ const actions = {
             console.error(e)
         }
 
-        utils.debug("saving new manga to database");
-        dispatch('addManga', mg);
+        debug("saving new manga to database");
+        dispatch('addManga', {manga: mg, fromSync: message.isSync});
         // update native language categories
         dispatch("updateLanguageCategories")
     },
@@ -299,7 +309,7 @@ const actions = {
         dispatch('findAndUpdateManga', mg);
 
         // Ignore sync updates for stats
-        if (message.isSync !== 1) {
+        if (!message.isSync && !message.fromSite) {
             // statsEvents.trackReadManga(mg);
         }
         // refresh badge
@@ -309,13 +319,13 @@ const actions = {
      * Get list of chapters for a manga
      */
     async getMangaListOfChapters({ dispatch, commit, getters }, manga) {
-        utils.debug("getMangaListOfChapters : get implementation of " + manga.mirror);
+        debug("getMangaListOfChapters : get implementation of " + manga.mirror);
         const impl = await mirrorsImpl.getImpl(manga.mirror);
         if (!impl || impl.disabled) {
             await dispatch("disabledManga", manga);
             throw new Error(`Failed to get implementation for mirror ${manga.mirror}`);
         }
-        utils.debug("getMangaListOfChapters : implementation found, get list of chapters for manga " + manga.name + " key " + manga.key);
+        debug("getMangaListOfChapters : implementation found, get list of chapters for manga " + manga.name + " key " + manga.key);
         return impl.getListChaps(manga.url);
     },
 
@@ -374,7 +384,7 @@ const actions = {
                                 // set current list chaps to the right one
                                 listChaps = listChaps[mg.language]
                             } else {
-                                utils.debug("required language " + mg.language + " does not exist in resulting list of chapters for manga " + mg.name + " on " + mg.mirror + ". Existing languages are : " + Object.keys(listChaps).join(","))
+                                debug("required language " + mg.language + " does not exist in resulting list of chapters for manga " + mg.name + " on " + mg.mirror + ". Existing languages are : " + Object.keys(listChaps).join(","))
                             }
                         }
                         if (listChaps.length > 0) {
@@ -387,8 +397,10 @@ const actions = {
                             }
                             if (posNew !== -1 && (message.fromSite || (posNew < posOld || posOld === -1))) {
                                 commit('updateMangaLastChapter', { key: mg.key, obj: message });
-                                if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
-                                await syncManager.setToRemote(mg, 'ts')
+                                if(!message.isSync) {
+                                    if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
+                                    await syncManager.setToRemote(mg, 'ts')
+                                }
                             }
                         }
                         resolve();
@@ -401,8 +413,10 @@ const actions = {
             } else {
                 if (message.fromSite || (posNew < posOld || posOld === -1)) {
                     commit('updateMangaLastChapter', { key: mg.key, obj: message });
-                    if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
-                    await syncManager.setToRemote(mg, 'ts')
+                    if(!message.isSync) {
+                        if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
+                        await syncManager.setToRemote(mg, 'ts')
+                    }
                 }
                 resolve();
             }
@@ -420,7 +434,7 @@ const actions = {
             throw new Error("Refreshing " + mg.key + " has been timeout... seems unreachable...");
         }, 60000);
 
-        utils.debug("waiting for manga list of chapters for " + mg.name + " on " + mg.mirror)
+        debug("waiting for manga list of chapters for " + mg.name + " on " + mg.mirror)
         let listChaps = await dispatch("getMangaListOfChapters", mg)
         clearTimeout(timeOutRefresh);
 
@@ -462,7 +476,7 @@ const actions = {
             throw ABSTRACT_MANGA_MSG
         }
 
-        utils.debug("chapters in multiple languages found for " + mg.name + " on " + mg.mirror + " --> select language " + mg.language)
+        debug("chapters in multiple languages found for " + mg.name + " on " + mg.mirror + " --> select language " + mg.language)
         if (listChaps[mg.language] && listChaps[mg.language].length > 0) {
             // update list of existing languages
             const listOfLanguages = Object.keys(listChaps).join(",");
@@ -471,7 +485,7 @@ const actions = {
             return listChaps[mg.language]
         }
 
-        utils.debug("required language " + mg.language + " does not exist in resulting list of chapters. Existing languages are : " + Object.keys(listChaps).join(","))
+        debug("required language " + mg.language + " does not exist in resulting list of chapters. Existing languages are : " + Object.keys(listChaps).join(","))
         return listChaps;
     },
 
@@ -497,13 +511,13 @@ const actions = {
 
         const oldLastChap = (typeof mg.listChaps[0] === 'object' ? mg.listChaps[0][1] : undefined);
 
-        utils.debug(listChaps.length + " chapters found for " + mg.name + " on " + mg.mirror)
+        debug(listChaps.length + " chapters found for " + mg.name + " on " + mg.mirror)
         commit('updateMangaListChaps', { key: mg.key, listChaps: listChaps });
 
         const newLastChap = mg.listChaps[0][1];
 
         if ((newLastChap !== oldLastChap) && (oldLastChap !== undefined)) {
-            if(!fromSync) notifications.notifyNewChapter(mg);
+            if(!fromSync && !message.isSync) notifications.notifyNewChapter(mg);
             commit('updateMangaLastChapTime', { key: mg.key });
         }
 
@@ -526,11 +540,11 @@ const actions = {
             return;
         }
 
-        console.error("Manga " + mg.name + " on " + mg.mirror + " has a lastChapterReadURL set to " + mg.lastChapterReadURL + " but this url can no more be found in the chapters list. First url in list is " + mg.listChaps[0][1] + ". ");
+        debug("Manga " + mg.name + " on " + mg.mirror + " has a lastChapterReadURL set to " + mg.lastChapterReadURL + " but this url can no more be found in the chapters list. First url in list is " + mg.listChaps[0][1] + ". ");
         const probable = utils.findProbableChapter(mg.lastChapterReadURL, mg.listChaps);
         if (probable !== undefined) {
             const [name, url] = probable;
-            console.log(`Found probable chapter : ${name} : ${url}`)
+            debug(`Found probable chapter : ${name} : ${url}`)
             commit('updateMangaLastChapter', {
                 key: mg.key, obj: {
                     lastChapterReadURL: url,
@@ -541,7 +555,7 @@ const actions = {
             return;
         }
 
-        console.log("No list entry or multiple list entries match the known last chapter. Reset to first chapter");
+        debug("No list entry or multiple list entries match the known last chapter. Reset to first chapter");
         commit('updateMangaLastChapter', {
             key: mg.key, obj: {
                 lastChapterReadURL: listChaps[listChaps.length - 1][1],
@@ -571,14 +585,14 @@ const actions = {
         }
         if(isConverting) timeout = 60*1000
         if(timeout > 0) {
-            utils.debug('Skipped chapter lists update')
+            debug('Skipped chapter lists update')
             setTimeout(() => {
                actions.updateChaptersLists({ dispatch, commit, getters, state, rootState }, {force} = {force: true})
             }, timeout);
             return
         }
         dispatch("setOption", {key: "isUpdatingChapterLists", value: 1}); // Set watcher
-        utils.debug('Starting chapter lists update')
+        debug('Starting chapter lists update')
         let tsstopspin;
         if (rootState.options.refreshspin === 1) {
             // spin the badge
@@ -632,15 +646,15 @@ const actions = {
         let mirrorTasks2 = Object.values(mirrorTasks).map(list => {
             return () => new Promise(async (resolve) => {
                 for (let seriesUpdate of list) {
-                    await seriesUpdate().catch(utils.debug)
+                    await seriesUpdate().catch(debug)
                 }
                 resolve()
             })
         })
 
-        await Promise.all(mirrorTasks2.map(t => t())).catch(utils.debug)
+        await Promise.all(mirrorTasks2.map(t => t())).catch(debug)
         dispatch("setOption", {key: "isUpdatingChapterLists", value: 0}); // Unset watcher when done
-        utils.debug('Done updating chapter lists')
+        debug('Done updating chapter lists')
         if (rootState.options.refreshspin === 1) {
             //stop the spinning
             iconHelper.stopSpinning();
@@ -731,7 +745,7 @@ const actions = {
      * @param {*} param0
      */
     importSamples({ dispatch }) {
-        utils.debug("Importing samples manga in AMR (" + samples.length + " mangas to import)");
+        debug("Importing samples manga in AMR (" + samples.length + " mangas to import)");
         for (let sample of samples) {
             sample.auto = true;
             dispatch("readManga", sample);
@@ -815,10 +829,10 @@ const mutations = {
     setMangas(state, mangas) {
         state.all = mangas
     },
-    setMangaTsOpts(state, key) {
+    setMangaTsOpts(state, key, date) {
         let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
-            mg.tsOpts = Date.now()
+            mg.tsOpts = date || Date.now()
         }
         
     },

@@ -51,9 +51,8 @@ IconHelper.setBlueIcon();
     /**
      * Start sync process between local and remote storage
      */
+    await store.dispatch('setMangaTsOpts')
     await store.dispatch("initSync")
-
-
     /**
      * Initialize bookmarks list in store from DB
      */
