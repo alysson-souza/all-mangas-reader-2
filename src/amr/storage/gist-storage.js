@@ -9,6 +9,8 @@ export default class GistStorage extends Storage {
     this.gistSyncGitID = config.gistSyncGitID
     this.gistSyncSecret = config.gistSyncSecret
     this.axios = this.initAxios()
+    this.delay = 500
+    this.requests = 0
   }
 
   initAxios() {
@@ -30,6 +32,7 @@ export default class GistStorage extends Storage {
     if(!this.gistSyncGitID || !this.gistSyncSecret) throw new Error('Missing credentials. Skipping update')
     if(!this.gistSyncSecret.startsWith('ghp_')) throw new Error('Missing PAT. Skipping update')
     if(this.gistSyncSecret.length < 2) throw new Error('Missing ID. Skipping update')
+    await this.wait()
     const request = await this.axios.get(`gists/${this.gistSyncGitID}?cache=${Date.now()}`).catch(this.handleSyncError)
     const amr = request.data.files['amr.json']
     if(amr) {
@@ -46,11 +49,13 @@ export default class GistStorage extends Storage {
   }
 
   async init() {
+    await this.wait()
     const request = await this.axios.patch(`gists/${this.gistSyncGitID}`, this.getFileStruct('[]')).catch(this.handleSyncError)
     return JSON.parse(request.data.files['amr.json'].content)
   }
 
   async saveAll(content) {
+    await this.wait()
     return this.axios.patch(`gists/${this.gistSyncGitID}`, this.getFileStruct(JSON.stringify(content))).catch(this.handleSyncError)
   }
 
@@ -66,6 +71,7 @@ export default class GistStorage extends Storage {
   async delete(key, value) {
     const data = await this.getAll()
     const updates = data.map(manga => manga.key === key ? value : manga)
+    await this.wait()
     this.axios.patch(`gists/${this.gistSyncGitID}`, this.getFileStruct(JSON.stringify(updates)))
       .catch(e=> {
         if(e.response.headers['x-ratelimit-remaining'] === "0") {
@@ -81,5 +87,20 @@ export default class GistStorage extends Storage {
 
   getFileStruct(content) {
     return { files: { 'amr.json' : { content: content } } }
+  }
+
+  async wait() {
+    return new Promise((resolve) => {
+      this.requests = this.requests + 1
+      setTimeout(() => {
+        this.decrementReqs()
+        resolve()
+      }, this.delay*this.requests)
+    })
+  }
+
+  decrementReqs() {
+    this.requests = this.requests - 1
+    if(this.requests < 0) this.requests = 0
   }
 }
