@@ -127,10 +127,13 @@ const actions = {
      * @param {*} param0
      * @param {*} manga
      */
-    async addManga({ dispatch, commit }, manga) {
+    async addManga({ dispatch, commit }, {manga, fromSync}) {
         await storedb.storeManga(manga);
-        if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
-        await syncManager.setToRemote(manga, 'ts')
+        if(!fromSync) {
+            console.log('set to remote addManga')
+            if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
+            await syncManager.setToRemote(manga, 'ts')
+        }
         try {
             dispatch("setOption", {key: "updated", value: Date.now()});
             dispatch("setOption", {key: "changesSinceSync", value: 1});
@@ -154,10 +157,17 @@ const actions = {
             console.error(e)
         }
     },
-    async setMangaTsOpts ({commit, dispatch}, {key}) {
-        const mg = state.all.find(manga => manga.key === key)
-        commit('setMangaTsOpts', mg.key)
-        await dispatch('findAndUpdateManga', mg);
+    async setMangaTsOpts ({commit, dispatch}, manga, date) {
+        if(manga) {
+            const mg = state.all.find(m => m.key === manga.key)
+            commit('setMangaTsOpts', mg.key, date)
+        } else {
+            const mgs = state.all.filter(m => typeof(m.tsOpts) === 'undefined')
+            for(const mg of mgs) {
+                commit('setMangaTsOpts', mg.key)
+                await dispatch('findAndUpdateManga', mg);
+            }
+        }
     },
     /**
      * Change manga display mode
@@ -231,6 +241,7 @@ const actions = {
         commit('resetManga', message);
         let mg = state.all.find(manga => manga.key === key);
         dispatch('findAndUpdateManga', mg);
+        console.log('set to remote from reset()')
         await syncManager.setToRemote(mg, 'ts')
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();
@@ -265,7 +276,7 @@ const actions = {
         }
 
         utils.debug("saving new manga to database");
-        dispatch('addManga', mg);
+        dispatch('addManga', {manga: mg, fromSync: message.isSync});
         // update native language categories
         dispatch("updateLanguageCategories")
     },
@@ -387,8 +398,11 @@ const actions = {
                             }
                             if (posNew !== -1 && (message.fromSite || (posNew < posOld || posOld === -1))) {
                                 commit('updateMangaLastChapter', { key: mg.key, obj: message });
-                                if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
-                                await syncManager.setToRemote(mg, 'ts')
+                                if(!message.isSync || !message.fromSite) {
+                                    console.log('set to remote from consult manga')
+                                    if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
+                                    await syncManager.setToRemote(mg, 'ts')
+                                }
                             }
                         }
                         resolve();
@@ -401,8 +415,11 @@ const actions = {
             } else {
                 if (message.fromSite || (posNew < posOld || posOld === -1)) {
                     commit('updateMangaLastChapter', { key: mg.key, obj: message });
-                    if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
-                    await syncManager.setToRemote(mg, 'ts')
+                    if(!message.isSync || !message.fromSite) {
+                        console.log('set to remote from consult manga cond2')
+                        if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
+                        await syncManager.setToRemote(mg, 'ts')
+                    }
                 }
                 resolve();
             }
@@ -503,7 +520,7 @@ const actions = {
         const newLastChap = mg.listChaps[0][1];
 
         if ((newLastChap !== oldLastChap) && (oldLastChap !== undefined)) {
-            if(!fromSync) notifications.notifyNewChapter(mg);
+            if(!fromSync && !message.isSync) notifications.notifyNewChapter(mg);
             commit('updateMangaLastChapTime', { key: mg.key });
         }
 
@@ -815,10 +832,10 @@ const mutations = {
     setMangas(state, mangas) {
         state.all = mangas
     },
-    setMangaTsOpts(state, key) {
+    setMangaTsOpts(state, key, date) {
         let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
-            mg.tsOpts = Date.now()
+            mg.tsOpts = date || Date.now()
         }
         
     },
