@@ -107,26 +107,26 @@ class SyncManager {
 
             // skip if one of these is running (sync-manager will retry by itself)
             if(isUpdating || isConverting || isSyncing) {
-                console.error(`[SYNC-${storage.constructor.name.replace('Storage', '')}] Skipping sync due to chapter lists being updated`)
+                debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] Skipping sync due to chapter lists being updated`)
                 return;
             }
             if(storage.retryDate && storage.retryDate.getTime() > Date.now()) {
-                console.error(`[SYNC-${storage.constructor.name.replace('Storage', '')}] Skipping sync due to present retry date until ${storage.retryDate.toISOString()}`)
+                debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] Skipping sync due to present retry date until ${storage.retryDate.toISOString()}`)
             } else {
-                console.error(`[SYNC-${storage.constructor.name.replace('Storage', '')}] Starting sync`)
+                debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] Starting sync`)
                 await this.dispatch("setOption", {key: 'isSyncing', value: 1}) // Set watcher
                 this.checkData(storage)
                 .then(res => {
                     this.dispatch("setOption", {key: 'isSyncing', value: 0}) // Unset watcher when done
-                    console.error(`[SYNC-${storage.constructor.name.replace('Storage', '')}] Done`)
-                    console.error(res)
+                    debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] Done`)
+                    debug(res)
                 })
                 .catch(e => {
                     this.dispatch("setOption", {key: 'isSyncing', value: 0}) // Unset watcher on errors
                     if(e instanceof ThrottleError) {
                         storage.retryDate = e.getRetryAfterDate()
                     } else if(e instanceof Error) {
-                        console.error(`[SYNC-${storage.constructor.name.replace('Storage', '')}] ${e.message}`)
+                        debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] ${e.message}`)
                     }
                 })
             }
@@ -139,14 +139,13 @@ class SyncManager {
      */
     async checkData(storage) {
         const storageName = storage.constructor.name.replace('Storage', '')
-        console.error(`[SYNC-${storageName}] Checking sync data`);
+        debug(`[SYNC-${storageName}] Checking sync data`);
         const localList = await this.localStorage.loadMangaList();
         const remoteList = await storage.getAll()
-        console.error(`[SYNC-${storageName}] Comparing local and remote list`);
+        debug(`[SYNC-${storageName}] Comparing local and remote list`);
         const incoming = await this.processUpdatesToLocal(localList, remoteList)
-        console.log('to remote')
         const outgoing = await this.processUpdatesToRemote(localList, remoteList, storage)
-        console.error(`[SYNC-${storageName}] Completed sync data check`);
+        debug(`[SYNC-${storageName}] Completed sync data check`);
         return { incoming, outgoing };
     }
     /**
@@ -177,7 +176,7 @@ class SyncManager {
                             this.tsOpts()
                         }, later)
                     } else if(e instanceof Error) {
-                        console.error(`[SYNC-${storage.constructor.name.replace('Storage', '')}] ${e.message}`)
+                        debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] ${e.message}`)
                     }
                 })
             }
@@ -200,9 +199,7 @@ class SyncManager {
      * @returns {Promise<{local: Manga[], remote: Manga[]}>}
      */
     async processUpdatesToLocal(localList, remoteList) {
-        const local = []
-        const remote = []
-        console.log('update to locals()')
+        const localUpdates = []
         for(const remoteManga of remoteList) {
             const localManga = localList.find(m => m.key === remoteManga.key);
             if(localManga) {
@@ -220,14 +217,16 @@ class SyncManager {
                 }
                 if(remoteManga.ts > localManga.ts) {
                     this.localStorage.syncLocal(remoteManga)
-                }  
+                }
+                localUpdates.push(remoteManga)
             } else {
                 if(remoteManga.deleted !== syncUtils.DELETED) {
+                    localUpdates.push(remoteManga)
                     this.localStorage.syncLocal(remoteManga)
                 }
             }
         }
-        return {local, remote}
+        return localUpdates
     }
     /**
      * @param {[]} localList
@@ -235,12 +234,9 @@ class SyncManager {
      * @param {Storage} remoteStorage
      */
     async processUpdatesToRemote(localList, remoteList, remoteStorage) {
-        console.log('process to remote()')
         const remoteUpdates = [];
         for (const local of localList) {
-            console.log('weloop')
             if(!this.shouldSkipSync(local)) {
-                console.log('wesync')
                 const remoteManga = remoteList.find(m => m.key === local.key);
                 if(!remoteManga) {
                     remoteUpdates.push({ ...local, listChaps: [] })
@@ -328,7 +324,7 @@ class SyncManager {
                         this.deleteManga(key)
                     }, later)
                 } else if(e instanceof Error) {
-                    console.error(`[SYNC-${storage.constructor.name.replace('Storage', '')}] ${e.message}`)
+                    debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] ${e.message}`)
                 }
             })
         }
@@ -341,9 +337,11 @@ class SyncManager {
      * @return {Promise<void>}
      */
     async setToRemote(localManga, mutatedKey, remoteStorage) {
-
+        if(remoteStorage.retryDate && remoteStorage.retryDate.getTime() > Date.now()) {
+            debug(`[SYNC-${remoteStorage.constructor.name.replace('Storage', '')}] Skipping sync due to present retry date until ${remoteStorage.retryDate.toISOString()}`)
+            return
+        }
         if(this.vuexStore.options.isSyncing && !remoteStorage) {
-            console.log('try later')
             // retry in 5s if we are already syncing-in
             setTimeout(() => {
                 this.setToRemote(localManga, mutatedKey, remoteStorage)
@@ -359,7 +357,6 @@ class SyncManager {
         }
     }
     async setToRemoteInternal(localManga, mutatedKey, storage) {
-        console.log('change ', mutatedKey, '=', localManga[mutatedKey], localManga)
             // get remote Manga
             const remoteList = await storage.getAll()
             const remoteManga = remoteList.find(m => m.key === localManga.key)
@@ -369,7 +366,6 @@ class SyncManager {
                 if(mutatedKey === 'ts') {
                     // No remote manga (new manga to add)
                     if(remoteManga.ts < localManga.ts) {
-                        console.log('updating remote manga chaps')
                         // Mutations for:
                         // resetManga, updateMangaLastChapter
                         remoteManga.lastChapterReadURL = localManga.lastChapterReadURL
@@ -405,7 +401,7 @@ class SyncManager {
                             this.setToRemote(localManga, mutatedKey)
                         }, later)
                     } else if(e instanceof Error) {
-                        console.error(`[SYNC-${storage.constructor.name.replace('Storage', '')}] ${e.message}`)
+                        debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] ${e.message}`)
                     }
                 })
             }

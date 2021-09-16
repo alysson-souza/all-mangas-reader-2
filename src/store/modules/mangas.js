@@ -130,7 +130,6 @@ const actions = {
     async addManga({ dispatch, commit }, {manga, fromSync}) {
         await storedb.storeManga(manga);
         if(!fromSync) {
-            console.log('set to remote addManga')
             if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
             await syncManager.setToRemote(manga, 'ts')
         }
@@ -241,7 +240,6 @@ const actions = {
         commit('resetManga', message);
         let mg = state.all.find(manga => manga.key === key);
         dispatch('findAndUpdateManga', mg);
-        console.log('set to remote from reset()')
         await syncManager.setToRemote(mg, 'ts')
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();
@@ -399,7 +397,6 @@ const actions = {
                             if (posNew !== -1 && (message.fromSite || (posNew < posOld || posOld === -1))) {
                                 commit('updateMangaLastChapter', { key: mg.key, obj: message });
                                 if(!message.isSync || !message.fromSite) {
-                                    console.log('set to remote from consult manga')
                                     if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
                                     await syncManager.setToRemote(mg, 'ts')
                                 }
@@ -416,7 +413,6 @@ const actions = {
                 if (message.fromSite || (posNew < posOld || posOld === -1)) {
                     commit('updateMangaLastChapter', { key: mg.key, obj: message });
                     if(!message.isSync || !message.fromSite) {
-                        console.log('set to remote from consult manga cond2')
                         if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
                         await syncManager.setToRemote(mg, 'ts')
                     }
