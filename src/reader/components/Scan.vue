@@ -23,7 +23,7 @@
             {{ i18n('reader_context_menu_copy_url') }}
           </v-list-item-title>
         </v-list-item>
-        <v-list-item link v-if="isSecureContext">
+        <v-list-item link>
           <v-list-item-title @click="copyIMG">
             {{ i18n('reader_context_menu_copy_img') }}
           </v-list-item-title>
@@ -133,9 +133,6 @@ export default {
       if (sc) return sc.note
       return undefined
     },
-    isSecureContext() {
-      return window.isSecureContext
-    }
   },
   watch: {
     /* watch if loading, error or src changed, reload image */
