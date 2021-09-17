@@ -21,6 +21,8 @@ class HandleMisc {
                 });
             case "reloadStats":
                 return Promise.resolve(/*statsEvents.reloadStats()*/)
+            case "fetchImage":
+                return window['AMR_STORE'].dispatch('fetchImage', message)
         }
     }
 }

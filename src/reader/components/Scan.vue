@@ -59,6 +59,7 @@
 </template>
 
 <script>
+import browser from "webextension-polyfill";
 import bookmarks from '../state/bookmarks'
 import { scansProvider } from '../helpers/ScansProvider'
 import EventBus from '../helpers/EventBus'
@@ -171,9 +172,7 @@ export default {
           })
     },
     async imageToBlob(imageURL) {
-      const resp = await fetch(imageURL)
-      const blob = await resp.blob()
-      const bs64 = await this.blobToBase64(blob)
+      const bs64 = await browser.runtime.sendMessage({action: 'fetchImage', imageURL})
       const img = new Image()
       const c = document.createElement("canvas");
       const ctx = c.getContext("2d");
@@ -186,14 +185,6 @@ export default {
         }
         img.src = bs64
       })
-    },
-    
-    blobToBase64(blob) {
-      return new Promise((resolve, _) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result);
-        reader.readAsDataURL(blob);
-      });
     },
     /* check if we need to fit width */
     resizeW() {
