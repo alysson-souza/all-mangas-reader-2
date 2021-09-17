@@ -818,7 +818,7 @@ const actions = {
         const resp = await axios.get(imageURL, {responseType: 'arraybuffer'})
         const raw = new Buffer.from(resp.data).toString('base64');
         return "data:" + resp.headers["content-type"] + ";base64,"+raw;
-    }
+    },
 }
 
 /**
