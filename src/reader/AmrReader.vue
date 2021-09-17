@@ -538,12 +538,7 @@
   import ShortcutsPopup from "./components/ShortcutsPopup";
   import SocialBar from "./components/SocialBar";
   import { THINSCAN } from '../amr/options';
-  import mimedb from 'mime-db';
-  import { saveAs } from 'file-saver';
-  import * as zip from "@zip.js/zip.js";
-  zip.configure({
-    useWebWorkers: false
-  })
+
   /** Possible values for resize (readable), the stored value is the corresponding index */
   const resize_values = ['width', 'height', 'container', 'none']
 
@@ -908,7 +903,10 @@
         if (await this.$refs.wizdialog.confirm(
           this.i18n("list_mg_act_delete"),
           this.i18n("list_mg_delete_question", this.manga.name, mirrorImpl.get().mirrorName))) {
-          await util.deleteManga()
+            browser.runtime.sendMessage({
+              action: 'deleteManga',
+              key: this.mangaInfos.key
+            })
           this.mangaExists = false
         }
       },
@@ -1354,32 +1352,12 @@
       },
       async DownloadChapter() {
         this.zip = true
-        const urls = this.$refs.reader.scansState.scans.map(ele => ele.scan.currentSrc).reverse()
-        const chapterName = this.pageData.currentChapter
-        const seriesName = this.mangaInfos && this.mangaInfos.displayName ? this.mangaInfos.displayName : this.manga.name
-        // setup zip
-        const blobWriter = new zip.BlobWriter("application/zip");
-        const writer = new zip.ZipWriter(blobWriter);
-        for(const [i, url] of urls.entries()) {
-          let ext = '.jpg'
-          const res = await fetch(url).catch(e=> this.zip = false)
-          const content = await res.blob().catch(e=> this.zip = false)
-          const mime = res.headers.get('content-type')
-          if(mime.indexOf('image') > -1) {
-            if(mimedb[mime].extensions) {
-              ext = mimedb[mime].extensions[0]
-            } else {
-              const match = url.match(/(\.\w{2,4})(?![^?])/)
-              if(match) {
-                ext = match[1].replace('.', '')
-              }
-            }
-          }
-          await writer.add(String(i+1).padStart(3, '0') + '.' + ext, new zip.BlobReader(content))
-        }
-        const blob = await blobWriter.getData();
-
-        saveAs(blob, `${seriesName} - ${chapterName}.cbz`)
+        await browser.runtime.sendMessage({
+            action: "DownloadChapter",
+            urls: this.$refs.reader.scansState.scans.map(ele => ele.scan.currentSrc).reverse(),
+            chapterName: this.pageData.currentChapter,
+            seriesName: this.mangaInfos && this.mangaInfos.displayName ? this.mangaInfos.displayName : this.manga.name
+        }).catch(() => this.zip = false)
         this.zip = false
       },
       changeMaxWidth(type) {

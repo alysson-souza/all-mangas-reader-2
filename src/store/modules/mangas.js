@@ -11,6 +11,9 @@ import amrUpdater from '../../amr/amr-updater';
 import iconHelper from '../../amr/icon-helper';
 import * as syncUtils from '../../amr/sync/utils';
 import { getSyncManager } from '../../amr/sync/sync-manager'
+import axios from 'axios';
+import {Buffer} from 'buffer'
+
 let syncManager;
 // @TODO replace with actual error
 // actually have specific meaning, does not get saved to db
@@ -810,7 +813,12 @@ const actions = {
     },
     clearMangasSelect({ commit }) {
         commit("clearSelection");
-    }
+    },
+    async fetchImage({}, {imageURL}) {
+        const resp = await axios.get(imageURL, {responseType: 'arraybuffer'})
+        const raw = new Buffer.from(resp.data).toString('base64');
+        return "data:" + resp.headers["content-type"] + ";base64,"+raw;
+    },
 }
 
 /**
