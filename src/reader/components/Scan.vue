@@ -23,7 +23,7 @@
             {{ i18n('reader_context_menu_copy_url') }}
           </v-list-item-title>
         </v-list-item>
-        <v-list-item link>
+        <v-list-item link v-if="isSecureContext">
           <v-list-item-title @click="copyIMG">
             {{ i18n('reader_context_menu_copy_img') }}
           </v-list-item-title>
@@ -59,17 +59,10 @@
 </template>
 
 <script>
-import browser from 'webextension-polyfill'
-
-import mirrorImpl from '../state/mirrorimpl'
-import options from '../state/options'
 import bookmarks from '../state/bookmarks'
-
 import { scansProvider } from '../helpers/ScansProvider'
-import util from '../helpers/util'
 import EventBus from '../helpers/EventBus'
 import i18n from '../../amr/i18n'
-
 import { i18nmixin } from '../../mixins/i18n-mixin'
 
 export default {
@@ -139,6 +132,9 @@ export default {
       if (sc) return sc.note
       return undefined
     },
+    isSecureContext() {
+      return window.isSecureContext
+    }
   },
   watch: {
     /* watch if loading, error or src changed, reload image */
@@ -174,22 +170,30 @@ export default {
             this.snackbarShow = true
           })
     },
-    imageToBlob(imageURL) {
-      const img = new Image;
+    async imageToBlob(imageURL) {
+      const resp = await fetch(imageURL)
+      const blob = await resp.blob()
+      const bs64 = await this.blobToBase64(blob)
+      const img = new Image()
       const c = document.createElement("canvas");
       const ctx = c.getContext("2d");
-      img.crossOrigin = "";
-      img.src = imageURL;
       return new Promise(resolve => {
         img.onload = function () {
           c.width = this.naturalWidth;
           c.height = this.naturalHeight;
           ctx.drawImage(this, 0, 0);
-          c.toBlob((blob) => {
-            resolve(blob)
-          }, "image/png", 1);
-        };
+          c.toBlob(resolve)
+        }
+        img.src = bs64
       })
+    },
+    
+    blobToBase64(blob) {
+      return new Promise((resolve, _) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.readAsDataURL(blob);
+      });
     },
     /* check if we need to fit width */
     resizeW() {
