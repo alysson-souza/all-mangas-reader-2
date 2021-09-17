@@ -416,37 +416,45 @@ export default {
      * Mark last chapter as read
      */
     markAsRead() {
-      this.$store.dispatch("readManga", {
+      browser.runtime.sendMessage({ 
+        action: 'readManga',
         url: this.manga.url,
         mirror: this.manga.mirror,
         lastChapterReadName: this.manga.listChaps[0][0],
         lastChapterReadURL: this.manga.listChaps[0][1],
         name: this.manga.name,
         language: this.manga.language
-      });
+      })
     },
     /**
      * Reset manga reading to first chapter for the group of mangas
      */
     resetManga() {
-      this.$store.dispatch("resetManga", { url: this.manga.url, language: this.manga.language })
+      browser.runtime.sendMessage({
+        action: "resetManga",
+        url: this.manga.url,
+        language: this.manga.language
+      })
     },
     /**
      * Toggle following manga updates for this group
      */
     toggleFollow: function() {
-      this.$store.dispatch("markMangaReadTop", {
+      browser.runtime.sendMessage({
+        action: "markMangaReadTop",
         url: this.manga.url,
         language: this.manga.language,
         updatesamemangas: true,
         read: this.manga.read == 1 ? 0 : 1
-      });
+      })
+
     },
     /**
      * Stop updating (looking for new chapters) mangas in this group
      */
     toggleUpdate: function() {
-      this.$store.dispatch("markMangaUpdateTop", {
+      browser.runtime.sendMessage({
+        action: "markMangaUpdateTop",
         url: this.manga.url,
         language: this.manga.language,
         updatesamemangas: true,
@@ -500,11 +508,9 @@ export default {
     /**
      * Deletes a manga
      */
-    trash() {
+    async trash() {
+      browser.runtime.sendMessage({ action: "deleteManga", key: this.manga.key })
       this.deleteManga = false;
-      this.$store.dispatch("deleteManga", {
-        key: this.manga.key
-      });
     },
     /** Read a manga in another language */
     async readMangaInLang(lang) {
@@ -517,13 +523,15 @@ export default {
       });
     },
     deleteCategory: function(cat) {
-      this.$store.dispatch("removeCategoryFromManga", {
+      browser.runtime.sendMessage({
+        action: "removeCategoryFromManga",
         key: this.manga.key,
         name: cat
       })
     },
     addCategory: function() {
-      this.$store.dispatch("addCategoryToManga", {
+      browser.runtime.sendMessage({
+        action: "addCategoryToManga",
         key: this.manga.key,
         name: this.newCat
       })

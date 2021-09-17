@@ -908,7 +908,10 @@
         if (await this.$refs.wizdialog.confirm(
           this.i18n("list_mg_act_delete"),
           this.i18n("list_mg_delete_question", this.manga.name, mirrorImpl.get().mirrorName))) {
-          await util.deleteManga()
+            browser.runtime.sendMessage({
+              action: 'deleteManga',
+              key: this.mangaInfos.key
+            })
           this.mangaExists = false
         }
       },
