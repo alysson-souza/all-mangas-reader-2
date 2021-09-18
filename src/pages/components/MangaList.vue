@@ -4,24 +4,13 @@
     <v-row no-gutters>
       <!-- Categories -->
       <v-col cols="12">
-        <Categories :categories="categories" :static-cats="false" :delegate-delete="false" />
+        
       </v-col>
       <!-- Filters -->
       <v-col cols="12" class="d-flex align-center filter-container">
-        <v-card v-if="visMangas.length" class="hover-card">
-          <v-tooltip v-if="visNewMangas.length" top content-class="icon-ttip">
-            <template v-slot:activator="{ on }">
-              <v-icon v-on="on" @click="markAllAsRead()">mdi-eye</v-icon>
-            </template>
-            <span>{{i18n("list_global_read")}}</span>
-          </v-tooltip>
-          <v-tooltip top content-class="icon-ttip">
-            <template v-slot:activator="{ on }">
-              <v-icon v-on="on" @click="deleteAll()">mdi-delete</v-icon>
-            </template>
-            <span>{{i18n("list_global_delete")}}</span>
-          </v-tooltip>
-        </v-card>
+        <v-card class="hover-card">
+          <Categories v-on="on" :categories="categories" :static-cats="false" :delegate-delete="false" />
+        </v-card>      
         <v-card v-if="visMangas.length" class="hover-card">
           <v-icon class="filters-icon">mdi-filter</v-icon>
           <v-tooltip top content-class="icon-ttip">
@@ -72,6 +61,20 @@
               <v-icon v-on="on" @click="showMirrorSelection = !showMirrorSelection" :class="['amr-filter', {activated: showMirrorSelection}]">mdi-image-multiple-outline</v-icon>
             </template>
             <span>{{i18n("list_mirror_filter_icon")}}</span>
+          </v-tooltip>
+        </v-card>
+        <v-card v-if="visMangas.length" class="hover-card">
+          <v-tooltip v-if="visNewMangas.length" top content-class="icon-ttip">
+            <template v-slot:activator="{ on }">
+              <v-icon v-on="on" @click="markAllAsRead()">mdi-eye</v-icon>
+            </template>
+            <span>{{i18n("list_global_read")}}</span>
+          </v-tooltip>
+          <v-tooltip top content-class="icon-ttip">
+            <template v-slot:activator="{ on }">
+              <v-icon v-on="on" @click="deleteAll()">mdi-delete</v-icon>
+            </template>
+            <span>{{i18n("list_global_delete")}}</span>
           </v-tooltip>
         </v-card>
       </v-col>

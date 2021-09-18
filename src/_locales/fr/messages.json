@@ -517,6 +517,10 @@
     "message": "Mirror $1 is no longer available. Please consider using different mirror to read this manga",
     "description": "Tooltip on mirror icon, that no longer supported by AMR."
   },
+  "list_cat_filter" : {
+    "message": "Selectionner les catégories à afficher",
+    "description": "Tooltip on the category button to display the list of categories"
+  },
   "list_cat_include_all": {
     "message": "Inclure toutes les catégories",
     "description": "Tooltip on eye button before categories to include all categories (change state to include for all)"
