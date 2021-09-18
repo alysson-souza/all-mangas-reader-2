@@ -5,26 +5,26 @@ class LocalStorage {
 
     /**
      * @param {StoreDB} indexedDb
-     * @param vuexStore
+     * @param dispatch
      */
-    constructor(indexedDb, vuexStore) {
+    constructor(indexedDb, dispatch) {
         this.indexedDb = indexedDb
-        this.vuexStore = vuexStore
+        this.dispatch = dispatch
     }
 
     async loadMangaList() {
         return this.indexedDb.getMangaList();
     }
     dispatch(key, payload) {
-        return this.vuexStore.dispatch(key, payload, true)
+        return this.dispatch(key, payload, true)
     }
     syncLocal(manga) {
         if(manga.delete === syncUtils.DELETED) {
-            return this.vuexStore.dispatch('deleteManga', { key: manga.key }, true)
+            return this.dispatch('deleteManga', { key: manga.key }, true)
         }
-        return this.vuexStore.dispatch('readManga', { ...manga, fromSite: 1, isSync: 1})
+        return this.dispatch('readManga', { ...manga, fromSite: 1, isSync: 1})
     }
 }
 
-export const createLocalStorage = (vuexStore) => new LocalStorage(storedb, vuexStore)
+export const createLocalStorage = (dispatch) => new LocalStorage(storedb, dispatch)
 

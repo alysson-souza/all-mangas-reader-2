@@ -428,7 +428,8 @@ export default {
       this.dialogAction = () => {
         self.showDialog = false
         self.visNewMangas.forEach(mg => {
-          self.$store.dispatch("readManga", {
+          browser.runtime.sendMessage({
+            action: "readManga",
             url: mg.url,
             mirror: mg.mirror,
             lastChapterReadName: mg.listChaps[0][0],
@@ -447,7 +448,8 @@ export default {
       this.dialogAction = () => {
         self.showDialog = false
         self.visMangas.forEach(mg => {
-          self.$store.dispatch("deleteManga", {
+          browser.runtime.sendMessage({
+            action: "deleteManga",
             key: mg.key
           })
         })

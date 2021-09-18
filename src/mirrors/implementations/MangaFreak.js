@@ -3,9 +3,9 @@ if (typeof registerMangaObject === 'function') {
         mirrorName: "Manga-Freak",
         canListFullMangas: false,
         mirrorIcon: "mangafreak.png",
-        domains: ["w11.mangafreak.net"],
+        domains: ["w11.mangafreak.net", "w12.mangafreak.net"],
         languages: "en",
-        home: "https://w11.mangafreak.net",
+        home: "https://w12.mangafreak.net",
         chapter_url: /\/Read.*/g,
 
         getMangaList: async function (search) {

@@ -59,17 +59,11 @@
 </template>
 
 <script>
-import browser from 'webextension-polyfill'
-
-import mirrorImpl from '../state/mirrorimpl'
-import options from '../state/options'
+import browser from "webextension-polyfill";
 import bookmarks from '../state/bookmarks'
-
 import { scansProvider } from '../helpers/ScansProvider'
-import util from '../helpers/util'
 import EventBus from '../helpers/EventBus'
 import i18n from '../../amr/i18n'
-
 import { i18nmixin } from '../../mixins/i18n-mixin'
 
 export default {
@@ -174,21 +168,19 @@ export default {
             this.snackbarShow = true
           })
     },
-    imageToBlob(imageURL) {
-      const img = new Image;
+    async imageToBlob(imageURL) {
+      const bs64 = await browser.runtime.sendMessage({action: 'fetchImage', imageURL})
+      const img = new Image()
       const c = document.createElement("canvas");
       const ctx = c.getContext("2d");
-      img.crossOrigin = "";
-      img.src = imageURL;
       return new Promise(resolve => {
         img.onload = function () {
           c.width = this.naturalWidth;
           c.height = this.naturalHeight;
           ctx.drawImage(this, 0, 0);
-          c.toBlob((blob) => {
-            resolve(blob)
-          }, "image/png", 1);
-        };
+          c.toBlob(resolve)
+        }
+        img.src = bs64
       })
     },
     /* check if we need to fit width */
