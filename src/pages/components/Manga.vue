@@ -197,7 +197,7 @@
     </v-row>
     <v-row v-if="expanded" dense>
       <!-- Categories Menu -->
-      <v-col cols="3" class="d-flex justify-center" v-if="categories.length">
+      <v-col :cols="submenu_col" class="d-flex justify-center" v-if="categories.length">
         <v-menu offset-x :close-on-content-click="false" max-height="196">
           <template v-slot:activator="{on, attrs}">
             <v-btn
@@ -245,7 +245,7 @@
         </v-menu>
       </v-col>
       <!-- Updates Menu -->
-      <v-col cols="3" class="d-flex justify-center">
+      <v-col :cols="submenu_col" class="d-flex justify-center">
         <v-menu offset-x :close-on-content-click="false" max-height="196">
           <template v-slot:activator="{on, attrs}">
             <v-btn
@@ -314,7 +314,7 @@
         </v-menu>
       </v-col>
       <!-- More actions Menu -->
-      <v-col cols="3" class="d-flex justify-center">
+      <v-col :cols="submenu_col" class="d-flex justify-center">
         <v-menu offset-x :close-on-content-click="false" max-height="196">
           <template v-slot:activator="{on, attrs}">
             <v-btn
@@ -382,7 +382,7 @@
 
 
       <!-- Manage manga bookmarks -->
-      <v-col cols="3" class="d-flex justify-center" v-if="bookmarks.length">
+      <v-col :cols="submenu_col" class="d-flex justify-center" v-if="bookmarks.length">
         <v-menu offset-x :close-on-content-click="false" max-height="196">
           <template v-slot:activator="{on, attrs}">
             <v-btn
@@ -434,7 +434,6 @@ import browser from "webextension-polyfill";
 import * as utils from "../utils";
 import * as amrutils from "../../amr/utils";
 import Flag from "./Flag";
-import Categories from "./Categories";
 
 export default {
   data() {
@@ -556,6 +555,13 @@ export default {
         cols = cols - 2
       }
       return cols
+    },
+    submenu_col() {
+      if(this.categories.length && this.bookmarks.length) {
+        return '3'
+      } else {
+        return '4'
+      }
     },
     isDarkText: function() {
       return utils.darkText(this.manga, this.options)
