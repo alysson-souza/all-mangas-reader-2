@@ -726,7 +726,7 @@ export default {
         name: cat
       })
     },
-    addCategory: function() {
+    addCategory: function(cat) {
       browser.runtime.sendMessage({
         action: "addCategoryToManga",
         key: this.manga.key,
