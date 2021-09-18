@@ -3,11 +3,11 @@
     <!-- Categories and filters -->
     <v-row no-gutters>
       <!-- Categories -->
-      <v-col cols="6" lg="9">
+      <v-col cols="12">
         <Categories :categories="categories" :static-cats="false" :delegate-delete="false" />
       </v-col>
       <!-- Filters -->
-      <v-col cols="6" lg="3" class="d-flex align-center justify-end filter-container">
+      <v-col cols="12" class="d-flex align-center filter-container">
         <v-card v-if="visMangas.length" class="hover-card">
           <v-tooltip v-if="visNewMangas.length" top content-class="icon-ttip">
             <template v-slot:activator="{ on }">
