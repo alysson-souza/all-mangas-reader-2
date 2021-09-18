@@ -5,12 +5,16 @@ import mirrorsImpl from '../../amr/mirrors-impl';
 import notifications from '../../amr/notifications';
 import statsEvents from '../../amr/stats-events';
 import * as utils from "../../amr/utils";
+import { debug } from "../../amr/utils"
 import samples from "../../amr/samples";
 import amrUpdater from '../../amr/amr-updater';
 import iconHelper from '../../amr/icon-helper';
 import * as syncUtils from '../../amr/sync/utils';
-import { getSyncManager } from '../../amr/sync/sync-manager';
-const syncManager = getSyncManager()
+import { getSyncManager } from '../../amr/sync/sync-manager'
+import axios from 'axios';
+import {Buffer} from 'buffer'
+
+let syncManager;
 // @TODO replace with actual error
 // actually have specific meaning, does not get saved to db
 const ABSTRACT_MANGA_MSG = "abstract_manga";
@@ -73,6 +77,15 @@ const getters = {
             }
         }
         return nb;
+    },
+
+    syncOptions: (state, getters, rootState) => {
+        return Object.keys(rootState.options)
+        .filter(x=>x.toLowerCase().indexOf('sync') > -1)
+        .reduce((obj, key) => {
+            obj[key] = rootState.options[key]
+            return obj
+        }, {})
     }
 }
 
@@ -87,13 +100,43 @@ const actions = {
             commit('setMangas', mangasdb.map(mg => new Manga(mg)));
         })
     },
+    async initSync({commit, rootState, dispatch, getters}) {
+        // starting manager
+        syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
+        syncManager.start()
+    },
+    async updateSync({getters, rootState, dispatch}, backgroundjs = false) {
+        if(backgroundjs) {
+            // wait 1s, helps commit from popup.js propagate.
+            setTimeout(() => {
+                if(syncManager) {
+                    syncManager.stop()
+                    syncManager.init(getters.syncOptions, rootState, dispatch)
+                    syncManager.start()
+                } else {
+                    syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
+                    syncManager.start()
+                }
+            }, 1000)
+        } else {
+            if(syncManager) {
+                syncManager.init(getters.syncOptions, rootState, dispatch)
+            } else {
+                syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
+            }
+        }
+    },
     /**
      * Add a manga in the store
      * @param {*} param0
      * @param {*} manga
      */
-    async addManga({ dispatch, commit }, manga) {
+    async addManga({ dispatch, commit }, {manga, fromSync}) {
         await storedb.storeManga(manga);
+        if(!fromSync) {
+            if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
+            await syncManager.setToRemote(manga, 'ts')
+        }
         try {
             dispatch("setOption", {key: "updated", value: Date.now()});
             dispatch("setOption", {key: "changesSinceSync", value: 1});
@@ -117,6 +160,18 @@ const actions = {
             console.error(e)
         }
     },
+    async setMangaTsOpts ({commit, dispatch}, manga, date) {
+        if(manga) {
+            const mg = state.all.find(m => m.key === manga.key)
+            commit('setMangaTsOpts', mg.key, date)
+        } else {
+            const mgs = state.all.filter(m => typeof(m.tsOpts) === 'undefined')
+            for(const mg of mgs) {
+                commit('setMangaTsOpts', mg.key)
+                await dispatch('findAndUpdateManga', mg);
+            }
+        }
+    },
     /**
      * Change manga display mode
      * @param {*} vuex object
@@ -126,9 +181,12 @@ const actions = {
         let key = utils.mangaKey(message.url, message.mirror, message.language);
         message.key = key
         const mg = state.all.find(manga => manga.key === key)
-        commit('setMangaDisplayMode', message);
+        commit('setMangaDisplayMode', message, fromSync);
         dispatch('findAndUpdateManga', mg);
-        if(!fromSync) await syncManager.setToRemote(mg, 'display')
+        if(!fromSync) {
+            if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
+            await syncManager.setToRemote(mg, 'display')
+        }
     },
     /**
      * Change manga reader layout mode
@@ -139,9 +197,12 @@ const actions = {
         let key = utils.mangaKey(message.url, message.mirror, message.language);
         message.key = key
         const mg = state.all.find(manga => manga.key === key)
-        commit('setMangaLayoutMode', message);
+        commit('setMangaLayoutMode', message, fromSync);
         dispatch('findAndUpdateManga', mg);
-        if(!fromSync) await syncManager.setToRemote(mg, 'layout')
+        if(!fromSync) {
+            if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
+            await syncManager.setToRemote(mg, 'layout')
+        }
     },
     /**
      * Change manga reader webtoon mode
@@ -152,9 +213,12 @@ const actions = {
         let key = utils.mangaKey(message.url, message.mirror, message.language);
         message.key = key
         const mg = state.all.find(manga => manga.key === key)
-        commit('setMangaWebtoonMode', message);
+        commit('setMangaWebtoonMode', message, fromSync);
         dispatch('findAndUpdateManga', mg);
-        if(!fromSync) await syncManager.setToRemote(mg, 'webtoon')
+        if(!fromSync) {
+            if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
+            await syncManager.setToRemote(mg, 'webtoon')
+        }
     },
     /**
      * Change manga display name
@@ -163,9 +227,12 @@ const actions = {
      */
     async setMangaDisplayName({ dispatch, commit, getters }, message, fromSync) {
         const mg = state.all.find(manga => manga.key === message.key)
-        commit('setMangaDisplayName', message);
+        commit('setMangaDisplayName', message, fromSync);
         dispatch('findAndUpdateManga', mg);
-        if(!fromSync) await syncManager.setToRemote(mg, 'displayName')
+        if(!fromSync) {
+            if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
+            await syncManager.setToRemote(mg, 'displayName')
+        }
     },
     /**
      * Reset manga reading for a manga to first chapter
@@ -198,7 +265,6 @@ const actions = {
         commit('createManga', message);
         const key = utils.mangaKey(message.url, message.mirror, message.language);
         const mg = state.all.find(manga => manga.key === key);
-
         try {
             await dispatch("refreshLastChapters", message);
         } catch (e) {
@@ -211,8 +277,8 @@ const actions = {
             console.error(e)
         }
 
-        utils.debug("saving new manga to database");
-        dispatch('addManga', mg);
+        debug("saving new manga to database");
+        dispatch('addManga', {manga: mg, fromSync: message.isSync});
         // update native language categories
         dispatch("updateLanguageCategories")
     },
@@ -231,7 +297,7 @@ const actions = {
         }
         const mg = state.all.find(manga => manga.key === key);
         if (mg === undefined) {
-            utils.debug("readManga of an unlisted manga --> create it");
+            console.error("readManga of an unlisted manga --> create it");
             await dispatch("createUnlistedManga", message);
             amrUpdater.refreshBadgeAndIcon();
             return;
@@ -246,7 +312,7 @@ const actions = {
         dispatch('findAndUpdateManga', mg);
 
         // Ignore sync updates for stats
-        if (message.isSync !== 1) {
+        if (!message.isSync && !message.fromSite) {
             // statsEvents.trackReadManga(mg);
         }
         // refresh badge
@@ -256,13 +322,13 @@ const actions = {
      * Get list of chapters for a manga
      */
     async getMangaListOfChapters({ dispatch, commit, getters }, manga) {
-        utils.debug("getMangaListOfChapters : get implementation of " + manga.mirror);
+        debug("getMangaListOfChapters : get implementation of " + manga.mirror);
         const impl = await mirrorsImpl.getImpl(manga.mirror);
         if (!impl || impl.disabled) {
             await dispatch("disabledManga", manga);
             throw new Error(`Failed to get implementation for mirror ${manga.mirror}`);
         }
-        utils.debug("getMangaListOfChapters : implementation found, get list of chapters for manga " + manga.name + " key " + manga.key);
+        debug("getMangaListOfChapters : implementation found, get list of chapters for manga " + manga.name + " key " + manga.key);
         return impl.getListChaps(manga.url);
     },
 
@@ -284,7 +350,7 @@ const actions = {
      * @param {*} vuex object
      * @param {*} message message contains info on a manga and flag fromSite
      */
-    async consultManga({ dispatch, commit, getters }, message) {
+    async consultManga({ dispatch, commit, getters, rootState }, message) {
         let key = utils.mangaKey(message.url, message.mirror, message.language),
             posOld = -1,
             posNew = -1,
@@ -321,7 +387,7 @@ const actions = {
                                 // set current list chaps to the right one
                                 listChaps = listChaps[mg.language]
                             } else {
-                                utils.debug("required language " + mg.language + " does not exist in resulting list of chapters for manga " + mg.name + " on " + mg.mirror + ". Existing languages are : " + Object.keys(listChaps).join(","))
+                                debug("required language " + mg.language + " does not exist in resulting list of chapters for manga " + mg.name + " on " + mg.mirror + ". Existing languages are : " + Object.keys(listChaps).join(","))
                             }
                         }
                         if (listChaps.length > 0) {
@@ -334,8 +400,10 @@ const actions = {
                             }
                             if (posNew !== -1 && (message.fromSite || (posNew < posOld || posOld === -1))) {
                                 commit('updateMangaLastChapter', { key: mg.key, obj: message });
-                                console.log('from the right place')
-                                syncManager.setToRemote(mg, 'ts')
+                                if(!message.isSync) {
+                                    if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
+                                    await syncManager.setToRemote(mg, 'ts')
+                                }
                             }
                         }
                         resolve();
@@ -348,8 +416,10 @@ const actions = {
             } else {
                 if (message.fromSite || (posNew < posOld || posOld === -1)) {
                     commit('updateMangaLastChapter', { key: mg.key, obj: message });
-                    console.log('from the right place')
-                    syncManager.setToRemote(mg, 'ts')
+                    if(!message.isSync) {
+                        if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
+                        await syncManager.setToRemote(mg, 'ts')
+                    }
                 }
                 resolve();
             }
@@ -367,7 +437,7 @@ const actions = {
             throw new Error("Refreshing " + mg.key + " has been timeout... seems unreachable...");
         }, 60000);
 
-        utils.debug("waiting for manga list of chapters for " + mg.name + " on " + mg.mirror)
+        debug("waiting for manga list of chapters for " + mg.name + " on " + mg.mirror)
         let listChaps = await dispatch("getMangaListOfChapters", mg)
         clearTimeout(timeOutRefresh);
 
@@ -404,13 +474,12 @@ const actions = {
 
             // Remove the manga --> will always fail because no language specified
             dispatch("deleteManga", mg)
-
             // Fail for current (deleted) manga
             // actually have specific meaning, does not get saved to db
             throw ABSTRACT_MANGA_MSG
         }
 
-        utils.debug("chapters in multiple languages found for " + mg.name + " on " + mg.mirror + " --> select language " + mg.language)
+        debug("chapters in multiple languages found for " + mg.name + " on " + mg.mirror + " --> select language " + mg.language)
         if (listChaps[mg.language] && listChaps[mg.language].length > 0) {
             // update list of existing languages
             const listOfLanguages = Object.keys(listChaps).join(",");
@@ -419,7 +488,7 @@ const actions = {
             return listChaps[mg.language]
         }
 
-        utils.debug("required language " + mg.language + " does not exist in resulting list of chapters. Existing languages are : " + Object.keys(listChaps).join(","))
+        debug("required language " + mg.language + " does not exist in resulting list of chapters. Existing languages are : " + Object.keys(listChaps).join(","))
         return listChaps;
     },
 
@@ -445,13 +514,13 @@ const actions = {
 
         const oldLastChap = (typeof mg.listChaps[0] === 'object' ? mg.listChaps[0][1] : undefined);
 
-        utils.debug(listChaps.length + " chapters found for " + mg.name + " on " + mg.mirror)
+        debug(listChaps.length + " chapters found for " + mg.name + " on " + mg.mirror)
         commit('updateMangaListChaps', { key: mg.key, listChaps: listChaps });
 
         const newLastChap = mg.listChaps[0][1];
 
         if ((newLastChap !== oldLastChap) && (oldLastChap !== undefined)) {
-            if(!fromSync) notifications.notifyNewChapter(mg);
+            if(!fromSync && !message.isSync) notifications.notifyNewChapter(mg);
             commit('updateMangaLastChapTime', { key: mg.key });
         }
 
@@ -474,11 +543,11 @@ const actions = {
             return;
         }
 
-        console.error("Manga " + mg.name + " on " + mg.mirror + " has a lastChapterReadURL set to " + mg.lastChapterReadURL + " but this url can no more be found in the chapters list. First url in list is " + mg.listChaps[0][1] + ". ");
+        debug("Manga " + mg.name + " on " + mg.mirror + " has a lastChapterReadURL set to " + mg.lastChapterReadURL + " but this url can no more be found in the chapters list. First url in list is " + mg.listChaps[0][1] + ". ");
         const probable = utils.findProbableChapter(mg.lastChapterReadURL, mg.listChaps);
         if (probable !== undefined) {
             const [name, url] = probable;
-            console.log(`Found probable chapter : ${name} : ${url}`)
+            debug(`Found probable chapter : ${name} : ${url}`)
             commit('updateMangaLastChapter', {
                 key: mg.key, obj: {
                     lastChapterReadURL: url,
@@ -489,7 +558,7 @@ const actions = {
             return;
         }
 
-        console.log("No list entry or multiple list entries match the known last chapter. Reset to first chapter");
+        debug("No list entry or multiple list entries match the known last chapter. Reset to first chapter");
         commit('updateMangaLastChapter', {
             key: mg.key, obj: {
                 lastChapterReadURL: listChaps[listChaps.length - 1][1],
@@ -519,14 +588,14 @@ const actions = {
         }
         if(isConverting) timeout = 60*1000
         if(timeout > 0) {
-            utils.debug('Skipped chapter lists update')
+            debug('Skipped chapter lists update')
             setTimeout(() => {
                actions.updateChaptersLists({ dispatch, commit, getters, state, rootState }, {force} = {force: true})
             }, timeout);
             return
         }
         dispatch("setOption", {key: "isUpdatingChapterLists", value: 1}); // Set watcher
-        utils.debug('Starting chapter lists update')
+        debug('Starting chapter lists update')
         let tsstopspin;
         if (rootState.options.refreshspin === 1) {
             // spin the badge
@@ -580,15 +649,15 @@ const actions = {
         let mirrorTasks2 = Object.values(mirrorTasks).map(list => {
             return () => new Promise(async (resolve) => {
                 for (let seriesUpdate of list) {
-                    await seriesUpdate().catch(utils.debug)
+                    await seriesUpdate().catch(debug)
                 }
                 resolve()
             })
         })
 
-        await Promise.all(mirrorTasks2.map(t => t())).catch(utils.debug)
+        await Promise.all(mirrorTasks2.map(t => t())).catch(debug)
         dispatch("setOption", {key: "isUpdatingChapterLists", value: 0}); // Unset watcher when done
-        utils.debug('Done updating chapter lists')
+        debug('Done updating chapter lists')
         if (rootState.options.refreshspin === 1) {
             //stop the spinning
             iconHelper.stopSpinning();
@@ -608,9 +677,12 @@ const actions = {
             mg = state.all.find(manga => manga.key === key);
         if (mg !== undefined) {
             message.key = key
-            commit('setMangaReadTop', message, mg);
+            commit('setMangaReadTop', message, fromSync);
             dispatch('findAndUpdateManga', mg);
-            if(!fromSync) await syncManager.setToRemote(mg, 'read')
+            if(!fromSync) {
+                if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
+                await syncManager.setToRemote(mg, 'read')
+            }
         }
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();
@@ -625,9 +697,12 @@ const actions = {
             mg = state.all.find(manga => manga.key === key);
         if (mg !== undefined) {
             message.key = key
-            commit('setMangaUpdateTop', message);
+            commit('setMangaUpdateTop', message, fromSync);
             dispatch('findAndUpdateManga', mg);
-            if(!fromSync) await syncManager.setToRemote(mg, 'update')
+            if(!fromSync) {
+                if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
+                await syncManager.setToRemote(mg, 'update')
+            }
         }
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();
@@ -658,7 +733,10 @@ const actions = {
         if (mg !== undefined) {
             commit('deleteManga', message.key);
             storedb.deleteManga(message.key);
-            if(!fromSync) syncManager.deleteManga(key)
+            if(!fromSync) {
+                if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
+                await syncManager.deleteManga(message.key)
+            }
         }
         // refresh badge
         amrUpdater.refreshBadgeAndIcon();
@@ -670,7 +748,7 @@ const actions = {
      * @param {*} param0
      */
     importSamples({ dispatch }) {
-        utils.debug("Importing samples manga in AMR (" + samples.length + " mangas to import)");
+        debug("Importing samples manga in AMR (" + samples.length + " mangas to import)");
         for (let sample of samples) {
             sample.auto = true;
             dispatch("readManga", sample);
@@ -735,7 +813,12 @@ const actions = {
     },
     clearMangasSelect({ commit }) {
         commit("clearSelection");
-    }
+    },
+    async fetchImage({}, {imageURL}) {
+        const resp = await axios.get(imageURL, {responseType: 'arraybuffer'})
+        const raw = new Buffer.from(resp.data).toString('base64');
+        return "data:" + resp.headers["content-type"] + ";base64,"+raw;
+    },
 }
 
 /**
@@ -754,15 +837,23 @@ const mutations = {
     setMangas(state, mangas) {
         state.all = mangas
     },
+    setMangaTsOpts(state, key, date) {
+        let mg = state.all.find(manga => manga.key === key)
+        if (mg !== undefined) {
+            mg.tsOpts = date || Date.now()
+        }
+        
+    },
     /**
      * Change manga display mode
      * @param {*} state
      * @param {*} param1 url of the manga and display mode
      */
-    setMangaDisplayMode(state, { key, url, mirror, language, display }) {
+    setMangaDisplayMode(state, { key, url, mirror, language, display }, fromSync) {
         let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.display = display;
+            if(!fromSync) mg.tsOpts = Date.now()
         }
     },
     /**
@@ -770,10 +861,11 @@ const mutations = {
      * @param {*} state
      * @param {*} param1 url of the manga and layout mode
      */
-    setMangaLayoutMode(state, { key, url, mirror, language, layout }) {
+    setMangaLayoutMode(state, { key, url, mirror, language, layout }, fromSync) {
         let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.layout = layout;
+            if(!fromSync) mg.tsOpts = Date.now()
         }
     },
     /**
@@ -781,10 +873,11 @@ const mutations = {
      * @param {*} state
      * @param {*} param1 url of the manga and layout mode
      */
-    setMangaWebtoonMode(state, { key, url, mirror, language, webtoon }) {
+    setMangaWebtoonMode(state, { key, url, mirror, language, webtoon }, fromSync) {
         let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.webtoon = webtoon;
+            if(!fromSync) mg.tsOpts = Date.now()
         }
     },
     /**
@@ -792,10 +885,11 @@ const mutations = {
      * @param {*} state
      * @param {*} param1 url of the manga and layout mode
      */
-    setMangaDisplayName(state, { key, displayName }) {
+    setMangaDisplayName(state, { key, displayName }, fromSync) {
         let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.displayName = displayName;
+            if(!fromSync) mg.tsOpts = Date.now()
         }
     },
     /**
@@ -803,10 +897,11 @@ const mutations = {
      * @param {*} state
      * @param {*} param1 url of the manga and read top
      */
-    setMangaReadTop(state, { key, url, read, mirror, language }) {
+    setMangaReadTop(state, { key, url, read, mirror, language }, fromSync) {
         let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.read = read;
+            if(!fromSync) mg.tsOpts = Date.now()
         }
     },
     /**
@@ -814,10 +909,11 @@ const mutations = {
      * @param {*} state
      * @param {*} param1 url of the manga and update top
      */
-    setMangaUpdateTop(state, { key, url, update, mirror, language }) {
+    setMangaUpdateTop(state, { key, url, update, mirror, language }, fromSync) {
         let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.update = update;
+            if(!fromSync) mg.tsOpts = Date.now();
         }
     },
     /**

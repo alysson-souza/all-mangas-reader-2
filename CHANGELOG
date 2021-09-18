@@ -1,3 +1,41 @@
+### V2.3.24
+  Fixes:
+    * Fix for option to automatically add series when you read them
+    * Gist Sync should be working properly now (Credit @JiPai)
+    * Fixed copy image to clipboard (Credit: @JiPai)
+    
+  Mirror Fixes:
+    * Manga Freak
+    * Asura Scans - Will now give the amr loading screen for all pages, they have stopped being consistent for naming chapters
+    * Mangadex - Missed a few things from the api change
+
+### V2.3.23
+  New Features:
+    * Added right click context menu option to copy the image to clipboard, only works with png images
+
+  Changes:
+    * UI Improvemenets for the manga list (Credit @JiPai)
+    * UI Improvements for options page (Credit @JiPai)
+    * Added link in the supported mirrors option page to send you to the homepage for each site in a new tab
+
+  Fixes:
+    * Gist Sync description fixed for english language (Credit: @NoneDark)
+    * In extension downloads (updates and chapters) have been fixed in firefox (Credit: @JiPai)
+    * How sync worked has been rewritten to work more efficently and in some cases just work properly (Credit: @JiPai)
+
+  Mirror Fixes:
+    * Mangex has several fixes including a breaking api change (Credit: @JiPai)
+    * Leviatan Scans
+    * Manga Sushi
+    * Read Manga (Credit: @NoneDark)
+    * Small change to most Madara based mirrors to handle url format changes (ex between manga,manhua,comic,etc..)
+    * Asura Scans: Some series were not recognized due to url formatting
+    * Manga Cultivator
+    * LHTranslations: They are sticking with the new format so we have added support, all old entries will need re-added
+
+  New Mirrors:
+    * Leveler Scans (https://levelerscans.xyz/)
+
 ### V2.3.22
   New Features:
     * Added reload image option to right click context menu, this should be used for images that load but are corrupted

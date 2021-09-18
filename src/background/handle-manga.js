@@ -25,6 +25,7 @@ class HandleManga {
                 let mg = window['AMR_STORE'].state.mangas.all.find(manga => manga.key === key)
                 if (mg !== undefined) {
                     return Promise.resolve({
+                        key: mg.key,
                         read: mg.read, /* Read top */
                         display: mg.display, /* Display mode of the old reader */
                         layout: mg.layout, /* Layout for the new reader */
@@ -47,12 +48,14 @@ class HandleManga {
                 // call store method to update reading list appropriately
                 return window['AMR_STORE'].dispatch('readManga', message);
             case "deleteManga":
-                utils.debug("Delete manga key " + key);
-                return window['AMR_STORE'].dispatch('deleteManga', { key: key });
+                utils.debug("Delete manga key " + message.key);
+                return window['AMR_STORE'].dispatch('deleteManga', {key: message.key});
             case "getNextChapterImages", "getChapterData": //returns boolean telling if url is a chapter page, infos from page and list of images for prefetch of next chapter in content script
                 return this.getChapterData(message);
             case "markReadTop":
                 return window['AMR_STORE'].dispatch('markMangaReadTop', message);
+            case "markMangaUpdateTop":
+                return window['AMR_STORE'].dispatch('markMangaUpdateTop', message)
             case "setDisplayMode":
                 return window['AMR_STORE'].dispatch('setMangaDisplayMode', message);
             case "setLayoutMode":
@@ -64,6 +67,10 @@ class HandleManga {
             case "setMangaChapter":
                 return window['AMR_STORE'].dispatch('resetManga', message) // reset reading to first chapter
                     .then(() => window['AMR_STORE'].dispatch('readManga', message)); // set reading to current chapter
+            case "removeCategoryFromManga":
+                return window['AMR_STORE'].dispatch('removeCategoryFromManga', message)
+            case "addCategoryToManga":
+                return window['AMR_STORE'].dispatch('addCategoryToManga', message)
             case "importSamples":
                 return window['AMR_STORE'].dispatch("importSamples");
             case "refreshMangas":

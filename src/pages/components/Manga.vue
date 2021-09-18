@@ -50,7 +50,10 @@
               <!-- Display last update time -->
               <v-tooltip top content-class="icon-ttip">
                 <template v-slot:activator="{ on }">
-                    <v-icon small v-show="options.displastup === 1 && manga.upts != 0 && timeUpdated < 50" class="ml-1 mr-2" v-on="on">mdi-calendar-clock</v-icon>
+                    <v-card flat v-show="options.displastup === 1 && manga.upts != 0 && timeUpdated < 50" dark :class="color(0)" v-on="on">
+                      <span v-show="timeUpdated > 0" class="pl-1">{{ timeUpdated }}</span>
+                      <v-icon dense class="pr-1">mdi-calendar-clock</v-icon>
+                    </v-card>
                 </template>
                 <span v-if="timeUpdated === 0">{{i18n("list_calendar_today")}}</span>
                 <span v-else>{{i18n("list_calendar_days_found", timeUpdated)}}</span>
@@ -602,37 +605,45 @@ export default {
      * Mark last chapter as read
      */
     markAsRead() {
-      this.$store.dispatch("readManga", {
+      browser.runtime.sendMessage({ 
+        action: 'readManga',
         url: this.manga.url,
         mirror: this.manga.mirror,
         lastChapterReadName: this.manga.listChaps[0][0],
         lastChapterReadURL: this.manga.listChaps[0][1],
         name: this.manga.name,
         language: this.manga.language
-      });
+      })
     },
     /**
      * Reset manga reading to first chapter for the group of mangas
      */
     resetManga() {
-      this.$store.dispatch("resetManga", { url: this.manga.url, language: this.manga.language })
+      browser.runtime.sendMessage({
+        action: "resetManga",
+        url: this.manga.url,
+        language: this.manga.language
+      })
     },
     /**
      * Toggle following manga updates for this group
      */
     toggleFollow: function() {
-      this.$store.dispatch("markMangaReadTop", {
+      browser.runtime.sendMessage({
+        action: "markMangaReadTop",
         url: this.manga.url,
         language: this.manga.language,
         updatesamemangas: true,
         read: this.manga.read == 1 ? 0 : 1
-      });
+      })
+
     },
     /**
      * Stop updating (looking for new chapters) mangas in this group
      */
     toggleUpdate: function() {
-      this.$store.dispatch("markMangaUpdateTop", {
+      browser.runtime.sendMessage({
+        action: "markMangaUpdateTop",
         url: this.manga.url,
         language: this.manga.language,
         updatesamemangas: true,
@@ -688,11 +699,9 @@ export default {
     /**
      * Deletes a manga
      */
-    trash() {
+    async trash() {
+      browser.runtime.sendMessage({ action: "deleteManga", key: this.manga.key })
       this.deleteManga = false;
-      this.$store.dispatch("deleteManga", {
-        key: this.manga.key
-      });
     },
     /** Read a manga in another language */
     async readMangaInLang(lang) {
@@ -705,13 +714,15 @@ export default {
       });
     },
     deleteCategory: function(cat) {
-      this.$store.dispatch("removeCategoryFromManga", {
+      browser.runtime.sendMessage({
+        action: "removeCategoryFromManga",
         key: this.manga.key,
         name: cat
       })
     },
-    addCategory: function(cat) {
-      this.$store.dispatch("addCategoryToManga", {
+    addCategory: function() {
+      browser.runtime.sendMessage({
+        action: "addCategoryToManga",
         key: this.manga.key,
         name: cat
       })
@@ -798,7 +809,7 @@ export default {
   },
   // Name of the component
   name: "Manga",
-  components: { Flag, Categories }
+  components: { Flag }
 };
 </script>
 

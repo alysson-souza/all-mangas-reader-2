@@ -6,6 +6,15 @@ if (typeof registerMangaObject === 'function') {
         languages : "en",
         domains: ["lhtranslation.net"],
         home: "https://lhtranslation.net",
+
+        chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+        abstract: "Madara",
+        abstract_options: {
+            search_url: 'https://mangacultivator.com/',
+            chapter_list_ajax: true,
+            isekai_chapter_url: true
+        },
+        /*
         chapter_url: /\/read-.+$/g,
 
         getMangaList : async function (search) {
@@ -72,5 +81,6 @@ if (typeof registerMangaObject === 'function') {
         isCurrentPageAChapterPage : function (doc, curUrl) {
             return $('img.chapter-img', doc).length > 0;
         }
+        */
     })
 }

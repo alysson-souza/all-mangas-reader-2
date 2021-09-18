@@ -8,7 +8,6 @@ import browser from "webextension-polyfill";
 import HandleManga from './handle-manga';
 import converToMangadexV5 from './misc/mangedex-v5-converter'
 import mirrorsHelper from '../amr/mirrors-helper';
-import { getSyncManager } from '../amr/sync/sync-manager'
 
 // Blue icon while loading
 IconHelper.setBlueIcon();
@@ -52,18 +51,8 @@ IconHelper.setBlueIcon();
     /**
      * Start sync process between local and remote storage
      */
-
-    // Filtering all *sync* options
-    const SyncOptions = Object.keys(store.state.options)
-        .filter(x=>x.toLowerCase().indexOf('sync') > -1)
-        .reduce((obj, key) => {
-            obj[key] = store.state.options[key]
-            return obj
-        }, {})
-    const syncManager = getSyncManager(SyncOptions, window['AMR_STORE']);
-    // Need to complete sync before we refresh chapters to clean up deleted entries
-    await syncManager.start()
-
+    await store.dispatch('setMangaTsOpts')
+    await store.dispatch("initSync")
     /**
      * Initialize bookmarks list in store from DB
      */
