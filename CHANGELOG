@@ -1,3 +1,14 @@
+### V2.3.24
+  Fixes:
+    * Fix for option to automatically add series when you read them
+    * Gist Sync should be working properly now (Credit @JiPai)
+    * Fixed copy image to clipboard (Credit: @JiPai)
+    
+  Mirror Fixes:
+    * Manga Freak
+    * Asura Scans - Will now give the amr loading screen for all pages, they have stopped being consistent for naming chapters
+    * Mangadex - Missed a few things from the api change
+
 ### V2.3.23
   New Features:
     * Added right click context menu option to copy the image to clipboard, only works with png images
