@@ -52,7 +52,7 @@ class HandleManga {
                 return window['AMR_STORE'].dispatch('deleteManga', {key: message.key});
             case "getNextChapterImages", "getChapterData": //returns boolean telling if url is a chapter page, infos from page and list of images for prefetch of next chapter in content script
                 return this.getChapterData(message);
-            case "markReadTop":
+            case "markMangaReadTop":
                 return window['AMR_STORE'].dispatch('markMangaReadTop', message);
             case "markMangaUpdateTop":
                 return window['AMR_STORE'].dispatch('markMangaUpdateTop', message)
@@ -67,6 +67,8 @@ class HandleManga {
             case "setMangaChapter":
                 return window['AMR_STORE'].dispatch('resetManga', message) // reset reading to first chapter
                     .then(() => window['AMR_STORE'].dispatch('readManga', message)); // set reading to current chapter
+            case "resetManga":
+                return window['AMR_STORE'].dispatch('resetManga', message)
             case "removeCategoryFromManga":
                 return window['AMR_STORE'].dispatch('removeCategoryFromManga', message)
             case "addCategoryToManga":
