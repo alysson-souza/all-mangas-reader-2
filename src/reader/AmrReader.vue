@@ -276,7 +276,7 @@
               <!-- Pause following updates on manga -->
               <v-tooltip bottom  class="ml-1">
                 <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon color="blue" @click.stop="markReadTop(1)" v-show="mangaExists && mangaInfos && mangaInfos.read === 0">
+                  <v-btn v-on="on" icon color="blue" @click.stop="markMangaReadTop(1)" v-show="mangaExists && mangaInfos && mangaInfos.read === 0">
                       <v-icon>mdi-pause</v-icon>
                   </v-btn>
                 </template>
@@ -285,7 +285,7 @@
               <!-- Follow updates on manga -->
               <v-tooltip bottom  class="ml-1">
                 <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon color="blue" @click.stop="markReadTop(0)" v-show="mangaExists && mangaInfos && mangaInfos.read === 1">
+                  <v-btn v-on="on" icon color="blue" @click.stop="markMangaReadTop(0)" v-show="mangaExists && mangaInfos && mangaInfos.read === 1">
                       <v-icon>mdi-play</v-icon>
                   </v-btn>
                 </template>
@@ -880,8 +880,8 @@
         }
       },
       /** Change updating mode for this manga (1 : stop updating, 0 : check updates) */
-      async markReadTop(nTop) {
-        await util.markReadTop(nTop)
+      async markMangaReadTop(nTop) {
+        await util.markMangaReadTop(nTop)
         this.loadMangaInformations()
       },
       /** Mark current chapter as latest read in reading list */
@@ -1130,8 +1130,8 @@
               // Pause / Play notifications on manga
               if (e.which === 80) { // shift + p
                 if (this.mangaExists && this.mangaInfos) {
-                  if (this.mangaInfos.read === 1) this.markReadTop(0)
-                  else this.markReadTop(1)
+                  if (this.mangaInfos.read === 1) this.markMangaReadTop(0)
+                  else this.markMangaReadTop(1)
                   prevent()
                 }
               }
