@@ -1,41 +1,100 @@
 <template>
-  <div>
-    <!-- Manage manga categories -->
-    <v-row >
-      <v-col>
-        <v-chip :color="selected.length ? 'green' : 'gray'" label close @click:close="clearSelect()">
-          {{ i18n("list_multi_action_currently_selected", selected.length) }}
+  <!-- Manage manga categories -->
+  <v-col cols="4" offset="4" style="position:fixed;z-index:10;top:30%;" class="pr-4" v-if="selectable">
+    <v-card elevation="12" class="pa-5">
+      <v-row>
+        <v-btn
+          class="ml-auto no-bg-hover"
+          @click="unselect()"
+          text
+          x-small
+        >
+          <v-icon color="gray">
+            mdi-close
+          </v-icon>
+        </v-btn>
+      </v-row>
+      <div class="d-flex align-center my-3">
+        <v-chip color="gray" label small>
+          {{ selected.length + '/' + total }}
         </v-chip>
-        <v-btn @click='selectAll()' outlined small color="info">
-          {{ i18n("button_multi_manga_select_all") }}
-        </v-btn>
-        <v-btn @click='selectUnread()' outlined small color="info">
-          {{ i18n("button_multi_manga_select_unread") }}
-        </v-btn>
-
-      </v-col>
-      <v-col>
-        <v-select :items="categories" dense outlined v-model="selectedCategory" item-text="name" item-value="name" :label="i18n('list_multi_action_select_category')"></v-select>
-        <!-- Actions buttons -->
-        <div v-if="selectedCategory">
-          <v-btn @click='addCategory()' class="green" small>
-            {{ i18n("button_add") }}
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              text
+              x-small
+              class="no-bg-hover"
+              v-bind="attrs"
+              v-on="on"
+              @click='selectAll()'
+            >
+              <v-icon color="gray" left>
+                mdi-checkbox-multiple-marked-outline
+              </v-icon>
+            </v-btn>
+          </template>
+          <span>{{ i18n("button_multi_manga_select_all")}}</span>
+        </v-tooltip>
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              text
+              x-small
+              class="no-bg-hover"
+              v-bind="attrs"
+              v-on="on"
+              @click='clearSelect()'
+            >
+              <v-icon color="gray" left>
+                mdi-close-box-multiple-outline
+              </v-icon>
+            </v-btn>
+          </template>
+          <span>{{ i18n("button_multi_manga_unselect_all")}}</span>
+        </v-tooltip>
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              text
+              x-small
+              class="no-bg-hover"
+              v-bind="attrs"
+              v-on="on"
+              @click='selectUnread()'
+            >
+              <v-icon color="gray" left>
+                mdi-playlist-check
+              </v-icon>
+            </v-btn>
+          </template>
+          <span>{{ i18n("button_multi_manga_select_unread")}}</span>
+        </v-tooltip>
+      </div>
+      <v-row>
+        <v-col cols="12" lg="6">
+          <v-btn @click='openLatest()' :disabled="!selected.length || selected.length > 15" outlined small color="info">
+            {{ i18n("button_multi_manga_open_latest") }}
           </v-btn>
-          <v-btn @click='deleteCategory()' class="red" small>
-            {{ i18n("button_remove") }}
+          <v-btn @click='openNew()' :disabled="!selected.length || selected.length > 15" outlined small color="info">
+            {{ i18n("button_multi_manga_open_new") }}
           </v-btn>
-        </div>
-      </v-col>
-      <v-col>
-        <v-btn @click='openLatest()' :disabled="!selected.length || selected.length > 15" outlined small color="info">
-          {{ i18n("button_multi_manga_open_latest") }}
-        </v-btn>
-        <v-btn @click='openNew()' :disabled="!selected.length || selected.length > 15" outlined small color="info">
-          {{ i18n("button_multi_manga_open_new") }}
-        </v-btn>
-      </v-col>
-    </v-row>
-  </div>
+        </v-col>
+        <v-divider />
+        <v-col cols="12" lg="6">
+          <v-select :items="categories" dense outlined v-model="selectedCategory" item-text="name" item-value="name" :label="i18n('list_multi_action_select_category')"></v-select>
+          <!-- Actions buttons -->
+          <div v-if="selectedCategory">
+            <v-btn @click='addCategory()' class="green" small>
+              {{ i18n("button_add") }}
+            </v-btn>
+            <v-btn @click='deleteCategory()' class="red" small>
+              {{ i18n("button_remove") }}
+            </v-btn>
+          </div>
+        </v-col>
+      </v-row>
+    </v-card>
+  </v-col>
 </template>
 
 <script>
@@ -50,7 +109,9 @@ export default {
     }
   },
   props: [
-    "selected"
+    "selected",
+    "selectable",
+    "total"
   ],
   computed: {
     // AMR options
@@ -103,6 +164,9 @@ export default {
       for (let manga of this.selected) {
         this.$eventBus.$emit('multi-manga:open-first-new:' + manga.key)
       }
+    },
+    unselect: function () {
+      this.$emit('unselect');
     }
   },
 }
