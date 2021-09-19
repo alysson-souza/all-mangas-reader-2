@@ -1,5 +1,5 @@
 <template>
-  <v-card v-if="shouldShow" :class="color(3, true) + ' amr-manga-row' + (manga.update === 0 ? ' amr-noupdates' : '')">
+  <v-card v-show="shouldShow" :class="color(3, true) + ' amr-manga-row' + (manga.update === 0 ? ' amr-noupdates' : '')">
     <v-row :class="isDarkText ? 'dark-text' : 'light-text'">
       <v-col v-show="selectable" cols="auto" class="pr-0 mr-0">
         <v-checkbox v-model="selected" hide-details dense class="shrink mr-2 mt-0"></v-checkbox>
