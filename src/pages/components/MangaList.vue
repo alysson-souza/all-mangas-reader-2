@@ -142,6 +142,8 @@
           </v-tooltip>
         </v-card>
       </v-col>
+    </v-row>
+    <v-row no-gutters>
       <MultiMangaAction :selected="selectedMangaExpanded" :selectable="selectable" :total="visMangas.length" v-on:unselect="selectable = false" />
     </v-row>
     <br />

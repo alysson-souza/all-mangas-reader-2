@@ -1,19 +1,19 @@
 <template>
   <!-- Manage manga categories -->
-  <v-col cols="4" offset="4" style="position:fixed;z-index:10;top:30%;" class="pr-4" v-if="selectable">
-    <v-card elevation="12" class="pa-5">
-      <v-row>
-        <v-btn
-          class="ml-auto no-bg-hover"
-          @click="unselect()"
-          text
-          x-small
-        >
-          <v-icon color="gray">
-            mdi-close
-          </v-icon>
-        </v-btn>
-      </v-row>
+  <div style="position:fixed;z-index:10;" class="pr-4" v-if="selectable">
+    <v-card elevation="12" class="pa-3" ref="draggableContainer">
+        <v-row class="mb-3 secondary" @mousedown="dragMouseDown">
+          <v-btn
+            class="ml-auto no-bg-hover"
+            @click="unselect()"
+            text
+            x-small
+          >
+            <v-icon color="gray">
+              mdi-close
+            </v-icon>
+          </v-btn>
+        </v-row>
       <div class="d-flex align-center my-3">
         <v-chip color="gray" label small>
           {{ selected.length + '/' + total }}
@@ -94,24 +94,29 @@
         </v-col>
       </v-row>
     </v-card>
-  </v-col>
+  </div>
 </template>
 
 <script>
 import i18n from '../../amr/i18n';
 import * as utils from '../utils';
-
 export default {
   name: "MultiMangaAction",
   data() {
     return {
       selectedCategory: "",
+      positions: {
+        clientX: undefined,
+        clientY: undefined,
+        movementX: 0,
+        movementY: 0
+      }
     }
   },
   props: [
     "selected",
     "selectable",
-    "total"
+    "total",
   ],
   computed: {
     // AMR options
@@ -167,6 +172,29 @@ export default {
     },
     unselect: function () {
       this.$emit('unselect');
+    },
+    dragMouseDown: function (event) {
+      console.log(this.$refs)
+      event.preventDefault()
+      // get the mouse cursor position at startup:
+      this.positions.clientX = event.clientX
+      this.positions.clientY = event.clientY
+      document.onmousemove = this.elementDrag
+      document.onmouseup = this.closeDragElement
+    },
+    elementDrag: function (event) {
+      event.preventDefault()
+      this.positions.movementX = this.positions.clientX - event.clientX
+      this.positions.movementY = this.positions.clientY - event.clientY
+      this.positions.clientX = event.clientX
+      this.positions.clientY = event.clientY
+      // set the element's new position:
+      this.$refs.draggableContainer.$el.style.top = (this.$refs.draggableContainer.$el.offsetTop - this.positions.movementY) + 'px'
+      this.$refs.draggableContainer.$el.style.left = (this.$refs.draggableContainer.$el.offsetLeft - this.positions.movementX) + 'px'
+    },
+    closeDragElement () {
+      document.onmouseup = null
+      document.onmousemove = null
     }
   },
 }
