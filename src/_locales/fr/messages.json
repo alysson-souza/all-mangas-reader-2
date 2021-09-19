@@ -422,12 +422,8 @@
     "description": "Please select category"
   },
   "list_multi_action_select_category": {
-    "message": "Please select category",
+    "message": "Changer de categorie",
     "description": "Please select category"
-  },
-  "list_multi_action_currently_selected": {
-    "message": "Currently selected $1",
-    "description": "Currently selected $1"
   },
   "list_details_more_actions": {
     "message": "Plus d'actions",
@@ -1748,6 +1744,10 @@
   "button_multi_manga_select_all": {
     "message": "Tout sélectionner",
     "description": "Multi select, select all button"
+  },
+  "button_multi_manga_unselect_all": {
+    "message": "Tout désélectionner",
+    "description": "Multi select, unselect all button"
   },
   "button_multi_manga_select_unread": {
     "message": "Tout sélectionner avec des chapitres non lus",
