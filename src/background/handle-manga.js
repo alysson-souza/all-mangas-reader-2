@@ -67,6 +67,8 @@ class HandleManga {
             case "setMangaChapter":
                 return window['AMR_STORE'].dispatch('resetManga', message) // reset reading to first chapter
                     .then(() => window['AMR_STORE'].dispatch('readManga', message)); // set reading to current chapter
+            case "resetManga":
+                return window['AMR_STORE'].dispatch('resetManga', message)
             case "removeCategoryFromManga":
                 return window['AMR_STORE'].dispatch('removeCategoryFromManga', message)
             case "addCategoryToManga":

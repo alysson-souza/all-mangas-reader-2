@@ -953,11 +953,13 @@ const mutations = {
      * @param {*} param1
      */
     updateMangaLastChapter(state, { key, obj }) {
+        console.log('from site:', obj.fromSite)
         let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.lastChapterReadURL = obj.lastChapterReadURL;
             mg.lastChapterReadName = obj.lastChapterReadName;
             if (!obj.fromSite) {
+                console.log('updated ts')
                 mg.ts = Math.round(Date.now() / 1000);
             }
         }

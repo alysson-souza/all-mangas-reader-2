@@ -41,6 +41,22 @@
                   </div>
                 </template>
               </v-checkbox>
+              <!-- Display percentage -->
+               <v-checkbox v-model="disppercentage" @change="setOption('disppercentage')">
+                <template v-slot:label>
+                  <div>
+                    {{ i18n('options_gen_disppercentage_opt') }}
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on }">
+                        <v-icon v-on="on" color="blue darken-2" class="superscript" small>
+                          mdi-information
+                        </v-icon>
+                      </template>
+                      {{ i18n('options_gen_disppercentage_desc') }}
+                    </v-tooltip>
+                  </div>
+                </template>
+              </v-checkbox>             
               <!-- Display badge last update -->
               <v-checkbox v-model="displastup" @change="setOption('displastup')">
                 <template v-slot:label>
@@ -643,6 +659,7 @@ const converters = {
       "newTab",
       "groupmgs",
       "displastup",
+      "disppercentage",
       "dark",
       "checkmgstart",
       "refreshspin",

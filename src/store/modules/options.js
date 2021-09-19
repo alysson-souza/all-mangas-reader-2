@@ -43,6 +43,7 @@ const default_options = {
     /** Customization options */
     newTab: 0, //Open popup in new tab
     displastup: 0, // Display a badge with last time updated in popup
+    disppercentage: 1, // Display a circular icon with progression
     dark: 0, // Use a dark backgroud for AMR pages,
     colornew: "green", // color of mangas with new chapters
     colorread: "blue", // color of mangas with all chapters read
