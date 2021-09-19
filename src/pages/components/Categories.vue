@@ -1,5 +1,4 @@
 <template>
-
   <v-menu :close-on-content-click="false" v-model="menu">
     <template #activator="{ on: onMenu }">
       <v-tooltip top>
@@ -22,7 +21,7 @@
     <v-card>
       <v-row no-gutters>
         <v-btn
-          color="primary"
+          color="gray"
           @click="menu = false"
           class="ml-auto no-bg-hover"
           text
@@ -325,8 +324,5 @@ export default {
   font-weight: bold;
   font-size: 0.9rem;
   padding: 0px 3px;
-}
-.no-bg-hover::before {
-   background-color: transparent !important;
 }
 </style>
