@@ -427,9 +427,8 @@ export default {
       let self = this;
       this.dialogAction = () => {
         self.showDialog = false
-        self.visNewMangas.forEach(mg => {
-          browser.runtime.sendMessage({
-            action: "readManga",
+        self.visNewMangas.forEach(async mg => {
+          await self.$store.dispatch('readManga', {
             url: mg.url,
             mirror: mg.mirror,
             lastChapterReadName: mg.listChaps[0][0],
@@ -447,9 +446,8 @@ export default {
       let self = this;
       this.dialogAction = () => {
         self.showDialog = false
-        self.visMangas.forEach(mg => {
-          browser.runtime.sendMessage({
-            action: "deleteManga",
+        self.visMangas.forEach(async mg => {
+          await self.$store.dispatch("deleteManga", {
             key: mg.key
           })
         })
