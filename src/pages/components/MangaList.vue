@@ -50,7 +50,7 @@
             <span>{{i18n("list_select_action")}}</span>
           </v-tooltip>
           <!-- Search Field -->
-          <v-menu :close-on-content-click="false" v-model="showFilter"  >
+          <v-menu offset-y :close-on-content-click="false" :close-on-click="false" v-model="showFilter"  >
             <template #activator="{ on: onsearchMenu }">
               <v-tooltip top>
                 <template #activator="{ on: onsearchTooltip }">
@@ -93,7 +93,7 @@
             </v-card>
           </v-menu>
           <!-- Mirror select -->
-          <v-menu :close-on-content-click="false" v-model="showMirrorSelection">
+          <v-menu offset-y :close-on-content-click="false" :close-on-click="false" v-model="showMirrorSelection">
             <template #activator="{ on: onshowMirrorSelectionMenu }">
               <v-tooltip top>
                 <template #activator="{ on: onshowMirrorSelectionTooltip }">
@@ -106,23 +106,24 @@
             </template>
             <v-card>
               <v-row no-gutters class="pt-1">
-                <v-col cols="1" class="offset-9">
+                <v-col cols="10" class="pt-4 px-2">
+                  <v-select v-model="mirrorSelection" :items="usedMirrors" dense :label="i18n('list_mirror_filter_label')"></v-select>
+                </v-col>
+                <v-col cols="1">
                   <v-btn
                     color="gray"
                     @click="showMirrorSelection = false"
                     class="no-bg-hover px-0 pr-1"
                     text
                   >
-                    <v-icon class="ml-auto mb-5" small>
+                    <v-icon class="ml-5 mb-5" small>
                       mdi-close
                     </v-icon>
                   </v-btn>
                 </v-col>
               </v-row>
               <v-row no-gutters>
-                <v-col cols="10" class="px-3">
-                  <v-select v-model="mirrorSelection" :items="usedMirrors" dense :label="i18n('list_mirror_filter_label')"></v-select>
-                </v-col>
+
               </v-row>
             </v-card>
           </v-menu>
