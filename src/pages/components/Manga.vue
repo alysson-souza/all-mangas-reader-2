@@ -82,7 +82,7 @@
                   :loading="chapsForSelect.length ? '' : color(-2)"
                   :disabled="!chapsForSelect.length"
                 >
-                  <template v-slot:prepend-inner v-if="chapsForSelect.length">
+                  <template v-slot:prepend-inner v-if="chapsForSelect.length && showProgress">
                     <v-tooltip top content-class="icon-ttip">
                       <template v-slot:activator="{ on }">
                         <div class="d-flex align-center">
@@ -500,6 +500,9 @@ export default {
       return this.manga.listChaps.map(arr => {
         return { value: amrutils.chapPath(arr[1]), text: arr[0], url: arr[1] };
       });
+    },
+    showProgress: function() {
+      return this.options.disppercentage
     },
     // calculate reading progress
     progress: function() {

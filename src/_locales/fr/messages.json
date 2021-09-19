@@ -196,6 +196,14 @@
     "message": "Afficher un badge avec une icone calendrier et la dernière fois en nombre de jours qu'un chapitre a été publié (le badge disparaitra si la dernière publication date de plus de 50 jours)",
     "description": "Option Badge with last time updated description"
   },
+  "options_gen_disppercentage_opt": {
+    "message": "Badge progression de lecture",
+    "description": "Option Badge reading progression"
+  },
+  "options_gen_disppercentage_desc": {
+    "message": "Afficher un badge avec une icon circulair indiquant l'état de progression de lecture",
+    "description": "Option Display a badge with a circular icons which indicate the read progression"
+  },
   "options_gen_dark_desc": {
     "message": "Appliquer un fond sombre aux pages de All Mangas Reader.",
     "description": "Option Dark popup description"
