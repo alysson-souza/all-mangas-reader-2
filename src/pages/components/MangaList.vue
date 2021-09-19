@@ -2,10 +2,6 @@
   <div>
     <!-- Categories and filters -->
     <v-row no-gutters>
-      <!-- Categories -->
-      <v-col cols="12">
-        
-      </v-col>
       <!-- Filters -->
       <v-col cols="12" class="d-flex align-center filter-container">
         <v-card class="hover-card">
@@ -144,9 +140,6 @@
         </v-card>
       </v-col>
     </v-row>
-    <v-row no-gutters>
-      <MultiMangaAction :selected="selectedMangaExpanded" :selectable="selectable" :total="visMangas.length" v-on:unselect="selectable = false" />
-    </v-row>
     <br />
     <!-- Manga List -->
     <v-data-table
@@ -270,6 +263,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <MultiMangaAction :selected="selectedMangaExpanded" :selectable="selectable" :total="visMangas.length" v-on:unselect="selectable = false" />
   </div>
 </template>
 <script>

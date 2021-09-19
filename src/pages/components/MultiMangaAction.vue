@@ -1,6 +1,6 @@
 <template>
   <!-- Manage manga categories -->
-  <div style="position:fixed;z-index:10;" class="pr-4" v-if="selectable">
+  <div style="position:fixed;z-index:10;top:30%;left:35%" class="pr-4" v-if="selectable">
     <v-card elevation="12" class="pa-3" ref="draggableContainer">
         <v-row class="mb-3 secondary" @mousedown="dragMouseDown">
           <v-btn
