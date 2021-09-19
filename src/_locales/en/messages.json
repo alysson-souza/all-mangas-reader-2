@@ -475,7 +475,7 @@
     "description": "Tooltip on timer off icon to explain that this manga's chapter list is no more updated."
   },
   "list_progress_reading": {
-    "message": "Progression : $1 %",
+    "message": "Progression: $1% ($2)",
     "description": "Tooltip on progress bar below chapters list to tell the reading progression"
   },
   "list_mg_act_read": {

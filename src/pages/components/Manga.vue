@@ -98,7 +98,7 @@
                           />
                         </div>
                       </template>
-                      <span>{{i18n("list_progress_reading", progress)}}</span>
+                      <span>{{i18n("list_progress_reading", progress, absoluteProgress)}}</span>
                     </v-tooltip>
                     <v-divider
                       class="mx-2"
@@ -504,6 +504,9 @@ export default {
     // calculate reading progress
     progress: function() {
       return Math.floor((1 - this.posInChapList / this.manga.listChaps.length) * 100);
+    },
+    absoluteProgress: function() {
+      return `${this.manga.listChaps.length - this.posInChapList}/${this.manga.listChaps.length}`
     },
     // position of current chapter in chapters list
     posInChapList() {
