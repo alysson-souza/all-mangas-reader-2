@@ -2,30 +2,34 @@
   <div>
     <!-- Categories and filters -->
     <v-row no-gutters>
-      <!-- Filters -->
       <v-col cols="12" class="d-flex align-center filter-container">
         <v-card class="hover-card">
           <Categories v-on="on" :categories="categories" :static-cats="false" :delegate-delete="false" />
-        </v-card>      
+        </v-card>
+        <!-- Filters -->
         <v-card v-if="visMangas.length" class="hover-card d-flex">
+          <!-- Alphabetical -->
           <v-tooltip top content-class="icon-ttip">
             <template v-slot:activator="{ on }">
               <v-icon v-on="on" @click="sort = 'az'" :class="['amr-filter', {activated: sort === 'az'}]">mdi-sort-alphabetical-ascending</v-icon>
             </template>
             <span>{{i18n("list_sort_alpha")}}</span>
           </v-tooltip>
+          <!-- New first -->
           <v-tooltip top content-class="icon-ttip">
             <template v-slot:activator="{ on }">
               <v-icon v-on="on" @click="sort = 'updates'" :class="['amr-filter', {activated: sort === 'updates'}]">mdi-flash-auto</v-icon>
             </template>
             <span>{{i18n("list_sort_new")}}</span>
           </v-tooltip>
+          <!-- New w/ most unread -->
           <v-tooltip top content-class="icon-ttip">
             <template v-slot:activator="{ on }">
               <v-icon v-on="on" @click="sort = 'updates-mostunread'" :class="['amr-filter', {activated: sort === 'updates-mostunread'}]">mdi-flash</v-icon>
             </template>
             <span>{{i18n("list_sort_new_most_unread")}}</span>
           </v-tooltip>
+          <!-- Recently updated -->
           <v-tooltip top content-class="icon-ttip">
             <template v-slot:activator="{ on }">
               <v-icon v-on="on" @click="sort = 'uptime'" :class="['amr-filter', {activated: sort === 'uptime'}]">mdi-sort-calendar-ascending</v-icon>
@@ -46,7 +50,7 @@
             <span>{{i18n("list_select_action")}}</span>
           </v-tooltip>
           <!-- Search Field -->
-          <v-menu offset-y :close-on-content-click="false" :close-on-click="false" v-model="showFilter"  >
+          <v-menu offset-y bottom :close-on-content-click="false" :close-on-click="false" v-model="showFilter"  >
             <template #activator="{ on: onsearchMenu }">
               <v-tooltip top>
                 <template #activator="{ on: onsearchTooltip }">
@@ -89,7 +93,7 @@
             </v-card>
           </v-menu>
           <!-- Mirror select -->
-          <v-menu offset-y :close-on-content-click="false" :close-on-click="false" v-model="showMirrorSelection">
+          <v-menu offset-y top :close-on-content-click="false" :close-on-click="false" v-model="showMirrorSelection">
             <template #activator="{ on: onshowMirrorSelectionMenu }">
               <v-tooltip top>
                 <template #activator="{ on: onshowMirrorSelectionTooltip }">
