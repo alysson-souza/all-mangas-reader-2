@@ -11,8 +11,7 @@
         <v-card class="hover-card">
           <Categories v-on="on" :categories="categories" :static-cats="false" :delegate-delete="false" />
         </v-card>      
-        <v-card v-if="visMangas.length" class="hover-card">
-          <v-icon class="filters-icon">mdi-filter</v-icon>
+        <v-card v-if="visMangas.length" class="hover-card d-flex">
           <v-tooltip top content-class="icon-ttip">
             <template v-slot:activator="{ on }">
               <v-icon v-on="on" @click="sort = 'az'" :class="['amr-filter', {activated: sort === 'az'}]">mdi-sort-alphabetical-ascending</v-icon>
@@ -50,18 +49,83 @@
             </template>
             <span>{{i18n("list_select_action")}}</span>
           </v-tooltip>
-          <v-tooltip top content-class="icon-ttip">
-            <template v-slot:activator="{ on }">
-              <v-icon v-on="on" @click="showFilter = !showFilter" :class="['amr-filter', {activated: showFilter}]">mdi-magnify</v-icon>
+          <!-- Search Field -->
+          <v-menu :close-on-content-click="false" v-model="showFilter"  >
+            <template #activator="{ on: onsearchMenu }">
+              <v-tooltip top>
+                <template #activator="{ on: onsearchTooltip }">
+                    <v-icon v-on="{ ...onsearchMenu, ...onsearchTooltip }" :class="['amr-filter', {activated: showFilter}]">
+                      mdi-magnify
+                    </v-icon>
+                </template>
+                <span>{{ i18n("list_filter") }}</span>
+              </v-tooltip>
             </template>
-            <span>{{i18n("list_filter")}}</span>
-          </v-tooltip>
-          <v-tooltip top content-class="icon-ttip">
-            <template v-slot:activator="{ on }">
-              <v-icon v-on="on" @click="showMirrorSelection = !showMirrorSelection" :class="['amr-filter', {activated: showMirrorSelection}]">mdi-image-multiple-outline</v-icon>
+            <v-card>
+              <v-row no-gutters class="pa-1">
+                <v-col cols="10">
+                  <v-text-field
+                      v-model="searchText"
+                      prepend-icon="mdi-magnify"
+                      :label="i18n('list_search_label')"
+                      dense
+                      single-line
+                      filled
+                      rounded
+                      hide-details
+                      clearable
+                      autofocus
+                    ></v-text-field>
+                </v-col>
+                <v-col cols="2">
+                  <v-btn
+                    color="gray"
+                    @click="showFilter = false"
+                    class="no-bg-hover px-0 pr-2"
+                    text
+                  >
+                    <v-icon class="ml-auto mb-5" small>
+                      mdi-close
+                    </v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-card>
+          </v-menu>
+          <!-- Mirror select -->
+          <v-menu :close-on-content-click="false" v-model="showMirrorSelection">
+            <template #activator="{ on: onshowMirrorSelectionMenu }">
+              <v-tooltip top>
+                <template #activator="{ on: onshowMirrorSelectionTooltip }">
+                    <v-icon v-on="{ ...onshowMirrorSelectionMenu, ...onshowMirrorSelectionTooltip }" :class="['amr-filter', {activated: showMirrorSelection}]">
+                      mdi-image-multiple-outline
+                    </v-icon>
+                </template>
+                <span>{{i18n("list_mirror_filter_icon")}}</span>
+              </v-tooltip>
             </template>
-            <span>{{i18n("list_mirror_filter_icon")}}</span>
-          </v-tooltip>
+            <v-card>
+              <v-row no-gutters class="pt-1">
+                <v-col cols="1" class="offset-9">
+                  <v-btn
+                    color="gray"
+                    @click="showMirrorSelection = false"
+                    class="no-bg-hover px-0 pr-1"
+                    text
+                  >
+                    <v-icon class="ml-auto mb-5" small>
+                      mdi-close
+                    </v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+              <v-row no-gutters>
+                <v-col cols="10" class="px-3">
+                  <v-select v-model="mirrorSelection" :items="usedMirrors" dense :label="i18n('list_mirror_filter_label')"></v-select>
+                </v-col>
+              </v-row>
+            </v-card>
+          </v-menu>
         </v-card>
         <v-card v-if="visMangas.length" class="hover-card">
           <v-tooltip v-if="visNewMangas.length" top content-class="icon-ttip">
@@ -78,28 +142,7 @@
           </v-tooltip>
         </v-card>
       </v-col>
-      <v-col cols="6" v-show="showFilter">
-        <!-- Search Field -->
-        <v-text-field
-            v-model="searchText"
-            prepend-icon="mdi-magnify"
-            :label="i18n('list_search_label')"
-            dense
-            single-line
-            filled
-            rounded
-            hide-details
-            clearable
-            autofocus
-          ></v-text-field>
-      </v-col>
-      <v-col cols="6" v-show="showMirrorSelection">
-        <!-- Search Field -->
-        <v-select v-model="mirrorSelection" :items="usedMirrors" dense :label="i18n('list_mirror_filter_label')"></v-select>
-      </v-col>
-      <v-col cols="12" v-if="selectable">
-        <MultiMangaAction :selected="selectedMangaExpanded" />
-      </v-col>
+      <MultiMangaAction :selected="selectedMangaExpanded" :selectable="selectable" :total="visMangas.length" v-on:unselect="selectable = false" />
     </v-row>
     <br />
     <!-- Manga List -->
@@ -298,6 +341,7 @@ export default {
       itemsPerPage: this.$store.state.options.perPageMangas,
       pageNavigationPosition: this.$store.state.options.pageNavigationPosition,
       alpha_asc_desc: this.$store.state.options.alpha_asc_desc, // Toggle Manga List select behaviour
+      searchMenu:false,
     };
   },
   watch: {
@@ -608,5 +652,8 @@ td {
 .v-data-table__wrapper {
   padding-right: 4px!important;
   padding-left: 4px!important;
+}
+.no-bg-hover::before {
+   background-color: transparent !important;
 }
 </style>
