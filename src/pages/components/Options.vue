@@ -285,6 +285,14 @@
                           :label="i18n('options_search_open_series_desc')"></v-checkbox>
             </v-expansion-panel-content>
           </v-expansion-panel>
+          <!-- Support -->
+          <v-expansion-panel v-if="gistSyncEnabled && gistSyncSecret.length && gistSyncGitID.length">
+            <v-expansion-panel-header><div class="text-h5 blue--text lighten-4">{{ i18n("options_support_title") }}</div></v-expansion-panel-header>
+              <v-expansion-panel-content class="pt-6" color="slight-overlay">
+              <v-checkbox v-model="gistDebugEnabled" @change="setOption('gistDebugEnabled')"
+                          :label="i18n('options_support_desc')"></v-checkbox>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
         </v-expansion-panels>
       </v-tab-item>
       <v-tab-item value="onwebsites" transition="false">
@@ -676,6 +684,7 @@ const converters = {
       "darkreader",
       "syncEnabled",
       "gistSyncEnabled",
+      "gistDebugEnabled",
       "searchOpenSeries",
       "mangadexDataSaver",
       "webtoonDefault",
@@ -906,6 +915,10 @@ export default {
           this.deactivateUnreadable();
       }
       // retrieve Sync options, must follow current naming convention : providerSyncEnabled
+      if (optstr.toLowerCase().includes('syncenabled') || optstr.toLowerCase().includes('sync')) {
+        this.updateSync(optstr, val)
+        this.dispatch("updateSync", false);
+      }
       if (optstr.toLowerCase().includes('syncenabled') || optstr.toLowerCase().includes('sync')) {
         this.updateSync(optstr, val)
         this.dispatch("updateSync", false);

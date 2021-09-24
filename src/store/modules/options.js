@@ -75,6 +75,9 @@ const default_options = {
     gistSyncEnabled: 0,
     gistSyncSecret: "",
     gistSyncGitID: "",
+
+    /** Debug options */
+    gistDebugEnabled: 0,
     /**
      * Sync/Update/Convert safener
      */
