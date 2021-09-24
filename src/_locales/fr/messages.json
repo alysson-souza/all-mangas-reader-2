@@ -1621,6 +1621,14 @@
     "message": "Bascule l'écran de recherche pour ouvrir la liste des séries dans un nouvel onglet au lieu d'ajouter la série",
     "description": "search open series in new tab"
   },
+  "options_support_title": {
+    "message": "Support",
+    "description": "support option"
+  },
+  "options_support_desc": {
+    "message": "Activer le support avec Gist",
+    "description": "support option"
+  },
   "__V2_3_0": {
     "message": "Just a filler to separate new labels from old ones"
   },

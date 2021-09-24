@@ -6,6 +6,7 @@ import notifications from '../../amr/notifications';
 import statsEvents from '../../amr/stats-events';
 import * as utils from "../../amr/utils";
 import { debug } from "../../amr/utils"
+import { gistDebug } from '../../amr/utils';
 import samples from "../../amr/samples";
 import amrUpdater from '../../amr/amr-updater';
 import iconHelper from '../../amr/icon-helper';
@@ -557,7 +558,15 @@ const actions = {
             });
             return;
         }
-
+        gistDebug(getters.syncOptions.gistSyncSecret, getters.syncOptions.gistSyncGitID, 'amrResets.json', {
+            name:mg.name,
+            mirror:mg.mirror,
+            oldPath:mg.lastChapterReadURL,
+            oldName:mg.lastChapterReadName,
+            newPath: listChaps[listChaps.length - 1][1],
+            newName: listChaps[listChaps.length - 1][0],
+            dateTime:new Date().toLocaleString()
+        })
         debug("No list entry or multiple list entries match the known last chapter. Reset to first chapter");
         commit('updateMangaLastChapter', {
             key: mg.key, obj: {
