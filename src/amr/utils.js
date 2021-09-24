@@ -88,17 +88,17 @@ export async function gistDebug(secret, id, filename, content) {
           });
         const request = await ax.get(`gists/${id}?cache=${Date.now()}`).catch(debug)
         const data = request.data
+        let stringContent;
         if(data.files[filename]) {
             const parsedContent = JSON.parse(data.files[filename].content)
             parsedContent.push(content)
-            const stringContent = JSON.stringify(parsedContent, null, 2)
-            await ax.patch(`gists/${id}`, { files: { [filename] : { content: stringContent } } } ).catch(debug)
+            stringContent = JSON.stringify(parsedContent, null, 2)
         } else {
             data.files[filename] = { content: [] }
             data.files[filename].content.push(content)
-            const stringContent = JSON.stringify(data.files[filename].content, null, 2)
-            await ax.patch(`gists/${id}`, { files: { [filename] : { content: stringContent } } } ).catch(debug)
+            stringContent = JSON.stringify(data.files[filename].content, null, 2)
         }
+        await ax.patch(`gists/${id}`, { files: { [filename] : { content: stringContent } } } ).catch(debug)
     }
 }
 
