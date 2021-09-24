@@ -78,28 +78,27 @@ export function debug(message) {
  */
 export async function gistDebug(secret, id, filename, content) {
     if(window['AMR_STORE'].state.options.gistDebugEnabled === 0) return
-    if(secret && secret !== '' && id && id !== '') {
-        const ax = axios.create({
-            baseURL: 'https://api.github.com/',
-            headers: {
-              'Authorization': `Bearer ${secret}`,
-              'Cache-Control': 'no-cache'
-            }
-          });
-        const request = await ax.get(`gists/${id}?cache=${Date.now()}`).catch(debug)
-        const data = request.data
-        let stringContent;
-        if(data.files[filename]) {
-            const parsedContent = JSON.parse(data.files[filename].content)
-            parsedContent.push(content)
-            stringContent = JSON.stringify(parsedContent, null, 2)
-        } else {
-            data.files[filename] = { content: [] }
-            data.files[filename].content.push(content)
-            stringContent = JSON.stringify(data.files[filename].content, null, 2)
+    if(secret && secret !== '' && id && id !== '') return
+    const ax = axios.create({
+        baseURL: 'https://api.github.com/',
+        headers: {
+            'Authorization': `Bearer ${secret}`,
+            'Cache-Control': 'no-cache'
         }
-        await ax.patch(`gists/${id}`, { files: { [filename] : { content: stringContent } } } ).catch(debug)
+        });
+    const request = await ax.get(`gists/${id}?cache=${Date.now()}`).catch(debug)
+    const data = request.data
+    let stringContent;
+    if(data.files[filename]) {
+        const parsedContent = JSON.parse(data.files[filename].content)
+        parsedContent.push(content)
+        stringContent = JSON.stringify(parsedContent, null, 2)
+    } else {
+        data.files[filename] = { content: [] }
+        data.files[filename].content.push(content)
+        stringContent = JSON.stringify(data.files[filename].content, null, 2)
     }
+    await ax.patch(`gists/${id}`, { files: { [filename] : { content: stringContent } } } ).catch(debug)
 }
 
 
