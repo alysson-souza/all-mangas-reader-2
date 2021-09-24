@@ -201,7 +201,7 @@
     "description": "Option Badge reading progression"
   },
   "options_gen_disppercentage_desc": {
-    "message": "Afficher un badge avec une icon circulair indiquant l'état de progression de lecture",
+    "message": "Afficher un badge avec une icone circulair indiquant l'état de progression de lecture",
     "description": "Option Display a badge with a circular icons which indicate the read progression"
   },
   "options_gen_dark_desc": {
