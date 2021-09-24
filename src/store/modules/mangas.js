@@ -30,11 +30,19 @@ const state = {
     /**
      * List of followed mangas
      */
-    all: []
+    all: [],
+    /**
+     * List of chapter resets
+     */
+    resets:[]
 }
 
 // getters
 const getters = {
+    /**
+     * Return List of chapter resets
+     */
+    allResets:state => state.resets,
     /**
      * Return the whole list of followed mangas
      */
@@ -559,6 +567,13 @@ const actions = {
         }
 
         debug("No list entry or multiple list entries match the known last chapter. Reset to first chapter");
+        state.resets = [{
+            name:mg.name,
+            mirror:mg.mirror,
+            oldPath:mg.lastChapterReadURL,
+            oldName:mg.lastChapterReadName,
+            dateTime:new Date().toLocaleString()
+        },...state.resets]
         commit('updateMangaLastChapter', {
             key: mg.key, obj: {
                 lastChapterReadURL: listChaps[listChaps.length - 1][1],

@@ -11,6 +11,7 @@ export default class GistStorage extends Storage {
     this.axios = this.initAxios()
     this.delay = 500
     this.requests = 0
+    this.resets = []
   }
 
   initAxios() {
@@ -51,6 +52,7 @@ export default class GistStorage extends Storage {
   async init() {
     await this.wait()
     const request = await this.axios.patch(`gists/${this.gistSyncGitID}`, this.getFileStruct('[]')).catch(this.handleSyncError)
+    this.resets = request.data.files['amrResets.json']
     return JSON.parse(request.data.files['amr.json'].content)
   }
 
@@ -86,7 +88,12 @@ export default class GistStorage extends Storage {
   }
 
   getFileStruct(content) {
-    return { files: { 'amr.json' : { content: content } } }
+    return {
+      files: {
+        'amr.json': { content: content },
+        'amrResets.json':{ content: JSON.stringify([...AMR_STORE.getters.allResets,...this.resets||[]])}
+      }
+    }
   }
 
   async wait() {
