@@ -10,7 +10,9 @@ if (typeof registerMangaObject === 'function') {
         abstract: "Madara",
         abstract_options: {
             search_url: "https://manytoon.com/",
-            img_src: "src"
+            img_src: "data-src",
+            chapter_list_ajax: true,
+            isekai_chapter_url: true
         }
     })
 }

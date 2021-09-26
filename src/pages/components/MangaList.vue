@@ -436,8 +436,9 @@ export default {
             key: key,
             mangas: []
           })
+          index = groups.findIndex(group => group.key == key)
         }
-        index = groups.findIndex(group => group.key == key)
+        
 
         groups[index].mangas.push(manga)
 
