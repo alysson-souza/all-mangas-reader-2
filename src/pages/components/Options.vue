@@ -554,72 +554,40 @@
                   </div>
                 </template>
               </v-checkbox>
-              <!-- Image Server option -->
-              <!-- <div class="text-h6">{{i18n('options_mangadex_image_server')}}</div>
-              <div class="text-body-1">
-                <v-container fluid class="opt-container">
-                  <v-row  >
-                    <v-col cols="6" class="sel-title">
-                      {{ i18n("options_mangadex_image_server_label") }} :
-                    </v-col>
-                    <v-col cols="6">
-                      <v-select v-model="mangadexImageServer" :items="mangadex_image_server_values"></v-select>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </div> -->
-              <!-- Blocked Groups - ->
-              <div class="text-h6">{{i18n('options_mangadex_blocked_groups')}}</div>
-              <div class="text-body-1">{{i18n('options_mangadex_blocked_groups_label')}}</div>
-              <v-text-field v-model="arrays.mangadexBlockedGroups.value" dense outlined>
-                <template v-slot:prepend>
-                  <v-tooltip bottom>
-                    <template v-slot:activator="{ on }">
-                      <v-icon v-on="on">mdi-help-circle-outline</v-icon>
-                    </template>
-                    {{i18n('options_numeric')}}
-                  </v-tooltip>
+              <!-- Enable Mangadex integration -->
+              <v-checkbox v-model="mangadexIntegrationEnable" @change="setOption('mangadexIntegrationEnable')">
+                <template v-slot:label>
+                  <div>
+                    {{ i18n('options_mangadex_integration') }}
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on }">
+                        <v-icon v-on="on" color="blue darken-2" class="superscript" small>
+                          mdi-information
+                        </v-icon>
+                      </template>
+                      {{ i18n('options_mangadex_integration_info') }}
+                    </v-tooltip>
+                  </div>
                 </template>
-                <template v-slot:append-outer>
-                  <v-btn rounded @click="addArrayEntry('mangadexBlockedGroups')" disabled>Add (Not Implimented)</v-btn>
-                </template>
-              </v-text-field>
-              <v-card v-if="arrays.mangadexBlockedGroups.array.length">
-                <v-chip
-                  v-for="(group, index) in arrays.mangadexBlockedGroups.array"
-                  :key="index"
-                  close
-                  @click:close="removeArrayEntry('mangadexBlockedGroups', index)"
-                >
-                  {{ group }}
-                </v-chip>
-              </v-card>
-              <!- - Preferred Groups - ->
-              <div class="text-h6">{{i18n('options_mangadex_preferred_groups')}}</div>
-              <div class="text-body-1">{{i18n('options_mangadex_preferred_groups_label')}}</div>
-              <v-text-field v-model="arrays.mangadexPreferredGroups.value" dense outlined>
-                <template v-slot:prepend>
-                  <v-tooltip bottom>
-                    <template v-slot:activator="{ on }">
-                      <v-icon v-on="on">mdi-help-circle-outline</v-icon>
-                    </template>
-                    {{i18n('options_numeric')}}
-                  </v-tooltip>
-                </template>
-                <template v-slot:append-outer>
-                  <v-btn rounded @click="addArrayEntry('mangadexPreferredGroups')" disabled>Add (Not Implimented)</v-btn>
-                </template>
-              </v-text-field>
-              <v-card v-if="arrays.mangadexPreferredGroups.array.length">
-                <v-chip
-                  v-for="(group, index) in arrays.mangadexPreferredGroups.array"
-                  :key="index"
-                  close
-                  @click:close="removeArrayEntry('mangadexPreferredGroups', index)"
-                >
-                  {{ group }}
-                </v-chip>
-              </v-card> -->
+              </v-checkbox>
+              <!-- Credentials -->
+              <v-text-field v-if="(mangadexIntegrationEnable && !mangadexValidCredentials) || mangadexRefreshExpire < Date.now()" v-model="mangadexLogin" @change="setOption('mangadexLogin')"
+                          :label="i18n('options_mangadex_login')"></v-text-field>
+              <v-text-field type="password"  v-if="(mangadexIntegrationEnable && !mangadexValidCredentials) || mangadexRefreshExpire < Date.now()" v-model="mangadexPassword" @change="setOption('mangadexPassword')"
+                          :label="i18n('options_mangadex_password')"></v-text-field>
+              <!-- Confirm credentials button -->
+              <v-btn :loading="mangadexCredsLoading" v-if="mangadexLogin && mangadexPassword && (!mangadexValidCredentials || mangadexRefreshExpire < Date.now())" @click="verifyMangadexCreds"> {{ i18n('options_mangadex_verify_credentials') }}</v-btn>
+              <!-- Reset credentials button -->
+              <v-btn class="mb-4" color="warning" :loading="mangadexCredsLoading" v-if="mangadexValidCredentials && mangadexRefreshExpire > Date.now()" @click="resetMangadexCreds"> {{ i18n('options_mangadex_reset_credentials') }}</v-btn>
+              <v-divider v-if="mangadexValidCredentials && mangadexRefreshExpire > Date.now()" />
+              <!-- Mangadex integration options -->
+              <div class="mt-4" v-if="mangadexValidCredentials && mangadexRefreshExpire > Date.now()">
+                <v-checkbox
+                  v-model="mangadexUpdateReadStatus"
+                  @change="setOption('mangadexUpdateReadStatus')"
+                  :label="i18n('options_mangadex_update_read')"
+                  />
+              </div>
             </v-expansion-panel-content>
           </v-expansion-panel>
           <!-- Komga Options -->
@@ -686,11 +654,14 @@ const converters = {
       "gistSyncEnabled",
       "gistDebugEnabled",
       "searchOpenSeries",
-      "mangadexDataSaver",
       "webtoonDefault",
       "alternateColors",
       "invertKeys",
-      "smoothNavigation"
+      "smoothNavigation",
+      "mangadexDataSaver",
+      "mangadexIntegrationEnable",
+      "mangadexValidCredentials",
+      "mangadexUpdateReadStatus",
     ]
   }
 };
@@ -812,21 +783,12 @@ export default {
       newRepo: "",
       newRepositoryDialog: false,
       selectedLang: "",
+      mangadexCredsLoading: false,
+      mangadexLogin: '',
+      mangadexPassword: ''
     };
     // add all options properties in data model; this properties are the right one in store because synchronization with background has been called by encapsuler (popup.js / other) before initializing vue
     res = Object.assign(res, this.$store.state.options);
-
-    // Create array for these values so they can be added as chips
-    res.arrays = {
-      mangadexBlockedGroups: {
-        array: this.$store.state.options.mangadexBlockedGroups.length ? this.$store.state.options.mangadexBlockedGroups.split(',') : [],
-        value: ""
-      },
-      mangadexPreferredGroups: {
-        array: this.$store.state.options.mangadexPreferredGroups.length ? this.$store.state.options.mangadexPreferredGroups.split(',') : [],
-        value: ""
-      }
-    }
 
     // convert values
     Object.keys(converters).forEach(key => {
@@ -875,9 +837,6 @@ export default {
     waitbetweenupdates: function(n, o) {
         this.setOption("waitbetweenupdates");
     },
-    mangadexImageServer: function(n, o) {
-        this.setOption("mangadexImageServer");
-    },
     displayzero: function() {
       amrUpdater.refreshBadgeAndIcon();
     },
@@ -889,6 +848,9 @@ export default {
         if (nVal && [1, 2].includes(this.resizeMode)) {
             this.resizeMode = 0
         }
+    },
+    mangadexIntegrationEnable(nVal) {
+      this.resetMangadexCreds()
     }
   },
   methods: {
@@ -1095,6 +1057,40 @@ export default {
     },
     isFirefox() {
       return typeof InstallTrigger !== 'undefined';
+    },
+    async resetMangadexCreds() {
+      this.$store.dispatch("setOption", { key: 'mangadexValidCredentials', value: 0 });
+      this.mangadexValidCredentials = 0
+    },
+    async verifyMangadexCreds() {
+      this.mangadexCredsLoading = true
+      const res = await fetch("https://api.mangadex.org/auth/login", {
+        method: "POST",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({username: this.mangadexLogin, password: this.mangadexPassword})
+      })
+      if(res.status == 200) {
+        const json = await res.json()
+        if(json.result === 'ok') {
+          const in13min = Date.now() + (60*1000*13) // 2min margin
+          const inAmonthOrSo = Date.now() + (1000*60*60*24*29) // 1 day margin
+          this.$store.dispatch("setOption", { key: 'mangadexValidCredentials', value: 1 });
+          this.$store.dispatch("setOption", { key: 'mangadexToken', value: json.token.session });
+          this.$store.dispatch("setOption", { key: 'mangadexTokenExpire', value: in13min });
+          this.$store.dispatch("setOption", { key: 'mangadexRefresh', value: json.token.refresh });
+          this.$store.dispatch("setOption", { key: 'mangadexRefreshExpire', value: inAmonthOrSo });
+        }
+
+      }
+      // adding "fake" loading time
+      setTimeout(() => {
+        this.mangadexCredsLoading = false
+        this.mangadexValidCredentials = 1
+      }, 2000)
+      
     }
   }
 };

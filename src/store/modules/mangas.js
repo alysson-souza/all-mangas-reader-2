@@ -87,6 +87,15 @@ const getters = {
             obj[key] = rootState.options[key]
             return obj
         }, {})
+    },
+
+    mangadexOptions: (state, getter, rootState) => {
+        return Object.keys(rootState.options)
+            .filter(opt=>opt.startsWith('mangadex'))
+            .reduce((obj, key) => {
+                obj[key] = rootState.options[key]
+                return obj
+            }, {})
     }
 }
 
@@ -101,11 +110,20 @@ const actions = {
             commit('setMangas', mangasdb.map(mg => new Manga(mg)));
         })
     },
+    /**
+     * Initialise syncManager
+     * @param {*} param0 
+     */
     async initSync({commit, rootState, dispatch, getters}) {
         // starting manager
         syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
         syncManager.start()
     },
+    /**
+     * Update syncManager options
+     * @param {*} param0 
+     * @param {*} backgroundjs 
+     */
     async updateSync({getters, rootState, dispatch}, backgroundjs = false) {
         if(backgroundjs) {
             // wait 1s, helps commit from popup.js propagate.

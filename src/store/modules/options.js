@@ -121,10 +121,19 @@ const default_options = {
     alpha_asc_desc: false, // Order by name asending/descending
 
     /** Mangadex specific options */
-    mangadexBlockedGroups: '', // Group id's to block chapters from
-    mangadexPreferredGroups: '', // Group id's to prefer chapters from
     mangadexDataSaver: 0, // Use the datasaver option when getting chapter images
-    mangadexImageServer: 'none', // Use the MD@Home network when getting chapter images (not implimented in v2 api yet)
+
+    /** Mangadex integration Options */
+    mangadexIntegrationEnable: 0,
+    mangadexValidCredentials: 0,
+    mangadexToken: '',
+    mangadexTokenExpire: Date.now(),
+    mangadexRefresh: '',
+    mangadexRefreshExpire: Date.now(),
+    mangadexUpdateReadStatus: 0,
+    mangadexImportLists: 0,
+    mangadexImportFollows: 0,
+
 
     /** Komga specific options */
     komgaUrl: 'http://localhost:8080',
@@ -134,8 +143,20 @@ const default_options = {
 }
 
 const jsonOptions = ["categoriesStates", "readlanguages"];
-const stringOptions = ["colornew", "colorread", "colornotfollow", "mangadexBlockedGroups", "mangadexPreferredGroups", "mangadexImageServer", "pageNavigationPosition",
-    "sortOrder", "komgaUrl", "komgaUser", "komgaPassword", "gistSyncSecret", "gistSyncGitID"];
+const stringOptions = [
+    "colornew",
+    "colorread",
+    "colornotfollow",
+    "pageNavigationPosition",
+    "sortOrder",
+    "komgaUrl",
+    "komgaUser",
+    "komgaPassword",
+    "gistSyncSecret",
+    "gistSyncGitID",
+    'mangadexToken',
+    'mangadexRefresh'
+];
 
 /**
  *  initial state of amr options

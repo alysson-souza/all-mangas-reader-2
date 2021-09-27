@@ -7,6 +7,7 @@ import amrInit from '../amr/amr-init';
 import browser from "webextension-polyfill";
 import HandleManga from './handle-manga';
 import converToMangadexV5 from './misc/mangedex-v5-converter'
+import {Mangadex} from './misc/mangadex-v5-integration'
 import mirrorsHelper from '../amr/mirrors-helper';
 
 // Blue icon while loading
@@ -84,7 +85,7 @@ IconHelper.setBlueIcon();
 
     utils.debug('Running mangadex converter')
     converToMangadexV5()
-
+    new Mangadex(store.getters.mangadexOptions)
     // content script included, test if a mirror match the page and load AMR in tab
     /*browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
         if (changeInfo.status === "loading") { // just load scripts once, when the tab is loading

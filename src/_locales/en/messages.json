@@ -1649,6 +1649,34 @@
     "message": "Compressed jpeg images for less bandwidth",
     "description": "Option for datasaver toggle on mangadex"
   },
+  "options_mangadex_integration": {
+    "message": "Enable mangadex integration",
+    "description": ""
+  },
+  "options_mangadex_integration_info": {
+    "message": "Synchronise read progression, import list/follows",
+    "description": ""
+  },
+  "options_mangadex_login": {
+    "message": "Your Mangadex username",
+    "description": ""
+  },
+  "options_mangadex_password": {
+    "message": "Your Mangadex password",
+    "description": ""
+  },
+  "options_mangadex_verify_credentials": {
+    "message": "Connect your Mangadex account",
+    "description": ""
+  },
+  "options_mangadex_reset_credentials": {
+    "message": "Disconnect from Mangadex",
+    "description": ""
+  },
+  "options_mangadex_update_read": {
+    "message": "Synchronise reading progression",
+    "description": ""
+  },
   "options_mangadex_blocked_groups": {
     "message": "Blocked groups list",
     "description": "Option for blocking groups on mangadex"

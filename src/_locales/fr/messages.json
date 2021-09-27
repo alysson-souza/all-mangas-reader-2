@@ -1648,6 +1648,34 @@
     "message": "Images jpeg compressées pour moins de bande passante",
     "description": "Option for datasaver toggle on mangadex"
   },
+  "options_mangadex_integration": {
+    "message": "Activé l'intégration de mangadex",
+    "description": "Option for datasaver toggle on mangadex"
+  },
+  "options_mangadex_integration_info": {
+    "message": "Synchroniser l'état d'avancement de lecture, importer les listes/suivis",
+    "description": "Option for datasaver toggle on mangadex"
+  },
+  "options_mangadex_login": {
+    "message": "Votre nom d'utilisateur Mangadex",
+    "description": "Option for datasaver toggle on mangadex"
+  },
+  "options_mangadex_password": {
+    "message": "Votre mot de pass Mangadex",
+    "description": "Option for datasaver toggle on mangadex"
+  },
+  "options_mangadex_verify_credentials": {
+    "message": "Associer votre compte Mangadex",
+    "description": "Option for datasaver toggle on mangadex"
+  },
+  "options_mangadex_reset_credentials": {
+    "message": "Se déconnecter de Mangadex",
+    "description": "Option for datasaver toggle on mangadex"
+  },
+  "options_mangadex_update_read": {
+    "message": "Synchroniser la progression de lecture",
+    "description": ""
+  },
   "options_mangadex_blocked_groups": {
     "message": "Liste des groupes bloqués",
     "description": "Option for blocking groups on mangadex"
