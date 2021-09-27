@@ -25,7 +25,7 @@ if (typeof registerMangaObject === "function") {
                 json.props['pageProps']['series']['chapters'].forEach(chapter => {
                     res.push([`${chapter.number} - ${chapter.title ? chapter.title : 'N/A'}`, `${mangaUrl}/${chapter.number}`]);
                 });
-                return res.reverse();
+                return res;
             },
             getImageList: (json) => {
                 const res = [];
