@@ -28,17 +28,20 @@ export default class BrowserStorage extends Storage {
         this.batchSize = 10;
     }
 
-    remove(keys) {
+    async remove(keys) {
+        await this.wait()
         this.storageSync.remove(keys)
     }
 
-    getAll() {
+    async getAll() {
+        await this.wait()
         return this.storageSync.get()
         .then(result => objectMapToArray(result))
         .then(data => data.filter(i => typeof i === 'object'));
     }
 
-    save(key, value) {
+    async save(key, value) {
+        await this.wait()
         return this.storageSync.set({[key]: value}).catch(this.handleSyncError)
     }
 
@@ -49,18 +52,23 @@ export default class BrowserStorage extends Storage {
     /**
      * @param {{}} data
      */
-    set(data) {
-
+    async set(data) {
         if (typeof data === 'object') {
             if (Object.keys(data).length > this.batchSize) {
                 return this.setInBatches(data)
             }
         }
 
-        return this.storageSync.set(data).catch(this.handleSyncError)
+        try {
+            await this.wait()
+            return this.storageSync.set(data);
+        } catch (e) {
+            return this.handleSyncError(e);
+        }
     }
 
-    get(key) {
+    async get(key) {
+        await this.wait()
         return this.storageSync.get(key).catch(this.handleSyncError)
     }
 
@@ -82,7 +90,10 @@ export default class BrowserStorage extends Storage {
 
     setInBatches(data) {
         const batchedKeys = batchProps(data, this.batchSize)
-        const promises = batchedKeys.map(batch => this.storageSync.set(batch))
+        const promises = batchedKeys.map(async batch => {
+            await this.wait()
+            return this.storageSync.set(batch)
+        })
 
         return Promise.all(promises).catch(this.handleSyncError)
     }
