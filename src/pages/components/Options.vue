@@ -635,6 +635,14 @@
               <v-text-field v-model="komgaPassword" type="password" @change="setOption('komgaPassword')" :label="i18n('options_komga_password_label')" />
             </v-expansion-panel-content>
           </v-expansion-panel>
+          <!-- tachidesk Options -->
+          <v-expansion-panel>
+            <v-expansion-panel-header><div class="text-h5 blue--text lighten-4">{{ i18n("options_mirror_specific_tachidesk") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-content class="pt-6" color="slight-overlay">
+              <!-- tachidesk Domain -->
+              <v-text-field v-model="tachideskUrl" @change="setOption('tachideskUrl')" :label="i18n('options_tachidesk_server_label')" />
+            </v-expansion-panel-content>
+          </v-expansion-panel>
         </v-expansion-panels>
       </v-tab-item>
     </v-tabs-items>
