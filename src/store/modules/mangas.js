@@ -14,6 +14,7 @@ import * as syncUtils from '../../amr/sync/utils';
 import { getSyncManager } from '../../amr/sync/sync-manager'
 import axios from 'axios';
 import {Buffer} from 'buffer'
+import { Mangadex } from '../../background/misc/mangadex-v5-integration';
 
 let syncManager;
 // @TODO replace with actual error
@@ -419,6 +420,7 @@ const actions = {
                             }
                             if (posNew !== -1 && (message.fromSite || (posNew < posOld || posOld === -1))) {
                                 commit('updateMangaLastChapter', { key: mg.key, obj: message });
+                                if(mg.mirror === "MangaDex V5" && getters.mangadexOptions.mangadexIntegrationEnable) await new Mangadex(getters.mangadexOptions, dispatch).markAsRead(mg.lastChapterReadURL)
                                 if(!message.isSync) {
                                     if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
                                     await syncManager.setToRemote(mg, 'ts')
@@ -435,6 +437,7 @@ const actions = {
             } else {
                 if (message.fromSite || (posNew < posOld || posOld === -1)) {
                     commit('updateMangaLastChapter', { key: mg.key, obj: message });
+                    if(mg.mirror === "MangaDex V5" && getters.mangadexOptions.mangadexIntegrationEnable) await new Mangadex(getters.mangadexOptions, dispatch).markAsRead(mg.lastChapterReadURL)
                     if(!message.isSync) {
                         if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
                         await syncManager.setToRemote(mg, 'ts')
