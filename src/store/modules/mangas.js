@@ -90,13 +90,21 @@ const getters = {
         }, {})
     },
 
-    mangadexOptions: (state, getter, rootState) => {
+    mangadexOptions: (state, getters, rootState) => {
         return Object.keys(rootState.options)
             .filter(opt=>opt.startsWith('mangadex'))
             .reduce((obj, key) => {
                 obj[key] = rootState.options[key]
                 return obj
             }, {})
+    },
+    mdMarkAsRead: (state, getters, rootState) => {
+        const o = getters.mangadexOptions
+        if(o.mangadexIntegrationEnable == 1 && o.mangadexUpdateReadStatus == 1) {
+            return true
+        } else {
+            return false
+        }
     }
 }
 
@@ -420,7 +428,7 @@ const actions = {
                             }
                             if (posNew !== -1 && (message.fromSite || (posNew < posOld || posOld === -1))) {
                                 commit('updateMangaLastChapter', { key: mg.key, obj: message });
-                                if(mg.mirror === "MangaDex V5" && getters.mangadexOptions.mangadexIntegrationEnable) await new Mangadex(getters.mangadexOptions, dispatch).markAsRead(mg.lastChapterReadURL)
+                                if(mg.mirror === "MangaDex V5" && getters.mdMarkAsRead) await new Mangadex(getters.mangadexOptions, dispatch).markAsRead(mg.lastChapterReadURL)
                                 if(!message.isSync) {
                                     if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
                                     await syncManager.setToRemote(mg, 'ts')
@@ -437,7 +445,7 @@ const actions = {
             } else {
                 if (message.fromSite || (posNew < posOld || posOld === -1)) {
                     commit('updateMangaLastChapter', { key: mg.key, obj: message });
-                    if(mg.mirror === "MangaDex V5" && getters.mangadexOptions.mangadexIntegrationEnable) await new Mangadex(getters.mangadexOptions, dispatch).markAsRead(mg.lastChapterReadURL)
+                    if(mg.mirror === "MangaDex V5" && getters.mdMarkAsRead) await new Mangadex(getters.mangadexOptions, dispatch).markAsRead(mg.lastChapterReadURL)
                     if(!message.isSync) {
                         if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
                         await syncManager.setToRemote(mg, 'ts')
