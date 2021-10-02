@@ -9,6 +9,7 @@ export class Mangadex {
  * @param {Number} opts.mangadexRefreshExpire
  * @param {Boolean} opts.mangadexIntegrationEnable
  * @param {Boolean} opts.mangadexValidCredentials
+ * @param {Boolean} opts.mangadexUpdateReadStatus
  * @param {Function} dispatch 
  */
   constructor({
@@ -19,6 +20,7 @@ export class Mangadex {
       mangadexIntegrationEnable,
       mangadexValidCredentials
   }, dispatch) {
+    this.requests = 0
     this.mangadexIntegrationEnable === mangadexIntegrationEnable
     this.mangadexValidCredentials === mangadexValidCredentials
     this.token = {
@@ -34,17 +36,29 @@ export class Mangadex {
     }
   }
 
-  /**
-   * Verify tokens
-   * @returns {Promise<this>}
-   */
+  async wait() {
+    this.requests = this.requests+1
+    const time = this.requests*180
+    return new Promise(resolve => {
+      setTimeout(() => {
+        this.resetRequests()
+        resolve()
+      }, time)
+    })
+  }
+
+  resetRequests() {
+    if(this.requests > 0) this.requests = this.requests - 1
+  }
+
   async verifyTokens() {
     if(Date.now() > this.token.refresh[1]) {
       await this.dispatch("setOption", { key: 'mangadexValidCredentials', value: 0 });
+      return false
     } else if(Date.now() > this.token.session[1]) {
-      await this.refreshToken()
+      return this.refreshToken()
     }
-    return new Promise(resolve => resolve(this))
+    return true
   }
   /**
    * Refresh tokens
@@ -59,8 +73,9 @@ export class Mangadex {
       body: JSON.stringify({token: this.token.refresh[0]})
     })
     if(req.status === 200) {
-      await this.propagate(await req.json())
+      return await this.propagate(await req.json())
     }
+    return false
   }
   /**
    * Propagate API results to the store
@@ -75,9 +90,11 @@ export class Mangadex {
       await this.dispatch("setOption", { key: 'mangadexTokenExpire', value: in13min });
       await this.dispatch("setOption", { key: 'mangadexRefresh', value: json.token.refresh });
       this.token.session = [json.token.session, in13min]
+      return true
     } else {
       await this.dispatch("setOption", { key: 'mangadexValidCredentials', value: 0 });
       this.mangadexValidCredentials = false
+      return false
     }
   }
   /**
@@ -86,20 +103,68 @@ export class Mangadex {
    * @param {String} method GET|POST|PUT|DELETE
    * @param {Object} obj
    */
-   async MD(path, method, obj = {}) {
-    await this.verifyTokens()
+   async MD(path, method, obj) {
+    const isValid = await this.verifyTokens()
+    if(!isValid) return {}
+    await this.wait()
     const req = await fetch(`https://api.mangadex.org${path}`, {
       method: method,
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': `bearer ${this.token.session}`
+        'Authorization': `Bearer ${this.token.session[0]}`
       },
-      body: JSON.stringify(obj)
+      body: obj ? JSON.stringify(obj) : undefined
     })
     return req.json()
   }
 
+  async getFollows() {
+      let res = []
+      // fetching for a max of 10.000 results
+      for(const [page] of Array(100).entries()) {
+        const resp = await this.MD(`/user/follows/manga?limit=100&offset=${page * 100}`, 'GET')
+        const current = parseInt(resp.limit) + parseInt(resp.offset)
+        const total = parseInt(resp.total)
+        res = res.concat(resp.data)
+        if(current >= total) break;
+      }
+      const mapped = res.map(async r => {
+        const lang = await this.getAvailableLanguages(r.id)
+        return {
+          id: r.id,
+          title: r.attributes.title.en || Object.entries(r.attributes.title)[0][1],
+          lang: lang.sort(function(a, b) {
+            var textA = a.name.toLocaleUpperCase();
+            var textB = b.name.toLocaleUpperCase();
+            return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+          })
+        }
+      })
+      return (await Promise.allSettled(mapped)).filter(p => p.status === "fulfilled").map(v => v.value).sort((a, b) => {
+        var textA = a.title.toLocaleUpperCase();
+        var textB = b.title.toLocaleUpperCase();
+        return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+      })
+  }
+  async getAvailableLanguages(id) {
+    const res = []
+    for(const [page] of Array(500).entries()) {
+      const resp = await this.MD(`/manga/${id}/feed?limit=100&offset=${page * 100}&order[chapter]=asc`, 'GET')
+      const current = parseInt(resp.limit) + parseInt(resp.offset)
+      const total = parseInt(resp.total)
+      for(const data of resp.data) {
+        const lang = data.attributes.translatedLanguage
+        res.push({ name: lang, key: `mangadexv5/title/${id}_${lang}`, url: `https://mangadex.org/chapter/${data.id}` })
+      }
+      if(current >= total) break;
+    }
+    return res.filter((thing, index, self) =>
+      index === self.findIndex((t) => (
+        t.name === thing.name && t.key === thing.key
+      ))
+    )
+  }
   /**
    * 
    * @param {String} mg 
