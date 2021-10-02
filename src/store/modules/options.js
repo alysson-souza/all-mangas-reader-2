@@ -129,13 +129,15 @@ const default_options = {
     /** Komga specific options */
     komgaUrl: 'http://localhost:8080',
     komgaUser: '',
-    komgaPassword: ''
+    komgaPassword: '',
+
+    tachideskUrl: 'http://localhost:4567 '
 
 }
 
 const jsonOptions = ["categoriesStates", "readlanguages"];
 const stringOptions = ["colornew", "colorread", "colornotfollow", "mangadexBlockedGroups", "mangadexPreferredGroups", "mangadexImageServer", "pageNavigationPosition",
-    "sortOrder", "komgaUrl", "komgaUser", "komgaPassword", "gistSyncSecret", "gistSyncGitID"];
+    "sortOrder", "komgaUrl", "komgaUser", "komgaPassword", "tachideskUrl", "gistSyncSecret", "gistSyncGitID"];
 
 /**
  *  initial state of amr options

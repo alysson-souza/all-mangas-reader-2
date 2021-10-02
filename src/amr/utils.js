@@ -36,6 +36,9 @@ export function matchDomain(str, rule) {
     if (rule == 'komga') {
         rule = new URL(AMR_STORE.state.options.komgaUrl).host
     }
+    if (rule == 'tachidesk') {
+        rule = new URL(AMR_STORE.state.options.tachideskUrl).host
+    }
     let doMatch = new RegExp("^" + rule.replace(/\*/g, '.*') + "$").test(str)
     return doMatch
 }
