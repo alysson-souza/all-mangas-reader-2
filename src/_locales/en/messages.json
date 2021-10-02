@@ -1673,10 +1673,7 @@
     "message": "Disconnect from Mangadex",
     "description": ""
   },
-  "options_mangadex_update_read": {
-    "message": "Synchronise reading progression",
-    "description": ""
-  },
+
   "options_mangadex_blocked_groups": {
     "message": "Blocked groups list",
     "description": "Option for blocking groups on mangadex"

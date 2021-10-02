@@ -1672,10 +1672,6 @@
     "message": "Se déconnecter de Mangadex",
     "description": "Option for datasaver toggle on mangadex"
   },
-  "options_mangadex_update_read": {
-    "message": "Synchroniser la progression de lecture",
-    "description": ""
-  },
   "options_mangadex_blocked_groups": {
     "message": "Liste des groupes bloqués",
     "description": "Option for blocking groups on mangadex"

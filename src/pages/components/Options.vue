@@ -17,7 +17,7 @@
     </v-tabs>
     <v-tabs-items v-model="tabs" class="elevation-1">
       <v-tab-item value="general" transition="false">
-        <v-expansion-panels accordion focusable>
+        <v-expansion-panels accordion focusable v-model="panels">
           <v-expansion-panel>
             <!-- AMR aspect -->
             <v-expansion-panel-header><div class="text-h5 blue--text lighten-4">{{ i18n("options_gen_aspect") }}</div></v-expansion-panel-header>
@@ -296,7 +296,7 @@
         </v-expansion-panels>
       </v-tab-item>
       <v-tab-item value="onwebsites" transition="false">
-        <v-expansion-panels accordion focusable>
+        <v-expansion-panels accordion focusable v-model="panels">
           <v-expansion-panel>
             <v-expansion-panel-header><div class="text-h5 blue--text lighten-4">{{ i18n("options_web_chapter_display_mode") }}</div></v-expansion-panel-header>
             <v-expansion-panel-content class="pt-6" color="slight-overlay">
@@ -440,7 +440,7 @@
         </v-expansion-panels>
       </v-tab-item>
       <v-tab-item value="supported" transition="false">
-        <v-expansion-panels accordion focusable>
+        <v-expansion-panels accordion focusable v-model="panels">
           <v-expansion-panel>
             <!-- Languages -->
             <v-expansion-panel-header><div class="text-h5 blue--text lighten-4">{{ i18n("options_sup_languages") }}</div></v-expansion-panel-header>
@@ -533,7 +533,7 @@
         </v-expansion-panels>
       </v-tab-item>
       <v-tab-item value="mirror" transition="false">
-         <v-expansion-panels accordion focusable>
+         <v-expansion-panels accordion focusable v-model="panels">
           <!-- Mangadex Options -->
           <v-expansion-panel>
             <v-expansion-panel-header><div class="text-h5 blue--text lighten-4">{{ i18n("options_mirror_specific_mangadex") }}</div></v-expansion-panel-header>
@@ -571,21 +571,23 @@
                 </template>
               </v-checkbox>
               <!-- Credentials -->
-              <v-text-field v-if="(mangadexIntegrationEnable && !mangadexValidCredentials) || mangadexRefreshExpire < Date.now()" v-model="mangadexLogin" @change="setOption('mangadexLogin')"
-                          :label="i18n('options_mangadex_login')"></v-text-field>
-              <v-text-field type="password"  v-if="(mangadexIntegrationEnable && !mangadexValidCredentials) || mangadexRefreshExpire < Date.now()" v-model="mangadexPassword" @change="setOption('mangadexPassword')"
-                          :label="i18n('options_mangadex_password')"></v-text-field>
-              <!-- Confirm credentials button -->
-              <v-btn :loading="mangadexCredsLoading" v-if="mangadexLogin && mangadexPassword && (!mangadexValidCredentials || mangadexRefreshExpire < Date.now())" @click="verifyMangadexCreds"> {{ i18n('options_mangadex_verify_credentials') }}</v-btn>
+              <div v-if="mangadexIntegrationEnable && (!mangadexValidCredentials || mangadexExpired)">
+                <v-text-field v-model="mangadexLogin" @change="setOption('mangadexLogin')"
+                            :label="i18n('options_mangadex_login')"></v-text-field>
+                <v-text-field type="password" v-model="mangadexPassword" @change="setOption('mangadexPassword')"
+                            :label="i18n('options_mangadex_password')"></v-text-field>
+                <!-- Confirm credentials button -->
+                <v-btn :loading="mangadexCredsLoading" v-if="mangadexLogin && mangadexPassword" @click="verifyMangadexCreds"> {{ i18n('options_mangadex_verify_credentials') }}</v-btn>
+              </div>
               <!-- Reset credentials button -->
-              <v-btn class="mb-4" color="warning" :loading="mangadexCredsLoading" v-if="mangadexValidCredentials && mangadexRefreshExpire > Date.now()" @click="resetMangadexCreds"> {{ i18n('options_mangadex_reset_credentials') }}</v-btn>
-              <v-divider v-if="mangadexValidCredentials && mangadexRefreshExpire > Date.now()" />
+              <v-btn class="mb-4" color="warning" :loading="mangadexCredsLoading" v-if="mangadexValidCredentials && !mangadexExpired" @click="resetMangadexCreds"> {{ i18n('options_mangadex_reset_credentials') }}</v-btn>
+              <v-divider v-if="mangadexIntegrationEnable && mangadexValidCredentials && !mangadexExpired" />
               <!-- Mangadex integration options -->
-              <div class="mt-4" v-if="mangadexValidCredentials && mangadexRefreshExpire > Date.now()">
+              <div class="mt-4" v-if="mangadexIntegrationEnable && mangadexValidCredentials && !mangadexExpired">
                 <v-checkbox
                   v-model="mangadexUpdateReadStatus"
                   @change="setOption('mangadexUpdateReadStatus')"
-                  :label="i18n('options_mangadex_update_read')"
+                  :label="i18n('options_web_markwhendownload_desc')"
                   />
               </div>
             </v-expansion-panel-content>
@@ -667,10 +669,16 @@ const converters = {
 };
 
 export default {
+  props: {
+    preOpen: {
+      default: () => { return { tab: "general", panel: undefined } },
+    },
+  },
   data() {
     // default options
     let res = {
-      tabs: 'general',
+      tabs: this.preOpen.tab,
+      panels: this.preOpen.panel,
       colors: [
         "red#l3",
         "red",
@@ -821,7 +829,12 @@ export default {
                   languages: el
               }
           })
-      }
+      },
+      mangadexExpired() {
+        if(this.mangadexRefreshExpire < Date.now()) return true
+        return false
+      },
+
   },
   watch: {
     /**
@@ -851,6 +864,9 @@ export default {
     },
     mangadexIntegrationEnable(nVal) {
       this.resetMangadexCreds()
+    },
+    tabs: function(n, o) {
+      this.panels = undefined
     }
   },
   methods: {
@@ -1060,6 +1076,7 @@ export default {
     },
     async resetMangadexCreds() {
       this.$store.dispatch("setOption", { key: 'mangadexValidCredentials', value: 0 });
+      this.$store.dispatch("setOption", { key: 'mangadexDontRemindMe', value: 0 });
       this.mangadexValidCredentials = 0
     },
     async verifyMangadexCreds() {
@@ -1082,6 +1099,7 @@ export default {
           this.$store.dispatch("setOption", { key: 'mangadexTokenExpire', value: in13min });
           this.$store.dispatch("setOption", { key: 'mangadexRefresh', value: json.token.refresh });
           this.$store.dispatch("setOption", { key: 'mangadexRefreshExpire', value: inAmonthOrSo });
+          this.$store.dispatch("setOption", { key: 'mangadexDontRemindMe', value: 0 });
         }
 
       }

@@ -133,7 +133,7 @@ const default_options = {
     mangadexUpdateReadStatus: 0,
     mangadexImportLists: 0,
     mangadexImportFollows: 0,
-
+    mangadexDontRemindMe: 0,
 
     /** Komga specific options */
     komgaUrl: 'http://localhost:8080',
