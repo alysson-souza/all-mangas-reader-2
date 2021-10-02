@@ -589,6 +589,39 @@
                   @change="setOption('mangadexUpdateReadStatus')"
                   :label="i18n('options_web_markwhendownload_desc')"
                   />
+                <v-btn text :loading="mangadexImportLoading" @click="mdImport"> IMPORT FOLLOWS </v-btn>
+                <div v-if="mdFollows">
+                  <v-data-table
+                    :items="mdFollows"
+                    :items-per-page="10"
+                    :calculate-widths="true"
+                    class="elevation-1"
+                  >
+                    <template v-slot:item="{item, index}">
+                      <tr>
+                        <td class="py-2">
+                          {{ index+1 }}
+                        </td>
+                        <td class="py-2">
+                          {{ item.title }}
+                        </td>
+                        <td class="py-2">
+                          <v-btn
+                            class="mx-2"
+                            v-for="(subitem, index) of item.lang"
+                            :key="index"
+                            x-small
+                            rounded
+                            color="info"
+                            @click="addManga(subitem)"
+                          >
+                            {{ subitem.name }}
+                          </v-btn>
+                        </td>
+                      </tr>
+                    </template>
+                  </v-data-table>
+                </div>
               </div>
             </v-expansion-panel-content>
           </v-expansion-panel>
@@ -618,7 +651,7 @@ import Flag from "./Flag";
 import * as amrutils from "../../amr/utils";
 import * as utils from "../utils";
 import { THINSCAN } from '../../amr/options';
-
+import { Mangadex } from '../../background/misc/mangadex-v5-integration'
 /**
  * Converters to format options in db and in page (ex : booleans are store as 0:1 in db)
  */
@@ -793,7 +826,8 @@ export default {
       selectedLang: "",
       mangadexCredsLoading: false,
       mangadexLogin: '',
-      mangadexPassword: ''
+      mangadexPassword: '',
+      mangadexImportLoading: false,
     };
     // add all options properties in data model; this properties are the right one in store because synchronization with background has been called by encapsuler (popup.js / other) before initializing vue
     res = Object.assign(res, this.$store.state.options);
@@ -1109,6 +1143,28 @@ export default {
         this.mangadexValidCredentials = 1
       }, 2000)
       
+    },
+    mdImport() {
+    const opts = this.$store.getters.mangadexOptions
+      if(opts.mangadexIntegrationEnable) {
+        const md = new Mangadex(this.$store.getters.mangadexOptions, this.$store.dispatch)
+        this.mangadexImportLoading = true
+        const mangas = this.$store.state.mangas.all.filter(mg => mg.mirror === "MangaDex V5").map(mg => mg.key)
+        console.log(mangas)
+        md.getFollows().then((f) => {
+          this.mdFollows = f.filter(f => {
+            if(mangas.find(e=>e.includes(f.id))) {
+              return false
+            } else {
+              return true
+            }
+          })
+          this.mangadexImportLoading = false
+        })
+      }
+    },
+    addManga(infos) {
+      console.log(infos)
     }
   }
 };
@@ -1173,5 +1229,10 @@ export default {
 .v-icon.v-icon.superscript {
   vertical-align: super;
   line-height: 0;
+}
+</style>
+<style scoped>
+.theme--light.v-data-table>.v-data-table__wrapper>table>tbody>tr:not(:last-child)>td:last-child, .theme--light.v-data-table>.v-data-table__wrapper>table>tbody>tr:not(:last-child)>td:not(.v-data-table__mobile-row), .theme--light.v-data-table>.v-data-table__wrapper>table>tbody>tr:not(:last-child)>th:last-child, .theme--light.v-data-table>.v-data-table__wrapper>table>tbody>tr:not(:last-child)>th:not(.v-data-table__mobile-row), .theme--light.v-data-table>.v-data-table__wrapper>table>thead>tr:last-child>th {
+    border-bottom: thin solid rgba(0,0,0,.12)!important;
 }
 </style>
