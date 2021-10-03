@@ -154,14 +154,13 @@ export class Mangadex {
       const current = parseInt(resp.limit) + parseInt(resp.offset)
       const total = parseInt(resp.total)
       for(const data of resp.data) {
-        const lang = data.attributes.translatedLanguage
-        res.push({ name: lang, key: `mangadexv5/title/${id}_${lang}`, url: `https://mangadex.org/chapter/${data.id}` })
+        res.push({ name: data.attributes.translatedLanguage, url: `https://mangadex.org/chapter/${data.id}` })
       }
       if(current >= total) break;
     }
     return res.filter((thing, index, self) =>
       index === self.findIndex((t) => (
-        t.name === thing.name && t.key === thing.key
+        t.name === thing.name
       ))
     )
   }

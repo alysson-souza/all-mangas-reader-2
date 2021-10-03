@@ -613,7 +613,7 @@
                             x-small
                             rounded
                             color="info"
-                            @click="addManga(subitem)"
+                            @click="addManga(item, subitem)"
                           >
                             {{ subitem.name }}
                           </v-btn>
@@ -1150,7 +1150,6 @@ export default {
         const md = new Mangadex(this.$store.getters.mangadexOptions, this.$store.dispatch)
         this.mangadexImportLoading = true
         const mangas = this.$store.state.mangas.all.filter(mg => mg.mirror === "MangaDex V5").map(mg => mg.key)
-        console.log(mangas)
         md.getFollows().then((f) => {
           this.mdFollows = f.filter(f => {
             if(mangas.find(e=>e.includes(f.id))) {
@@ -1163,8 +1162,15 @@ export default {
         })
       }
     },
-    addManga(infos) {
-      console.log(infos)
+    addManga(item, subitem) {
+      browser.runtime.sendMessage({
+        action: "readManga",
+        url: `https://mangadex.org/title/${item.id}`,
+        mirror: "MangaDex V5",
+        lastChapterReadURL: subitem.url,
+        name: item.title,
+        language: subitem.name
+      });
     }
   }
 };
