@@ -868,7 +868,9 @@ export default {
         if(this.mangadexRefreshExpire < Date.now()) return true
         return false
       },
-
+      mangadexMangasInStore() {
+        return this.$store.state.mangas.all.filter(mg => mg.mirror === "MangaDex V5").map(mg => mg.key)
+      }
   },
   watch: {
     /**
@@ -1149,10 +1151,9 @@ export default {
       if(opts.mangadexIntegrationEnable) {
         const md = new Mangadex(this.$store.getters.mangadexOptions, this.$store.dispatch)
         this.mangadexImportLoading = true
-        const mangas = this.$store.state.mangas.all.filter(mg => mg.mirror === "MangaDex V5").map(mg => mg.key)
         md.getFollows().then((f) => {
           this.mdFollows = f.filter(f => {
-            if(mangas.find(e=>e.includes(f.id))) {
+            if(this.mangadexMangasInStore.find(e=>e.includes(f.id))) {
               return false
             } else {
               return true
@@ -1170,7 +1171,16 @@ export default {
         lastChapterReadURL: subitem.url,
         name: item.title,
         language: subitem.name
-      });
+      }).then(() => {
+        this.mdFollows = this.mdFollows.filter(f => {
+          if(this.mangadexMangasInStore.find(e=>e.includes(f.id))) {
+            return false
+          } else {
+            return true
+          }
+        })
+        this.$forceUpdate()
+      })
     }
   }
 };
