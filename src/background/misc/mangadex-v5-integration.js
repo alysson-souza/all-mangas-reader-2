@@ -122,7 +122,7 @@ export class Mangadex {
   async getFollows() {
       let res = []
       // fetching for a max of 10.000 results
-      for(const [page] of Array(100).entries()) {
+      for(const [page] of Array(1000).entries()) {
         const resp = await this.MD(`/user/follows/manga?limit=100&offset=${page * 100}`, 'GET')
         const current = parseInt(resp.limit) + parseInt(resp.offset)
         const total = parseInt(resp.total)
@@ -130,15 +130,37 @@ export class Mangadex {
         if(current >= total) break;
       }
       const mapped = res.map(async r => {
-        const lang = await this.getAvailableLanguages(r.id)
+        // get all chapters lists in all language
+        const langs = await this.getAllchaptersInAllAvailableLanguages(r.id)
+        // get read chapters
+        const reads = (await this.MD(`/manga/${r.id}/read`, 'GET')).data
+        // find the highest chapter's number read in any language
+        let lastChaptersRead = -9999
+        if(reads) {
+          if(reads.length) {
+            langs.forEach(l => {
+              l.chapters.forEach(c => {
+                if(reads.includes(c.id)) {
+                  if(c.chapNum > lastChaptersRead) lastChaptersRead = c.chapNum
+                }
+              })
+            })
+          }
+        }
+        // keep the closest chapter, affects every language
+        // eg. if last read RU = 10 and last read EN = 5, skip EN ahead to 10 or the "closest" last released chapter
+        langs.forEach(l => {
+          l.lastRead = l.chapters.reduce((prev, curr) => {
+            return (Math.abs(curr.chapNum - lastChaptersRead) < Math.abs(prev.chapNum - lastChaptersRead) ? curr : prev);
+          })
+        })
+
         return {
           id: r.id,
           title: r.attributes.title.en || Object.entries(r.attributes.title)[0][1],
-          lang: lang.sort(function(a, b) {
-            var textA = a.name.toLocaleUpperCase();
-            var textB = b.name.toLocaleUpperCase();
-            return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
-          })
+          lastChaptersRead: lastChaptersRead >= 0 ? lastChaptersRead : undefined,
+          langs:langs
+
         }
       })
       return (await Promise.allSettled(mapped)).filter(p => p.status === "fulfilled").map(v => v.value).sort((a, b) => {
@@ -147,22 +169,44 @@ export class Mangadex {
         return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
       })
   }
-  async getAvailableLanguages(id) {
-    const res = []
-    for(const [page] of Array(500).entries()) {
+  async getAllchaptersInAllAvailableLanguages(id) {
+    const res = {}
+    for(const [page] of Array(1000).entries()) {
       const resp = await this.MD(`/manga/${id}/feed?limit=100&offset=${page * 100}&order[chapter]=asc`, 'GET')
       const current = parseInt(resp.limit) + parseInt(resp.offset)
       const total = parseInt(resp.total)
+      
       for(const data of resp.data) {
-        res.push({ name: data.attributes.translatedLanguage, url: `https://mangadex.org/chapter/${data.id}` })
+        const titleParts = []
+        if(data.attributes.chapter && data.attributes.chapter.length > 0) titleParts.push(data.attributes.chapter)
+        if(data.attributes.title) titleParts.push(data.attributes.title)
+        const lang = data.attributes.translatedLanguage
+        const obj = {
+          id: data.id,
+          chapNum: data.attributes.chapter,
+          title: titleParts.length > 0 ? titleParts.join(' - ') : 'Untitled',
+          url: `https://mangadex.org/chapter/${data.id}`,
+          date: new Date(data.attributes.publishAt).getTime()
+        }
+        if(!res[lang]) res[lang] = []
+        res[lang].push(obj)
       }
       if(current >= total) break;
     }
-    return res.filter((thing, index, self) =>
-      index === self.findIndex((t) => (
-        t.name === thing.name
-      ))
-    )
+    const mapped = []
+    // change the way data is presented
+    Object.keys(res).forEach(k => {
+      // only keep the oldest chapter
+      const chapters = Object.values(res[k].reduce((a, {id, chapNum, title, url, date}) => {
+        if (a[id]) {
+          if (a[id].date > date) a[id] = {id, chapNum, title, url, date};
+        } else a[id] = {id, chapNum, title, url, date};
+        
+        return a;
+      }, {}));
+      mapped.push({ code: k, chapters})
+    }) 
+    return mapped
   }
   /**
    * 
