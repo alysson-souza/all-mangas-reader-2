@@ -109,6 +109,10 @@ const actions = {
             if (w.mirrorName == 'Komga') {
                 w.home = rootState.options.komgaUrl
             }
+            // tachidesk shit
+            if (w.mirrorName == 'Tachidesk') {
+                w.home = rootState.options.tachideskUrl
+            }
 
             w.activated = act;
             updts.push(

@@ -138,7 +138,9 @@ const default_options = {
     /** Komga specific options */
     komgaUrl: 'http://localhost:8080',
     komgaUser: '',
-    komgaPassword: ''
+    komgaPassword: '',
+
+    tachideskUrl: 'http://localhost:4567 '
 
 }
 
@@ -147,15 +149,16 @@ const stringOptions = [
     "colornew",
     "colorread",
     "colornotfollow",
-    "pageNavigationPosition",
-    "sortOrder",
+    "gistSyncSecret",
+    "gistSyncGitID",
     "komgaUrl",
     "komgaUser",
     "komgaPassword",
-    "gistSyncSecret",
-    "gistSyncGitID",
     'mangadexToken',
-    'mangadexRefresh'
+    'mangadexRefresh',
+    "pageNavigationPosition",
+    "sortOrder",
+    "tachideskUrl",
 ];
 
 /**
