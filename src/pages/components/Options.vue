@@ -591,7 +591,8 @@
                   />
                 <v-btn text :loading="mangadexImportLoading" @click="mdImport"> IMPORT FOLLOWS </v-btn>
                 <div v-if="mdFollows">
-                  <v-data-table
+                  <pre> {{ mdFollows }}</pre>
+                  <!-- <v-data-table
                     :items="mdFollows"
                     :items-per-page="10"
                     :calculate-widths="true"
@@ -615,12 +616,12 @@
                             color="info"
                             @click="addManga(item, subitem)"
                           >
-                            {{ subitem.name }}
+                            {{ subitem.lang }}
                           </v-btn>
                         </td>
                       </tr>
                     </template>
-                  </v-data-table>
+                  </v-data-table> -->
                 </div>
               </div>
             </v-expansion-panel-content>
@@ -1170,7 +1171,7 @@ export default {
         mirror: "MangaDex V5",
         lastChapterReadURL: subitem.url,
         name: item.title,
-        language: subitem.name
+        language: subitem.lang
       }).then(() => {
         this.mdFollows = this.mdFollows.filter(f => {
           if(this.mangadexMangasInStore.find(e=>e.includes(f.id))) {
