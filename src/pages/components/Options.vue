@@ -1172,14 +1172,15 @@ export default {
         })
       }
     },
-    addManga(item, subitem) {
+    addManga(item, selectedSubitem) {
       browser.runtime.sendMessage({
         action: "readManga",
+        name: item.title,
         url: `https://mangadex.org/title/${item.id}`,
         mirror: "MangaDex V5",
-        lastChapterReadURL: subitem.url,
-        name: item.title,
-        language: subitem.lang
+        lastChapterReadURL: selectedSubitem.lastRead.url,
+        lastChapterReadName: selectedSubitem.lastRead.title,
+        language: selectedSubitem.code
       }).then(() => {
         this.mdFollows = this.mdFollows.filter(f => {
           if(this.mangadexMangasInStore.find(e=>e.includes(f.id))) {
