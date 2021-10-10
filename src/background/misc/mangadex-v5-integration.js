@@ -144,7 +144,7 @@ export class Mangadex {
             langs.forEach(l => {
               l.chapters.forEach(c => {
                 if(reads.includes(c.id)) {
-                  if(c.chapNum > lastChaptersRead) lastChaptersRead = c.chapNum
+                  if(parseFloat(c.chapNum) > parseFloat(lastChaptersRead)) lastChaptersRead = c.chapNum
                 }
               })
             })
@@ -154,7 +154,7 @@ export class Mangadex {
         // eg. if last read RU = 10 and last read EN = 5, skip EN ahead to 10 or the "closest" last released chapter
         langs.forEach(l => {
           l.lastRead = l.chapters.reduce((prev, curr) => {
-            return (Math.abs(curr.chapNum - lastChaptersRead) < Math.abs(prev.chapNum - lastChaptersRead) ? curr : prev);
+            return (Math.abs(parseFloat(curr.chapNum) - parseFloat(lastChaptersRead)) < Math.abs(parseFloat(prev.chapNum) - parseFloat(lastChaptersRead)) ? curr : prev);
           })
         })
         // return
