@@ -165,12 +165,12 @@ export class Mangadex {
           langs:langs
         }
       })
-      // Keep fulfilled promised and sort output by title
+      // Keep values of fulfilled promised, sort output by title, remove entries with empty langs
       return (await Promise.allSettled(mapped)).filter(p => p.status === "fulfilled").map(v => v.value).sort((a, b) => {
         var textA = a.title.toLocaleUpperCase();
         var textB = b.title.toLocaleUpperCase();
         return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
-      })
+      }).filter(e=> e.langs.length)
   }
   /**
    * Get all chapters in all languages.
