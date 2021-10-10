@@ -201,9 +201,8 @@ export class Mangadex {
         }
         // only add languages which aren't in store
         if(!inStore.find(m => m.includes(id+'_'+lang))) {
-          const formatted_lang = this.convertLang(lang)
-          if(!res[formatted_lang]) res[formatted_lang] = []
-          res[formatted_lang].push(obj)
+          if(!res[lang]) res[lang] = []
+          res[lang].push(obj)
         }
       }
       // stop loop if API has no more results to offer
@@ -225,21 +224,6 @@ export class Mangadex {
     })
     // sort languages alphabetically
     return mapped.sort((a, b) => a.code > b.code ? 1 : -1)
-  }
-  /**
-   * 
-   * @param {String} lang 
-   */
-  convertLang(lang) {
-    if(lang === 'pt-br') lang = 'br'
-    if(lang === 'es-la') lang = 'mx'
-    if(lang === 'fa') lang = 'ir'
-    if(lang === 'cs') lang = 'cz'
-    if(lang === 'zh-hk') lang = 'hk'
-    if(lang === 'zh') lang = 'cn'
-    if(lang === 'uk') lang = 'ua'
-    if(lang === 'vi') lang = 'vn'
-    return lang
   }
   /**
    * Mark chapter as read.
