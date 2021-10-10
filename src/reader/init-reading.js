@@ -18,7 +18,7 @@ import options from './state/options';
 import ChapterLoader from "./helpers/ChapterLoader";
 import store from '../store'
 
-vuetifyOptions.icons.iconfont = 'mdiSvg'
+vuetifyOptions.icons.iconfont = 'mdiSvg' // Forves embedded svg font for reader, we use the cdn based one for the popup still
 
 /** DO NOT REMOVE, not used here but define a global object used in loaded implementation */
 import mirrorHelper from '../amr/mirrors-helper';
