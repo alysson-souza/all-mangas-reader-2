@@ -27,7 +27,7 @@
 				{{i18n("options_gen_allowtracking_desc")}}
 				<div>
 					<v-btn @click="saveAllowTracking(true)">{{i18n('button_yes')}}</v-btn>
-					<v-btn flat @click="saveAllowTracking(false)">{{i18n('button_no')}}</v-btn>
+					<v-btn text @click="saveAllowTracking(false)">{{i18n('button_no')}}</v-btn>
 				</div>
 			</v-alert>
 			<v-alert class="mb-0" type="info" :value="true" icon="mdi-cookie-alert" v-if="!cookiesDone">
@@ -36,7 +36,7 @@
 				{{i18n("options_gen_allowcookies_warning")}}
 				<div>
 					<v-btn @click="saveAllowCookies(true)">{{i18n('button_yes')}}</v-btn>
-					<v-btn flat @click="saveAllowCookies(false)">{{i18n('button_no')}}</v-btn>
+					<v-btn text @click="saveAllowCookies(false)">{{i18n('button_no')}}</v-btn>
 				</div>
 			</v-alert>
 			<MangaList

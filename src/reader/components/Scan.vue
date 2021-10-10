@@ -43,7 +43,7 @@
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
               <v-btn v-on="on" icon large @click="reloadScan" color="primary">
-                <v-icon v-bind:data-src="src">mdi-image-broken</v-icon>
+                <v-icon v-bind:data-src="src">{{ icons.mdiImageBroken }}</v-icon>
               </v-btn>
             </template>
             <span>Click to try reloading scan</span>
@@ -65,6 +65,7 @@ import { scansProvider } from '../helpers/ScansProvider'
 import EventBus from '../helpers/EventBus'
 import i18n from '../../amr/i18n'
 import { i18nmixin } from '../../mixins/i18n-mixin'
+import { mdiImageBroken } from '@mdi/js'
 
 export default {
   mixins: [i18nmixin],
@@ -78,7 +79,8 @@ export default {
       snackbarShow: false,
       snackbarText: '',
       snackbarColor: '',
-      snackbarTimeout: 1500
+      snackbarTimeout: 1500,
+      icons: { mdiImageBroken }
     }
   },
   props: {
