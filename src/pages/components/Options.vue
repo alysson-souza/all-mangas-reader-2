@@ -1219,10 +1219,12 @@ export default {
       this.mdaddAllMangasCount = String(0)
       this.mdImportHideLanguage({global: true, lang})
       toAdd.forEach((item, i) => {
+        // exponential growth where min = 500 max = 2000
+        const wait = i*Math.min(Math.max(i**1.1, 500), 2000)
           setTimeout(() => {
             const selectedSubitem = item.langs.find(l => l.code === lang)
             this.mdAddManga(item, selectedSubitem)
-          }, 500*(i**1.2))
+          }, wait)
       })
     },
     /**

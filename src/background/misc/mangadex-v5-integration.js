@@ -38,7 +38,8 @@ export class Mangadex {
 
   async wait() {
     this.requests = this.requests+1
-    const time = 180*(this.requests**1.2)
+    // exponential growth where min = 200, max = 2000
+    const time = this.requests*Math.min(Math.max(this.requests**1.1, 200), 2000)
     return new Promise(resolve => {
       setTimeout(() => {
         this.resetRequests()
