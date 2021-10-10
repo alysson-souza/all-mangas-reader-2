@@ -1876,5 +1876,13 @@
   "reader_context_menu_reload_image": {
     "message": "Recharger l'image",
     "description": "Context Menu link for reloading a single image"
+  },
+  "options_mirror_specific_tachidesk": {
+    "message": "Options Tachidesk",
+    "description": "Option panel header Tachidesk"
+  },
+  "options_tachidesk_server_label": {
+    "message": "URL du serveur Tachidesk",
+    "description": "Option for Tachidesk url"
   }
 }
