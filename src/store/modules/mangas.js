@@ -823,8 +823,18 @@ const actions = {
     clearMangasSelect({ commit }) {
         commit("clearSelection");
     },
+    /**
+     * 
+     * @param {*} param0 
+     * @param {Object} param1
+     * @param {String} param1.imageURL 
+     * @param {String} param1.referer 
+     * @returns 
+     */
     async fetchImage({}, {imageURL, referer}) {
-        browser.webRequest.onBeforeSendHeaders.addListener(function(details){
+        const filter = { urls : [ "https://*/*", "http://*/*" ] }
+        const extraInfoSpec = ["requestHeaders", "blocking"]
+        const listener = (details) => {
             var newRef = referer;
             var gotRef = false;
             for(var n in details.requestHeaders) {
@@ -838,17 +848,13 @@ const actions = {
                 details.requestHeaders.push({name:"Referer",value:newRef});
             }
             return {requestHeaders:details.requestHeaders};
-        },{
-            urls:[ "https://*/*", "http://*/*" ]
-        },[
-            "requestHeaders",
-            "blocking",
-            "extraHeaders"
-        ]);
+        }
+
+        browser.webRequest.onBeforeSendHeaders.addListener(listener, filter, extraInfoSpec)
         const resp = await fetch(imageURL)
         const arraybuffer = await resp.arrayBuffer()
         const bs64 = new Buffer.from(arraybuffer).toString('base64');
-        browser.webRequest.onBeforeSendHeaders.removeListener()
+        browser.webRequest.onBeforeSendHeaders.removeListener(listener)
         return "data:" + resp.headers["content-type"] + ";base64,"+bs64
     }
 
