@@ -589,17 +589,23 @@
                   @change="setOption('mangadexUpdateReadStatus')"
                   :label="i18n('options_web_markwhendownload_desc')"
                   />
-                <v-alert v-if="mangadexImportLoading || this.mdFollows" dense value="true" color="error" icon="mdi-alert-octagon" text elevation="1">
-                  Closing this menu will reset the import process
-                </v-alert>
-                <v-alert v-if="mangadexImportLoading || this.mdFollows" dense value="true" color="info" icon="mdi-information" text elevation="1">
-                  Mangas already in AMR will be ignored.
-                </v-alert>
-                <v-btn v-if="!mdFollows" text :loading="mangadexImportLoading" @click="mdImport">LOAD FOLLOWS</v-btn>
-                <v-btn v-else text :loading="mangadexImportLoading" @click="mdImport">RE-LOAD FOLLOWS</v-btn>
+                <v-btn v-if="!mdFollows" :loading="mangadexImportLoading" @click="mdImport">LOAD FOLLOWS</v-btn>
+                <v-btn v-else :loading="mangadexImportLoading" @click="mdImport">RE-LOAD FOLLOWS</v-btn>
                 <div v-if="mdFollows">
-                  <pre> {{ mdFollows }}</pre>
-                  <!-- <v-data-table
+                  <v-radio-group class="mt-5">
+                    <v-radio @click="mdFollowsMethod = 'all'">
+                      <template v-slot:label>
+                        <div>Select a language and import all</div>
+                      </template>
+                    </v-radio>
+                    <v-radio @click="mdFollowsMethod = 'table'">
+                      <template v-slot:label>
+                        <div>Choose from the list</div>
+                      </template>
+                    </v-radio>
+                  </v-radio-group>
+                  <v-data-table
+                    v-if="mdFollowsMethod === 'table'"
                     :items="mdFollows"
                     :items-per-page="10"
                     :calculate-widths="true"
@@ -616,19 +622,43 @@
                         <td class="py-2">
                           <v-btn
                             class="mx-2"
-                            v-for="(subitem, index) of item.lang"
+                            v-for="(subitem, index) of item.langs"
                             :key="index"
                             x-small
                             rounded
                             color="info"
-                            @click="addManga(item, subitem)"
+                            @click="mdAddManga(item, subitem)"
                           >
-                            {{ subitem.lang }}
+                            <Flag v-if="subitem.code" :value="subitem.code"/>
                           </v-btn>
                         </td>
                       </tr>
                     </template>
-                  </v-data-table> -->
+                  </v-data-table>
+                  <v-menu v-if="mdFollowsMethod === 'all'" offset-x max-height="196" min-width="50" max-width="100">
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        color="primary"
+                        dark
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        Dropdown
+                      </v-btn>
+                    </template>
+                    <v-list dense>
+                      <v-list-item
+                        v-for="(item, index) in mdFollowsLangs"
+                        :key="index"
+                        link
+                      >
+                        <v-list-item-title @click="mdaddAllMangas(item)"><Flag big :value="item"/></v-list-item-title>
+                      </v-list-item>
+                    </v-list>
+                  </v-menu>
+                  <v-alert class="mt-4" v-if="mdaddAllMangasTotal" dense value="true" color="info" icon="mdi-information" text elevation="1">
+                    importing {{ mdaddAllMangasCount }} / {{ mdaddAllMangasTotal }}
+                  </v-alert>
                 </div>
               </div>
             </v-expansion-panel-content>
@@ -844,6 +874,8 @@ export default {
       mangadexLogin: '',
       mangadexPassword: '',
       mangadexImportLoading: false,
+      mdFollowsMethod: 'none',
+      mdImportAll: false,
     };
     // add all options properties in data model; this properties are the right one in store because synchronization with background has been called by encapsuler (popup.js / other) before initializing vue
     res = Object.assign(res, this.$store.state.options);
@@ -1169,25 +1201,80 @@ export default {
         this.mangadexImportLoading = true
         md.getFollows(this.mangadexMangasInStore).then((f) => {
           this.mdFollows = f
+          const set = new Set(
+            [].concat.apply(
+              [],
+              f.map(f => f.langs.map(l=>l.code))
+              )
+          )
+          this.mdFollowsLangs = Array.from(set).sort((a, b) => a > b ? 1 : -1)
           this.mangadexImportLoading = false
         })
       }
     },
-    addManga(item, selectedSubitem) {
-      browser.runtime.sendMessage({
+    mdaddAllMangas(lang) {
+      const toAdd = this.mdFollows.filter(f=> f.langs.find(l=> l.code === lang))
+      this.mdaddAllMangasTotal = String(toAdd.length)
+      this.mdaddAllMangasCount = String(0)
+      this.mdImportHideLanguage({global: true, lang})
+      toAdd.forEach((item, i) => {
+          setTimeout(() => {
+            const selectedSubitem = item.langs.find(l => l.code === lang)
+            this.mdAddManga(item, selectedSubitem)
+            this.mdaddAllMangasCount = String(i+1)
+            this.$forceUpdate()
+          }, 500*i)
+      })
+    },
+    /**
+     * @param {object} item
+     * @param {string} item.id Manga id
+     * @param {string} item.title Manga title
+     * @param {object} selectedSubitem
+     * @param {string} selectedSubitem.code Selected language
+     * @param {object} selectedSubitem.lastRead
+     * @param {string} selectedSubitem.lastRead.url Last Chapter Read URL
+     * @param {string} selectedSubitem.lastRead.title Last Chapter Read Title
+     * @param {{title: String, url: String}[]} selectedSubitem.chapters List of chapters
+     */
+    mdAddManga(item, selectedSubitem) {
+      const payload = {
         action: "readManga",
         name: item.title,
         url: `https://mangadex.org/title/${item.id}`,
         mirror: "MangaDex V5",
-        lastChapterReadURL: selectedSubitem.lastRead.url,
-        lastChapterReadName: selectedSubitem.lastRead.title,
+        lastChapterReadURL: selectedSubitem.lastRead ? selectedSubitem.lastRead.url : selectedSubitem.chapters[0].url,
+        lastChapterReadName: selectedSubitem.lastRead ? selectedSubitem.lastRead.title : selectedSubitem.chapters[0].title,
         language: selectedSubitem.code
-      }).then(() => {
-        this.mdFollows.forEach(f => {
-          f.langs = f.langs.filter(l => l.code !== selectedSubitem.code )
-        })
-        this.$forceUpdate()
+      }
+      browser.runtime.sendMessage(payload).then(() => {
+        this.mdImportHideLanguage({global: false, item, selectedSubitem})
       })
+    },
+    /**
+     * hide language from import
+     * @param {object} params
+     * @param {string} params.lang language to hide, works if global is true
+     * @param {boolean} params.global true if language is globally hidden
+     * @param {object} params.item Manga
+     * @param {string} params.item.id Manga id
+     * @param {object} params.selectedSubitem selected language object (contains chapters)
+     * @param {string} params.selectedSubitem.code selected manga language name
+     */
+    mdImportHideLanguage({lang, global, item, selectedSubitem}) {
+      if(global && lang) {
+        this.mdFollowsLangs = this.mdFollowsLangs.filter(l => l !== lang)
+        this.mdFollows = this.mdFollows.filter(f => !f.langs.find(l => l.code === lang))
+      } else if(item && selectedSubitem) {
+        const find = this.mdFollows.find(f => f.id === item.id)
+        if(find) {
+          find.langs = find.langs.filter(l => l.code !== selectedSubitem.code)
+          if(!find.langs.length) {
+            this.mdFollows = this.mdFollows.filter(f => f.id !== item.id)
+          }
+          this.$forceUpdate()
+        }
+      }
     }
   }
 };
