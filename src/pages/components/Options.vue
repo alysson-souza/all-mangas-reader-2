@@ -1209,6 +1209,7 @@ export default {
           )
           this.mdFollowsLangs = Array.from(set).sort((a, b) => a > b ? 1 : -1)
           this.mangadexImportLoading = false
+          this.$forceUpdate()
         })
       }
     },
@@ -1221,9 +1222,7 @@ export default {
           setTimeout(() => {
             const selectedSubitem = item.langs.find(l => l.code === lang)
             this.mdAddManga(item, selectedSubitem)
-            this.mdaddAllMangasCount = String(i+1)
-            this.$forceUpdate()
-          }, 500*i)
+          }, 500*(i**1.2))
       })
     },
     /**
@@ -1248,6 +1247,9 @@ export default {
         language: selectedSubitem.code
       }
       browser.runtime.sendMessage(payload).then(() => {
+        if(this.mdaddAllMangasCount) {
+          this.mdaddAllMangasCount = String(parseInt(this.mdaddAllMangasCount)+1)
+        }
         this.mdImportHideLanguage({global: false, item, selectedSubitem})
       })
     },
@@ -1272,9 +1274,9 @@ export default {
           if(!find.langs.length) {
             this.mdFollows = this.mdFollows.filter(f => f.id !== item.id)
           }
-          this.$forceUpdate()
         }
       }
+      this.$forceUpdate()
     }
   }
 };

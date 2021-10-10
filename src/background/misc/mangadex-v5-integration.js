@@ -38,7 +38,7 @@ export class Mangadex {
 
   async wait() {
     this.requests = this.requests+1
-    const time = this.requests*180
+    const time = 180*(this.requests**1.2)
     return new Promise(resolve => {
       setTimeout(() => {
         this.resetRequests()
@@ -124,8 +124,8 @@ export class Mangadex {
    */
   async getFollows(inStore) {
       let res = []
-      // fetching for a max of 10.000 results
-      for(const [page] of Array(1000).entries()) {
+      // loop
+      for(const [page] of Array(10000).entries()) {
         const resp = await this.MD(`/user/follows/manga?limit=100&offset=${page * 100}`, 'GET')
         const current = parseInt(resp.limit) + parseInt(resp.offset)
         const total = parseInt(resp.total)
@@ -180,8 +180,8 @@ export class Mangadex {
    */
   async getAllchaptersInAllAvailableLanguages(id, inStore) {
     const res = {}
-    // loop a thousand time!
-    for(const [page] of Array(1000).entries()) {
+    // loop
+    for(const [page] of Array(10000).entries()) {
       const resp = await this.MD(`/manga/${id}/feed?limit=100&offset=${page * 100}&order[chapter]=asc`, 'GET')
       const current = parseInt(resp.limit) + parseInt(resp.offset)
       const total = parseInt(resp.total)
