@@ -22,7 +22,7 @@
         <v-btn
           :class="`elevation-${hover ? 12 : 2} opacity-${hover || drawer ? 'full':'transparent'}`"
           color="red darken-2" dark small fab @click="drawer = !drawer">
-          <v-icon>mdi-menu</v-icon>
+          <v-icon> {{ icons.mdiMenu }}</v-icon>
         </v-btn>
         <!-- Quick button to go to next chapter -->
         <v-tooltip left>
@@ -36,7 +36,7 @@
               v-show="!lastChapter && nextchapLoading && !drawer && hover"
             >
               <v-btn small fab @click.stop="goNextChapter" class="green--text">
-                <v-icon>{{shouldInvertKeys ? 'mdi-chevron-left' : 'mdi-chevron-right'}}</v-icon>
+                <v-icon>{{ shouldInvertKeys ? icons.mdiChevronLeft : icons.mdiChevronRight }}</v-icon>
               </v-btn>
             </v-progress-circular>
             <v-progress-circular v-on="on" class=" mt-2 amr-floting-progress"
@@ -49,7 +49,7 @@
               v-show="!lastChapter && !nextchapLoading && !drawer && hover"
             >
               <v-btn small fab @click.stop="goNextChapter" class="red--text">
-                <v-icon>{{shouldInvertKeys ? 'mdi-chevron-left' : 'mdi-chevron-right'}}</v-icon>
+                <v-icon>{{ shouldInvertKeys ? icons.mdiChevronLeft : icons.mdiChevronRight }}</v-icon>
               </v-btn>
             </v-progress-circular>
           </template>
@@ -58,7 +58,7 @@
         <v-tooltip left>
           <template v-slot:activator="{ on }">
             <v-btn v-on="on" small class="mt-2" fab v-show="hover && !drawer && lastChapter" color="orange--text">
-              <v-icon>mdi-alert</v-icon>
+              <v-icon>{{ icons.mdiAlert }}</v-icon>
             </v-btn>
           </template>
           <span>{{i18n("content_nav_last_chap")}}</span>
@@ -67,7 +67,7 @@
         <v-tooltip left>
           <template v-slot:activator="{ on }">
             <v-btn v-on="on" small class="mt-2" fab v-show="!mangaExists && options.addauto === 0 && hover && !drawer" color="green--text" @click.stop="addManga">
-              <v-icon>mdi-plus</v-icon>
+              <v-icon>{{ icons.mdiPlus }} </v-icon>
             </v-btn>
           </template>
           <span>{{i18n("content_nav_add_list")}}</span>
@@ -117,7 +117,7 @@
                   <template v-slot:activator="{ on }">
                     <v-btn v-on="on" icon v-show="(shouldInvertKeys ?  !lastChapter : !firstChapter)"
                       @click.stop="shouldInvertKeys ?  goNextChapter() : goPreviousChapter()" class="btn-huge">
-                      <v-icon>mdi-chevron-left</v-icon>
+                      <v-icon>{{ icons.mdiChevronLeft }}</v-icon>
                     </v-btn>
                   </template>
                   <span>
@@ -143,7 +143,7 @@
                     <!-- Next chapter button -->
                     <v-btn v-on="on" icon v-show="(shouldInvertKeys ? !firstChapter : !lastChapter)"
                       @click.stop="shouldInvertKeys ? goPreviousChapter() : goNextChapter()" class="btn-huge">
-                      <v-icon>mdi-chevron-right</v-icon>
+                      <v-icon>{{ icons.mdiChevronRight }}</v-icon>
                     </v-btn>
                   </template>
                   <span>
@@ -177,7 +177,7 @@
                     <template v-slot:activator="{ on: tooltip }">
                       <v-btn v-on="{...tooltip, ...menu}" icon
                         :color="(bookstate.booked ? 'yellow' : 'yellow text--lighten-4')">
-                          <v-icon>mdi-star</v-icon>
+                          <v-icon>{{ icons.mdiStar }}</v-icon>
                       </v-btn>
                     </template>
                     <span>{{i18n("content_nav_click_bm")}}</span>
@@ -193,7 +193,7 @@
                     <!-- Action to update / delete bookmark for chapter > open popup -->
                     <v-btn @click="bookmarkChapter"
                       :color="!darkreader ? (bookstate.booked ? 'yellow grey--text text--darken-3' : 'yellow grey--text') : (bookstate.booked ? 'yellow--text' : 'yellow--text text--lighten-4')">
-                      <v-icon>mdi-star</v-icon>&nbsp;
+                      <v-icon>{{ icons.mdiStar }}</v-icon>&nbsp;
                       {{ bookstate.booked ?
                         i18n("reader_bookmark_update") :
                         i18n("reader_bookmark_create") }}
@@ -202,7 +202,7 @@
                     <v-tooltip bottom>
                       <template v-slot:activator="{ on }">
                         <v-btn v-on="on" icon @click="openBookmarksTab" color="blue">
-                          <v-icon>mdi-open-in-new</v-icon>
+                          <v-icon>{{ icons.mdiOpenInNew }}</v-icon>
                         </v-btn>
                       </template>
                       <span>{{i18n("reader_open_bookmarks_tab")}}</span>
@@ -248,7 +248,7 @@
                 <template v-slot:activator="{ on }">
                   <v-btn v-on="on" icon color="orange"
                     v-show="showLatestRead" @click.stop="markAsLatest">
-                      <v-icon>mdi-page-last</v-icon>
+                      <v-icon>{{ icons.mdiPageLast }}</v-icon>
                   </v-btn>
                 </template>
                 <span>{{i18n("content_nav_mark_read")}}</span>
@@ -258,7 +258,7 @@
                 <template v-slot:activator="{ on }">
                   <v-btn v-on="on" icon color="green"
                     v-show="!mangaExists && options.addauto === 0" @click.stop="addManga">
-                      <v-icon>mdi-plus</v-icon>
+                      <v-icon>{{ icons.mdiPlus }}</v-icon>
                   </v-btn>
                 </template>
                 <span>{{i18n("content_nav_add_list")}}</span>
@@ -268,7 +268,7 @@
                 <template v-slot:activator="{ on }">
                   <v-btn v-on="on" icon color="red"
                     v-show="mangaExists" @click.stop="deleteManga">
-                      <v-icon>mdi-delete</v-icon>
+                      <v-icon>{{ icons.mdiDelete }}</v-icon>
                   </v-btn>
                 </template>
                 <span>{{i18n("reader_delete_manga")}}</span>
@@ -277,7 +277,7 @@
               <v-tooltip bottom  class="ml-1">
                 <template v-slot:activator="{ on }">
                   <v-btn v-on="on" icon color="blue" @click.stop="markMangaReadTop(1)" v-show="mangaExists && mangaInfos && mangaInfos.read === 0">
-                      <v-icon>mdi-pause</v-icon>
+                      <v-icon>{{ icons.mdiPause }}</v-icon>
                   </v-btn>
                 </template>
                 <span>{{i18n("content_nav_stopfollow")}}</span>
@@ -286,7 +286,7 @@
               <v-tooltip bottom  class="ml-1">
                 <template v-slot:activator="{ on }">
                   <v-btn v-on="on" icon color="blue" @click.stop="markMangaReadTop(0)" v-show="mangaExists && mangaInfos && mangaInfos.read === 1">
-                      <v-icon>mdi-play</v-icon>
+                      <v-icon>{{ icons.mdiPlay }}</v-icon>
                   </v-btn>
                 </template>
                 <span>{{i18n("content_nav_follow")}}</span>
@@ -295,7 +295,7 @@
               <v-tooltip bottom class="ml-1">
                 <template v-slot:activator="{ on }">
                   <v-btn v-on="on" icon color="red" @click.stop="reloadErrors">
-                      <v-icon>mdi-replay</v-icon>
+                      <v-icon>{{ icons.mdiReplay }}</v-icon>
                   </v-btn>
                 </template>
                 <span>{{i18n("content_nav_reload")}}</span>
@@ -305,7 +305,7 @@
                 <template v-slot:activator="{ on }">
                   <v-btn v-on="on" icon color="red" @click.stop="DownloadChapter">
                       <v-progress-circular indeterminate v-if="zip" />
-                      <v-icon v-if="!zip">mdi-download-outline</v-icon>
+                      <v-icon v-if="!zip">{{ icons.mdiDownloadOutline }}</v-icon>
                   </v-btn>
                 </template>
                 <span>{{i18n("content_nav_downlaod")}}</span>
@@ -326,7 +326,7 @@
                   <template v-slot:activator="{ on }">
                     <!-- Book offset button -->
                     <v-btn block outlined v-on="on" @click="offsetBook" color="blue" v-show="displayBookOffsetButton">
-                      <v-icon left>mdi-book-open-page-variant</v-icon>
+                      <v-icon left>{{ icons.mdiBookOpenPageVariant }}</v-icon>
                       {{i18n("reader_book_offset")}}
                     </v-btn>
                   </template>
@@ -341,7 +341,7 @@
                   <template v-slot:activator="{ on }">
                     <v-btn v-on="on" text value="ltr">
                       <!--<span>Left to right</span>-->
-                      <v-icon>mdi-arrow-right</v-icon>
+                      <v-icon>{{  icons.mdiArrowRight }}</v-icon>
                     </v-btn>
                   </template>
                   <span>{{i18n("option_read_book_ltr")}}</span>
@@ -350,7 +350,7 @@
                   <template v-slot:activator="{ on }">
                     <v-btn text v-on="on" value="rtl">
                       <!--<span>Right to left</span>-->
-                      <v-icon>mdi-arrow-left</v-icon>
+                      <v-icon>{{ icons.mdiArrowLeft }}</v-icon>
                     </v-btn>
                   </template>
                   <span>{{i18n("option_read_book_rtl")}}</span>
@@ -376,7 +376,7 @@
                   <template v-slot:activator="{ on }">
                     <v-btn v-on="on" text value="width">
                       <!--<span>Width</span>-->
-                      <v-icon>mdi-arrow-expand-horizontal</v-icon>
+                      <v-icon>{{ icons.mdiArrowExpandHorizontal }}</v-icon>
                     </v-btn>
                   </template>
                   <span>{{i18n("option_read_resize_w")}}</span>
@@ -385,7 +385,7 @@
                   <template v-slot:activator="{ on }">
                     <v-btn v-on="on" text value="height" v-show="!fullchapter">
                       <!--<span>Height</span>-->
-                      <v-icon>mdi-arrow-expand-vertical</v-icon>
+                      <v-icon>{{ icons.mdiArrowExpandVertical }}</v-icon>
                     </v-btn>
                   </template>
                   <span>{{i18n("option_read_resize_h")}}</span>
@@ -394,7 +394,7 @@
                   <template v-slot:activator="{ on }">
                     <v-btn v-on="on" text value="container" v-show="!fullchapter">
                       <!--<span>Container</span>-->
-                      <v-icon>mdi-arrow-expand-all</v-icon>
+                      <v-icon>{{ icons.mdiArrowExpandAll }}</v-icon>
                     </v-btn>
                   </template>
                   <span>{{i18n("option_read_resize_c")}}</span>
@@ -403,7 +403,7 @@
                   <template v-slot:activator="{ on }">
                     <v-btn v-on="on" text value="none">
                       <!--<span>None</span>-->
-                      <v-icon>mdi-border-none-variant</v-icon>
+                      <v-icon>{{ icons.mdiBorderNoneVariant }}</v-icon>
                     </v-btn>
                   </template>
                   <span>{{i18n("option_read_resize_n")}}</span>
@@ -416,7 +416,7 @@
                   <v-tooltip top>
                     <template v-slot:activator="{ on }">
                       <v-btn v-on="on" icon color="green" @click="changeMaxWidth('more')" class="ma-0">
-                        <v-icon>mdi-plus-circle</v-icon>
+                        <v-icon>{{ icons.mdiPlusCircle }}</v-icon>
                       </v-btn>
                     </template>
                     <span>{{i18n("reader_zoom_plus")}}</span>
@@ -429,7 +429,7 @@
                   <v-tooltip top>
                     <template v-slot:activator="{ on }">
                       <v-btn v-on="on" icon color="red" @click="changeMaxWidth('less')" class="ma-0">
-                        <v-icon>mdi-minus-circle</v-icon>
+                        <v-icon>{{ icons.mdiMinusCircle }}</v-icon>
                       </v-btn>
                     </template>
                     <span>{{i18n("reader_zoom_minus")}}</span>
@@ -441,7 +441,7 @@
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
                   <v-btn v-on="on" icon @click="saveOptionsAsDefault(false)" color="primary" v-show="layoutDiffFromOptions" class="ma-0">
-                    <v-icon>mdi-content-save</v-icon>
+                    <v-icon>{{ icons.mdiContentSave }}</v-icon>
                   </v-btn>
                 </template>
                 <span>{{i18n("reader_button_saveoptions")}}</span>
@@ -449,7 +449,7 @@
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
                   <v-btn v-on="on" icon @click="resetOptionsToDefault" color="primary" v-show="layoutDiffFromOptions" class="ma-0">
-                    <v-icon>mdi-reload</v-icon>
+                    <v-icon>{{ icons.mdiReload }}</v-icon>
                   </v-btn>
                 </template>
                 <span>{{i18n("reader_button_resetoptions")}}</span>
@@ -457,7 +457,7 @@
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
                   <v-btn v-on="on" icon @click="toggleDark" :color="darkreader ? 'white' : 'black'" class="ma-0">
-                    <v-icon>mdi-brightness-6</v-icon>
+                    <v-icon>{{ icons.mdiBrightness6 }}</v-icon>
                   </v-btn>
                 </template>
                 <span>{{!darkreader ? i18n("reader_button_dark") : i18n("reader_button_light")}}</span>
@@ -465,7 +465,7 @@
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
                   <v-btn v-on="on" icon @click="toggleFullScreen" class="ma-0">
-                    <v-icon>{{fullscreen ? 'mdi-fullscreen-exit' : 'mdi-fullscreen'}}</v-icon>
+                    <v-icon>{{fullscreen ? icons.mdiFullscreenExit : icons.mdiFullscreen }}</v-icon>
                   </v-btn>
                 </template>
                 <span>{{!fullscreen ? i18n("reader_button_fullscreen") : i18n("reader_button_exit_fullscreen")}}</span>
@@ -473,7 +473,7 @@
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
                   <v-btn v-on="on" icon @click="openShortcuts" class="ma-0">
-                    <v-icon>mdi-keyboard</v-icon>
+                    <v-icon>{{ icons.mdiKeyboard }}</v-icon>
                   </v-btn>
                 </template>
                 <span>{{i18n("reader_shortcuts_tooltip")}}</span>
@@ -481,7 +481,7 @@
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
                   <v-btn v-on="on" icon @click="displayTips" color="blue" class="ma-0">
-                    <v-icon>mdi-lightbulb-on</v-icon>
+                    <v-icon>{{ icons.mdiLightbulbOn }}</v-icon>
                   </v-btn>
                 </template>
                 <span>{{i18n("reader_button_tips")}}</span>
@@ -489,7 +489,7 @@
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
                   <v-btn v-on="on" icon @click="showMaxWidth = !showMaxWidth" color="blue" class="ma-0">
-                    <v-icon>mdi-magnify-minus</v-icon>
+                    <v-icon>{{ icons.mdiMagnifyMinus }}</v-icon>
                   </v-btn>
                 </template>
                 <span>{{i18n("reader_zoom_show")}}</span>
@@ -538,6 +538,10 @@
   import ShortcutsPopup from "./components/ShortcutsPopup";
   import SocialBar from "./components/SocialBar";
   import { THINSCAN } from '../amr/options';
+  import { mdiMenu, mdiChevronRight, mdiChevronLeft, mdiAlert, mdiPlus, mdiStar, mdiOpenInNew, mdiPageLast, mdiDelete, 
+    mdiPause, mdiPlay, mdiReplay, mdiDownloadOutline, mdiBookOpenPageVariant, mdiArrowRight, mdiArrowLeft, mdiArrowExpandHorizontal,
+    mdiArrowExpandVertical, mdiArrowExpandAll, mdiBorderNoneVariant, mdiPlusCircle, mdiMinusCircle, mdiContentSave, mdiReload,
+    mdiBrightness6, mdiFullscreen, mdiFullscreenExit, mdiKeyboard, mdiLightbulbOn, mdiMagnifyMinus} from '@mdi/js'
 
   /** Possible values for resize (readable), the stored value is the corresponding index */
   const resize_values = ['width', 'height', 'container', 'none']
@@ -580,7 +584,40 @@
       pageData: pageData.state, /* reactive data from pageData */
 
       showMaxWidth: false, /* Show the max width */
-      maxWidthValue: 100
+      maxWidthValue: 100,
+
+      icons: {
+        mdiMenu,
+        mdiChevronRight, 
+        mdiChevronLeft,
+        mdiAlert,
+        mdiPlus,
+        mdiStar,
+        mdiOpenInNew,
+        mdiPageLast,
+        mdiDelete,
+        mdiPause,
+        mdiPlay,
+        mdiReplay,
+        mdiDownloadOutline,
+        mdiBookOpenPageVariant,
+        mdiArrowRight,
+        mdiArrowLeft,
+        mdiArrowExpandHorizontal,
+        mdiArrowExpandVertical,
+        mdiArrowExpandAll,
+        mdiBorderNoneVariant,
+        mdiPlusCircle,
+        mdiMinusCircle,
+        mdiContentSave,
+        mdiReload,
+        mdiBrightness6,
+        mdiFullscreen,
+        mdiFullscreenExit,
+        mdiKeyboard,
+        mdiLightbulbOn,
+        mdiMagnifyMinus,
+      }      
     }),
     created() {
       /** Register keys */

@@ -7,7 +7,7 @@
           <Categories v-on="on" :categories="categories" :static-cats="false" :delegate-delete="false" />
         </v-card>
         <!-- Filters -->
-        <v-card v-if="visMangas.length" class="hover-card d-flex">
+        <v-card class="hover-card d-flex">
           <!-- Alphabetical -->
           <v-tooltip top content-class="icon-ttip">
             <template v-slot:activator="{ on }">
@@ -243,8 +243,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" flat @click.native="showDialog = false">{{i18n("button_no")}}</v-btn>
-          <v-btn color="blue darken-1" flat @click.native="dialogAction">{{i18n("button_yes")}}</v-btn>
+          <v-btn color="blue darken-1" text @click.native="showDialog = false">{{i18n("button_no")}}</v-btn>
+          <v-btn color="blue darken-1" text @click.native="dialogAction">{{i18n("button_yes")}}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

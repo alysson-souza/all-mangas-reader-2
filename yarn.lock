@@ -96,6 +96,11 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.0.tgz#87de7af9c231826fdd68ac7258f77c429e0e5fcf"
   integrity sha512-wdppn25U8z/2yiaT6YGquE6X8sSv7hNMWSXYSSU1jGv/yd6XqjXgTDJ8KP4NgjTXfJ3GbRjeeb8RTV7a/VpM+w==
 
+"@mdi/js@^6.2.95":
+  version "6.2.95"
+  resolved "https://registry.yarnpkg.com/@mdi/js/-/js-6.2.95.tgz#decf0f86035990248f25b0a4e246a7d152211273"
+  integrity sha512-fbD22sEBathqVSQWcxshEtzhhRNFmMnV64z6T7DClRbQ9N5axorykt3Suv2zPzLDyiqH7UhNRu0VPvPCPDNpnQ==
+
 "@mdn/browser-compat-data@3.2.4":
   version "3.2.4"
   resolved "https://registry.yarnpkg.com/@mdn/browser-compat-data/-/browser-compat-data-3.2.4.tgz#9b015c608eaed5cc47c35bb3d63f6502e5bd88c7"

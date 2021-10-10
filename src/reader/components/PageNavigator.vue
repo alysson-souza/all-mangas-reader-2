@@ -6,13 +6,13 @@
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
             <v-btn v-show="showBackwardButton" v-on="on" class="btn-huge" icon @click.stop="goPreviousScan">
-              <v-icon>mdi-chevron-left</v-icon>
+              <v-icon>{{ icons.mdiChevronLeft }}</v-icon>
             </v-btn>
           </template>
           <span>{{ i18n(shouldInvertKeys ? "reader_go_next_scan" : "reader_go_previous_scan") }}</span>
         </v-tooltip>
         <!-- Current scan infos -->
-        <div class="title">{{
+        <div class="text-h6">{{
             i18n("reader_page_progression", currentPage + 1, pages.length, pages.length > 0 ?
                 Math.floor((currentPage + 1) / pages.length * 100) : 0)
           }}
@@ -21,7 +21,7 @@
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
             <v-btn v-show="showForwardButton" v-on="on" class="btn-huge" icon @click.stop="goNextScan">
-              <v-icon>mdi-chevron-right</v-icon>
+              <v-icon>{{ icons.mdiChevronRight}} </v-icon>
             </v-btn>
           </template>
           <span>{{ i18n(shouldInvertKeys ? "reader_go_previous_scan" : "reader_go_next_scan") }}</span>
@@ -31,8 +31,13 @@
   </v-row>
 </template>
 <script>
+import { mdiChevronRight, mdiChevronLeft } from '@mdi/js'
+
 export default {
   name: 'PageNavigator',
+  data: () => ({
+    icons: { mdiChevronRight, mdiChevronLeft }
+  }),
   props: {
     currentPage: {},
     firstScan: Boolean,
