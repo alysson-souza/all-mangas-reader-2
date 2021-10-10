@@ -153,7 +153,7 @@ export default {
   },
   methods: {
     async copyIMG() {
-      const img = await this.imageToBlob(this.scan.scan.currentSrc)
+      const img = await this.imageToBlob(this.scan.scan.currentSrc, window.location.href)
       navigator.clipboard.write([
             new ClipboardItem({
               [img.type]: img
@@ -168,8 +168,8 @@ export default {
             this.snackbarShow = true
           })
     },
-    async imageToBlob(imageURL) {
-      const bs64 = await browser.runtime.sendMessage({action: 'fetchImage', imageURL})
+    async imageToBlob(imageURL, referer) {
+      const bs64 = await browser.runtime.sendMessage({action: 'fetchImage', imageURL, referer})
       const img = new Image()
       const c = document.createElement("canvas");
       const ctx = c.getContext("2d");

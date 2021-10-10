@@ -12,7 +12,7 @@ import amrUpdater from '../../amr/amr-updater';
 import iconHelper from '../../amr/icon-helper';
 import * as syncUtils from '../../amr/sync/utils';
 import { getSyncManager } from '../../amr/sync/sync-manager'
-import axios from 'axios';
+import browser from "webextension-polyfill";
 import {Buffer} from 'buffer'
 
 let syncManager;
@@ -823,11 +823,35 @@ const actions = {
     clearMangasSelect({ commit }) {
         commit("clearSelection");
     },
-    async fetchImage({}, {imageURL}) {
-        const resp = await axios.get(imageURL, {responseType: 'arraybuffer'})
-        const raw = new Buffer.from(resp.data).toString('base64');
-        return "data:" + resp.headers["content-type"] + ";base64,"+raw;
-    },
+    async fetchImage({}, {imageURL, referer}) {
+        browser.webRequest.onBeforeSendHeaders.addListener(function(details){
+            var newRef = referer;
+            var gotRef = false;
+            for(var n in details.requestHeaders) {
+                gotRef = details.requestHeaders[n].name.toLowerCase()=="referer";
+                if(gotRef){
+                    details.requestHeaders[n].value = newRef;
+                    break;
+                }
+            }
+            if(!gotRef){
+                details.requestHeaders.push({name:"Referer",value:newRef});
+            }
+            return {requestHeaders:details.requestHeaders};
+        },{
+            urls:[ "https://*/*", "http://*/*" ]
+        },[
+            "requestHeaders",
+            "blocking",
+            "extraHeaders"
+        ]);
+        const resp = await fetch(imageURL)
+        const arraybuffer = await resp.arrayBuffer()
+        const bs64 = new Buffer.from(arraybuffer).toString('base64');
+        browser.webRequest.onBeforeSendHeaders.removeListener()
+        return "data:" + resp.headers["content-type"] + ";base64,"+bs64
+    }
+
 }
 
 /**
