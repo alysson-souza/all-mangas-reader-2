@@ -220,10 +220,11 @@ export class Mangadex {
         } else a[id] = {id, chapNum, title, url, date};
         return a;
       }, {}));
+
       mapped.push({ code: k, chapters})
     })
-
-    return mapped
+    // sort languages alphabetically
+    return mapped.sort((a, b) => a.code > b.code ? 1 : -1)
   }
   /**
    * 
