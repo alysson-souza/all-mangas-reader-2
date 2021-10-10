@@ -74,7 +74,7 @@
 					<v-toolbar-title>{{i18n("options_title")}}</v-toolbar-title>
 				</v-toolbar>
 				<v-main>
-					<Options v-if="options" :preOpen="optionsPreOpen" />
+					<Options v-show="options" :preOpen="optionsPreOpen" />
 				</v-main>
 			</v-card>
 		</v-dialog>
