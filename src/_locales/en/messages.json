@@ -1824,7 +1824,11 @@
   "reader_context_menu_copy_img": {
     "message": "Copy Image to Clipboard",
     "description": "Context Menu link for copying image url"
-  }, 
+  },
+  "reader_context_menu_copy_img_warning_dialog": {
+    "message": "<p>To enable this feature we need to tweak your browser!<br/><small>ps: this is a one time thing, the settings will then apply to any new pages (▀̿Ĺ̯▀̿ ̿)</small><p>1. Open a new tab, in the address bar type <code>about:config</code>, then press ENTER<br/>2. Click the <code>Accept the risk and continue</code> button<br/>3. Search for <code>dom.events.asyncClipboard.clipboardItem</code> and click the \"toggle button\" (far right)<br/>4. Close <code>about:config</code> and reload this page</p>",
+    "description": "Context Menu link for copying image url"
+  },
   "reader_zoom_show": {
     "message": "Show Zoom Control",
     "description": "Button to show zoom controls"

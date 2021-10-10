@@ -8,6 +8,24 @@
         </v-col>
       </v-row>
     </v-container>
+    <v-dialog
+      v-model="copyImageToClipboardWarning"
+    >
+      <v-card>
+        <v-card-text class="pt-6" v-html="i18n('reader_context_menu_copy_img_warning_dialog')" />
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="primary"
+            text
+            @click="copyImageToClipboardWarning = false"
+          >
+            {{ i18n('button_close') }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <!-- The Scan container ! -->
     <div ref="scanDiv" class="amr-scan" v-show="!loading && !error" @contextmenu="show"></div>
 
@@ -66,6 +84,7 @@ import EventBus from '../helpers/EventBus'
 import i18n from '../../amr/i18n'
 import { i18nmixin } from '../../mixins/i18n-mixin'
 import { mdiImageBroken } from '@mdi/js'
+import { isFirefox } from '../../amr/utils';
 
 export default {
   mixins: [i18nmixin],
@@ -74,6 +93,7 @@ export default {
       bookstate: bookmarks.state, /* bookmarks state */
       scansProvider: scansProvider.state, /* scans Provider, where the HTMLImage is loaded */
       showMenu: false,
+      copyImageToClipboardWarning: false,
       x: 0,
       y: 0,
       snackbarShow: false,
@@ -155,23 +175,29 @@ export default {
   },
   methods: {
     async copyIMG() {
-      const img = await this.imageToBlob(this.scan.scan.currentSrc)
-      navigator.clipboard.write([
-            new ClipboardItem({
-              [img.type]: img
-            })
-          ]).then(() => {
-            this.snackbarText = i18n('reader_snackbar_img_success')
-            this.snackbarColor = 'success'
-            this.snackbarShow = true   
-          }).catch((e) => {
-            this.snackbarText = i18n('reader_snackbar_img_error', e)
-            this.snackbarColor = 'error'
-            this.snackbarShow = true
-          })
+      if(typeof ClipboardItem === 'undefined' && isFirefox()) {
+        this.copyImageToClipboardWarning = true
+        return
+      }
+      const img = await this.imageToBlob(this.scan.scan.currentSrc, window.location.href)
+      try {
+        await navigator.clipboard.write([
+              new ClipboardItem({
+                [img.type]: img
+              })
+            ])
+        this.snackbarText = i18n('reader_snackbar_img_success')
+        this.snackbarColor = 'success'
+        this.snackbarShow = true   
+      } catch(e) {
+        this.snackbarText = i18n('reader_snackbar_img_error', e)
+        this.snackbarColor = 'error'
+        this.snackbarShow = true
+      }
+
     },
-    async imageToBlob(imageURL) {
-      const bs64 = await browser.runtime.sendMessage({action: 'fetchImage', imageURL})
+    async imageToBlob(imageURL, referer) {
+      const bs64 = await browser.runtime.sendMessage({action: 'fetchImage', imageURL, referer})
       const img = new Image()
       const c = document.createElement("canvas");
       const ctx = c.getContext("2d");
