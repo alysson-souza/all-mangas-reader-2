@@ -589,7 +589,14 @@
                   @change="setOption('mangadexUpdateReadStatus')"
                   :label="i18n('options_web_markwhendownload_desc')"
                   />
-                <v-btn text :loading="mangadexImportLoading" @click="mdImport"> IMPORT FOLLOWS </v-btn>
+                <v-alert v-if="mangadexImportLoading || this.mdFollows" dense value="true" color="error" icon="mdi-alert-octagon" text elevation="1">
+                  Closing this menu will reset the import process
+                </v-alert>
+                <v-alert v-if="mangadexImportLoading || this.mdFollows" dense value="true" color="info" icon="mdi-information" text elevation="1">
+                  Mangas already in AMR will be ignored.
+                </v-alert>
+                <v-btn v-if="!mdFollows" text :loading="mangadexImportLoading" @click="mdImport">LOAD FOLLOWS</v-btn>
+                <v-btn v-else text :loading="mangadexImportLoading" @click="mdImport">RE-LOAD FOLLOWS</v-btn>
                 <div v-if="mdFollows">
                   <pre> {{ mdFollows }}</pre>
                   <!-- <v-data-table
@@ -1160,14 +1167,8 @@ export default {
       if(opts.mangadexIntegrationEnable) {
         const md = new Mangadex(this.$store.getters.mangadexOptions, this.$store.dispatch)
         this.mangadexImportLoading = true
-        md.getFollows().then((f) => {
-          this.mdFollows = f.filter(f => {
-            if(this.mangadexMangasInStore.find(e=>e.includes(f.id))) {
-              return false
-            } else {
-              return true
-            }
-          })
+        md.getFollows(this.mangadexMangasInStore).then((f) => {
+          this.mdFollows = f
           this.mangadexImportLoading = false
         })
       }
@@ -1182,12 +1183,8 @@ export default {
         lastChapterReadName: selectedSubitem.lastRead.title,
         language: selectedSubitem.code
       }).then(() => {
-        this.mdFollows = this.mdFollows.filter(f => {
-          if(this.mangadexMangasInStore.find(e=>e.includes(f.id))) {
-            return false
-          } else {
-            return true
-          }
+        this.mdFollows.forEach(f => {
+          f.langs = f.langs.filter(l => l.code !== selectedSubitem.code )
         })
         this.$forceUpdate()
       })

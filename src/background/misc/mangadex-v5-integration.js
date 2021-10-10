@@ -79,10 +79,9 @@ export class Mangadex {
   }
   /**
    * Propagate API results to the store
-   * @param {*} json
-   * @param {Boolean} isRenew 
+   * @param {Object} json parsed json from fetch
    */
-  async propagate(json, isRenew = false) {
+  async propagate(json) {
     if(json.result === 'ok') {
       const in13min = Date.now() + (60*1000*13) // 2min margin
       await this.dispatch("setOption", { key: 'mangadexValidCredentials', value: 1 });
@@ -119,7 +118,11 @@ export class Mangadex {
     return req.json()
   }
 
-  async getFollows() {
+  /**
+   * @param {Array<String>} inStore Array of mg.key in store 
+   * @returns 
+   */
+  async getFollows(inStore) {
       let res = []
       // fetching for a max of 10.000 results
       for(const [page] of Array(1000).entries()) {
@@ -131,7 +134,7 @@ export class Mangadex {
       }
       const mapped = res.map(async r => {
         // get all chapters lists in all language
-        const langs = await this.getAllchaptersInAllAvailableLanguages(r.id)
+        const langs = await this.getAllchaptersInAllAvailableLanguages(r.id, inStore)
         // get read chapters
         const reads = (await this.MD(`/manga/${r.id}/read`, 'GET')).data
         // find the highest chapter's number read in any language
@@ -154,29 +157,37 @@ export class Mangadex {
             return (Math.abs(curr.chapNum - lastChaptersRead) < Math.abs(prev.chapNum - lastChaptersRead) ? curr : prev);
           })
         })
-
+        // return
         return {
           id: r.id,
           title: r.attributes.title.en || Object.entries(r.attributes.title)[0][1],
           lastChaptersRead: lastChaptersRead >= 0 ? lastChaptersRead : undefined,
           langs:langs
-
         }
       })
+      // Keep fulfilled promised and sort output by title
       return (await Promise.allSettled(mapped)).filter(p => p.status === "fulfilled").map(v => v.value).sort((a, b) => {
         var textA = a.title.toLocaleUpperCase();
         var textB = b.title.toLocaleUpperCase();
         return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
       })
   }
-  async getAllchaptersInAllAvailableLanguages(id) {
+  /**
+   * Get all chapters in all languages.
+   * @param {String} id Manga id
+   * @param {Array<String>} inStore Array of mg.key in store
+   * @returns 
+   */
+  async getAllchaptersInAllAvailableLanguages(id, inStore) {
     const res = {}
+    // loop a thousand time!
     for(const [page] of Array(1000).entries()) {
       const resp = await this.MD(`/manga/${id}/feed?limit=100&offset=${page * 100}&order[chapter]=asc`, 'GET')
       const current = parseInt(resp.limit) + parseInt(resp.offset)
       const total = parseInt(resp.total)
       
       for(const data of resp.data) {
+        // same as mangadex-v5 implementation
         const titleParts = []
         if(data.attributes.chapter && data.attributes.chapter.length > 0) titleParts.push(data.attributes.chapter)
         if(data.attributes.title) titleParts.push(data.attributes.title)
@@ -188,29 +199,34 @@ export class Mangadex {
           url: `https://mangadex.org/chapter/${data.id}`,
           date: new Date(data.attributes.publishAt).getTime()
         }
-        if(!res[lang]) res[lang] = []
-        res[lang].push(obj)
+        // only add languages which aren't in store
+        if(!inStore.find(m => m.includes(id+'_'+lang))) {
+          if(!res[lang]) res[lang] = []
+          res[lang].push(obj)
+        }
       }
+      // stop loop if API has no more results to offer
       if(current >= total) break;
     }
+
+
+    // If there's multiple releases for the same chapter, keep the oldest (same as mangadex-v5 impl.)
     const mapped = []
-    // change the way data is presented
     Object.keys(res).forEach(k => {
-      // only keep the oldest chapter
       const chapters = Object.values(res[k].reduce((a, {id, chapNum, title, url, date}) => {
         if (a[id]) {
           if (a[id].date > date) a[id] = {id, chapNum, title, url, date};
         } else a[id] = {id, chapNum, title, url, date};
-        
         return a;
       }, {}));
       mapped.push({ code: k, chapters})
-    }) 
+    })
+
     return mapped
   }
   /**
-   * 
-   * @param {String} mg 
+   * Mark chapter as read.
+   * @param {String} chap chapter id
    */
   async markAsRead(chap) {
     chap = chap.match(/\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b/)[0]
