@@ -1823,7 +1823,11 @@
   "reader_context_menu_copy_img": {
     "message": "Copier l'image dans le presse-papier",
     "description": "Context Menu link for copying image url"
-  }, 
+  },
+  "reader_context_menu_copy_img_warning_dialog": {
+    "message": "<p>Pour activer cette feature nous allons devoir pimper votre navigateur!<br/><small>ps: Les réglages sont permanents et s'appliqueront automatiquement sur toutes les nouvelles pages (▀̿Ĺ̯▀̿ ̿)</small><p>1. Ouvrez un nouvelle onglet et taper <code>about:config</code> dans la barre d'adresse puis appuyer sur ENTRER<br/>2. Cliquer sur le button <code>Accepter le risque et poursuivre</code><br/>3. Cherchez <code>dom.events.asyncClipboard.clipboardItem</code> et cliquer sur le button \"inverser\" (tout à droite)<br/>4. Fermez l'onglet <code>about:config</code> et rechargez cette page</p>",
+    "description": "Context Menu link for copying image url"
+  },
   "reader_zoom_show": {
     "message": "Afficher la commande de zoom",
     "description": "Button to show zoom controls"
