@@ -238,7 +238,7 @@
               <v-alert dense v-if="!syncEnabled || !gistSyncEnabled "  :value="true" color="error" icon="mdi-alert-octagon" text elevation="1">
                 {{i18n('options_sync_title_warning')}}
               </v-alert>
-              <v-checkbox v-model="syncEnabled" @change="setOption('syncEnabled')">
+              <v-checkbox v-if="isFirefox() || syncEnabled" v-model="syncEnabled" @change="setOption('syncEnabled')">
                 <template v-slot:label>
                   <div>
                     {{ i18n('options_sync_checkbox') }}
