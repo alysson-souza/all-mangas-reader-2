@@ -1,3 +1,30 @@
+### V2.3.25
+  New Features:
+    * There is now a option to store the reading progress for manga that gets reset due to missing chapters in gist (Credit: @robo & @JiPai)
+
+  Fixes:
+    * Fix for copying image (Credit: @JiPai)
+    * Fix naming issue with marking latest manga read (Credit: @JiPai)
+    * Fix to prevent flooding remote storage (Credit: @JiPai)
+    * Fixed a few settings in the options menu
+
+  Changes:
+    * UI changes to the Manga List (Credit: @JiPai)
+    * Added button to toggle dark mode to the popup
+    * Added the checkbox back for remote storage if you already have it selected, so chromium users can turn it off
+
+  New Mirrors:
+    * Tachidesk - Another local manga reader (Credit: @Robo)
+
+  Mirror Fixes:
+    * Mangadex - Fix for broken reader icons
+    * Immortal Updates - Chapter list fixed
+    * Early Manga - Added another domain to fix reader
+    * Hiperdex - Updated how chapter list is generated
+    * Manytoon - Updated how chapter list is generated and image source
+    * Cat Manga - Chapter list was getting reversed due to a website change
+    * Webtoon XYZ - Chapter list was not loading
+
 ### V2.3.24
   Fixes:
     * Fix for option to automatically add series when you read them
