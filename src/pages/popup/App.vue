@@ -6,6 +6,9 @@
 				<img src="/icons/icon_32.png" alt="All Mangas Reader" style="margin-right: 5px;">
 				<v-toolbar-title v-text="title"></v-toolbar-title>
 				<v-spacer></v-spacer>
+				<v-btn icon @click.stop="toggleDarkMode()">
+					<v-icon>mdi-brightness-6</v-icon>
+				</v-btn>
 				<v-btn icon @click.stop="openOptions()">
 					<v-icon>mdi-cog</v-icon>
 				</v-btn>
@@ -24,7 +27,7 @@
 				{{i18n("options_gen_allowtracking_desc")}}
 				<div>
 					<v-btn @click="saveAllowTracking(true)">{{i18n('button_yes')}}</v-btn>
-					<v-btn flat @click="saveAllowTracking(false)">{{i18n('button_no')}}</v-btn>
+					<v-btn text @click="saveAllowTracking(false)">{{i18n('button_no')}}</v-btn>
 				</div>
 			</v-alert>
 			<v-alert class="mb-0" type="info" :value="true" icon="mdi-cookie-alert" v-if="!cookiesDone">
@@ -33,13 +36,13 @@
 				{{i18n("options_gen_allowcookies_warning")}}
 				<div>
 					<v-btn @click="saveAllowCookies(true)">{{i18n('button_yes')}}</v-btn>
-					<v-btn flat @click="saveAllowCookies(false)">{{i18n('button_no')}}</v-btn>
+					<v-btn text @click="saveAllowCookies(false)">{{i18n('button_no')}}</v-btn>
 				</div>
 			</v-alert>
 			<MangaList
-        @search-request="openSearch"
-        @manga-loaded="handleLoaded()"
-       />
+				@search-request="openSearch"
+				@manga-loaded="handleLoaded()"
+			/>
 			<v-tooltip top v-if="alertmessage !== ''">
 				<template v-slot:activator="{ on }">
 					<v-alert class="mb-0" type="warning" dismissible v-on="on" :value="true" icon="mdi-alert-decagram" slot="activator">
@@ -62,7 +65,7 @@
 			hide-overlay
 			scrollable
 			:content-class="istab()"
-    >
+		>
 			<v-card>
 				<v-toolbar max-height="64">
 					<v-btn icon @click.native="closeOptions()">
@@ -77,12 +80,12 @@
 		</v-dialog>
 		<!-- Search dialog -->
 		<v-dialog
-      v-model="search"
-      fullscreen
-      transition="dialog-bottom-transition"
-      hide-overlay
-      scrollable
-    >
+			v-model="search"
+			fullscreen
+			transition="dialog-bottom-transition"
+			hide-overlay
+			scrollable
+		>
 			<v-card tile>
         <v-toolbar app max-height="64">
           <v-btn icon @click.native="closeSearch()">
@@ -277,10 +280,10 @@ export default {
 		},
 		async DownloadAMR() {
 			let url = 'https://release.allmangasreader.com/all-mangas-reader-latest.crx';
-			let filename = navigator.platform === 'Win32' ? 'all-mangas-reader-latest.7z' : 'all-mangas-reader-latest.zip'
+			let filename = window.navigator.platform === 'Win32' ? 'all-mangas-reader-latest.7z' : 'all-mangas-reader-latest.zip'
 			if(localStorage.beta) {
 					url = 'https://release.allmangasreader.com/all-mangas-reader-beta-latest.crx';
-					filename = navigator.platform === 'Win32' ? 'all-mangas-reader-beta-latest.7z' : 'all-mangas-reader-beta-latest.zip'
+					filename = window.navigator.platform === 'Win32' ? 'all-mangas-reader-beta-latest.7z' : 'all-mangas-reader-beta-latest.zip'
 			}
 			const res = await fetch(url)
 			const fileStream = streamSaver.createWriteStream(filename, {
@@ -312,6 +315,10 @@ export default {
 			await this.$store.dispatch("setOption", { key: "allowcookiesdone", value: 1});
 			this.cookiesDone = true
 			await this.$store.dispatch("setOption", { key: "allowcookies", value: doAllow ? 1 : 0 });
+		},
+		toggleDarkMode() {
+			this.$vuetify.theme.dark = !this.$store.state.options.dark
+			this.$store.dispatch("setOption", { key: 'dark', value: this.$store.state.options.dark ? 0 : 1 });
 		}
 	},
 	mounted: function () {

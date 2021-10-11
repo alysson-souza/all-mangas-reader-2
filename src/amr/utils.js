@@ -1,5 +1,5 @@
 import i18n from './i18n';
-
+import axios from 'axios';
 /**
  * Test if current browser is Firefox
  * - used to display icons in browser (Firefix supports animated svg, chrome does not)
@@ -36,6 +36,9 @@ export function matchDomain(str, rule) {
     if (rule == 'komga') {
         rule = new URL(AMR_STORE.state.options.komgaUrl).host
     }
+    if (rule == 'tachidesk') {
+        rule = new URL(AMR_STORE.state.options.tachideskUrl).host
+    }
     let doMatch = new RegExp("^" + rule.replace(/\*/g, '.*') + "$").test(str)
     return doMatch
 }
@@ -68,6 +71,40 @@ export function debug(message) {
         console.log(t.getHours() + ':' + t.getMinutes() + ':' + t.getSeconds() + ' ' + t.getMilliseconds() + ': ' + message);
     }
 }
+
+/**
+ * 
+ * @param {string} secret 
+ * @param {string} id 
+ * @param {string} filename 
+ * @param {*} content 
+ */
+export async function gistDebug(secret, id, filename, content) {
+    if(window['AMR_STORE'].state.options.gistDebugEnabled === 0) return
+    if(secret && secret !== '' && id && id !== '') return
+    const ax = axios.create({
+        baseURL: 'https://api.github.com/',
+        headers: {
+            'Authorization': `Bearer ${secret}`,
+            'Cache-Control': 'no-cache'
+        }
+        });
+    const request = await ax.get(`gists/${id}?cache=${Date.now()}`).catch(debug)
+    const data = request.data
+    let stringContent;
+    if(data.files[filename]) {
+        const parsedContent = JSON.parse(data.files[filename].content)
+        parsedContent.push(content)
+        stringContent = JSON.stringify(parsedContent, null, 2)
+    } else {
+        data.files[filename] = { content: [] }
+        data.files[filename].content.push(content)
+        stringContent = JSON.stringify(data.files[filename].content, null, 2)
+    }
+    await ax.patch(`gists/${id}`, { files: { [filename] : { content: stringContent } } } ).catch(debug)
+}
+
+
 /**
  * Serialize a vuex object.
  * Doing that because content script is not vue aware, the reactive vuex object needs to be

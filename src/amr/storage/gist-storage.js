@@ -9,8 +9,6 @@ export default class GistStorage extends Storage {
     this.gistSyncGitID = config.gistSyncGitID
     this.gistSyncSecret = config.gistSyncSecret
     this.axios = this.initAxios()
-    this.delay = 500
-    this.requests = 0
   }
 
   initAxios() {
@@ -87,20 +85,5 @@ export default class GistStorage extends Storage {
 
   getFileStruct(content) {
     return { files: { 'amr.json' : { content: content } } }
-  }
-
-  async wait() {
-    return new Promise((resolve) => {
-      this.requests = this.requests + 1
-      setTimeout(() => {
-        this.decrementReqs()
-        resolve()
-      }, this.delay*this.requests)
-    })
-  }
-
-  decrementReqs() {
-    this.requests = this.requests - 1
-    if(this.requests < 0) this.requests = 0
   }
 }

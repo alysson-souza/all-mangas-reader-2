@@ -43,6 +43,7 @@ const default_options = {
     /** Customization options */
     newTab: 0, //Open popup in new tab
     displastup: 0, // Display a badge with last time updated in popup
+    disppercentage: 1, // Display a circular icon with progression
     dark: 0, // Use a dark backgroud for AMR pages,
     colornew: "green", // color of mangas with new chapters
     colorread: "blue", // color of mangas with all chapters read
@@ -74,6 +75,9 @@ const default_options = {
     gistSyncEnabled: 0,
     gistSyncSecret: "",
     gistSyncGitID: "",
+
+    /** Debug options */
+    gistDebugEnabled: 0,
     /**
      * Sync/Update/Convert safener
      */
@@ -126,13 +130,15 @@ const default_options = {
     /** Komga specific options */
     komgaUrl: 'http://localhost:8080',
     komgaUser: '',
-    komgaPassword: ''
+    komgaPassword: '',
+
+    tachideskUrl: 'http://localhost:4567 '
 
 }
 
 const jsonOptions = ["categoriesStates", "readlanguages"];
 const stringOptions = ["colornew", "colorread", "colornotfollow", "mangadexBlockedGroups", "mangadexPreferredGroups", "mangadexImageServer", "pageNavigationPosition",
-    "sortOrder", "komgaUrl", "komgaUser", "komgaPassword", "gistSyncSecret", "gistSyncGitID"];
+    "sortOrder", "komgaUrl", "komgaUser", "komgaPassword", "tachideskUrl", "gistSyncSecret", "gistSyncGitID"];
 
 /**
  *  initial state of amr options

@@ -41,6 +41,22 @@
                   </div>
                 </template>
               </v-checkbox>
+              <!-- Display percentage -->
+               <v-checkbox v-model="disppercentage" @change="setOption('disppercentage')">
+                <template v-slot:label>
+                  <div>
+                    {{ i18n('options_gen_disppercentage_opt') }}
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on }">
+                        <v-icon v-on="on" color="blue darken-2" class="superscript" small>
+                          mdi-information
+                        </v-icon>
+                      </template>
+                      {{ i18n('options_gen_disppercentage_desc') }}
+                    </v-tooltip>
+                  </div>
+                </template>
+              </v-checkbox>             
               <!-- Display badge last update -->
               <v-checkbox v-model="displastup" @change="setOption('displastup')">
                 <template v-slot:label>
@@ -219,10 +235,10 @@
             <!-- Synchronization -->
             <v-expansion-panel-header><div class="text-h5 blue--text lighten-4">{{ i18n("options_sync_title") }}</div></v-expansion-panel-header>
             <v-expansion-panel-content class="pt-6" color="slight-overlay">
-              <v-alert dense v-if="isFirefox() ? !syncEnabled || !gistSyncEnabled : !gistSyncEnabled"  :value="true" color="error" icon="mdi-alert-octagon" text elevation="1">
+              <v-alert dense v-if="!syncEnabled || !gistSyncEnabled "  :value="true" color="error" icon="mdi-alert-octagon" text elevation="1">
                 {{i18n('options_sync_title_warning')}}
               </v-alert>
-              <v-checkbox v-if="isFirefox()" v-model="syncEnabled" @change="setOption('syncEnabled')">
+              <v-checkbox v-if="isFirefox() || syncEnabled" v-model="syncEnabled" @change="setOption('syncEnabled')">
                 <template v-slot:label>
                   <div>
                     {{ i18n('options_sync_checkbox') }}
@@ -267,6 +283,14 @@
               <v-expansion-panel-content class="pt-6" color="slight-overlay">
               <v-checkbox v-model="searchOpenSeries" @change="setOption('searchOpenSeries')"
                           :label="i18n('options_search_open_series_desc')"></v-checkbox>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+          <!-- Support -->
+          <v-expansion-panel v-if="gistSyncEnabled && gistSyncSecret.length && gistSyncGitID.length">
+            <v-expansion-panel-header><div class="text-h5 blue--text lighten-4">{{ i18n("options_support_title") }}</div></v-expansion-panel-header>
+              <v-expansion-panel-content class="pt-6" color="slight-overlay">
+              <v-checkbox v-model="gistDebugEnabled" @change="setOption('gistDebugEnabled')"
+                          :label="i18n('options_support_desc')"></v-checkbox>
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
@@ -331,7 +355,7 @@
               </v-row>
               <!-- Default to webtoon mode -->
 
-              <v-checkbox v-model="smoothNavigation" @change="setOption('smoothNavigation')"
+              <v-checkbox v-model="webtoonDefault" @change="setOption('webtoonDefault')"
                       :label="i18n('options_webtoon_mode_default')"></v-checkbox>
             </v-expansion-panel-content>
           </v-expansion-panel>
@@ -394,7 +418,7 @@
                 </template>
               </v-checkbox>
               <!-- Smooth navigation toggle (dynamially load next/previous chapters) -->
-              <v-checkbox v-model="displayFullChapter" @change="setOption('displayFullChapter')">
+              <v-checkbox v-model="smoothNavigation" @change="setOption('smoothNavigation')">
                 <template v-slot:label>
                   <div>
                     {{ i18n('options_reader_smooth_navigation') }}
@@ -611,6 +635,14 @@
               <v-text-field v-model="komgaPassword" type="password" @change="setOption('komgaPassword')" :label="i18n('options_komga_password_label')" />
             </v-expansion-panel-content>
           </v-expansion-panel>
+          <!-- tachidesk Options -->
+          <v-expansion-panel>
+            <v-expansion-panel-header><div class="text-h5 blue--text lighten-4">{{ i18n("options_mirror_specific_tachidesk") }}</div></v-expansion-panel-header>
+            <v-expansion-panel-content class="pt-6" color="slight-overlay">
+              <!-- tachidesk Domain -->
+              <v-text-field v-model="tachideskUrl" @change="setOption('tachideskUrl')" :label="i18n('options_tachidesk_server_label')" />
+            </v-expansion-panel-content>
+          </v-expansion-panel>
         </v-expansion-panels>
       </v-tab-item>
     </v-tabs-items>
@@ -643,6 +675,7 @@ const converters = {
       "newTab",
       "groupmgs",
       "displastup",
+      "disppercentage",
       "dark",
       "checkmgstart",
       "refreshspin",
@@ -659,6 +692,7 @@ const converters = {
       "darkreader",
       "syncEnabled",
       "gistSyncEnabled",
+      "gistDebugEnabled",
       "searchOpenSeries",
       "mangadexDataSaver",
       "webtoonDefault",
@@ -889,6 +923,10 @@ export default {
           this.deactivateUnreadable();
       }
       // retrieve Sync options, must follow current naming convention : providerSyncEnabled
+      if (optstr.toLowerCase().includes('syncenabled') || optstr.toLowerCase().includes('sync')) {
+        this.updateSync(optstr, val)
+        this.dispatch("updateSync", false);
+      }
       if (optstr.toLowerCase().includes('syncenabled') || optstr.toLowerCase().includes('sync')) {
         this.updateSync(optstr, val)
         this.dispatch("updateSync", false);

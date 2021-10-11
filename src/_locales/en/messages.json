@@ -196,6 +196,14 @@
     "message": "Display a badge with a calendar icon and the last time in days a new chapter has been published (badge will be removed if last chapter is more than 50 days old)",
     "description": "Option Badge with last time updated description"
   },
+  "options_gen_disppercentage_opt": {
+    "message": "Badge with reading progress",
+    "description": "Option Badge reading progress"
+  },
+  "options_gen_disppercentage_desc": {
+    "message": "Display a circular icon which indicate the reading progress",
+    "description": "Option Display a badge with a circular icons which indicate the read progression"
+  },
   "options_gen_dark_desc": {
     "message": "Display a dark background in All Mangas Reader pages",
     "description": "Option Dark popup description"
@@ -415,24 +423,20 @@
     "description": "Link to import samples mangas when reading list is empty"
   },
   "list_details_cats": {
-    "message": "Categories",
+    "message": "Edit categories",
     "description": "Title of categories list in manga detail"
-  },
-  "list_details_cats_select": {
-    "message": "Category to add",
-    "description": "Default otion in categories list select in manga details"
   },
   "list_multi_action_select_manga": {
     "message": "Please select manga for multi action",
     "description": "Please select category"
   },
   "list_multi_action_select_category": {
-    "message": "Please select category",
+    "message": "Change category",
     "description": "Please select category"
   },
-  "list_multi_action_currently_selected": {
-    "message": "Currently selected $1",
-    "description": "Currently selected $1"
+  "list_details_more_actions": {
+    "message": "More actions",
+    "description": "Select other actions"
   },
   "list_details_books": {
     "message": "Bookmarks",
@@ -479,7 +483,7 @@
     "description": "Tooltip on timer off icon to explain that this manga's chapter list is no more updated."
   },
   "list_progress_reading": {
-    "message": "Progression : $1 %",
+    "message": "Progression: $1% ($2)",
     "description": "Tooltip on progress bar below chapters list to tell the reading progression"
   },
   "list_mg_act_read": {
@@ -517,6 +521,10 @@
   "list_mirror_disabled_tooltip": {
     "message": "Mirror $1 is no longer available. Please consider using different mirror to read this manga",
     "description": "Tooltip on mirror icon, that no longer supported by AMR."
+  },
+  "list_cat_filter" : {
+    "message": "Select displayed categories",
+    "description": "Tooltip on the category button to display the list of categories"
   },
   "list_cat_include_all": {
     "message": "Include all categories",
@@ -1614,6 +1622,14 @@
     "message": "Switches search screen to open series list in new tab instead of adding the series",
     "description": "search open series in new tab"
   },
+  "options_support_title": {
+    "message": "Support",
+    "description": "support option"
+  },
+  "options_support_desc": {
+    "message": "Enable support using gist",
+    "description": "support option"
+  },
   "__V2_3_0": {
     "message": "Just a filler to separate new labels from old ones"
   },
@@ -1746,6 +1762,10 @@
     "message": "Select all",
     "description": "Multi select, select all button"
   },
+  "button_multi_manga_unselect_all": {
+    "message": "Deselect all",
+    "description": "Multi select, unselect all button"
+  },
   "button_multi_manga_select_unread": {
     "message": "Select all with unread chapters",
     "description": "multi select, select all with unread button"
@@ -1804,7 +1824,11 @@
   "reader_context_menu_copy_img": {
     "message": "Copy Image to Clipboard",
     "description": "Context Menu link for copying image url"
-  }, 
+  },
+  "reader_context_menu_copy_img_warning_dialog": {
+    "message": "<p>To enable this feature we need to tweak your browser!<br/><small>ps: this is a one time thing, the settings will then apply to any new pages (▀̿Ĺ̯▀̿ ̿)</small><p>1. Open a new tab, in the address bar type <code>about:config</code>, then press ENTER<br/>2. Click the <code>Accept the risk and continue</code> button<br/>3. Search for <code>dom.events.asyncClipboard.clipboardItem</code> and click the \"toggle button\" (far right)<br/>4. Close <code>about:config</code> and reload this page</p>",
+    "description": "Context Menu link for copying image url"
+  },
   "reader_zoom_show": {
     "message": "Show Zoom Control",
     "description": "Button to show zoom controls"
@@ -1857,5 +1881,13 @@
   "reader_context_menu_reload_image": {
     "message": "Reload Image",
     "description": "Context Menu link for reloading a single image"
+  },
+  "options_mirror_specific_tachidesk": {
+    "message": "Tachidesk Options",
+    "description": "Option panel header Tachidesk"
+  },
+  "options_tachidesk_server_label": {
+    "message": "Tachidesk Server URL",
+    "description": "Option for Tachidesk url"
   }
 }

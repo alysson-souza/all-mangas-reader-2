@@ -3,24 +3,19 @@
  */
 export default [
     {
-        mirror: "Manga Panda",
+        mirror: "Manga-Fox",
         name: "One Piece",
-        url: "https://www.mangapanda.com/one-piece"
+        url: "http://fanfox.net/manga/one_piece/"
     },
     {
-        mirror: "MangaStream",
-        name: "Dragon Ball Super",
-        url: "https://readms.net/manga/dragon_ball_super"
+        mirror: "Manhuaus",
+        name: "Against the Gods",
+        url: "https://manhuaus.com/manga/against-the-gods/"
     },
     {
-        mirror: "Manga Panda",
+        mirror: "Readm.org",
         name: "Fairy Tail",
-        url: "https://www.mangapanda.com/fairy-tail"
-    },
-    {
-        mirror: "Manga Reader",
-        name: "Hunter X Hunter",
-        url: "https://www.mangareader.net/hunter-x-hunter"
+        url: "https://readm.org/manga/2004"
     },
     {
         mirror: "Manga-Fox",

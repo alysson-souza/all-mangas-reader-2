@@ -71,9 +71,9 @@ class Util {
     /**
      * Change updating mode for this manga (1 : stop updating, 0 : check updates)
      */
-    async markReadTop(nTop) {
+    async markMangaReadTop(nTop) {
         return await browser.runtime.sendMessage({
-            action: "markReadTop",
+            action: "markMangaReadTop",
             url: pageData.state.currentMangaURL,
             read: nTop,
             updatesamemangas: true,

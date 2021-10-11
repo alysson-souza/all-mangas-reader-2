@@ -3,7 +3,7 @@ if (typeof registerMangaObject === 'function') {
         mirrorName: "EarlyManga",
         mirrorIcon: "earlymanga.png",
         languages: "en",
-        domains: ["earlymanga.net", "earlymanga.xyz", "earlymanga.me", "earlymanga.org"],
+        domains: ["earlymanga.net", "earlymanga.xyz", "earlymanga.me", "earlymanga.org", "earlymangarelease.com"],
         home: "https://earlymanga.org",
         chapter_url: /^\/manga\/.*\/.+$/g,
 

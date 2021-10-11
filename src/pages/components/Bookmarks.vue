@@ -39,7 +39,7 @@
     </v-row>
     <v-dialog v-model="deleteBookmarkDialog" max-width="290">
       <v-card v-if="bmToDelete">
-        <v-card-title class="headline">{{bmToDelete.type === 'chapter' ? i18n("bookmarks_chapter_delete") : i18n("bookmarks_scan_delete")}}</v-card-title>
+        <v-card-title class="text-h5">{{bmToDelete.type === 'chapter' ? i18n("bookmarks_chapter_delete") : i18n("bookmarks_scan_delete")}}</v-card-title>
         <v-card-text>{{bmToDelete.type === 'chapter' ? i18n("bookmarks_chapter_delete_text", bmToDelete.name, bmToDelete.chapName) : i18n("bookmarks_scan_delete_text", bmToDelete.name, bmToDelete.chapName, bmToDelete.scanName)}}</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -51,8 +51,8 @@
     <v-dialog v-model="editBookmarkDialog" max-width="500px">
       <v-card v-if="bmToEdit">
         <v-card-title>
-          <span class="headline" v-if="bmToEdit.type === 'chapter'">{{i18n('bookmarks_chapter_edit')}}</span>
-          <span class="headline" v-else>{{i18n('bookmarks_scan_edit')}}</span>
+          <span class="text-h5" v-if="bmToEdit.type === 'chapter'">{{i18n('bookmarks_chapter_edit')}}</span>
+          <span class="text-h5" v-else>{{i18n('bookmarks_scan_edit')}}</span>
         </v-card-title>
         <v-card-text>
           <p v-html="bmToEdit.type === 'chapter' ? i18n('bookmarks_chapter_edit_text', bmToEdit.name, bmToEdit.chapName) : i18n('bookmarks_scan_edit_text', bmToEdit.name, bmToEdit.chapName, bmToEdit.scanName)"></p>

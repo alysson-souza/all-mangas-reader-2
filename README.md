@@ -225,9 +225,10 @@ All Mangas Reader is a browser extension which is designed to help you read and 
                 <td><img src="src/mirrors/icons/skscans.png" width="16" title="SK Scans"></td>
                 <td><img src="src/mirrors/icons/socialweebs.png" width="16" title="Social Weebs"></td>
                 <td><img src="src/mirrors/icons/submanga.png" width="16" title="SubManga"></td>
-                <td><img src="src/mirrors/icons/taptaptaptaptap.png" width="16" title="Tappy tappy tap"></td>
+                <td><img src="src/mirrors/icons/tachidesk.png" width="16" title="Tachidesk"></td>
             </tr>
             <tr>
+                <td><img src="src/mirrors/icons/taptaptaptaptap.png" width="16" title="Tappy tappy tap"></td>
                 <td><img src="src/mirrors/icons/toonily_net.png" width="16" title="Toonily.Net"></td>
                 <td><img src="src/mirrors/icons/toonily.png" width="16" title="Toonily"></td>
                 <td><img src="src/mirrors/icons/topmanhua.png" width="16" title="Top Manhua"></td>
@@ -237,9 +238,9 @@ All Mangas Reader is a browser extension which is designed to help you read and 
                 <td><img src="src/mirrors/icons/unemployed-scans.jpg" width="16" title="Unemployed Scans"></td>
                 <td><img src="src/mirrors/icons/unionleitor.png" width="16" title="Union Leitor"></td>
                 <td><img src="src/mirrors/icons/vanguard.png" width="16" title="Vanguard Scans"></td>
-                <td><img src="src/mirrors/icons/voidscans.png" width="16" title="Void Scans"></td>
             </tr>
             <tr>
+                <td><img src="src/mirrors/icons/voidscans.png" width="16" title="Void Scans"></td>
                 <td><img src="src/mirrors/icons/vortexscans.png" width="16" title="Vortex Scans"></td>
                 <td><img src="src/mirrors/icons/webtoons.png" width="16" title="WebToons"></td>
                 <td><img src="src/mirrors/icons/webtoon-xyz.png" width="16" title="Webtoon.xyz"></td>

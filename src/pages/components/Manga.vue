@@ -1,5 +1,5 @@
 <template>
-  <v-card v-if="shouldShow" :class="color(3, true) + ' amr-manga-row' + (manga.update === 0 ? ' amr-noupdates' : '')">
+  <v-card v-show="shouldShow" :class="color(3, true) + ' amr-manga-row' + (manga.update === 0 ? ' amr-noupdates' : '')">
     <v-row :class="isDarkText ? 'dark-text' : 'light-text'">
       <v-col v-show="selectable" cols="auto" class="pr-0 mr-0">
         <v-checkbox v-model="selected" hide-details dense class="shrink mr-2 mt-0"></v-checkbox>
@@ -74,7 +74,7 @@
                   @change="playChap($event)"
                   dense
                   solo
-                  class="align-self-center chap-select"
+                  class="align-self-center"
                   hide-details
                   :background-color="color(0)"
                   :color="isDarkText ? 'dark-text' : 'light-text'"
@@ -82,7 +82,7 @@
                   :loading="chapsForSelect.length ? '' : color(-2)"
                   :disabled="!chapsForSelect.length"
                 >
-                  <template v-slot:prepend-inner v-if="chapsForSelect.length">
+                  <template v-slot:prepend-inner v-if="chapsForSelect.length && showProgress">
                     <v-tooltip top content-class="icon-ttip">
                       <template v-slot:activator="{ on }">
                         <div class="d-flex align-center">
@@ -98,7 +98,7 @@
                           />
                         </div>
                       </template>
-                      <span>{{i18n("list_progress_reading", progress)}}</span>
+                      <span>{{i18n("list_progress_reading", progress, absoluteProgress)}}</span>
                     </v-tooltip>
                     <v-divider
                       class="mx-2"
@@ -196,47 +196,233 @@
       </v-col>
     </v-row>
     <v-row v-if="expanded" dense>
-      <!-- Categories -->
-      <v-col cols="6">
-        <span>{{i18n("list_details_cats")}} : </span>
-        <Categories
-          :categories="manga.cats"
-          :static-cats="true"
-          :delegate-delete="true"
-          @delete-category="deleteCategory" />
-        <div class="det-sel-wrapper">
-          <select dark v-model="newCat" @change="addCategory()" :class="color(2)">
-            <option value="">{{i18n("list_details_cats_select")}}</option>
-            <option v-for="(cat, key) of selectableCategory"
-                    :key="key"
-                    :value="cat.name">
-                {{cat.name}}
-            </option>
-          </select>
-        </div>
+      <!-- Categories Menu -->
+      <v-col :cols="submenu_col" class="d-flex justify-center" v-if="categories.length">
+        <v-menu offset-x :close-on-content-click="false" max-height="196">
+          <template v-slot:activator="{on, attrs}">
+            <v-btn
+              :color="color(-1)"
+              v-bind="attrs"
+              v-on="on"
+              x-small
+              :dark="!isDarkText"
+            >
+              {{i18n("list_details_cats")}}
+              <v-icon
+                right
+                x-small
+              >
+                mdi-menu-down
+             </v-icon>
+            </v-btn>
+          </template>
+          <v-list
+            :color="color(1)"
+            dense
+            :subheader="true"
+            class="py-0"
+          >
+            <v-list-item
+              link
+              v-for="(item, index) of categories"
+              :key="index"
+              :style="index < categories.length - 1 ? 'border-bottom: 1px solid rgb(0 0 0 / 10%);': ''"
+              :class="isDarkText ? 'dark-text' : 'light-text'"
+              @click="hasCategory(item.name) ? deleteCategory(item.name) : addCategory(item.name)"
+            >
+              <v-list-item-title>
+                {{ item.name }}
+              </v-list-item-title>
+              <v-list-item-action>
+                <v-checkbox
+                  dense
+                  :dark="!isDarkText"
+                  :input-value="hasCategory(item.name)"
+                ></v-checkbox>
+              </v-list-item-action>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </v-col>
+      <!-- Updates Menu -->
+      <v-col :cols="submenu_col" class="d-flex justify-center">
+        <v-menu offset-x :close-on-content-click="false" max-height="196">
+          <template v-slot:activator="{on, attrs}">
+            <v-btn
+              :color="color(-1)"
+              v-bind="attrs"
+              v-on="on"
+              x-small
+              :dark="!isDarkText"
+            >
+              {{i18n("options_gen_updates")}}
+              <v-icon
+                right
+                x-small
+              >
+                mdi-menu-down
+             </v-icon>
+            </v-btn>
+          </template>
+          <v-list
+            :color="color(1)"
+            dense
+            :subheader="true"
+            class="py-0"
+            :class="isDarkText ? 'dark-text' : 'light-text'"
+          >
+            <!-- un/follow updates -->
+            <v-list-item link @click='toggleFollow()'>
+              <v-list-item-title v-if="manga.read === 0">
+                <v-icon small left>
+                  mdi-bell-off-outline
+                </v-icon>
+                {{ i18n("list_details_act_stop_follow") }}
+              </v-list-item-title>
+              <v-list-item-title v-else>
+                <v-icon small left>
+                  mdi-bell-alert-outline
+                </v-icon>
+                {{ i18n("list_details_act_follow") }}
+              </v-list-item-title>
+            </v-list-item>
+            <!-- start/stop updates -->
+            <v-list-item link @click='toggleUpdate()'>
+              <v-list-item-title v-if="manga.update === 1">
+                <v-icon small left>
+                  mdi-timer-off-outline
+                </v-icon>
+                {{ i18n("list_details_act_stop_updating") }}
+              </v-list-item-title>
+              <v-list-item-title v-else>
+                <v-icon small left>
+                  mdi-timer-outline
+                </v-icon>
+                {{ i18n("list_details_act_restart_updating") }}
+              </v-list-item-title>
+            </v-list-item>
+            <!-- refresh manga chapter list -->
+            <v-list-item link @click='refreshMangaNow();'>
+              <v-list-item-title>
+                <v-icon small left :class="loader">
+                  mdi-refresh
+                </v-icon>
+                {{ i18n("refresh_chapters") }}
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </v-col>
+      <!-- More actions Menu -->
+      <v-col :cols="submenu_col" class="d-flex justify-center">
+        <v-menu offset-x :close-on-content-click="false" max-height="196">
+          <template v-slot:activator="{on, attrs}">
+            <v-btn
+              :color="color(-1)"
+              v-bind="attrs"
+              v-on="on"
+              x-small
+              :dark="!isDarkText"
+            >
+              {{ i18n("list_details_more_actions") }}
+              <v-icon
+                right
+                x-small
+              >
+                mdi-menu-down
+             </v-icon>
+            </v-btn>
+          </template>
+          <v-list
+            :color="color(1)"
+            dense
+            :subheader="true"
+            class="py-0"
+            :class="isDarkText ? 'dark-text' : 'light-text'"
+          >
+            <!-- search this manga elsewhere -->
+            <v-list-item link @click='searchElsewhere()'>
+              <v-list-item-title>
+                <v-icon small left>
+                  mdi-text-search
+                </v-icon>
+                {{ i18n("list_details_act_search") }}
+              </v-list-item-title>
+            </v-list-item>
+            <!-- Reset manga read status -->
+            <v-list-item link @click='resetManga()'>
+              <v-list-item-title>
+                <v-icon small left>
+                  mdi-restart
+                </v-icon>
+                {{ i18n("list_details_act_reset") }}
+              </v-list-item-title>
+            </v-list-item>
+            <!-- Rename manga -->
+            <v-list-item link @click='renameManga();'>
+              <v-list-item-title>
+                <v-icon x-small left :class="loader">
+                  mdi-pencil-outline
+                </v-icon>
+                {{ i18n("list_details_rename_manga") }}
+              </v-list-item-title>
+            </v-list-item>
+            <!-- Reset manga name -->
+            <v-list-item link @click='resetName();' v-if="manga.displayName && manga.displayName !== ''">
+              <v-list-item-title>
+                <v-icon x-small left :class="loader">
+                  mdi-pencil-off-outline
+                </v-icon>
+                {{ i18n("list_details_reset_name") }}
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </v-col>
+
+
       <!-- Manage manga bookmarks -->
-      <v-col cols="6">
-        <span>{{i18n("list_details_books")}} : </span>
-        <select v-if="bookmarks.length" dark v-model="curBm" @change="openBookmark()" :class="color(2)">
-          <option v-for="(bm, key) of bookmarks"
-                  :key="key"
-                  :value="bm.chapUrl">
-              {{bm.type === 'scan' ? i18n("bookmarks_scan_title", bm.chapName, bm.scanName) : i18n("bookmarks_chapter_title", bm.chapName)}}
-          </option>
-        </select>
-        <span v-if="!bookmarks.length">{{i18n("list_details_no_bookmarks")}}</span>
-      </v-col>
-      <v-col cols="12" class="text-center">
-        <v-btn @click='searchElsewhere()' :color="color(-1)" small>{{i18n("list_details_act_search")}}</v-btn>
-        <v-btn @click='resetManga()' :color="color(-1)" small>{{i18n("list_details_act_reset")}}</v-btn>
-        <v-btn v-if="manga.read === 0" @click='toggleFollow()' :color="color(-1)" small>{{i18n("list_details_act_stop_follow")}}</v-btn>
-        <v-btn v-if="manga.read === 1" @click='toggleFollow()' :color="color(-1)" small>{{i18n("list_details_act_follow")}}</v-btn>
-        <v-btn v-if="manga.update === 1" @click='toggleUpdate()' :color="color(-1)" small>{{i18n("list_details_act_stop_updating")}}</v-btn>
-        <v-btn v-if="manga.update === 0" @click='toggleUpdate()' :color="color(-1)" small>{{i18n("list_details_act_restart_updating")}}</v-btn>
-        <v-btn @click='refreshMangaNow()' :color="color(-1)" small>{{ i18n("refresh_chapters") }}</v-btn>
-        <v-btn @click='renameManga()' :color="color(-1)" small>{{ i18n("list_details_rename_manga") }}</v-btn>
-        <v-btn v-if="manga.displayName && manga.displayName !== ''" @click='resetName()' :color="color(-1)" small>{{ i18n("list_details_reset_name") }}</v-btn>
+      <v-col :cols="submenu_col" class="d-flex justify-center" v-if="bookmarks.length">
+        <v-menu offset-x :close-on-content-click="false" max-height="196">
+          <template v-slot:activator="{on, attrs}">
+            <v-btn
+              :color="color(-1)"
+              v-bind="attrs"
+              v-on="on"
+              x-small
+              :dark="!isDarkText"
+            >
+              {{ i18n("list_details_books") }}
+              <v-icon
+                right
+                x-small
+              >
+                mdi-bookmark-multiple-outline
+             </v-icon>
+            </v-btn>
+          </template>
+          <v-list
+            :color="color(1)"
+            dense
+            :subheader="true"
+            class="py-0"
+            :class="isDarkText ? 'dark-text' : 'light-text'"
+          >
+            <!-- search this manga elsewhere -->
+            <v-list-item
+              link
+              v-for="(item, index) of bookmarks"
+              :key="index"
+              :style="index < bookmarks.length - 1 ? 'border-bottom: 1px solid rgb(0 0 0 / 10%);': ''"
+              :class="isDarkText ? 'dark-text' : 'light-text'"
+              @click="openBookmark(item.chapUrl)"
+            >
+              <v-list-item-title>
+                {{item.type === 'scan' ? i18n("bookmarks_scan_title", item.chapName, item.scanName) : i18n("bookmarks_chapter_title", item.chapName)}}
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </v-col>
     </v-row>
   </v-card>
@@ -248,7 +434,6 @@ import browser from "webextension-polyfill";
 import * as utils from "../utils";
 import * as amrutils from "../../amr/utils";
 import Flag from "./Flag";
-import Categories from "./Categories";
 
 export default {
   data() {
@@ -257,13 +442,10 @@ export default {
       expanded: false,
       // delete manga popup state
       deleteManga: false,
-      // category to add to this group of mangas
-      newCat: "",
-      // selected bookmark
-      curBm: null,
       selectable: false, // Should we show the multi select checkbox
       selected: false,
-      canOpenTab: true // This is used for a timer to hopefully eliminate weird duping issue
+      canOpenTab: true, // This is used for a timer to hopefully eliminate weird duping issue
+      refreshing: false,
     };
   },
   // property to load the component with --> the manga it represents
@@ -319,9 +501,15 @@ export default {
         return { value: amrutils.chapPath(arr[1]), text: arr[0], url: arr[1] };
       });
     },
+    showProgress: function() {
+      return this.options.disppercentage
+    },
     // calculate reading progress
     progress: function() {
       return Math.floor((1 - this.posInChapList / this.manga.listChaps.length) * 100);
+    },
+    absoluteProgress: function() {
+      return `${this.manga.listChaps.length - this.posInChapList}/${this.manga.listChaps.length}`
     },
     // position of current chapter in chapters list
     posInChapList() {
@@ -370,15 +558,28 @@ export default {
         cols = cols - 1
       }
       if(this.manga.update === 0) {
-        cols = cols - 1
+        cols = cols - 2
       }
       return cols
+    },
+    submenu_col() {
+      if(this.categories.length && this.bookmarks.length) {
+        return '3'
+      } else {
+        return '4'
+      }
     },
     isDarkText: function() {
       return utils.darkText(this.manga, this.options)
     },
-    selectableCategory() {
-      return this.options.categoriesStates.filter(cat => cat.type !== 'native' && cat.type != 'language' && !this.manga.cats.includes(cat.name))
+    categories() {
+      return this.options.categoriesStates.filter(cat => cat.type !== 'native' && cat.type != 'language')
+    },
+    loader() {
+      if(this.refreshing) {
+        return 'custom-loader'
+      }
+      return ''
     },
     // bookmarks for this group
     bookmarks: function() {
@@ -465,10 +666,12 @@ export default {
      * Refresh manga chapter list
      */
     refreshMangaNow: function () {
+      this.refreshing = true
       browser.runtime.sendMessage({
         action: 'refreshMangas',
         manga: this.manga
       })
+      setTimeout(()=> this.refreshing = false, 2000)
     },
     /**
      * Open search panel with search field prefilled with manga name
@@ -529,19 +732,21 @@ export default {
         name: cat
       })
     },
-    addCategory: function() {
+    addCategory: function(cat) {
       browser.runtime.sendMessage({
         action: "addCategoryToManga",
         key: this.manga.key,
-        name: this.newCat
+        name: cat
       })
-      this.newCat = ""
+    },
+    hasCategory: function(cat) {
+      return this.manga.cats.includes(cat)
     },
     /**
      * Open bookmark in a new tab (the chapter corresponding to bookmark)
      */
-    openBookmark: function() {
-      browser.runtime.sendMessage({ action: "opentab", url: this.curBm });
+    openBookmark: function(bm) {
+      browser.runtime.sendMessage({ action: "opentab", url: bm });
     },
     emitExpand() {
       this.$emit("expand-group");
@@ -616,7 +821,7 @@ export default {
   },
   // Name of the component
   name: "Manga",
-  components: { Flag, Categories }
+  components: { Flag }
 };
 </script>
 
@@ -702,7 +907,9 @@ export default {
 .min-h-26 {
  min-height: 26px;
 }
-
+.add {
+  color:rgba(0, 0, 255, 0.3)!important;
+}
 @media screen and (max-width: 1263px) {
   .m-icon {
     margin-left: 2px!important;
@@ -711,6 +918,41 @@ export default {
 @media screen and (min-width: 1264px) {
   .m-icon {
     margin-left: 4px!important;
+  }
+}
+.custom-loader {
+  animation: loader 1s infinite;
+}
+@-moz-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@-o-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 </style>

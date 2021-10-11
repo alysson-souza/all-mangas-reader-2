@@ -6,12 +6,13 @@ import notifications from '../../amr/notifications';
 import statsEvents from '../../amr/stats-events';
 import * as utils from "../../amr/utils";
 import { debug } from "../../amr/utils"
+import { gistDebug } from '../../amr/utils';
 import samples from "../../amr/samples";
 import amrUpdater from '../../amr/amr-updater';
 import iconHelper from '../../amr/icon-helper';
 import * as syncUtils from '../../amr/sync/utils';
 import { getSyncManager } from '../../amr/sync/sync-manager'
-import axios from 'axios';
+import browser from "webextension-polyfill";
 import {Buffer} from 'buffer'
 
 let syncManager;
@@ -557,7 +558,15 @@ const actions = {
             });
             return;
         }
-
+        gistDebug(getters.syncOptions.gistSyncSecret, getters.syncOptions.gistSyncGitID, 'amrResets.json', {
+            name:mg.name,
+            mirror:mg.mirror,
+            oldPath:mg.lastChapterReadURL,
+            oldName:mg.lastChapterReadName,
+            newPath: listChaps[listChaps.length - 1][1],
+            newName: listChaps[listChaps.length - 1][0],
+            dateTime:new Date().toLocaleString()
+        })
         debug("No list entry or multiple list entries match the known last chapter. Reset to first chapter");
         commit('updateMangaLastChapter', {
             key: mg.key, obj: {
@@ -814,11 +823,41 @@ const actions = {
     clearMangasSelect({ commit }) {
         commit("clearSelection");
     },
-    async fetchImage({}, {imageURL}) {
-        const resp = await axios.get(imageURL, {responseType: 'arraybuffer'})
-        const raw = new Buffer.from(resp.data).toString('base64');
-        return "data:" + resp.headers["content-type"] + ";base64,"+raw;
-    },
+    /**
+     * 
+     * @param {*} param0 
+     * @param {Object} param1
+     * @param {String} param1.imageURL 
+     * @param {String} param1.referer 
+     * @returns 
+     */
+    async fetchImage({}, {imageURL, referer}) {
+        const filter = { urls : [ "https://*/*", "http://*/*" ] }
+        const extraInfoSpec = ["requestHeaders", "blocking"]
+        const listener = (details) => {
+            var newRef = referer;
+            var gotRef = false;
+            for(var n in details.requestHeaders) {
+                gotRef = details.requestHeaders[n].name.toLowerCase()=="referer";
+                if(gotRef){
+                    details.requestHeaders[n].value = newRef;
+                    break;
+                }
+            }
+            if(!gotRef){
+                details.requestHeaders.push({name:"Referer",value:newRef});
+            }
+            return {requestHeaders:details.requestHeaders};
+        }
+
+        browser.webRequest.onBeforeSendHeaders.addListener(listener, filter, extraInfoSpec)
+        const resp = await fetch(imageURL)
+        const arraybuffer = await resp.arrayBuffer()
+        const bs64 = new Buffer.from(arraybuffer).toString('base64');
+        browser.webRequest.onBeforeSendHeaders.removeListener(listener)
+        return "data:" + resp.headers["content-type"] + ";base64,"+bs64
+    }
+
 }
 
 /**
@@ -953,11 +992,13 @@ const mutations = {
      * @param {*} param1
      */
     updateMangaLastChapter(state, { key, obj }) {
+        console.log('from site:', obj.fromSite)
         let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.lastChapterReadURL = obj.lastChapterReadURL;
             mg.lastChapterReadName = obj.lastChapterReadName;
             if (!obj.fromSite) {
+                console.log('updated ts')
                 mg.ts = Math.round(Date.now() / 1000);
             }
         }

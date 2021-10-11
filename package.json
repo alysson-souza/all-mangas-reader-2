@@ -1,6 +1,6 @@
 {
   "name": "all-mangas-reader",
-  "version": "2.3.24",
+  "version": "2.3.25",
   "description": "All Mangas Reader",
   "author": "Pierre-Louis Duhoux <pl.duhoux@gmail.com>",
   "scripts": {
@@ -38,9 +38,10 @@
     "vuex": "^3.6.0",
     "vuex-shared-mutations": "^1.0.2",
     "web-streams-polyfill": "^3.1.1",
-    "webextension-polyfill": "^0.7.0"
+    "webextension-polyfill": "^0.8.0"
   },
   "devDependencies": {
+    "@mdi/js": "^6.2.95",
     "circular-dependency-plugin": "^5.2.2",
     "clean-webpack-plugin": "^3.0.0",
     "copy-webpack-plugin": "^7.0.0",
@@ -48,7 +49,7 @@
     "css-loader": "^5.0.1",
     "eslint": "^7.17.0",
     "eslint-plugin-vue": "^7.4.1",
-    "eslint-plugin-vuetify": "^1.0.0-beta.7",
+    "eslint-plugin-vuetify": "^1.0.1",
     "js-beautify": "^1.13.11",
     "style-loader": "^2.0.0",
     "terser-webpack-plugin": "^5.1.1",
