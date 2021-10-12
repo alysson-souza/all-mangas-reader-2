@@ -7,18 +7,18 @@
                 <v-toolbar-title class="white--text">{{i18n("reader_shortcuts_title")}}</v-toolbar-title>
             </v-toolbar>
             <v-card-text text-no-wrap>
-                <div class="title py-3">{{i18n('reader_shortcuts_section_chapters')}}</div>
+                <div class="text-h6 py-3">{{i18n('reader_shortcuts_section_chapters')}}</div>
                 <shortcuts :items="shortcuts_chapter" />
-                <div class="title py-3">{{i18n('reader_shortcuts_section_manga')}}</div>
+                <div class="text-h6 py-3">{{i18n('reader_shortcuts_section_manga')}}</div>
                 <shortcuts :items="shortcuts_manga" />
-                <div class="title py-3">{{i18n('reader_shortcuts_section_layout')}}</div>
+                <div class="text-h6 py-3">{{i18n('reader_shortcuts_section_layout')}}</div>
                 <shortcuts :items="shortcuts_layout" />
-                <div class="title py-3">{{i18n('reader_shortcuts_section_actions')}}</div>
+                <div class="text-h6 py-3">{{i18n('reader_shortcuts_section_actions')}}</div>
                 <shortcuts :items="shortcuts_actions" />
             </v-card-text>
             <v-card-actions class="pt-0">
                 <v-spacer></v-spacer>
-                <v-btn color="grey" flat="flat" @click.native="dialog = false">
+                <v-btn color="grey" text @click.native="dialog = false">
                     {{i18n("button_close")}}
                 </v-btn>
             </v-card-actions>

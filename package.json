@@ -1,6 +1,6 @@
 {
   "name": "all-mangas-reader",
-  "version": "2.3.24",
+  "version": "2.3.25",
   "description": "All Mangas Reader",
   "author": "Pierre-Louis Duhoux <pl.duhoux@gmail.com>",
   "scripts": {
@@ -41,6 +41,7 @@
     "webextension-polyfill": "^0.8.0"
   },
   "devDependencies": {
+    "@mdi/js": "^6.2.95",
     "circular-dependency-plugin": "^5.2.2",
     "clean-webpack-plugin": "^3.0.0",
     "copy-webpack-plugin": "^7.0.0",

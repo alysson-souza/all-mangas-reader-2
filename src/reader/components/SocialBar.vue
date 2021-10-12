@@ -16,7 +16,7 @@
           <v-tooltip top slot="activator" class="ml-1">
             <template v-slot:activator="{ on: tooltip }">
               <v-btn v-on="{ ...tooltip, ...menu}" icon>
-                <v-icon>mdi-share-variant</v-icon>
+                <v-icon>{{ mdiShareVariant }}</v-icon>
               </v-btn>
             </template>
             <span>{{i18n("reader_social_all")}}</span>
@@ -24,18 +24,18 @@
         </template>
         <!-- List of social -->
         <v-list class="amr-social-list">
-          <v-list-tile v-for="(soc, i) in social_shared" :key="i">
-            <v-list-tile-content>
+          <v-list-item v-for="(soc, i) in social_shared" :key="i">
+            <v-list-item-content>
               <v-tooltip left class="ml-1">
                 <template v-slot:activator="{ on }">
                   <v-btn v-on="on" icon :color="soc.color" @click="opentab(soc.url)">
-                    <v-icon>{{soc.icon}}</v-icon>
+                    <v-icon>{{ soc.icon }}</v-icon>
                   </v-btn>
                 </template>
                 <span>{{i18n(soc.tooltip)}}</span>
               </v-tooltip>
-            </v-list-tile-content>
-          </v-list-tile>
+            </v-list-item-content>
+          </v-list-item>
         </v-list>
       </v-menu>
     </v-col>
@@ -45,23 +45,25 @@
 <script>
 import {i18nmixin} from "../../mixins/i18n-mixin"
 import browser from "webextension-polyfill";
+import { mdiShareVariant, mdiPatreon, mdiDiscord, mdiFacebook, mdiTwitter  } from '@mdi/js'
 
 export default {
     mixins: [i18nmixin],
     data() {
         return {
             social_direct: [
-                { icon: "mdi-patreon", tooltip: "reader_social_patreon",
+                { icon: mdiPatreon, tooltip: "reader_social_patreon",
                     url: "https://www.patreon.com/allmangasreader", color: "deep-orange lighten-1"},
-                { icon: "mdi-discord", tooltip: "reader_social_discord",
+                { icon: mdiDiscord, tooltip: "reader_social_discord",
                     url: "https://discord.gg/bdzk9hR", color: "indigo lighten-2" }
             ],
             social_shared: [
-                { icon: "mdi-facebook", tooltip: "reader_social_facebook",
+                { icon: mdiFacebook, tooltip: "reader_social_facebook",
                     url: "https://www.facebook.com/allmangasreader/", color: "blue darken-3" },
-                { icon: "mdi-twitter", tooltip: "reader_social_twitter",
+                { icon: mdiTwitter, tooltip: "reader_social_twitter",
                     url: "https://twitter.com/AllMangasReader", color: "light-blue" }
-            ]
+            ],
+            mdiShareVariant
         }
     },
     methods: {

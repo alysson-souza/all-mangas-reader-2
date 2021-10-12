@@ -235,10 +235,10 @@
             <!-- Synchronization -->
             <v-expansion-panel-header><div class="text-h5 blue--text lighten-4">{{ i18n("options_sync_title") }}</div></v-expansion-panel-header>
             <v-expansion-panel-content class="pt-6" color="slight-overlay">
-              <v-alert dense v-if="isFirefox() ? !syncEnabled || !gistSyncEnabled : !gistSyncEnabled"  :value="true" color="error" icon="mdi-alert-octagon" text elevation="1">
+              <v-alert dense v-if="!syncEnabled || !gistSyncEnabled "  :value="true" color="error" icon="mdi-alert-octagon" text elevation="1">
                 {{i18n('options_sync_title_warning')}}
               </v-alert>
-              <v-checkbox v-if="isFirefox()" v-model="syncEnabled" @change="setOption('syncEnabled')">
+              <v-checkbox v-if="isFirefox() || syncEnabled" v-model="syncEnabled" @change="setOption('syncEnabled')">
                 <template v-slot:label>
                   <div>
                     {{ i18n('options_sync_checkbox') }}
@@ -355,7 +355,7 @@
               </v-row>
               <!-- Default to webtoon mode -->
 
-              <v-checkbox v-model="smoothNavigation" @change="setOption('smoothNavigation')"
+              <v-checkbox v-model="webtoonDefault" @change="setOption('webtoonDefault')"
                       :label="i18n('options_webtoon_mode_default')"></v-checkbox>
             </v-expansion-panel-content>
           </v-expansion-panel>
@@ -418,7 +418,7 @@
                 </template>
               </v-checkbox>
               <!-- Smooth navigation toggle (dynamially load next/previous chapters) -->
-              <v-checkbox v-model="displayFullChapter" @change="setOption('displayFullChapter')">
+              <v-checkbox v-model="smoothNavigation" @change="setOption('smoothNavigation')">
                 <template v-slot:label>
                   <div>
                     {{ i18n('options_reader_smooth_navigation') }}

@@ -4,7 +4,7 @@
             slot="activator"></slot>
       <v-card>
         <v-card-title>
-          <span class="headline">{{i18n("bookmark_popup_title")}}</span>
+          <span class="text-h5">{{i18n("bookmark_popup_title")}}</span>
         </v-card-title>
         <v-card-text>
             {{

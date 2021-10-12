@@ -18,12 +18,13 @@ import options from './state/options';
 import ChapterLoader from "./helpers/ChapterLoader";
 import store from '../store'
 
+vuetifyOptions.icons.iconfont = 'mdiSvg' // Forves embedded svg font for reader, we use the cdn based one for the popup still
+
 /** DO NOT REMOVE, not used here but define a global object used in loaded implementation */
 import mirrorHelper from '../amr/mirrors-helper';
 
 let ourCss = [
-    'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700',
-    'https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.8.55/css/materialdesignicons.min.css'
+    'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700'
 ]
 
 if (window["__armreader__"] === undefined) { // avoid loading script twice

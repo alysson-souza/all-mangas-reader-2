@@ -10,7 +10,8 @@ if (typeof registerMangaObject === 'function') {
         abstract: "Madara",
         abstract_options: {
             search_url: "https://levelerscans.xyz/",
-            chapter_list_ajax: true
+            chapter_list_ajax: true,
+            img_src: "data-src"
         }
     })
 }
