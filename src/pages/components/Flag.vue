@@ -17,10 +17,12 @@ import '../flags.css';
 export default {
     props: {
         value: undefined,
-        big: Boolean
+        big: Boolean,
+        mirrorName: String  // not needed atm
     },
     computed: {
         country () {
+            // if(mirrorName !== 'MangaDex V5') return
             let value = this.value
             if(Array.isArray(this.value)) {
                 value = this.value[0]
@@ -33,6 +35,18 @@ export default {
             if(value === 'zh') return 'cn'
             if(value === 'uk') return 'ua'
             if(value === 'vi') return 'vn'
+            if(value === 'he') return 'il'
+            if(value === 'ms') return 'my'
+            if(value === 'tl') return 'ph'
+            if(value === 'ja') return 'jp'
+            if(value === 'ko') return 'kr'
+            if(value === 'hi') return 'in'
+            if(value === 'bn') return 'bd'
+            if(value === 'sv') return 'se'
+            if(value === 'el') return 'gr'
+            if(value === 'sr') return 'ba'
+            if(value === 'da') return 'dk'
+            if(value === 'ca') return 'ct'
             return value
         },
         isBig() {
