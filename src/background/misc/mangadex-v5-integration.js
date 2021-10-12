@@ -1,5 +1,5 @@
-
-export class Mangadex {
+import { EventEmitter } from "events";
+export class Mangadex extends EventEmitter {
 /**
  * 
  * @param {Object} opts
@@ -20,6 +20,7 @@ export class Mangadex {
       mangadexIntegrationEnable,
       mangadexValidCredentials
   }, dispatch) {
+    super()
     this.requests = 0
     this.mangadexIntegrationEnable === mangadexIntegrationEnable
     this.mangadexValidCredentials === mangadexValidCredentials
@@ -120,7 +121,8 @@ export class Mangadex {
   }
 
   /**
-   * @param {Array<String>} inStore Array of mg.key in store 
+   * @param {Array<String>} inStore Array of mg.key in store
+   * @param {String} searchLang Lang to search
    * @returns 
    */
   async getFollows(inStore) {
@@ -131,11 +133,14 @@ export class Mangadex {
         const current = parseInt(resp.limit) + parseInt(resp.offset)
         const total = parseInt(resp.total)
         res = res.concat(resp.data)
+        this.emit('getFollows:list:progress', {total, current})
         if(current >= total) break;
       }
-      const mapped = res.map(async r => {
+      
+      const mapped = res.map(async (r, index) => {
+        
         // get all chapters lists in all language
-        const langs = await this.getAllchaptersInAllAvailableLanguages(r.id, inStore)
+        const langs = await this.getAllchapters(r.id, inStore)
         // get read chapters
         const reads = (await this.MD(`/manga/${r.id}/read`, 'GET')).data
         // find the highest chapter's number read in any language
@@ -154,22 +159,28 @@ export class Mangadex {
         // keep the closest chapter, affects every language
         // eg. if last read RU = 10 and last read EN = 5, skip EN ahead to 10 or the "closest" last released chapter
         langs.forEach(l => {
-          l.lastRead = l.chapters.reduce((prev, curr) => {
+          const lastRead = l.chapters.reduce((prev, curr) => {
             return (Math.abs(parseFloat(curr.chapNum) - parseFloat(lastChaptersRead)) < Math.abs(parseFloat(prev.chapNum) - parseFloat(lastChaptersRead)) ? curr : prev);
           })
+          l.lastChapterReadName = lastRead.title
+          l.lastChapterReadURL = lastRead.url
+          l.chapters = l.chapters.map(c => [c.title, c.url])
         })
+        // emit progress
+        this.emit('getFollows:loading:progress')
         // return
         return {
-          id: r.id,
-          title: r.attributes.title.en || Object.entries(r.attributes.title)[0][1],
-          lastChaptersRead: lastChaptersRead >= 0 ? lastChaptersRead : undefined,
+          key: `mangadexv5/title/${r.id}`,
+          name: r.attributes.title.en || Object.entries(r.attributes.title)[0][1],
+          url: `https://mangadex.org/title/${r.id}`,
+          mirror: "MangaDex V5",
           langs:langs
         }
       })
       // Keep values of fulfilled promised, sort output by title, remove entries with empty langs
       return (await Promise.allSettled(mapped)).filter(p => p.status === "fulfilled").map(v => v.value).sort((a, b) => {
-        var textA = a.title.toLocaleUpperCase();
-        var textB = b.title.toLocaleUpperCase();
+        var textA = a.name.toLocaleUpperCase();
+        var textB = b.name.toLocaleUpperCase();
         return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
       }).filter(e=> e.langs.length)
   }
@@ -179,11 +190,11 @@ export class Mangadex {
    * @param {Array<String>} inStore Array of mg.key in store
    * @returns 
    */
-  async getAllchaptersInAllAvailableLanguages(id, inStore) {
+  async getAllchapters(id, inStore) {
     const res = {}
     // loop
     for(const [page] of Array(10000).entries()) {
-      const resp = await this.MD(`/manga/${id}/feed?limit=100&offset=${page * 100}&order[chapter]=asc`, 'GET')
+      const resp = await this.MD(`/manga/${id}/feed?limit=100&offset=${page * 100}&order[chapter]=desc&contentRating[]=safe&contentRating[]=suggestive&contentRating[]=erotica&contentRating[]=pornographic`, 'GET')
       const current = parseInt(resp.limit) + parseInt(resp.offset)
       const total = parseInt(resp.total)
       
