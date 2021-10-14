@@ -1,7 +1,7 @@
 <template>
 <div>
   <!-- Enable Mangadex integration -->
-  <v-checkbox v-model="mangadexIntegrationEnable" @change="setOption('mangadexIntegrationEnable')">
+  <v-checkbox v-model="enabled">
     <template v-slot:label>
       <div>
         {{ i18n('options_mangadex_integration') }}
@@ -17,102 +17,132 @@
     </template>
   </v-checkbox>
   <!-- Credentials -->
-  <div v-if="mangadexIntegrationEnable && (!mangadexValidCredentials || mangadexExpired)">
-    <v-text-field v-model="mangadexLogin" @change="setOption('mangadexLogin')"
+  <div v-if="enabled && (!validCredentials || tokenExpired)">
+    <v-text-field v-model="login" @change="setOption('login')"
                 :label="i18n('options_mangadex_login')"></v-text-field>
-    <v-text-field type="password" v-model="mangadexPassword" @change="setOption('mangadexPassword')"
+    <v-text-field type="password" v-model="password" @change="setOption('password')"
                 :label="i18n('options_mangadex_password')"></v-text-field>
     <!-- Confirm credentials button -->
-    <v-btn :loading="mangadexCredsLoading" v-if="mangadexLogin && mangadexPassword" @click="verifyMangadexCreds"> {{ i18n('options_mangadex_verify_credentials') }}</v-btn>
+    <v-btn :loading="credentialLoading" v-if="login && password" @click="verifyCredentials"> {{ i18n('options_mangadex_verify_credentials') }}</v-btn>
   </div>
   <!-- Reset credentials button -->
-  <v-btn class="mb-4" color="warning" :loading="mangadexCredsLoading" v-if="mangadexValidCredentials && !mangadexExpired" @click="resetMangadexCreds"> {{ i18n('options_mangadex_reset_credentials') }}</v-btn>
-  <v-divider v-if="mangadexIntegrationEnable && mangadexValidCredentials && !mangadexExpired" />
+  <v-btn class="mb-4" color="warning" :loading="credentialLoading" v-if="validCredentials && !tokenExpired" @click="resetCredentials"> {{ i18n('options_mangadex_reset_credentials') }}</v-btn>
+  <v-divider v-if="enabled && validCredentials && !tokenExpired" />
   <!-- Mangadex integration options -->
-  <div class="mt-4" v-if="mangadexIntegrationEnable && mangadexValidCredentials && !mangadexExpired">
+  <div class="mt-4" v-if="enabled && validCredentials && !tokenExpired">
     <v-checkbox
-      v-model="mangadexUpdateReadStatus"
-      @change="setOption('mangadexUpdateReadStatus')"
+      v-model="updateReadMarker"
       :label="i18n('options_web_markwhendownload_desc')"
       />
-    <v-btn v-if="!mdFollows" :loading="mangadexImportLoading" @click="mdImport">LOAD FOLLOWS</v-btn>
-    <v-btn v-else :loading="mangadexImportLoading" @click="mdImport">RE-LOAD FOLLOWS</v-btn>
-    <div v-if="mdFollows">
-      <v-radio-group class="mt-5">
-        <v-radio @click="mdFollowsMethod = 'all'">
-          <template v-slot:label>
-            <div>Select a language and import all</div>
-          </template>
-        </v-radio>
-        <v-radio @click="mdFollowsMethod = 'table'">
-          <template v-slot:label>
-            <div>Choose from the list</div>
-          </template>
-        </v-radio>
-      </v-radio-group>
-      <v-data-table
-        v-if="mdFollowsMethod === 'table'"
-        :items="mdFollows"
-        :items-per-page="10"
-        :calculate-widths="true"
-        class="elevation-1"
-      >
-        <template v-slot:item="{item, index}">
-          <tr>
-            <td class="py-2">
-              {{ index+1 }}
-            </td>
-            <td class="py-2">
-              {{ item.title }}
-            </td>
-            <td class="py-2">
-              <v-btn
-                class="mx-2"
-                v-for="(subitem, index) of item.langs"
-                :key="index"
-                x-small
-                rounded
-                color="info"
-                @click="mdAddManga(item, subitem)"
-              >
-                <Flag v-if="subitem.code" :value="subitem.code"/>
-              </v-btn>
-            </td>
-          </tr>
-        </template>
-      </v-data-table>
-      <v-menu v-if="mdFollowsMethod === 'all'" offset-x max-height="196" min-width="50" max-width="100">
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            color="primary"
-            dark
-            v-bind="attrs"
-            v-on="on"
-          >
-            Dropdown
-          </v-btn>
-        </template>
-        <v-list dense>
-          <v-list-item
-            v-for="(item, index) in mdFollowsLangs"
-            :key="index"
-            link
-          >
-            <v-list-item-title @click="mdaddAllMangas(item)"><Flag big :value="item"/></v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
-      <v-alert class="mt-4" v-if="mdaddAllMangasTotal" dense value="true" color="info" icon="mdi-information" text elevation="1">
-        importing {{ mdaddAllMangasCount }} / {{ mdaddAllMangasTotal }}
-      </v-alert>
-    </div>
+    <v-row class="mb-4">
+      <v-col cols="3">
+        <v-btn
+          v-bind="attrs"
+          v-on="on"
+          :loading="importLoading"
+          :disabled="importLoading"
+          @click="importManga"
+        >
+          {{ follows ? 'RE-LOAD FOLLOWS': 'LOAD FOLLOWS' }}
+        </v-btn>
+      </v-col>
+      <v-col cols="6">
+        <v-alert
+          v-if="importLoading && fetchProgress && fetchTotal"
+          text
+          elevation="1"
+          color="info"
+          icon="mdi-information"
+        >
+          {{ i18n(importLoadingText, fetchProgress, fetchTotal) }}
+        </v-alert>
+      </v-col>
+    </v-row>
+    <v-row v-if="follows">
+      <v-col cols="6" offset="3" offset-lg="0" lg="3">
+        <v-card class="pb-6">
+          <v-card-title>Import by language</v-card-title>
+          <v-card-text>
+            <v-data-table
+              :headers="importAllTableHeaders"
+              :items="followsLangs"
+              :items-per-page="5"
+              :calculate-widths="true"
+              class="elevation-4"
+              dense
+            >
+              <template v-slot:item="{item, index}">
+                <tr>
+                  <td class="py-2">
+                  <v-btn
+                    class="mx-2"
+                    x-small
+                    text
+                    :loading="addLangLoading.value && addLangLoading.index === index"
+                    @click="addLangLoading.value = true; addLangLoading.index = index;addLang(item.code)"
+                  >
+                    <v-icon left>
+                      mdi-plus
+                    </v-icon>
+                  </v-btn>
+                    <Flag big :value="item.code"/>
+                  </td>
+                  <td class="py-2">
+                    {{ item.count }}
+                  </td>
+                </tr>
+              </template>
+            </v-data-table>
+          </v-card-text>
+        </v-card>
+      </v-col>
+      <v-col cols="12" lg="9">
+        <v-card class="pb-6">
+          <v-card-title>Choose mangas to import</v-card-title>
+          <v-card-text>
+            <v-data-table
+              :items="follows"
+              :items-per-page="10"
+              :calculate-widths="true"
+              class="elevation-4"
+            >
+              <template v-slot:item="{item, index}">
+                <tr>
+                  <td class="py-2">
+                    {{ index+1 }}
+                  </td>
+                  <td class="py-2">
+                    {{ item.name }}
+                  </td>
+                  <td class="py-2">
+                    <v-btn
+                      class="my-2"
+                      v-for="(subitem, index) of item.langs"
+                      :key="index"
+                      x-small
+                      rounded
+                      text
+                      @click="addManga(item, subitem)"
+                    >
+                      <Flag v-if="subitem.code" :value="subitem.code"/>
+                    </v-btn>
+                  </td>
+                </tr>
+              </template>
+            </v-data-table>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
   </div>
 </div>
 </template>
 <script>
+import browser from "webextension-polyfill";
 import i18n from "../../amr/i18n";
 import Flag from "./Flag";
 import { Mangadex } from '../../background/misc/mangadex-v5-integration'
+import Manga from '../../amr/manga'
 
 export default {
   props: {
@@ -120,13 +150,142 @@ export default {
   },
   data() {
     return {
-      mangadexCredsLoading: false,
-      mangadexLogin: '',
-      mangadexPassword: '',
-      mangadexImportLoading: false,
-      mdFollowsMethod: 'none',
-      mdImportAll: false,
-
+      credentialLoading: false,
+      login: '',
+      password: '',
+      importLoading: false,
+      importLoadingText: 'options_mangadex_loading_list',
+      importMethod: 'none',
+      addLangLoading: { value: false, index: -1 },
+      follows: undefined,
+      importAllTableHeaders: [
+        { text: this.i18n('options_gen_mirrors_header_lang'), value: 'code', width: '150' },
+        { text: 'Mangas', value: 'count' },
+      ],
+      langs: [{
+        text: "English",
+        value: "en"
+      }, {
+        text: "Portuguese (Br)",
+        value: "pt-br"
+      }, {
+        text: "Russian",
+        value: "ru"
+      }, {
+        text: "French",
+        value: "fr"
+      }, {
+        text: "Spanish (LATAM)",
+        value: "es-la"
+      }, {
+        text: "Polish",
+        value: "pl"
+      }, {
+        text: "Turkish",
+        value: "tr"
+      }, {
+        text: "Italian",
+        value: "it"
+      }, {
+        text: "Spanish (Es)",
+        value: "es"
+      }, {
+        text: "Indonesian",
+        value: "id"
+      }, {
+        text: "Vietnamese",
+        value: "vi"
+      }, {
+        text: "Hungarian",
+        value: "hu"
+      }, {
+        text: "Chinese (Simp.)",
+        value: "zh"
+      }, {
+        text: "Arabic",
+        value: "ar"
+      }, {
+        text: "German",
+        value: "de"
+      }, {
+        text: "Chinese (Trad.)",
+        value: "zh-hk"
+      }, {
+        text: "Catalan",
+        value: "ca"
+      }, {
+        text: "Thai",
+        value: "th"
+      }, {
+        text: "Bulgarian",
+        value: "bg"
+      }, {
+        text: "Persian",
+        value: "fa"
+      }, {
+        text: "Ukrainian",
+        value: "uk"
+      }, {
+        text: "Mongolian",
+        value: "mn"
+      }, {
+        text: "Hebrew",
+        value: "he"
+      }, {
+        text: "Romanian",
+        value: "ro"
+      }, {
+        text: "Malay",
+        value: "ms"
+      }, {
+        text: "Tagalog",
+        value: "tl"
+      }, {
+        text: "Japanese",
+        value: "ja"
+      }, {
+        text: "Korean",
+        value: "ko"
+      }, {
+        text: "Hindi",
+        value: "hi"
+      }, {
+        text: "Burmese",
+        value: "my"
+      }, {
+        text: "Czech",
+        value: "cs"
+      }, {
+        text: "Portuguese (Pt)",
+        value: "pt"
+      }, {
+        text: "Dutch",
+        value: "nl"
+      }, {
+        text: "Swedish",
+        value: "sv"
+      }, {
+        text: "Bengali",
+        value: "bn"
+      }, {
+        text: "Norwegian",
+        value: "no"
+      }, {
+        text: "Lithuanian",
+        value: "lt"
+      }, {
+        text: "Greek",
+        value: "el"
+      }, {
+        text: "Serbo-Croatian",
+        value: "sr"
+      }, {
+        text: "Danish",
+        value: "da"
+      }, {
+        text: "Finnish",
+        value: "fi"
+      }]
     }
   },
   computed: {
@@ -136,24 +295,24 @@ export default {
     options() {
       return this.$store.getters.mangadexOptions
     },
-    mangadexIntegrationEnable:{
+    enabled:{
       get () { return this.options.mangadexIntegrationEnable == 1 },
       set (val) {
         this.$store.dispatch("setOption", { key: 'mangadexIntegrationEnable', value: val === true ? 1:0 });
       }
     },
-    mangadexValidCredentials: {
+    validCredentials: {
       get() { return this.options.mangadexValidCredentials == 1 },
       set (val) {
         this.$store.dispatch("setOption", { key: 'mangadexValidCredentials', value: val === true ? 1:0 });
       }
     },
     // token has expired
-    mangadexExpired() {
+    tokenExpired() {
         if(this.options.mangadexRefreshExpire < Date.now()) return true
         return false
-      },
-    mangadexUpdateReadStatus: {
+    },
+    updateReadMarker: {
       get() { return this.options.mangadexUpdateReadStatus == 1 },
       set (val) {
         this.$store.dispatch("setOption", { key: 'mangadexUpdateReadStatus', value: val === true ? 1:0 });
@@ -161,60 +320,31 @@ export default {
     }
   },
   watch: {
-    mangadexIntegrationEnable(nVal) {
-      this.resetMangadexCreds()
+    enabled() {
+      this.resetCredentials()
+    },
+    follows() {
+      this.$forceUpdate()
     },
   },
   methods: {
     i18n: (message, ...args) => i18n(message, ...args),
-    /**
-     * Set an option value
-     */
-    setOption(optstr) {
-      //option value in the data model
-      let val = this[optstr];
-      // Set dark mode before conversion
-      if (optstr === 'dark') {
-        this.$vuetify.theme.dark = val
-      }
-      //convert it for base if necessary
-      Object.keys(converters).forEach(key => {
-        for (let prop of converters[key].properties) {
-          if (prop === optstr) val = converters[key].toDb(val);
-        }
-      });
-      this.$store.dispatch("setOption", { key: optstr, value: val });
-      // do post treatment for some options
-      if (optstr === "deactivateunreadable" && val === 1) { // deactivate all unreadable mirrors if option is checked
-          this.deactivateUnreadable();
-      }
-      // retrieve Sync options, must follow current naming convention : providerSyncEnabled
-      if (optstr.toLowerCase().includes('syncenabled') || optstr.toLowerCase().includes('sync')) {
-        this.updateSync(optstr, val)
-        this.dispatch("updateSync", false);
-      }
-      if (optstr.toLowerCase().includes('syncenabled') || optstr.toLowerCase().includes('sync')) {
-        this.updateSync(optstr, val)
-        this.dispatch("updateSync", false);
-      }
-    },
-    async resetMangadexCreds() {
-      await this.$store.dispatch("setOption", { key: 'mangadexValidCredentials', value: 0 });
+    async resetCredentials() {
       await this.$store.dispatch("setOption", { key: 'mangadexDontRemindMe', value: 0 });
-      this.mangadexValidCredentials = 0
+      this.validCredentials = false
     },
-    async verifyMangadexCreds() {
-      this.mangadexCredsLoading = true
+    async verifyCredentials() {
+      this.credentialLoading = true
       const res = await fetch("https://api.mangadex.org/auth/login", {
         method: "POST",
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({username: this.mangadexLogin, password: this.mangadexPassword})
-      })
+        body: JSON.stringify({username: this.login, password: this.password})
+      }).catch(this.verifyCredentialsCallback(false))
       if(res.status == 200) {
-        const json = await res.json()
+        const json = await res.json().catch(this.verifyCredentialsCallback(false))
         if(json.result === 'ok') {
           const in13min = Date.now() + (60*1000*13) // 2min margin
           const inAmonthOrSo = Date.now() + (1000*60*60*24*29) // 1 day margin
@@ -224,101 +354,118 @@ export default {
           this.$store.dispatch("setOption", { key: 'mangadexRefresh', value: json.token.refresh });
           this.$store.dispatch("setOption", { key: 'mangadexRefreshExpire', value: inAmonthOrSo });
           this.$store.dispatch("setOption", { key: 'mangadexDontRemindMe', value: 0 });
+          return this.verifyCredentialsCallback(true)
         }
-
+        return this.verifyCredentialsCallback(false)
       }
-      // adding "fake" loading time
-      setTimeout(() => {
-        this.mangadexCredsLoading = false
-        this.mangadexValidCredentials = 1
-      }, 2000)
+      return this.verifyCredentialsCallback(false)
+    },
+    /**
+     * @param {boolean} validity
+     */
+    verifyCredentialsCallback(validity) {
+        // adding "fake" loading time
+        setTimeout(() => {
+          this.credentialLoading = false
+          this.validCredentials = validity
+        }, 2000)
+    },
+    /**
+     * Load followed mangas from MD
+     */
+    async importManga() {
+      this.importLoading = true
+      const md = new Mangadex(this.options, this.$store.dispatch)
       
+      // updating counts
+      md.on('getFollows:list:progress', ({total, current}) => {
+        this.fetchProgress = String(current > total ? total : current)
+        this.fetchTotal = String(total)
+        this.$forceUpdate()  
+      })
+      let loading = 0
+      md.on('getFollows:loading:progress', () => {
+        if(loading === 0) {
+          this.importLoadingText = 'options_mangadex_loading_mangas'
+          this.fetchProgress = 0
+          loading = 1
+        }
+        this.fetchProgress = this.fetchProgress+1
+        this.$forceUpdate()  
+      })
+      
+      // fetch data
+      this.follows = await md.getFollows(this.inStore)
+      this.importLoading = false
+      this.updatefollowsLangs()
+      this.$forceUpdate()
     },
-    mdImport() {
-      if(this.options.mangadexIntegrationEnable) {
-        const md = new Mangadex(this.options, this.$store.dispatch)
-        this.mangadexImportLoading = true
-        md.getFollows(this.inStore).then((f) => {
-          this.mdFollows = f
-          const set = new Set(
-            [].concat.apply(
-              [],
-              f.map(f => f.langs.map(l=>l.code))
-              )
-          )
-          this.mdFollowsLangs = Array.from(set).sort((a, b) => a > b ? 1 : -1)
-          this.mangadexImportLoading = false
-          this.$forceUpdate()
-        })
-      }
+    /**
+     * add manga
+     * @typedef { { code: String, lastChapterReadURL: String|Void, lastChapterReadName: String|Void, chapters: Array<Array<String>>  } } langsContent
+     * @param { { key: String, name: String, mirror: String, url: String, langs: langsContent[] } } item Manga fetched data
+     * @param { langsContent } selectedSubitem List of chapters in every languages
+     * @param { Boolean } lastItemFromLang automatically set by `addLang()`
+     */
+    addManga(item, selectedSubitem, lastItemFromLang) {
+      const mg = new Manga({
+        key: item.key+'_'+selectedSubitem.code,
+        name: item.name,
+        url: item.url,
+        mirror: item.mirror,
+        listChaps: selectedSubitem.chapters,
+        lastChapterReadURL: selectedSubitem.lastChapterReadURL ? selectedSubitem.lastChapterReadURL : selectedSubitem.chapters[0][1],
+        lastChapterReadName: selectedSubitem.lastChapterReadName ? selectedSubitem.lastChapterReadName : selectedSubitem.chapters[0][0],
+        language: selectedSubitem.code,
+        languages: item.langs.map(l=> l.code).join(','),
+        update: 1,
+      })
+      mg.action = "readManga"
+      browser.runtime.sendMessage(mg).then(() => {
+        const entry = this.follows.find(f=> f.key === item.key)
+        if(entry) entry.langs = entry.langs.filter(l => l.code !== selectedSubitem.code)
+        this.follows = this.follows.filter(f=> f.langs.length)
+        this.updatefollowsLangs()
+        if(lastItemFromLang) this.addLangLoading = {value: false, index: -1}
+      })
     },
-    mdaddAllMangas(lang) {
-      const toAdd = this.mdFollows.filter(f=> f.langs.find(l=> l.code === lang))
-      this.mdaddAllMangasTotal = String(toAdd.length)
-      this.mdaddAllMangasCount = String(0)
-      this.mdImportHideLanguage({global: true, lang})
-      toAdd.forEach((item, i) => {
-        // exponential growth where min = 500 max = 2000
-        const wait = i*Math.min(Math.max(i**1.1, 500), 2000)
+    /**
+     * add all mangas available in language
+     * @param {String} lang selected language
+     */
+    addLang(lang) {
+      const toAdd = this.follows.filter(f=> f.langs.find(l=> l.code == lang))
+      toAdd.forEach((item, i, arr) => {
+        const wait = i*150
           setTimeout(() => {
-            const selectedSubitem = item.langs.find(l => l.code === lang)
-            this.mdAddManga(item, selectedSubitem)
+            const selectedSubitem = item.langs.find(l => l.code == lang)
+            if(i === arr.length-1) this.addManga(item, selectedSubitem, true)
+            else this.addManga(item, selectedSubitem)
           }, wait)
       })
     },
     /**
-     * @param {object} item
-     * @param {string} item.id Manga id
-     * @param {string} item.title Manga title
-     * @param {object} selectedSubitem
-     * @param {string} selectedSubitem.code Selected language
-     * @param {object} selectedSubitem.lastRead
-     * @param {string} selectedSubitem.lastRead.url Last Chapter Read URL
-     * @param {string} selectedSubitem.lastRead.title Last Chapter Read Title
-     * @param {{title: String, url: String}[]} selectedSubitem.chapters List of chapters
+     * Update this.followsLangs based on this.follows values
      */
-    mdAddManga(item, selectedSubitem) {
-      const payload = {
-        action: "readManga",
-        name: item.title,
-        url: `https://mangadex.org/title/${item.id}`,
-        mirror: "MangaDex V5",
-        lastChapterReadURL: selectedSubitem.lastRead ? selectedSubitem.lastRead.url : selectedSubitem.chapters[0].url,
-        lastChapterReadName: selectedSubitem.lastRead ? selectedSubitem.lastRead.title : selectedSubitem.chapters[0].title,
-        language: selectedSubitem.code
-      }
-      browser.runtime.sendMessage(payload).then(() => {
-        if(this.mdaddAllMangasCount) {
-          this.mdaddAllMangasCount = String(parseInt(this.mdaddAllMangasCount)+1)
+    updatefollowsLangs() {
+      // get all available languages from data
+      const langs = Array.from(
+        new Set(
+          [].concat.apply(
+            [],
+            this.follows.map(follow => follow.langs.map(lang => lang.code))
+          )
+        )
+      )
+
+      // display the number of available entries for each languages
+      this.followsLangs = langs.map(l => {
+        return {
+          code: l,
+          count: this.follows.filter(follow => follow.langs.find(lang => lang.code === l && lang.chapters.length)).length
         }
-        this.mdImportHideLanguage({global: false, item, selectedSubitem})
-      })
+      }).sort((a, b) => a.code > b.code ? 1 : -1)
     },
-    /**
-     * hide language from import
-     * @param {object} params
-     * @param {string} params.lang language to hide, works if global is true
-     * @param {boolean} params.global true if language is globally hidden
-     * @param {object} params.item Manga
-     * @param {string} params.item.id Manga id
-     * @param {object} params.selectedSubitem selected language object (contains chapters)
-     * @param {string} params.selectedSubitem.code selected manga language name
-     */
-    mdImportHideLanguage({lang, global, item, selectedSubitem}) {
-      if(global && lang) {
-        this.mdFollowsLangs = this.mdFollowsLangs.filter(l => l !== lang)
-        this.mdFollows = this.mdFollows.filter(f => !f.langs.find(l => l.code === lang))
-      } else if(item && selectedSubitem) {
-        const find = this.mdFollows.find(f => f.id === item.id)
-        if(find) {
-          find.langs = find.langs.filter(l => l.code !== selectedSubitem.code)
-          if(!find.langs.length) {
-            this.mdFollows = this.mdFollows.filter(f => f.id !== item.id)
-          }
-        }
-      }
-      this.$forceUpdate()
-    }
   },
   components: {Flag}
 }
