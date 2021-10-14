@@ -1673,7 +1673,14 @@
     "message": "Disconnect from Mangadex",
     "description": ""
   },
-
+  "options_mangadex_loading_list": {
+    "message": "Loading list: $1 / $2",
+    "description": "loading message from import follows button"
+  },
+  "options_mangadex_loading_mangas": {
+    "message": "Loading mangas: $1 / $2",
+    "description": "loading message from import follows button"
+  },
   "options_mangadex_blocked_groups": {
     "message": "Blocked groups list",
     "description": "Option for blocking groups on mangadex"

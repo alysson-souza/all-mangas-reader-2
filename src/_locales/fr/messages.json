@@ -1672,6 +1672,14 @@
     "message": "Se déconnecter de Mangadex",
     "description": "Option for datasaver toggle on mangadex"
   },
+  "options_mangadex_loading_list": {
+    "message": "Chargement de la liste: $1 / $2",
+    "description": "loading message from import follows button"
+  },
+  "options_mangadex_loading_mangas": {
+    "message": "Chargement des mangas: $1 / $2",
+    "description": "loading message from import follows button"
+  },
   "options_mangadex_blocked_groups": {
     "message": "Liste des groupes bloqués",
     "description": "Option for blocking groups on mangadex"
