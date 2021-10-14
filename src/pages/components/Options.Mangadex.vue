@@ -18,9 +18,9 @@
   </v-checkbox>
   <!-- Credentials -->
   <div v-if="enabled && (!validCredentials || tokenExpired)">
-    <v-text-field v-model="login" @change="setOption('login')"
+    <v-text-field v-model="login"
                 :label="i18n('options_mangadex_login')"></v-text-field>
-    <v-text-field type="password" v-model="password" @change="setOption('password')"
+    <v-text-field type="password" v-model="password"
                 :label="i18n('options_mangadex_password')"></v-text-field>
     <!-- Confirm credentials button -->
     <v-btn :loading="credentialLoading" v-if="login && password" @click="verifyCredentials"> {{ i18n('options_mangadex_verify_credentials') }}</v-btn>
