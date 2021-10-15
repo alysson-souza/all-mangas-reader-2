@@ -117,7 +117,7 @@ export class Mangadex extends EventEmitter {
         'Authorization': `Bearer ${this.token.session[0]}`
       },
       body: obj ? JSON.stringify(obj) : undefined
-    })
+    }).catch(console.log('could not fetch:', path))
     return req.json()
   }
 
