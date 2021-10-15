@@ -40,8 +40,7 @@ export class Mangadex extends EventEmitter {
 
   async wait() {
     this.requests = this.requests+1
-    // exponential growth where min = 200, max = 2000
-    const time = this.requests*500
+    const time = this.requests*200
     return new Promise(resolve => {
       setTimeout(() => {
         this.resetRequests()
@@ -117,8 +116,9 @@ export class Mangadex extends EventEmitter {
         'Authorization': `Bearer ${this.token.session[0]}`
       },
       body: obj ? JSON.stringify(obj) : undefined
-    }).catch(console.log('could not fetch:', path))
-    return req.json()
+    })
+    const json = await req.json()
+    return json
   }
 
   /**
@@ -139,8 +139,9 @@ export class Mangadex extends EventEmitter {
       }
       const blob = new Blob([JSON.stringify(res, null, 2)], {type: "text/plain;charset=utf-8"});
       saveAs(blob, 'mgList.json')
-      const mapped = res.map(async (r, index) => {
-        
+      
+      const fullRes = []
+      for(const r of res) {
         // get all chapters lists in all language
         const langs = await this.getAllchapters(r.id, inStore)
         // get read chapters
@@ -170,17 +171,18 @@ export class Mangadex extends EventEmitter {
         })
         // emit progress
         this.emit('getFollows:loading:progress')
-        // return
-        return {
+        fullRes.push({
           key: `mangadexv5/title/${r.id}`,
           name: r.attributes.title.en || Object.entries(r.attributes.title)[0][1],
           url: `https://mangadex.org/title/${r.id}`,
           mirror: "MangaDex V5",
           langs:langs
-        }
-      })
+        })
+      }
+
+
       // Keep values of fulfilled promised, sort output by title, remove entries with empty langs
-      const final = (await Promise.allSettled(mapped)).filter(p => p.status === "fulfilled").map(v => v.value).sort((a, b) => {
+      const final = fullRes.sort((a, b) => {
         var textA = a.name.toLocaleUpperCase();
         var textB = b.name.toLocaleUpperCase();
         return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
