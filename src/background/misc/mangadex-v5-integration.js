@@ -41,7 +41,7 @@ export class Mangadex extends EventEmitter {
   async wait() {
     this.requests = this.requests+1
     // exponential growth where min = 200, max = 2000
-    const time = this.requests*Math.min(Math.max(this.requests**1.1, 200), 2000)
+    const time = this.requests*500
     return new Promise(resolve => {
       setTimeout(() => {
         this.resetRequests()
