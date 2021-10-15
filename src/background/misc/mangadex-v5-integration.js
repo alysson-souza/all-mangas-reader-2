@@ -1,4 +1,5 @@
 import { EventEmitter } from "events";
+import saveAs from "file-saver";
 export class Mangadex extends EventEmitter {
 /**
  * 
@@ -136,7 +137,8 @@ export class Mangadex extends EventEmitter {
         this.emit('getFollows:list:progress', {total, current})
         if(current >= total) break;
       }
-      
+      const blob = new Blob([JSON.stringify(res, null, 2)], {type: "text/plain;charset=utf-8"});
+      saveAs(blob, 'mgList.json')
       const mapped = res.map(async (r, index) => {
         
         // get all chapters lists in all language
@@ -178,11 +180,14 @@ export class Mangadex extends EventEmitter {
         }
       })
       // Keep values of fulfilled promised, sort output by title, remove entries with empty langs
-      return (await Promise.allSettled(mapped)).filter(p => p.status === "fulfilled").map(v => v.value).sort((a, b) => {
+      const final = (await Promise.allSettled(mapped)).filter(p => p.status === "fulfilled").map(v => v.value).sort((a, b) => {
         var textA = a.name.toLocaleUpperCase();
         var textB = b.name.toLocaleUpperCase();
         return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
       }).filter(e=> e.langs.length)
+      const blob2 = new Blob([JSON.stringify(res, null, 2)], {type: "text/plain;charset=utf-8"});
+      saveAs(blob2, 'full.json')
+      return final
   }
   /**
    * Get all chapters in all languages.
