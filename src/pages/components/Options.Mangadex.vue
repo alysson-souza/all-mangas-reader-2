@@ -435,7 +435,7 @@ export default {
       const toAdd = this.follows.filter(f=> f.langs.find(l=> l.code == lang))
       for(const [i, item] of toAdd.entries()) {
         const selectedSubitem = item.langs.find(l => l.code == lang)
-        await this.wait(1000)
+        await this.wait(300)
         await this.addManga(item, selectedSubitem)
       }
       this.addLangLoading = ""
