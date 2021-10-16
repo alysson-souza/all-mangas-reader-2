@@ -71,15 +71,15 @@
               class="elevation-4"
               dense
             >
-              <template v-slot:item="{item, index}">
+              <template v-slot:item="{item}">
                 <tr>
                   <td class="py-2">
                   <v-btn
                     class="mx-2"
                     x-small
                     text
-                    :loading="addLangLoading.value && addLangLoading.index === index"
-                    @click="addLangLoading.value = true; addLangLoading.index = index;addLang(item.code)"
+                    :loading="addLangLoading == item.code"
+                    @click="addLang(item.code)"
                   >
                     <v-icon left>
                       mdi-plus
@@ -156,7 +156,7 @@ export default {
       importLoading: false,
       importLoadingText: 'options_mangadex_loading_list',
       importMethod: 'none',
-      addLangLoading: { value: false, index: -1 },
+      addLangLoading: "",
       follows: undefined,
       importAllTableHeaders: [
         { text: this.i18n('options_gen_mirrors_header_lang'), value: 'code', width: '150' },
@@ -406,7 +406,7 @@ export default {
      * @param { { key: String, name: String, mirror: String, url: String, langs: langsContent[] } } item Manga fetched data
      * @param { langsContent } selectedSubitem List of chapters in every languages
      */
-    async addManga(item, selectedSubitem, lastItemFromLang) {
+    async addManga(item, selectedSubitem) {
       const mg = new Manga({
         key: item.key+'_'+selectedSubitem.code,
         name: item.name,
@@ -431,13 +431,14 @@ export default {
      * @param {String} lang selected language
      */
     async addLang(lang) {
+      this.addLangLoading = lang
       const toAdd = this.follows.filter(f=> f.langs.find(l=> l.code == lang))
       for(const [i, item] of toAdd.entries()) {
         const selectedSubitem = item.langs.find(l => l.code == lang)
         await this.wait(1000)
         await this.addManga(item, selectedSubitem)
       }
-      this.addLangLoading = {value: false, index: -1}
+      this.addLangLoading = ""
     },
     /**
      * Update this.followsLangs based on this.follows values
