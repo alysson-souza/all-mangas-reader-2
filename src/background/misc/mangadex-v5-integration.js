@@ -38,9 +38,9 @@ export class Mangadex extends EventEmitter {
     }
   }
 
-  async wait() {
+  async wait(ms) {
     this.requests = this.requests+1
-    const time = this.requests*200
+    const time = this.requests*ms||10
     return new Promise(resolve => {
       setTimeout(() => {
         this.resetRequests()
@@ -116,7 +116,11 @@ export class Mangadex extends EventEmitter {
         'Authorization': `Bearer ${this.token.session[0]}`
       },
       body: obj ? JSON.stringify(obj) : undefined
-    })
+    }).catch(() => this.MD(path, method, obj))
+    if(req.status !== 200) {
+      await this.wait(1000)
+      return this.MD(path, method, obj)
+    }
     const json = await req.json()
     return json
   }
@@ -137,9 +141,7 @@ export class Mangadex extends EventEmitter {
         this.emit('getFollows:list:progress', {total, current})
         if(current >= total) break;
       }
-      const blob = new Blob([JSON.stringify(res, null, 2)], {type: "text/plain;charset=utf-8"});
-      saveAs(blob, 'mgList.json')
-      
+
       const fullRes = []
       for(const r of res) {
         // get all chapters lists in all language
@@ -182,14 +184,12 @@ export class Mangadex extends EventEmitter {
 
 
       // Keep values of fulfilled promised, sort output by title, remove entries with empty langs
-      const final = fullRes.sort((a, b) => {
-        var textA = a.name.toLocaleUpperCase();
-        var textB = b.name.toLocaleUpperCase();
+      return fullRes.sort((a, b) => {
+        const textA = a.name.toLocaleUpperCase();
+        const textB = b.name.toLocaleUpperCase();
         return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
-      }).filter(e=> e.langs.length)
-      const blob2 = new Blob([JSON.stringify(res, null, 2)], {type: "text/plain;charset=utf-8"});
-      saveAs(blob2, 'full.json')
-      return final
+      })
+      .filter(e=> e.langs.length)
   }
   /**
    * Get all chapters in all languages.
