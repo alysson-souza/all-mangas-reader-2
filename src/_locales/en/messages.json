@@ -1657,6 +1657,22 @@
     "message": "Synchronise read progression, import list/follows",
     "description": ""
   },
+  "options_mangadex_integration_load": {
+    "message": "Import follows",
+    "description": "button to start the import"
+  },
+  "options_mangadex_integration_reload": {
+    "message": "Reload follows",
+    "description": "button to restart the import"
+  },
+  "options_mangadex_integration_load_bylang": {
+    "message": "Import by language",
+    "description": "Title of language table"
+  },
+  "options_mangadex_integration_load_bymanga": {
+    "message": "Choose mangas to import",
+    "description": "Title of language table"
+  },
   "options_mangadex_login": {
     "message": "Your Mangadex username",
     "description": ""

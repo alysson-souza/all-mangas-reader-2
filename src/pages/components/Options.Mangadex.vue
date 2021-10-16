@@ -43,7 +43,7 @@
           :disabled="importLoading"
           @click="importManga"
         >
-          {{ follows ? 'RE-LOAD FOLLOWS': 'LOAD FOLLOWS' }}
+          {{ follows ? i18n('options_mangadex_integration_load'): i18n('options_mangadex_integration_reload') }}
         </v-btn>
       </v-col>
       <v-col cols="6">
@@ -61,7 +61,7 @@
     <v-row v-if="follows">
       <v-col cols="6" offset="3" offset-lg="0" lg="3">
         <v-card class="pb-6">
-          <v-card-title>Import by language</v-card-title>
+          <v-card-title>{{ i18n('options_mangadex_integration_load_bylang') }}</v-card-title>
           <v-card-text>
             <v-data-table
               :headers="importAllTableHeaders"
@@ -98,7 +98,7 @@
       </v-col>
       <v-col cols="12" lg="9">
         <v-card class="pb-6">
-          <v-card-title>Choose mangas to import</v-card-title>
+          <v-card-title>{{ i18n('options_mangadex_integration_load_bymanga') }}</v-card-title>
           <v-card-text>
             <v-data-table
               :items="follows"
@@ -405,9 +405,8 @@ export default {
      * @typedef { { code: String, lastChapterReadURL: String|Void, lastChapterReadName: String|Void, chapters: Array<Array<String>>  } } langsContent
      * @param { { key: String, name: String, mirror: String, url: String, langs: langsContent[] } } item Manga fetched data
      * @param { langsContent } selectedSubitem List of chapters in every languages
-     * @param { Boolean } lastItemFromLang automatically set by `addLang()`
      */
-    addManga(item, selectedSubitem, lastItemFromLang) {
+    async addManga(item, selectedSubitem, lastItemFromLang) {
       const mg = new Manga({
         key: item.key+'_'+selectedSubitem.code,
         name: item.name,
@@ -421,28 +420,23 @@ export default {
         update: 1,
       })
       mg.action = "readManga"
-      browser.runtime.sendMessage(mg).then(() => {
-        const entry = this.follows.find(f=> f.key === item.key)
-        if(entry) entry.langs = entry.langs.filter(l => l.code !== selectedSubitem.code)
-        this.follows = this.follows.filter(f=> f.langs.length)
-        this.updatefollowsLangs()
-        if(lastItemFromLang) this.addLangLoading = {value: false, index: -1}
-      })
+      await browser.runtime.sendMessage(mg)
+      const entry = this.follows.find(f=> f.key === item.key)
+      if(entry) entry.langs = entry.langs.filter(l => l.code !== selectedSubitem.code)
+      this.follows = this.follows.filter(f=> f.langs.length)
+      this.updatefollowsLangs()
     },
     /**
      * add all mangas available in language
      * @param {String} lang selected language
      */
-    addLang(lang) {
+    async addLang(lang) {
       const toAdd = this.follows.filter(f=> f.langs.find(l=> l.code == lang))
-      toAdd.forEach((item, i, arr) => {
-        const wait = i*150
-          setTimeout(() => {
-            const selectedSubitem = item.langs.find(l => l.code == lang)
-            if(i === arr.length-1) this.addManga(item, selectedSubitem, true)
-            else this.addManga(item, selectedSubitem)
-          }, wait)
-      })
+      for(const [i, item] of toAdd.entries()) {
+        const selectedSubitem = item.langs.find(l => l.code == lang)
+        await this.addManga(item, selectedSubitem)
+      }
+      this.addLangLoading = {value: false, index: -1}
     },
     /**
      * Update this.followsLangs based on this.follows values
