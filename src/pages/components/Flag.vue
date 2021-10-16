@@ -1,5 +1,5 @@
 <template>
-    <v-tooltip top class='flag-container'>
+    <v-tooltip v-if="country" top class='flag-container'>
         <template v-slot:activator="{ on }">
             <i
             v-on="on"
@@ -47,6 +47,7 @@ export default {
             if(value === 'sr') return 'ba'
             if(value === 'da') return 'dk'
             if(value === 'ca') return 'ct'
+            if(value === 'null' || value === 'NULL') return false
             return value
         },
         isBig() {
