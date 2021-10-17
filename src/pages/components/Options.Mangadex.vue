@@ -34,6 +34,7 @@
       v-model="updateReadMarker"
       :label="i18n('options_mangadex_integration_markwhendownload')"
       />
+    <!-- Import option-->
     <v-row class="mb-4">
       <v-col cols="3">
         <v-btn
@@ -43,7 +44,7 @@
           :disabled="importLoading"
           @click="importManga"
         >
-          {{ i18n(importLoadingText) }}
+          {{ i18n(importButtonText) }}
         </v-btn>
       </v-col>
       <v-col cols="6">
@@ -58,6 +59,21 @@
         </v-alert>
       </v-col>
     </v-row>
+    <v-dialog
+			v-model="importMangaWait"
+			max-width="500"
+			hide-overlay
+		>
+			<v-card>
+				<v-card-text>
+					<div class="text-h6 pa-10 pb-5" v-html="i18n('options_mangadex_integration_wait')" />
+				</v-card-text>
+				<v-card-actions class="justify-end">
+					<v-btn text @click="importMangaWait = false">{{ i18n('button_close') }}</v-btn>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
+    <!-- import tables -->
     <v-row v-if="follows">
       <v-col cols="6" offset="3" offset-lg="0" lg="3">
         <v-card class="pb-6">
@@ -153,8 +169,10 @@ export default {
       credentialLoading: false,
       login: '',
       password: '',
+      importMangaWait: false,
       importLoading: false,
-      importLoadingText: 'options_mangadex_integration_load',
+      importButtonText: 'options_mangadex_integration_load',
+      importLoadingText: 'options_mangadex_loading_list',
       importMethod: 'none',
       addLangLoading: "",
       follows: undefined,
@@ -292,6 +310,9 @@ export default {
     inStore() {
       return this.$store.state.mangas.all.filter(mg => mg.mirror === "MangaDex V5").map(mg => mg.key)
     },
+    allOptions() {
+      return this.$store.state.options
+    },
     options() {
       return this.$store.getters.mangadexOptions
     },
@@ -374,6 +395,10 @@ export default {
      * Load followed mangas from MD
      */
     async importManga() {
+      if(this.allOptions.isUpdatingChapterLists == 1) {
+        this.importMangaWait = true
+        return
+      }
       this.importLoading = true
       const md = new Mangadex(this.options, this.$store.dispatch)
       
@@ -386,7 +411,7 @@ export default {
       let loading = 0
       md.on('getFollows:loading:progress', () => {
         if(loading === 0) {
-          this.importLoadingText = 'options_mangadex_integration_reload'
+          this.importLoadingText = 'options_mangadex_loading_mangas'
           this.fetchProgress = 0
           loading = 1
         }

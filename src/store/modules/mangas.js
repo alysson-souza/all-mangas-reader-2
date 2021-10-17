@@ -98,6 +98,13 @@ const getters = {
                 return obj
             }, {})
     },
+    allOptions: (rootState) => {
+        return Object.key(rootState.options)
+            .reduce((obj, key) => {
+                obj[key] = rootState.options[key]
+                return obj
+            })
+    },
     mdMarkAsRead: (state, getters, rootState) => {
         const o = getters.mangadexOptions
         if(o.mangadexIntegrationEnable == 1 && o.mangadexUpdateReadStatus == 1) {

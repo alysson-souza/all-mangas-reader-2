@@ -1677,6 +1677,10 @@
     "message": "Choose mangas to import",
     "description": "Title of language table"
   },
+  "options_mangadex_integration_wait": {
+    "message": "<p>You can't import while AMR is looking for new releases on your list.</p> <p><b>Please retry later</b></p>",
+    "description": "wait message when you can't import because AMR is refreshing chapter list"
+  },
   "options_mangadex_login": {
     "message": "Your Mangadex username",
     "description": ""
