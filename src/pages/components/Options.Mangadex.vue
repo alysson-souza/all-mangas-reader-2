@@ -129,7 +129,11 @@
           </v-card-text>
         </v-card>
       </v-col>
-      <v-col cols="12" lg="9">
+      <v-col
+        v-if="!addLangLoading || addLangLoading == ''"
+        cols="12"
+        lg="9"
+      >
         <v-card class="pb-6">
           <v-card-title>{{ i18n('options_mangadex_integration_load_bymanga') }}</v-card-title>
           <v-card-text>
