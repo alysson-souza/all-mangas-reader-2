@@ -1676,8 +1676,16 @@
     "message": "Recharger",
     "description": "button to restart the import"
   },
+  "options_mangadex_integration_export": {
+    "message": "Exporter automatiquement les mangas d'All Mangas Reader vers une \"MDList\"",
+    "description": "button to start the import"
+  },
+  "options_mangadex_integration_export_done": {
+    "message": "La liste actuelle de mangas à été exportée!",
+    "description": "button to start the import"
+  },
   "options_mangadex_integration_markwhendownload": {
-    "message": "Lors de la lecture d'un chapitre, le marquer comme lu sur mangadex",
+    "message": "Automatiquement marquer comme lu sur Mangadex les mangas lu avec All Mangas Reader",
     "description": "mark as read"
   },
   "options_mangadex_integration_load_bylang": {
@@ -1710,6 +1718,14 @@
   },
   "options_mangadex_loading_list": {
     "message": "Chargement de la liste: $1 / $2",
+    "description": "loading message from import follows button"
+  },
+  "options_mangadex_loading_customList": {
+    "message": "Chargement de la liste...",
+    "description": "loading message from import follows button"
+  },
+  "options_mangadex_export_customList": {
+    "message": "Export: $1 / $2",
     "description": "loading message from import follows button"
   },
   "options_mangadex_loading_mangas": {
