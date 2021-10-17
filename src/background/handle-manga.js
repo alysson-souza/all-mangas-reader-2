@@ -4,6 +4,7 @@ import mirrorsImpl from '../amr/mirrors-impl';
 import * as utils from '../amr/utils';
 import * as domutils from '../amr/domutils';
 import storedb from '../amr/storedb';
+import iconHelper from '../amr/icon-helper';
 
 /** Scripts to inject in pages containing mangas for new reader */
 const contentScriptsV2 = [
@@ -47,6 +48,11 @@ class HandleManga {
                 utils.debug("Read manga " + message.url);
                 // call store method to update reading list appropriately
                 return window['AMR_STORE'].dispatch('readManga', message);
+            case "importMangaFromSite":
+                // message.mg will be added as-is without fetching any data
+                return window['AMR_STORE'].dispatch('addManga', {manga: message.mg, formImport: true})
+            case "initMangasFromDB":
+                return window['AMR_STORE'].dispatch('initMangasFromDB')
             case "deleteManga":
                 utils.debug("Delete manga key " + message.key);
                 return window['AMR_STORE'].dispatch('deleteManga', {key: message.key});
@@ -93,6 +99,22 @@ class HandleManga {
                 return this.loadListChaps(message)
             case "importMangas":
                 return this.importMangas(message)
+            case "refreshIcon":
+                let nbnew = window['AMR_STORE'].getters.nbNewMangas;
+                if (window['AMR_STORE'].state.options.nocount == 1) {
+                    iconHelper.resetBadge(); // remove badge
+                    // display a grey badge if no new mangas
+                    if (nbnew > 0) iconHelper.resetIcon();
+                    else iconHelper.setBWIcon();
+                } else {
+                    iconHelper.resetIcon();
+                    if (window['AMR_STORE'].state.options.displayzero === 1) {
+                        iconHelper.updateBadge(nbnew);
+                    } else {
+                        if (nbnew == 0) iconHelper.resetBadge();
+                        else iconHelper.updateBadge(nbnew);
+                    }
+                }
         }
     }
 

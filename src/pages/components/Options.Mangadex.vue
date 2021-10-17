@@ -419,8 +419,8 @@ export default {
         languages: item.langs.map(l=> l.code).join(','),
         update: 1,
       })
-      mg.action = "readManga"
-      await browser.runtime.sendMessage(mg)
+
+      await browser.runtime.sendMessage({action: 'importMangaFromSite', mg })
       const entry = this.follows.find(f=> f.key === item.key)
       if(entry) entry.langs = entry.langs.filter(l => l.code !== selectedSubitem.code)
       this.follows = this.follows.filter(f=> f.langs.length)
@@ -435,10 +435,11 @@ export default {
       const toAdd = this.follows.filter(f=> f.langs.find(l=> l.code == lang))
       for(const [i, item] of toAdd.entries()) {
         const selectedSubitem = item.langs.find(l => l.code == lang)
-        await this.wait(300)
         await this.addManga(item, selectedSubitem)
       }
       this.addLangLoading = ""
+      await browser.runtime.sendMessage({action: 'initMangasFromDB'})
+      await browser.runtime.sendMessage({action: 'refreshIcon'})
     },
     /**
      * Update this.followsLangs based on this.follows values
