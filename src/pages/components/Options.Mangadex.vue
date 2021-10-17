@@ -438,8 +438,7 @@ export default {
         await this.addManga(item, selectedSubitem)
       }
       this.addLangLoading = ""
-      await browser.runtime.sendMessage({action: 'initMangasFromDB'})
-      await browser.runtime.sendMessage({action: 'refreshIcon'})
+      await browser.runtime.sendMessage({action: 'initMangasFromDB', fromImport: true})
     },
     /**
      * Update this.followsLangs based on this.follows values

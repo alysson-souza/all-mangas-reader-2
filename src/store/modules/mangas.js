@@ -114,10 +114,11 @@ const actions = {
      * Retrieve manga list from DB, initialize the store
      * @param {*} param0
      */
-    async initMangasFromDB({ commit }) {
+    async initMangasFromDB({ commit }, fromImport) {
         await storedb.getMangaList().then(mangasdb => {
             commit('setMangas', mangasdb.map(mg => new Manga(mg)));
         })
+        if(fromImport) amrUpdater.refreshBadgeAndIcon()
     },
     /**
      * Initialise syncManager
