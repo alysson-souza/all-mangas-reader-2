@@ -133,7 +133,7 @@ export class Mangadex extends EventEmitter {
   async getFollows(inStore) {
       let res = []
       // loop
-      for(const [page] of Array(10000).entries()) {
+      for(let page = 0; page <= 100000; page++) {
         const resp = await this.MD(`/user/follows/manga?limit=100&offset=${page * 100}`, 'GET')
         const current = parseInt(resp.limit) + parseInt(resp.offset)
         const total = parseInt(resp.total)
@@ -199,7 +199,7 @@ export class Mangadex extends EventEmitter {
   async getAllchapters(id, inStore) {
     const res = {}
     // loop
-    for(const [page] of Array(10000).entries()) {
+    for(let page = 0; page <= 100000; page++) {
       const resp = await this.MD(`/manga/${id}/feed?limit=100&offset=${page * 100}&order[chapter]=desc&contentRating[]=safe&contentRating[]=suggestive&contentRating[]=erotica&contentRating[]=pornographic`, 'GET')
       const current = parseInt(resp.limit) + parseInt(resp.offset)
       const total = parseInt(resp.total)
