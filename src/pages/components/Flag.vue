@@ -47,7 +47,7 @@ export default {
             if(value === 'sr') return 'ba'
             if(value === 'da') return 'dk'
             if(value === 'ca') return 'ct'
-            if(value === 'null' || value === 'NULL') return 'United-Nations'
+            if(value === 'null' || value === 'NULL') return '_United-Nations'
             return value
         },
         isBig() {
