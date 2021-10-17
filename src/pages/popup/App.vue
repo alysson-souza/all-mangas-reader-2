@@ -90,11 +90,11 @@
 					<v-toolbar-title>{{i18n("options_mirror_specific_mangadex")}}</v-toolbar-title>
 				</v-toolbar>
 				<v-card-text>
-					<div class="text-h6 pa-10 pb-5">Your Mangadex connexion has expired!</div>
+					<div class="text-h6 pa-10 pb-5">{{ i18n('options_mangadex_integration_expired_text') }}</div>
 				</v-card-text>
 				<v-card-actions class="justify-end">
-					<v-btn text @click="mdDontRemindMe">Don't ask me again</v-btn>
-					<v-btn text color="primary" @click="mdLogin">Login</v-btn>
+					<v-btn text @click="mdDontRemindMe">{{ i18n('options_mangadex_integration_expired_dontremindme') }}</v-btn>
+					<v-btn text color="primary" @click="mdLogin">{{ i18n('options_mangadex_integration_expired_login') }}</v-btn>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>

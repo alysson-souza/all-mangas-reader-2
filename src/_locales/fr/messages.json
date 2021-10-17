@@ -1656,6 +1656,18 @@
     "message": "Synchroniser l'état d'avancement de lecture, importer les listes/suivis",
     "description": "Option for datasaver toggle on mangadex"
   },
+  "options_mangadex_integration_expired_text": {
+    "message": "Votre connexion à mangadex à expirée!",
+    "description": "Your Mangadex connexion has expired!"
+  },
+  "options_mangadex_integration_expired_dontremindme": {
+    "message": "Ne plus me le demander",
+    "description": "Don't ask me again"
+  },
+  "options_mangadex_integration_expired_login": {
+    "message": "Se connecter",
+    "description": "login"
+  },
   "options_mangadex_integration_load": {
     "message": "Charger les follows",
     "description": "button to start the import"

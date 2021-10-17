@@ -1657,6 +1657,18 @@
     "message": "Synchronise read progression, import list/follows",
     "description": ""
   },
+  "options_mangadex_integration_expired_text": {
+    "message": "Your Mangadex connexion has expired!",
+    "description": "Your Mangadex connexion has expired!"
+  },
+  "options_mangadex_integration_expired_dontremindme": {
+    "message": "Don't ask me again",
+    "description": "Don't ask me again"
+  },
+  "options_mangadex_integration_expired_login": {
+    "message": "Login",
+    "description": "login"
+  },
   "options_mangadex_integration_load": {
     "message": "Import follows",
     "description": "button to start the import"
