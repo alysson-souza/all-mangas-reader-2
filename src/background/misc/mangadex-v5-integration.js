@@ -23,6 +23,7 @@ export class Mangadex extends EventEmitter {
   }, dispatch) {
     super()
     this.requests = 0
+    this.customList = undefined
     this.mangadexIntegrationEnable === mangadexIntegrationEnable
     this.mangadexValidCredentials === mangadexValidCredentials
     this.token = {
@@ -31,7 +32,7 @@ export class Mangadex extends EventEmitter {
     }
     this.dispatch = dispatch
     if(Date.now() > this.token.refresh[1]) {
-      (async () => await this.dispatch("setOption", { key: 'mangadexValidCredentials', value: 0 }))
+      (async () => await this.dispatch("setOption", { key: 'mangadexValidCredentials', value: 0 }, {root: true}))
     }
     else if(Date.now() > this.token.session[1]) {
       (async () => await this.refreshToken())
@@ -55,7 +56,7 @@ export class Mangadex extends EventEmitter {
 
   async verifyTokens() {
     if(Date.now() > this.token.refresh[1]) {
-      await this.dispatch("setOption", { key: 'mangadexValidCredentials', value: 0 });
+      await this.dispatch("setOption", { key: 'mangadexValidCredentials', value: 0 }, {root: true});
       return false
     } else if(Date.now() > this.token.session[1]) {
       return this.refreshToken()
@@ -86,25 +87,25 @@ export class Mangadex extends EventEmitter {
   async propagate(json) {
     if(json.result === 'ok') {
       const in13min = Date.now() + (60*1000*13) // 2min margin
-      await this.dispatch("setOption", { key: 'mangadexValidCredentials', value: 1 });
-      await this.dispatch("setOption", { key: 'mangadexToken', value: json.token.session });
-      await this.dispatch("setOption", { key: 'mangadexTokenExpire', value: in13min });
-      await this.dispatch("setOption", { key: 'mangadexRefresh', value: json.token.refresh });
+      await this.dispatch("setOption", { key: 'mangadexValidCredentials', value: 1 }, {root: true});
+      await this.dispatch("setOption", { key: 'mangadexToken', value: json.token.session }, {root: true});
+      await this.dispatch("setOption", { key: 'mangadexTokenExpire', value: in13min }, {root: true});
+      await this.dispatch("setOption", { key: 'mangadexRefresh', value: json.token.refresh }, {root: true});
       this.token.session = [json.token.session, in13min]
       return true
     } else {
-      await this.dispatch("setOption", { key: 'mangadexValidCredentials', value: 0 });
+      await this.dispatch("setOption", { key: 'mangadexValidCredentials', value: 0 }, {root: true});
       this.mangadexValidCredentials = false
       return false
     }
   }
   /**
    * helper to interact w/ mangadex API
-   * @param {String} path
-   * @param {String} method GET|POST|PUT|DELETE
-   * @param {Object} obj
+   * @param {String} path relative path
+   * @param {String} method GET | POST | PUT | DELETE
+   * @param {Object} body body content
    */
-   async MD(path, method, obj) {
+   async MD(path, method, body) {
     const isValid = await this.verifyTokens()
     if(!isValid) return {}
     await this.wait()
@@ -115,11 +116,11 @@ export class Mangadex extends EventEmitter {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${this.token.session[0]}`
       },
-      body: obj ? JSON.stringify(obj) : undefined
-    }).catch(() => this.MD(path, method, obj))
-    if(req.status !== 200) {
+      body: body ? JSON.stringify(body) : undefined
+    }).catch(() => this.MD(path, method, body))
+    if(req.status > 201 && req.status < 400) {
       await this.wait(1000)
-      return this.MD(path, method, obj)
+      return this.MD(path, method, body)
     }
     const json = await req.json()
     return json
@@ -250,5 +251,57 @@ export class Mangadex extends EventEmitter {
   async markAsRead(chap) {
     chap = chap.match(/\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b/)[0]
     return this.MD(`/chapter/${chap}/read`, 'POST')
+  }
+  /**
+   * 
+   * @param {string[]} ids mangas id
+   */
+  async exportToList(ids) {
+    ids = ids.map(id => id.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/)[0])
+    const customListId = await this.getCustomList()
+    for(const [i, id] of ids.entries()) {
+      this.emit('exportToList:progress', { current: String(i+1), total: String(ids.length) })
+      await this.MD(`/manga/${id}/list/${customListId}`, 'POST', {})
+    }
+    this.emit('exportToList:done')
+  }
+  /**
+   * get customList id
+   * @returns {Promise<String>}
+   */
+     async getCustomList() {
+      this.emit('getCustomList:start')
+      this.customList = this.customList || await this.findOrCreateCustomList()
+      this.emit('getCustomList:done')
+      return this.customList
+    }
+  /**
+   * fetch the api to find AMR customList id, create if none.
+   * @returns {Promise<String>}
+   */
+  async findOrCreateCustomList() {
+    let result;
+    // search in API for a list named "AMR"
+    for(let page = 0; page <= 100000; page++) {
+      const resp = await this.MD(`/user/list?limit=100&offset=${page * 100}`, 'GET')
+      const current = parseInt(resp.limit) + parseInt(resp.offset)
+      const total = parseInt(resp.total)
+      const exist = resp.data.find(r=>r.attributes.name === 'AMR')
+      if(exist) {
+        console.log('found!')
+        result = exist.id
+        break;
+      }
+      if(current >= total) break;
+    }
+
+    // create customList if none where found
+    if(!result) {
+     return (await this.MD('/list', 'POST', {
+        name: 'AMR',
+        visibility: 'private'
+      })).data.id
+    }
+    return result
   }
 }

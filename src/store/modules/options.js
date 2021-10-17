@@ -131,8 +131,7 @@ const default_options = {
     mangadexRefresh: '',
     mangadexRefreshExpire: Date.now(),
     mangadexUpdateReadStatus: 0,
-    mangadexImportLists: 0,
-    mangadexImportFollows: 0,
+    mangadexExportList: 0,
     mangadexDontRemindMe: 0,
 
     /** Komga specific options */

@@ -638,6 +638,7 @@ const converters = {
       "mangadexIntegrationEnable",
       "mangadexValidCredentials",
       "mangadexUpdateReadStatus",
+      "mangadexExportList"
     ]
   }
 };

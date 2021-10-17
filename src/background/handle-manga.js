@@ -47,9 +47,6 @@ class HandleManga {
                 utils.debug("Read manga " + message.url);
                 // call store method to update reading list appropriately
                 return window['AMR_STORE'].dispatch('readManga', message);
-            case "importMangaFromSite":
-                // message.mg will be added as-is without fetching any data
-                return window['AMR_STORE'].dispatch('addManga', {manga: message.mg, formImport: true})
             case "initMangasFromDB":
                 return window['AMR_STORE'].dispatch('initMangasFromDB', true)
             case "deleteManga":
