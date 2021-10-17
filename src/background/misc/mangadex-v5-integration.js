@@ -131,57 +131,57 @@ export class Mangadex extends EventEmitter {
    * @returns 
    */
   async getFollows(inStore) {
-      // let res = []
-      // // loop
-      // for(const [page] of Array(10000).entries()) {
-      //   const resp = await this.MD(`/user/follows/manga?limit=100&offset=${page * 100}`, 'GET')
-      //   const current = parseInt(resp.limit) + parseInt(resp.offset)
-      //   const total = parseInt(resp.total)
-      //   res = res.concat(resp.data)
-      //   this.emit('getFollows:list:progress', {total, current})
-      //   if(current >= total) break;
-      // }
+      let res = []
+      // loop
+      for(const [page] of Array(10000).entries()) {
+        const resp = await this.MD(`/user/follows/manga?limit=100&offset=${page * 100}`, 'GET')
+        const current = parseInt(resp.limit) + parseInt(resp.offset)
+        const total = parseInt(resp.total)
+        res = res.concat(resp.data)
+        this.emit('getFollows:list:progress', {total, current})
+        if(current >= total) break;
+      }
 
-      // const fullRes = []
-      // for(const r of res) {
-      //   // get all chapters lists in all language
-      //   const langs = await this.getAllchapters(r.id, inStore)
-      //   // get read chapters
-      //   const reads = (await this.MD(`/manga/${r.id}/read`, 'GET')).data
-      //   // find the highest chapter's number read in any language
-      //   let lastChaptersRead = -9999
-      //   if(reads) {
-      //     if(reads.length) {
-      //       langs.forEach(l => {
-      //         l.chapters.forEach(c => {
-      //           if(reads.includes(c.id)) {
-      //             if(parseFloat(c.chapNum) > parseFloat(lastChaptersRead)) lastChaptersRead = c.chapNum
-      //           }
-      //         })
-      //       })
-      //     }
-      //   }
-      //   // keep the closest chapter, affects every language
-      //   // eg. if last read RU = 10 and last read EN = 5, skip EN ahead to 10 or the "closest" last released chapter
-      //   langs.forEach(l => {
-      //     const lastRead = l.chapters.reduce((prev, curr) => {
-      //       return (Math.abs(parseFloat(curr.chapNum) - parseFloat(lastChaptersRead)) < Math.abs(parseFloat(prev.chapNum) - parseFloat(lastChaptersRead)) ? curr : prev);
-      //     })
-      //     l.lastChapterReadName = lastRead.title
-      //     l.lastChapterReadURL = lastRead.url
-      //     l.chapters = l.chapters.map(c => [c.title, c.url])
-      //   })
-      //   // emit progress
-      //   this.emit('getFollows:loading:progress')
-      //   fullRes.push({
-      //     key: `mangadexv5/title/${r.id}`,
-      //     name: r.attributes.title.en || Object.entries(r.attributes.title)[0][1],
-      //     url: `https://mangadex.org/title/${r.id}`,
-      //     mirror: "MangaDex V5",
-      //     langs:langs
-      //   })
-      // }
-      const fullRes = require('../../../full.json')
+      const fullRes = []
+      for(const r of res) {
+        // get all chapters lists in all language
+        const langs = await this.getAllchapters(r.id, inStore)
+        // get read chapters
+        const reads = (await this.MD(`/manga/${r.id}/read`, 'GET')).data
+        // find the highest chapter's number read in any language
+        let lastChaptersRead = -9999
+        if(reads) {
+          if(reads.length) {
+            langs.forEach(l => {
+              l.chapters.forEach(c => {
+                if(reads.includes(c.id)) {
+                  if(parseFloat(c.chapNum) > parseFloat(lastChaptersRead)) lastChaptersRead = c.chapNum
+                }
+              })
+            })
+          }
+        }
+        // keep the closest chapter, affects every language
+        // eg. if last read RU = 10 and last read EN = 5, skip EN ahead to 10 or the "closest" last released chapter
+        langs.forEach(l => {
+          const lastRead = l.chapters.reduce((prev, curr) => {
+            return (Math.abs(parseFloat(curr.chapNum) - parseFloat(lastChaptersRead)) < Math.abs(parseFloat(prev.chapNum) - parseFloat(lastChaptersRead)) ? curr : prev);
+          })
+          l.lastChapterReadName = lastRead.title
+          l.lastChapterReadURL = lastRead.url
+          l.chapters = l.chapters.map(c => [c.title, c.url])
+        })
+        // emit progress
+        this.emit('getFollows:loading:progress')
+        fullRes.push({
+          key: `mangadexv5/title/${r.id}`,
+          name: r.attributes.title.en || Object.entries(r.attributes.title)[0][1],
+          url: `https://mangadex.org/title/${r.id}`,
+          mirror: "MangaDex V5",
+          langs:langs
+        })
+      }
+
       // Keep values of fulfilled promised, sort output by title, remove entries with empty langs
       return fullRes.sort((a, b) => {
         const textA = a.name.toLocaleUpperCase();
