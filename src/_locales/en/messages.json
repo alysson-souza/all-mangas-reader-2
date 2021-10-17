@@ -1665,6 +1665,10 @@
     "message": "Reload",
     "description": "button to restart the import"
   },
+  "options_mangadex_integration_markwhendownload": {
+    "message": "When reading a chapter, mark it as read on mangadex",
+    "description": "mark as read"
+  },
   "options_mangadex_integration_load_bylang": {
     "message": "Import by language",
     "description": "Title of language table"

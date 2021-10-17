@@ -32,7 +32,7 @@
   <div class="mt-4" v-if="enabled && validCredentials && !tokenExpired">
     <v-checkbox
       v-model="updateReadMarker"
-      :label="i18n('options_web_markwhendownload_desc')"
+      :label="i18n('options_mangadex_integration_markwhendownload')"
       />
     <v-row class="mb-4">
       <v-col cols="3">
