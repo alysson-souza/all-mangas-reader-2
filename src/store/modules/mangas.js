@@ -159,7 +159,7 @@ const actions = {
      * @param {*} param0
      * @param {*} manga
      */
-    async addManga({ dispatch, commit }, {manga, fromSync}) {
+    async addManga({ dispatch, getters, rootState }, {manga, fromSync}) {
         await storedb.storeManga(manga);
         if(!fromSync) {
             if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
