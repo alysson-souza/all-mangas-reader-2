@@ -43,7 +43,7 @@
           :disabled="importLoading"
           @click="importManga"
         >
-          {{ follows ? i18n('options_mangadex_integration_load'): i18n('options_mangadex_integration_reload') }}
+          {{ i18n(importLoadingText) }}
         </v-btn>
       </v-col>
       <v-col cols="6">
@@ -154,7 +154,7 @@ export default {
       login: '',
       password: '',
       importLoading: false,
-      importLoadingText: 'options_mangadex_loading_list',
+      importLoadingText: 'options_mangadex_integration_load',
       importMethod: 'none',
       addLangLoading: "",
       follows: undefined,
@@ -386,7 +386,7 @@ export default {
       let loading = 0
       md.on('getFollows:loading:progress', () => {
         if(loading === 0) {
-          this.importLoadingText = 'options_mangadex_loading_mangas'
+          this.importLoadingText = 'options_mangadex_integration_reload'
           this.fetchProgress = 0
           loading = 1
         }
@@ -406,7 +406,7 @@ export default {
      * @param { { key: String, name: String, mirror: String, url: String, langs: langsContent[] } } item Manga fetched data
      * @param { langsContent } selectedSubitem List of chapters in every languages
      */
-    async addManga(item, selectedSubitem) {
+    async addManga(item, selectedSubitem, notFromLang = true) {
       const mg = new Manga({
         key: item.key+'_'+selectedSubitem.code,
         name: item.name,
@@ -420,11 +420,12 @@ export default {
         update: 1,
       })
 
-      await browser.runtime.sendMessage({action: 'importMangaFromSite', mg })
+      await browser.runtime.sendMessage({action: 'importMangaFromSite', mg})
       const entry = this.follows.find(f=> f.key === item.key)
       if(entry) entry.langs = entry.langs.filter(l => l.code !== selectedSubitem.code)
       this.follows = this.follows.filter(f=> f.langs.length)
       this.updatefollowsLangs()
+      if(notFromLang) this.refreshBadge()
     },
     /**
      * add all mangas available in language
@@ -435,10 +436,10 @@ export default {
       const toAdd = this.follows.filter(f=> f.langs.find(l=> l.code == lang))
       for(const [i, item] of toAdd.entries()) {
         const selectedSubitem = item.langs.find(l => l.code == lang)
-        await this.addManga(item, selectedSubitem)
+        await this.addManga(item, selectedSubitem, false)
       }
       this.addLangLoading = ""
-      await browser.runtime.sendMessage({action: 'initMangasFromDB', fromImport: true})
+      this.refreshBadge()
     },
     /**
      * Update this.followsLangs based on this.follows values
@@ -468,6 +469,9 @@ export default {
           resolve()
         }, ms);
       })
+    },
+    refreshBadge() {
+      browser.runtime.sendMessage({action: 'initMangasFromDB', fromImport: true})
     }
   },
   components: {Flag}

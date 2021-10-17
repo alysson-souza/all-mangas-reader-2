@@ -1657,11 +1657,11 @@
     "description": "Option for datasaver toggle on mangadex"
   },
   "options_mangadex_integration_load": {
-    "message": "Charger follow",
+    "message": "Charger les follows",
     "description": "button to start the import"
   },
   "options_mangadex_integration_reload": {
-    "message": "Reload follows",
+    "message": "Recharger",
     "description": "button to restart the import"
   },
   "options_mangadex_integration_load_bylang": {

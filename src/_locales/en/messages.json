@@ -1662,7 +1662,7 @@
     "description": "button to start the import"
   },
   "options_mangadex_integration_reload": {
-    "message": "Reload follows",
+    "message": "Reload",
     "description": "button to restart the import"
   },
   "options_mangadex_integration_load_bylang": {
