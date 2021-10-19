@@ -211,6 +211,25 @@ const actions = {
     }
   },
   /**
+   * mark as read on the site chapter before lastChapterReadURL
+   */
+  async autoExportReadStatus({getters, dispatch}, mg) {
+    if(!mg.lastChapterReadURL) return
+    if(!mg.listChaps) return
+    if(!mg.listChaps.length) return
+    const toExport = []
+    for(const chap of mg.listChaps.reverse()) {
+      toExport.push(chap[1])
+      if(chap[1] == mg.lastChapterReadURL) break
+    }
+    if(mg.mirror === "MangaDex V5") {
+      if(getters.mangadexOptions.mangadexIntegrationEnable == 0) return
+      if(getters.mangadexOptions.mangadexUpdateReadStatus == 0) return
+      if(!mangadex) await dispatch('initMangadex')
+      await mangadex.markAsReadBatch(mg.key, toExport)
+    }
+  },
+  /**
    * add a manga to your read list on the site
    * meant to be reused if any other integration are added
    * @param {*} param0 

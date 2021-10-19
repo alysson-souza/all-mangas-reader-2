@@ -653,6 +653,7 @@ const actions = {
                                 console.error(e);
                             }
                         });
+                    await dispatch('autoExportReadStatus', mg, {root: true})
                     resolve()
                 }, 1000 * delay)
             })
