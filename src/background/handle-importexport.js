@@ -14,6 +14,8 @@ class HandleImportExport {
         return window['AMR_STORE'].dispatch('mangadexAddManga', message);
       case "mangadexAddMangasInLang":
         return window['AMR_STORE'].dispatch('mangadexAddMangasInLang', message);
+      case "exportReadStatus":
+        return window['AMR_STORE'].dispatch('exportReadStatus', message);
     }
   }
 }

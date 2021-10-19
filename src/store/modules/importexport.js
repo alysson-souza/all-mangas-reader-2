@@ -189,14 +189,18 @@ const actions = {
     }
     commit('stopLoadingLang', {mirror: 'mangadex'})
   },
-  async mangadexMarkAsRead({getters, dispatch}, {url, mirror}) {
+  /**
+   * mark as read
+   * function is meant to be reused if any other integration are added
+   */
+  async exportReadStatus({getters, dispatch}, {url, mirror}) {
     if(getters.mangadexOptions.mangadexIntegrationEnable == 0) return
     if(getters.mangadexOptions.mangadexUpdateReadStatus == 0) return
     if(mirror === "MangaDex V5") {
       if(!mangadex) await dispatch('initMangadex')
       mangadex.markAsRead(url)
     }
-  }
+  },
 }
 
 
