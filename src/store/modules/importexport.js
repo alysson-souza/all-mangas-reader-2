@@ -60,11 +60,16 @@ const getters = {
   mangadexInStore: (state, getters, rootState) => {
     return rootState.mangas.all.filter(mg => mg.mirror === "MangaDex V5")
   },
-  mangadexImports: (state, getters, rootState) => {
+  mangadexImports: (state) => {
     return state.imports.find(i=>i.mirror === 'mangadex').value
   }
 }
 
+/**
+ * Actions:
+ * functions named after a mirror are used by front-end
+ * other functions should stay generic
+ */
 const actions = {
   async setGlobalOption({dispatch}, {key, value}) {
     return dispatch('setOption', {key, value}, { root: true })
@@ -190,21 +195,43 @@ const actions = {
     commit('stopLoadingLang', {mirror: 'mangadex'})
   },
   /**
-   * mark as read
-   * function is meant to be reused if any other integration are added
+   * mark as read on the site
+   * meant to be reused if any other integration are added
+   * @param {*} param0
+   * @param {Object} payload
+   * @param {String} payload.url chapter url
+   * @param {String} payload.mirror mg.mirrorName
    */
   async exportReadStatus({getters, dispatch}, {url, mirror}) {
-    if(getters.mangadexOptions.mangadexIntegrationEnable == 0) return
-    if(getters.mangadexOptions.mangadexUpdateReadStatus == 0) return
     if(mirror === "MangaDex V5") {
+      if(getters.mangadexOptions.mangadexIntegrationEnable == 0) return
+      if(getters.mangadexOptions.mangadexUpdateReadStatus == 0) return
       if(!mangadex) await dispatch('initMangadex')
-      mangadex.markAsRead(url)
+      await mangadex.markAsRead(url)
     }
+  },
+  /**
+   * add a manga to your read list on the site
+   * meant to be reused if any other integration are added
+   * @param {*} param0 
+   * @param {Object} payload
+   * @param {String} payload.id mg.key
+   * @param {String} payload.mirror mg.mirrorName
+   */
+  async exportMangas({getters, dispatch}, {id, mirror}) {
+    await dispatch('setGlobalOption', {key: 'isUpdatingChapterLists', value: 1})
+    if(mirror === 'MangaDex V5' && getters.mangadexOptions.mangadexExportList == 1) {
+      if(!mangadex) await dispatch('initMangadex')
+      await mangadex.exportToList([id]).catch(() => dispatch('setGlobalOption', {key: 'isUpdatingChapterLists', value: 0}))
+    }
+    await dispatch('setGlobalOption', {key: 'isUpdatingChapterLists', value: 0})
   },
 }
 
 
-
+/**
+ * Mutation are used to modify the state of the view
+ */
 const mutations = {
   startLoading(state, {mirror, key}) {
     const toggle = state.loadings.find(l=>l.mirror === mirror)

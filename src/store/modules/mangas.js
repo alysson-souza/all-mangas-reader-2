@@ -152,7 +152,7 @@ const actions = {
      */
     async addManga({ dispatch, getters, rootState }, {manga, fromSync}) {
         await storedb.storeManga(manga);
-        await dispatch('mangadexExportMangas', { ids: [manga.key] }, {root: true})
+        await dispatch('exportManga', { ids: manga.key }, {root: true})
         if(!fromSync) {
             if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
             await syncManager.setToRemote(manga, 'ts')
