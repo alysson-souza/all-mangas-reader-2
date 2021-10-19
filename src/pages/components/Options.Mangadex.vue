@@ -1,5 +1,20 @@
 <template>
 <div>
+    <v-checkbox v-model="datasaver">
+    <template v-slot:label>
+      <div>
+        {{ i18n('options_mangadex_datasaver') }}
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-icon v-on="on" color="blue darken-2" class="superscript" small>
+              mdi-information
+            </v-icon>
+          </template>
+          {{ i18n('options_mangadex_datasaver_info') }}
+        </v-tooltip>
+      </div>
+    </template>
+  </v-checkbox>
   <!-- Enable Mangadex integration -->
   <v-checkbox v-model="enabled">
     <template v-slot:label>
@@ -331,6 +346,12 @@ export default {
     },
     options() {
       return this.$store.getters.mangadexOptions
+    },
+    datasaver: {
+      get() { return this.options.mangadexDataSaver == 1},
+      set (val) {
+        this.$store.dispatch("setOption", { key: 'mangadexDataSaver', value: val === true ? 1:0 })
+      }
     },
     enabled:{
       get () { return this.options.mangadexIntegrationEnable == 1 },

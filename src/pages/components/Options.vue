@@ -538,22 +538,6 @@
           <v-expansion-panel>
             <v-expansion-panel-header><div class="text-h5 blue--text lighten-4">{{ i18n("options_mirror_specific_mangadex") }}</div></v-expansion-panel-header>
             <v-expansion-panel-content class="pt-6" color="slight-overlay">
-              <!-- Datasaver option -->
-              <v-checkbox v-model="mangadexDataSaver" @change="setOption('mangadexDataSaver')">
-                <template v-slot:label>
-                  <div>
-                    {{ i18n('options_mangadex_datasaver') }}
-                    <v-tooltip bottom>
-                      <template v-slot:activator="{ on }">
-                        <v-icon v-on="on" color="blue darken-2" class="superscript" small>
-                          mdi-information
-                        </v-icon>
-                      </template>
-                      {{ i18n('options_mangadex_datasaver_info') }}
-                    </v-tooltip>
-                  </div>
-                </template>
-              </v-checkbox>
               <Mangadex :inStore="mangadexMangasInStore" />
             </v-expansion-panel-content>
           </v-expansion-panel>
@@ -634,11 +618,6 @@ const converters = {
       "alternateColors",
       "invertKeys",
       "smoothNavigation",
-      "mangadexDataSaver",
-      "mangadexIntegrationEnable",
-      "mangadexValidCredentials",
-      "mangadexUpdateReadStatus",
-      "mangadexExportList"
     ]
   }
 };
