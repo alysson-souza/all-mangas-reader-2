@@ -112,26 +112,33 @@ const actions = {
     const commitPayload = {mirror: 'mangadex', key:'credential', value: false}
     commit('verifyCredentials', commitPayload)
   },
-  async mangadexExportMangas({getters, commit, dispatch}) {
+  async mangadexExportMangas({getters, commit, dispatch}, {ids}) {
+    if(getters.mangadexOptions.mangadexExportList === 0) return
     await dispatch('setGlobalOption', {key: 'isUpdatingChapterLists', value: 1})
     commit('startLoading', { mirror: 'mangadex', key: 'export' })
-    const inStoreKeys = getters.mangadexInStore.map(mg => mg.key)
     if(!mangadex) await dispatch('initMangadex')
-    mangadex.on('getCustomList:start', () => {
-      commit('setText', { mirror: 'mangadex', key: 'export', value: 'options_mangadex_loading_customList'})
-    })
-    mangadex.on('exportToList:progress', ({total, current}) => {
-      commit('setText', { mirror: 'mangadex', key: 'export', value: 'options_mangadex_export_customList'})
-      commit('setText', { mirror: 'mangadex', key: 'exportProgress', value: String(current > total ? total : current)})
-      commit('setText', { mirror: 'mangadex', key: 'exportTotal', value: String(total)})
-    })
-    mangadex.on('exportToList:done', () => {
-      commit('setText', { mirror: 'mangadex', key: 'export', value: 'options_mangadex_integration_export_done'})
-      commit('setMisc', { mirror: 'mangadex', key: 'exportDone', value: true})
-      commit('stopLoading', { mirror: 'mangadex', key: 'export'})
-    })
+    // ids aren't provided when using "export all" from Options.Mangadex.vue
+    const keys = ids || getters.mangadexInStore.map(mg => mg.key)
+    // display export progress if function called from Options.Mangadex.vue
+    const fromOptionMenu = !Array.isArray(ids)
+    if(fromOptionMenu) {
+      mangadex.on('getCustomList:start', () => {
+        commit('setText', { mirror: 'mangadex', key: 'export', value: 'options_mangadex_loading_customList'})
+      })
+      mangadex.on('exportToList:progress', ({total, current}) => {
+        commit('setText', { mirror: 'mangadex', key: 'export', value: 'options_mangadex_export_customList'})
+        commit('setText', { mirror: 'mangadex', key: 'exportProgress', value: String(current > total ? total : current)})
+        commit('setText', { mirror: 'mangadex', key: 'exportTotal', value: String(total)})
+      })
+      mangadex.on('exportToList:done', () => {
+        commit('setText', { mirror: 'mangadex', key: 'export', value: 'options_mangadex_integration_export_done'})
+        commit('setMisc', { mirror: 'mangadex', key: 'exportDone', value: true})
+        commit('stopLoading', { mirror: 'mangadex', key: 'export'})
+      })
+    }
+    
     try {
-      await mangadex.exportToList(inStoreKeys)
+      await mangadex.exportToList(keys)
       await dispatch('setGlobalOption', {key: 'isUpdatingChapterLists', value: 0})
     } catch(e) {
       await dispatch('setGlobalOption', {key: 'isUpdatingChapterLists', value: 0})
@@ -176,8 +183,17 @@ const actions = {
       await dispatch('mangadexAddManga', {payload: current, lastOfList: i+1 === payload.length})
     }
     commit('stopLoadingLang', {mirror: 'mangadex'})
+  },
+  async mangadexMarkAsRead({getters, dispatch}, {url, mirror}) {
+    if(getters.mangadexOptions.mangadexIntegrationEnable == 0 || getters.mangadexOptions.mangadexUpdateReadStatus == 0) return
+    if(mirror === "MangaDex V5" && getters.mangadexOptions.mangadexUpdateReadStatus == 1) {
+      if(!mangadex) await dispatch('initMangadex')
+      mangadex.markAsRead(url)
+    }
   }
 }
+
+
 
 const mutations = {
   startLoading(state, {mirror, key}) {

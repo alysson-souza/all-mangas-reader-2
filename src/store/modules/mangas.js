@@ -14,7 +14,6 @@ import * as syncUtils from '../../amr/sync/utils';
 import { getSyncManager } from '../../amr/sync/sync-manager'
 import browser from "webextension-polyfill";
 import {Buffer} from 'buffer'
-import { Mangadex } from '../../background/misc/mangadex-v5-integration';
 
 let syncManager;
 // @TODO replace with actual error
@@ -90,14 +89,6 @@ const getters = {
         }, {})
     },
 
-    mangadexOptions: (state, getters, rootState) => {
-        return Object.keys(rootState.options)
-            .filter(opt=>opt.startsWith('mangadex'))
-            .reduce((obj, key) => {
-                obj[key] = rootState.options[key]
-                return obj
-            }, {})
-    },
     allOptions: (rootState) => {
         return Object.key(rootState.options)
             .reduce((obj, key) => {
@@ -105,14 +96,6 @@ const getters = {
                 return obj
             })
     },
-    mdMarkAsRead: (state, getters, rootState) => {
-        const o = getters.mangadexOptions
-        if(o.mangadexIntegrationEnable == 1 && o.mangadexUpdateReadStatus == 1) {
-            return true
-        } else {
-            return false
-        }
-    }
 }
 
 // actions
@@ -169,6 +152,7 @@ const actions = {
      */
     async addManga({ dispatch, getters, rootState }, {manga, fromSync}) {
         await storedb.storeManga(manga);
+        await dispatch('mangadexExportMangas', { ids: [manga.key] }, {root: true})
         if(!fromSync) {
             if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
             await syncManager.setToRemote(manga, 'ts')
@@ -435,8 +419,8 @@ const actions = {
                                 if (utils.chapPath(listChaps[i][1]) === messchap) posNew = i;
                             }
                             if (posNew !== -1 && (message.fromSite || (posNew < posOld || posOld === -1))) {
-                                commit('updateMangaLastChapter', { key: mg.key, obj: message });
-                                if(mg.mirror === "MangaDex V5" && getters.mdMarkAsRead) await new Mangadex(getters.mangadexOptions, dispatch).markAsRead(mg.lastChapterReadURL)
+                                commit('updateMangaLastChapter', { key: mg.key, obj: message }, {root: true});
+                                await dispatch('mangadexMarkAsRead', {url: mg.lastChapterReadURL, mirror: mg.mirror})
                                 if(!message.isSync) {
                                     if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
                                     await syncManager.setToRemote(mg, 'ts')
@@ -452,8 +436,8 @@ const actions = {
                 }
             } else {
                 if (message.fromSite || (posNew < posOld || posOld === -1)) {
-                    commit('updateMangaLastChapter', { key: mg.key, obj: message });
-                    if(mg.mirror === "MangaDex V5" && getters.mdMarkAsRead) await new Mangadex(getters.mangadexOptions, dispatch).markAsRead(mg.lastChapterReadURL)
+                    commit('updateMangaLastChapter', { key: mg.key, obj: message }, {root: true});
+                    await dispatch('mangadexMarkAsRead', {url: mg.lastChapterReadURL, mirror: mg.mirror})
                     if(!message.isSync) {
                         if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
                         await syncManager.setToRemote(mg, 'ts')
