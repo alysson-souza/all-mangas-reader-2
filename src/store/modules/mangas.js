@@ -419,8 +419,8 @@ const actions = {
                                 if (utils.chapPath(listChaps[i][1]) === messchap) posNew = i;
                             }
                             if (posNew !== -1 && (message.fromSite || (posNew < posOld || posOld === -1))) {
-                                commit('updateMangaLastChapter', { key: mg.key, obj: message }, {root: true});
-                                await dispatch('mangadexMarkAsRead', {url: mg.lastChapterReadURL, mirror: mg.mirror})
+                                commit('updateMangaLastChapter', { key: mg.key, obj: message });
+                                await dispatch('mangadexMarkAsRead', {url: mg.lastChapterReadURL, mirror: mg.mirror}, { root: true })
                                 if(!message.isSync) {
                                     if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
                                     await syncManager.setToRemote(mg, 'ts')
@@ -437,7 +437,7 @@ const actions = {
             } else {
                 if (message.fromSite || (posNew < posOld || posOld === -1)) {
                     commit('updateMangaLastChapter', { key: mg.key, obj: message }, {root: true});
-                    await dispatch('mangadexMarkAsRead', {url: mg.lastChapterReadURL, mirror: mg.mirror})
+                    await dispatch('mangadexMarkAsRead', {url: mg.lastChapterReadURL, mirror: mg.mirror}, { root: true })
                     if(!message.isSync) {
                         if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
                         await syncManager.setToRemote(mg, 'ts')
