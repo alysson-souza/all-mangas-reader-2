@@ -368,7 +368,6 @@ export default {
     updateReadMarker: {
       get() { return this.options.mangadexUpdateReadStatus == 1 },
       set (val) {
-        this.resetCredentials()
         this.$store.dispatch("setOption", { key: 'mangadexUpdateReadStatus', value: val === true ? 1:0 });
       }
     },
