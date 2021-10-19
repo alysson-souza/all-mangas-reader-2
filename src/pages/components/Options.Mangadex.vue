@@ -368,6 +368,7 @@ export default {
     updateReadMarker: {
       get() { return this.options.mangadexUpdateReadStatus == 1 },
       set (val) {
+        this.resetCredentials()
         this.$store.dispatch("setOption", { key: 'mangadexUpdateReadStatus', value: val === true ? 1:0 });
       }
     },
@@ -375,6 +376,7 @@ export default {
       get() { return this.options.mangadexExportList == 1 },
       set (val) {
         this.$store.dispatch("setOption", { key: 'mangadexExportList', value: val === true ? 1:0 });
+        if(val) this.exportManga()
       }
     },
     credentialLoading() { return this.$store.state.importexport.loadings.find(l=> l.mirror === 'mangadex').credential },
@@ -406,18 +408,6 @@ export default {
       }).sort((a, b) => a.code > b.code ? 1 : -1)
     }
   },
-  watch: {
-    enabled() {
-      this.resetCredentials()
-    },
-    updateExportMarker(nVal) {
-      // on/off ?
-      if(nVal === true || nVal == 1) {
-        // only export if user has entry
-        if(this.inStore.length) this.exportManga()
-      }
-    }
-  },
   methods: {
     i18n: (message, ...args) => i18n(message, ...args),
     async resetCredentials() {
@@ -432,7 +422,7 @@ export default {
         this.importMangaWait = true
         return
       }
-      browser.runtime.sendMessage({action: 'mangadexExportMangas'})
+      browser.runtime.sendMessage({action: 'mangadexExportMangas', fromOptionMenu: true })
     },
     /**
      * Load followed mangas from MD

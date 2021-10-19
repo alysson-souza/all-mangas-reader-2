@@ -7,7 +7,7 @@ class HandleImportExport {
       case "mangadexResetCredentials":
         return window['AMR_STORE'].dispatch('mangadexResetCredentials');
       case "mangadexExportMangas":
-        return window['AMR_STORE'].dispatch('mangadexExportMangas');
+        return window['AMR_STORE'].dispatch('mangadexExportMangas', message);
       case "mangadexImportMangas":
         return window['AMR_STORE'].dispatch('mangadexImportMangas');
       case "mangadexAddManga":
