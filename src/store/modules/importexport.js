@@ -113,13 +113,20 @@ const actions = {
     commit('verifyCredentials', commitPayload)
   },
   async mangadexExportMangas({getters, commit, dispatch}, {ids, fromOptionMenu}) {
-    if(getters.mangadexOptions.mangadexExportList == 0 || !fromOptionMenu) return
+    /**
+     * weird starting conditions:
+     * when this function is called form Options.Mangadex.vue
+     * mangadexExportList options isn't changed instantaneously
+     */
+    if(getters.mangadexOptions.mangadexExportList == 0) {
+      if(!fromOptionMenu) return
+    } 
     await dispatch('setGlobalOption', {key: 'isUpdatingChapterLists', value: 1})
     commit('startLoading', { mirror: 'mangadex', key: 'export' })
     if(!mangadex) await dispatch('initMangadex')
-    // ids aren't provided when using "export all" from Options.Mangadex.vue
-    const keys = ids || getters.mangadexInStore.map(mg => mg.key)
+    const keys = ids || getters.mangadexInStore.map(mg => mg.key) // ids aren't provided when using "export all" from Options.Mangadex.vue
     if(fromOptionMenu) {
+      // display progress only when using "export all" from Options.Mangadex.vue
       mangadex.on('getCustomList:start', () => {
         commit('setText', { mirror: 'mangadex', key: 'export', value: 'options_mangadex_loading_customList'})
       })
