@@ -112,15 +112,13 @@ const actions = {
     const commitPayload = {mirror: 'mangadex', key:'credential', value: false}
     commit('verifyCredentials', commitPayload)
   },
-  async mangadexExportMangas({getters, commit, dispatch}, {ids}) {
-    if(getters.mangadexOptions.mangadexExportList === 0) return
+  async mangadexExportMangas({getters, commit, dispatch}, {ids, fromOptionMenu}) {
+    if(getters.mangadexOptions.mangadexExportList == 0 || !fromOptionMenu) return
     await dispatch('setGlobalOption', {key: 'isUpdatingChapterLists', value: 1})
     commit('startLoading', { mirror: 'mangadex', key: 'export' })
     if(!mangadex) await dispatch('initMangadex')
     // ids aren't provided when using "export all" from Options.Mangadex.vue
     const keys = ids || getters.mangadexInStore.map(mg => mg.key)
-    // display export progress if function called from Options.Mangadex.vue
-    const fromOptionMenu = !Array.isArray(ids)
     if(fromOptionMenu) {
       mangadex.on('getCustomList:start', () => {
         commit('setText', { mirror: 'mangadex', key: 'export', value: 'options_mangadex_loading_customList'})
@@ -185,8 +183,9 @@ const actions = {
     commit('stopLoadingLang', {mirror: 'mangadex'})
   },
   async mangadexMarkAsRead({getters, dispatch}, {url, mirror}) {
-    if(getters.mangadexOptions.mangadexIntegrationEnable == 0 || getters.mangadexOptions.mangadexUpdateReadStatus == 0) return
-    if(mirror === "MangaDex V5" && getters.mangadexOptions.mangadexUpdateReadStatus == 1) {
+    if(getters.mangadexOptions.mangadexIntegrationEnable == 0) return
+    if(getters.mangadexOptions.mangadexUpdateReadStatus == 0) return
+    if(mirror === "MangaDex V5") {
       if(!mangadex) await dispatch('initMangadex')
       mangadex.markAsRead(url)
     }
