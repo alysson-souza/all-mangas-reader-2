@@ -49,11 +49,27 @@
       v-model="updateReadMarker"
       :label="i18n('options_mangadex_integration_markwhendownload')"
       />
-    <!-- Export option-->
+    <!-- Export to Follows option-->
     <v-checkbox
-      v-model="updateExportMarker"
+      v-model="updateExportToFollowsMarker"
+      :label="i18n('options_mangadex_integration_export_follows')"
+      :disabled="exportLoading || exportFollowsLoading"
+    />
+
+    <v-alert
+      v-if="(exportFollowsLoading && exportFollowsProgress && exportFollowsTotal) || exportFollowsDone"
+      text
+      elevation="1"
+      :color="exportFollowsDone ? 'success' : 'info'"
+      icon="mdi-information"
+    >
+      {{ i18n(exportFollowsLoadingText, exportFollowsProgress, exportFollowsTotal) }}
+    </v-alert>
+    <!-- Export to MDList option-->
+    <v-checkbox
+      v-model="updateExportToListMarker"
       :label="i18n('options_mangadex_integration_export')"
-      :disabled="exportLoading"
+      :disabled="exportLoading || exportFollowsLoading"
     />
 
     <v-alert
@@ -90,6 +106,7 @@
         </v-alert>
       </v-col>
     </v-row>
+    <!-- dialog please wait -->
     <v-dialog
 			v-model="importMangaWait"
 			max-width="500"
@@ -371,11 +388,18 @@ export default {
         this.$store.dispatch("setOption", { key: 'mangadexUpdateReadStatus', value: val === true ? 1:0 });
       }
     },
-    updateExportMarker: {
-      get() { return this.options.mangadexExportList == 1 },
+    updateExportToListMarker: {
+      get() { return this.options.mangadexExportToList == 1 },
       set (val) {
         this.$store.dispatch("setOption", { key: 'mangadexExportList', value: val === true ? 1:0 });
-        if(val) this.exportManga()
+        if(val) this.exportMangasToList()
+      }
+    },
+    updateExportToFollowsMarker: {
+      get() { return this.options.mangadexExportToFollows == 1 },
+      set (val) {
+        this.$store.dispatch("setOption", { key: 'mangadexExportToFollows', value: val === true ? 1:0 });
+        if(val) this.exportMangasToFollows()
       }
     },
     credentialLoading() { return this.$store.state.importexport.loadings.find(l=> l.mirror === 'mangadex').credential },
@@ -384,6 +408,11 @@ export default {
     exportProgress() { return this.$store.state.importexport.texts.find(t=> t.mirror === 'mangadex').exportProgress },
     exportTotal() { return this.$store.state.importexport.texts.find(t=> t.mirror === 'mangadex').exportTotal },
     exportDone() { return this.$store.state.importexport.misc.find(m=> m.mirror === 'mangadex').exportDone },
+    exportFollowsLoading() { return this.$store.state.importexport.loadings.find(l=> l.mirror === 'mangadex').exportFollows },
+    exportFollowsLoadingText() { return this.$store.state.importexport.texts.find(t=> t.mirror === 'mangadex').exportFollows },
+    exportFollowsProgress() { return this.$store.state.importexport.texts.find(t=> t.mirror === 'mangadex').exportFollowsProgress },
+    exportFollowsTotal() { return this.$store.state.importexport.texts.find(t=> t.mirror === 'mangadex').exportFollowsTotal },
+    exportFollowsDone() { return this.$store.state.importexport.misc.find(m=> m.mirror === 'mangadex').exportFollowsDone },
     importLoading() { return this.$store.state.importexport.loadings.find(l=> l.mirror === 'mangadex').import },
     importButtonText() { return this.follows.length ? 'options_mangadex_integration_reload' : 'options_mangadex_integration_load' },
     importLoadingText() { return this.$store.state.importexport.texts.find(t=> t.mirror === 'mangadex').import},
@@ -415,13 +444,19 @@ export default {
     async verifyCredentials() {
       browser.runtime.sendMessage({action: 'mangadexVerifyCredentials', username: this.login, password: this.password})
     },
-    exportManga() {
-      // await browser.runtime.sendMessage({action: 'initMangadex'})
+    exportMangasToList() {
       if(this.allOptions.isUpdatingChapterLists == 1) {
         this.importMangaWait = true
         return
       }
-      browser.runtime.sendMessage({action: 'mangadexExportMangas', fromOptionMenu: true })
+      browser.runtime.sendMessage({action: 'mangadexExportToList', fromOptionMenu: true })
+    },
+    exportMangasToFollows() {
+      if(this.allOptions.isUpdatingChapterLists == 1) {
+        this.importMangaWait = true
+        return
+      }
+      browser.runtime.sendMessage({action: 'mangadexExportToFollows', fromOptionMenu: true })
     },
     /**
      * Load followed mangas from MD

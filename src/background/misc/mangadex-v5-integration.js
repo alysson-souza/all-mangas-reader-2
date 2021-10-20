@@ -283,6 +283,37 @@ export class Mangadex extends EventEmitter {
     }
     this.emit('exportToList:done')
   }
+
+  async RemoveFromList(ids) {
+    ids = ids.map(id => id.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/)[0])
+    const customListId = await this.getCustomList()
+    for(const id of ids) {
+      await this.MD(`/manga/${id}/list/${customListId}`, 'DELETE', {})
+    }
+  }
+  /**
+   * @param {String[]} ids mg.key
+   */
+   async exportToFollows(ids) {
+    this.emit('exportToFollows:start')
+    ids = ids.map(id => id.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/)[0])
+    for(const [i, id] of ids.entries()) {
+      this.emit('exportToFollows:progress', { current: String(i+1), total: String(ids.length) })
+      await this.MD(`/manga/${id}/follow`, 'POST', {})
+      await this.MD(`/manga/${id}/status`, 'POST', { status: 'reading' })
+    }
+    this.emit('exportToFollows:done')
+  }
+  /**
+   * @param {String[]} ids mg.key
+   */
+   async removeFromFollows(ids) {
+    ids = ids.map(id => id.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/)[0])
+    for(const id of ids) {
+      await this.MD(`/manga/${id}/follow`, 'POST', {})
+      await this.MD(`/manga/${id}/status`, 'POST', { status: 'dropped' })
+    }
+  }
   /**
    * get customList id
    * @returns {Promise<String>}

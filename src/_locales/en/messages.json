@@ -1677,6 +1677,10 @@
     "message": "Reload",
     "description": "button to restart the import"
   },
+  "options_mangadex_integration_export_follows": {
+    "message": "Automatically export mangas from All Mangas Reader to your follows",
+    "description": "button to start the import"
+  },
   "options_mangadex_integration_export": {
     "message": "Automatically export mangas from All Mangas Reader to an \"MDList\"",
     "description": "button to start the import"

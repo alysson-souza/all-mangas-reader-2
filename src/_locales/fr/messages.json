@@ -1676,6 +1676,10 @@
     "message": "Recharger",
     "description": "button to restart the import"
   },
+  "options_mangadex_integration_export_follows": {
+    "message": "Exporter automatiquement les mangas d'All Mangas Readers dans votre liste de follows",
+    "description": "button to start the import"
+  },
   "options_mangadex_integration_export": {
     "message": "Exporter automatiquement les mangas d'All Mangas Reader vers une \"MDList\"",
     "description": "button to start the import"

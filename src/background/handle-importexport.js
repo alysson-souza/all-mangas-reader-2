@@ -6,8 +6,10 @@ class HandleImportExport {
         return window['AMR_STORE'].dispatch('mangadexVerifyCredentials', message);
       case "mangadexResetCredentials":
         return window['AMR_STORE'].dispatch('mangadexResetCredentials');
-      case "mangadexExportMangas":
-        return window['AMR_STORE'].dispatch('mangadexExportMangas', message);
+      case "mangadexExportToList":
+        return window['AMR_STORE'].dispatch('mangadexExportToList', message);
+      case "mangadexExportToFollows":
+        return window['AMR_STORE'].dispatch('mangadexExportToFollows', message);
       case "mangadexImportMangas":
         return window['AMR_STORE'].dispatch('mangadexImportMangas');
       case "mangadexAddManga":
