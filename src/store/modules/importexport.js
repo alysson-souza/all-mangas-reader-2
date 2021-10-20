@@ -240,7 +240,7 @@ const actions = {
     commit('stopLoadingLang', {mirror: 'mangadex'})
   },
   /**
-   * mark as read on the site
+   * Triggered by the reader on a single entry
    * meant to be reused if any other integration are added
    * @param {*} param0
    * @param {Object} payload
@@ -256,7 +256,9 @@ const actions = {
     }
   },
   /**
-   * mark as read on the site chapter before lastChapterReadURL
+   * Triggered when updating chapter lists:
+   * retro-actively export read markers
+   * meant to be reused if any other integration are added
    */
   async autoExportReadStatus({getters, dispatch}, mg) {
     if(!mg.lastChapterReadURL) return
