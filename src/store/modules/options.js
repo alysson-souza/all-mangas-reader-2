@@ -121,19 +121,24 @@ const default_options = {
     alpha_asc_desc: false, // Order by name asending/descending
 
     /** Mangadex specific options */
+    
+
+    /** Mangadex Options */
     mangadexDataSaver: 0, // Use the datasaver option when getting chapter images
 
-    /** Mangadex integration Options */
-    mangadexIntegrationEnable: 0,
-    mangadexValidCredentials: 0,
-    mangadexToken: '',
-    mangadexTokenExpire: Date.now(),
-    mangadexRefresh: '',
-    mangadexRefreshExpire: Date.now(),
-    mangadexUpdateReadStatus: 0,
-    mangadexExportToList: 0,
-    mangadexExportToFollows: 0,
-    mangadexDontRemindMe: 0,
+    /** Mangadex Integration Options */
+    mangadexIntegrationEnable: 0, // enable integration
+    mangadexValidCredentials: 0, // watcher for credentials validity
+    mangadexDontRemindMe: 0, // Stop reminding the user that they need to login again
+    mangadexToken: '', // current token
+    mangadexTokenExpire: Date.now(), // current token expiration date
+    mangadexRefresh: '', // refresh token
+    mangadexRefreshExpire: Date.now(), // refresh token expiration date
+    mangadexUpdateReadStatus: 0, // mark as read on mangadex
+    mangadexExportToList: 0, // auto export added manga to MDlist
+    mangadexExportToFollows: 0, // auto export added manga to Follows (removed onces are moved to "dropped")
+    // 
+
 
     /** Komga specific options */
     komgaUrl: 'http://localhost:8080',
