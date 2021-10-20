@@ -663,7 +663,7 @@
         if (options.markwhendownload === 1) {
             this.consultManga()
         }
-        browser.runtime.sendMessage('exportReadStatus', { mirror: this.mirrorDesc.mirrorName, url: this.pageData.currentChapterURL })
+        browser.runtime.sendMessage({ action: 'exportReadStatus', mirror: this.mirrorDesc.mirrorName, url: this.pageData.currentChapterURL })
       })
     },
     mounted() {
