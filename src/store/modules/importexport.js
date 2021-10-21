@@ -51,29 +51,33 @@ const state = {
 }
 
 const getters = {
-  mangadex : {
-    allOptions: (state, getters, rootState) => {
-      return Object.keys(rootState.options)
-          .filter(opt=>opt.startsWith('mangadex'))
-          .reduce((obj, key) => {
-              obj[key] = rootState.options[key]
-              return obj
-          }, {})
-    },
-    options : {
-      enabled: (state, getters, rootState) => getters.mangadex.allOptions.mangadexIntegrationEnable == 1,
-      valid: (state, getters, rootState) => getters.mangadex.allOptions.mangadexvalidCredentials == 1,
-      exportToList: (state, getters, rootState) => getters.mangadex.allOptions.mangadexExportToList == 1,
-      exportToFollows: (state, getters, rootState) => getters.mangadex.allOptions.mangadexExportToFollows == 1,
-      markAsRead: (state, getters, rootState) => getters.mangadex.allOptions.mangadexUpdateReadStatus == 1
-    },
-    loadings: (state) => state.loadings.find(l=>l.mirror === 'mangadex'),
-    texts: (state) => state.texts.find(l=>l.mirror === 'mangadex'),
-    misc: (state) => state.misc.find(l=>l.mirror === 'mangadex'),
-    inStore: (state, getters, rootState) => rootState.mangas.all.filter(mg => mg.mirror === "MangaDex V5"),
-    imports: (state) => state.imports.find(i=>i.mirror === 'mangadex').value
+  md_allOptions: (state, getters, rootState) => {
+    return Object.keys(rootState.options)
+        .filter(opt=>opt.startsWith('mangadex'))
+        .reduce((obj, key) => {
+            obj[key] = rootState.options[key]
+            return obj
+        }, {})
+  },
+  md_options: (state, getters, rootState) => {
+    return {
+      enabled: rootState.options.mangadexIntegrationEnable == 1,
+      valid: rootState.options.mangadexValidCredentials == 1,
+      exportToList: rootState.options.mangadexExportToList == 1,
+      exportToFollows: rootState.options.mangadexExportToFollows == 1,
+      markAsRead: rootState.options.mangadexUpdateReadStatus == 1  
+    }
+  },
+  md_loadings: (state) => state.loadings.find(l=>l.mirror === 'mangadex'),
+  md_texts: (state) => state.texts.find(l=>l.mirror === 'mangadex'),
+  md_misc: (state) => state.misc.find(l=>l.mirror === 'mangadex'),
+  md_inStore: (state, getters, rootState) => rootState.mangas.all.filter(mg => mg.mirror === "MangaDex V5"),
+  md_imports: (state) => state.imports.find(i=>i.mirror === 'mangadex').value
+  // }
   }
-}
+
+
+
 
 /**
  * Actions:

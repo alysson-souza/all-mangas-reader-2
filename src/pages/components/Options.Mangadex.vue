@@ -362,7 +362,7 @@ export default {
       return this.$store.state.options
     },
     options() {
-      return this.$store.getters.mangadex.options
+      return this.$store.getters.md_options
     },
     datasaver: {
       get() { return this.allOptions.mangadexDataSaver == 1},
@@ -402,9 +402,9 @@ export default {
         if(val) this.exportMangasToFollows()
       }
     },
-    loadings() { return this.$store.getters.mangadex.loadings },
-    texts() { return this.$store.getters.mangadex.texts },
-    misc() { return this.$store.getters.mangadex.misc },
+    loadings() { return this.$store.getters.md_loadings },
+    texts() { return this.$store.getters.md_texts },
+    misc() { return this.$store.getters.md_misc },
     credentialLoading() { return this.loadings.credential },
     exportLoading() { return this.loadings.export },
     exportLoadingText() { return this.texts.export },
@@ -422,7 +422,7 @@ export default {
     importProgress() { return this.texts.importProgress },
     importTotal() { return this.texts.importTotal },
     addLangLoading() { return this.loadings.importLang },
-    follows() { return this.$store.getters.mangadex.imports.value },
+    follows() { return this.$store.getters.md_imports },
     followsLangs() {
     return Array.from(
         new Set(
