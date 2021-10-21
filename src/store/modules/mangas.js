@@ -654,6 +654,7 @@ const actions = {
                             }
                         });
                     await dispatch('autoExportReadStatus', mg, {root: true})
+                    await dispatch('exportManga', mg, {root:true})
                     resolve()
                 }, 1000 * delay)
             })
