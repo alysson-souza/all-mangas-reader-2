@@ -239,7 +239,6 @@ export default {
       importMangaWait: false,
       exportToListNextTime: false,
       exportToFollowsNextTime: false,
-      importMethod: 'none',
       importAllTableHeaders: [
         { text: this.i18n('options_gen_mirrors_header_lang'), value: 'code', width: '150' },
         { text: 'Mangas', value: 'count' },
@@ -467,7 +466,6 @@ export default {
       browser.runtime.sendMessage({action: 'mangadexVerifyCredentials', username: this.login, password: this.password})
     },
     exportMangasToList() {
-      console.log(this.allOptions)
       if(this.allOptions.isUpdatingChapterLists == 1) {
         this.exportToListNextTime = true
         return
@@ -490,31 +488,6 @@ export default {
         return
       }
       browser.runtime.sendMessage({action: 'mangadexImportMangas'})
-      // this.importLoading = true
-      // const md = new Mangadex(this.options, this.$store.dispatch)
-      
-      // // updating counts
-      // md.on('getFollows:list:progress', ({total, current}) => {
-      //   this.fetchProgress = String(current > total ? total : current)
-      //   this.fetchTotal = String(total)
-      //   this.$forceUpdate()  
-      // })
-      // let loading = 0
-      // md.on('getFollows:loading:progress', () => {
-      //   if(loading === 0) {
-      //     this.importLoadingText = 'options_mangadex_loading_mangas'
-      //     this.fetchProgress = 0
-      //     loading = 1
-      //   }
-      //   this.fetchProgress = this.fetchProgress+1
-      //   this.$forceUpdate()  
-      // })
-      
-      // // fetch data
-      // this.follows = await md.getFollows(this.inStoreKeys)
-      // this.importLoading = false
-      // this.updatefollowsLangs()
-      // this.$forceUpdate()
     },
     /**
      * add manga
