@@ -283,7 +283,7 @@ export class Mangadex extends EventEmitter {
     this.emit('exportToList:done')
   }
 
-  async RemoveFromList(ids) {
+  async removeFromList(ids) {
     ids = ids.map(id => id.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/)[0])
     const customListId = await this.getCustomList()
     for(const id of ids) {
