@@ -55,7 +55,6 @@
       :label="i18n('options_mangadex_integration_export_follows')"
       :disabled="exportLoading || exportFollowsLoading"
     />
-
     <v-alert
       v-if="(exportFollowsLoading && exportFollowsProgress && exportFollowsTotal) || exportFollowsDone"
       text
@@ -64,6 +63,15 @@
       icon="mdi-information"
     >
       {{ i18n(exportFollowsLoadingText, exportFollowsProgress, exportFollowsTotal) }}
+    </v-alert>
+    <v-alert
+      v-else-if="exportToFollowsNextTime"
+      text
+      elevation="1"
+      color="info"
+      icon="mdi-information"
+    >
+      {{ i18n('options_mangadex_integration_wait_export') }}
     </v-alert>
     <!-- Export to MDList option-->
     <v-checkbox
@@ -80,6 +88,15 @@
       icon="mdi-information"
     >
       {{ i18n(exportLoadingText, exportProgress, exportTotal) }}
+    </v-alert>
+    <v-alert
+      v-else-if="exportToListNextTime"
+      text
+      elevation="1"
+      color="info"
+      icon="mdi-information"
+    >
+      {{ i18n('options_mangadex_integration_wait_export') }}
     </v-alert>
     <!-- Import option-->
     <v-row class="mb-4">
@@ -220,6 +237,8 @@ export default {
       login: '',
       password: '',
       importMangaWait: false,
+      exportToListNextTime: false,
+      exportToFollowsNextTime: false,
       importMethod: 'none',
       importAllTableHeaders: [
         { text: this.i18n('options_gen_mirrors_header_lang'), value: 'code', width: '150' },
@@ -448,15 +467,16 @@ export default {
       browser.runtime.sendMessage({action: 'mangadexVerifyCredentials', username: this.login, password: this.password})
     },
     exportMangasToList() {
+      console.log(this.allOptions)
       if(this.allOptions.isUpdatingChapterLists == 1) {
-        this.importMangaWait = true
+        this.exportToListNextTime = true
         return
       }
       browser.runtime.sendMessage({action: 'mangadexExportToList', fromOptionMenu: true })
     },
     exportMangasToFollows() {
       if(this.allOptions.isUpdatingChapterLists == 1) {
-        this.importMangaWait = true
+        this.exportToFollowsNextTime = true
         return
       }
       browser.runtime.sendMessage({action: 'mangadexExportToFollows', fromOptionMenu: true })

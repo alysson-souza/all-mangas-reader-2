@@ -1701,9 +1701,13 @@
     "message": "Choose mangas to import",
     "description": "Title of language table"
   },
-  "options_mangadex_integration_wait": {
+  "options_mangadex_integration_wait_import": {
     "message": "<p>You can't import while AMR is looking for new releases on your list.</p> <p><b>Please retry later</b></p>",
-    "description": "wait message when you can't import because AMR is refreshing chapter list"
+    "description": "wait dialog when you can't import because AMR is refreshing chapter list"
+  },
+  "options_mangadex_integration_wait_export": {
+    "message": "An export will be performed next time All Mangas Reader updates chapters list.",
+    "description": "wait message when you can't export because AMR is refreshing chapter list"
   },
   "options_mangadex_login": {
     "message": "Your Mangadex username",
