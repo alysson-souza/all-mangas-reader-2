@@ -73,7 +73,6 @@ const getters = {
   md_misc: (state) => state.misc.find(l=>l.mirror === 'mangadex'),
   md_inStore: (state, getters, rootState) => rootState.mangas.all.filter(mg => mg.mirror === "MangaDex V5"),
   md_imports: (state) => state.imports.find(i=>i.mirror === 'mangadex').value
-  // }
   }
 
 

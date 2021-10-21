@@ -353,10 +353,10 @@ export default {
   },
   computed: {
     inStore() {
-      return this.$store.state.mangas.all.filter(mg => mg.mirror === "MangaDex V5")
+      return this.$store.getters.md_inStore
     },
     inStoreKeys() {
-      return this.$store.state.mangas.all.filter(mg => mg.mirror === "MangaDex V5").map(mg => mg.key)
+      return this.inStore.map(mg => mg.key)
     },
     allOptions() {
       return this.$store.state.options
