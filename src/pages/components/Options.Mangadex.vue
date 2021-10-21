@@ -391,7 +391,7 @@ export default {
     updateExportToListMarker: {
       get() { return this.options.exportToList },
       set (val) {
-        this.$store.dispatch("setOption", { key: 'mangadexExportList', value: val === true ? 1:0 });
+        this.$store.dispatch("setOption", { key: 'mangadexExportToList', value: val === true ? 1:0 });
         if(val) this.exportMangasToList()
       }
     },
