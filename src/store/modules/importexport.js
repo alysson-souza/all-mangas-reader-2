@@ -88,7 +88,7 @@ const actions = {
     return dispatch('setOption', {key, value}, { root: true })
   },
   async initMangadex({getters, dispatch}) {
-    mangadex = new Mangadex(getters.mangadex.allOptions, dispatch)
+    mangadex = new Mangadex(getters.md_allOptions, dispatch)
   },
   async mangadexVerifyCredentials({commit, dispatch}, {username, password}) {
     const commitPayload = {mirror: 'mangadex', key:'credential', value: false}
@@ -137,13 +137,13 @@ const actions = {
     commit('setMisc', { mirror: 'mangadex', key: 'exportDone', value: false})
     commit('stopLoading', { mirror: 'mangadex', key: 'export'})
     // force export if action triggered from option menu
-    if(!getters.mangadex.options.exportToList) {
+    if(!getters.md_options.exportToList) {
       if(!fromOptionMenu) return
     } 
     await dispatch('setGlobalOption', {key: 'isUpdatingChapterLists', value: 1})
     commit('startLoading', { mirror: 'mangadex', key: 'export' })
     if(!mangadex) await dispatch('initMangadex')
-    const keys = ids || getters.mangadex.inStore.map(mg => mg.key) // ids aren't provided when using "export all" from Options.Mangadex.vue
+    const keys = ids || getters.md_inStore.map(mg => mg.key) // ids aren't provided when using "export all" from Options.Mangadex.vue
     if(fromOptionMenu) {
       // display progress only when using "export all" from Options.Mangadex.vue
       mangadex.on('getCustomList:start', () => {
@@ -175,13 +175,13 @@ const actions = {
     commit('setMisc', { mirror: 'mangadex', key: 'exportFollowsDone', value: false})
     commit('stopLoading', { mirror: 'mangadex', key: 'exportFollows'})
     // force export if action triggered from option menu
-    if(!getters.mangadex.options.exportToFollows) {
+    if(!getters.md_options.exportToFollows) {
       if(!fromOptionMenu) return
     }
     await dispatch('setGlobalOption', {key: 'isUpdatingChapterLists', value: 1})
     commit('startLoading', { mirror: 'mangadex', key: 'exportFollows' })
     if(!mangadex) await dispatch('initMangadex')
-    const keys = ids || getters.mangadex.inStore.map(mg => mg.key) // mangas aren't provided when using "export all" from Options.Mangadex.vue
+    const keys = ids || getters.md_inStore.map(mg => mg.key) // mangas aren't provided when using "export all" from Options.Mangadex.vue
     if(fromOptionMenu) {
       // display progress only when using "export all" from Options.Mangadex.vue
       mangadex.on('exportToFollows:start', () => {
@@ -209,7 +209,7 @@ const actions = {
   async mangadexImportMangas({getters, commit, dispatch}) {
     await dispatch('setGlobalOption', {key: 'isUpdatingChapterLists', value: 1})
     commit('startLoading', { mirror: 'mangadex', key: 'import' })
-    const inStoreKeys = getters.mangadex.inStore.map(mg => mg.key)
+    const inStoreKeys = getters.md_inStore.map(mg => mg.key)
     if(!mangadex) await dispatch('initMangadex')
     mangadex.on('getFollows:list:progress', ({total, current}) => {
       commit('setText', { mirror: 'mangadex', key: 'importProgress', value: String(current > total ? total : current)})
@@ -257,8 +257,8 @@ const actions = {
    */
   async exportReadStatus({getters, dispatch}, {url, mirror}) {
     if(mirror === "MangaDex V5") {
-      if(!getters.mangadex.options.enabled) return
-      if(!getters.mangadex.options.markAsRead) return
+      if(!getters.md_options.enabled) return
+      if(!getters.md_options.markAsRead) return
       if(!mangadex) await dispatch('initMangadex')
       await mangadex.markAsRead(url)
     }
@@ -278,8 +278,8 @@ const actions = {
       if(chap[1] == mg.lastChapterReadURL) break
     }
     if(mg.mirror === "MangaDex V5") {
-      if(!getters.mangadex.options.enabled) return
-      if(!getters.mangadex.options.markAsRead) return
+      if(!getters.md_options.enabled) return
+      if(!getters.md_options.markAsRead) return
       if(!mangadex) await dispatch('initMangadex')
       await mangadex.markAsReadBatch(mg.key, toExport)
     }
@@ -291,12 +291,12 @@ const actions = {
    */
   async exportManga({getters, dispatch}, mg) {
     if(mg.mirror === 'MangaDex V5') {
-      if(!getters.mangadex.options.enabled) return
-      if(getters.mangadex.options.exportToList) {
+      if(!getters.md_options.enabled) return
+      if(getters.md_options.exportToList) {
         if(!mangadex) await dispatch('initMangadex')
         await mangadex.exportToList([mg.key])
       }
-      if(getters.mangadex.options.exportToFollows) {
+      if(getters.md_options.exportToFollows) {
         if(!mangadex) await dispatch('initMangadex')
         await mangadex.exportToFollows([mg.key])
       }
@@ -304,12 +304,12 @@ const actions = {
   },
   async unExportManga({getters, dispatch}, mg) {
     if(mg.mirror === 'MangaDex V5') {
-      if(!getters.mangadex.options.enabled) return
-      if(getters.mangadex.options.exportToList) {
+      if(!getters.md_options.enabled) return
+      if(getters.md_options.exportToList) {
         if(!mangadex) await dispatch('initMangadex')
         await mangadex.removeFromList([mg.key])
       }
-      if(getters.mangadex.options.exportToFollows) {
+      if(getters.md_options.exportToFollows) {
         if(!mangadex) await dispatch('initMangadex')
         await mangadex.removeFromFollows([mg.key])
       }
