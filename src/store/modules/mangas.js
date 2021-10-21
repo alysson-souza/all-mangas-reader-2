@@ -87,7 +87,15 @@ const getters = {
             obj[key] = rootState.options[key]
             return obj
         }, {})
-    }
+    },
+
+    allOptions: (rootState) => {
+        return Object.key(rootState.options)
+            .reduce((obj, key) => {
+                obj[key] = rootState.options[key]
+                return obj
+            })
+    },
 }
 
 // actions
@@ -96,16 +104,26 @@ const actions = {
      * Retrieve manga list from DB, initialize the store
      * @param {*} param0
      */
-    async initMangasFromDB({ commit }) {
+    async initMangasFromDB({ commit }, fromModule) {
         await storedb.getMangaList().then(mangasdb => {
             commit('setMangas', mangasdb.map(mg => new Manga(mg)));
         })
+        if(fromModule) amrUpdater.refreshBadgeAndIcon()
     },
+    /**
+     * Initialise syncManager
+     * @param {*} param0 
+     */
     async initSync({commit, rootState, dispatch, getters}) {
         // starting manager
         syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
         syncManager.start()
     },
+    /**
+     * Update syncManager options
+     * @param {*} param0 
+     * @param {*} backgroundjs 
+     */
     async updateSync({getters, rootState, dispatch}, backgroundjs = false) {
         if(backgroundjs) {
             // wait 1s, helps commit from popup.js propagate.
@@ -132,8 +150,9 @@ const actions = {
      * @param {*} param0
      * @param {*} manga
      */
-    async addManga({ dispatch, commit }, {manga, fromSync}) {
+    async addManga({ dispatch, getters, rootState }, {manga, fromSync}) {
         await storedb.storeManga(manga);
+        await dispatch('exportManga', manga, {root: true})
         if(!fromSync) {
             if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
             await syncManager.setToRemote(manga, 'ts')
@@ -401,6 +420,7 @@ const actions = {
                             }
                             if (posNew !== -1 && (message.fromSite || (posNew < posOld || posOld === -1))) {
                                 commit('updateMangaLastChapter', { key: mg.key, obj: message });
+                                await dispatch('autoExportReadStatus', mg, { root: true })
                                 if(!message.isSync) {
                                     if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
                                     await syncManager.setToRemote(mg, 'ts')
@@ -416,7 +436,8 @@ const actions = {
                 }
             } else {
                 if (message.fromSite || (posNew < posOld || posOld === -1)) {
-                    commit('updateMangaLastChapter', { key: mg.key, obj: message });
+                    commit('updateMangaLastChapter', { key: mg.key, obj: message }, {root: true});
+                    await dispatch('autoExportReadStatus', mg, { root: true })
                     if(!message.isSync) {
                         if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
                         await syncManager.setToRemote(mg, 'ts')
@@ -632,6 +653,7 @@ const actions = {
                                 console.error(e);
                             }
                         });
+                    await dispatch('autoExportReadStatus', mg, {root: true})
                     resolve()
                 }, 1000 * delay)
             })
@@ -742,6 +764,7 @@ const actions = {
         if (mg !== undefined) {
             commit('deleteManga', message.key);
             storedb.deleteManga(message.key);
+            dispatch('unExportManga', mg, {root:true})
             if(!fromSync) {
                 if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
                 await syncManager.deleteManga(message.key)

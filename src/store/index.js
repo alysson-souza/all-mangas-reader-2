@@ -6,7 +6,7 @@ import mangas from './modules/mangas';
 import mirrors from './modules/mirrors';
 import options from './modules/options';
 import bookmarks from './modules/bookmarks';
-
+import importexport from './modules/importexport'
 Vue.use(Vuex);
 
 /**
@@ -23,7 +23,8 @@ export default new Vuex.Store({
         mangas,
         mirrors,
         options,
-        bookmarks
+        bookmarks,
+        importexport
     },
     plugins: [createMutationsSharer({ predicate: () => true })], // share the state for every mutation
     actions: {

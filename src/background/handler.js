@@ -7,7 +7,7 @@ import HandleMisc from "./handle-misc";
 import HandleVueInit from "./handle-vue-init";
 import HandleLab from "./handle-lab";
 import HandleSync from "./handle-sync";
-
+import HandleImportExport from './handle-importexport'
 class Handler {
     handle() {
         /**
@@ -23,7 +23,8 @@ class Handler {
                 HandleNavigation,
                 HandleBookmarks,
                 HandleLab,
-                HandleSync
+                HandleSync,
+                HandleImportExport
             ];
             for (let handler of handlers) {
                 result = handler.handle(message, sender);

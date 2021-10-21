@@ -74,7 +74,7 @@ if (typeof registerMangaObject === 'function') {
             for(const [page, emptyVal] of Array(15).entries()) {
                 // fetch data
                 const jsonChapFeed = await amr.loadJson(
-                    `${this.api}/manga/${id}/feed?limit=${this.pageLimit}&order[chapter]=desc&offset=${page * this.pageLimit}`
+                    `${this.api}/manga/${id}/feed?limit=${this.pageLimit}&order[chapter]=desc&offset=${page * this.pageLimit}&contentRating[]=safe&contentRating[]=suggestive&contentRating[]=erotica&contentRating[]=pornographic`
                 )
                 // Create Object representing results
                 const uniq = jsonChapFeed.data./*filter(data => data.result === "ok").*/reduce((acc,o)=>{
