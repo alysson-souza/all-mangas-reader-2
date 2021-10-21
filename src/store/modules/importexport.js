@@ -283,6 +283,7 @@ const actions = {
    */
   async exportManga({getters, dispatch}, mg) {
     if(mg.mirror === 'MangaDex V5') {
+      if(getters.mangadexOptions.mangadexIntegrationEnable == 0) return
       if(getters.mangadexOptions.mangadexExportToList == 1) {
         if(!mangadex) await dispatch('initMangadex')
         await mangadex.exportToList([mg.key]).catch(() => dispatch('setGlobalOption', {key: 'isUpdatingChapterLists', value: 0}))
@@ -295,6 +296,7 @@ const actions = {
   },
   async unExportManga({getters, dispatch}, mg) {
     if(mg.mirror === 'MangaDex V5') {
+      if(getters.mangadexOptions.mangadexIntegrationEnable == 0) return
       if(getters.mangadexOptions.mangadexExportToList == 1) {
         if(!mangadex) await dispatch('initMangadex')
         await mangadex.removeFromList([mg.key]).catch(() => dispatch('setGlobalOption', {key: 'isUpdatingChapterLists', value: 0}))
