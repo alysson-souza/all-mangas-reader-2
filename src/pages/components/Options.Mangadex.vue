@@ -362,64 +362,67 @@ export default {
       return this.$store.state.options
     },
     options() {
-      return this.$store.getters.mangadexOptions
+      return this.$store.getters.mangadex.options
     },
     datasaver: {
-      get() { return this.options.mangadexDataSaver == 1},
+      get() { return this.allOptions.mangadexDataSaver == 1},
       set (val) {
         this.$store.dispatch("setOption", { key: 'mangadexDataSaver', value: val === true ? 1:0 })
       }
     },
     enabled:{
-      get () { return this.options.mangadexIntegrationEnable == 1 },
+      get () { return this.options.enabled },
       set (val) {
         this.$store.dispatch("setOption", { key: 'mangadexIntegrationEnable', value: val === true ? 1:0 });
       }
     },
-    validCredentials() { return this.options.mangadexValidCredentials == 1 },
+    validCredentials() { return this.options.valid },
     // token has expired
     tokenExpired() {
-        if(this.options.mangadexRefreshExpire < Date.now()) return true
+        if(this.allOptions.mangadexRefreshExpire < Date.now()) return true
         return false
     },
     updateReadMarker: {
-      get() { return this.options.mangadexUpdateReadStatus == 1 },
+      get() { return this.options.markAsRead },
       set (val) {
         this.$store.dispatch("setOption", { key: 'mangadexUpdateReadStatus', value: val === true ? 1:0 });
       }
     },
     updateExportToListMarker: {
-      get() { return this.options.mangadexExportToList == 1 },
+      get() { return this.options.exportToList },
       set (val) {
         this.$store.dispatch("setOption", { key: 'mangadexExportList', value: val === true ? 1:0 });
         if(val) this.exportMangasToList()
       }
     },
     updateExportToFollowsMarker: {
-      get() { return this.options.mangadexExportToFollows == 1 },
+      get() { return this.options.exportToFollows },
       set (val) {
         this.$store.dispatch("setOption", { key: 'mangadexExportToFollows', value: val === true ? 1:0 });
         if(val) this.exportMangasToFollows()
       }
     },
-    credentialLoading() { return this.$store.state.importexport.loadings.find(l=> l.mirror === 'mangadex').credential },
-    exportLoading() { return this.$store.state.importexport.loadings.find(l=> l.mirror === 'mangadex').export },
-    exportLoadingText() { return this.$store.state.importexport.texts.find(t=> t.mirror === 'mangadex').export },
-    exportProgress() { return this.$store.state.importexport.texts.find(t=> t.mirror === 'mangadex').exportProgress },
-    exportTotal() { return this.$store.state.importexport.texts.find(t=> t.mirror === 'mangadex').exportTotal },
-    exportDone() { return this.$store.state.importexport.misc.find(m=> m.mirror === 'mangadex').exportDone },
-    exportFollowsLoading() { return this.$store.state.importexport.loadings.find(l=> l.mirror === 'mangadex').exportFollows },
-    exportFollowsLoadingText() { return this.$store.state.importexport.texts.find(t=> t.mirror === 'mangadex').exportFollows },
-    exportFollowsProgress() { return this.$store.state.importexport.texts.find(t=> t.mirror === 'mangadex').exportFollowsProgress },
-    exportFollowsTotal() { return this.$store.state.importexport.texts.find(t=> t.mirror === 'mangadex').exportFollowsTotal },
-    exportFollowsDone() { return this.$store.state.importexport.misc.find(m=> m.mirror === 'mangadex').exportFollowsDone },
-    importLoading() { return this.$store.state.importexport.loadings.find(l=> l.mirror === 'mangadex').import },
+    loadings() { return this.$store.getters.mangadex.loadings },
+    texts() { return this.$store.getters.mangadex.texts },
+    misc() { return this.$store.getters.mangadex.misc },
+    credentialLoading() { return this.loadings.credential },
+    exportLoading() { return this.loadings.export },
+    exportLoadingText() { return this.texts.export },
+    exportProgress() { return this.texts.exportProgress },
+    exportTotal() { return this.texts.exportTotal },
+    exportDone() { return this.misc.exportDone },
+    exportFollowsLoading() { return this.loadings.exportFollows },
+    exportFollowsLoadingText() { return this.texts.exportFollows },
+    exportFollowsProgress() { return this.texts.exportFollowsProgress },
+    exportFollowsTotal() { return this.texts.exportFollowsTotal },
+    exportFollowsDone() { return this.misc.exportFollowsDone },
+    importLoading() { return this.loadings.import },
     importButtonText() { return this.follows.length ? 'options_mangadex_integration_reload' : 'options_mangadex_integration_load' },
-    importLoadingText() { return this.$store.state.importexport.texts.find(t=> t.mirror === 'mangadex').import},
-    importProgress() {return this.$store.state.importexport.texts.find(t=> t.mirror === 'mangadex').importProgress},
-    importTotal() { return this.$store.state.importexport.texts.find(t=> t.mirror === 'mangadex').importTotal },
-    addLangLoading() { return this.$store.state.importexport.loadings.find(l=> l.mirror === 'mangadex').importLang },
-    follows() { return this.$store.state.importexport.imports.find(f=> f.mirror === 'mangadex').value },
+    importLoadingText() { return this.texts.import},
+    importProgress() { return this.texts.importProgress },
+    importTotal() { return this.texts.importTotal },
+    addLangLoading() { return this.loadings.importLang },
+    follows() { return this.$store.getters.mangadex.imports.value },
     followsLangs() {
     return Array.from(
         new Set(
