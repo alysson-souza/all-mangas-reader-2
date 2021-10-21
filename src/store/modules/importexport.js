@@ -159,7 +159,7 @@ const actions = {
     }
     
     try {
-      await mangadex.exportToList(keys)
+      await mangadex.exportToList(keys, fromOptionMenu)
       await dispatch('setGlobalOption', {key: 'isUpdatingChapterLists', value: 0})
     } catch(e) {
       await dispatch('setGlobalOption', {key: 'isUpdatingChapterLists', value: 0})
@@ -197,7 +197,7 @@ const actions = {
     }
     
     try {
-      await mangadex.exportToFollows(keys)
+      await mangadex.exportToFollows(keys, fromOptionMenu)
       await dispatch('setGlobalOption', {key: 'isUpdatingChapterLists', value: 0})
     } catch(e) {
       await dispatch('setGlobalOption', {key: 'isUpdatingChapterLists', value: 0})

@@ -273,11 +273,11 @@ export class Mangadex extends EventEmitter {
   /**
    * @param {string[]} ids mangas id
    */
-  async exportToList(ids) {
+  async exportToList(ids, fromOptionMenu = false) {
     ids = ids.map(id => id.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/)[0])
-    const customListId = await this.getCustomList()
+    const customListId = await this.getCustomList(fromOptionMenu)
     for(const [i, id] of ids.entries()) {
-      this.emit('exportToList:progress', { current: String(i+1), total: String(ids.length) })
+      if(fromOptionMenu) this.emit('exportToList:progress', { current: String(i+1), total: String(ids.length) })
       await this.MD(`/manga/${id}/list/${customListId}`, 'POST', {})
     }
     this.emit('exportToList:done')
@@ -293,11 +293,11 @@ export class Mangadex extends EventEmitter {
   /**
    * @param {String[]} ids mg.key
    */
-   async exportToFollows(ids) {
-    this.emit('exportToFollows:start')
+   async exportToFollows(ids, fromOptionMenu = false) {
+    if(fromOptionMenu) this.emit('exportToFollows:start')
     ids = ids.map(id => id.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/)[0])
     for(const [i, id] of ids.entries()) {
-      this.emit('exportToFollows:progress', { current: String(i+1), total: String(ids.length) })
+      if(fromOptionMenu) this.emit('exportToFollows:progress', { current: String(i+1), total: String(ids.length) })
       await this.MD(`/manga/${id}/follow`, 'POST', {})
       await this.MD(`/manga/${id}/status`, 'POST', { status: 'reading' })
     }
@@ -317,10 +317,10 @@ export class Mangadex extends EventEmitter {
    * get customList id
    * @returns {Promise<String>}
    */
-     async getCustomList() {
-      this.emit('getCustomList:start')
+     async getCustomList(fromOptionMenu = false) {
+      if(fromOptionMenu) this.emit('getCustomList:start')
       this.customList = this.customList || await this.findOrCreateCustomList()
-      this.emit('getCustomList:done')
+      if(fromOptionMenu) this.emit('getCustomList:done')
       return this.customList
     }
   /**
