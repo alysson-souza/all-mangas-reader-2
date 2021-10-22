@@ -273,7 +273,7 @@ const actions = {
     if(!mg.listChaps) return
     if(!mg.listChaps.length) return
     const toExport = []
-    for(const chap of mg.listChaps.reverse()) {
+    for(const chap of mg.listChaps.slice().reverse()) {
       toExport.push(chap[1])
       if(chap[1] == mg.lastChapterReadURL) break
     }
