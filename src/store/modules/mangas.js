@@ -647,13 +647,13 @@ const actions = {
                 setTimeout(async () => {
                     await dispatch("refreshLastChapters", mg).then(() => {
                             dispatch('findAndUpdateManga', mg); //save updated manga do not wait
+                            dispatch('autoExportReadStatus', mg, {root: true})
                             amrUpdater.refreshBadgeAndIcon();
                         }).catch(e => {
                             if (e !== ABSTRACT_MANGA_MSG) {
                                 console.error(e);
                             }
                         });
-                    await dispatch('autoExportReadStatus', mg, {root: true})
                     resolve()
                 }, 1000 * delay)
             })

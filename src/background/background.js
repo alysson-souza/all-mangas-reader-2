@@ -85,7 +85,7 @@ IconHelper.setBlueIcon();
 
     utils.debug('Running mangadex converter')
     converToMangadexV5()
-    if(store.state.options.mangadexIntegrationEnable) new Mangadex(store.getters.mangadexOptions)
+    if(store.state.options.mangadexIntegrationEnable) new Mangadex(store.getters.md_allOptions)
     // content script included, test if a mirror match the page and load AMR in tab
     /*browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
         if (changeInfo.status === "loading") { // just load scripts once, when the tab is loading

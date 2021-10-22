@@ -340,15 +340,6 @@ const mutations = {
         else state[key] = value;
     },
     /**
-     * Set {key, value} option
-     * @param {*} state
-     * @param {*} obj containing key and value
-     */
-    setMangadexOption(state, { key, value }) {
-        if (!key) console.error("Impossible to set option with undefined key; value is " + value);
-        else state.mangadex[key] = value;
-    },
-    /**
      * Adds a category in categories states
      * @param {*} state
      * @param {*} name
