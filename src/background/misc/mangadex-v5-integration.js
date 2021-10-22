@@ -259,12 +259,12 @@ export class Mangadex extends EventEmitter {
    */
    async markAsReadBatch(manga, chaps) {
     const mangaId = manga.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/)[0]
-    const chapterIdsRead = []
+    let chapterIdsRead = []
     for(const [i, chap] of chaps.entries()) {
       const chapId = chap.match(/\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b/)[0]
       chapterIdsRead.push(chapId)
-      const size = Buffer.byteLength(JSON.stringify(body)) / 1024
-      if(size > 9 || i === chaps.add.length-1) {
+      const size = Buffer.byteLength(JSON.stringify(chapterIdsRead)) / 1024
+      if(size > 9 || i === chaps.length-1) {
         await this.MD(`/manga/${mangaId}/read`, 'POST', {chapterIdsRead})
         chapterIdsRead = []
       }
