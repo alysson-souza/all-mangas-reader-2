@@ -34,11 +34,11 @@ class IconHelper {
         browser.browserAction.setBadgeText({text: ""+nb});
         if (nb === 0) {
             // white text + grey background
-            browser.browserAction.setBadgeTextColor({color: '#ffffff'})
+            if(utils.isFirefox()) browser.browserAction.setBadgeTextColor({color: '#ffffff'})
             browser.browserAction.setBadgeBackgroundColor({color:"#646464"});
         } else {
             // white text + red background (same red as AMR icon)
-            browser.browserAction.setBadgeTextColor({color: '#ffffff'})
+            if(utils.isFirefox()) browser.browserAction.setBadgeTextColor({color: '#ffffff'})
             browser.browserAction.setBadgeBackgroundColor({color:"#bd0000"});
         }
     }
