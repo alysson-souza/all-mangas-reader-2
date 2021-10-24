@@ -385,6 +385,78 @@ To test the extension while developing on Firefox for Android, install Firefox o
 5. Open Firefox on your phone and open (as an url) `file:///mnt/sdcard/`
 6. Tap the extension file, it will install it !
 7. You can now debug it using Firefox WebIDE and connect to your phone.
+
+### Working on multi-language sites implementation requirements
+
+Some sites return language strings which aren't supported by AMR such as `es-la` or `pt-br`  
+When Creating or editing a site implementation we need to make sure they return language(s) from this list [list of compatible languages](LANGUAGES.md)  
+
+If the site returns *"wrong"* languages you will need to convert them:  
+
+- Create a convert function in `./src/utils.js`
+    ```js
+    somethingLangFix(lang) {
+      const results = []
+      for(const lang of langs.split(',')) {
+        switch(lang) {
+            case 'es-la':
+                results.push('mx') //=> mexican flag
+                break;
+            case 'pt-br':
+                results.push('br') //=> brazilian flag
+                break;
+            default:
+                results.push(lang)
+                break;
+      }
+      return results.join(',')
+    }
+    ```
+- Call this function in the implementation:
+    ```js
+    /** my website impl. */
+    // [....]
+    getListChaps: async function(urlManga) {
+        const res = []  
+        const data = doSomething(urlManga)
+        data.forEach(item => {
+            const lang = utils.somethingLangFix(item.lang) //=> Convert lang
+            /** rest of the code is up to you */
+            if(!res[lang]) res[lang] = []
+            res[lang] = item.information
+        }
+        // [ ... ]
+        getInformationsFromCurrentPage: async function(doc, curUrl) {
+        const info = doSomethingElse(curUrl)
+        // [ ... ]
+        return {
+            name: info.name,
+            currentMangaURL: info.url,
+            currentChapterURL: info.chapter.url
+            language: utils.somethingLangFix(info.chapter.lang) //=> Convert lang
+        }
+    }
+    ```
+- If you are working on an existing implementation you need to convert existing IndexedDB records:
+    - list *"wrong"* languages in `./src/utils.js` with `_` as a prefix
+        ```js
+        const somethingFixLangsList = ['es-la', 'ja']
+        export const somethingFixLangsListPrefix = somethingFixLangsList.map(e => '_'+e)
+        ```
+    - edit initMangasFromDB in `./src/store/modules/mangas.js`
+        ```js
+        // [ ... ]
+        await storedb.getMangaList().then(async mangasdb => {
+        // [ ... ] existing code
+        //  if there's already a fixLang dispatch don't be bothered, created a new one
+        await dispatch('fixLangs', 
+            mangasdb.filter(
+                mg => mg.mirror === 'something'
+                && new RegExp(utils.somethingFixLangsListPrefix .join('|')).test(mg.key)
+            )
+            )
+        })
+        ```
 ### Dependencies
  - Vue : One of the most popular reactive framework, Vue allows to create great UI
  - Vuex : Reactive store for vue, vuex organizes the data model properly
