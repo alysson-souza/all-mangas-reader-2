@@ -107,7 +107,7 @@ const actions = {
     async initMangasFromDB({ commit, dispatch }, fromModule) {
         await storedb.getMangaList().then(async mangasdb => {
             // mangadex fix
-            await dispatch('fixMDV5', 
+            await dispatch('fixLangs', 
                 mangasdb.filter(
                     mg => mg.mirror === 'MangaDex V5'
                     && new RegExp(utils.mdFixLangsListPrefix.join('|')).test(mg.key)
@@ -118,8 +118,7 @@ const actions = {
         })
         if(fromModule) amrUpdater.refreshBadgeAndIcon()
     },
-    /** fix mangadex v5 languages in storedb */
-    async fixMDV5({}, mgs) {
+    async fixLangs({}, mgs) {
         for(const oldManga of mgs) {
                 const newManga = new Manga(oldManga)
                 newManga.key = utils.mangaKey(newManga.url, newManga.mirror, utils.mdFixLang(newManga.language))
