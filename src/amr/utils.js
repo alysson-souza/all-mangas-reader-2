@@ -372,3 +372,39 @@ export const shouldCheckForUpdate = (mg, options) => {
 
     return shouldUpdate
 };
+
+/**
+ * Convert language to country
+ * @param {String} langs language 
+ */
+ export function mdFixLang(langs) {
+    const results = []
+    for(const lang of langs.split(',')) {
+        if(lang === 'pt-br') results.push('br')
+        else if(lang === 'es-la') results.push('mx')
+        else if(lang === 'fa') results.push('ir')
+        else if(lang === 'cs') results.push('cz')
+        else if(lang === 'zh-hk') results.push('hk')
+        else if(lang === 'zh') results.push('cn')
+        else if(lang === 'uk') results.push('ua')
+        else if(lang === 'vi') results.push('vn')
+        else if(lang === 'he') results.push('il')
+        else if(lang === 'ms') results.push('my')
+        else if(lang === 'tl') results.push('ph')
+        else if(lang === 'ja') results.push('jp')
+        else if(lang === 'ko') results.push('kr')
+        else if(lang === 'hi') results.push('in')
+        else if(lang === 'bn') results.push('bd')
+        else if(lang === 'sv') results.push('se')
+        else if(lang === 'el') results.push('gr')
+        else if(lang === 'sr') results.push('ba')
+        else if(lang === 'da') results.push('dk')
+        else if(lang === 'ca') results.push('ct')
+        else if(lang === 'null' || lang === 'NULL') results.push('_United-Nations')
+        else results.push(lang)
+    }
+    return results.join(',')
+}
+
+export const mdFixLangsList = ['pt-br', 'es-la', 'fa', 'cs', 'zh-hk', 'zh', 'uk', 'vi', 'he', 'ms', 'tl', 'ja', 'ko', 'hi', 'bn', 'sv', 'sv', 'el', 'sr', 'da', 'ca', 'null', 'NULL']
+export const mdFixLangsListPrefix = mdFixLangsList.map(e => '_'+e)
