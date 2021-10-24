@@ -121,13 +121,13 @@ const actions = {
     async fixLangs({dispatch}, mgs) {
         if(!syncManager) await dispatch('initSync')
         for(const oldManga of mgs) {
-                const newManga = new Manga(oldManga)
-                newManga.key = utils.mdFixLangKey(newManga.key)
-                newManga.language = utils.mdFixLang(newManga.language)
-                newManga.languages = utils.mdFixLang(newManga.languages)
-                await syncManager.deleteManga(oldManga.key)
-                await syncManager.setToRemote(newManga, 'ts')
-                await storedb.replace({oldManga, newManga}) 
+            const newManga = new Manga(oldManga)
+            newManga.key = utils.mdFixLangKey(newManga.key)
+            newManga.language = utils.mdFixLang(newManga.language)
+            newManga.languages = utils.mdFixLang(newManga.languages)
+            await syncManager.deleteManga(oldManga.key)
+            await syncManager.setToRemote(newManga, 'ts')
+            await storedb.replace({oldManga, newManga}) 
         }
     },
     /**
