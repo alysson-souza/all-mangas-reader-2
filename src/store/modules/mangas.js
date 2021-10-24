@@ -106,7 +106,13 @@ const actions = {
      */
     async initMangasFromDB({ commit, dispatch }, fromModule) {
         await storedb.getMangaList().then(async mangasdb => {
-            await dispatch('fixMDV5', mangasdb.filter(mg => mg.mirror === 'MangaDex V5'))
+            // mangadex fix
+            await dispatch('fixMDV5', 
+                mangasdb.filter(
+                    mg => mg.mirror === 'MangaDex V5'
+                    && new RegExp(utils.mdFixLangsListPrefix.join('|')).test(mg.key)
+                )
+            )
             await dispatch('updateLanguageCategories')
             commit('setMangas', mangasdb.map(mg => new Manga(mg)));
         })
@@ -115,13 +121,11 @@ const actions = {
     /** fix mangadex v5 languages in storedb */
     async fixMDV5({}, mgs) {
         for(const oldManga of mgs) {
-            if(new RegExp(utils.mdFixLangsListPrefix.join('|')).test(oldManga.key)) {
                 const newManga = new Manga(oldManga)
                 newManga.key = utils.mangaKey(newManga.url, newManga.mirror, utils.mdFixLang(newManga.language))
                 newManga.language = utils.mdFixLang(newManga.language)
                 newManga.languages = utils.mdFixLang(newManga.languages)
                 await storedb.replace({oldManga, newManga}) 
-            }
         }
     },
     /**
