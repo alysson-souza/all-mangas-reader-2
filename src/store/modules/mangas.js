@@ -118,7 +118,7 @@ const actions = {
         })
         if(fromModule) amrUpdater.refreshBadgeAndIcon()
     },
-    async fixLangs({}, mgs) {
+    async fixLangs({dispatch}, mgs) {
         if(!syncManager) await dispatch('initSync')
         for(const oldManga of mgs) {
                 const newManga = new Manga(oldManga)
