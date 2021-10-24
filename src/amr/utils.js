@@ -380,28 +380,77 @@ export const shouldCheckForUpdate = (mg, options) => {
  export function mdFixLang(langs) {
     const results = []
     for(const lang of langs.split(',')) {
-        if(lang === 'pt-br') results.push('br')
-        else if(lang === 'es-la') results.push('mx')
-        else if(lang === 'fa') results.push('ir')
-        else if(lang === 'cs') results.push('cz')
-        else if(lang === 'zh-hk') results.push('hk')
-        else if(lang === 'zh') results.push('cn')
-        else if(lang === 'uk') results.push('ua')
-        else if(lang === 'vi') results.push('vn')
-        else if(lang === 'he') results.push('il')
-        else if(lang === 'ms') results.push('my')
-        else if(lang === 'tl') results.push('ph')
-        else if(lang === 'ja') results.push('jp')
-        else if(lang === 'ko') results.push('kr')
-        else if(lang === 'hi') results.push('in')
-        else if(lang === 'bn') results.push('bd')
-        else if(lang === 'sv') results.push('se')
-        else if(lang === 'el') results.push('gr')
-        else if(lang === 'sr') results.push('ba')
-        else if(lang === 'da') results.push('dk')
-        else if(lang === 'ca') results.push('ct')
-        else if(lang === 'null' || lang === 'NULL') results.push('_United-Nations')
-        else results.push(lang)
+        switch (lang) {
+            case 'pt-br':
+                results.push('br')
+                break;
+            case 'es-la':
+                results.push('mx')
+                break;
+            case 'fa':
+                results.push('ir')
+                break;
+            case 'cs':
+                results.push('cz')
+                break;
+            case 'zh-hk':
+                results.push('hk')
+                break;
+            case 'zh':
+                results.push('cn')
+                break;
+            case 'uk':
+                results.push('ua')
+                break;
+            case 'vi':
+                results.push('vn')
+                break;
+            case 'he':
+                results.push('il')
+                break;
+            case 'ms':
+                results.push('my')
+                break;
+            case 'tl':
+                results.push('ph')
+                break;
+            case 'ja':
+                results.push('jp')
+                break;
+            case 'ko':
+                results.push('ko')
+                break;
+            case 'hi':
+                results.push('in')
+                break;
+            case 'bn':
+                results.push('bd')
+                break;
+            case 'sv':
+                results.push('se')
+                break;
+            case 'el':
+                results.push('gr')
+                break;
+            case 'sr':
+                results.push('ba')
+                break;
+            case 'da':
+                results.push('dk')
+                break;
+            case 'ca':
+                results.push('ct')
+                break;
+            case 'null':
+                results.push('_United-Nations')
+                break;
+            case 'NULL':
+                results.push('_United-Nations')
+                break;
+            default:
+                results.push(lang)
+                break;
+        }
     }
     return results.join(',')
 }
