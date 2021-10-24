@@ -454,6 +454,10 @@ export const shouldCheckForUpdate = (mg, options) => {
     }
     return results.join(',')
 }
-
+export function mdFixLangKey(key) {
+    return key.replace(/.*_(.*)$/, function(a, b) {
+        return a.replace(b, '') + mdFixLang(b);
+    })
+}
 export const mdFixLangsList = ['pt-br', 'es-la', 'fa', 'cs', 'zh-hk', 'zh', 'uk', 'vi', 'he', 'ms', 'tl', 'ja', 'ko', 'hi', 'bn', 'sv', 'sv', 'el', 'sr', 'da', 'ca', 'null', 'NULL']
 export const mdFixLangsListPrefix = mdFixLangsList.map(e => '_'+e)

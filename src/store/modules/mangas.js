@@ -121,7 +121,7 @@ const actions = {
     async fixLangs({}, mgs) {
         for(const oldManga of mgs) {
                 const newManga = new Manga(oldManga)
-                newManga.key = utils.mangaKey(newManga.url, newManga.mirror, utils.mdFixLang(newManga.language))
+                newManga.key = utils.mdFixLangKey(newManga.key)
                 newManga.language = utils.mdFixLang(newManga.language)
                 newManga.languages = utils.mdFixLang(newManga.languages)
                 await storedb.replace({oldManga, newManga}) 
