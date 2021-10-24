@@ -35,8 +35,8 @@ export default class GistStorage extends Storage {
   async ax(method, path, data) {
     let results;
     await this.wait()
-    if(method = 'get') results = await this.axios[method](path).catch(this.handleSyncError)
-    else results = await this.axios[method](path, data).catch(this.handleSyncError)
+    if(method = 'get') results = await this.axios.get(path).catch(this.handleSyncError)
+    if(method = 'patch') results = await this.axios.patch(path, data).catch(this.handleSyncError)
     return results
   }
 
