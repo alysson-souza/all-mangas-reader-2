@@ -389,7 +389,7 @@ To test the extension while developing on Firefox for Android, install Firefox o
 ### Working on multi-language sites implementation requirements
 
 Some sites return language strings which aren't supported by AMR such as `es-la` or `pt-br`  
-When Creating or editing a site implementation we need to make sure they return language(s) from this list [list of compatible languages](LANGUAGES.md)  
+When Creating or editing a site implementation we need to make sure they return language(s) from the [list of compatible languages](LANGUAGES.md)  
 
 If the site returns *"wrong"* languages you will need to convert them:  
 
