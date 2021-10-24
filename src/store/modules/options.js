@@ -195,6 +195,10 @@ const actions = {
                         storedVal = parseInt(storedVal); // all non Json and non String values are considered Integers --> this is right for now
                     }
                 }
+                // do not display broken categories
+                if(key === 'categoriesStates') {
+                    storedVal = storedVal.filter(cat => typeof cat.name !== 'undefined')
+                }
                 commit('setOption', { key: key, value: storedVal });
             }
         }
