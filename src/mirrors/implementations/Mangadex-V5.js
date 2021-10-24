@@ -94,7 +94,7 @@ if (typeof registerMangaObject === 'function') {
                     // Format data to be consumed
                     // .map(data => data.data)
                     .forEach(chap => {
-                        const lang = chap.attributes.translatedLanguage
+                        const lang = utils.mdFixLang(chap.attributes.translatedLanguage)
                         const attributes = chap.attributes
                         if(!res[lang]) res[lang] = []
                         const titleParts = []
@@ -136,7 +136,7 @@ if (typeof registerMangaObject === 'function') {
             res.name = mangaInfo.title
             res.currentMangaURL = mangaInfo.url
             res.currentChapterURL = curUrl.split('/').slice(0, 5).join('/')
-            res.language = chapData.attributes.translatedLanguage;
+            res.language = utils.mdFixLang(chapData.attributes.translatedLanguage);
             return res;
         },
 
