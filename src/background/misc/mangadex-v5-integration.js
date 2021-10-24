@@ -41,7 +41,7 @@ export class Mangadex extends EventEmitter {
 
   async wait(ms) {
     this.requests = this.requests+1
-    const time = this.requests*ms||10
+    const time = this.requests*ms
     return new Promise(resolve => {
       setTimeout(() => {
         this.resetRequests()

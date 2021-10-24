@@ -6,18 +6,19 @@ export default class Storage {
     this.requests = 0
     this.delay = 500
   }
-  async wait() {
-    return new Promise((resolve) => {
-      this.requests = this.requests + 1
+
+  async wait(ms = 150) {
+    this.requests = this.requests+1
+    const time = this.requests*ms
+    return new Promise(resolve => {
       setTimeout(() => {
-        this.decrementReqs()
+        this.resetRequests()
         resolve()
-      }, this.delay*this.requests)
+      }, time)
     })
   }
 
-  decrementReqs() {
-    this.requests = this.requests - 1
-    if(this.requests < 0) this.requests = 0
+  resetRequests() {
+    if(this.requests > 0) this.requests = this.requests - 1
   }
 }
