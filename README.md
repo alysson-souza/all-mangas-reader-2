@@ -412,7 +412,7 @@ If the site returns *"wrong"* languages you will need to convert them:
       return results.join(',')
     }
     ```
-- Call this function in the implementation:
+- Call this function in the implementation when needed:
     ```js
     /** my website impl. */
     // [....]
@@ -424,9 +424,14 @@ If the site returns *"wrong"* languages you will need to convert them:
             /** rest of the code is up to you */
             if(!res[lang]) res[lang] = []
             res[lang] = item.information
-        }
+        })
+        return res
+    },
+    ```
+    ```js
+    /** my website impl. */
         // [ ... ]
-        getInformationsFromCurrentPage: async function(doc, curUrl) {
+    getInformationsFromCurrentPage: async function(doc, curUrl) {
         const info = doSomethingElse(curUrl)
         // [ ... ]
         return {
@@ -435,7 +440,7 @@ If the site returns *"wrong"* languages you will need to convert them:
             currentChapterURL: info.chapter.url
             language: utils.somethingLangFix(info.chapter.lang) //=> Convert lang
         }
-    }
+    },
     ```
 - If you are working on an existing implementation you need to convert existing IndexedDB records:
     - list *"wrong"* languages in `./src/utils.js` with `_` as a prefix
