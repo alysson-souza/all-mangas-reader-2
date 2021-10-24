@@ -33,11 +33,13 @@ class IconHelper {
         if (utils.isFirefoxAndroid()) return
         browser.browserAction.setBadgeText({text: ""+nb});
         if (nb === 0) {
-            //set grey background
-            browser.browserAction.setBadgeBackgroundColor({color:"#aaaaaa"});
+            // white text + grey background
+            if(utils.isFirefox()) browser.browserAction.setBadgeTextColor({color: '#ffffff'})
+            browser.browserAction.setBadgeBackgroundColor({color:"#646464"});
         } else {
-            //set red background
-            browser.browserAction.setBadgeBackgroundColor({color:"red"});
+            // white text + red background (same red as AMR icon)
+            if(utils.isFirefox()) browser.browserAction.setBadgeTextColor({color: '#ffffff'})
+            browser.browserAction.setBadgeBackgroundColor({color:"#bd0000"});
         }
     }
     resetBadge() {

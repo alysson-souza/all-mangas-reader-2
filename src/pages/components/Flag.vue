@@ -4,6 +4,7 @@
             <i
             v-on="on"
             :class='"flag flag-" + country + isBig + isDisabled'
+            @click="toggleLanguageSelection"
             />
         </template>
         <span>{{i18n("language_" + country )}}</span>
@@ -45,6 +46,9 @@ export default {
     },
     methods: {
         i18n: (message, ...args) => i18n(message, ...args),
+        toggleLanguageSelection () {
+            this.$emit('toggleLanguageSelection')
+        }
     }
 }
 </script>
