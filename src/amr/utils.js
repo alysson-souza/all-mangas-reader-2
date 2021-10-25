@@ -379,6 +379,7 @@ export const shouldCheckForUpdate = (mg, options) => {
  */
  export function mdFixLang(langs) {
     const results = []
+    if(typeof langs !== 'string') return '_United-Nations'
     for(const lang of langs.split(',')) {
         switch (lang) {
             case 'pt-br':
