@@ -105,20 +105,19 @@ const actions = {
      * @param {*} param0
      */
     async initMangasFromDB({ commit, dispatch }, fromModule) {
+        await dispatch('mdFixLang')
         await storedb.getMangaList().then(async mangasdb => {
-            // mangadex fix
-            await dispatch('fixLangs', 
-                mangasdb.filter(
-                    mg => mg.mirror === 'MangaDex V5'
-                    && new RegExp(utils.mdFixLangsListPrefix.join('|')).test(mg.key)
-                )
-            )
             await dispatch('updateLanguageCategories')
             commit('setMangas', mangasdb.map(mg => new Manga(mg)));
         })
         if(fromModule) amrUpdater.refreshBadgeAndIcon()
     },
-    async fixLangs({getters, rootState, dispatch}, mgs) {
+    async mdFixLang({getters, rootState, dispatch}) {
+        const mangasdb = await storedb.getMangaList()
+        const mgs = mangasdb.filter(
+            mg => mg.mirror === 'MangaDex V5'
+            && new RegExp(utils.mdFixLangsListPrefix.join('|')).test(mg.key)
+        )
         const temporarySyncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
         const payload = []
         for(const oldManga of mgs) {
@@ -129,7 +128,7 @@ const actions = {
             payload.push({oldManga, newManga})
             await storedb.replace({oldManga, newManga}) 
         }
-        temporarySyncManager.fixLang(payload)
+        await temporarySyncManager.fixLang(payload)
     },
     /**
      * Initialise syncManager
