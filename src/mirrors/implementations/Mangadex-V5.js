@@ -78,10 +78,10 @@ if (typeof registerMangaObject === 'function') {
                 )
                 // Create Object representing results
                 const uniq = jsonChapFeed.data./*filter(data => data.result === "ok").*/reduce((acc,o)=>{
-                    if (!acc[o.attributes.chapter + o.attributes.translatedLanguage]) {
-                        acc[o.attributes.chapter + o.attributes.translatedLanguage] = [];
+                    if (!acc[o.attributes.chapter + utils.mdFixLang(o.attributes.translatedLanguage)]) {
+                        acc[o.attributes.chapter + utils.mdFixLang(o.attributes.translatedLanguage)] = [];
                     }
-                    acc[o.attributes.chapter + o.attributes.translatedLanguage].push(o);
+                    acc[o.attributes.chapter + utils.mdFixLang(o.attributes.translatedLanguage)].push(o);
                     return acc;
                 }, {});
                 // When chapter has multiple groups, only keep the oldest entry
