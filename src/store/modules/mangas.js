@@ -118,17 +118,18 @@ const actions = {
         })
         if(fromModule) amrUpdater.refreshBadgeAndIcon()
     },
-    async fixLangs({dispatch}, mgs) {
-        if(!syncManager) await dispatch('initSync')
+    async fixLangs({getters, rootState, dispatch}, mgs) {
+        const temporarySyncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
+        const payload = []
         for(const oldManga of mgs) {
             const newManga = new Manga(oldManga)
             newManga.key = utils.mdFixLangKey(newManga.key)
             newManga.language = utils.mdFixLang(newManga.language)
             newManga.languages = utils.mdFixLang(newManga.languages)
-            await syncManager.deleteManga(oldManga.key)
-            await syncManager.setToRemote(newManga, 'ts')
+            payload.push({oldManga, newManga})
             await storedb.replace({oldManga, newManga}) 
         }
+        temporarySyncManager.fixLang({oldManga, newManga})
     },
     /**
      * Initialise syncManager
