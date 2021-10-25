@@ -339,7 +339,9 @@ To contribute, fork the project and work on opened issues. Once fixed, submit a 
 
 You can submit issues through GitLab issues tool, please submit a test case to reproduce your issue.
 
-**If you are not a developer, you can contribute as a translator** too, to do so, clone the repository locally and work on the `messages.json` file in your language as explained in [this doc](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/i18n/Locale-Specific_Message_reference).
+⚠️ Developers working on sites implementation **MUST** read [this](SITES_REQUIREMENTS.md)  
+
+**If you are not a developer, you can still contribute as a translator** too, to do so, clone the repository locally and work on the `messages.json` file in your language as explained in [this doc](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/i18n/Locale-Specific_Message_reference).
 
 You can also work on the [wiki](https://gitlab.com/all-mangas-reader/all-mangas-reader-2/wikis/) to help us explain to everyone how All Mangas Reader works.
 
@@ -385,6 +387,7 @@ To test the extension while developing on Firefox for Android, install Firefox o
 5. Open Firefox on your phone and open (as an url) `file:///mnt/sdcard/`
 6. Tap the extension file, it will install it !
 7. You can now debug it using Firefox WebIDE and connect to your phone.
+
 ### Dependencies
  - Vue : One of the most popular reactive framework, Vue allows to create great UI
  - Vuex : Reactive store for vue, vuex organizes the data model properly

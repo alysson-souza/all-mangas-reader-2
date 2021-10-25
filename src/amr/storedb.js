@@ -305,6 +305,11 @@ class StoreDB {
                 });
             });   
     }
+    /** replace old with new */
+    async replace({oldManga, newManga}) {
+        await this.deleteManga(oldManga.key)
+        await this.storeManga(newManga)
+    }
     /**
      * Return the stored list of manga (reading list)
      */

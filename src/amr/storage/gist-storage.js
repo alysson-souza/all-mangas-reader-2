@@ -9,6 +9,7 @@ export default class GistStorage extends Storage {
     this.gistSyncGitID = config.gistSyncGitID
     this.gistSyncSecret = config.gistSyncSecret
     this.axios = this.initAxios()
+    this.requests = 0
   }
 
   initAxios() {
@@ -26,16 +27,28 @@ export default class GistStorage extends Storage {
     this.axios = this.initAxios()
   }
 
+  /**
+   * 
+   * @param {String} method 
+   * @param {String} path 
+   */
+  async ax(method, path, data) {
+    let results;
+    await this.wait()
+    if(method = 'get') results = await this.axios.get(path).catch(this.handleSyncError)
+    if(method = 'patch') results = await this.axios.patch(path, data).catch(this.handleSyncError)
+    return results
+  }
+
   async getAll() {
     if(!this.gistSyncGitID || !this.gistSyncSecret) throw new Error('Missing credentials. Skipping update')
     if(!this.gistSyncSecret.startsWith('ghp_')) throw new Error('Missing PAT. Skipping update')
     if(this.gistSyncSecret.length < 2) throw new Error('Missing ID. Skipping update')
-    await this.wait()
-    const request = await this.axios.get(`gists/${this.gistSyncGitID}?cache=${Date.now()}`).catch(this.handleSyncError)
+    const request = await this.ax('get', `gists/${this.gistSyncGitID}?cache=${Date.now()}`).catch(this.handleSyncError)
     const amr = request.data.files['amr.json']
     if(amr) {
       if(amr.truncated) {
-        const content = await this.axios.get(amr.raw_url).catch(this.handleSyncError)
+        const content = await this.ax('get', amr.raw_url).catch(this.handleSyncError)
         return content.data
       } else {
         return JSON.parse(amr.content)
@@ -48,13 +61,13 @@ export default class GistStorage extends Storage {
 
   async init() {
     await this.wait()
-    const request = await this.axios.patch(`gists/${this.gistSyncGitID}`, this.getFileStruct('[]')).catch(this.handleSyncError)
+    const request = await this.ax('patch', `gists/${this.gistSyncGitID}`, this.getFileStruct('[]')).catch(this.handleSyncError)
     return JSON.parse(request.data.files['amr.json'].content)
   }
 
   async saveAll(content) {
     await this.wait()
-    return this.axios.patch(`gists/${this.gistSyncGitID}`, this.getFileStruct(JSON.stringify(content))).catch(this.handleSyncError)
+    return this.ax('patch', `gists/${this.gistSyncGitID}`, this.getFileStruct(JSON.stringify(content))).catch(this.handleSyncError)
   }
 
   handleSyncError(e) {
@@ -70,7 +83,7 @@ export default class GistStorage extends Storage {
     const data = await this.getAll()
     const updates = data.map(manga => manga.key === key ? value : manga)
     await this.wait()
-    this.axios.patch(`gists/${this.gistSyncGitID}`, this.getFileStruct(JSON.stringify(updates)))
+    this.ax('patch', `gists/${this.gistSyncGitID}`, this.getFileStruct(JSON.stringify(updates)))
       .catch(e=> {
         if(e.response.headers['x-ratelimit-remaining'] === "0") {
           const timestamp = parseInt(e.response.headers['x-ratelimit-reset']) * 1000

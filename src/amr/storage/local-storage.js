@@ -10,6 +10,7 @@ class LocalStorage {
     constructor(indexedDb, dispatch) {
         this.indexedDb = indexedDb
         this.dispatch = dispatch
+        this.requests = 0
     }
 
     async loadMangaList() {
@@ -19,10 +20,14 @@ class LocalStorage {
         return this.dispatch(key, payload, true)
     }
     syncLocal(manga) {
-        if(manga.delete === syncUtils.DELETED) {
-            return this.dispatch('deleteManga', { key: manga.key }, true)
-        }
-        return this.dispatch('readManga', { ...manga, fromSite: 1, isSync: 1})
+        this.requests = this.requests + 1
+        setTimeout(() => {
+            this.requests = this.requests - 1
+            if(manga.delete === syncUtils.DELETED) {
+                return this.dispatch('deleteManga', { key: manga.key }, true)
+            }
+            return this.dispatch('readManga', { ...manga, fromSite: 1, isSync: 1})
+        }, this.requests*500);
     }
 }
 

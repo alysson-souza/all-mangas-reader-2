@@ -396,9 +396,6 @@ class SyncManager {
                     remoteManga.listChaps = []
                 }
             }
-
-
-
             // save changes
             if(storage.isdb) {
                 storage.set(remoteManga)
@@ -415,6 +412,40 @@ class SyncManager {
                     }
                 })
             }
+    }
+    /**
+     * 
+     * @param {{oldManga: Manga, newManga: Manga}[]} payload 
+     */
+    async fixLang(payload) {
+        for(const storage of this.remoteStorages) {
+            const remoteList = await storage.getAll()
+            /** Delete mangas with "wrong" keys */
+            const updated = remoteList
+                .map(mg => {
+                    const find = payload.find(p => p.oldManga.key === mg.key)
+                    if(!find) return mg
+                    return {
+                        key: mg.key,
+                        ts: Math.round(Date.now() / 1000),
+                        deleted: syncUtils.DELETED
+                    }
+                })
+                /** Re-add them with the "fixed" key */
+                .concat(payload.map(p => p.newManga));
+            
+            storage.saveAll(updated).catch(e => {
+                if(e instanceof ThrottleError) {
+                    storage.retryDate = e.getRetryAfterDate()
+                    const later = storage.retryDate.getTime() - Date.now() + 2000
+                    setTimeout(() => {
+                        this.fixLang(payload)
+                    }, later)
+                } else if(e instanceof Error) {
+                    debug(`[SYNC-${storage.constructor.name.replace('Storage', '')}] ${e.message}`)
+                }
+            })
+        }
     }
 }
 

@@ -104,18 +104,39 @@ const actions = {
      * Retrieve manga list from DB, initialize the store
      * @param {*} param0
      */
-    async initMangasFromDB({ commit }, fromModule) {
-        await storedb.getMangaList().then(mangasdb => {
+    async initMangasFromDB({ commit, dispatch }, fromModule) {
+        await dispatch('mdFixLang')
+        await storedb.getMangaList().then(async mangasdb => {
+            await dispatch('updateLanguageCategories')
             commit('setMangas', mangasdb.map(mg => new Manga(mg)));
         })
         if(fromModule) amrUpdater.refreshBadgeAndIcon()
+    },
+    async mdFixLang({getters, rootState, dispatch}) {
+        const mangasdb = await storedb.getMangaList()
+        const mgs = mangasdb.filter(
+            mg => mg.mirror === 'MangaDex V5'
+            && new RegExp(utils.mdFixLangsListPrefix.join('|')).test(mg.key)
+        )
+        if(!mgs.length) return
+        const temporarySyncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
+        const payload = []
+        for(const oldManga of mgs) {
+            const newManga = new Manga(oldManga)
+            newManga.key = utils.mdFixLangKey(newManga.key)
+            newManga.language = utils.mdFixLang(newManga.language)
+            newManga.languages = utils.mdFixLang(newManga.languages)
+            payload.push({oldManga, newManga})
+            await storedb.replace({oldManga, newManga}) 
+        }
+        await temporarySyncManager.fixLang(payload)
     },
     /**
      * Initialise syncManager
      * @param {*} param0 
      */
     async initSync({commit, rootState, dispatch, getters}) {
-        // starting manager
+        if(syncManager) syncManager.stop()
         syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
         syncManager.start()
     },

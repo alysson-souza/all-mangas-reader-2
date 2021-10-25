@@ -86,6 +86,7 @@ function writeWebsites(allAbstracts, allMirrors) {
         }`
     }
     let content = `
+    const utils = require('../amr/utils')
     const loadMirrors = function(current) {
         ${allAbstracts.map(conditionalExec).join("\n;")}
         ${allMirrors.map(conditionalExec).join("\n;")}
