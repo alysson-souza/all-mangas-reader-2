@@ -419,13 +419,9 @@ class SyncManager {
      */
     async fixLang(payload) {
         for(const storage of this.remoteStorages) {
-            /**
-             * 1. Get all mangas from remote
-             * 2. Mark mangas with "wrong" keys as deleted
-             * 3. Add mangas with "fixed" keys
-             */
-            const remoteList = await storage
-                .getAll()
+            const remoteList = await storage.getAll()
+            /** Delete mangas with "wrong" keys */
+            const updated = remoteList
                 .map(mg => {
                     const find = payload.find(p => p.oldManga.key === mg.key)
                     if(!find) return mg
@@ -435,9 +431,10 @@ class SyncManager {
                         deleted: syncUtils.DELETED
                     }
                 })
+                /** Re-add them with the "fixed" key */
                 .concat(payload.map(p => p.newManga));
             
-            storage.saveAll(remoteList).catch(e => {
+            storage.saveAll(updated).catch(e => {
                 if(e instanceof ThrottleError) {
                     storage.retryDate = e.getRetryAfterDate()
                     const later = storage.retryDate.getTime() - Date.now() + 2000
