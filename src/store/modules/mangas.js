@@ -129,7 +129,7 @@ const actions = {
             payload.push({oldManga, newManga})
             await storedb.replace({oldManga, newManga}) 
         }
-        temporarySyncManager.fixLang({oldManga, newManga})
+        temporarySyncManager.fixLang(payload)
     },
     /**
      * Initialise syncManager
