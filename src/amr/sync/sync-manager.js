@@ -424,7 +424,7 @@ class SyncManager {
              * 2. Mark mangas with "wrong" keys as deleted
              * 3. Add mangas with "fixed" keys
              */
-            const remoteList = storage
+            const remoteList = await storage
                 .getAll()
                 .map(mg => {
                     const find = payload.find(p => p.oldManga.key === mg.key)
