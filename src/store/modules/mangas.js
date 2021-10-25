@@ -118,6 +118,7 @@ const actions = {
             mg => mg.mirror === 'MangaDex V5'
             && new RegExp(utils.mdFixLangsListPrefix.join('|')).test(mg.key)
         )
+        if(!mgs.length) return
         const temporarySyncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
         const payload = []
         for(const oldManga of mgs) {
