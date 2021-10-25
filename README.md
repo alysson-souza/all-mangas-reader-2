@@ -339,7 +339,9 @@ To contribute, fork the project and work on opened issues. Once fixed, submit a 
 
 You can submit issues through GitLab issues tool, please submit a test case to reproduce your issue.
 
-**If you are not a developer, you can contribute as a translator** too, to do so, clone the repository locally and work on the `messages.json` file in your language as explained in [this doc](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/i18n/Locale-Specific_Message_reference).
+⚠️ Developers working on sites implementation **MUST** read [this](SITES_REQUIREMENTS.md)  
+
+**If you are not a developer, you can still contribute as a translator** too, to do so, clone the repository locally and work on the `messages.json` file in your language as explained in [this doc](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/i18n/Locale-Specific_Message_reference).
 
 You can also work on the [wiki](https://gitlab.com/all-mangas-reader/all-mangas-reader-2/wikis/) to help us explain to everyone how All Mangas Reader works.
 
@@ -386,82 +388,6 @@ To test the extension while developing on Firefox for Android, install Firefox o
 6. Tap the extension file, it will install it !
 7. You can now debug it using Firefox WebIDE and connect to your phone.
 
-### Working on multi-language sites implementation requirements
-
-Some sites return language strings which aren't supported by AMR such as `es-la` or `pt-br`  
-When Creating or editing a site implementation we need to make sure they return language(s) from the [list of compatible languages](LANGUAGES.md)  
-
-If the site returns *"wrong"* languages you will need to convert them:  
-
-- Create a convert function in `./src/utils.js`
-    ```js
-    somethingLangFix(lang) {
-      const results = []
-      for(const lang of langs.split(',')) {
-        switch(lang) {
-            case 'es-la':
-                results.push('mx') //=> mexican flag
-                break;
-            case 'pt-br':
-                results.push('br') //=> brazilian flag
-                break;
-            default:
-                results.push(lang)
-                break;
-      }
-      return results.join(',')
-    }
-    ```
-- Call this function in the implementation when needed:
-    ```js
-    /** my website impl. */
-    // [....]
-    getListChaps: async function(urlManga) {
-        const res = []  
-        const data = doSomething(urlManga)
-        data.forEach(item => {
-            const lang = utils.somethingLangFix(item.lang) //=> Convert lang
-            /** rest of the code is up to you */
-            if(!res[lang]) res[lang] = []
-            res[lang] = item.information
-        })
-        return res
-    },
-    ```
-    ```js
-    /** my website impl. */
-        // [ ... ]
-    getInformationsFromCurrentPage: async function(doc, curUrl) {
-        const info = doSomethingElse(curUrl)
-        // [ ... ]
-        return {
-            name: info.name,
-            currentMangaURL: info.url,
-            currentChapterURL: info.chapter.url
-            language: utils.somethingLangFix(info.chapter.lang) //=> Convert lang
-        }
-    },
-    ```
-- If you are working on an existing implementation you need to convert existing IndexedDB records:
-    - list *"wrong"* languages in `./src/utils.js` with `_` as a prefix
-        ```js
-        const somethingFixLangsList = ['es-la', 'ja']
-        export const somethingFixLangsListPrefix = somethingFixLangsList.map(e => '_'+e)
-        ```
-    - edit initMangasFromDB in `./src/store/modules/mangas.js`
-        ```js
-        // [ ... ]
-        await storedb.getMangaList().then(async mangasdb => {
-        // [ ... ] existing code
-        //  if there's already a fixLang dispatch don't be bothered, created a new one
-        await dispatch('fixLangs', 
-            mangasdb.filter(
-                mg => mg.mirror === 'something'
-                && new RegExp(utils.somethingFixLangsListPrefix .join('|')).test(mg.key)
-            )
-            )
-        })
-        ```
 ### Dependencies
  - Vue : One of the most popular reactive framework, Vue allows to create great UI
  - Vuex : Reactive store for vue, vuex organizes the data model properly
