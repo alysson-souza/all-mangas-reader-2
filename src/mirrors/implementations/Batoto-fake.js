@@ -9,7 +9,7 @@ if (typeof registerMangaObject === 'function') {
 
         getMangaList : async function (search, url = null) {
             let doc
-            if (url) 
+            if (!url) 
                 doc = await amr.loadPage(this.home + '/search?word=' + search, { nocache: true, preventimages: true })
             else
                 doc = await amr.loadPage(url, { nocache: true, preventimages: true })
