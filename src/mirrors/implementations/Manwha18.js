@@ -1,21 +1,21 @@
 if (typeof registerMangaObject === 'function') {
 	registerMangaObject({
         mirrorName: "Manwha 18",
-        canListFullMangas: true,
+        canListFullMangas: false,
         mirrorIcon: "manwha18.png",
         languages: "en",
         domains: ["manhwa18.com"],
         home: "https://manhwa18.com/",
-        chapter_url: /\/read-.*chapter-/g,
+        chapter_url: /\/chap-.*/g,
         
         getMangaList: async function (search) {
-            let doc = await amr.loadPage(this.home + "manga-list.html?listType=allABC", { nocache: true, preventimages: true })
+            let doc = await amr.loadPage(this.home + "search?q=" + search, { nocache: true, preventimages: true })
             let res = []
             let self = this
-            $(`span[data-toggle="mangapop"] a[href*="manga-"]`, doc).each(function(ind) {
+            $(`.series-title a`, doc).each(function(ind) {
                 res.push([
                     $(this).text(),
-                    self.home + $(this).attr("href")
+                    $(this).attr("href")
                 ])
             })
             return res
@@ -26,28 +26,30 @@ if (typeof registerMangaObject === 'function') {
             let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
             let res = []
             let self = this
-            $(`div#tab-chapper a.chapter`, doc).each(function (index) {
+            $(`ul.list-chapters a`, doc).each(function (index) {
                 res.push([
-                    $(this).text(),
-                    self.home + $(this).attr("href")
+                    $('.chapter-name', this).text().trim(),
+                    $(this).attr("href")
                 ])
             })
             return res
         },
     
         getInformationsFromCurrentPage: async function (doc, curUrl) {
-            let link = $("a.navbar-brand.manga-name", doc)
+            let link = $($("ul.breadcrumb li a", doc)[2])
+            let titlePage = await amr.loadPage(link.attr('href'))
+
 			return {
-				"name": link.text(),
-				"currentMangaURL": this.home + link.attr('href'),
+				"name": $('.series-name', titlePage).text(),
+				"currentMangaURL": link.attr('href'),
 				"currentChapterURL": curUrl
 			}
         },
     
         getListImages: async function (doc, curUrl) {
             let res = []
-            $(`div.chapter-content img`, doc).each(function() {
-                res.push($(this).attr('src'))
+            $(`div#chapter-content img`, doc).each(function() {
+                res.push($(this).attr('data-src'))
             })
 			return res
         },
@@ -57,7 +59,7 @@ if (typeof registerMangaObject === 'function') {
         },
     
         isCurrentPageAChapterPage: function (doc, curUrl) {
-            return $(`div.chapter-content img`, doc).length > 0
+            return $(`div#chapter-content img`, doc).length > 0
         }
     });
 }
