@@ -14,6 +14,7 @@ window['GenkanAbs'] = function(options) {
         images_end: ';window.nextChapter',
         images_include_base_url: true,
         chapter_page: 'h6.page-section-title',
+        chapter_information_title_url_parts: 5,
     };
     this.options = Object.assign(this.default_options, options);
     this.mirrorName = 'GenkanAbs';
@@ -64,7 +65,7 @@ window['GenkanAbs'] = function(options) {
             name: $(this.options.chapter_information_selector, doc)
                 .text()
                 .trim(),
-            currentMangaURL: parts.slice(0, 5).join('/'),
+            currentMangaURL: parts.slice(0, this.options.chapter_information_title_url_parts).join('/'),
             currentChapterURL: curUrl,
         };
     };
