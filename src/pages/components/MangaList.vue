@@ -4,7 +4,7 @@
     <v-row no-gutters>
       <v-col cols="12" class="d-flex align-center filter-container">
         <v-card class="hover-card">
-          <Categories v-on="on" :categories="categories" :static-cats="false" :delegate-delete="false" />
+          <Categories :categories="categories" :static-cats="false" :delegate-delete="false" />
         </v-card>
         <!-- Filters -->
         <v-card class="hover-card d-flex">
@@ -63,7 +63,7 @@
             </template>
             <v-card>
               <v-row no-gutters class="pa-1">
-                <v-col cols="10">
+                <v-col cols="8">
                   <v-text-field
                       v-model="searchText"
                       prepend-icon="mdi-magnify"
@@ -76,6 +76,9 @@
                       clearable
                       autofocus
                     ></v-text-field>
+                </v-col>
+                <v-col cols="2">
+                  <v-checkbox v-model="searchIncludeAll" label="Show hidden series"></v-checkbox>
                 </v-col>
                 <v-col cols="2">
                   <v-btn
@@ -142,97 +145,44 @@
             <span>{{i18n("list_global_delete")}}</span>
           </v-tooltip>
         </v-card>
+        <v-card>
+          <v-tooltip top content-class="icon-ttip">
+            <template v-slot:activator="{ on }">
+              <v-icon v-on="on" @click="view = 'table'" :class="['amr-filter', {activated: view === 'table'}]">mdi-flash-auto</v-icon>
+            </template>
+            <span>Data Table</span>
+          </v-tooltip>
+          <v-tooltip top content-class="icon-ttip">
+            <template v-slot:activator="{ on }">
+              <v-icon v-on="on" @click="view = 'infinite-new'" :class="['amr-filter', {activated: view === 'infinite-new'}]">mdi-flash-auto</v-icon>
+            </template>
+            <span>Simple List</span>
+          </v-tooltip>          
+        </v-card>
       </v-col>
     </v-row>
     <br />
     <!-- Manga List -->
-    <v-data-table
-      :items="groupedMangas"
-      :loading="!loaded"
-      :headers="[{value: 'name'}]"
-      :page.sync="pagination.currentPage"
-      :items-per-page="itemsPerPage"
-      hide-default-header
-      hide-default-footer
-      :search="searchText"
-      @page-count="pagination.pageCount = $event"
-    >
-      <template v-if="pageNavigationPosition == 'top'" v-slot:top>
-        <v-row class="mx-2">
-          <v-col cols="3">
-            <v-select dense outlined :items="pagination.pageOptions" v-model="itemsPerPage" :label="i18n('list_page_label')"></v-select>
-          </v-col>
-          <v-col>
-            <v-pagination :total-visible="$isPopup ? 5 : 10" v-model="pagination.currentPage" :length="pagination.pageCount"></v-pagination>
-          </v-col>
-          <v-col cols="1">
-            <v-tooltip top content-class="icon-ttip">
-            <template v-slot:activator="{ on }">
-              <v-btn color="blue" icon x-large @click="moveNavigation()" v-on="on">
-                <v-icon>mdi-arrow-down-box</v-icon>
-              </v-btn>
-            </template>
-            <span>{{i18n("list_move_navigation")}}</span>
-          </v-tooltip>
-          </v-col>
-        </v-row>
-      </template>
-      <template v-if="pageNavigationPosition == 'bottom'" v-slot:footer>
-        <v-row class="mx-2 pt-5">
-          <v-col cols="3">
-            <v-select dense outlined :items="pagination.pageOptions" v-model="itemsPerPage" :label="i18n('list_page_label')"></v-select>
-          </v-col>
-          <v-col>
-            <v-pagination :total-visible="$isPopup ? 5 : 10" v-model="pagination.currentPage" :length="pagination.pageCount"></v-pagination>
-          </v-col>
-          <v-col cols="1">
-            <v-tooltip top content-class="icon-ttip">
-            <template v-slot:activator="{ on }">
-              <v-btn color="blue" icon x-large @click="moveNavigation()" v-on="on">
-                <v-icon>mdi-arrow-up-box</v-icon>
-              </v-btn>
-            </template>
-            <span>{{i18n("list_move_navigation")}}</span>
-          </v-tooltip>
-          </v-col>
-        </v-row>
-      </template>
-      <!-- Loading progress bar -->
-      <template v-slot:progress>
-        <v-progress-linear
-          color="purple"
-          :height="10"
-          indeterminate
-        ></v-progress-linear>
-      </template>
-      <!-- Table Body, manga entries -->
-      <template v-slot:item="{item, index}">
-        <tr class="">
-          <td>
-            <MangaGroup
-              :group="item"
-              :group-index="index"
-              @search-request="propagateSR"
-              @rename-manga="renameManga"
-            />
-          </td>
-        </tr>
-      </template>
-      <template v-slot:no-data>
-        <div v-if="allMangas.length > 0">
-          <p v-html="i18n('list_no_manga_catstate_message')"></p>
-        </div>
-        <div v-else>
-          <p v-html="convertIcons(i18n('list_no_manga_message'))"></p>
-          <p>
-            <a @click.prevent="importSamples()">{{ i18n("list_import_samples")}}</a>
-          </p>
-        </div>
-      </template>
-      <template v-slot:no-results>
-        <p v-html="i18n('list_no_manga_search_message')"></p>
-      </template>
-    </v-data-table>
+    
+    
+    <v-card v-if="view == 'table'">
+      <DataTableList
+        :groups="groupedMangas"
+        @search-request="propagateSR"
+        @rename-manga="renameManga"
+        :loaded="loaded"
+        :searchText="searchText"
+      />
+    </v-card>
+
+    <v-card v-if="view == 'infinite-new'">
+      <SimpleList 
+        :groups="groupedMangas"
+        @search-request="propagateSR"
+        @rename-manga="renameManga"
+      />
+    </v-card>
+
     <v-dialog v-model="showDialog" max-width="500px">
       <v-card>
         <v-card-title>
@@ -273,16 +223,19 @@
 <script>
 import i18n from "../../amr/i18n";
 import { mapGetters } from "vuex";
-import MangaGroup from "./MangaGroup";
 import Categories from "./Categories";
 import MultiMangaAction from './MultiMangaAction';
+import SimpleList from './list-simple/SimpleList'
+import DataTableList from './list-data-table/DataTableList.vue'
 import browser from "webextension-polyfill";
 import * as utilsamr from '../../amr/utils';
 import * as utils from '../utils';
 
 const default_sort = (a, b) => {
-    let af = utilsamr.formatMgName((a.displayName && a.displayName !== '') ? a.displayName : a.name),
-      bf = utilsamr.formatMgName((b.displayName && b.displayName !== '') ? b.displayName : b.name)
+    // let af = utilsamr.formatMgName((a.displayName && a.displayName !== '') ? a.displayName : a.name),
+    //   bf = utilsamr.formatMgName((b.displayName && b.displayName !== '') ? b.displayName : b.name)
+    let af = utilsamr.formatMgName(a.name),
+      bf = utilsamr.formatMgName(b.name)
     let res = af === undefined ? -1 : af.localeCompare(bf)
     if (res === 0) {
         res = a.mirror === undefined ? -1 : a.mirror.localeCompare(b.mirror)
@@ -327,22 +280,13 @@ export default {
       selectable: false, // Toggle Manga List select behaviour
       dialogAction: () => {self.showDialog = false}, // action to take on yes in dialog
       searchText: "",
+      view: 'infinite-new',
+      // view: 'table',
       mirrorSelection: "All",
       selectedManga: [],
-      pagination: {
-        pageOptions: [
-          5,
-          25,
-          50,
-          100
-        ],
-        currentPage: 1,
-        pageCount: 0
-      },
-      itemsPerPage: this.$store.state.options.perPageMangas,
-      pageNavigationPosition: this.$store.state.options.pageNavigationPosition,
       alpha_asc_desc: this.$store.state.options.alpha_asc_desc, // Toggle Manga List select behaviour
       searchMenu:false,
+      searchIncludeAll: false, // Include hidden mangas in text search
     };
   },
   watch: {
@@ -388,14 +332,21 @@ export default {
      * Return all visible mangas
      */
     visMangas: function() {
+      let filteredList = this.allMangas
+
       if (this.mirrorSelection != 'All') {
-        return this.allMangas.filter(
+        filteredList = filteredList.filter(
           mg => mg.mirror == this.mirrorSelection
         )
       }
-      return this.allMangas.filter(
-        mg => utils.displayFilterCats(mg, this.options.categoriesStates, this.mirrors.find(mir => mir.mirrorName === mg.mirror))
-      )
+
+      if (!(this.searchIncludeAll && this.searchText !== '')) {
+        filteredList = filteredList.filter(
+          mg => utils.displayFilterCats(mg, this.options.categoriesStates, this.mirrors.find(mir => mir.mirrorName === mg.mirror))
+        )
+      }
+
+      return filteredList
     },
     /**
      * Returns a list of all mirrors that have series
@@ -461,7 +412,7 @@ export default {
     ...mapGetters(["countMangas", "allMangas"])
   },
   name: "MangaList",
-  components: { Categories, MangaGroup, MultiMangaAction },
+  components: { Categories, MultiMangaAction, SimpleList, DataTableList },
   methods: {
     i18n: (message, ...args) => i18n(message, ...args),
     convertIcons: str => utils.convertIcons(str),
@@ -539,16 +490,6 @@ export default {
       return items.sort(function(a, b) {
         return AMR_STORE.getters.options.alpha_asc_desc ? cmp(b,a): cmp(a,b)
       })
-    },
-    moveNavigation: function() {
-      let newDir = ''
-      if (this.pageNavigationPosition == 'top') {
-        newDir = 'bottom'
-      } else {
-        newDir = 'top'
-      }
-      this.pageNavigationPosition = newDir
-      this.$store.dispatch("setOption", { key: 'pageNavigationPosition', value: newDir })
     },
     /**
      * Pull up the dialog for renaming a manga

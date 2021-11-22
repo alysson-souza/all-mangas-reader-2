@@ -429,11 +429,11 @@
 </template>
 
 <script>
-import i18n from "../../amr/i18n";
+import i18n from "../../../amr/i18n";
 import browser from "webextension-polyfill";
-import * as utils from "../utils";
-import * as amrutils from "../../amr/utils";
-import Flag from "./Flag";
+import * as utils from "../../utils";
+import * as amrutils from "../../../amr/utils";
+import Flag from "./../Flag";
 
 export default {
   data() {

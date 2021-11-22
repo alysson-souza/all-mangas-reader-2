@@ -3,7 +3,7 @@
   <div class="mx-3">
     <MangaGroup
       v-for="(group, index) in groups"
-      :key="index"
+      :key="group.key"
       :group="group"
       :group-index="index"
       @search-request="propagateSR"
