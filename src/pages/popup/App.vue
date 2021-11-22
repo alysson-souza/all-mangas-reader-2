@@ -74,8 +74,28 @@
 					<v-toolbar-title>{{i18n("options_title")}}</v-toolbar-title>
 				</v-toolbar>
 				<v-main>
-					<Options v-if="options" />
+					<Options v-show="options" :preOpen="optionsPreOpen" />
 				</v-main>
+			</v-card>
+		</v-dialog>
+		<!-- Mangadex integration dialog -->
+		<v-dialog
+			v-model="mangadex"
+			max-width="500"
+			hide-overlay
+			persistent
+		>
+			<v-card>
+				<v-toolbar max-height="64">
+					<v-toolbar-title>{{i18n("options_mirror_specific_mangadex")}}</v-toolbar-title>
+				</v-toolbar>
+				<v-card-text>
+					<div class="text-h6 pa-10 pb-5">{{ i18n('options_mangadex_integration_expired_text') }}</div>
+				</v-card-text>
+				<v-card-actions class="justify-end">
+					<v-btn text @click="mdDontRemindMe">{{ i18n('options_mangadex_integration_expired_dontremindme') }}</v-btn>
+					<v-btn text color="primary" @click="mdLogin">{{ i18n('options_mangadex_integration_expired_login') }}</v-btn>
+				</v-card-actions>
 			</v-card>
 		</v-dialog>
 		<!-- Search dialog -->
@@ -183,34 +203,57 @@ streamSaver.WritableStream = ponyfill.WritableStream
 export default {
   data() {
     return {
-		title: "All Mangas Reader",
-		options: false,
-		search: false,
-		rpanel: false,
-		tabs: "refresh", // in rpanel, right tabs state
-		toSearch: "", // phrase to search in search panel (used to load search from manga)
-		alertmessage: "", // alert to display at the bottom of the popup
-		tooltipalert: "",
-		trackingDone: false,
-		cookiesDone: false,
+			title: "All Mangas Reader",
+			options: false,
+			search: false,
+			rpanel: false,
+			tabs: "refresh", // in rpanel, right tabs state
+			toSearch: "", // phrase to search in search panel (used to load search from manga)
+			alertmessage: "", // alert to display at the bottom of the popup
+			tooltipalert: "",
+			trackingDone: false,
+			cookiesDone: false,
+			optionsPreOpen: { tab: "general", panel: undefined },
     };
   },
   name: "App",
   components: { MangaList, Options, Search, Timers, ImportExport },
   created() {
-	this.trackingDone = true //this.$store.state.options.allowtrackingdone == 1; // Forced to true to disable this
-	this.cookiesDone = this.$store.state.options.allowcookiesdone == 1;
-	document.title = i18n("page_popup_title");
-    // initialize state for store in popup from background
-    this.$store.dispatch("getStateFromReference", {
-      module: "mirrors",
-      key: "all",
-      mutation: "setMirrors"
+		this.trackingDone = true //this.$store.state.options.allowtrackingdone == 1; // Forced to true to disable this
+		this.cookiesDone = this.$store.state.options.allowcookiesdone == 1;
+		document.title = i18n("page_popup_title");
+		// initialize state for store in popup from background
+		this.$store.dispatch("getStateFromReference", {
+			module: "mirrors",
+			key: "all",
+			mutation: "setMirrors"
 		});
 		if (this.$store.state.options.notifynewversion == 1 && ((localStorage.beta == 1 && localStorage.version != localStorage.latestBetaVersion) ||
 			(localStorage.beta == 0 && localStorage.version != localStorage.latestStableVersion ))) {
 				this.alertmessage = this.i18n("amr_newversion")
 				this.tooltipalert = this.i18n("amr_newversion_long")
+		}
+	},
+	computed: {
+		// initialize mangadex integration options
+		mangadexIntegrationEnable: function() { return this.$store.state.options.mangadexIntegrationEnable },
+		mangadexValidCredentials: function() { return  this.$store.state.options.mangadexValidCredentials },
+		mangadexExpired: function() { return this.$store.state.options.mangadexRefreshExpire < Date.now() ? true : false },
+		mangadexDontRemindMe: function() { return this.$store.state.options.mangadexDontRemindMe },
+
+		mangadex: {
+			get() {
+				return (
+					this.$store.state.options.mangadexIntegrationEnable
+					&& !this.$store.state.options.mangadexDontRemindMe
+					&& !this.options
+					&& 
+						(
+							!this.$store.state.options.mangadexValidCredentials
+							|| this.$store.state.options.mangadexRefreshExpire < Date.now()
+						)
+					)
+			}
 		}
 	},
 	watch: {
@@ -228,6 +271,7 @@ export default {
 			}
 		},
 		openOptions() {
+			this.optionsPreOpen = { tab: "general", panel: undefined}
 			this.options = true;
 			PopupResizer.setHeightToMax();
 		},
@@ -237,6 +281,13 @@ export default {
 		},
 		handleLoaded() {
 			PopupResizer.setHeightToCurrent();
+		},
+		mdLogin() {
+			this.optionsPreOpen = { tab: "mirror", panel: 0 }
+			this.options = true		
+		},
+		async mdDontRemindMe() {
+			await this.$store.dispatch('setOption', {key: 'mangadexDontRemindMe', value: 1})
 		},
 		/**
 		 * Open search panel, if launch trough event search-reaquest, the parameter is the search phrase to search

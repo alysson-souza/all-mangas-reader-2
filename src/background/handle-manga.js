@@ -47,6 +47,8 @@ class HandleManga {
                 utils.debug("Read manga " + message.url);
                 // call store method to update reading list appropriately
                 return window['AMR_STORE'].dispatch('readManga', message);
+            case "initMangasFromDB":
+                return window['AMR_STORE'].dispatch('initMangasFromDB', true)
             case "deleteManga":
                 utils.debug("Delete manga key " + message.key);
                 return window['AMR_STORE'].dispatch('deleteManga', {key: message.key});

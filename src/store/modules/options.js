@@ -122,10 +122,24 @@ const default_options = {
     alpha_asc_desc: false, // Order by name asending/descending
 
     /** Mangadex specific options */
-    mangadexBlockedGroups: '', // Group id's to block chapters from
-    mangadexPreferredGroups: '', // Group id's to prefer chapters from
+    
+
+    /** Mangadex Options */
     mangadexDataSaver: 0, // Use the datasaver option when getting chapter images
-    mangadexImageServer: 'none', // Use the MD@Home network when getting chapter images (not implimented in v2 api yet)
+
+    /** Mangadex Integration Options */
+    mangadexIntegrationEnable: 0, // enable integration
+    mangadexValidCredentials: 0, // watcher for credentials validity
+    mangadexDontRemindMe: 0, // Stop reminding the user that they need to login again
+    mangadexToken: '', // current token
+    mangadexTokenExpire: Date.now(), // current token expiration date
+    mangadexRefresh: '', // refresh token
+    mangadexRefreshExpire: Date.now(), // refresh token expiration date
+    mangadexUpdateReadStatus: 0, // mark as read on mangadex
+    mangadexExportToList: 0, // auto export added manga to MDlist
+    mangadexExportToFollows: 0, // auto export added manga to Follows (removed onces are moved to "dropped")
+    // 
+
 
     /** Komga specific options */
     komgaUrl: 'http://localhost:8080',
@@ -137,8 +151,21 @@ const default_options = {
 }
 
 const jsonOptions = ["categoriesStates", "readlanguages"];
-const stringOptions = ["colornew", "colorread", "colornotfollow", "mangadexBlockedGroups", "mangadexPreferredGroups", "mangadexImageServer", "pageNavigationPosition",
-    "sortOrder", "komgaUrl", "komgaUser", "komgaPassword", "tachideskUrl", "gistSyncSecret", "gistSyncGitID"];
+const stringOptions = [
+    "colornew",
+    "colorread",
+    "colornotfollow",
+    "gistSyncSecret",
+    "gistSyncGitID",
+    "komgaUrl",
+    "komgaUser",
+    "komgaPassword",
+    'mangadexToken',
+    'mangadexRefresh',
+    "pageNavigationPosition",
+    "sortOrder",
+    "tachideskUrl",
+];
 
 /**
  *  initial state of amr options
@@ -168,6 +195,10 @@ const actions = {
                     if (!stringOptions.includes(key)) {
                         storedVal = parseInt(storedVal); // all non Json and non String values are considered Integers --> this is right for now
                     }
+                }
+                // do not display broken categories
+                if(key === 'categoriesStates') {
+                    storedVal = storedVal.filter(cat => typeof cat.name !== 'undefined')
                 }
                 commit('setOption', { key: key, value: storedVal });
             }
@@ -312,15 +343,6 @@ const mutations = {
     setOption(state, { key, value }) {
         if (!key) console.error("Impossible to set option with undefined key; value is " + value);
         else state[key] = value;
-    },
-    /**
-     * Set {key, value} option
-     * @param {*} state
-     * @param {*} obj containing key and value
-     */
-    setMangadexOption(state, { key, value }) {
-        if (!key) console.error("Impossible to set option with undefined key; value is " + value);
-        else state.mangadex[key] = value;
     },
     /**
      * Adds a category in categories states

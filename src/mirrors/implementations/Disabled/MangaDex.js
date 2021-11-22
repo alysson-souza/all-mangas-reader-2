@@ -87,9 +87,6 @@ if (typeof registerMangaObject === 'function') {
             if (amrOptions.mangadexDataSaver) {
                 params.append("saver", "true")
             }
-            if (amrOptions.mangadexImageServer !== 'none') {
-                params.append("server", amrOptions.mangadexImageServer)
-            }
 
             url += params.toString()
 

@@ -17,7 +17,7 @@
     </v-tabs>
     <v-tabs-items v-model="tabs" class="elevation-1">
       <v-tab-item value="general" transition="false">
-        <v-expansion-panels accordion focusable>
+        <v-expansion-panels accordion focusable v-model="panels">
           <v-expansion-panel>
             <!-- AMR aspect -->
             <v-expansion-panel-header><div class="text-h5 blue--text lighten-4">{{ i18n("options_gen_aspect") }}</div></v-expansion-panel-header>
@@ -296,7 +296,7 @@
         </v-expansion-panels>
       </v-tab-item>
       <v-tab-item value="onwebsites" transition="false">
-        <v-expansion-panels accordion focusable>
+        <v-expansion-panels accordion focusable v-model="panels">
           <v-expansion-panel>
             <v-expansion-panel-header><div class="text-h5 blue--text lighten-4">{{ i18n("options_web_chapter_display_mode") }}</div></v-expansion-panel-header>
             <v-expansion-panel-content class="pt-6" color="slight-overlay">
@@ -440,7 +440,7 @@
         </v-expansion-panels>
       </v-tab-item>
       <v-tab-item value="supported" transition="false">
-        <v-expansion-panels accordion focusable>
+        <v-expansion-panels accordion focusable v-model="panels">
           <v-expansion-panel>
             <!-- Languages -->
             <v-expansion-panel-header><div class="text-h5 blue--text lighten-4">{{ i18n("options_sup_languages") }}</div></v-expansion-panel-header>
@@ -533,93 +533,12 @@
         </v-expansion-panels>
       </v-tab-item>
       <v-tab-item value="mirror" transition="false">
-         <v-expansion-panels accordion focusable>
+         <v-expansion-panels accordion focusable v-model="panels">
           <!-- Mangadex Options -->
           <v-expansion-panel>
             <v-expansion-panel-header><div class="text-h5 blue--text lighten-4">{{ i18n("options_mirror_specific_mangadex") }}</div></v-expansion-panel-header>
             <v-expansion-panel-content class="pt-6" color="slight-overlay">
-              <!-- Datasaver option -->
-              <v-checkbox v-model="mangadexDataSaver" @change="setOption('mangadexDataSaver')">
-                <template v-slot:label>
-                  <div>
-                    {{ i18n('options_mangadex_datasaver') }}
-                    <v-tooltip bottom>
-                      <template v-slot:activator="{ on }">
-                        <v-icon v-on="on" color="blue darken-2" class="superscript" small>
-                          mdi-information
-                        </v-icon>
-                      </template>
-                      {{ i18n('options_mangadex_datasaver_info') }}
-                    </v-tooltip>
-                  </div>
-                </template>
-              </v-checkbox>
-              <!-- Image Server option -->
-              <!-- <div class="text-h6">{{i18n('options_mangadex_image_server')}}</div>
-              <div class="text-body-1">
-                <v-container fluid class="opt-container">
-                  <v-row  >
-                    <v-col cols="6" class="sel-title">
-                      {{ i18n("options_mangadex_image_server_label") }} :
-                    </v-col>
-                    <v-col cols="6">
-                      <v-select v-model="mangadexImageServer" :items="mangadex_image_server_values"></v-select>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </div> -->
-              <!-- Blocked Groups - ->
-              <div class="text-h6">{{i18n('options_mangadex_blocked_groups')}}</div>
-              <div class="text-body-1">{{i18n('options_mangadex_blocked_groups_label')}}</div>
-              <v-text-field v-model="arrays.mangadexBlockedGroups.value" dense outlined>
-                <template v-slot:prepend>
-                  <v-tooltip bottom>
-                    <template v-slot:activator="{ on }">
-                      <v-icon v-on="on">mdi-help-circle-outline</v-icon>
-                    </template>
-                    {{i18n('options_numeric')}}
-                  </v-tooltip>
-                </template>
-                <template v-slot:append-outer>
-                  <v-btn rounded @click="addArrayEntry('mangadexBlockedGroups')" disabled>Add (Not Implimented)</v-btn>
-                </template>
-              </v-text-field>
-              <v-card v-if="arrays.mangadexBlockedGroups.array.length">
-                <v-chip
-                  v-for="(group, index) in arrays.mangadexBlockedGroups.array"
-                  :key="index"
-                  close
-                  @click:close="removeArrayEntry('mangadexBlockedGroups', index)"
-                >
-                  {{ group }}
-                </v-chip>
-              </v-card>
-              <!- - Preferred Groups - ->
-              <div class="text-h6">{{i18n('options_mangadex_preferred_groups')}}</div>
-              <div class="text-body-1">{{i18n('options_mangadex_preferred_groups_label')}}</div>
-              <v-text-field v-model="arrays.mangadexPreferredGroups.value" dense outlined>
-                <template v-slot:prepend>
-                  <v-tooltip bottom>
-                    <template v-slot:activator="{ on }">
-                      <v-icon v-on="on">mdi-help-circle-outline</v-icon>
-                    </template>
-                    {{i18n('options_numeric')}}
-                  </v-tooltip>
-                </template>
-                <template v-slot:append-outer>
-                  <v-btn rounded @click="addArrayEntry('mangadexPreferredGroups')" disabled>Add (Not Implimented)</v-btn>
-                </template>
-              </v-text-field>
-              <v-card v-if="arrays.mangadexPreferredGroups.array.length">
-                <v-chip
-                  v-for="(group, index) in arrays.mangadexPreferredGroups.array"
-                  :key="index"
-                  close
-                  @click:close="removeArrayEntry('mangadexPreferredGroups', index)"
-                >
-                  {{ group }}
-                </v-chip>
-              </v-card> -->
+              <Mangadex :inStore="mangadexMangasInStore" />
             </v-expansion-panel-content>
           </v-expansion-panel>
           <!-- Komga Options -->
@@ -653,6 +572,7 @@ import i18n from "../../amr/i18n";
 import browser from "webextension-polyfill";
 import amrUpdater from "../../amr/amr-updater";
 import Flag from "./Flag";
+import Mangadex from './Options.Mangadex.vue'
 import * as amrutils from "../../amr/utils";
 import * as utils from "../utils";
 import { THINSCAN } from '../../amr/options';
@@ -694,20 +614,25 @@ const converters = {
       "gistSyncEnabled",
       "gistDebugEnabled",
       "searchOpenSeries",
-      "mangadexDataSaver",
       "webtoonDefault",
       "alternateColors",
       "invertKeys",
-      "smoothNavigation"
+      "smoothNavigation",
     ]
   }
 };
 
 export default {
+  props: {
+    preOpen: {
+      default: () => { return { tab: "general", panel: undefined } },
+    },
+  },
   data() {
     // default options
     let res = {
-      tabs: 'general',
+      tabs: this.preOpen.tab,
+      panels: this.preOpen.panel,
       colors: [
         "red#l3",
         "red",
@@ -824,18 +749,6 @@ export default {
     // add all options properties in data model; this properties are the right one in store because synchronization with background has been called by encapsuler (popup.js / other) before initializing vue
     res = Object.assign(res, this.$store.state.options);
 
-    // Create array for these values so they can be added as chips
-    res.arrays = {
-      mangadexBlockedGroups: {
-        array: this.$store.state.options.mangadexBlockedGroups.length ? this.$store.state.options.mangadexBlockedGroups.split(',') : [],
-        value: ""
-      },
-      mangadexPreferredGroups: {
-        array: this.$store.state.options.mangadexPreferredGroups.length ? this.$store.state.options.mangadexPreferredGroups.split(',') : [],
-        value: ""
-      }
-    }
-
     // convert values
     Object.keys(converters).forEach(key => {
       for (let prop of converters[key].properties) {
@@ -844,7 +757,7 @@ export default {
     });
     return res;
   },
-  components: {Flag},
+  components: {Flag, Mangadex},
   computed: {
       supportedWebsites() {
           return this.$store.state.mirrors.all.filter(m => !m.disabled)
@@ -867,7 +780,8 @@ export default {
                   languages: el
               }
           })
-      }
+      },
+
   },
   watch: {
     /**
@@ -883,9 +797,6 @@ export default {
     waitbetweenupdates: function(n, o) {
         this.setOption("waitbetweenupdates");
     },
-    mangadexImageServer: function(n, o) {
-        this.setOption("mangadexImageServer");
-    },
     displayzero: function() {
       amrUpdater.refreshBadgeAndIcon();
     },
@@ -897,6 +808,9 @@ export default {
         if (nVal && [1, 2].includes(this.resizeMode)) {
             this.resizeMode = 0
         }
+    },
+    tabs: function(n, o) {
+      this.panels = undefined
     }
   },
   methods: {
@@ -1103,7 +1017,7 @@ export default {
     },
     isFirefox() {
       return typeof InstallTrigger !== 'undefined';
-    }
+    },
   }
 };
 </script>
@@ -1167,5 +1081,10 @@ export default {
 .v-icon.v-icon.superscript {
   vertical-align: super;
   line-height: 0;
+}
+</style>
+<style scoped>
+.theme--light.v-data-table>.v-data-table__wrapper>table>tbody>tr:not(:last-child)>td:last-child, .theme--light.v-data-table>.v-data-table__wrapper>table>tbody>tr:not(:last-child)>td:not(.v-data-table__mobile-row), .theme--light.v-data-table>.v-data-table__wrapper>table>tbody>tr:not(:last-child)>th:last-child, .theme--light.v-data-table>.v-data-table__wrapper>table>tbody>tr:not(:last-child)>th:not(.v-data-table__mobile-row), .theme--light.v-data-table>.v-data-table__wrapper>table>thead>tr:last-child>th {
+    border-bottom: thin solid rgba(0,0,0,.12)!important;
 }
 </style>

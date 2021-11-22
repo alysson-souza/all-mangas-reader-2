@@ -3,6 +3,8 @@ import * as zip from "@zip.js/zip.js";
 import saveAs from 'file-saver';
 import mimedb from 'mime-db';
 import axios from 'axios'
+import amrUpdater from '../amr/amr-updater'
+
 zip.configure({
   useWebWorkers: false
 })

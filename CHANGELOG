@@ -1,3 +1,29 @@
+### V2.4.0
+  Mangadex Integration:
+    There is now some back and forth with your mangadex account built into AMR thanks to @JiPai with help from @Robo and @Fahim
+      * You can now login to your mangadex account through the AMR options page (Note: We DO NOT save your credentials!!!)
+      * Periodic logins are required to keep these features running
+      * This also fixed mangadex not pulling chapters for titles marked 18+
+
+    Features:
+      * Login to your mangadex account through AMR
+      * Mark chapters as read when you read them in AMR
+      * Import your follows from Mangadex into AMR
+      * Export your reading list from AMR into Mangadex follows
+
+  Mirror Fixes:
+    * Batoto - Issue with searching
+    * Manhua Plus - Fixed chapter list not working
+    * Mangapill - Fixed AMR not recognizing chapter pages
+    * ReadManga - URL change (Credit: @nonedark2008)
+    * Manwha18 - Site changed up many things
+    * Reset Scans - Fixed chapter list not working
+    * Manhuas - Fixed chapter list not working
+    * Lynx Scans - URL Format change
+    * Imperfect Comics - Fixed chapter list not working
+    * LHTranslations - Searching not working
+    * Asura Scans - Images not loading
+
 ### V2.3.25
   New Features:
     * There is now a option to store the reading progress for manga that gets reset due to missing chapters in gist (Credit: @robo & @JiPai)

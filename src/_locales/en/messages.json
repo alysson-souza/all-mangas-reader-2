@@ -1649,6 +1649,98 @@
     "message": "Compressed jpeg images for less bandwidth",
     "description": "Option for datasaver toggle on mangadex"
   },
+  "options_mangadex_integration": {
+    "message": "Enable mangadex integration",
+    "description": ""
+  },
+  "options_mangadex_integration_info": {
+    "message": "Synchronise read progression, import list/follows",
+    "description": ""
+  },
+  "options_mangadex_integration_expired_text": {
+    "message": "Your Mangadex connexion has expired!",
+    "description": "Your Mangadex connexion has expired!"
+  },
+  "options_mangadex_integration_expired_dontremindme": {
+    "message": "Don't ask me again",
+    "description": "Don't ask me again"
+  },
+  "options_mangadex_integration_expired_login": {
+    "message": "Login",
+    "description": "login"
+  },
+  "options_mangadex_integration_load": {
+    "message": "Import follows",
+    "description": "button to start the import"
+  },
+  "options_mangadex_integration_reload": {
+    "message": "Reload",
+    "description": "button to restart the import"
+  },
+  "options_mangadex_integration_export_follows": {
+    "message": "Automatically export mangas from All Mangas Reader to your follows",
+    "description": "button to start the import"
+  },
+  "options_mangadex_integration_export": {
+    "message": "Automatically export mangas from All Mangas Reader to an \"MDList\"",
+    "description": "button to start the import"
+  },
+  "options_mangadex_integration_export_done": {
+    "message": "The current list of mangas has been exported!",
+    "description": "button to start the import"
+  },
+  "options_mangadex_integration_markwhendownload": {
+    "message": "Automatically mark chapter as read on Mangadex when reading with All Mangas Reader",
+    "description": "mark as read"
+  },
+  "options_mangadex_integration_load_bylang": {
+    "message": "Import by language",
+    "description": "Title of language table"
+  },
+  "options_mangadex_integration_load_bymanga": {
+    "message": "Choose mangas to import",
+    "description": "Title of language table"
+  },
+  "options_mangadex_integration_wait_import": {
+    "message": "<p>You can't import while AMR is looking for new releases on your list.</p> <p><b>Please retry later</b></p>",
+    "description": "wait dialog when you can't import because AMR is refreshing chapter list"
+  },
+  "options_mangadex_integration_wait_export": {
+    "message": "An export will be performed next time All Mangas Reader updates chapters list.",
+    "description": "wait message when you can't export because AMR is refreshing chapter list"
+  },
+  "options_mangadex_login": {
+    "message": "Your Mangadex username",
+    "description": ""
+  },
+  "options_mangadex_password": {
+    "message": "Your Mangadex password",
+    "description": ""
+  },
+  "options_mangadex_verify_credentials": {
+    "message": "Connect your Mangadex account",
+    "description": ""
+  },
+  "options_mangadex_reset_credentials": {
+    "message": "Disconnect from Mangadex",
+    "description": ""
+  },
+  "options_mangadex_loading_list": {
+    "message": "Loading list: $1 / $2",
+    "description": "loading message from import follows button"
+  },
+  "options_mangadex_loading_customList": {
+    "message": "Loading lists...",
+    "description": "loading message from import follows button"
+  },
+  "options_mangadex_export_customList": {
+    "message": "Exporting: $1 / $2",
+    "description": "loading message from import follows button"
+  },
+  "options_mangadex_loading_mangas": {
+    "message": "Loading mangas: $1 / $2",
+    "description": "loading message from import follows button"
+  },
   "options_mangadex_blocked_groups": {
     "message": "Blocked groups list",
     "description": "Option for blocking groups on mangadex"

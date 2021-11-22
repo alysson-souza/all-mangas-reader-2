@@ -74,14 +74,14 @@ if (typeof registerMangaObject === 'function') {
             for(const [page, emptyVal] of Array(15).entries()) {
                 // fetch data
                 const jsonChapFeed = await amr.loadJson(
-                    `${this.api}/manga/${id}/feed?limit=${this.pageLimit}&order[chapter]=desc&offset=${page * this.pageLimit}`
+                    `${this.api}/manga/${id}/feed?limit=${this.pageLimit}&order[chapter]=desc&offset=${page * this.pageLimit}&contentRating[]=safe&contentRating[]=suggestive&contentRating[]=erotica&contentRating[]=pornographic`
                 )
                 // Create Object representing results
                 const uniq = jsonChapFeed.data./*filter(data => data.result === "ok").*/reduce((acc,o)=>{
-                    if (!acc[o.attributes.chapter + o.attributes.translatedLanguage]) {
-                        acc[o.attributes.chapter + o.attributes.translatedLanguage] = [];
+                    if (!acc[o.attributes.chapter + utils.mdFixLang(o.attributes.translatedLanguage)]) {
+                        acc[o.attributes.chapter + utils.mdFixLang(o.attributes.translatedLanguage)] = [];
                     }
-                    acc[o.attributes.chapter + o.attributes.translatedLanguage].push(o);
+                    acc[o.attributes.chapter + utils.mdFixLang(o.attributes.translatedLanguage)].push(o);
                     return acc;
                 }, {});
                 // When chapter has multiple groups, only keep the oldest entry
@@ -94,7 +94,7 @@ if (typeof registerMangaObject === 'function') {
                     // Format data to be consumed
                     // .map(data => data.data)
                     .forEach(chap => {
-                        const lang = chap.attributes.translatedLanguage
+                        const lang = utils.mdFixLang(chap.attributes.translatedLanguage)
                         const attributes = chap.attributes
                         if(!res[lang]) res[lang] = []
                         const titleParts = []
@@ -136,7 +136,7 @@ if (typeof registerMangaObject === 'function') {
             res.name = mangaInfo.title
             res.currentMangaURL = mangaInfo.url
             res.currentChapterURL = curUrl.split('/').slice(0, 5).join('/')
-            res.language = chapData.attributes.translatedLanguage;
+            res.language = utils.mdFixLang(chapData.attributes.translatedLanguage);
             return res;
         },
 
