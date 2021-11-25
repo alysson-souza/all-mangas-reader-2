@@ -13,7 +13,7 @@ if (typeof registerMangaObject === 'function') {
             chapter_list_ajax: false,
             // chapter_list_ajax_selctor: 'div#manga-chapters-holder',
             // chapter_list_ajax_selctor_type: 'html',
-            chapters_a_sel: 'li.wp-manga-chapter > a'
+            chapters_a_sel: 'div.chapter-link > a'
         },
     });
 }

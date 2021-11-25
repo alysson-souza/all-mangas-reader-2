@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["www.funmanga.com"],
         home: "http://www.funmanga.com",
-        chapter_url: /^\/.*\/[0-9]+\/.+$/g,
+        chapter_url: /^\/.*\/[0-9]+\.?[0-9]*\/.+$/g,
 
         abstract: "FunMangaAbs",
         abstract_options: {
