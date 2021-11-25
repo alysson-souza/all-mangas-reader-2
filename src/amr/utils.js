@@ -51,7 +51,7 @@ export function matchDomain(str, rule) {
 export function currentPageMatch(url) {
     let host = extractHostname(url)
     for (let mir of window['AMR_STORE'].state.mirrors.all) {
-        if (mir.activated && mir.domains) {
+        if (mir.activated && mir.domains && !mir.disabled) {
             let wss = mir.domains;
             for (let u of wss) {
                 if (matchDomain(host, u)) {

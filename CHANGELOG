@@ -1,3 +1,12 @@
+### V2.4.1
+  Bug Fix:
+    * Fixed an issue where disabling a mirror via code would not fully disable it. Causing issues if you disabled the Mangadex V5 mirror
+
+  Mirror Fixes:
+    * Reaper Scans - Chapter list not loading
+    * Martial Scans - Chapter list not loading
+    * Pattern matching for chapter parts on FunManga, MangaInn, and ReadMangaToday
+    
 ### V2.4.0
   Mangadex Integration:
     There is now some back and forth with your mangadex account built into AMR thanks to @JiPai with help from @Robo and @Fahim

@@ -12,6 +12,7 @@ if (typeof registerMangaObject === 'function') {
             search_url: "https://disasterscans.com/",
             img_src: "data-src",
             chapter_list_ajax: true,
+            isekai_chapter_url: true,
         }
     })
 }
