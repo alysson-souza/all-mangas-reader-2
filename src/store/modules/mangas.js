@@ -192,8 +192,8 @@ const actions = {
      * @param {*} manga 
      */
     async findAndUpdateManga({dispatch, commit}, manga) {
-        await storedb.findAndUpdate(manga)
         try {
+            await storedb.findAndUpdate(manga)
             dispatch("setOption", {key: "updated", value: Date.now()});
             dispatch("setOption", {key: "changesSinceSync", value: 1});
         } catch (e) {
