@@ -14,7 +14,7 @@ if (typeof registerMangaObject === 'function') {
             chapters_text_sel: "span.chapternum",
             search_json: false,
             img_sel: `#readerarea img[width!="1px"]`,
-            img_src: 'data-src'
+            img_src: 'src'
         },      
     })
 }
