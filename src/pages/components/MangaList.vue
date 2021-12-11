@@ -206,12 +206,12 @@
         ></v-progress-linear>
       </template>
       <!-- Table Body, manga entries -->
-      <template v-slot:item="{item, index}">
+      <template v-slot:item="{item}">
         <tr class="">
           <td>
             <MangaGroup
               :group="item"
-              :group-index="index"
+              :group-index="item.key"
               @search-request="propagateSR"
               @rename-manga="renameManga"
             />
