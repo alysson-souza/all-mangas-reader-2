@@ -1,3 +1,16 @@
+### V2.4.2
+  Bug Avoidance:
+    * Forced manga list checking status to reset after a period of time if it gets stuck, avoiding issues where your list would only update once after loading
+
+  Bug Fix:
+    * Fixed (hopefully) an issue where group expanded status was being transfered to other series on list updates
+
+  Mirror Fixes:
+    * Asura Scans - Fixed images not loading
+
+  New Mirror:
+    * Alpha Scans (https://alpha-scans.org/)
+    
 ### V2.4.1
   Bug Fix:
     * Fixed an issue where disabling a mirror via code would not fully disable it. Causing issues if you disabled the Mangadex V5 mirror

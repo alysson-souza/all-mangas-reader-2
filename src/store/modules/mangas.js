@@ -192,8 +192,8 @@ const actions = {
      * @param {*} manga 
      */
     async findAndUpdateManga({dispatch, commit}, manga) {
-        await storedb.findAndUpdate(manga)
         try {
+            await storedb.findAndUpdate(manga)
             dispatch("setOption", {key: "updated", value: Date.now()});
             dispatch("setOption", {key: "changesSinceSync", value: 1});
         } catch (e) {
@@ -647,7 +647,9 @@ const actions = {
         }
         dispatch("setOption", {key: "isUpdatingChapterLists", value: 1}); // Set watcher
         debug('Starting chapter lists update')
-        let tsstopspin;
+        let tsstopspin, tsresetupdating;
+
+        tsresetupdating = setTimeout(() => dispatch("setOption", {key: "isUpdatingChapterLists", value: 0}), 1000 * 60 * 10) // Reset this after 10 minutes
         if (rootState.options.refreshspin === 1) {
             // spin the badge
             iconHelper.spinIcon();
@@ -709,6 +711,10 @@ const actions = {
 
         await Promise.all(mirrorTasks2.map(t => t())).catch(debug)
         dispatch("setOption", {key: "isUpdatingChapterLists", value: 0}); // Unset watcher when done
+
+        if (tsresetupdating) {
+            clearTimeout(tsresetupdating)
+        }
         debug('Done updating chapter lists')
         if (rootState.options.refreshspin === 1) {
             //stop the spinning
