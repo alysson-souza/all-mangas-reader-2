@@ -12,12 +12,13 @@ if (typeof registerMangaObject === 'function') {
         abstract_options: {
             search_url: 'https://leviatanscans.com/',
             chapter_list_ajax: true,
-            path_length: 3,
+            path_length: 2,
             sort_chapters: true,
             isekai_chapter_url: true,
             urlProcessor: (url) => {
                 let t = url.split('/')
-                t.splice(3, 1)
+                if (t[3] != 'manga')
+                    t.splice(3, 1)
                 return t.join('/')
             }
         },

@@ -127,7 +127,7 @@ window["Madara"] = function (options) {
     }
 
     this.getInformationsFromCurrentPage = async function (doc, curUrl) {
-        let url = new URL(curUrl);
+        let url = new URL(this.options.urlProcessor(curUrl));
         let path = url.pathname;
         let pathSplitted = path.split('/').filter(p => p != '');
         let mangaPath = pathSplitted.slice(0, this.options.path_length);
@@ -145,7 +145,7 @@ window["Madara"] = function (options) {
         }
         return {
             "name": mgname,
-            "currentMangaURL": this.options.urlProcessor(mangaurl),
+            "currentMangaURL": mangaurl,
             "currentChapterURL": this.options.urlProcessor(this.makeChapterUrl(curUrl))
         };
     }
