@@ -14,7 +14,12 @@ if (typeof registerMangaObject === 'function') {
             chapter_list_ajax: true,
             path_length: 3,
             sort_chapters: true,
-            isekai_chapter_url: true
+            isekai_chapter_url: true,
+            urlProcessor: (url) => {
+                let t = url.split('/')
+                t.splice(3, 1)
+                return t.join('/')
+            }
         },
     });
 }
