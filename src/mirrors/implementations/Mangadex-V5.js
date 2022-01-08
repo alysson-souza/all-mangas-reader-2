@@ -144,16 +144,16 @@ if (typeof registerMangaObject === 'function') {
             const mangadexDataSaver = amr.getOption('mangadexDataSaver')
             const chapterId = curUrl.split('/')[4]
 
-            const chapterJson = await amr.loadJson(`${this.api}/chapter/${chapterId}`)
+            // const chapterJson = await amr.loadJson(`${this.api}/chapter/${chapterId}`)
             const serverInfo = await amr.loadJson(`${this.api}/at-home/server/${chapterId}`)
 
-            if (chapterJson.result !== "ok") {
+            if (serverInfo.result !== "ok") {
                 console.error("error during call url", curUrl)
                 console.log(chapterJson)
                 return [];
             }
 
-            const chapData = chapterJson.data.attributes
+            const chapData = serverInfo.chapter
             
             if(mangadexDataSaver) {
                 const url = `${serverInfo.baseUrl}/data-saver/${chapData.hash}`
