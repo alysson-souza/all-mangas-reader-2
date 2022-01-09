@@ -13,8 +13,9 @@ if (typeof registerMangaObject === 'function') {
             chapters_a_sel: "div.bixbox.bxcl ul li div.eph-num a",
             chapters_text_sel: "span.chapternum",
             search_json: false,
-            img_sel: `#readerarea img[width!="1px"]`,
-            img_src: 'src'
+            img_sel: `#readerarea img[width!="1px"]:not(".asurascans")`,
+            img_src: 'src',
+            flame_scans_fuckery: true
         },      
     })
 }

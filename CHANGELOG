@@ -1,3 +1,10 @@
+### V2.4.3
+  Mirror Fixes:
+    * Leviatan Scans - Fixed the issue with the constantly changing url, series will need to be readded once more then should be fine
+    * Asura Scans - Fixed chapter list for some series and the first image being broken
+    * Batoto - Fixed batoto for non development builds. Sorry for a delay this was impossible to reproduce in development because of permissions
+    * Mangadex - The api was changed to move where images are pulled from
+
 ### V2.4.2
   Bug Avoidance:
     * Forced manga list checking status to reset after a period of time if it gets stuck, avoiding issues where your list would only update once after loading

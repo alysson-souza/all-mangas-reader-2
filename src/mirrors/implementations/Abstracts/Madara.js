@@ -16,6 +16,7 @@ window["Madara"] = function (options) {
         secondary_img_src: "data-src",
         sort_chapters: false,
         isekai_chapter_url: false,
+        urlProcessor: (url) => url,
         doBefore: () => { }
     },
     this.options = Object.assign(this.default_options, options)
@@ -60,7 +61,7 @@ window["Madara"] = function (options) {
         $(this.options.search_a_sel, doc).each(function (index) {
             res[res.length] = [
                 $(this).text(),
-                $(this).attr("href")
+                this.options.urlProcessor($(this).attr("href"))
             ];
         });
         }
@@ -107,7 +108,7 @@ window["Madara"] = function (options) {
             
             res.push([
                 chapterName.trim(),
-                self.makeChapterUrl($(this).attr("href")) // add ?style=list to load chapter in long strip mode, remove it if it already there and add it again,
+                self.options.urlProcessor(self.makeChapterUrl($(this).attr("href"))) // add ?style=list to load chapter in long strip mode, remove it if it already there and add it again,
             ])
         })
 
@@ -126,7 +127,7 @@ window["Madara"] = function (options) {
     }
 
     this.getInformationsFromCurrentPage = async function (doc, curUrl) {
-        let url = new URL(curUrl);
+        let url = new URL(this.options.urlProcessor(curUrl));
         let path = url.pathname;
         let pathSplitted = path.split('/').filter(p => p != '');
         let mangaPath = pathSplitted.slice(0, this.options.path_length);
@@ -145,7 +146,7 @@ window["Madara"] = function (options) {
         return {
             "name": mgname,
             "currentMangaURL": mangaurl,
-            "currentChapterURL": this.makeChapterUrl(curUrl)
+            "currentChapterURL": this.options.urlProcessor(this.makeChapterUrl(curUrl))
         };
     }
 
