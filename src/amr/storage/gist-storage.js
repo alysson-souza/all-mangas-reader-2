@@ -28,15 +28,15 @@ export default class GistStorage extends Storage {
   }
 
   /**
-   * 
-   * @param {String} method 
-   * @param {String} path 
+   * @param {'get' | 'patch'} method
+   * @param {String} path
+   * @param {object} [data]
    */
   async ax(method, path, data) {
     let results;
     await this.wait()
-    if(method = 'get') results = await this.axios.get(path).catch(this.handleSyncError)
-    if(method = 'patch') results = await this.axios.patch(path, data).catch(this.handleSyncError)
+    if (method === 'get') results = await this.axios.get(path).catch(this.handleSyncError)
+    if (method === 'patch') results = await this.axios.patch(path, data).catch(this.handleSyncError)
     return results
   }
 
