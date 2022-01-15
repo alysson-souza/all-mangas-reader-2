@@ -1,5 +1,6 @@
 if (typeof registerMangaObject === 'function') {
 	registerMangaObject({
+        disabled: true,
         mirrorName : "Tappy tappy tap",
         mirrorIcon : "taptaptaptaptap.png",
         languages : "en",

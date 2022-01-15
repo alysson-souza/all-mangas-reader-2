@@ -1,5 +1,6 @@
 if (typeof registerMangaObject === "function") {
     registerMangaObject({
+        disabled: true,
         mirrorName: "Glitchy Comics",
         canListFullMangas: true,
         mirrorIcon: "glitchycomics.png",

@@ -1,17 +1,18 @@
 if (typeof registerMangaObject === 'function') {
     registerMangaObject({
-        mirrorName: "Aloalivn",
-        mirrorIcon: "aloalivn.png",
+        disabled: true,
+        mirrorName: "Vanguard Scans",
+        mirrorIcon: "vanguard.png",
         languages: "en",
-        domains: ["aloalivn.com"],
-        home: "https://aloalivn.com/",
+        domains: ["vanguardbun.com"],
+        home: "https://vanguardbun.com/",
         chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
-        canListFullMangas: false,
+
         abstract: "Madara",
         abstract_options: {
-            search_url: "https://aloalivn.com/",
+            search_url: "https://vanguardbun.com/",
+            search_json: true,
             chapter_list_ajax: true
         }
     })
 }
-
