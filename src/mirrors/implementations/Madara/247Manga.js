@@ -10,7 +10,6 @@ if (typeof registerMangaObject === 'function') {
         abstract: "Madara",
         abstract_options: {
             search_url: "https://247manga.com/",
-            chapter_list_ajax: true
         }
     })
 }
