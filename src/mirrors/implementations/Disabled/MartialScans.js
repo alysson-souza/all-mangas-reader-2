@@ -1,5 +1,6 @@
 if (typeof registerMangaObject === "function") {
     registerMangaObject({
+        disabled: true,
         mirrorName: "Martial Scans",
         canListFullMangas: true,
         mirrorIcon: "martialscans.png",

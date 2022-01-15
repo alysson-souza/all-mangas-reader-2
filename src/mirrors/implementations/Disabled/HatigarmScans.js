@@ -1,5 +1,6 @@
 if (typeof registerMangaObject === 'function') {
     registerMangaObject({
+        disabled: true,
         mirrorName: 'Hatigarm Scans',
         mirrorIcon: 'hatigarmscans.png',
         languages: 'en',

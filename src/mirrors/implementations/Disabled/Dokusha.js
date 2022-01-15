@@ -1,15 +1,16 @@
 if (typeof registerMangaObject === 'function') {
 	registerMangaObject({
-        mirrorName : "World Three",
-        mirrorIcon : "worldthree.png",
+        disabled: true,
+        mirrorName : "Dokusha",
+        mirrorIcon : "dokusha.png",
         languages : "en",
-        domains: ["www.slide.world-three.org"],
-        home: "http://www.world-three.org/",
+        domains: ["dokusha.info"],
+        home: "http://dokusha.info",
         chapter_url: /^\/read\/.+$/g,
 
         abstract: "FoolSlide",
         abstract_options: {
-            base_url: "http://www.slide.world-three.org",
+            base_url: "http://dokusha.info",
             mglist_selector: ".title > a[href*='/series/']"
         }
     })
