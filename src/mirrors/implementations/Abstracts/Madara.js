@@ -57,11 +57,11 @@ window["Madara"] = function (options) {
         // Load search page
         let urlManga = this.options.search_url + "?s=" + search + "&post_type=wp-manga";
         let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
-
+        const self = this
         $(this.options.search_a_sel, doc).each(function (index) {
             res[res.length] = [
                 $(this).text(),
-                this.options.urlProcessor($(this).attr("href"))
+                self.options.urlProcessor($(this).attr("href"))
             ];
         });
         }
