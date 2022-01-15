@@ -3,7 +3,7 @@ if (typeof registerMangaObject === 'function') {
         mirrorName: "ScanFR",
         mirrorIcon: "scanfr.png",
         languages: "fr",
-        domains: ["www.scan-fr.co", "scan-fr.co", "www.scan-fr.cc"],
+        domains: ["scan-fr.cc", "www.scan-fr.cc"],
         home: "https://www.scan-fr.cc",
         chapter_url: /^\/manga\/.*\/.+$/g,
 
