@@ -11,9 +11,9 @@ if (typeof registerMangaObject === 'function') {
         abstract_options: {
             search_url: "https://setsuscans.com/",
             chapter_list_ajax: true,
+            isekai_chapter_url: true,
             chapter_list_ajax_selctor_type: 'html',
             chapter_list_ajax_selctor: '#manga-chapters-holder'
         }
     })
 }
-

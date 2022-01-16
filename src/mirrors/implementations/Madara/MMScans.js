@@ -3,13 +3,13 @@ if (typeof registerMangaObject === 'function') {
         mirrorName: "MM Scans",
         mirrorIcon: "mmscans.png",
         languages: "en",
-        domains: ["mm-scans.com"],
-        home: "https://mm-scans.com/",
+        domains: ["mm-scans.com", "mm-scans.org"],
+        home: "https://mm-scans.org/",
         chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
         canListFullMangas: false,
         abstract: "Madara",
         abstract_options: {
-            search_url: "https://mm-scans.com/",
+            search_url: "https://mm-scans.org/",
             chapter_list_ajax: true
         }
     })

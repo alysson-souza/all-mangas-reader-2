@@ -8,6 +8,7 @@ if (typeof registerMangaObject === 'function') {
         chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
         canListFullMangas: false,
         abstract: "Madara",
+        disabled: true,
         abstract_options: {
             search_url: "https://www.mangastream.cc/"
         }

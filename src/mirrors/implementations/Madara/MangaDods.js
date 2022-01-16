@@ -12,7 +12,8 @@ if (typeof registerMangaObject === 'function') {
             search_url: "https://www.mangadods.com/",
             img_src: "src",
             chapter_list_ajax: false,
-            secondary_img_src: "data-src"
+            secondary_img_src: "data-src",
+            chapters_a_sel: "li.wp-manga-chapter a",
         }
     })
 }

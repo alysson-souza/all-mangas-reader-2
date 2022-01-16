@@ -12,7 +12,7 @@ if (typeof registerMangaObject === 'function') {
             search_url: "https://manhuafast.com/",
             img_src: "src",
             chapter_list_ajax: true,
-            secondary_img_src: "data-full-url"
+            // secondary_img_src: "data-full-url"
         }
     })
 }
