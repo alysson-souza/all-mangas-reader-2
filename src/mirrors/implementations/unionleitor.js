@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         domains: ["unionleitor.top", "unionmangas.top"],
         languages: "br,pt",
         home: "https://unionleitor.top/",
-        chapter_url: /\/leitor\/.*\/.+\/.*/g,
+        chapter_url: /\/leitor\/.*\/.*/g,
 
         getMangaList: async function (search) {
             var urlManga = this.home + "busca"
@@ -23,7 +23,7 @@ if (typeof registerMangaObject === 'function') {
                 let link = $(bloc).find('a:last')
                 if (link) {
                     res.push([
-                        link.text(),
+                        link.text().trim(),
                         link.attr('href')
                     ])
                 }
@@ -36,7 +36,7 @@ if (typeof registerMangaObject === 'function') {
             let res = []
             $('.col-md-8 .capitulos a[href*="/leitor/"]', doc).each(function () {
                 res.push([
-                    $(this).text(),
+                    $(this).text().trim(),
                     $(this).attr('href')
                 ])
             })
@@ -46,7 +46,7 @@ if (typeof registerMangaObject === 'function') {
         getInformationsFromCurrentPage: async function (doc, curUrl) {
             let mga = $('.breadcrumbs div div a:last', doc)
             return {
-                "name": mga.text(),
+                "name": mga.text().trim(),
                 "currentMangaURL": mga.attr("href"),
                 "currentChapterURL": curUrl
             };

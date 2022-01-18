@@ -3,15 +3,15 @@ if (typeof registerMangaObject === 'function') {
         mirrorName: "MangaKawaii",
         mirrorIcon: "mangakawaii.png",
         languages: "fr",
-        domains: ["www.mangakawaii.com"],
-        home: "https://www.mangakawaii.com",
+        domains: ["www.mangakawaii.net"],
+        home: "https://www.mangakawaii.net",
         chapter_url: /\/manga\/.*\/.*\/?.*$/g,
 
         getMangaList: async function(search) {
             let res = [];
             let self = this;
             let resultPage = await amr.loadPage(`${this.home}/search?query=${search}&search_type=manga`, { nocache: true, preventimages: true });
-            $("li.mb-2 a", resultPage).each(function() {
+            $("li h4 a", resultPage).each(function() {
                 res.push([
                     $(this).text(),
                     self.home + $(this).attr('href')
@@ -25,9 +25,9 @@ if (typeof registerMangaObject === 'function') {
             let res = [];
             let self = this;
 
-            let params = doc.innerText.match(/params=(.*)\", true/)[1];
-            let chapters = await amr.loadPage(`${this.home}/arrilot/load-widget?id=2&name=ChapterInfo&params=${params}`);
-            $(".table__chapter a", chapters).each((idx, link) => {
+            // let params = doc.innerText.match(/params=(.*)\", true/)[1];
+            // let chapters = await amr.loadPage(`${this.home}/arrilot/load-widget?id=2&name=ChapterInfo&params=${params}`);
+            $(".table__chapter a", doc).each((idx, link) => {
                 // +1 is here to handle the history.pushstate
                 res.push([
                     $(link).text(),
@@ -39,7 +39,7 @@ if (typeof registerMangaObject === 'function') {
 
         getInformationsFromCurrentPage: async function(doc, curUrl) {
             // we don't use this link because the title can be truncated
-            let serieLink = $("h1 a.mr-3", doc).attr('href');
+            let serieLink = $("h1 a", doc).attr('href');
             let mangaPage = await amr.loadPage(this.home + serieLink, { preventimages: true });
             let mangaTitle = $("h1", mangaPage).text();
             return {
@@ -51,9 +51,15 @@ if (typeof registerMangaObject === 'function') {
 
         getListImages: async function(doc, curUrl) {
             let res = []
-            $('img.img-fluid.lazyload', doc).each(function() {
-                res.push($(this).attr('data-src'))
-            })
+            //image = "https://cdn.mangakawaii.net/uploads/manga/" + oeuvre_slug + "/chapters_" + applocale + "/" + chapter_slug + "/" + pages[e - 1].page_image + "?" + pages[e - 1].page_version
+            let pages = amr.getVariable("pages", doc),
+                oeuvre_slug = amr.getVariable("oeuvre_slug", doc),
+                chapter_slug = amr.getVariable("chapter_slug", doc),
+                applocale = amr.getVariable("applocale", doc)
+
+            for (page of pages) {
+                res.push(`https://cdn.mangakawaii.net/uploads/manga/${oeuvre_slug}/chapters_${applocale}/${chapter_slug}/${page.page_image}?${page.page_version}`)
+            }
             return res
         },
 
@@ -62,7 +68,7 @@ if (typeof registerMangaObject === 'function') {
         },
 
         isCurrentPageAChapterPage: function(doc, curUrl) {
-            return $('img.img-fluid', doc).length > 0;
+            return $('select#page-list', doc).length > 0;
         }
     })
 }

@@ -5,16 +5,16 @@ if (typeof registerMangaObject === 'function') {
         mirrorIcon: "mangallama.png",
         languages: "en",
         domains: ["mangallama.com"],
-        home: "https://mangallama.com/",
-        chapter_url: /readmanga.php\?manga=/g,
+        home: "https://mangallama.com",
+        chapter_url: /\/reader\/.*\/.*/g,
         
         getMangaList: async function (search) {
-            let doc = await amr.loadPage(this.home + "search.php?manga=" + search, { nocache: true, preventimages: true })
+            let doc = await amr.loadPage(this.home + "/search.php?manga=" + search, { nocache: true, preventimages: true })
             let res = []
             let self = this
-            $(`a[href*="manga.php"]`, doc).each(function(ind) {
+            $(`a[href*="/manga/"]`, doc).each(function(ind) {
                 res.push([
-                    $(this).text(),
+                    $(this).text().trim(),
                     self.home + $(this).attr("href")
                 ])
             })
@@ -26,7 +26,7 @@ if (typeof registerMangaObject === 'function') {
             let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
             let res = []
             let self = this
-            $(`div#chapscontainer tbody td a[href*="readmanga.php"]`, doc).each(function (index) {
+            $(`#chapsholder tbody td a[href*="/reader/"]`, doc).each(function (index) {
                 res.push([
                     $(this).text().trim(),
                     self.home + $(this).attr("href")
@@ -36,18 +36,19 @@ if (typeof registerMangaObject === 'function') {
         },
     
         getInformationsFromCurrentPage: async function (doc, curUrl) {
-            let name = $('#titlecontainer', doc).text()
-            name = name.substr(0, name.indexOf('Chapter')).trim()
+            let link = $('#maintitle a', doc)
+            let name = link.text()
+            name = name.substring(0, name.indexOf('Chapter')).trim()
 			return {
 				"name": name,
-				"currentMangaURL": this.home + 'manga.php?manga=' + name.replace(/ /g, '-'),
+				"currentMangaURL": this.home + link.attr('href'),
 				"currentChapterURL": curUrl
 			}
         },
     
         getListImages: async function (doc, curUrl) {
             let res = []
-            $(`#chapcontainer img[width!="1px"]`, doc).each(function() {
+            $(`main img[width!="1px"]`, doc).each(function() {
                 let src = $(this).attr('src') 
                 if (!res.includes(src)) {
                     res.push(src)
@@ -61,7 +62,7 @@ if (typeof registerMangaObject === 'function') {
         },
     
         isCurrentPageAChapterPage: function (doc, curUrl) {
-            return $(`#chapcontainer img`, doc).length > 0
+            return $(`main img[width!="1px"]`, doc).length > 0
         }
     })
 }

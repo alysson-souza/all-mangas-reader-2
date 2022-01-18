@@ -4,8 +4,8 @@ if (typeof registerMangaObject === 'function') {
         mirrorIcon : "zahardtop.png",
         canListFullMangas: true,
         languages : "en",
-        domains: ["zahard.top"],
-        home: "https://zahard.top",
+        domains: ["zahard.xyz"],
+        home: "https://zahard.xyz",
         chapter_url: /^\/manga\/.+\/.*$/g,
 
         getMangaList : async function (search) {

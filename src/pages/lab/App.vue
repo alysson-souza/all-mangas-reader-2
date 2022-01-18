@@ -11,7 +11,7 @@
 		<v-main>
       <v-container fluid>
         <v-form ref="form" @submit.prevent="loadCourse" id="mirrorTests">
-          <div class="headline">Select the mirror to test : </div>
+          <div class="text-h5">Select the mirror to test : </div>
           <v-row >
             <v-col cols="6">
               <v-row >
@@ -47,7 +47,7 @@
           </v-row>
           <v-row  v-if="testsResults.length > 0" class="mt-4">
             <v-col cols="3">
-              <div class="headline">
+              <div class="text-h5">
                   Course of tests
               </div>
             </v-col>
@@ -105,7 +105,7 @@
         scrollable
     >
       <v-card tile>
-        <v-toolbar card dark color="primary">
+        <v-toolbar flat dark color="primary">
           <v-btn icon @click.native="options = false" dark>
             <v-icon>mdi-close</v-icon>
           </v-btn>
@@ -148,7 +148,7 @@ export default {
   },
   computed: {
     mirrors() {
-      return this.$store.state.mirrors.all;
+      return this.$store.state.mirrors.all.filter(m => (m.disabled == undefined || !m.disabled));
     },
     nbtests() {
         return this.tests.length;
