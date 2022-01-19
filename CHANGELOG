@@ -1,3 +1,62 @@
+### V2.4.4
+  Note:
+    This release comes with a major push to disable and fix mirrors credit to @JiPai, @Robo, and @Fahim for putting togeather the list
+    and doing initial investigation work to determine the appropriate list of actions. There are still some mirrors on the list to fix up 
+    but I wanted to get these out now since my long weekend is now over and I am back to work.
+
+  Changes:
+    * Changed the lab used for development to hide disabled mirrors
+
+  Fixes:
+    * Fixed issue with gist sync sending multiple requests at the same time (Credit @kYem)
+
+  New Mirrors:
+    * Realm Scans - https://realmscans.com/
+    * Dragon Tea - https://dragontea.ink/
+
+  Mirror Fixes:
+    * Manwha18 (Credit @JiPai)
+    * Scan FR (Credit @JiPai)
+    * 247 Manga (Credit @JiPai)
+    * Arang Scans  (Credit @JiPai)
+    * GD Scans (Credit @JiPai)
+    * Manga Stream
+    * Lily Manga
+    * Manga Dods
+    * Manhua Fast
+    * MM Scans
+    * Sawamics
+    * Setsu Scans
+    * Top Manhua
+    * Lynx Scans
+    * Kiryuu
+    * Manga Kawii
+    * Manga Llama
+    * Realm Scans
+    * Union Leitor
+    * Za Hard Top
+    * Shoujo Hearts
+
+  Mirrors Disabled: (Credit @JiPai)
+    * Aloalivn
+    * Cat Manga
+    * Dokusha
+    * Edelgarde Scans
+    * Glitchy Comics
+    * Hatigarm Scans
+    * Manga Turf
+    * Martial Scans
+    * Method Scans
+    * PM Scans
+    * Sam Manga
+    * Secret Scans
+    * Social Weebs
+    * Taptaptaptaptap
+    * Vanguard Scans
+    * Void Scans
+    * World Three
+    * Manga Stream
+
 ### V2.4.3
   Mirror Fixes:
     * Leviatan Scans - Fixed the issue with the constantly changing url, series will need to be readded once more then should be fine

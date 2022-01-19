@@ -1,5 +1,6 @@
 if (typeof registerMangaObject === 'function') {
     registerMangaObject({
+        disabled: true,
         mirrorName: 'Secret Scans',
         mirrorIcon: 'secretscans.png',
         languages: 'en',

@@ -1,5 +1,6 @@
 if (typeof registerMangaObject === 'function') {
     registerMangaObject({
+        disabled: true,
         mirrorName: 'Manga Turf',
         mirrorIcon: 'mangaturf.png',
         languages: 'en',

@@ -3,13 +3,13 @@ if (typeof registerMangaObject === 'function') {
         mirrorName: "Top Manhua",
         mirrorIcon: "topmanhua.png",
         languages: "en",
-        domains: ["topmanhua.com"],
-        home: "https://topmanhua.com/",
+        domains: ["www.topmanhua.com"],
+        home: "https://www.topmanhua.com/",
         chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
         canListFullMangas: false,
         abstract: "Madara",
         abstract_options: {
-            search_url: "https://topmanhua.com/"
+            search_url: "https://www.topmanhua.com/"
         }
     })
 }

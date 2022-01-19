@@ -1,15 +1,16 @@
 if (typeof registerMangaObject === 'function') {
     registerMangaObject({
-        mirrorName: 'Edelgarde Scans',
-        mirrorIcon: 'edelgardescans.png',
+        disabled: true,
+        mirrorName: 'Method Scans',
+        mirrorIcon: 'methodscans.png',
         languages: 'en',
-        domains: ['edelgardescans.com'],
-        home: 'https://edelgardescans.com/home',
+        domains: ['methodscans.com'],
+        home: 'https://methodscans.com/home',
         canListFullMangas: true,
         chapter_url: /^\/comics\/.*\/.+$/g,
         abstract: 'GenkanAbs',
         abstract_options: {
-            base_url: 'https://edelgardescans.com/',
+            base_url: 'https://methodscans.com/',
         },
     });
 }

@@ -6,10 +6,10 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["manhwa18.com"],
         home: "https://manhwa18.com/",
-        chapter_url: /\/chap-.*/g,
+        chapter_url: /\/chapter-.*/g,
         
         getMangaList: async function (search) {
-            let doc = await amr.loadPage(this.home + "search?q=" + search, { nocache: true, preventimages: true })
+            let doc = await amr.loadPage(this.home + "tim-kiem?q=" + search, { nocache: true, preventimages: true })
             let res = []
             let self = this
             $(`.series-title a`, doc).each(function(ind) {

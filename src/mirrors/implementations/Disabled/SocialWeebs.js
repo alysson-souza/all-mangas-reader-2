@@ -1,5 +1,6 @@
 if (typeof registerMangaObject === 'function') {
     registerMangaObject({
+        disabled: true,
         mirrorName: 'Social Weebs',
         mirrorIcon: 'socialweebs.png',
         languages: 'en',
