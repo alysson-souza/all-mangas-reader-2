@@ -77,7 +77,7 @@ if (typeof registerMangaObject === 'function') {
                     `${this.api}/manga/${id}/feed?limit=${this.pageLimit}&order[chapter]=desc&offset=${page * this.pageLimit}&contentRating[]=safe&contentRating[]=suggestive&contentRating[]=erotica&contentRating[]=pornographic`
                 )
                 // Create Object representing results
-                const uniq = jsonChapFeed.data./*filter(data => data.result === "ok").*/reduce((acc,o)=>{
+                const uniq = jsonChapFeed.data.filter(chap => chap.attributes.externalUrl == null).reduce((acc,o)=>{
                     if (!acc[o.attributes.chapter + utils.mdFixLang(o.attributes.translatedLanguage)]) {
                         acc[o.attributes.chapter + utils.mdFixLang(o.attributes.translatedLanguage)] = [];
                     }
