@@ -11,7 +11,8 @@ if (typeof registerMangaObject === 'function') {
         abstract_options: {
             search_url: "https://manhuaplus.com/",
             search_a_sel: "div.post-title > h3 > a",
-            // chapter_list_ajax: true,
+            chapter_list_ajax: true,
+            isekai_chapter_url: true,
         }
     })
 }
