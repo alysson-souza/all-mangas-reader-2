@@ -6,7 +6,7 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         domains: ["manhwa18.com"],
         home: "https://manhwa18.com/",
-        chapter_url: /\/chapter-.*/g,
+        chapter_url: /\/chapter-.*|\/chap-.*/g,
         
         getMangaList: async function (search) {
             let doc = await amr.loadPage(this.home + "tim-kiem?q=" + search, { nocache: true, preventimages: true })
