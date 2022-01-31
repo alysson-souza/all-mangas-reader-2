@@ -338,7 +338,7 @@ export default {
       selectable: false, // Toggle Manga List select behaviour
       dialogAction: () => {self.showDialog = false}, // action to take on yes in dialog
       searchText: "",
-      mirrorSelection: "All",
+      mirrorSelection: i18n('list_page_all'),
       selectedManga: [],
       pagination: {
         pageOptions: [
@@ -371,7 +371,7 @@ export default {
     },
     showMirrorSelection: function(newValue) {
       if (!newValue) {
-        this.mirrorSelection = "All"
+        this.mirrorSelection = i18n('list_page_all')
       }
     },
     selectable: function(newValue) {
@@ -400,7 +400,7 @@ export default {
      * Return all visible mangas
      */
     visMangas: function() {
-      if (this.mirrorSelection != 'All') {
+      if (this.mirrorSelection !== i18n('list_page_all')) {
         return this.allMangas.filter(
           mg => mg.mirror == this.mirrorSelection
         )
