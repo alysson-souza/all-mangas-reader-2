@@ -28,7 +28,7 @@ if (typeof registerMangaObject === 'function') {
             let self = this
             $(`ul.list-chapters a`, doc).each(function (index) {
                 res.push([
-                    $('.chapter-name', this).text().trim(),
+                    $('.chapter-name', this).text().replace(/chapter|chap/g, '').trim(),
                     $(this).attr("href")
                 ])
             })
