@@ -157,8 +157,8 @@
       :search="searchText"
       @page-count="pagination.pageCount = $event"
     >
-      <template v-if="pageNavigationPosition == 'top'" v-slot:top>
-        <v-row class="mx-2">
+      <template v-slot:[pageNavigationPosition]>
+        <v-row class="mx-2" :class="pageNavigationPosition === 'footer' ? 'my-6' :''">
           <v-col cols="3">
             <v-select dense outlined :items="pagination.pageOptions" v-model="itemsPerPage" :label="i18n('list_page_label')">
             <template v-slot:item="{ item }">
@@ -180,27 +180,7 @@
             <v-tooltip top content-class="icon-ttip">
             <template v-slot:activator="{ on }">
               <v-btn color="blue" icon x-large @click="moveNavigation()" v-on="on">
-                <v-icon>mdi-arrow-down-box</v-icon>
-              </v-btn>
-            </template>
-            <span>{{i18n("list_move_navigation")}}</span>
-          </v-tooltip>
-          </v-col>
-        </v-row>
-      </template>
-      <template v-if="pageNavigationPosition == 'bottom'" v-slot:footer>
-        <v-row class="mx-2 pt-5">
-          <v-col cols="3">
-            <v-select dense outlined :items="pagination.pageOptions" v-model="itemsPerPage" :label="i18n('list_page_label')"></v-select>
-          </v-col>
-          <v-col>
-            <v-pagination :total-visible="$isPopup ? 5 : 10" v-model="pagination.currentPage" :length="pagination.pageCount"></v-pagination>
-          </v-col>
-          <v-col cols="1">
-            <v-tooltip top content-class="icon-ttip">
-            <template v-slot:activator="{ on }">
-              <v-btn color="blue" icon x-large @click="moveNavigation()" v-on="on">
-                <v-icon>mdi-arrow-up-box</v-icon>
+                <v-icon>{{ pageNavigationPosition === 'top' ? 'mdi-arrow-down-box' : 'mdi-arrow-up-box'}}</v-icon>
               </v-btn>
             </template>
             <span>{{i18n("list_move_navigation")}}</span>
@@ -352,7 +332,7 @@ export default {
         pageCount: 0
       },
       itemsPerPage: this.$store.state.options.perPageMangas,
-      pageNavigationPosition: this.$store.state.options.pageNavigationPosition,
+      pageNavigationPosition: this.$store.state.options.pageNavigationPosition === 'bottom' ? 'footer' : 'top',
       alpha_asc_desc: this.$store.state.options.alpha_asc_desc, // Toggle Manga List select behaviour
       searchMenu:false,
     };
