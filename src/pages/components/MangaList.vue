@@ -160,7 +160,18 @@
       <template v-if="pageNavigationPosition == 'top'" v-slot:top>
         <v-row class="mx-2">
           <v-col cols="3">
-            <v-select dense outlined :items="pagination.pageOptions" v-model="itemsPerPage" :label="i18n('list_page_label')"></v-select>
+            <v-select dense outlined :items="pagination.pageOptions" v-model="itemsPerPage" :label="i18n('list_page_label')">
+            <template v-slot:item="{ item }">
+              <v-list-item-content>
+                <v-list-item-title>
+                  {{ item === -1 ? i18n('list_page_all') : item }}
+                </v-list-item-title>
+              </v-list-item-content>
+            </template>
+            <template v-slot:selection="{ item }">
+              {{ item === -1 ? i18n('list_page_all') : item }}
+            </template>
+            </v-select>
           </v-col>
           <v-col>
             <v-pagination :total-visible="$isPopup ? 5 : 10" v-model="pagination.currentPage" :length="pagination.pageCount"></v-pagination>
@@ -334,7 +345,8 @@ export default {
           5,
           25,
           50,
-          100
+          100,
+          -1
         ],
         currentPage: 1,
         pageCount: 0
