@@ -1,6 +1,6 @@
 if (typeof registerMangaObject === 'function') {
 	registerMangaObject({
-        mirrorName: "Manwha 18",
+        mirrorName: "Manwha18.com",
         canListFullMangas: false,
         mirrorIcon: "manwha18.png",
         languages: "en",
@@ -28,7 +28,7 @@ if (typeof registerMangaObject === 'function') {
             let self = this
             $(`ul.list-chapters a`, doc).each(function (index) {
                 res.push([
-                    $('.chapter-name', this).text().replace(/chapter|chap/g, '').trim(),
+                    $('.chapter-name', this).text().replace(/chapter|chap|ch/g, '').trim(),
                     $(this).attr("href")
                 ])
             })
