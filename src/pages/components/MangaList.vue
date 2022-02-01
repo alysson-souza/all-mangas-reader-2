@@ -160,28 +160,34 @@
       <template v-slot:[pageNavigationPosition]>
         <v-row class="mx-2" :class="pageNavigationPosition === 'footer' ? 'my-6' :''">
           <v-col cols="3">
-            <v-select dense outlined :items="pagination.pageOptions" v-model="itemsPerPage" :label="i18n('list_page_label')">
-            <template v-slot:item="{ item }">
-              <v-list-item-content>
-                <v-list-item-title>
-                  {{ item === -1 ? i18n('list_page_all') : item }}
-                </v-list-item-title>
-              </v-list-item-content>
-            </template>
-            <template v-slot:selection="{ item }">
-              {{ item === -1 ? i18n('list_page_all') : item }}
-            </template>
-            </v-select>
+            <v-lazy>
+              <v-select dense outlined :items="pagination.pageOptions" v-model="itemsPerPage" :label="i18n('list_page_label')">
+              <template v-slot:item="{ item }">
+                <v-list-item-content>
+                  <v-list-item-title>
+                    {{ item === -1 ? i18n('list_page_all') : item }}
+                  </v-list-item-title>
+                </v-list-item-content>
+              </template>
+              <template v-slot:selection="{ item }">
+                {{ item === -1 ? i18n('list_page_all') : item }}
+              </template>
+              </v-select>
+            </v-lazy>
           </v-col>
           <v-col>
-            <v-pagination v-if="itemsPerPage > 0" :total-visible="$isPopup ? 5 : 10" v-model="pagination.currentPage" :length="pagination.pageCount"></v-pagination>
+            <v-lazy v-if="itemsPerPage > 0" :total-visible="$isPopup ? 5 : 10">
+              <v-pagination  v-model="pagination.currentPage" :length="pagination.pageCount"></v-pagination>
+            </v-lazy>
           </v-col>
           <v-col cols="1">
             <v-tooltip top content-class="icon-ttip">
             <template v-slot:activator="{ on }">
+            <v-lazy>
               <v-btn color="blue" icon x-large @click="moveNavigation()" v-on="on">
                 <v-icon>{{ pageNavigationPosition === 'top' ? 'mdi-arrow-down-box' : 'mdi-arrow-up-box'}}</v-icon>
               </v-btn>
+            </v-lazy>
             </template>
             <span>{{i18n("list_move_navigation")}}</span>
           </v-tooltip>
@@ -258,7 +264,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <MultiMangaAction :selected="selectedMangaExpanded" :selectable="selectable" :total="visMangas.length" v-on:unselect="selectable = false" />
+      <MultiMangaAction :selected="selectedMangaExpanded" :selectable="selectable" :total="visMangas.length" v-on:unselect="selectable = false" />
   </div>
 </template>
 <script>

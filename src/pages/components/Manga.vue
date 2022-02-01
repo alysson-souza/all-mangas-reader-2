@@ -1,12 +1,11 @@
 <template>
   <v-card v-if="shouldShow" :class="color(3, true) + ' amr-manga-row' + (manga.update === 0 ? ' amr-noupdates' : '')">
     <v-row :class="isDarkText ? 'dark-text' : 'light-text'">
-      <v-col v-if="selectable" cols="auto" class="pr-0 mr-0">
-        <v-checkbox v-model="selected" hide-details dense class="shrink mr-2 mt-0"></v-checkbox>
-      </v-col>
+      <v-lazy class="col-auto pr-0 mr-0" v-if="selectable">
+          <v-checkbox v-model="selected" hide-details dense class="shrink mr-2 mt-0"></v-checkbox>
+      </v-lazy>
       <!-- Name, Last Updated -->
       <v-col cols="4" lg="5">
-
         <v-card :color="color(0)" class="back-card amr-manga-title-cont" :class="isInGroup && !isFirst && groupExpanded ? 'ml-4':''">
           <v-row no-gutters align="center" class="min-h-26">
             
