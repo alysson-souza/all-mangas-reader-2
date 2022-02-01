@@ -85,7 +85,7 @@
       <v-col :cols="selectable ? '3' : '4'" :lg="selectable ? '4': '5'">
         <v-card :color="color(3, true)" tile flat class="back-card">
               <!-- List of chapters -->
-              <div v-if="manga.listChaps.length" class="amr-prog-cont">
+              <div v-if="manga.listChaps.length && showChapSelect" class="amr-prog-cont">
                   <v-select
                     v-model="selValue"
                     :items="chapsForSelect"
@@ -511,7 +511,8 @@ export default {
     "isFirst",
     // is the group currently expanded
     "groupExpanded",
-    "groupIndex"
+    "groupIndex",
+    "showChapSelect",
   ],
   computed: {
     shouldShow: function() {

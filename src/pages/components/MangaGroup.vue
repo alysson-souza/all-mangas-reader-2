@@ -9,6 +9,7 @@
       :is-first="index == 0"
       :group-index="groupIndex"
       :group-expanded="expanded"
+      :showChapSelect="showChapSelect"
       @expand-group="expanded = !expanded"
       @search-request="propagateSR"
       @rename-manga="renameManga"
@@ -27,7 +28,7 @@ export default {
     }
   },
   // property to load the component with --> a group of manga
-  props: ["group", "groupIndex"],
+  props: ["group", "groupIndex", "showChapSelect"],
   components: { Manga },
   methods: {
     /**
