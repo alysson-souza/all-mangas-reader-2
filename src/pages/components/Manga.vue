@@ -66,7 +66,7 @@
                 <v-lazy>
                     <v-card flat v-if="options.displastup === 1 && manga.upts != 0 && timeUpdated < 50" dark :class="color(0)" v-on="on">
                       <span v-if="timeUpdated > 0">{{ timeUpdated }}</span>
-                      <v-icon dense class="pr-1">mdi-calendar-clock</v-icon>
+                      <v-icon dense>mdi-calendar-clock</v-icon>
                     </v-card>
                 </v-lazy>
                 </template>
@@ -124,9 +124,9 @@
                       ></v-divider>
                     </template>
                     <template v-slot:selection="{on, item}">
-                      <v-lazy>
-                        <div class="d-flex align-center text-truncate">
-                          <div v-on="on" class="text-truncate">
+                      <v-lazy class="text-truncate">
+                        <div class="d-flex align-center">
+                          <div v-on="on">
                             <Flag v-if="manga.language" :value="manga.language"/>
                             <span class="chap-title">{{truncText(item.text)}}</span>
                           </div>
