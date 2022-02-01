@@ -65,7 +65,7 @@
                 <template v-slot:activator="{ on }">
                 <v-lazy>
                     <v-card flat v-if="options.displastup === 1 && manga.upts != 0 && timeUpdated < 50" dark :class="color(0)" v-on="on">
-                      <span v-if="timeUpdated > 0" class="pl-1">{{ timeUpdated }}</span>
+                      <span v-if="timeUpdated > 0">{{ timeUpdated }}</span>
                       <v-icon dense class="pr-1">mdi-calendar-clock</v-icon>
                     </v-card>
                 </v-lazy>
