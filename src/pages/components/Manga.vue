@@ -65,8 +65,10 @@
                 <template v-slot:activator="{ on }">
                 <v-lazy>
                     <v-card flat v-if="options.displastup === 1 && manga.upts != 0 && timeUpdated < 50" dark :class="color(0)" v-on="on">
-                      <span v-if="timeUpdated > 0">{{ timeUpdated }}</span>
-                      <v-icon dense>mdi-calendar-clock</v-icon>
+                      <span class="group mr-1">
+                        <span v-if="timeUpdated > 0">{{ timeUpdated }}</span>
+                        <v-icon small>mdi-calendar-clock</v-icon>
+                      </span>
                     </v-card>
                 </v-lazy>
                 </template>
@@ -865,6 +867,11 @@ export default {
 </script>
 
 <style lang="css" scoped data-amr="true">
+.group {
+  display:flex;
+  flex:1;
+  justify-content: space-evenly;
+}
 .dark-text * {
   color: #424242 !important;
 }
