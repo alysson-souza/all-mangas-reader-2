@@ -156,7 +156,9 @@
             <!-- Mark as read -->
             <v-tooltip top content-class="icon-ttip">
               <template v-slot:activator="{ on }">
-                <v-icon v-if="hasNew" v-on="on" @click="markAsRead()">mdi-eye</v-icon>
+                <v-lazy v-if="hasNew"> 
+                  <v-icon v-on="on" @click="markAsRead()">mdi-eye</v-icon>
+                </v-lazy>
               </template>
               <span>{{i18n("list_mg_act_read")}}</span>
             </v-tooltip>
@@ -168,7 +170,9 @@
             <!-- Previous chapter -->
             <v-tooltip top content-class="icon-ttip">
               <template v-slot:activator="{ on }">
-                <v-icon v-if="posInChapList < manga.listChaps.length - 1" v-on="on" @click="play(-1)">mdi-chevron-left</v-icon>
+              <v-lazy v-if="posInChapList < manga.listChaps.length - 1">
+                <v-icon v-on="on" @click="play(-1)">mdi-chevron-left</v-icon>
+              </v-lazy>
               </template>
               <span>{{i18n("list_mg_act_prev")}}</span>
             </v-tooltip>
@@ -183,14 +187,18 @@
 
             <v-tooltip top content-class="icon-ttip">
               <template v-slot:activator="{ on }">
-                <v-icon v-if="isMirrorEnabled" v-on="on" @click="play(0)">mdi-play</v-icon>
+                <v-lazy v-if="isMirrorEnabled">
+                  <v-icon v-on="on" @click="play(0)">mdi-play</v-icon>
+                </v-lazy>
               </template>
               <span>{{i18n("list_mg_act_cur")}}</span>
             </v-tooltip>
             <!-- Next chapter play -->
             <v-tooltip top content-class="icon-ttip">
               <template v-slot:activator="{ on }">
-                <v-icon v-if="posInChapList > 0" v-on="on" @click="play(1)">mdi-chevron-right</v-icon>
+                <v-lazy v-if="posInChapList > 0">
+                  <v-icon v-on="on" @click="play(1)">mdi-chevron-right</v-icon>
+                </v-lazy>
               </template>
               <span>{{i18n("list_mg_act_next")}}</span>
             </v-tooltip>
@@ -205,14 +213,18 @@
             
             <v-tooltip top content-class="icon-ttip">
               <template v-slot:activator="{ on }">
-                <v-icon v-if="isMirrorEnabled" v-on="on" @click="play(Infinity)">mdi-page-last</v-icon>
+                <v-lazy v-if="isMirrorEnabled">
+                  <v-icon v-on="on" @click="play(Infinity)">mdi-page-last</v-icon>
+                </v-lazy>
               </template>
               <span>{{i18n("list_mg_act_latest")}}</span>
             </v-tooltip>
             <!-- Delete manga -->
             <v-tooltip top content-class="icon-ttip">
               <template v-slot:activator="{ on }">
-                <v-icon v-on="on" @click="deleteManga = true">mdi-delete</v-icon>
+                <v-lazy>
+                  <v-icon v-on="on" @click="deleteManga = true">mdi-delete</v-icon>
+                </v-lazy>
               </template>
               <span>{{i18n("list_mg_act_delete")}}</span>
             </v-tooltip>
