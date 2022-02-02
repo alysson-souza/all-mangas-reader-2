@@ -836,10 +836,8 @@ export default {
     lazyLoad(newValue, oldValue) {
       if(newValue === oldValue) return
       if(newValue) {
-        setTimeout(() => {
-          this.displayChapterSelectMenu = true
-          this.displayActionMenu = true
-        }, 1)
+        this.displayChapterSelectMenu = true
+        this.displayActionMenu = true
       } else {
         this.displayChapterSelectMenu = false
         this.displayActionMenu = false
