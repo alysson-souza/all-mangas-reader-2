@@ -82,7 +82,11 @@
         </v-card>
       </v-col>
       <!-- Select List -->
-      <v-col :cols="selectable ? '3' : '4'" :lg="selectable ? '4': '5'">
+      <v-col 
+        :cols="selectable ? '3' : '4'"
+        :lg="selectable ? '4': '5'"
+        v-intersect="onIntersect"
+      >
         <v-card :color="color(0)" class="back-card" :rounded="true" flat>
               <!-- List of chapters -->
               <div v-if="manga.listChaps.length" class="amr-prog-cont">
@@ -646,6 +650,9 @@ export default {
     },
   },
   methods: {
+      onIntersect (entries, observer) {
+        this.lazyLoad = entries[0].isIntersecting 
+      },
     i18n: (message, ...args) => i18n(message, ...args),
     /**
      * Return the right color for this manga, depending if it updates (you can stop following udates for a manga), if it has unread chapters or not
@@ -826,12 +833,16 @@ export default {
     }
   },
   watch: {
-    lazyLoad(newValue) {
+    lazyLoad(newValue, oldValue) {
+      if(newValue === oldValue) return
       if(newValue) {
         setTimeout(() => {
           this.displayChapterSelectMenu = true
           this.displayActionMenu = true
         }, 1)
+      } else {
+        this.displayChapterSelectMenu = false
+        this.displayActionMenu = false
       }
     },
     selected(newValue) {
@@ -883,9 +894,6 @@ export default {
       if (this.selected)
         this.selected = false
     })
-  },
-  mounted() {
-    this.lazyLoad = true
   },
   // Name of the component
   name: "Manga",
