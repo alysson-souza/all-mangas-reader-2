@@ -9,7 +9,6 @@
       :is-first="index == 0"
       :group-index="groupIndex"
       :group-expanded="expanded"
-      :showChapSelect="showChapSelect"
       @expand-group="expanded = !expanded"
       @search-request="propagateSR"
       @rename-manga="renameManga"

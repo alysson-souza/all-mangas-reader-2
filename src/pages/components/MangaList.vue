@@ -209,7 +209,6 @@
             <MangaGroup
               :group="item"
               :group-index="item.key"
-              :showChapSelect="loaded"
               @search-request="propagateSR"
               @rename-manga="renameManga"
             />

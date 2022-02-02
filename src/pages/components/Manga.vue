@@ -83,10 +83,11 @@
       </v-col>
       <!-- Select List -->
       <v-col :cols="selectable ? '3' : '4'" :lg="selectable ? '4': '5'">
-        <v-card :color="color(3, true)" tile flat class="back-card">
+        <v-card :color="color(0)" class="back-card" :rounded="true" flat>
               <!-- List of chapters -->
-              <div v-if="manga.listChaps.length && showChapSelect" class="amr-prog-cont">
+              <div v-if="manga.listChaps.length" class="amr-prog-cont">
                   <v-select
+                    v-if="displayChapterSelectMenu"
                     v-model="selValue"
                     :items="chapsForSelect"
                     @change="playChap($event)"
@@ -150,27 +151,26 @@
       </v-col>
       <!-- Actions -->
       <v-col cols="4" lg="2" class="amr-list-actions text-center ml-auto">
-
-          <v-card :color="color(0)" class="back-card d-flex justify-space-between px-3 min-h-26">
-
+          <v-card  :color="color(0)" class="back-card px-3 min-h-26">
+            <div v-if="displayActionMenu" class="d-flex min-h-26 justify-space-between">
             <!-- Mark as read -->
             <v-tooltip top content-class="icon-ttip">
               <template v-slot:activator="{ on }">
-                <v-lazy v-if="hasNew"> 
+                <v-lazy v-if="hasNew" height="22" class="align-self-center"> 
                   <v-icon v-on="on" @click="markAsRead()">mdi-eye</v-icon>
                 </v-lazy>
               </template>
               <span>{{i18n("list_mg_act_read")}}</span>
             </v-tooltip>
             <!-- Empty icon if all read -->
-            <v-lazy v-if="!hasNew">
+            <v-lazy v-if="!hasNew" height="22" class="align-self-center">
               <v-icon  class="empty-icon"></v-icon>
             </v-lazy>
             
             <!-- Previous chapter -->
             <v-tooltip top content-class="icon-ttip">
               <template v-slot:activator="{ on }">
-              <v-lazy v-if="posInChapList < manga.listChaps.length - 1">
+              <v-lazy v-if="posInChapList < manga.listChaps.length - 1" height="22" class="align-self-center">
                 <v-icon v-on="on" @click="play(-1)">mdi-chevron-left</v-icon>
               </v-lazy>
               </template>
@@ -187,7 +187,7 @@
 
             <v-tooltip top content-class="icon-ttip">
               <template v-slot:activator="{ on }">
-                <v-lazy v-if="isMirrorEnabled">
+                <v-lazy v-if="isMirrorEnabled" height="22" class="align-self-center">
                   <v-icon v-on="on" @click="play(0)">mdi-play</v-icon>
                 </v-lazy>
               </template>
@@ -196,7 +196,7 @@
             <!-- Next chapter play -->
             <v-tooltip top content-class="icon-ttip">
               <template v-slot:activator="{ on }">
-                <v-lazy v-if="posInChapList > 0">
+                <v-lazy v-if="posInChapList > 0" height="22" class="align-self-center">
                   <v-icon v-on="on" @click="play(1)">mdi-chevron-right</v-icon>
                 </v-lazy>
               </template>
@@ -213,7 +213,7 @@
             
             <v-tooltip top content-class="icon-ttip">
               <template v-slot:activator="{ on }">
-                <v-lazy v-if="isMirrorEnabled">
+                <v-lazy v-if="isMirrorEnabled" height="22" class="align-self-center">
                   <v-icon v-on="on" @click="play(Infinity)">mdi-page-last</v-icon>
                 </v-lazy>
               </template>
@@ -222,14 +222,14 @@
             <!-- Delete manga -->
             <v-tooltip top content-class="icon-ttip">
               <template v-slot:activator="{ on }">
-                <v-lazy>
+                <v-lazy height="22" class="align-self-center"> 
                   <v-icon v-on="on" @click="deleteManga = true">mdi-delete</v-icon>
                 </v-lazy>
               </template>
               <span>{{i18n("list_mg_act_delete")}}</span>
             </v-tooltip>
             <!-- Expand Menu -->
-            <v-lazy>
+            <v-lazy height="22" class="align-self-center">
               <v-icon @click="expanded = !expanded">mdi-dots-vertical</v-icon>
             </v-lazy>
             <!-- Delete manga dialog -->
@@ -245,6 +245,7 @@
                 </v-card-actions>
               </v-card>
             </v-dialog>
+            </div>
           </v-card>
       </v-col>
     </v-row>
@@ -499,6 +500,9 @@ export default {
       selected: false,
       canOpenTab: true, // This is used for a timer to hopefully eliminate weird duping issue
       refreshing: false,
+      displayChapterSelectMenu: false,
+      displayActionMenu: false,
+      lazyLoad: false,
     };
   },
   // property to load the component with --> the manga it represents
@@ -512,7 +516,6 @@ export default {
     // is the group currently expanded
     "groupExpanded",
     "groupIndex",
-    "showChapSelect",
   ],
   computed: {
     shouldShow: function() {
@@ -823,6 +826,14 @@ export default {
     }
   },
   watch: {
+    lazyLoad(newValue) {
+      if(newValue) {
+        setTimeout(() => {
+          this.displayChapterSelectMenu = true
+          this.displayActionMenu = true
+        }, 1)
+      }
+    },
     selected(newValue) {
       if (newValue)
         this.$eventBus.$emit('multi-manga:select-manga', this.manga.key)
@@ -872,6 +883,9 @@ export default {
       if (this.selected)
         this.selected = false
     })
+  },
+  mounted() {
+    this.lazyLoad = true
   },
   // Name of the component
   name: "Manga",
