@@ -27,7 +27,7 @@ export default {
     }
   },
   // property to load the component with --> a group of manga
-  props: ["group", "groupIndex", "showChapSelect"],
+  props: ["group", "groupIndex"],
   components: { Manga },
   methods: {
     /**
