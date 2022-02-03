@@ -145,8 +145,8 @@
               <div v-else>
                 <v-lazy>
                   <!-- Loading bar if chapters list is not loaded yet-->
-                  <v-progress-linear v-if="isMirrorEnabled" :indeterminate="true" height="4" class="amr-manga-waiting" :color="color(2)"></v-progress-linear>
-                  <span v-if="!isMirrorEnabled">
+                  <v-progress-linear v-if="isMirrorEnabled" :indeterminate="true" height="4" :color="color(2)"></v-progress-linear>
+                  <span v-else>
                     {{ isMirrorEnabled ? mirror.mirrorName : i18n("list_mirror_disabled", manga.mirror) }}
                   </span>
                 </v-lazy>
