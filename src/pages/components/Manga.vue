@@ -66,7 +66,7 @@
                 <v-lazy>
                     <v-card flat v-if="options.displastup === 1 && manga.upts != 0 && timeUpdated < 50" dark :class="color(0)" v-on="on">
                       <span class="group mr-1">
-                        <span v-if="timeUpdated > 0">{{ timeUpdated }}</span>
+                        <span v-if="timeUpdated > 0" class="text-caption">{{ timeUpdated }}</span>
                         <v-icon small>mdi-calendar-clock</v-icon>
                       </span>
                     </v-card>
