@@ -417,36 +417,34 @@ export default {
      * Build mangas groups (by name)
      */
     groupedMangas: function() {
-      const results = this.sortMangaList(this.visMangas).reduce((groups, manga) => {
-        let key
-        let name = (manga.displayName && manga.displayName !== '') ? manga.displayName : manga.name
-        if (this.options.groupmgs === 0) {
-          key = manga.key
-        } else {
-          key = 'group:' + utilsamr.formatMgName(name)
-        }
+      return this.sortMangaList(this.visMangas).reduce((groups, manga) => {
 
+        // make a copy of manga add a "hasNew" key and remove chapters
+        const mangaCopy = Object.assign({}, manga)
+        delete mangaCopy.listChaps
+        mangaCopy.hasNew = utils.hasNew(manga)
+
+        // free memory early
+        manga = null
+        
+        // get manga name, key or group key and group index
+        const name = (mangaCopy.displayName && mangaCopy.displayName !== '') ? mangaCopy.displayName : mangaCopy.name
+        const key = this.options.groupmgs === 0 ? mangaCopy.key : 'group:' + utilsamr.formatMgName(name)
         let index = groups.findIndex(group => group.key == key)
 
+        // if group doesn't exist, create it
         if (index === -1) {
-          groups.push({
-            name: name,
-            key: key,
-            mangas: []
-          })
+          groups.push({ name, key, mangas: [] })
           index = groups.findIndex(group => group.key == key)
         }
-        
-        const mangaCopy = Object.assign({}, manga)
-        mangaCopy.listChaps = []
-        mangaCopy.hasNew = utils.hasNew(manga)
+
+        // add manga to group
         groups[index].mangas.push(mangaCopy)
 
         // Ensure still updating manga are first in the group
         groups[index].mangas = groups[index].mangas.sort((a, b) => a.read - b.read)
         return groups
       }, [])
-      return results
     },
 
     selectedMangaExpanded: function() {
