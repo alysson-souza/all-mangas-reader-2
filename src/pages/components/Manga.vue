@@ -160,14 +160,14 @@
             <!-- Mark as read -->
             <v-tooltip top content-class="icon-ttip">
               <template v-slot:activator="{ on }">
-                <v-lazy v-if="hasNew" height="22" class="align-self-center"> 
+                <v-lazy v-if="manga.hasNew" height="22" class="align-self-center"> 
                   <v-icon v-on="on" @click="markAsRead()">mdi-eye</v-icon>
                 </v-lazy>
               </template>
               <span>{{i18n("list_mg_act_read")}}</span>
             </v-tooltip>
             <!-- Empty icon if all read -->
-            <v-lazy v-if="!hasNew" height="22" class="align-self-center">
+            <v-lazy v-if="!manga.hasNew" height="22" class="align-self-center">
               <v-icon  class="empty-icon"></v-icon>
             </v-lazy>
             
@@ -539,10 +539,6 @@ export default {
     options: function() {
       return this.$store.state.options;
     },
-    // determine if this manga has new published chapters
-    hasNew: function() {
-      return utils.hasNew(this.manga);
-    },
     // mirror for current chapter
     mirror: function() {
       return this.$store.state.mirrors.all.find(
@@ -662,7 +658,12 @@ export default {
         let odd = (this.groupIndex + 1) % 2 == 1
         light += odd ? -2 : 1
       }
-      return utils.getColor(this.manga, this.options, light);
+      if (this.manga.read !== 0) return utils.computeColorLight(this.options.colornotfollow, light);
+      else if (this.manga.hasNew) {
+          return utils.computeColorLight(this.options.colornew, light);
+      } else {
+          return utils.computeColorLight(this.options.colorread, light);
+      }
     },
     /** get the real url from the value (url path used in select) in the manga list */
     urlFromValue: function(val) {
