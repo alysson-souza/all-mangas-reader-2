@@ -417,7 +417,7 @@ export default {
      * Build mangas groups (by name)
      */
     groupedMangas: function() {
-      return this.sortMangaList(this.visMangas).reduce((groups, manga) => {
+      const results = this.sortMangaList(this.visMangas).reduce((groups, manga) => {
         let key
         let name = (manga.displayName && manga.displayName !== '') ? manga.displayName : manga.name
         if (this.options.groupmgs === 0) {
@@ -437,13 +437,16 @@ export default {
           index = groups.findIndex(group => group.key == key)
         }
         
-
-        groups[index].mangas.push(manga)
+        const mangaCopy = Object.assign({}, manga)
+        mangaCopy.listChaps = []
+        mangaCopy.hasNew = utils.hasNew(manga)
+        groups[index].mangas.push(mangaCopy)
 
         // Ensure still updating manga are first in the group
         groups[index].mangas = groups[index].mangas.sort((a, b) => a.read - b.read)
         return groups
       }, [])
+      return results
     },
 
     selectedMangaExpanded: function() {
