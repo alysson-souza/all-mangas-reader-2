@@ -605,6 +605,9 @@ export default {
       if(this.isInGroup) {
         cols = 10
       }
+      if(this.manga.update === 0) {
+        cols = cols - 1
+      }
       return cols
     },
     title_sm_col() {
