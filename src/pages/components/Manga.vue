@@ -87,7 +87,7 @@
         :lg="selectable ? '4': '5'"
         v-intersect="onIntersect"
       >
-        <v-card :color="color(0)" class="back-card" :rounded="true" flat>
+        <v-card :color="color(0)" class="back-card" :rounded="true" :flat="listChaps.length ? true : false">
               <!-- List of chapters -->
               <div v-if="listChaps.length" class="amr-prog-cont">
                   <v-select
