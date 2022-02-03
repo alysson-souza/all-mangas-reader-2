@@ -1,7 +1,16 @@
 <template>
-  <v-card v-if="shouldShow" v-intersect="onIntersect" :class="color(3, true) + ' amr-manga-row' + (manga.update === 0 ? ' amr-noupdates' : '')">
+  <v-card v-if="shouldShow" 
+    v-intersect="{
+          handler: onIntersect,
+          options: {
+            threshold: 0, 
+            rootMargin: '380px 0px 380px 0px' // top, right, bottom, left // 38px = height of the card 
+          }
+        }"
+    :class="color(3, true) + ' amr-manga-row' + (manga.update === 0 ? ' amr-noupdates' : '')"
+  >
     <v-row :class="isDarkText ? 'dark-text' : 'light-text'">
-      <v-lazy class="col-auto pr-0 mr-0" v-if="selectable">
+      <v-lazy class="col-auto pr-0 mr-0" v-if="selectable && lazyLoad">
           <v-checkbox v-model="selected" hide-details dense class="shrink mr-2 mt-0"></v-checkbox>
       </v-lazy>
       <!-- Name, Last Updated -->
@@ -11,28 +20,29 @@
             
               <!-- + / - icon if group of mangas  -->
               <v-lazy
-                v-if="isInGroup && isFirst"
+                v-if="isInGroup && isFirst && lazyLoad"
+                class="d-flex align-self-center"
+                width="16px"
               >
                 <v-icon small v-if="!groupExpanded" @click="emitExpand()">mdi-plus</v-icon>
                 <v-icon small v-else @click="emitExpand()">mdi-minus</v-icon>
               </v-lazy>
 
               <!-- Mirror icons -->
-              <v-tooltip top content-class="icon-ttip">
-                <template v-slot:activator="{ on }">
-                <v-lazy
+              <v-lazy
+                  v-if="lazyLoad"
                   width="20"
                   height="16"
-                >
-                  <img class="m-icon" width="16" height="16" v-if="isMirrorEnabled" :src="mirror.mirrorIcon" v-on="on" />
-                </v-lazy>
-                <v-lazy>
-                  <v-icon small v-if="!isMirrorEnabled" v-on="on">mdi-cancel</v-icon>
-                </v-lazy>
+                  :class="!isInGroup || isInGroup && !isFirst ? 'ml-1': ''"
+              >
+              <v-tooltip top content-class="icon-ttip">
+                <template v-slot:activator="{ on }">
+                  <img v-if="isMirrorEnabled" class="m-icon" width="16" height="16" :src="mirror.mirrorIcon" v-on="on" />
+                  <v-icon v-else small v-on="on">mdi-cancel</v-icon>
                 </template>
                 <span>{{ isMirrorEnabled ? mirror.mirrorName : i18n("list_mirror_disabled_tooltip", manga.mirror) }}</span>
               </v-tooltip>
-            
+            </v-lazy>
             <!-- Manga name -->
             <v-col :sm="title_sm_col" :lg="title_lg_col">
               <v-tooltip top :disabled="!(manga.displayName && manga.displayName !== '')">
@@ -107,7 +117,9 @@
                     <template v-slot:prepend-inner v-if="chapsForSelect.length && showProgress">
                       <v-tooltip top content-class="icon-ttip">
                         <template v-slot:activator="{ on }">
-                          <v-lazy>
+                          <v-lazy
+                            width="12"
+                          >
                             <div class="d-flex align-center">
                               <v-progress-circular
                                 :indeterminate="!chapsForSelect.length"
@@ -125,20 +137,17 @@
                         <span>{{i18n("list_progress_reading", progress, absoluteProgress)}}</span>
                       </v-tooltip>
                       <v-divider
-                        class="mx-2"
+                        class="ml-2 mr-1"
                         vertical
                       ></v-divider>
                     </template>
                     <template v-slot:selection="{on, item}">
-                      <v-lazy class="text-truncate">
-                        <div class="d-flex align-center">
-                          <div v-on="on">
-                            <Flag v-if="manga.language" :value="manga.language"/>
-                            <span class="chap-title">{{truncText(item.text)}}</span>
-                          </div>
-                        </div>
-                      </v-lazy>
+                          <div v-on="on" class="d-flex align-center text-truncate">
+                            <v-lazy v-if="manga.language" width="20">
+                              <Flag :value="manga.language"/>
+                            </v-lazy>
                             <span class="chap-title">{{item.text}}</span>
+                          </div>
                     </template>
                   </v-select>
                 </div>
