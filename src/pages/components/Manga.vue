@@ -89,7 +89,7 @@
       >
         <v-card :color="color(0)" class="back-card" :rounded="true" flat>
               <!-- List of chapters -->
-              <div v-if="manga.listChaps.length" class="amr-prog-cont">
+              <div v-if="listChaps.length" class="amr-prog-cont">
                   <v-select
                     v-if="displayChapterSelectMenu"
                     v-model="selValue"
@@ -174,14 +174,14 @@
             <!-- Previous chapter -->
             <v-tooltip top content-class="icon-ttip">
               <template v-slot:activator="{ on }">
-              <v-lazy v-if="posInChapList < manga.listChaps.length - 1" height="22" class="align-self-center">
+              <v-lazy v-if="posInChapList < listChaps.length - 1" height="22" class="align-self-center">
                 <v-icon v-on="on" @click="play(-1)">mdi-chevron-left</v-icon>
               </v-lazy>
               </template>
               <span>{{i18n("list_mg_act_prev")}}</span>
             </v-tooltip>
             <!-- Empty icon if no previous -->
-            <v-lazy v-if="posInChapList === manga.listChaps.length - 1">
+            <v-lazy v-if="posInChapList === listChaps.length - 1">
               <v-icon class="empty-icon"></v-icon>
             </v-lazy>
             <!-- Current chapter play -->
@@ -507,6 +507,7 @@ export default {
       displayChapterSelectMenu: false,
       displayActionMenu: false,
       lazyLoad: false,
+      listChaps: [],
     };
   },
   // property to load the component with --> the manga it represents
@@ -554,7 +555,7 @@ export default {
     },
     // format chapters list to be displayed
     chapsForSelect: function() {
-      return this.manga.listChaps.map(arr => {
+      return this.listChaps.map(arr => {
         return { value: amrutils.chapPath(arr[1]), text: arr[0], url: arr[1] };
       });
     },
@@ -563,10 +564,10 @@ export default {
     },
     // calculate reading progress
     progress: function() {
-      return Math.floor((1 - this.posInChapList / this.manga.listChaps.length) * 100);
+      return Math.floor((1 - this.posInChapList / this.listChaps.length) * 100);
     },
     absoluteProgress: function() {
-      return `${this.manga.listChaps.length - this.posInChapList}/${this.manga.listChaps.length}`
+      return `${this.listChaps.length - this.posInChapList}/${this.listChaps.length}`
     },
     // position of current chapter in chapters list
     posInChapList() {
@@ -627,7 +628,7 @@ export default {
       }
     },
     isDarkText: function() {
-      return utils.darkText(this.manga, this.options)
+      return utils.darkText(this.manga, this.manga.hasNew, this.options)
     },
     categories() {
       return this.options.categoriesStates.filter(cat => cat.type !== 'native' && cat.type != 'language')
@@ -647,7 +648,13 @@ export default {
   },
   methods: {
       onIntersect (entries, observer) {
-        this.lazyLoad = entries[0].isIntersecting 
+        this.lazyLoad = entries[0].isIntersecting
+        if(this.lazyLoad) {
+          const chaps = this.$store.state.mangas.all.find(manga => manga.key === this.manga.key)
+          if(chaps) this.listChaps = chaps.listChaps
+        } else {
+          this.listChaps = []
+        }
       },
     i18n: (message, ...args) => i18n(message, ...args),
     /**
@@ -658,16 +665,11 @@ export default {
         let odd = (this.groupIndex + 1) % 2 == 1
         light += odd ? -2 : 1
       }
-      if (this.manga.read !== 0) return utils.computeColorLight(this.options.colornotfollow, light);
-      else if (this.manga.hasNew) {
-          return utils.computeColorLight(this.options.colornew, light);
-      } else {
-          return utils.computeColorLight(this.options.colorread, light);
-      }
+      return utils.getColor(this.manga, this.manga.hasNew, this.options, light);
     },
     /** get the real url from the value (url path used in select) in the manga list */
     urlFromValue: function(val) {
-      return this.manga.listChaps.find(
+      return this.listChaps.find(
         arr => amrutils.chapPath(arr[1]) === val
       )[1];
     },
@@ -686,8 +688,8 @@ export default {
         action: 'readManga',
         url: this.manga.url,
         mirror: this.manga.mirror,
-        lastChapterReadName: this.manga.listChaps[0][0],
-        lastChapterReadURL: this.manga.listChaps[0][1],
+        lastChapterReadName: this.listChaps[0][0],
+        lastChapterReadURL: this.listChaps[0][1],
         name: this.manga.name,
         language: this.manga.language
       })
@@ -753,12 +755,12 @@ export default {
       else {
         pos = this.posInChapList - which; // order of chapters is reversed
         if (pos < 0) pos = 0;
-        else if (pos >= this.manga.listChaps.length)
-          pos = this.manga.listChaps.length - 1;
+        else if (pos >= this.listChaps.length)
+          pos = this.listChaps.length - 1;
       }
       browser.runtime.sendMessage({
         action: "opentab",
-        url: this.manga.listChaps[pos][1]
+        url: this.listChaps[pos][1]
       });
     },
     /**
