@@ -1,5 +1,5 @@
 <template>
-  <v-card v-if="shouldShow" :class="color(3, true) + ' amr-manga-row' + (manga.update === 0 ? ' amr-noupdates' : '')">
+  <v-card v-if="shouldShow" v-intersect="onIntersect" :class="color(3, true) + ' amr-manga-row' + (manga.update === 0 ? ' amr-noupdates' : '')">
     <v-row :class="isDarkText ? 'dark-text' : 'light-text'">
       <v-lazy class="col-auto pr-0 mr-0" v-if="selectable">
           <v-checkbox v-model="selected" hide-details dense class="shrink mr-2 mt-0"></v-checkbox>
@@ -85,7 +85,6 @@
       <v-col 
         :cols="selectable ? '3' : '4'"
         :lg="selectable ? '4': '5'"
-        v-intersect="onIntersect"
       >
         <v-card :color="color(0)" class="back-card" :rounded="true" :flat="listChaps.length ? true : false">
               <!-- List of chapters -->
