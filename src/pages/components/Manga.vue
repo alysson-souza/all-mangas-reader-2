@@ -47,8 +47,8 @@
             <v-col :sm="title_sm_col" :lg="title_lg_col">
               <v-tooltip top :disabled="!(manga.displayName && manga.displayName !== '')">
                 <template v-slot:activator="{on}">
-                  <div class="text-truncate ml-1">
-                    <span class="amr-manga-title" v-on="on" @click="openManga">
+                  <div class="ml-1 d-flex ">
+                    <span class="amr-manga-title text-truncate" v-on="on" @click="openManga">
                       {{ manga.displayName && manga.displayName !== '' ? manga.displayName : manga.name }}
                     </span>
                   </div>
@@ -142,11 +142,11 @@
                       ></v-divider>
                     </template>
                     <template v-slot:selection="{on, item}">
-                          <div v-on="on" class="d-flex align-center text-truncate">
-                            <v-lazy v-if="manga.language" width="20">
+                          <div v-on="on" class="d-flex align-center text-truncate align-content-space-between">
+                            <v-lazy v-if="manga.language" width="16" height="20">
                               <Flag :value="manga.language"/>
                             </v-lazy>
-                            <span class="chap-title">{{item.text}}</span>
+                            <span class="chap-title text-truncate" :class="manga.language ? 'ml-1': ''">{{item.text}}</span>
                           </div>
                     </template>
                   </v-select>
@@ -922,6 +922,7 @@ export default {
 .amr-manga-title {
   font-weight: bold;
   cursor: pointer;
+  max-width: 748px!important;
 }
 .amr-manga-title-cont .select-checkbox {
     display: inline-flex;
@@ -987,6 +988,7 @@ export default {
 }
 .chap-title {
   font-size:13px;
+  max-width:687px!important
 }
 .amr-noupdates {
   opacity: 0.75;
