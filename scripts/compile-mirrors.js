@@ -51,7 +51,7 @@ global.registerMangaObject = function(object) {
     if (!object.mirrorIcon) {
         console.error(mirrorName + " : mirrorIcon is required !")
     }
-    website.mirrorIcon = base64_encode(iconDir + object.mirrorIcon)
+    website.mirrorIcon = base64_encode(iconDir + object.mirrorIcon.replace(/\.png|\.jpg|\.gif|\.webp/g, '-optimized.png'))
     website.iconName = object.mirrorIcon
     
     if (object.abstract !== undefined) {
@@ -183,7 +183,7 @@ function writeReadme() {
         }
         const td = document.createElement('td')
         const img = document.createElement('img')
-        img.src = "src/mirrors/icons/"+w.iconName
+        img.src = "src/mirrors/icons/"+w.iconName.replace(/\.png|\.jpg|\.gif|\.webp/g, '-optimized.png')
         img.width = "16"
         img.title = w.mirrorName
         td.appendChild(img)
