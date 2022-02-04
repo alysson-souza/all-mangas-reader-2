@@ -157,39 +157,30 @@
       :search="searchText"
       @page-count="pagination.pageCount = $event"
     >
-      <template v-if="pageNavigationPosition == 'top'" v-slot:top>
-        <v-row class="mx-2">
+      <template v-slot:[pageNavigationPosition]>
+        <v-row class="mx-2" :class="pageNavigationPosition === 'footer' ? 'my-6' :''">
           <v-col cols="3">
-            <v-select dense outlined :items="pagination.pageOptions" v-model="itemsPerPage" :label="i18n('list_page_label')"></v-select>
-          </v-col>
-          <v-col>
-            <v-pagination :total-visible="$isPopup ? 5 : 10" v-model="pagination.currentPage" :length="pagination.pageCount"></v-pagination>
-          </v-col>
-          <v-col cols="1">
-            <v-tooltip top content-class="icon-ttip">
-            <template v-slot:activator="{ on }">
-              <v-btn color="blue" icon x-large @click="moveNavigation()" v-on="on">
-                <v-icon>mdi-arrow-down-box</v-icon>
-              </v-btn>
+            <v-select dense outlined :items="pagination.pageOptions" v-model="itemsPerPage" :label="i18n('list_page_label')">
+            <template v-slot:item="{ item }">
+              <v-list-item-content>
+                <v-list-item-title>
+                  {{ item === -1 ? i18n('list_page_all') : item }}
+                </v-list-item-title>
+              </v-list-item-content>
             </template>
-            <span>{{i18n("list_move_navigation")}}</span>
-          </v-tooltip>
-          </v-col>
-        </v-row>
-      </template>
-      <template v-if="pageNavigationPosition == 'bottom'" v-slot:footer>
-        <v-row class="mx-2 pt-5">
-          <v-col cols="3">
-            <v-select dense outlined :items="pagination.pageOptions" v-model="itemsPerPage" :label="i18n('list_page_label')"></v-select>
+            <template v-slot:selection="{ item }">
+              {{ item === -1 ? i18n('list_page_all') : item }}
+            </template>
+            </v-select>
           </v-col>
           <v-col>
-            <v-pagination :total-visible="$isPopup ? 5 : 10" v-model="pagination.currentPage" :length="pagination.pageCount"></v-pagination>
+            <v-pagination v-if="itemsPerPage > 0" :total-visible="$isPopup ? 5 : 10" v-model="pagination.currentPage" :length="pagination.pageCount"></v-pagination>
           </v-col>
           <v-col cols="1">
             <v-tooltip top content-class="icon-ttip">
             <template v-slot:activator="{ on }">
               <v-btn color="blue" icon x-large @click="moveNavigation()" v-on="on">
-                <v-icon>mdi-arrow-up-box</v-icon>
+                <v-icon>{{ pageNavigationPosition === 'top' ? 'mdi-arrow-down-box' : 'mdi-arrow-up-box'}}</v-icon>
               </v-btn>
             </template>
             <span>{{i18n("list_move_navigation")}}</span>
@@ -327,20 +318,21 @@ export default {
       selectable: false, // Toggle Manga List select behaviour
       dialogAction: () => {self.showDialog = false}, // action to take on yes in dialog
       searchText: "",
-      mirrorSelection: "All",
+      mirrorSelection: i18n('list_page_all'),
       selectedManga: [],
       pagination: {
         pageOptions: [
           5,
           25,
           50,
-          100
+          100,
+          -1
         ],
         currentPage: 1,
         pageCount: 0
       },
       itemsPerPage: this.$store.state.options.perPageMangas,
-      pageNavigationPosition: this.$store.state.options.pageNavigationPosition,
+      pageNavigationPosition: this.$store.state.options.pageNavigationPosition === 'bottom' ? 'footer' : 'top',
       alpha_asc_desc: this.$store.state.options.alpha_asc_desc, // Toggle Manga List select behaviour
       searchMenu:false,
     };
@@ -359,7 +351,7 @@ export default {
     },
     showMirrorSelection: function(newValue) {
       if (!newValue) {
-        this.mirrorSelection = "All"
+        this.mirrorSelection = i18n('list_page_all')
       }
     },
     selectable: function(newValue) {
@@ -388,7 +380,7 @@ export default {
      * Return all visible mangas
      */
     visMangas: function() {
-      if (this.mirrorSelection != 'All') {
+      if (this.mirrorSelection !== i18n('list_page_all')) {
         return this.allMangas.filter(
           mg => mg.mirror == this.mirrorSelection
         )

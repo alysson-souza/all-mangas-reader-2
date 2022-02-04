@@ -1,3 +1,16 @@
+### V2.4.5
+  Changes: (All changes credit @JiPai)
+    * Added option to diplay all series on single page
+    * Removed pagination buttons if all series are displayed
+  
+  Mirror Fixes:
+    * ManhuaPlus - Fix chapter list and occasial series name being "Novel Info"
+    * Mangadex - Ignoring chapters that have external url links
+    * Manwha18 - Renamed to Manwha18.com, chapter url fixes (Credit @JiPai)
+    * Toonily - Chapter list fixed (Credit: @JiPai)
+
+  New Mirrors:
+    * Manwha18.net - https://manhwa18.net/
 ### V2.4.4
   Note:
     This release comes with a major push to disable and fix mirrors credit to @JiPai, @Robo, and @Fahim for putting togeather the list

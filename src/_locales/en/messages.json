@@ -1796,6 +1796,10 @@
     "message": "Mangas per page",
     "description": "Label for the manga per page select box"
   },
+  "list_page_all": {
+    "message": "All",
+    "description": "All manga per page option | Mirror selection option"
+  },
   "options_webtoon_mode_default": {
     "message": "Turn on webtoon mode by default",
     "description": "webtoon mode default check box"
