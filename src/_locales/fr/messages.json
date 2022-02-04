@@ -1984,5 +1984,12 @@
   "options_tachidesk_server_label": {
     "message": "URL du serveur Tachidesk",
     "description": "Option for Tachidesk url"
+  },
+  "__V2_4_5": {
+    "message": "Just a filler to separate new labels from old ones"
+  },
+  "reader_context_menu_download_image": {
+    "message": "Télécharger l'image",
+    "description": "Context Menu link for downloading a single image"
   }
 }

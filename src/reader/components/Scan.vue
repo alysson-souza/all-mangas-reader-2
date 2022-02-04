@@ -51,6 +51,11 @@
             {{ i18n('reader_context_menu_reload_image') }}
           </v-list-item-title>
         </v-list-item>
+        <v-list-item link>
+          <v-list-item-title @click="downloadImage">
+            Download Image
+          </v-list-item-title>
+        </v-list-item>
       </v-list>
     </v-menu>
 
@@ -196,6 +201,20 @@ export default {
       }
 
     },
+
+    async downloadImage() {
+      const image = await this.imageToBlob(this.scan.scan.currentSrc, window.location.href)
+      const url = window.URL.createObjectURL(image)
+      
+      let a = document.createElement("a")
+      document.body.appendChild(a)
+      a.style = "display: none"
+      a.href = url;
+      a.download = this.src.split('/').pop().split('#')[0].split('?')[0];
+      a.click();
+      window.URL.revokeObjectURL(url);
+    },
+
     async imageToBlob(imageURL, referer) {
       const bs64 = await browser.runtime.sendMessage({action: 'fetchImage', imageURL, referer})
       const img = new Image()
