@@ -3,8 +3,9 @@
     v-intersect="{
           handler: onIntersect,
           options: {
-            threshold: 0, 
-            rootMargin: '380px 0px 380px 0px' // top, right, bottom, left // 38px = height of the card 
+            threshold: 0,
+            // add virtual margin so items are rendered outside of viewport
+            rootMargin: '190px 0px 190px 0px' // 38px = 1 row height 
           }
         }"
     :class="color(3, true) + ' amr-manga-row' + (manga.update === 0 ? ' amr-noupdates' : '')"
