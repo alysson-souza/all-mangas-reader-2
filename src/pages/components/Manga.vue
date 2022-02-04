@@ -922,7 +922,7 @@ export default {
 .amr-manga-title {
   font-weight: bold;
   cursor: pointer;
-  max-width: 748px!important;
+  max-width: 700px!important
 }
 .amr-manga-title-cont .select-checkbox {
     display: inline-flex;
@@ -988,7 +988,7 @@ export default {
 }
 .chap-title {
   font-size:13px;
-  max-width:687px!important
+  max-width:600px!important
 }
 .amr-noupdates {
   opacity: 0.75;
