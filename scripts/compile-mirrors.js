@@ -1,6 +1,7 @@
 const fs = require('fs')
 const fspromise = require('fs').promises
 const path = require('path')
+const {renameToOptimized} = require('./icons-helper')
 const JSDOM = require('jsdom').JSDOM
 const beautify = require('js-beautify').html
 const dom = new JSDOM()
@@ -51,7 +52,7 @@ global.registerMangaObject = function(object) {
     if (!object.mirrorIcon) {
         console.error(mirrorName + " : mirrorIcon is required !")
     }
-    website.mirrorIcon = base64_encode(iconDir + object.mirrorIcon)
+    website.mirrorIcon = base64_encode(renameToOptimized(iconDir + object.mirrorIcon))
     website.iconName = object.mirrorIcon
     
     if (object.abstract !== undefined) {
@@ -183,7 +184,7 @@ function writeReadme() {
         }
         const td = document.createElement('td')
         const img = document.createElement('img')
-        img.src = "src/mirrors/icons/"+w.iconName
+        img.src = "src/mirrors/icons/"+w.iconName.replace(/\.png|\.jpg|\.gif|\.webp/g, '-optimized.png')
         img.width = "16"
         img.title = w.mirrorName
         td.appendChild(img)

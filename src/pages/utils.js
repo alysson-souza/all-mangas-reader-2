@@ -62,9 +62,9 @@ export function convertIcons(input) {
  * @param {*} param1
  * @param {*} light a parameter indicating how much lighter the color must be
  */
-export function getColor(manga, { colornotfollow, colornew, colorread }, light) {
+export function getColor(manga, hasNew, { colornotfollow, colornew, colorread }, light) {
     if (manga.read !== 0) return computeColorLight(colornotfollow, light);
-    else if (hasNew(manga)) {
+    else if (hasNew) {
         return computeColorLight(colornew, light);
     } else {
         return computeColorLight(colorread, light);
@@ -93,9 +93,9 @@ export function computeColorLight(color, light) {
  * @param {} manga
  * @param {*} options
  */
-export function darkText(manga, { colornotfollow, colornew, colorread }) {
+export function darkText(manga, hasNew, { colornotfollow, colornew, colorread }) {
     if (manga.read !== 0) return isLight(colornotfollow);
-    else if (hasNew(manga)) {
+    else if (hasNew) {
         return isLight(colornew);
     } else {
         return isLight(colorread);
