@@ -53,7 +53,7 @@
         </v-list-item>
         <v-list-item link>
           <v-list-item-title @click="downloadImage">
-            Download Image
+            {{ i18n('reader_context_menu_download_image') }}
           </v-list-item-title>
         </v-list-item>
       </v-list>
