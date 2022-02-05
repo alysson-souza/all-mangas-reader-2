@@ -176,9 +176,9 @@
             </v-lazy>
           </v-col>
           <v-col>
-            <v-lazy v-if="itemsPerPage > 0" :total-visible="$isPopup ? 5 : 10">
-              <v-pagination  v-model="pagination.currentPage" :length="pagination.pageCount"></v-pagination>
-            </v-lazy>
+            <v-lazy v-if="itemsPerPage > 0">
+              <v-pagination  :total-visible="$isPopup ? 5 : 10" v-model="pagination.currentPage" :length="pagination.pageCount"></v-pagination>
+            </v-lazy >
           </v-col>
           <v-col cols="1">
             <v-tooltip top content-class="icon-ttip">
