@@ -65,8 +65,7 @@
               <v-row no-gutters class="pa-1">
                 <v-col cols="10">
                   <v-text-field
-                      v-model="searchText"
-                      prepend-icon="mdi-magnify"
+                      v-model="searchTextBuffer"
                       :label="i18n('list_search_label')"
                       dense
                       single-line
@@ -75,7 +74,19 @@
                       hide-details
                       clearable
                       autofocus
-                    ></v-text-field>
+                    >
+                      <template v-slot:prepend>
+                        <v-progress-circular
+                          v-if="searchLoading"
+                          indeterminate
+                          color="primary"
+                          size="20"
+                          width="2"
+                          class="ml-1"
+                        ></v-progress-circular>
+                        <v-icon v-else color="primary">mdi-magnify</v-icon>
+                      </template>
+                    </v-text-field>
                 </v-col>
                 <v-col cols="2">
                   <v-btn
@@ -323,7 +334,10 @@ export default {
       renameKey: '', // Key of the manga we are going to rename
       selectable: false, // Toggle Manga List select behaviour
       dialogAction: () => {self.showDialog = false}, // action to take on yes in dialog
-      searchText: "",
+      searchText: "", // Text to search in list
+      searchTextBuffer: "", // User input buffer for search
+      searchTextTimeout: null, // timeout for search (works with buffer)
+      searchLoading: false, // display a loading icon instead of a magnifying glass if user input is still in buffer
       mirrorSelection: i18n('list_page_all'),
       selectedManga: [],
       pagination: {
@@ -350,9 +364,29 @@ export default {
     sort: function(newValue) {
       this.$store.dispatch("setOption", { key: 'sortOrder', value: newValue })
     },
+    searchTextBuffer: function(val) {
+      clearTimeout(this.searchTextTimeout)
+
+      // setup the timeout delay depending on the length of the search text
+      let delay = 500;
+      if(val !== null) { 
+        if(val.length <= 1) delay = 500
+        else if(val.length === 2) delay = 200
+        else delay = 20
+      }
+    
+      // do not bother showing the search loading indicator if the search delay is too small
+      if(delay > 20 && !this.searchLoading) this.searchLoading = true 
+
+      // set the timeout
+      this.searchTextTimeout = setTimeout(() => {
+        if(this.searchLoading) this.searchLoading = false
+        this.searchText = val
+      }, delay)
+    }, 
     showFilter: function(newValue) {
       if (!newValue) {
-        this.searchText = ""
+        this.searchTextBuffer = ""
       }
     },
     showMirrorSelection: function(newValue) {
@@ -360,6 +394,7 @@ export default {
         this.mirrorSelection = i18n('list_page_all')
       }
     },
+    
     selectable: function(newValue) {
       if (newValue)
         this.$eventBus.$emit('multi-manga:show-multiselect')
@@ -576,6 +611,9 @@ export default {
       this.renameDialog = false
     }
   },
+  beforeDestroy () {
+    clearInterval(this.searchTextTimeout)
+  },
   async created() {
     // initialize state for store in popup from background
     await this.$store.dispatch("getStateFromReference", {
@@ -654,5 +692,10 @@ td {
 }
 .no-bg-hover::before {
    background-color: transparent !important;
+}
+.v-progress-linear--absolute {
+    position: absolute;
+    width: 90%!important;
+    margin-left: 5%!important;
 }
 </style>
