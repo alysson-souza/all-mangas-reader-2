@@ -91,7 +91,7 @@
                 <v-col cols="2">
                   <v-btn
                     color="gray"
-                    @click="showFilter = false"
+                    @click="hideFilter()"
                     class="no-bg-hover px-0 pr-2"
                     text
                   >
@@ -338,6 +338,7 @@ export default {
       searchTextBuffer: "", // User input buffer for search
       searchTextTimeout: null, // timeout for search (works with buffer)
       searchLoading: false, // display a loading icon instead of a magnifying glass if user input is still in buffer
+      watchSearchLoading: false, // does the search popup needs to wait for search to finish loading before closing
       mirrorSelection: i18n('list_page_all'),
       selectedManga: [],
       pagination: {
@@ -364,6 +365,7 @@ export default {
     sort: function(newValue) {
       this.$store.dispatch("setOption", { key: 'sortOrder', value: newValue })
     },
+    
     searchTextBuffer: function(val) {
       clearTimeout(this.searchTextTimeout)
 
@@ -378,17 +380,21 @@ export default {
       // do not bother showing the search loading indicator if the search delay is too small
       if(delay > 20 && !this.searchLoading) this.searchLoading = true 
 
-      // set the timeout
+      // set the timeout for search
       this.searchTextTimeout = setTimeout(() => {
         if(this.searchLoading) this.searchLoading = false
         this.searchText = val
       }, delay)
+
+      // add delay to close the search popup if requested
+        if(this.watchSearchLoading) {
+          this.watchSearchLoading = false
+          setTimeout(() => {
+            this.showFilter = false
+          }, delay > 20 ? delay-100 : 0) // failsafe, in this case delay should always be 500
+
+        }
     }, 
-    showFilter: function(newValue) {
-      if (!newValue) {
-        this.searchTextBuffer = ""
-      }
-    },
     showMirrorSelection: function(newValue) {
       if (!newValue) {
         this.mirrorSelection = i18n('list_page_all')
@@ -535,6 +541,12 @@ export default {
         })
       }
       this.showDialog = true;
+    },
+    hideFilter: function(newValue) {
+      if (!newValue) {
+        this.searchTextBuffer = ""
+        this.watchSearchLoading = true
+      }
     },
     /**
      * Propagate search request event from MangaGroup to parent
