@@ -3,7 +3,7 @@ import * as amrutils from '../amr/utils'
 export function hasNew(manga) {
     return (
         manga.read === 0 &&
-        (manga.listChaps.length &&
+        (manga.listChaps.length > 0 &&
             amrutils.chapPath(manga.lastChapterReadURL) !== amrutils.chapPath(manga.listChaps[0][1]))
     );
 }
