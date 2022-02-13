@@ -17,6 +17,8 @@ window["MangastreamAbs"] = function (options) {
         img_src: "src",
         search_json: true,
         flame_scans_fuckery: false,
+        fixChapterUrl: (input) => input,
+        fixSeriesUrl: (input) => input,
         doBefore: () => { }
     }
     this.options = Object.assign(this.default_options, options)
@@ -50,7 +52,7 @@ window["MangastreamAbs"] = function (options) {
                     res.push(
                         [
                             item["post_title"],
-                            item["post_link"]
+                            self.options.fixSeriesUrl(item["post_link"])
                         ]
                     );
                 }
@@ -61,7 +63,7 @@ window["MangastreamAbs"] = function (options) {
             $(this.options.search_a_sel, doc).each(function (index) {
                 res[res.length] = [
                     self.options.manga_title_attr ? $(this).attr("title") : $(this).text().trim(),
-                    $(this).attr("href")
+                    self.options.fixSeriesUrl($(this).attr("href"))
                 ];
             });
         }
@@ -78,11 +80,12 @@ window["MangastreamAbs"] = function (options) {
                 chapter_text = $(self.options.chapters_text_sel, this).text().trim()
             }
 
-            let chapter_url = $(this).attr("href") + self.options.chapter_url_suffix
+            let chapter_url = self.options.fixChapterUrl($(this).attr("href") + self.options.chapter_url_suffix)
 
-            if (self.options.flame_scans_fuckery) {
-                chapter_url = self.flame_scans_chapter_url(chapter_url)
-            }
+            // if (self.options.flame_scans_fuckery) {
+            //     chapter_url = self.flame_scans_chapter_url(chapter_url)
+            // }
+
             res.push([
                 chapter_text,
                 chapter_url
@@ -96,13 +99,13 @@ window["MangastreamAbs"] = function (options) {
         let manga_url = $(this.options.manga_url_sel, doc).attr("href");
         let manga_name = $(this.options.manga_url_sel, doc).text();
 
-        if (this.options.flame_scans_fuckery) {
-            curUrl = this.flame_scans_chapter_url(curUrl)
-        }
+        // if (this.options.flame_scans_fuckery) {
+        //     curUrl = this.flame_scans_chapter_url(curUrl)
+        // }
         return {
             "name": manga_name.replace(this.options.manga_name_replace, "").trim(),
-            "currentMangaURL": manga_url,
-            "currentChapterURL": curUrl
+            "currentMangaURL": this.options.fixSeriesUrl(manga_url),
+            "currentChapterURL": this.options.fixChapterUrl(curUrl)
         };
     }
 
