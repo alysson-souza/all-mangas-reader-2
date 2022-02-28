@@ -269,10 +269,12 @@ const actions = {
    * meant to be reused if any other integration are added
    */
   async autoExportReadStatus({getters, dispatch}, mg) {
+    if(mg.mirror !== "MangaDex V5") return
+    if(!getters.md_options.enabled) return
+    if(!getters.md_options.markAsRead) return
     if(!mg.lastChapterReadURL) return
     if(!mg.listChaps) return
     if(!mg.listChaps.length) return
-    if(mg.mirror !== "MangaDex V5" && !getters.md_options.enabled && !getters.md_options.markAsRead) return
 
     const toExport = []
 
