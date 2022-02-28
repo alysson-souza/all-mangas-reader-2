@@ -699,6 +699,20 @@ export default {
         name: this.manga.name,
         language: this.manga.language
       })
+      self.$store.dispatch(
+        'autoExportReadStatus',
+        {
+          url: this.manga.url,
+          mirror: this.manga.mirror,
+          lastChapterReadName: this.listChaps[0][0],
+          lastChapterReadURL: this.listChaps[0][1],
+          name: this.manga.name,
+          language: this.manga.language
+        },
+        {
+          root: true
+        }
+      )
     },
     /**
      * Reset manga reading to first chapter for the group of mangas

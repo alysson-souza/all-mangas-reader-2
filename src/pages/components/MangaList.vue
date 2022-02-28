@@ -516,14 +516,11 @@ export default {
       this.dialogAction = () => {
         self.showDialog = false
         self.visNewMangas.forEach(async mg => {
-          await self.$store.dispatch('readManga', {
-            url: mg.url,
-            mirror: mg.mirror,
-            lastChapterReadName: mg.listChaps[0][0],
-            lastChapterReadURL: mg.listChaps[0][1],
-            name: mg.name,
-            language: mg.language
-          })
+          const newMG = mg
+          newMG.lastChapterReadName = mg.listChaps[0][0]
+          newMG.lastChapterReadURL = mg.listChaps[0][1]
+          await self.$store.dispatch('readManga', newMG)
+          await self.$store.dispatch('autoExportReadStatus', newMG, {root: true})
         })
       }
       this.showDialog = true;
