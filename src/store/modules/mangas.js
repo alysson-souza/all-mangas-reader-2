@@ -441,7 +441,6 @@ const actions = {
                             }
                             if (posNew !== -1 && (message.fromSite || (posNew < posOld || posOld === -1))) {
                                 commit('updateMangaLastChapter', { key: mg.key, obj: message });
-                                await dispatch('autoExportReadStatus', mg, { root: true })
                                 if(!message.isSync) {
                                     if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
                                     await syncManager.setToRemote(mg, 'ts')
@@ -458,7 +457,6 @@ const actions = {
             } else {
                 if (message.fromSite || (posNew < posOld || posOld === -1)) {
                     commit('updateMangaLastChapter', { key: mg.key, obj: message }, {root: true});
-                    await dispatch('autoExportReadStatus', mg, { root: true })
                     if(!message.isSync) {
                         if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
                         await syncManager.setToRemote(mg, 'ts')
@@ -670,7 +668,6 @@ const actions = {
                 setTimeout(async () => {
                     await dispatch("refreshLastChapters", mg).then(() => {
                             dispatch('findAndUpdateManga', mg); //save updated manga do not wait
-                            dispatch('autoExportReadStatus', mg, {root: true})
                             amrUpdater.refreshBadgeAndIcon();
                         }).catch(e => {
                             if (e !== ABSTRACT_MANGA_MSG) {
