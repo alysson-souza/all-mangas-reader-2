@@ -272,17 +272,20 @@ const actions = {
     if(!mg.lastChapterReadURL) return
     if(!mg.listChaps) return
     if(!mg.listChaps.length) return
+    if(mg.mirror !== "MangaDex V5" && !getters.md_options.enabled && !getters.md_options.markAsRead) return
+
     const toExport = []
+
     for(const chap of mg.listChaps.slice().reverse()) {
       toExport.push(chap[1])
       if(chap[1] == mg.lastChapterReadURL) break
     }
-    if(mg.mirror === "MangaDex V5") {
-      if(!getters.md_options.enabled) return
-      if(!getters.md_options.markAsRead) return
-      if(!mangadex) await dispatch('initMangadex')
-      await mangadex.markAsReadBatch(mg.key, toExport)
-    }
+
+    if(toExport.length === 0) return
+
+    if(!mangadex) await dispatch('initMangadex')
+    await mangadex.markAsReadBatch(mg.key, toExport)
+
   },
   /**
    * Automatically export read manga
