@@ -419,7 +419,7 @@
                   <v-slider
                     min="10"
                     max="100"
-                    v-model="maxWidthValue"
+                    v-model="maxWidthValueStore"
                     :thumb-color="backcolor(3)"
                     thumb-label="always"
                   ></v-slider>
@@ -776,6 +776,21 @@
         if (this.scaleUp !== (this.options.scaleUp === 1)) return true
         return false
       },
+      maxWidthValueStore: {
+        get() {
+          return this.maxWidthValue
+        },
+        set(val) {
+          this.maxWidthValue = val
+          browser.runtime.sendMessage({
+              action: "setZoomMode",
+              url: this.pageData.currentMangaURL,
+              zoom: val,
+              language: this.pageData.language,
+              mirror: this.mirror.mirrorName
+          })
+        }
+      },
       /* Top telling if we already tried loading next chapter */
       nextchapLoading() {
         return this.nextChapterLoader && this.nextChapterLoader.scansProvider
@@ -847,10 +862,11 @@
         this.direction = cdirection === 0 ? 'ltr': 'rtl'
         this.fullchapter = cfullchapter === 1
         this.resize = resize_values[cresize]
-
-        /** Set webtoon option */
+    
+        /** Set webtoon and zoom option */
         if (specific)
           this.webtoonMode = specific.webtoon || false
+          this.maxWidthValue = specific.zoom || 100
       },
       /** Load mirror description (containing icon and home page) */
       async loadMirror() {
