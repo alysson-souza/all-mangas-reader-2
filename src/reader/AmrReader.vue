@@ -729,6 +729,10 @@
           })
         }
       },
+      /** hide zoom slider if resize method isn't compatible */
+      resize(nVal) {
+        if(['height', 'none'].includes(nVal)) this.showMaxWidth = false
+      },
       webtoonMode(nVal, oVal) {
         if (this.mangaExists) {
           browser.runtime.sendMessage({
