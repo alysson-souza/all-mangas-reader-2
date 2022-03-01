@@ -218,6 +218,7 @@ class SyncManager {
                     if(localManga.display !== remoteManga.display) await this.localStorage.dispatch('setMangaDisplayMode', remoteManga, true)
                     if(localManga.layout !== remoteManga.layout) await this.localStorage.dispatch('setMangaLayoutMode', remoteManga, true)
                     if(localManga.webtoon !== remoteManga.webtoon) await this.localStorage.dispatch('setMangaWebtoonMode', remoteManga, true)
+                    if(localManga.zoom !== remoteManga.zoom) await this.localStorage.dispatch('setMangaZoomMode', remoteManga, true)
                     if(localManga.displayName !== remoteManga.displayName) await this.localStorage.dispatch('setMangaDisplayName', remoteManga, true)
                 }
                 if(remoteManga.ts > localManga.ts) {
@@ -262,6 +263,7 @@ class SyncManager {
                     if(local.display !== remoteManga.display) remoteManga.display = local.display
                     if(local.layout !== remoteManga.layout) remoteManga.layout = local.layout
                     if(local.webtoon !== remoteManga.webtoon) remoteManga.webtoon = local.webtoon
+                    if(local.zoom !== remoteManga.zoom) remoteManga.zoom = local.zoom
                     if(local.displayName !== remoteManga.displayName) remoteManga.displayName = local.displayName
                 }
                 if(save) remoteUpdates.push({ ...remoteManga, listChaps: [] })
@@ -380,7 +382,7 @@ class SyncManager {
                 } else if(remoteManga[mutatedKey] !== localManga[mutatedKey]) {
                     // Mutations for:
                     // setMangaDisplayMode, setMangaLayoutMode, setMangaWebtoonMode
-                    // setMangaDisplayName, setMangaReadTop, setMangaUpdateTop
+                    // setMangaDisplayName, setMangaReadTop, setMangaUpdateTop, setMangaZoomMode
                     remoteManga[mutatedKey] = localManga[mutatedKey]
                     remoteManga.tsOpts = localManga.tsOpts
                 } else {

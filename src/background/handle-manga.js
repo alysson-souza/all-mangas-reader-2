@@ -33,7 +33,8 @@ class HandleManga {
                         currentChapter: mg.currentChapter, /* last read chapter, last chapter page opened */
                         currentScanUrl: mg.currentScanUrlm, /* last viewed page in currentChapter */
                         webtoon: mg.webtoon || false, /* webtoon mode */
-                        displayName: mg.displayName
+                        displayName: mg.displayName,
+                        zoom: mg.zoom || 100, /* zoom level */
                     });
                 } else {
                     return Promise.resolve();
@@ -64,6 +65,8 @@ class HandleManga {
                 return window['AMR_STORE'].dispatch('setMangaLayoutMode', message);
             case "setWebtoonMode":
                 return window['AMR_STORE'].dispatch('setMangaWebtoonMode', message);
+            case "setZoomMode":
+                return window['AMR_STORE'].dispatch('setMangaZoomMode', message);
             case "setDisplayName":
                 return window['AMR_STORE'].dispatch('setMangaDisplayName', message);
             case "setMangaChapter":
@@ -374,6 +377,7 @@ class HandleManga {
                 if (mg.g) readmg.language = mg.g;
                 if (mg.dn) readmg.displayName = mg.dn
                 if (mg.wt) readmg.webtoon = mg.wt
+                if (mg.z) readmg.zoom = mg.z
                 // add default category if specified
                 if (importcat !== "") {
                     if (readmg.cats && readmg.cats.length > 0)

@@ -1929,14 +1929,6 @@
     "message": "Show Zoom Control",
     "description": "Button to show zoom controls"
   },
-  "reader_zoom_plus": {
-    "message": "Zoom In",
-    "description": "Button to zoom in"
-  },
-  "reader_zoom_minus": {
-    "message": "Zoom Out",
-    "description": "Button to zoom out"
-  },
   "options_reader_smooth_navigation": {
     "message": "Smooth Navigation",
     "description": "Smooth Navigation option"

@@ -1928,14 +1928,6 @@
     "message": "Afficher la commande de zoom",
     "description": "Button to show zoom controls"
   },
-  "reader_zoom_plus": {
-    "message": "Agrandir",
-    "description": "Button to zoom in"
-  },
-  "reader_zoom_minus": {
-    "message": "Dézoomer",
-    "description": "Button to zoom out"
-  },
   "options_reader_smooth_navigation": {
     "message": "Navigation fluide",
     "description": "Smooth Navigation option"

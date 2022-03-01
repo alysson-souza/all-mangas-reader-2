@@ -262,6 +262,23 @@ const actions = {
         }
     },
     /**
+     * Change manga reader zoom value
+     * @param {*} param0 
+     * @param {*} message 
+     */
+    async setMangaZoomMode({ dispatch, commit, getters }, message, fromSync) {
+        let key = utils.mangaKey(message.url, message.mirror, message.language);
+        message.key = key
+        const mg = state.all.find(manga => manga.key === key)
+        commit('setMangaZoomMode', message);
+        dispatch('findAndUpdateManga', mg);
+        if(!fromSync) {
+            if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
+            await syncManager.setToRemote(mg, 'zoom')
+        }
+    },
+    
+    /**
      * Change manga display name
      * @param {*} vuex object
      * @param {*} message containing manga object
@@ -963,6 +980,18 @@ const mutations = {
         let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.webtoon = webtoon;
+            if(!fromSync) mg.tsOpts = Date.now()
+        }
+    },
+    /**
+     * Change manga reader webtoon mode
+     * @param {*} state
+     * @param {*} param1 url of the manga and layout mode
+     */
+     setMangaZoomMode(state, { key, url, mirror, language, zoom }, fromSync) {
+        let mg = state.all.find(manga => manga.key === key)
+        if (mg !== undefined) {
+            mg.zoom = zoom;
             if(!fromSync) mg.tsOpts = Date.now()
         }
     },

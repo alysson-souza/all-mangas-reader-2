@@ -85,10 +85,10 @@
       ref="navdrawer"
       width="300"
     >
-      <v-card :color="backcolor()" class="white--text">
+      <v-card tile :color="backcolor()" class="white--text">
         <!-- Manga Title -->
         <v-card-title class="white--text amr-manga-title">
-          <div class="text-h6">
+          <div class="text-subtitle-1">
             <v-tooltip bottom v-if="mirrorDesc">
               <template v-slot:activator="{ on }">
                 <a v-on="on" :href="mirrorDesc.home" target="_blank">
@@ -108,15 +108,16 @@
           </div>
         </v-card-title>
         <!-- Chapters navigation -->
-        <v-card-actions>
+        <v-card-actions class="pa-0">
           <v-row  no-gutters>
             <v-col cols="12">
-              <v-toolbar flat class="pa-0 amr-chapters-toolbar" my-1>
+              <v-toolbar class="pa-0 amr-chapters-toolbar">
+                <div class="d-flex align-center py-1">
                 <!-- Previous chapter button -->
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
-                    <v-btn v-on="on" icon v-show="(shouldInvertKeys ?  !lastChapter : !firstChapter)"
-                      @click.stop="shouldInvertKeys ?  goNextChapter() : goPreviousChapter()" class="btn-huge">
+                    <v-btn class="select-btn" v-on="on" text small tile v-show="(shouldInvertKeys ?  !lastChapter : !firstChapter)"
+                      @click.stop="shouldInvertKeys ?  goNextChapter() : goPreviousChapter()">
                       <v-icon>{{ icons.mdiChevronLeft }}</v-icon>
                     </v-btn>
                   </template>
@@ -133,7 +134,7 @@
                   :items="chapters"
                   item-text="title"
                   item-value="url"
-                  solo dense single-line hide-details class="amr-chapter-select"
+                  solo dense single-line hide-details class="amr-chapter-select truncate"
                   :loading="chapters.length === 0 ? 'primary' : false"
                   @change="goToChapter"
                 ></v-select>
@@ -141,8 +142,8 @@
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
                     <!-- Next chapter button -->
-                    <v-btn v-on="on" icon v-show="(shouldInvertKeys ? !firstChapter : !lastChapter)"
-                      @click.stop="shouldInvertKeys ? goPreviousChapter() : goNextChapter()" class="btn-huge">
+                    <v-btn class="select-btn" v-on="on" text small tile v-show="(shouldInvertKeys ? !firstChapter : !lastChapter)"
+                      @click.stop="shouldInvertKeys ? goPreviousChapter() : goNextChapter()">
                       <v-icon>{{ icons.mdiChevronRight }}</v-icon>
                     </v-btn>
                   </template>
@@ -153,6 +154,7 @@
                     }}
                   </span>
                 </v-tooltip>
+                </div>
               </v-toolbar>
             </v-col>
             <!-- Next chapter preloading progression bar -->
@@ -315,28 +317,45 @@
         </v-card-actions>
       </v-card>
       <!-- Display options -->
-      <v-card :color="backcolor(1)" class="white--text">
+      <v-card tile :color="backcolor(1)" class="white--text">
         <v-card-title>
           <v-row dense>
             <v-col cols="12">
               <!-- Display book checkbox -->
-              <v-switch v-model="book" :label="i18n('option_read_book')" hide-details class="pb-1"></v-switch>
-              <span v-show="book">
+              <v-switch dense v-model="book" :label="i18n('option_read_book')" hide-details class="pb-1"></v-switch>
+              <span>
                 <v-tooltip top>
                   <template v-slot:activator="{ on }">
                     <!-- Book offset button -->
-                    <v-btn block outlined v-on="on" @click="offsetBook" color="blue" v-show="displayBookOffsetButton">
-                      <v-icon left>{{ icons.mdiBookOpenPageVariant }}</v-icon>
-                      {{i18n("reader_book_offset")}}
-                    </v-btn>
+                    <v-switch :disabled="!book" dense v-show="displayBookOffsetButton" v-on="on" @click="offsetBook" :label="i18n('reader_book_offset')" hide-details class="pb-1"></v-switch>
                   </template>
                   <span>{{i18n("reader_book_offset_description")}}</span>
                 </v-tooltip>
               </span>
             </v-col>
+            <v-col cols="12">
+              <v-divider></v-divider>
+            </v-col>
+            <v-col cols="12">
+              <!-- Display full chapter checkbox -->
+              <v-switch dense v-model="fullchapter" :label="i18n('option_read_fullchapter')" hide-details class="pb-1"></v-switch>
+            </v-col>
+            <v-col cols="12">
+              <!-- Webtoon Mode checkbox -->
+              <v-switch dense v-model="webtoonMode" :label="i18n('option_read_webtoon')" hide-details class="pb-1" :disabled="!fullchapter"></v-switch>
+            </v-col>
+            <v-col cols="12">
+              <v-divider></v-divider>
+            </v-col>
+            <v-col cols="12">
+              <!-- Scale Up Image checkbox -->
+              <v-switch dense v-model="scaleUp" :label="i18n('option_read_scaleup')" hide-details class="pb-1"></v-switch>
+            </v-col>
+          </v-row>
+          <v-row dense>
             <!-- Reading direction -->
-            <v-col class="text-center" cols="12">
-              <v-btn-toggle v-model="direction" mandatory>
+            <v-col class="text-center mt-2" cols="12">
+              <v-btn-toggle v-model="direction" mandatory color="primary" :background-color="backcolor(1)">
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
                     <v-btn v-on="on" text value="ltr">
@@ -357,21 +376,9 @@
                 </v-tooltip>
               </v-btn-toggle>
             </v-col>
-            <v-col cols="12">
-              <!-- Display full chapter checkbox -->
-              <v-switch v-model="fullchapter" :label="i18n('option_read_fullchapter')" hide-details class="pb-1"></v-switch>
-            </v-col>
-            <v-col cols="12">
-              <!-- Scale Up Image checkbox -->
-              <v-switch v-model="scaleUp" :label="i18n('option_read_scaleup')" hide-details class="pb-1"></v-switch>
-            </v-col>
-            <v-col cols="12">
-              <!-- Webtoon Mode checkbox -->
-              <v-switch v-model="webtoonMode" :label="i18n('option_read_webtoon')" hide-details class="pb-1" v-show="fullchapter"></v-switch>
-            </v-col>
             <!-- Resize mode -->
             <v-col class="text-center" cols="12">
-              <v-btn-toggle v-model="resize">
+              <v-btn-toggle v-model="resize" mandatory color="primary" :background-color="backcolor(1)">
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
                     <v-btn v-on="on" text value="width">
@@ -410,50 +417,38 @@
                 </v-tooltip>
               </v-btn-toggle>
             </v-col>
+            <!-- Zoom Value -->
             <v-col class="text-center mt-2" cols="12" v-if="showMaxWidth">
-              <v-row>
-                <v-col>
-                  <v-tooltip top>
-                    <template v-slot:activator="{ on }">
-                      <v-btn v-on="on" icon color="green" @click="changeMaxWidth('more')" class="ma-0">
-                        <v-icon>{{ icons.mdiPlusCircle }}</v-icon>
-                      </v-btn>
-                    </template>
-                    <span>{{i18n("reader_zoom_plus")}}</span>
-                  </v-tooltip>
-                </v-col>
-                <v-col>
-                  {{ maxWidthValue }}%
-                </v-col>
-                <v-col>
-                  <v-tooltip top>
-                    <template v-slot:activator="{ on }">
-                      <v-btn v-on="on" icon color="red" @click="changeMaxWidth('less')" class="ma-0">
-                        <v-icon>{{ icons.mdiMinusCircle }}</v-icon>
-                      </v-btn>
-                    </template>
-                    <span>{{i18n("reader_zoom_minus")}}</span>
-                  </v-tooltip>
-                </v-col>
-              </v-row>
+              <v-slider
+                v-model="maxWidthValueStore"
+                dense
+                min="10"
+                max="100"
+                track-fill-color="primary"
+                :thumb-color="backcolor(3)"
+                thumb-label="always"
+                hide-details
+              >
+                <template v-slot:prepend>
+                  <v-icon
+                    :color="backcolor(3)"
+                    @click="zoomOut"
+                  >
+                    {{ icons.mdiMinus }}
+                  </v-icon>
+                </template>
+                <template v-slot:append>
+                  <v-icon
+                    :color="backcolor(3)"
+                    @click="zoomIn"
+                  >
+                    {{ icons.mdiPlus }}
+                  </v-icon>
+                </template>
+              </v-slider>
             </v-col>
+            <v-col cols="12" class="mt-2" style="min-height:40px!important;" v-else />
             <v-col class="text-center mt-2" cols="12">
-              <v-tooltip top>
-                <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon @click="saveOptionsAsDefault(false)" color="primary" v-show="layoutDiffFromOptions" class="ma-0">
-                    <v-icon>{{ icons.mdiContentSave }}</v-icon>
-                  </v-btn>
-                </template>
-                <span>{{i18n("reader_button_saveoptions")}}</span>
-              </v-tooltip>
-              <v-tooltip top>
-                <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon @click="resetOptionsToDefault" color="primary" v-show="layoutDiffFromOptions" class="ma-0">
-                    <v-icon>{{ icons.mdiReload }}</v-icon>
-                  </v-btn>
-                </template>
-                <span>{{i18n("reader_button_resetoptions")}}</span>
-              </v-tooltip>
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
                   <v-btn v-on="on" icon @click="toggleDark" :color="darkreader ? 'white' : 'black'" class="ma-0">
@@ -472,6 +467,14 @@
               </v-tooltip>
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
+                  <v-btn v-on="on" icon @click="showMaxWidth = !showMaxWidth" class="ma-0" :disabled="['height', 'none'].includes(resize)">
+                    <v-icon>{{ icons.mdiMagnify }}</v-icon>
+                  </v-btn>
+                </template>
+                <span>{{i18n("reader_zoom_show")}}</span>
+              </v-tooltip>
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
                   <v-btn v-on="on" icon @click="openShortcuts" class="ma-0">
                     <v-icon>{{ icons.mdiKeyboard }}</v-icon>
                   </v-btn>
@@ -486,13 +489,25 @@
                 </template>
                 <span>{{i18n("reader_button_tips")}}</span>
               </v-tooltip>
+            </v-col>
+            <v-col class="text-center mt-2" cols="12">
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon @click="showMaxWidth = !showMaxWidth" color="blue" class="ma-0">
-                    <v-icon>{{ icons.mdiMagnifyMinus }}</v-icon>
+                  <v-btn v-on="on" icon @click="saveOptionsAsDefault(false)" color="primary" v-if="layoutDiffFromOptions" class="ma-0">
+                    <v-icon>{{ icons.mdiContentSave }}</v-icon>
                   </v-btn>
+                  <v-btn v-else icon disabled class="select-btn" />
                 </template>
-                <span>{{i18n("reader_zoom_show")}}</span>
+                <span>{{i18n("reader_button_saveoptions")}}</span>
+              </v-tooltip>
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-btn v-on="on" icon @click="resetOptionsToDefault" color="primary" v-if="layoutDiffFromOptions" class="ma-0">
+                    <v-icon>{{ icons.mdiReload }}</v-icon>
+                  </v-btn>
+                  <v-btn v-else icon disabled class="select-btn" />
+                </template>
+                <span>{{i18n("reader_button_resetoptions")}}</span>
               </v-tooltip>
             </v-col>
           </v-row>
@@ -538,10 +553,10 @@
   import ShortcutsPopup from "./components/ShortcutsPopup";
   import SocialBar from "./components/SocialBar";
   import { THINSCAN } from '../amr/options';
-  import { mdiMenu, mdiChevronRight, mdiChevronLeft, mdiAlert, mdiPlus, mdiStar, mdiOpenInNew, mdiPageLast, mdiDelete, 
+  import { mdiMenu, mdiChevronRight, mdiChevronLeft, mdiAlert, mdiPlus, mdiMinus, mdiStar, mdiOpenInNew, mdiPageLast, mdiDelete, 
     mdiPause, mdiPlay, mdiReplay, mdiDownloadOutline, mdiBookOpenPageVariant, mdiArrowRight, mdiArrowLeft, mdiArrowExpandHorizontal,
     mdiArrowExpandVertical, mdiArrowExpandAll, mdiBorderNoneVariant, mdiPlusCircle, mdiMinusCircle, mdiContentSave, mdiReload,
-    mdiBrightness6, mdiFullscreen, mdiFullscreenExit, mdiKeyboard, mdiLightbulbOn, mdiMagnifyMinus} from '@mdi/js'
+    mdiBrightness6, mdiFullscreen, mdiFullscreenExit, mdiKeyboard, mdiLightbulbOn, mdiMagnify} from '@mdi/js'
 
   /** Possible values for resize (readable), the stored value is the corresponding index */
   const resize_values = ['width', 'height', 'container', 'none']
@@ -585,6 +600,7 @@
 
       showMaxWidth: false, /* Show the max width */
       maxWidthValue: 100,
+      maxWidthTimeout: null,
 
       icons: {
         mdiMenu,
@@ -607,7 +623,9 @@
         mdiArrowExpandVertical,
         mdiArrowExpandAll,
         mdiBorderNoneVariant,
+        mdiPlus,
         mdiPlusCircle,
+        mdiMinus,
         mdiMinusCircle,
         mdiContentSave,
         mdiReload,
@@ -616,7 +634,7 @@
         mdiFullscreenExit,
         mdiKeyboard,
         mdiLightbulbOn,
-        mdiMagnifyMinus,
+        mdiMagnify,
       }      
     }),
     created() {
@@ -719,6 +737,10 @@
           })
         }
       },
+      /** hide zoom slider if resize method isn't compatible */
+      resize(nVal) {
+        if(['height', 'none'].includes(nVal)) this.showMaxWidth = false
+      },
       webtoonMode(nVal, oVal) {
         if (this.mangaExists) {
           browser.runtime.sendMessage({
@@ -787,6 +809,25 @@
         if (this.scaleUp !== (this.options.scaleUp === 1)) return true
         return false
       },
+      maxWidthValueStore: {
+        get() {
+          return this.maxWidthValue
+        },
+        set(val) {
+          if(this.maxWidthValue === val) return;
+          this.maxWidthValue = val
+          if(this.maxWidthTimeout) clearTimeout(this.maxWidthTimeout)
+          this.maxWidthTimeout = setTimeout(() => {
+            browser.runtime.sendMessage({
+                action: "setZoomMode",
+                url: this.pageData.currentMangaURL,
+                zoom: val,
+                language: this.pageData.language,
+                mirror: this.mirror.mirrorName
+            })
+          }, 2000)
+        }
+      },
       /* Top telling if we already tried loading next chapter */
       nextchapLoading() {
         return this.nextChapterLoader && this.nextChapterLoader.scansProvider
@@ -808,6 +849,14 @@
       async consultManga(force) {
         await util.consultManga(force)
         await this.loadMangaInformations() // reload last chapter read
+      },
+      /** Decrement Zoom value */
+      zoomOut() {
+        this.maxWidthValueStore = Math.max(10, this.maxWidthValueStore - 5)
+      },
+      /** Increment Zoom value */
+      zoomIn() {
+        this.maxWidthValueStore = Math.min(100, this.maxWidthValueStore + 5)
       },
       /** Check if current manga is in reading list */
       async checkExists() {
@@ -858,10 +907,12 @@
         this.direction = cdirection === 0 ? 'ltr': 'rtl'
         this.fullchapter = cfullchapter === 1
         this.resize = resize_values[cresize]
-
-        /** Set webtoon option */
-        if (specific)
+    
+        /** Set webtoon and zoom option */
+        if (specific) {
           this.webtoonMode = specific.webtoon || false
+          this.maxWidthValue = specific.zoom || 100
+        }
       },
       /** Load mirror description (containing icon and home page) */
       async loadMirror() {
@@ -1397,18 +1448,6 @@
         }).catch(() => this.zip = false)
         this.zip = false
       },
-      changeMaxWidth(type) {
-        if (type == 'more') {
-          if (this.maxWidthValue < 100) {
-            this.maxWidthValue += 10
-          }
-        }
-        if (type == 'less') {
-          if (this.maxWidthValue > 40) {
-            this.maxWidthValue -= 10
-          }
-        }
-      }
     }
   }
 </script>
@@ -1448,10 +1487,6 @@
   white-space: pre-wrap;
   word-break: break-word;
 }
-/** button font size bigger */
-.btn-huge .v-icon {
-  font-size: 250%!important;
-}
 /** To prevent select to be too small due to large padding */
 .v-toolbar.pa-0 .v-toolbar__content {
   padding: 0px 5px;
@@ -1459,6 +1494,7 @@
 /** So the dropdown can hover the rest... */
 .amr-chapters-toolbar {
   z-index: 8;
+  height: auto!important;
 }
 .amr-chapters-toolbar .v-toolbar__content {
   height: auto!important;
@@ -1517,5 +1553,28 @@
 }
 .v-select__selection--comma {
   white-space: normal;
+}
+label.v-label, span {
+  word-break: break-word!important;
+}
+/* truncate chapter text in v-select */
+.truncate {
+  width: 180px;
+  white-space: nowrap!important;
+  overflow: hidden!important;
+  text-overflow: ellipsis!important;
+}
+.v-select__selection--comma {
+    white-space: nowrap!important;
+}
+/* disable hover effect for select buttons */
+.select-btn::before {
+  display:none!important;
+}
+
+/** reduce switches margin and padding */
+.v-input--selection-controls {
+    margin-top: 8px;
+    padding-top: 8px;
 }
 </style>
