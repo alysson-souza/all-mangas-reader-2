@@ -332,7 +332,7 @@
               </span>
             </v-col>
             <!-- Reading direction -->
-            <v-col class="text-center" cols="12" v-show="book">
+            <v-col class="text-center" cols="12">
               <v-btn-toggle v-model="direction" mandatory>
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
