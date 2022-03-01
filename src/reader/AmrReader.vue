@@ -437,6 +437,7 @@
                 </template>
               </v-slider>
             </v-col>
+            <v-col cols="12" class="mt-2" style="min-height:40px!important;" v-else />
             <v-col class="text-center mt-2" cols="12">
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
