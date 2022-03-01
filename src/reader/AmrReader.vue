@@ -417,6 +417,7 @@
                     <span>{{i18n("reader_zoom_slider")}}</span>
                   </v-subheader>
                   <v-slider
+                    v-model="maxWidthValueStore"
                     dense
                     min="10"
                     max="100"
