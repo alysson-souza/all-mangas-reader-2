@@ -325,10 +325,7 @@
                 <v-tooltip top>
                   <template v-slot:activator="{ on }">
                     <!-- Book offset button -->
-                    <v-btn block outlined v-on="on" @click="offsetBook" color="blue" v-show="displayBookOffsetButton">
-                      <v-icon left>{{ icons.mdiBookOpenPageVariant }}</v-icon>
-                      {{i18n("reader_book_offset")}}
-                    </v-btn>
+                    <v-switch v-show="displayBookOffsetButton" v-on="on" @click="offsetBook" :label="i18n('reader_book_offset')" hide-details class="pb-1"></v-switch>
                   </template>
                   <span>{{i18n("reader_book_offset_description")}}</span>
                 </v-tooltip>
