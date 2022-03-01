@@ -1928,13 +1928,9 @@
     "message": "Afficher la commande de zoom",
     "description": "Button to show zoom controls"
   },
-  "reader_zoom_plus": {
-    "message": "Agrandir",
+  "reader_zoom_slider": {
+    "message": "Utiliser le curseur pour zoomer/dézoomer",
     "description": "Button to zoom in"
-  },
-  "reader_zoom_minus": {
-    "message": "Dézoomer",
-    "description": "Button to zoom out"
   },
   "options_reader_smooth_navigation": {
     "message": "Navigation fluide",

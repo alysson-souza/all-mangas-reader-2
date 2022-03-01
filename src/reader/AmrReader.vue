@@ -412,28 +412,17 @@
             </v-col>
             <v-col class="text-center mt-2" cols="12" v-if="showMaxWidth">
               <v-row>
-                <v-col>
-                  <v-tooltip top>
-                    <template v-slot:activator="{ on }">
-                      <v-btn v-on="on" icon color="green" @click="changeMaxWidth('more')" class="ma-0">
-                        <v-icon>{{ icons.mdiPlusCircle }}</v-icon>
-                      </v-btn>
-                    </template>
-                    <span>{{i18n("reader_zoom_plus")}}</span>
-                  </v-tooltip>
-                </v-col>
-                <v-col>
-                  {{ maxWidthValue }}%
-                </v-col>
-                <v-col>
-                  <v-tooltip top>
-                    <template v-slot:activator="{ on }">
-                      <v-btn v-on="on" icon color="red" @click="changeMaxWidth('less')" class="ma-0">
-                        <v-icon>{{ icons.mdiMinusCircle }}</v-icon>
-                      </v-btn>
-                    </template>
-                    <span>{{i18n("reader_zoom_minus")}}</span>
-                  </v-tooltip>
+                <v-col cols="12">
+                  <v-subheader class="pl-0">
+                    <span>{{i18n("reader_zoom_slider")}}</span>
+                  </v-subheader>
+                  <v-slider
+                    min="10"
+                    max="100"
+                    v-model="maxWidthValue"
+                    :thumb-color="backcolor(3)"
+                    thumb-label="always"
+                  ></v-slider>
                 </v-col>
               </v-row>
             </v-col>
@@ -1397,18 +1386,6 @@
         }).catch(() => this.zip = false)
         this.zip = false
       },
-      changeMaxWidth(type) {
-        if (type == 'more') {
-          if (this.maxWidthValue < 100) {
-            this.maxWidthValue += 10
-          }
-        }
-        if (type == 'less') {
-          if (this.maxWidthValue > 40) {
-            this.maxWidthValue -= 10
-          }
-        }
-      }
     }
   }
 </script>
