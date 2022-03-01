@@ -266,12 +266,16 @@ const actions = {
      * @param {*} param0 
      * @param {*} message 
      */
-    async setMangaZoomMode({ dispatch, commit, getters }, message) {
+    async setMangaZoomMode({ dispatch, commit, getters }, message, fromSync) {
         let key = utils.mangaKey(message.url, message.mirror, message.language);
         message.key = key
         const mg = state.all.find(manga => manga.key === key)
-        commit('setMangaWebtoonMode', message);
+        commit('setMangaZoomMode', message);
         dispatch('findAndUpdateManga', mg);
+        if(!fromSync) {
+            if(!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
+            await syncManager.setToRemote(mg, 'zoom')
+        }
     },
     
     /**
@@ -980,16 +984,17 @@ const mutations = {
         }
     },
     /**
-     * Change manga reader zoom value
+     * Change manga reader webtoon mode
      * @param {*} state
      * @param {*} param1 url of the manga and layout mode
      */
-         setMangaWebtoonMode(state, { key, zoom }) {
-            let mg = state.all.find(manga => manga.key === key)
-            if (mg !== undefined) {
-                mg.zoom = zoom;
-            }
-        },
+     setMangaZoomMode(state, { key, url, mirror, language, zoom }, fromSync) {
+        let mg = state.all.find(manga => manga.key === key)
+        if (mg !== undefined) {
+            mg.zoom = zoom;
+            if(!fromSync) mg.tsOpts = Date.now()
+        }
+    },
     /**
      * Change manga display name
      * @param {*} state

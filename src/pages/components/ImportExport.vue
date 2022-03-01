@@ -193,6 +193,7 @@ export default {
           if (mg.language !== undefined) res.g = mg.language;
           if (mg.displayName !== '') res.dn = mg.displayName
           if (mg.webtoon !== 0) res.wt = mg.webtoon
+          if (mg.zoom !== 0) res.z = mg.zoom
           return res;
         } else {
           let res = {
@@ -276,7 +277,9 @@ export default {
             p: mg.update,
             d: mg.display,
             y: mg.layout,
-            c: mg.cats
+            c: mg.cats,
+            wt: mg.webtoon,
+            z: mg.zoom,
           };
         });
       }
