@@ -85,7 +85,7 @@
       ref="navdrawer"
       width="300"
     >
-      <v-card :color="backcolor()" class="white--text">
+      <v-card tile :color="backcolor()" class="white--text">
         <!-- Manga Title -->
         <v-card-title class="white--text amr-manga-title">
           <div class="text-subtitle-1">
@@ -108,7 +108,7 @@
           </div>
         </v-card-title>
         <!-- Chapters navigation -->
-        <v-card-actions>
+        <v-card-actions class="pa-0">
           <v-row  no-gutters>
             <v-col cols="12">
               <v-toolbar class="pa-0 amr-chapters-toolbar">
@@ -317,36 +317,44 @@
         </v-card-actions>
       </v-card>
       <!-- Display options -->
-      <v-card :color="backcolor(1)" class="white--text">
+      <v-card tile :color="backcolor(1)" class="white--text">
         <v-card-title>
           <v-row dense>
             <v-col cols="12">
               <!-- Display book checkbox -->
-              <v-switch v-model="book" :label="i18n('option_read_book')" hide-details class="pb-1"></v-switch>
-              <span v-show="book">
+              <v-switch dense v-model="book" :label="i18n('option_read_book')" hide-details class="pb-1"></v-switch>
+              <span>
                 <v-tooltip top>
                   <template v-slot:activator="{ on }">
                     <!-- Book offset button -->
-                    <v-switch v-show="displayBookOffsetButton" v-on="on" @click="offsetBook" :label="i18n('reader_book_offset')" hide-details class="pb-1"></v-switch>
+                    <v-switch :disabled="!book" dense v-show="displayBookOffsetButton" v-on="on" @click="offsetBook" :label="i18n('reader_book_offset')" hide-details class="pb-1"></v-switch>
                   </template>
                   <span>{{i18n("reader_book_offset_description")}}</span>
                 </v-tooltip>
               </span>
             </v-col>
             <v-col cols="12">
+              <v-divider></v-divider>
+            </v-col>
+            <v-col cols="12">
               <!-- Display full chapter checkbox -->
-              <v-switch v-model="fullchapter" :label="i18n('option_read_fullchapter')" hide-details class="pb-1"></v-switch>
+              <v-switch dense v-model="fullchapter" :label="i18n('option_read_fullchapter')" hide-details class="pb-1"></v-switch>
             </v-col>
             <v-col cols="12">
               <!-- Webtoon Mode checkbox -->
-              <v-switch v-model="webtoonMode" :label="i18n('option_read_webtoon')" hide-details class="pb-1" v-show="fullchapter"></v-switch>
+              <v-switch dense v-model="webtoonMode" :label="i18n('option_read_webtoon')" hide-details class="pb-1" :disabled="!fullchapter"></v-switch>
+            </v-col>
+            <v-col cols="12">
+              <v-divider></v-divider>
             </v-col>
             <v-col cols="12">
               <!-- Scale Up Image checkbox -->
-              <v-switch v-model="scaleUp" :label="i18n('option_read_scaleup')" hide-details class="pb-1"></v-switch>
+              <v-switch dense v-model="scaleUp" :label="i18n('option_read_scaleup')" hide-details class="pb-1"></v-switch>
             </v-col>
+          </v-row>
+          <v-row dense>
             <!-- Reading direction -->
-            <v-col class="text-center" cols="12">
+            <v-col class="text-center mt-2" cols="12">
               <v-btn-toggle v-model="direction" mandatory color="primary" :background-color="backcolor(1)">
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
@@ -1562,5 +1570,11 @@ label.v-label, span {
 /* disable hover effect for select buttons */
 .select-btn::before {
   display:none!important;
+}
+
+/** reduce switches margin and padding */
+.v-input--selection-controls {
+    margin-top: 8px;
+    padding-top: 8px;
 }
 </style>
