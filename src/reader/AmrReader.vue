@@ -88,7 +88,7 @@
       <v-card :color="backcolor()" class="white--text">
         <!-- Manga Title -->
         <v-card-title class="white--text amr-manga-title">
-          <div class="text-h6">
+          <div class="text-subtitle-1">
             <v-tooltip bottom v-if="mirrorDesc">
               <template v-slot:activator="{ on }">
                 <a v-on="on" :href="mirrorDesc.home" target="_blank">
