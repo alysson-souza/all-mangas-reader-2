@@ -177,7 +177,12 @@ class HandleManga {
      * wait for cloudflare's browser integrity check to be done
      * @param {*} tabId 
      */
-    async waitForCloudflare(tabId) {      
+    async waitForCloudflare(tabId) {  
+        const firstTry = await browser.tabs.executeScript(tabId, {
+            code: 'document.body.innerText;'
+        });
+        const firstCheck = firstTry[0].match(/checking your browser before accessing/gmi);
+        if(!firstCheck) return
         return new Promise((resolve, reject) => {
             let tries = 0;
             let interval = setInterval(async () => {
