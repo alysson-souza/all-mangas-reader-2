@@ -417,11 +417,12 @@
                     <span>{{i18n("reader_zoom_slider")}}</span>
                   </v-subheader>
                   <v-slider
+                    dense
                     min="10"
                     max="100"
-                    v-model="maxWidthValueStore"
                     :thumb-color="backcolor(3)"
                     thumb-label="always"
+                    hide-details
                   ></v-slider>
                 </v-col>
               </v-row>
