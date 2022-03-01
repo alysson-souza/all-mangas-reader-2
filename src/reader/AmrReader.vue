@@ -485,17 +485,19 @@
             <v-col class="text-center mt-2" cols="12">
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon @click="saveOptionsAsDefault(false)" color="primary" :style="layoutDiffFromOptions ? 'visibility:hidden!important;': ''" class="ma-0">
+                  <v-btn v-on="on" icon @click="saveOptionsAsDefault(false)" color="primary" v-if="layoutDiffFromOptions" class="ma-0">
                     <v-icon>{{ icons.mdiContentSave }}</v-icon>
                   </v-btn>
+                  <v-btn v-else icon disabled class="select-btn" />
                 </template>
                 <span>{{i18n("reader_button_saveoptions")}}</span>
               </v-tooltip>
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon @click="resetOptionsToDefault" color="primary" :style="layoutDiffFromOptions ? 'visibility:hidden!important;': ''" class="ma-0">
+                  <v-btn v-on="on" icon @click="resetOptionsToDefault" color="primary" v-if="layoutDiffFromOptions" class="ma-0">
                     <v-icon>{{ icons.mdiReload }}</v-icon>
                   </v-btn>
+                  <v-btn v-else icon disabled class="select-btn" />
                 </template>
                 <span>{{i18n("reader_button_resetoptions")}}</span>
               </v-tooltip>
