@@ -173,7 +173,30 @@ class HandleManga {
             resolve(res);
         });
     }
-
+    /**
+     * wait for cloudflare's browser integrity check to be done
+     * @param {*} tabId 
+     */
+    async waitForCloudflare(tabId) {      
+        return new Promise((resolve, reject) => {
+            let tries = 0;
+            let interval = setInterval(async () => {
+                const results = await browser.tabs.executeScript(tabId, {
+                    code: 'document.body.innerText;'
+                });
+                const checks = results[0].match(/checking your browser before accessing/gmi)
+                if(!checks) {
+                    clearInterval(interval);
+                    return resolve();
+                }
+                tries++;
+                if(tries >= 40) {
+                    clearInterval(interval);
+                    return reject();
+                }
+            }, 500)
+        })
+    }
     /**
      * Test if the url matches a mirror implementation.
      * If so, inject content script to transform the page and the mirror implementation inside the tab
@@ -192,6 +215,12 @@ class HandleManga {
             if (!chaprx.test("/" + utils.afterHostURL(url))) {
                 return // returns if there is no match
             }
+        }
+        try {
+            // wait for cloudflare browser integrety check if needed
+            await this.waitForCloudflare(tabId);
+        } catch {
+            return
         }
 
         // Load amr preload
