@@ -443,22 +443,6 @@
             <v-col class="text-center mt-2" cols="12">
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon @click="saveOptionsAsDefault(false)" color="primary" v-show="layoutDiffFromOptions" class="ma-0">
-                    <v-icon>{{ icons.mdiContentSave }}</v-icon>
-                  </v-btn>
-                </template>
-                <span>{{i18n("reader_button_saveoptions")}}</span>
-              </v-tooltip>
-              <v-tooltip top>
-                <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon @click="resetOptionsToDefault" color="primary" v-show="layoutDiffFromOptions" class="ma-0">
-                    <v-icon>{{ icons.mdiReload }}</v-icon>
-                  </v-btn>
-                </template>
-                <span>{{i18n("reader_button_resetoptions")}}</span>
-              </v-tooltip>
-              <v-tooltip top>
-                <template v-slot:activator="{ on }">
                   <v-btn v-on="on" icon @click="toggleDark" :color="darkreader ? 'white' : 'black'" class="ma-0">
                     <v-icon>{{ icons.mdiBrightness6 }}</v-icon>
                   </v-btn>
@@ -496,6 +480,24 @@
                   </v-btn>
                 </template>
                 <span>{{i18n("reader_zoom_show")}}</span>
+              </v-tooltip>
+            </v-col>
+            <v-col class="text-center mt-2" cols="12">
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-btn v-on="on" icon @click="saveOptionsAsDefault(false)" color="primary" :style="layoutDiffFromOptions ? 'visibility:hidden!important;': ''" class="ma-0">
+                    <v-icon>{{ icons.mdiContentSave }}</v-icon>
+                  </v-btn>
+                </template>
+                <span>{{i18n("reader_button_saveoptions")}}</span>
+              </v-tooltip>
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-btn v-on="on" icon @click="resetOptionsToDefault" color="primary" :style="layoutDiffFromOptions ? 'visibility:hidden!important;': ''" class="ma-0">
+                    <v-icon>{{ icons.mdiReload }}</v-icon>
+                  </v-btn>
+                </template>
+                <span>{{i18n("reader_button_resetoptions")}}</span>
               </v-tooltip>
             </v-col>
           </v-row>
