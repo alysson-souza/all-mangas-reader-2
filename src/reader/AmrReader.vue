@@ -332,7 +332,7 @@
               </span>
             </v-col>
             <!-- Reading direction -->
-            <v-col class="text-center" cols="12">
+            <v-col class="text-center" cols="12" v-show="book">
               <v-btn-toggle v-model="direction" mandatory>
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
@@ -838,15 +838,11 @@
       },
       /** Decrement Zoom value */
       zoomOut() {
-        if (this.maxWidthValueStore > 10) {
-          this.maxWidthValueStore = this.maxWidthValueStore - 5
-        }
+        this.maxWidthValueStore = Math.max(10, this.maxWidthValueStore - 5)
       },
       /** Increment Zoom value */
       zoomIn() {
-        if (this.maxWidthValueStore < 100) {
-          this.maxWidthValueStore = this.maxWidthValueStore + 5
-        }
+        this.maxWidthValueStore = Math.min(100, this.maxWidthValueStore + 5)
       },
       /** Check if current manga is in reading list */
       async checkExists() {
