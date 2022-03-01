@@ -574,6 +574,7 @@
 
       showMaxWidth: false, /* Show the max width */
       maxWidthValue: 100,
+      maxWidthTimeout: null,
 
       icons: {
         mdiMenu,
@@ -781,14 +782,18 @@
           return this.maxWidthValue
         },
         set(val) {
+          if(this.maxWidthValue === val) return;
           this.maxWidthValue = val
-          browser.runtime.sendMessage({
-              action: "setZoomMode",
-              url: this.pageData.currentMangaURL,
-              zoom: val,
-              language: this.pageData.language,
-              mirror: this.mirror.mirrorName
-          })
+          if(this.maxWidthTimeout) clearTimeout(this.maxWidthTimeout)
+          this.maxWidthTimeout = setTimeout(() => {
+            browser.runtime.sendMessage({
+                action: "setZoomMode",
+                url: this.pageData.currentMangaURL,
+                zoom: val,
+                language: this.pageData.language,
+                mirror: this.mirror.mirrorName
+            })
+          }, 2000)
         }
       },
       /* Top telling if we already tried loading next chapter */
