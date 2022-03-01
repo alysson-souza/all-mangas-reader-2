@@ -111,12 +111,13 @@
         <v-card-actions>
           <v-row  no-gutters>
             <v-col cols="12">
-              <v-toolbar flat class="pa-0 amr-chapters-toolbar" my-1>
+              <v-toolbar class="pa-0 amr-chapters-toolbar">
+                <div class="d-flex align-center py-1">
                 <!-- Previous chapter button -->
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
-                    <v-btn v-on="on" icon v-show="(shouldInvertKeys ?  !lastChapter : !firstChapter)"
-                      @click.stop="shouldInvertKeys ?  goNextChapter() : goPreviousChapter()" class="btn-huge">
+                    <v-btn class="select-btn" v-on="on" text small tile v-show="(shouldInvertKeys ?  !lastChapter : !firstChapter)"
+                      @click.stop="shouldInvertKeys ?  goNextChapter() : goPreviousChapter()">
                       <v-icon>{{ icons.mdiChevronLeft }}</v-icon>
                     </v-btn>
                   </template>
@@ -133,7 +134,7 @@
                   :items="chapters"
                   item-text="title"
                   item-value="url"
-                  solo dense single-line hide-details class="amr-chapter-select"
+                  solo dense single-line hide-details class="amr-chapter-select truncate"
                   :loading="chapters.length === 0 ? 'primary' : false"
                   @change="goToChapter"
                 ></v-select>
@@ -141,8 +142,8 @@
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on }">
                     <!-- Next chapter button -->
-                    <v-btn v-on="on" icon v-show="(shouldInvertKeys ? !firstChapter : !lastChapter)"
-                      @click.stop="shouldInvertKeys ? goPreviousChapter() : goNextChapter()" class="btn-huge">
+                    <v-btn class="select-btn" v-on="on" text small tile v-show="(shouldInvertKeys ? !firstChapter : !lastChapter)"
+                      @click.stop="shouldInvertKeys ? goPreviousChapter() : goNextChapter()">
                       <v-icon>{{ icons.mdiChevronRight }}</v-icon>
                     </v-btn>
                   </template>
@@ -153,6 +154,7 @@
                     }}
                   </span>
                 </v-tooltip>
+                </div>
               </v-toolbar>
             </v-col>
             <!-- Next chapter preloading progression bar -->
@@ -1471,10 +1473,6 @@
   white-space: pre-wrap;
   word-break: break-word;
 }
-/** button font size bigger */
-.btn-huge .v-icon {
-  font-size: 250%!important;
-}
 /** To prevent select to be too small due to large padding */
 .v-toolbar.pa-0 .v-toolbar__content {
   padding: 0px 5px;
@@ -1482,6 +1480,7 @@
 /** So the dropdown can hover the rest... */
 .amr-chapters-toolbar {
   z-index: 8;
+  height: auto!important;
 }
 .amr-chapters-toolbar .v-toolbar__content {
   height: auto!important;
@@ -1543,5 +1542,19 @@
 }
 label.v-label, span {
   word-break: break-word!important;
+}
+/* truncate chapter text in v-select */
+.truncate {
+  width: 180px;
+  white-space: nowrap!important;
+  overflow: hidden!important;
+  text-overflow: ellipsis!important;
+}
+.v-select__selection--comma {
+    white-space: nowrap!important;
+}
+/* disable hover effect for select buttons */
+.select-btn::before {
+  display:none!important;
 }
 </style>
