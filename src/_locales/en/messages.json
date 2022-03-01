@@ -1929,10 +1929,6 @@
     "message": "Show Zoom Control",
     "description": "Button to show zoom controls"
   },
-  "reader_zoom_slider": {
-    "message": "Move the slider to zoom in/out",
-    "description": "Button to zoom in"
-  },
   "options_reader_smooth_navigation": {
     "message": "Smooth Navigation",
     "description": "Smooth Navigation option"

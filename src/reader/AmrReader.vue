@@ -409,9 +409,6 @@
             </v-col>
             <!-- Zoom Value -->
             <v-col class="text-center mt-2" cols="12" v-if="showMaxWidth">
-              <v-subheader class="pl-0">
-                <span>{{i18n("reader_zoom_slider")}}</span>
-              </v-subheader>
               <v-slider
                 v-model="maxWidthValueStore"
                 dense
