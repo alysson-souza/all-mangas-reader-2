@@ -418,6 +418,7 @@
                     dense
                     min="10"
                     max="100"
+                    track-fill-color="primary"
                     :thumb-color="backcolor(3)"
                     thumb-label="always"
                     hide-details
