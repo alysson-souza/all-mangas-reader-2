@@ -422,7 +422,24 @@
                     :thumb-color="backcolor(3)"
                     thumb-label="always"
                     hide-details
-                  ></v-slider>
+                  >
+                    <template v-slot:prepend>
+                      <v-icon
+                        :color="backcolor(3)"
+                        @click="zoomOut"
+                      >
+                        {{ icons.mdiMinus }}
+                      </v-icon>
+                    </template>
+                    <template v-slot:append>
+                      <v-icon
+                        :color="backcolor(3)"
+                        @click="zoomIn"
+                      >
+                        {{ icons.mdiPlus }}
+                      </v-icon>
+                    </template>
+                  </v-slider>
                 </v-col>
               </v-row>
             </v-col>
@@ -527,7 +544,7 @@
   import ShortcutsPopup from "./components/ShortcutsPopup";
   import SocialBar from "./components/SocialBar";
   import { THINSCAN } from '../amr/options';
-  import { mdiMenu, mdiChevronRight, mdiChevronLeft, mdiAlert, mdiPlus, mdiStar, mdiOpenInNew, mdiPageLast, mdiDelete, 
+  import { mdiMenu, mdiChevronRight, mdiChevronLeft, mdiAlert, mdiPlus, mdiMinus, mdiStar, mdiOpenInNew, mdiPageLast, mdiDelete, 
     mdiPause, mdiPlay, mdiReplay, mdiDownloadOutline, mdiBookOpenPageVariant, mdiArrowRight, mdiArrowLeft, mdiArrowExpandHorizontal,
     mdiArrowExpandVertical, mdiArrowExpandAll, mdiBorderNoneVariant, mdiPlusCircle, mdiMinusCircle, mdiContentSave, mdiReload,
     mdiBrightness6, mdiFullscreen, mdiFullscreenExit, mdiKeyboard, mdiLightbulbOn, mdiMagnifyMinus} from '@mdi/js'
@@ -597,7 +614,9 @@
         mdiArrowExpandVertical,
         mdiArrowExpandAll,
         mdiBorderNoneVariant,
+        mdiPlus,
         mdiPlusCircle,
+        mdiMinus,
         mdiMinusCircle,
         mdiContentSave,
         mdiReload,
@@ -817,6 +836,18 @@
       async consultManga(force) {
         await util.consultManga(force)
         await this.loadMangaInformations() // reload last chapter read
+      },
+      /** Decrement Zoom value */
+      zoomOut() {
+        if (this.maxWidthValueStore > 10) {
+          this.maxWidthValueStore = this.maxWidthValueStore - 5
+        }
+      },
+      /** Increment Zoom value */
+      zoomIn() {
+        if (this.maxWidthValueStore < 100) {
+          this.maxWidthValueStore = this.maxWidthValueStore + 5
+        }
       },
       /** Check if current manga is in reading list */
       async checkExists() {
