@@ -392,6 +392,11 @@ export default {
       get () { return this.options.enabled },
       set (val) {
         this.$store.dispatch("setOption", { key: 'mangadexIntegrationEnable', value: val === true ? 1:0 });
+        if(val) {
+          this.inStore.forEach(async mg => {
+            await self.$store.dispatch('autoExportReadStatus', mg, {root: true})
+          })
+        }
       }
     },
     validCredentials() { return this.options.valid },

@@ -269,20 +269,25 @@ const actions = {
    * meant to be reused if any other integration are added
    */
   async autoExportReadStatus({getters, dispatch}, mg) {
+    if(mg.mirror !== "MangaDex V5") return
+    if(!getters.md_options.enabled) return
+    if(!getters.md_options.markAsRead) return
     if(!mg.lastChapterReadURL) return
     if(!mg.listChaps) return
     if(!mg.listChaps.length) return
+
     const toExport = []
+
     for(const chap of mg.listChaps.slice().reverse()) {
       toExport.push(chap[1])
       if(chap[1] == mg.lastChapterReadURL) break
     }
-    if(mg.mirror === "MangaDex V5") {
-      if(!getters.md_options.enabled) return
-      if(!getters.md_options.markAsRead) return
-      if(!mangadex) await dispatch('initMangadex')
-      await mangadex.markAsReadBatch(mg.key, toExport)
-    }
+
+    if(toExport.length === 0) return
+
+    if(!mangadex) await dispatch('initMangadex')
+    await mangadex.markAsReadBatch(mg.key, toExport)
+
   },
   /**
    * Automatically export read manga

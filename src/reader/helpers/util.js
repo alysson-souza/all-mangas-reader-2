@@ -53,6 +53,13 @@ class Util {
             name: pageData.state.name,
             language: pageData.state.language
         });
+        if (!force) {
+            browser.runtime.sendMessage({
+                action: 'exportReadStatus',
+                mirror: mirrorImpl.get().mirrorName,
+                url: pageData.state.currentChapterURL
+            })
+          }
     }
     /**
      * Mark current chapter as latest read in reading list
