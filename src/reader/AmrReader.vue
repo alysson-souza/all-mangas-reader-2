@@ -407,40 +407,38 @@
                 </v-tooltip>
               </v-btn-toggle>
             </v-col>
+            <!-- Zoom Value -->
             <v-col class="text-center mt-2" cols="12" v-if="showMaxWidth">
-              <v-row>
-                <v-col cols="12">
-                  <v-subheader class="pl-0">
-                    <span>{{i18n("reader_zoom_slider")}}</span>
-                  </v-subheader>
-                  <v-slider
-                    v-model="maxWidthValueStore"
-                    dense
-                    min="10"
-                    max="100"
-                    track-fill-color="primary"
-                    :thumb-color="backcolor(3)"
-                    hide-details
+              <v-subheader class="pl-0">
+                <span>{{i18n("reader_zoom_slider")}}</span>
+              </v-subheader>
+              <v-slider
+                v-model="maxWidthValueStore"
+                dense
+                min="10"
+                max="100"
+                track-fill-color="primary"
+                :thumb-color="backcolor(3)"
+                thumb-label="always"
+                hide-details
+              >
+                <template v-slot:prepend>
+                  <v-icon
+                    :color="backcolor(3)"
+                    @click="zoomOut"
                   >
-                    <template v-slot:prepend>
-                      <v-icon
-                        :color="backcolor(3)"
-                        @click="zoomOut"
-                      >
-                        {{ icons.mdiMinus }}
-                      </v-icon>
-                    </template>
-                    <template v-slot:append>
-                      <v-icon
-                        :color="backcolor(3)"
-                        @click="zoomIn"
-                      >
-                        {{ icons.mdiPlus }}
-                      </v-icon>
-                    </template>
-                  </v-slider>
-                </v-col>
-              </v-row>
+                    {{ icons.mdiMinus }}
+                  </v-icon>
+                </template>
+                <template v-slot:append>
+                  <v-icon
+                    :color="backcolor(3)"
+                    @click="zoomIn"
+                  >
+                    {{ icons.mdiPlus }}
+                  </v-icon>
+                </template>
+              </v-slider>
             </v-col>
             <v-col class="text-center mt-2" cols="12">
               <v-tooltip top>
