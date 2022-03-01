@@ -1518,4 +1518,7 @@
 .v-select__selection--comma {
   white-space: normal;
 }
+label.v-label, span {
+  word-break: break-word!important;
+}
 </style>
