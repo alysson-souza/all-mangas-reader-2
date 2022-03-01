@@ -459,6 +459,14 @@
               </v-tooltip>
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
+                  <v-btn v-on="on" icon @click="showMaxWidth = !showMaxWidth" class="ma-0">
+                    <v-icon>{{ icons.mdiMagnify }}</v-icon>
+                  </v-btn>
+                </template>
+                <span>{{i18n("reader_zoom_show")}}</span>
+              </v-tooltip>
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
                   <v-btn v-on="on" icon @click="openShortcuts" class="ma-0">
                     <v-icon>{{ icons.mdiKeyboard }}</v-icon>
                   </v-btn>
@@ -472,14 +480,6 @@
                   </v-btn>
                 </template>
                 <span>{{i18n("reader_button_tips")}}</span>
-              </v-tooltip>
-              <v-tooltip top>
-                <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon @click="showMaxWidth = !showMaxWidth" color="blue" class="ma-0">
-                    <v-icon>{{ icons.mdiMagnifyMinus }}</v-icon>
-                  </v-btn>
-                </template>
-                <span>{{i18n("reader_zoom_show")}}</span>
               </v-tooltip>
             </v-col>
             <v-col class="text-center mt-2" cols="12">
@@ -546,7 +546,7 @@
   import { mdiMenu, mdiChevronRight, mdiChevronLeft, mdiAlert, mdiPlus, mdiMinus, mdiStar, mdiOpenInNew, mdiPageLast, mdiDelete, 
     mdiPause, mdiPlay, mdiReplay, mdiDownloadOutline, mdiBookOpenPageVariant, mdiArrowRight, mdiArrowLeft, mdiArrowExpandHorizontal,
     mdiArrowExpandVertical, mdiArrowExpandAll, mdiBorderNoneVariant, mdiPlusCircle, mdiMinusCircle, mdiContentSave, mdiReload,
-    mdiBrightness6, mdiFullscreen, mdiFullscreenExit, mdiKeyboard, mdiLightbulbOn, mdiMagnifyMinus} from '@mdi/js'
+    mdiBrightness6, mdiFullscreen, mdiFullscreenExit, mdiKeyboard, mdiLightbulbOn, mdiMagnify} from '@mdi/js'
 
   /** Possible values for resize (readable), the stored value is the corresponding index */
   const resize_values = ['width', 'height', 'container', 'none']
@@ -624,7 +624,7 @@
         mdiFullscreenExit,
         mdiKeyboard,
         mdiLightbulbOn,
-        mdiMagnifyMinus,
+        mdiMagnify,
       }      
     }),
     created() {
