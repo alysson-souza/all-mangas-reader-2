@@ -457,7 +457,7 @@
               </v-tooltip>
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon @click="showMaxWidth = !showMaxWidth" class="ma-0">
+                  <v-btn v-on="on" icon @click="showMaxWidth = !showMaxWidth" class="ma-0" :disabled="['height', 'none'].includes(resize)">
                     <v-icon>{{ icons.mdiMagnify }}</v-icon>
                   </v-btn>
                 </template>
