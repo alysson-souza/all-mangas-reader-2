@@ -331,6 +331,18 @@
                 </v-tooltip>
               </span>
             </v-col>
+            <v-col cols="12">
+              <!-- Display full chapter checkbox -->
+              <v-switch v-model="fullchapter" :label="i18n('option_read_fullchapter')" hide-details class="pb-1"></v-switch>
+            </v-col>
+            <v-col cols="12">
+              <!-- Scale Up Image checkbox -->
+              <v-switch v-model="scaleUp" :label="i18n('option_read_scaleup')" hide-details class="pb-1"></v-switch>
+            </v-col>
+            <v-col cols="12">
+              <!-- Webtoon Mode checkbox -->
+              <v-switch v-model="webtoonMode" :label="i18n('option_read_webtoon')" hide-details class="pb-1" v-show="fullchapter"></v-switch>
+            </v-col>
             <!-- Reading direction -->
             <v-col class="text-center" cols="12" v-show="book">
               <v-btn-toggle v-model="direction" mandatory>
