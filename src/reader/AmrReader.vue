@@ -871,9 +871,10 @@
         this.resize = resize_values[cresize]
     
         /** Set webtoon and zoom option */
-        if (specific)
+        if (specific) {
           this.webtoonMode = specific.webtoon || false
           this.maxWidthValue = specific.zoom || 100
+        }
       },
       /** Load mirror description (containing icon and home page) */
       async loadMirror() {
