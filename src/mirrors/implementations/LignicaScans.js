@@ -9,11 +9,11 @@ if (typeof registerMangaObject === 'function') {
 
         getMangaList: async function(search) {
             let res = [];
-            let resultPage = await amr.loadPage(`${this.home}/?q=${search}`, { nocache: true, preventimages: true });
-            $("div.fiche", resultPage).each(function() {
+            let resultPage = await amr.loadPage(`${this.home}/search/?q=${search}`, { nocache: true, preventimages: true });
+            $("div.manga_card__title", resultPage).each(function() {
                 res.push([
-                    $("div.titre a span b", this).text(),
-                    $("a", this).attr("href").replace("annexe", "manga")
+                    $("p.line-break", this).text(),
+                    $("a", this).attr("href")
                 ]);
             });
             return res;
@@ -31,20 +31,20 @@ if (typeof registerMangaObject === 'function') {
         },
 
         getInformationsFromCurrentPage: async function(doc, curUrl) {
-            let serieLink = $('h2 b a', doc);
+            let serieLink = $('a#mangalink', doc);
             return {
                 "name": serieLink.text().trim(),
-                "currentMangaURL": serieLink.attr('href'),
+                "currentMangaURL": serieLink.attr('href').slice(0, -1),
                 "currentChapterURL": curUrl
             };
         },
 
         getListImages: async function(doc, curUrl) {
             let res = []
-            $('img.reader-imgwidth', doc).each(function() {
-                res.push($(this).attr('src'))
+            $('div.forgen_reader_image img', doc).each(function() {
+                res.push($(this).data('src'));
             })
-            return res
+            return res;
         },
 
         getImageFromPageAndWrite: async function(urlImg, image) {
@@ -52,7 +52,7 @@ if (typeof registerMangaObject === 'function') {
         },
 
         isCurrentPageAChapterPage: function(doc, curUrl) {
-            return $('img.reader-imgwidth', doc).length > 0;
+            return $('div.forgen_reader_image', doc).length > 0;
         }
     })
 }
