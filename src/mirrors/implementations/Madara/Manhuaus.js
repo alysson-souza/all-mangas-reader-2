@@ -12,6 +12,7 @@ if (typeof registerMangaObject === 'function') {
             search_url: "https://manhuaus.com/",
             img_src: "src",
             chapter_list_ajax: true,
+            isekai_chapter_url: true,
             secondary_img_src: "data-src"
         }
     })
