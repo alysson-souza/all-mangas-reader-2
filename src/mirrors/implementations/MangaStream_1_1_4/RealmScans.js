@@ -11,6 +11,8 @@ if (typeof registerMangaObject === 'function') {
         abstract: "MangaStream_1_1_4Abs",
         abstract_options: {
             base_url: "https://realmscans.com/",
+            series_list_selector: '.listupd a[href*="/series/"]',
+            chapter_list_selector: `.eph-num a[href*="realmscans.com"]`,
         }
         
         // // Mangastream 1.1.4 - Add abstract
