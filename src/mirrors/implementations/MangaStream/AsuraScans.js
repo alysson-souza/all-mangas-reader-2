@@ -15,7 +15,29 @@ if (typeof registerMangaObject === 'function') {
             search_json: false,
             img_sel: `#readerarea img[width!="1px"]:not(".asurascans")`,
             img_src: 'src',
-            flame_scans_fuckery: true
+            flame_scans_fuckery: true,
+            fixChapterUrl: (origUrl) => {
+                let parts = origUrl.split('/')
+        
+                let parts2 = parts[3].split('-')
+        
+                if (!isNaN(parts2[0]) && !isNaN(parseFloat(parts2[0])))
+                    parts2.shift()
+        
+                parts[3] = parts2.join('-')
+                return parts.join('/')
+            },
+            fixSeriesUrl: (origUrl) => {
+                let parts = origUrl.split('/')
+        
+                let parts2 = parts[4].split('-')
+        
+                if (!isNaN(parts2[0]) && !isNaN(parseFloat(parts2[0])))
+                    parts2.shift()
+        
+                parts[4] = parts2.join('-')
+                return parts.join('/')
+            },
         },      
     })
 }
