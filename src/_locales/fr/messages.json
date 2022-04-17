@@ -1399,6 +1399,10 @@
     "message": "Afficher un chapitre du manga au hasard",
     "description": "Description of the shortcut for displaying a random chapter from the manga"
   },
+  "reader_shortcut_toggle_fullscreen": {
+    "message": "Passer du mode normal au mode plein écran et vice-versa",
+    "description": "Description of the shortcut to toggle fullscreen"
+  },
   "reader_shortcut_layout_drawer": {
     "message": "Afficher / cacher le menu",
     "description": "Description of the shortcut to toggle side menu"

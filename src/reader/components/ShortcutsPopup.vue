@@ -52,6 +52,7 @@ export default {
                 { keys: [[alt, shift, "r"]], i18n:"reader_shortcut_random_chapter" },
             ],
             shortcuts_layout: [ // shortcuts linked to layout options
+                { keys: [[alt, "f"]], i18n: "reader_shortcut_toggle_fullscreen" },
                 { keys: [[shift, "m"]], i18n: "reader_shortcut_layout_drawer" },
                 { keys: [[shift, "w"], [shift, "h"], [shift, "c"]], i18n: "reader_shortcut_layout_resize" },
                 { keys: [[shift, "f"]], i18n: "reader_shortcut_layout_fullchapter" },
