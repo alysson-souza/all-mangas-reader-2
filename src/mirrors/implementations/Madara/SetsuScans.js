@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "Setsu Scans",
         mirrorIcon: "setsuscans.png",
@@ -12,8 +12,8 @@ if (typeof registerMangaObject === 'function') {
             search_url: "https://setsuscans.com/",
             chapter_list_ajax: true,
             isekai_chapter_url: true,
-            chapter_list_ajax_selctor_type: 'html',
-            chapter_list_ajax_selctor: '#manga-chapters-holder'
+            chapter_list_ajax_selctor_type: "html",
+            chapter_list_ajax_selctor: "#manga-chapters-holder"
         }
     })
 }

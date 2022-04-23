@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "Non Stop Scans",
         mirrorIcon: "nonstopscans.png",
@@ -9,9 +9,8 @@ if (typeof registerMangaObject === 'function') {
 
         abstract: "MangaStream_1_1_4Abs",
         abstract_options: {
-            base_url: "https://nonstopscans.com/",
+            base_url: "https://nonstopscans.com/"
         }
-
 
         // getMangaList : async function (search) {
         //     let res = []
@@ -26,7 +25,7 @@ if (typeof registerMangaObject === 'function') {
         //     })
         //     return res
         // },
-    
+
         // getListChaps : async function (urlManga) {
         //     let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
         //     let res = []
@@ -38,7 +37,7 @@ if (typeof registerMangaObject === 'function') {
         //     });
         //     return res
         // },
-    
+
         // getInformationsFromCurrentPage : async function (doc, curUrl) {
         //     var mgtitle = $(".allc a", doc)
         //     return {
@@ -47,7 +46,7 @@ if (typeof registerMangaObject === 'function') {
         //         "currentChapterURL" : curUrl
         //     };
         // },
-    
+
         // getListImages : async function (doc, curUrl) {
         //     let res = []
 
@@ -64,11 +63,11 @@ if (typeof registerMangaObject === 'function') {
         //     })
         //     return res
         // },
-    
+
         // getImageFromPageAndWrite : async function (urlImg, image) {
         //     $(image).attr("src", urlImg)
         // },
-        
+
         // isCurrentPageAChapterPage : function (doc, curUrl) {
         //     return $("div#readerarea", doc).length > 0
         // }

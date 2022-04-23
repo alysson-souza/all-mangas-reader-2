@@ -1,16 +1,16 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         disabled: true,
-        mirrorName: 'Secret Scans',
-        mirrorIcon: 'secretscans.png',
-        languages: 'en',
-        domains: ['secretscans.co'],
-        home: 'https://secretscans.co/',
+        mirrorName: "Secret Scans",
+        mirrorIcon: "secretscans.png",
+        languages: "en",
+        domains: ["secretscans.co"],
+        home: "https://secretscans.co/",
         canListFullMangas: true,
         chapter_url: /^\/comics\/.*\/.+$/g,
-        abstract: 'GenkanAbs',
+        abstract: "GenkanAbs",
         abstract_options: {
-            base_url: 'https://secretscans.co/',
-        },
-    });
+            base_url: "https://secretscans.co/"
+        }
+    })
 }

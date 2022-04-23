@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         disabled: true,
         mirrorName: "Sam Manga",
@@ -10,8 +10,7 @@ if (typeof registerMangaObject === 'function') {
         canListFullMangas: false,
         abstract: "Madara",
         abstract_options: {
-            search_url: "https://sammanga.com/",
+            search_url: "https://sammanga.com/"
         }
     })
 }
-

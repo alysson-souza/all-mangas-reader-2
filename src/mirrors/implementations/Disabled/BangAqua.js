@@ -1,8 +1,8 @@
-if (typeof registerMangaObject === 'function') {
-	registerMangaObject({
-        mirrorName : "Bang Aqua",
-        mirrorIcon : "bangaqua.png",
-        languages : "en",
+if (typeof registerMangaObject === "function") {
+    registerMangaObject({
+        mirrorName: "Bang Aqua",
+        mirrorIcon: "bangaqua.png",
+        languages: "en",
         disabled: true,
         domains: ["reader.bangaqua.com"],
         home: "http://bangaqua.com/",

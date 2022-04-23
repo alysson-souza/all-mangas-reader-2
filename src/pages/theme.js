@@ -1,4 +1,4 @@
-import colors from 'vuetify/es5/util/colors'
+import colors from "vuetify/es5/util/colors"
 
 /**
  * Vuetify theme used by All Mangas Reader

@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "Realm Scans",
         canListFullMangas: false,
@@ -12,9 +12,9 @@ if (typeof registerMangaObject === 'function') {
         abstract_options: {
             base_url: "https://realmscans.com/",
             series_list_selector: '.listupd a[href*="/series/"]',
-            chapter_list_selector: `.eph-num a[href*="realmscans.com"]`,
+            chapter_list_selector: `.eph-num a[href*="realmscans.com"]`
         }
-        
+
         // // Mangastream 1.1.4 - Add abstract
         // getMangaList : async function (search) {
         //     let res = []
@@ -69,7 +69,7 @@ if (typeof registerMangaObject === 'function') {
         // getImageFromPageAndWrite : async function (urlImg, image) {
         //     $(image).attr("src", urlImg)
         // },
-        
+
         // isCurrentPageAChapterPage : function (doc, curUrl) {
         //     return $("div#readerarea", doc).length > 0
         // }

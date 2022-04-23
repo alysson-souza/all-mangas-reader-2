@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "Komikav",
         canListFullMangas: false,
@@ -11,6 +11,6 @@ if (typeof registerMangaObject === 'function') {
         abstract_options: {
             search_url: "https://komikav.com/",
             chapters_a_sel: "div.bixbox.bxcl > ul > li > span.lchx a"
-        },
+        }
     })
 }

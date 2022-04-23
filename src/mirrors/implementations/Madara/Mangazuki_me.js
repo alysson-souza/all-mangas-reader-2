@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "MangazukiMe",
         mirrorIcon: "mangazuki.png",
@@ -12,8 +12,6 @@ if (typeof registerMangaObject === 'function') {
             search_url: "https://mangazuki.me/",
             page_container_sel: "div.read-container",
             img_sel: "div.read-container img"
-
         }
     })
 }
-

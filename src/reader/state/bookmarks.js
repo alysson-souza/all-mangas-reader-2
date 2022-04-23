@@ -2,16 +2,16 @@
  * State of bookmarks linked to the current chapter
  * Helpers to load / save / delete bookmarks
  */
-import browser from "webextension-polyfill";
+import browser from "webextension-polyfill"
 
-import mirrorImpl from './mirrorimpl';
-import pageData from './pagedata';
+import mirrorImpl from "./mirrorimpl"
+import pageData from "./pagedata"
 
 export default {
     state: {
         booked: false, // true if chapter is booked
         note: undefined, // note of current chapter
-        scans: [], // list of scans [{url, name, note, booked}]
+        scans: [] // list of scans [{url, name, note, booked}]
     },
 
     /** Initialize state with a whole list of scans urls */
@@ -31,7 +31,7 @@ export default {
             })
         )
         for (let scUrl of scansUrl) {
-            this.loadBookmark({scanUrl: scUrl})
+            this.loadBookmark({ scanUrl: scUrl })
         }
     },
 
@@ -105,15 +105,15 @@ export default {
             action: "getBookmarkNote",
             mirror: mirrorImpl.get().mirrorName,
             url: pageData.state.currentMangaURL,
-            chapUrl: pageData.state.currentChapterURL,
-        };
+            chapUrl: pageData.state.currentChapterURL
+        }
         if (!scanUrl) {
             obj.type = "chapter"
         } else {
             obj.type = "scan"
             obj.scanUrl = scanUrl
         }
-        let result = await browser.runtime.sendMessage(obj);
+        let result = await browser.runtime.sendMessage(obj)
 
         if (!scanUrl) {
             this.state.note = result.note

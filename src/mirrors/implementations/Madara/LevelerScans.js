@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "Leveler Scans",
         mirrorIcon: "leveler-scans.png",
@@ -15,4 +15,3 @@ if (typeof registerMangaObject === 'function') {
         }
     })
 }
-

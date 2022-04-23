@@ -14,17 +14,14 @@ window["MyMangaReaderCMS"] = function (options) {
     this.getMangaList = async function (search) {
         let res = []
         if (!this.canListFullMangas) {
-            let json = await amr.loadJson(
-                this.options.base_url + "/search?query=" + search,
-                { nocache: true }
-            )
-            var sugs = json.suggestions;
+            let json = await amr.loadJson(this.options.base_url + "/search?query=" + search, { nocache: true })
+            var sugs = json.suggestions
             for (let obj of sugs) {
-                res[res.length] = [obj.value, this.options.base_url + "/manga/" + obj.data];
+                res[res.length] = [obj.value, this.options.base_url + "/manga/" + obj.data]
             }
         } else {
             let doc = await amr.loadPage(this.options.base_url + "/manga-list", { nocache: true, preventimages: true })
-            $("h5.media-heading > a[href*='/manga/']", doc).each(function() {
+            $("h5.media-heading > a[href*='/manga/']", doc).each(function () {
                 res.push([$(this).text().trim(), $(this).attr("href")])
             })
         }
@@ -41,50 +38,48 @@ window["MyMangaReaderCMS"] = function (options) {
     }
 
     this.getInformationsFromCurrentPage = async function (doc, curUrl) {
-        var name;
-        var currentMangaURL;
-        var currentChapterURL;
-        var chap = $("#chapter-list li.active a", doc);
-        currentChapterURL = chap.attr("href");
-        var mg = $("#navbar-collapse-1 > .nav > li > a[href*='/manga/']", doc);
-        name = mg.text();
-        if (name.endsWith("Manga")) name = name.substring(0, name.length - 5).trim();
-        currentMangaURL = mg.attr("href");
+        var name
+        var currentMangaURL
+        var currentChapterURL
+        var chap = $("#chapter-list li.active a", doc)
+        currentChapterURL = chap.attr("href")
+        var mg = $("#navbar-collapse-1 > .nav > li > a[href*='/manga/']", doc)
+        name = mg.text()
+        if (name.endsWith("Manga")) name = name.substring(0, name.length - 5).trim()
+        currentMangaURL = mg.attr("href")
         return {
-            "name": name,
-            "currentMangaURL": currentMangaURL,
-            "currentChapterURL": currentChapterURL
+            name: name,
+            currentMangaURL: currentMangaURL,
+            currentChapterURL: currentChapterURL
         }
     }
 
     this.getListImages = async function (doc, curUrl) {
-        let self = this;
-        var res = [];
-       $("img", $(".viewer-cnt #ppp", doc).prev()).each(
-            function () {
-                var src = $(this).attr(self.options.img_src);
-                if (src && src !== '') {
-                    if (src.indexOf("//") === 0) src = this.protocol() + src;
-                    res.push(src.trim())
-                }
+        let self = this
+        var res = []
+        $("img", $(".viewer-cnt #ppp", doc).prev()).each(function () {
+            var src = $(this).attr(self.options.img_src)
+            if (src && src !== "") {
+                if (src.indexOf("//") === 0) src = this.protocol() + src
+                res.push(src.trim())
             }
-        )
+        })
         return res
     }
 
     this.protocol = function () {
-        return this.options.base_url.substr(0, this.options.base_url.indexOf("/"));
+        return this.options.base_url.substr(0, this.options.base_url.indexOf("/"))
     }
 
     this.getImageFromPageAndWrite = async function (urlImg, image) {
-        $(image).attr("src", urlImg);
+        $(image).attr("src", urlImg)
     }
 
     this.isCurrentPageAChapterPage = function (doc, curUrl) {
-        return $("#ppp img.scan-page", doc).length > 0;
+        return $("#ppp img.scan-page", doc).length > 0
     }
 }
 
-if (typeof registerAbstractImplementation === 'function') {
+if (typeof registerAbstractImplementation === "function") {
     registerAbstractImplementation("MyMangaReaderCMS")
 }

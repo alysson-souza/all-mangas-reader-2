@@ -6,25 +6,24 @@ import { loadMirrors } from "../mirrors/register_implementations"
  */
 class MirrorsImpl {
     constructor() {
-        this.implementations = {};
-        this.abstracts = {};
-
-        (function (mirrorsImpl) {
+        this.implementations = {}
+        this.abstracts = {}
+        ;(function (mirrorsImpl) {
             /**
              * This function is called when an implementation is loaded
              */
             window["registerMangaObject"] = function (object) {
                 if (mirrorsImpl.implementations === undefined) mirrorsImpl.implementations = {}
-                mirrorsImpl.implementations[object.mirrorName] = object;
+                mirrorsImpl.implementations[object.mirrorName] = object
             }
             /**
              * This function is called when an abstraction is loaded
              */
             window["registerAbstractImplementation"] = function (mirrorName) {
                 if (mirrorsImpl.abstracts === undefined) mirrorsImpl.abstracts = {}
-                mirrorsImpl.abstracts[mirrorName] = {loaded: true};
+                mirrorsImpl.abstracts[mirrorName] = { loaded: true }
             }
-        })(this);
+        })(this)
     }
 
     /**
@@ -50,9 +49,9 @@ class MirrorsImpl {
                 Object.assign(inst, obj)
                 obj = inst
             }
-            return Promise.resolve(obj);
+            return Promise.resolve(obj)
         }
     }
 }
 
-export default (new MirrorsImpl)
+export default new MirrorsImpl()

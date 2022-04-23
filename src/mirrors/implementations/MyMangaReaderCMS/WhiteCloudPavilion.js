@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "White Cloud Pavilion",
         mirrorIcon: "whitecloudpavilion.png",

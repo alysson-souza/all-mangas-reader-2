@@ -1,5 +1,5 @@
-if (typeof registerMangaObject === 'function') {
-	registerMangaObject({
+if (typeof registerMangaObject === "function") {
+    registerMangaObject({
         mirrorName: "Read Comic Online",
         canListFullMangas: true,
         mirrorIcon: "readcomiconline.png",
@@ -9,7 +9,7 @@ if (typeof registerMangaObject === 'function') {
         chapter_url: /Comic\/.*\/.*\?id=/g,
 
         getMangaList: async function (search) {
-            let doc = await amr.loadPage(this.home + '/Search/Comic', {
+            let doc = await amr.loadPage(this.home + "/Search/Comic", {
                 nocache: true,
                 preventimages: true,
                 post: true,
@@ -19,9 +19,9 @@ if (typeof registerMangaObject === 'function') {
             })
             let res = []
             let self = this
-            $('table.listing a', doc).each(function (index) {
-                if ($(this).attr('href').includes('/Comic/')) {
-                    res.push([$(this).text().trim(), self.home + $(this).attr('href')])
+            $("table.listing a", doc).each(function (index) {
+                if ($(this).attr("href").includes("/Comic/")) {
+                    res.push([$(this).text().trim(), self.home + $(this).attr("href")])
                 }
             })
             return res
@@ -31,51 +31,51 @@ if (typeof registerMangaObject === 'function') {
             let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
             let res = []
             let self = this
-            let comicName = $('a.bigChar', doc).text().trim()
+            let comicName = $("a.bigChar", doc).text().trim()
             $("table.listing a", doc).each(function (index) {
-                if ($(this).attr('href').includes('/Comic/')) {
-                    res.push([$(this).text().replace(comicName, '').trim(), self.home + $(this).attr('href')])
+                if ($(this).attr("href").includes("/Comic/")) {
+                    res.push([$(this).text().replace(comicName, "").trim(), self.home + $(this).attr("href")])
                 }
             })
             return res
         },
 
         getInformationsFromCurrentPage: async function (doc, curUrl) {
-            let comicUrl = $('#navsubbar a', doc)
-            let nameParts = comicUrl.text().split('\n')
-            let name = ''
+            let comicUrl = $("#navsubbar a", doc)
+            let nameParts = comicUrl.text().split("\n")
+            let name = ""
             nameParts.forEach(part => {
-                if (!(part.trim() == '' || part.trim() == 'Comic' || part.trim() == 'information')) {
-                    name += part + ' '
+                if (!(part.trim() == "" || part.trim() == "Comic" || part.trim() == "information")) {
+                    name += part + " "
                 }
             })
 
             let url = new URL(curUrl)
-            let newUrl = url.origin + url.pathname + '?id=' + url.searchParams.get('id')
+            let newUrl = url.origin + url.pathname + "?id=" + url.searchParams.get("id")
             return {
-                "name": name.trim(),
-                "currentMangaURL": this.home + comicUrl.attr('href'),
-                "currentChapterURL": newUrl
+                name: name.trim(),
+                currentMangaURL: this.home + comicUrl.attr("href"),
+                currentChapterURL: newUrl
             }
         },
 
         getListImages: async function (doc, curUrl) {
-            doc = await amr.loadPage(curUrl + '&readType=1&quality=hq', { nocache: true })
+            doc = await amr.loadPage(curUrl + "&readType=1&quality=hq", { nocache: true })
             let regex = /lstImages\.push\(\"(.*?)\"\);/g
             let parts = doc.innerText.match(regex)
             var res = []
             parts.forEach(str => {
-                res.push(str.replace('lstImages.push("', '').replace('");', ''))
+                res.push(str.replace('lstImages.push("', "").replace('");', ""))
             })
             return res
         },
 
         getImageFromPageAndWrite: async function (urlImg, image) {
-            $(image).attr('src', urlImg)
+            $(image).attr("src", urlImg)
         },
 
         isCurrentPageAChapterPage: function (doc, curUrl) {
-            return $('#divImage img', doc).length > 0
+            return $("#divImage img", doc).length > 0
         }
     })
 }

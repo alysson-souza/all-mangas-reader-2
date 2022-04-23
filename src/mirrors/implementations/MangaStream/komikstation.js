@@ -1,10 +1,9 @@
-if (typeof registerMangaObject === 'function') {
-
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "Komikstation",
         canListFullMangas: false,
         mirrorIcon: "komikstation.png",
-        domains: ["www.komikstation.com","komikstation.com"],
+        domains: ["www.komikstation.com", "komikstation.com"],
         home: "https://www.komikstation.com/",
         chapter_url: /chapter-[0-9]+\/$/g,
         languages: "id",
@@ -16,6 +15,6 @@ if (typeof registerMangaObject === 'function') {
             search_option: "&post_type=manga",
             manga_title_attr: true,
             manga_url_sel: "div.chapterbody > div > article > div.headpost a"
-        },
+        }
     })
 }

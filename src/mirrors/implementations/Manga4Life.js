@@ -1,32 +1,29 @@
-if (typeof registerMangaObject === 'function') {
-	registerMangaObject({
-        mirrorName : "Manga4Life",
-        canListFullMangas : true,
-        mirrorIcon : "manga4life.png",
-        languages : "en",
+if (typeof registerMangaObject === "function") {
+    registerMangaObject({
+        mirrorName: "Manga4Life",
+        canListFullMangas: true,
+        mirrorIcon: "manga4life.png",
+        languages: "en",
         domains: ["manga4life.com"],
         home: "https://manga4life.com",
         chapter_url: /^\/read-online\/.+$/g,
 
-        getMangaList : async function (search) {
+        getMangaList: async function (search) {
             let doc = await amr.loadPage(this.home + "/directory/", { nocache: true, preventimages: true })
             let res = []
             let self = this
 
             let regex = /vm\.FullDirectory = (.*?)};/g
             let matches = regex.exec(doc.innerText)
-            let directory = JSON.parse(matches[1] + '}')
+            let directory = JSON.parse(matches[1] + "}")
 
             directory.Directory.forEach(manga => {
-                res.push([
-                    manga.s,
-                    self.home + '/manga/' + manga.i
-                ])
+                res.push([manga.s, self.home + "/manga/" + manga.i])
             })
             return res
         },
-    
-        getListChaps : async function (urlManga) {
+
+        getListChaps: async function (urlManga) {
             let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
             let res = []
             let self = this
@@ -43,26 +40,23 @@ if (typeof registerMangaObject === 'function') {
                 let linkPart = self.ChapterListLink(chapter.Chapter)
                 let name = self.ChapterListName(chapter.Type, chapter.Chapter)
 
-                res.push([
-                    name,
-                    self.home + '/read-online/' + titlePath + linkPart
-                ])
+                res.push([name, self.home + "/read-online/" + titlePath + linkPart])
             })
             return res
         },
-    
-        getInformationsFromCurrentPage : async function (doc, curUrl) {
+
+        getInformationsFromCurrentPage: async function (doc, curUrl) {
             var mgtitle = $($('.MainContainer a[href*="manga"]', doc)[0])
             return {
-                "name" : mgtitle.text().trim().split("\n")[0].trim(),
-                "currentMangaURL" : this.home + mgtitle.attr("href"),
-                "currentChapterURL" : curUrl.replace('-page-1', '')
-            };
+                name: mgtitle.text().trim().split("\n")[0].trim(),
+                currentMangaURL: this.home + mgtitle.attr("href"),
+                currentChapterURL: curUrl.replace("-page-1", "")
+            }
         },
-    
-        getListImages : async function (doc, curUrl) {
-            let fullUrl = curUrl.replace('-page-1.html', '.html')
-            doc = await amr.loadPage(fullUrl, { nocache: true})
+
+        getListImages: async function (doc, curUrl) {
+            let fullUrl = curUrl.replace("-page-1.html", ".html")
+            doc = await amr.loadPage(fullUrl, { nocache: true })
             let regex, matches
 
             regex = /vm\.CurChapter =(.*?);/g
@@ -72,7 +66,7 @@ if (typeof registerMangaObject === 'function') {
             // regex = /vm\.CurChapter\s*=\s*\{.*?\};\s*vm\.\w+\s*=\s*"(.*?)";/g
             regex = /vm\.(\w+?)\s*=\s*\w+\.data\.val\.PathName/g
             matches = regex.exec(doc.innerText)
-            regex = new RegExp('vm\\.'+matches[1]+'\\s*=\\s*\\"(.*?)\\"','g');
+            regex = new RegExp("vm\\." + matches[1] + '\\s*=\\s*\\"(.*?)\\"', "g")
 
             matches = regex.exec(doc.innerText)
             let cdnPath = matches[1]
@@ -81,54 +75,53 @@ if (typeof registerMangaObject === 'function') {
             matches = regex.exec(doc.innerText)
             let titlePath = matches[1]
 
-
             let res = []
             let chapImage = this.ChapterImage(vars.Chapter)
-            let extraDir = vars.Directory == '' ? '' : vars.Directory + '/'
-            for(i=1; i <= vars.Page; i++){
+            let extraDir = vars.Directory == "" ? "" : vars.Directory + "/"
+            for (i = 1; i <= vars.Page; i++) {
                 let pageImage = this.PageImage(i)
                 res.push(`https://${cdnPath}/manga/${titlePath}/${extraDir}/${chapImage}-${pageImage}.png`)
             }
             return res
         },
 
-        ChapterListLink: function(id) {
+        ChapterListLink: function (id) {
             let stupidvar1 = id.substr(0, 1)
             let chapterNumber = parseInt(id.slice(1, -1))
             let chapterPart = id.slice(-1)
-            let index = stupidvar1 != 1 ? '-index-' + stupidvar1 : ''
-            let chapterPartDisplay = chapterPart != 0 ? '.' + chapterPart : ''
+            let index = stupidvar1 != 1 ? "-index-" + stupidvar1 : ""
+            let chapterPartDisplay = chapterPart != 0 ? "." + chapterPart : ""
 
-            return '-chapter-' + chapterNumber + chapterPartDisplay + index +  '.html'
+            return "-chapter-" + chapterNumber + chapterPartDisplay + index + ".html"
         },
 
-        ChapterListName: function(type, id) {
-            let blah = (type != '' ? type : 'Chapter') + ' '
+        ChapterListName: function (type, id) {
+            let blah = (type != "" ? type : "Chapter") + " "
             let chapterNumber = parseInt(id.slice(1, -1))
             let chapterPart = id[id.length - 1]
-            return (blah + (chapterPart == 0 ? chapterNumber : chapterNumber + '.' + chapterPart)).trim()
+            return (blah + (chapterPart == 0 ? chapterNumber : chapterNumber + "." + chapterPart)).trim()
         },
 
-        ChapterImage : function(ChapterString){
-            var Chapter = ChapterString.slice(1,-1)
+        ChapterImage: function (ChapterString) {
+            var Chapter = ChapterString.slice(1, -1)
             var Odd = ChapterString.slice(-1)
-            if(Odd == 0){
+            if (Odd == 0) {
                 return Chapter
-            }else{
+            } else {
                 return Chapter + "." + Odd
             }
         },
 
-        PageImage : function(PageString){
-            var s = "000" + PageString;
+        PageImage: function (PageString) {
+            var s = "000" + PageString
             return s.substr(s.length - 3)
         },
-    
-        getImageFromPageAndWrite : async function (urlImg, image) {
+
+        getImageFromPageAndWrite: async function (urlImg, image) {
             $(image).attr("src", urlImg)
         },
-        
-        isCurrentPageAChapterPage : function (doc, curUrl) {
+
+        isCurrentPageAChapterPage: function (doc, curUrl) {
             return $("div.ImageGallery", doc).length > 0
         }
     })

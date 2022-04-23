@@ -1,9 +1,9 @@
-if (typeof registerMangaObject === 'function') {
-	registerMangaObject({
+if (typeof registerMangaObject === "function") {
+    registerMangaObject({
         disabled: true,
-        mirrorName : "Tappy tappy tap",
-        mirrorIcon : "taptaptaptaptap.png",
-        languages : "en",
+        mirrorName: "Tappy tappy tap",
+        mirrorIcon: "taptaptaptaptap.png",
+        languages: "en",
         domains: ["taptaptaptaptap.net"],
         home: "https://taptaptaptaptap.net/",
         chapter_url: /^\/fs\/read\/.+$/g,

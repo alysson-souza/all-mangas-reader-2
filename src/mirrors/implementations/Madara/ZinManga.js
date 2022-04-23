@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "Zin Manga",
         mirrorIcon: "zin-manga.webp",
@@ -13,4 +13,3 @@ if (typeof registerMangaObject === 'function') {
         }
     })
 }
-

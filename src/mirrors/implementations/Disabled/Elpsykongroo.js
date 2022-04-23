@@ -1,8 +1,8 @@
-if (typeof registerMangaObject === 'function') {
-	registerMangaObject({
-        mirrorName : "Elpsykongroo",
-        mirrorIcon : "elpsykongroo.png",
-        languages : "en",
+if (typeof registerMangaObject === "function") {
+    registerMangaObject({
+        mirrorName: "Elpsykongroo",
+        mirrorIcon: "elpsykongroo.png",
+        languages: "en",
         domains: ["elpsykongroo.pw"],
         home: "https://elpsykongroo.pw",
         disabled: true,

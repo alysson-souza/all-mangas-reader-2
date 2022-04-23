@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "Alpha Scans",
         canListFullMangas: false,
@@ -11,7 +11,7 @@ if (typeof registerMangaObject === 'function') {
         abstract_options: {
             search_url: "https://alpha-scans.org",
             chapters_a_sel: "div.bixbox.bxcl ul li a",
-            chapters_text_sel: "span.chapternum",
-        },      
+            chapters_text_sel: "span.chapternum"
+        }
     })
 }

@@ -1,7 +1,7 @@
-import browser from 'webextension-polyfill'
-import { arrayToObject, batchProps, objectMapToArray } from '../utils'
-import { ThrottleError } from './error/ToManyRequests';
-import Storage from './model-storage';
+import browser from "webextension-polyfill"
+import { arrayToObject, batchProps, objectMapToArray } from "../utils"
+import { ThrottleError } from "./error/ToManyRequests"
+import Storage from "./model-storage"
 
 const LIMITS = {
     MAX_ITEMS: 512,
@@ -9,10 +9,10 @@ const LIMITS = {
     MAX_WRITE_OPERATIONS_PER_HOUR: 1800,
     MAX_WRITE_OPERATIONS_PER_MINUTE: 120,
     QUOTA_BYTES: 102400,
-    QUOTA_BYTES_PER_ITEM: 8192,
+    QUOTA_BYTES_PER_ITEM: 8192
 }
 
-const ThrottleErrorMessages = Object.keys(LIMITS).filter(k => k.includes('OPERATIONS'));
+const ThrottleErrorMessages = Object.keys(LIMITS).filter(k => k.includes("OPERATIONS"))
 
 /**
  * The sync object implements the methods defined on the storage.StorageArea type
@@ -24,8 +24,8 @@ export default class BrowserStorage extends Storage {
      */
     constructor(config) {
         super(true)
-        this.storageSync = browser.storage.sync;
-        this.batchSize = 10;
+        this.storageSync = browser.storage.sync
+        this.batchSize = 10
     }
 
     async remove(keys) {
@@ -35,16 +35,16 @@ export default class BrowserStorage extends Storage {
 
     async getAll() {
         await this.wait()
-        return this.storageSync.get()
-        .then(result => objectMapToArray(result))
-        .then(data => data.filter(i => typeof i === 'object'));
+        return this.storageSync
+            .get()
+            .then(result => objectMapToArray(result))
+            .then(data => data.filter(i => typeof i === "object"))
     }
 
     async save(key, value) {
         await this.wait()
-        return this.storageSync.set({[key]: value}).catch(this.handleSyncError)
+        return this.storageSync.set({ [key]: value }).catch(this.handleSyncError)
     }
-
 
     async delete(key, value) {
         return this.save(key, value)
@@ -53,7 +53,7 @@ export default class BrowserStorage extends Storage {
      * @param {{}} data
      */
     async set(data) {
-        if (typeof data === 'object') {
+        if (typeof data === "object") {
             if (Object.keys(data).length > this.batchSize) {
                 return this.setInBatches(data)
             }
@@ -61,9 +61,9 @@ export default class BrowserStorage extends Storage {
 
         try {
             await this.wait()
-            return this.storageSync.set(data);
+            return this.storageSync.set(data)
         } catch (e) {
-            return this.handleSyncError(e);
+            return this.handleSyncError(e)
         }
     }
 
@@ -74,18 +74,18 @@ export default class BrowserStorage extends Storage {
 
     saveAll(data) {
         if (Array.isArray(data)) {
-            data = arrayToObject(data, 'key');
+            data = arrayToObject(data, "key")
         }
 
-        return this.set(data);
+        return this.set(data)
     }
 
     clear() {
-        this.storageSync.clear();
+        this.storageSync.clear()
     }
 
     getBytesInUse() {
-        this.storageSync.getBytesInUse();
+        this.storageSync.getBytesInUse()
     }
 
     setInBatches(data) {
@@ -103,13 +103,12 @@ export default class BrowserStorage extends Storage {
      * @param e Error
      */
     handleSyncError(e) {
-      if (ThrottleErrorMessages.some(msg => e.message.includes(msg))) {
+        if (ThrottleErrorMessages.some(msg => e.message.includes(msg))) {
+            // Delay by 30min
+            const timestamp = Date.now() + 1800 * 1000
+            throw new ThrottleError(e.message, new Date(timestamp))
+        }
 
-          // Delay by 30min
-          const timestamp = Date.now() + (1800 * 1000);
-          throw new ThrottleError(e.message, new Date(timestamp))
-      }
-
-      throw e;
+        throw e
     }
 }

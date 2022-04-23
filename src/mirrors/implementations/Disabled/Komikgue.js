@@ -1,9 +1,9 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "Komikgue",
         mirrorIcon: "id.png",
         languages: "id",
-        domains: ["www.komikgue.com","komikgue.com"],
+        domains: ["www.komikgue.com", "komikgue.com"],
         home: "http://www.komikgue.com",
         chapter_url: /^\/manga\/.*\/.+$/g,
         disabled: true,

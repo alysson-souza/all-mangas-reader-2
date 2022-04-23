@@ -1,19 +1,19 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
-        mirrorName: 'Reaper Scans',
-        mirrorIcon: 'reaperscans.png',
-        languages: 'en',
-        domains: ['reaperscans.com'],
-        home: 'https://reaperscans.com/',
+        mirrorName: "Reaper Scans",
+        mirrorIcon: "reaperscans.png",
+        languages: "en",
+        domains: ["reaperscans.com"],
+        home: "https://reaperscans.com/",
         canListFullMangas: false,
         chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
-        abstract: 'Madara',
+        abstract: "Madara",
         abstract_options: {
-            search_url: 'https://reaperscans.com/',
+            search_url: "https://reaperscans.com/",
             chapter_list_ajax: false,
             // chapter_list_ajax_selctor: 'div#manga-chapters-holder',
             // chapter_list_ajax_selctor_type: 'html',
-            chapters_a_sel: 'div.chapter-link > a'
-        },
-    });
+            chapters_a_sel: "div.chapter-link > a"
+        }
+    })
 }
