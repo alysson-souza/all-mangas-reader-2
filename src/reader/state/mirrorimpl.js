@@ -3,11 +3,11 @@ class MirrorImpl {
         /**
          * Current mirror implementation
          */
-        this.mirrorImpl = null;
+        this.mirrorImpl = null
     }
 
     get() {
-        return this.mirrorImpl;
+        return this.mirrorImpl
     }
 
     load(object) {
@@ -17,10 +17,10 @@ class MirrorImpl {
             // add implementation properties on instance
             Object.assign(inst, object)
             // set object as instanciated abstract
-            object = inst;
+            object = inst
         }
-        this.mirrorImpl = object;
+        this.mirrorImpl = object
     }
 }
 
-export default (new MirrorImpl); //singleton
+export default new MirrorImpl() //singleton

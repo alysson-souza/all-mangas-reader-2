@@ -36,25 +36,25 @@ window["FunMangaAbs"] = function (options) {
         }
 
         let doc = await amr.loadPage(this.options.search_url, opts)
-        let res = [];
+        let res = []
         $(this.options.search_a_sel, doc).each(function (index) {
-            res[index] = [$(this).attr("title").trim(), $(this).attr('href')];
-        });
-        return res;
+            res[index] = [$(this).attr("title").trim(), $(this).attr("href")]
+        })
+        return res
     }
 
     this.getListChaps = async function (urlManga) {
         let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
-        let res = [];
+        let res = []
         $(this.options.chapters_a_sel, doc).each(function () {
-            res[res.length] = [$(".val", $(this)).text().trim(), $(this).attr("href")];
-        });
-        return res;
+            res[res.length] = [$(".val", $(this)).text().trim(), $(this).attr("href")]
+        })
+        return res
     }
 
     this.getInformationsFromCurrentPage = async function (doc, curUrl) {
         let mangaurl = amr.getVariable("manga_url", doc)
-        let mgname;
+        let mgname
         if ($("a[href='" + mangaurl + "']", doc).length > 0) {
             mgname = $("a[href='" + mangaurl + "']", doc).text()
         }
@@ -63,9 +63,9 @@ window["FunMangaAbs"] = function (options) {
             mgname = $(".panel-heading h1", docmg).text()
         }
         return {
-            "name": mgname,
-            "currentMangaURL": mangaurl,
-            "currentChapterURL": amr.getVariable("chapter_url", doc)
+            name: mgname,
+            currentMangaURL: mangaurl,
+            currentChapterURL: amr.getVariable("chapter_url", doc)
         }
     }
 
@@ -83,6 +83,6 @@ window["FunMangaAbs"] = function (options) {
     }
 }
 
-if (typeof registerAbstractImplementation === 'function') {
+if (typeof registerAbstractImplementation === "function") {
     registerAbstractImplementation("FunMangaAbs")
 }

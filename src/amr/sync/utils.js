@@ -1,3 +1,3 @@
-export const DELETED = 1;
+export const DELETED = 1
 
-export const FAIL_KEY = '_no_key_';
+export const FAIL_KEY = "_no_key_"

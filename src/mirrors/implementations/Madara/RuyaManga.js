@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "Ruya Manga",
         mirrorIcon: "ruya-manga.png",
@@ -9,8 +9,7 @@ if (typeof registerMangaObject === 'function') {
         canListFullMangas: false,
         abstract: "Madara",
         abstract_options: {
-            search_url: "https://en.ruyamanga.com/",
+            search_url: "https://en.ruyamanga.com/"
         }
     })
 }
-

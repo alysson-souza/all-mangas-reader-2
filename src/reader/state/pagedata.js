@@ -1,4 +1,4 @@
-import Vue from "vue";
+import Vue from "vue"
 
 /**
  * Encapsulate data collected from mirror implementation to be retrieved everywhere

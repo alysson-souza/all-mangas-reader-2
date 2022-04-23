@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "Kiryuu",
         canListFullMangas: false,
@@ -14,7 +14,7 @@ if (typeof registerMangaObject === 'function') {
             chapters_text_sel: ".chapternum",
             img_sel: ".wp-post-image",
             img_src: "data-lazy-src",
-            search_json: false,
-        },
+            search_json: false
+        }
     })
 }

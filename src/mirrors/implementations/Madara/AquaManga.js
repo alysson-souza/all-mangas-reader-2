@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "Aqua Manga",
         mirrorIcon: "aqua-manga.png",
@@ -9,8 +9,7 @@ if (typeof registerMangaObject === 'function') {
         canListFullMangas: false,
         abstract: "Madara",
         abstract_options: {
-            search_url: "https://aquamanga.com/",
+            search_url: "https://aquamanga.com/"
         }
     })
 }
-

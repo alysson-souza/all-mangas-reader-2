@@ -22,4 +22,4 @@ export default [
         name: "Naruto",
         url: "http://fanfox.net/manga/naruto"
     }
-];
+]

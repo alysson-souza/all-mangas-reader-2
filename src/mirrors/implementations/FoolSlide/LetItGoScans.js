@@ -1,5 +1,5 @@
-if (typeof registerMangaObject === 'function') {
-	registerMangaObject({
+if (typeof registerMangaObject === "function") {
+    registerMangaObject({
         mirrorName: "Let It Go Scans",
         mirrorIcon: "letitgoscans.png",
         languages: "en",
@@ -12,5 +12,5 @@ if (typeof registerMangaObject === 'function') {
             base_url: "https://https://reader.letitgo.scans.today",
             mglist_selector: ".title > a[href*='/series/']"
         }
-    });
+    })
 }

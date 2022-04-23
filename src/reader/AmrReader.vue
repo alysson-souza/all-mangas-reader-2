@@ -1,1582 +1,1837 @@
 <template>
-  <v-app id="amrapp">
-    <!-- Global cover for loading when transition from a chapter to another one -->
-    <div v-show="loading" class="amr-transition-cover" :class="darkreader ? 'grey darken-4' : 'grey lighten-5'">
-      <v-progress-circular
-          indeterminate
-          color="primary"
-          :size="128"
-          :width="12"
-          ></v-progress-circular>
-    </div>
-    <!-- Global component to show confirmation dialogs, alert dialogs / other -->
-    <WizDialog ref="wizdialog"></WizDialog>
-    <!-- Global component to show bookmarks dialog -->
-    <BookmarkPopup ref="book"></BookmarkPopup>
-    <!-- Popup displaying shortcuts -->
-    <ShortcutsPopup ref="shortcuts"></ShortcutsPopup>
-    <!-- Global always visible buttons -->
-    <v-hover>
-      <div class="d-flex flex-column fab-container" slot-scope="{ hover }">
-        <!-- Button to open side drawer -->
-        <v-btn
-          :class="`elevation-${hover ? 12 : 2} opacity-${hover || drawer ? 'full':'transparent'}`"
-          color="red darken-2" dark small fab @click="drawer = !drawer">
-          <v-icon> {{ icons.mdiMenu }}</v-icon>
-        </v-btn>
-        <!-- Quick button to go to next chapter -->
-        <v-tooltip left>
-          <template v-slot:activator="{ on }">
-            <v-progress-circular v-on="on" class=" mt-2 amr-floting-progress"
-              :rotate="90"
-              :size="42"
-              :width="3"
-              :value="nextchapProgress"
-              color="green lighten-2"
-              v-show="!lastChapter && nextchapLoading && !drawer && hover"
-            >
-              <v-btn small fab @click.stop="goNextChapter" class="green--text">
-                <v-icon>{{ shouldInvertKeys ? icons.mdiChevronLeft : icons.mdiChevronRight }}</v-icon>
-              </v-btn>
-            </v-progress-circular>
-            <v-progress-circular v-on="on" class=" mt-2 amr-floting-progress"
-              :rotate="90"
-              :size="42"
-              :width="3"
-              :value="nextchapProgress"
-              indeterminate
-              color="red darken-2"
-              v-show="!lastChapter && !nextchapLoading && !drawer && hover"
-            >
-              <v-btn small fab @click.stop="goNextChapter" class="red--text">
-                <v-icon>{{ shouldInvertKeys ? icons.mdiChevronLeft : icons.mdiChevronRight }}</v-icon>
-              </v-btn>
-            </v-progress-circular>
-          </template>
-          <span>{{i18n("list_mg_act_next")}} {{nextchapLoading ? i18n("reader_loading", Math.floor(nextchapProgress)) : ""}}</span>
-        </v-tooltip>
-        <v-tooltip left>
-          <template v-slot:activator="{ on }">
-            <v-btn v-on="on" small class="mt-2" fab v-show="hover && !drawer && lastChapter" color="orange--text">
-              <v-icon>{{ icons.mdiAlert }}</v-icon>
-            </v-btn>
-          </template>
-          <span>{{i18n("content_nav_last_chap")}}</span>
-        </v-tooltip>
-        <!-- Quick button to add a manga to reading list -->
-        <v-tooltip left>
-          <template v-slot:activator="{ on }">
-            <v-btn v-on="on" small class="mt-2" fab v-show="!mangaExists && options.addauto === 0 && hover && !drawer" color="green--text" @click.stop="addManga">
-              <v-icon>{{ icons.mdiPlus }} </v-icon>
-            </v-btn>
-          </template>
-          <span>{{i18n("content_nav_add_list")}}</span>
-        </v-tooltip>
-      </div>
-    </v-hover>
-    <!-- AMR Reader side bar -->
-    <v-navigation-drawer
-      v-model="drawer"
-      clipped
-      right
-      fixed
-      app
-      :class="'amr-drawer ' + backcolor()"
-      ref="navdrawer"
-      width="300"
-    >
-      <v-card tile :color="backcolor()" class="white--text">
-        <!-- Manga Title -->
-        <v-card-title class="white--text amr-manga-title">
-          <div class="text-subtitle-1">
-            <v-tooltip bottom v-if="mirrorDesc">
-              <template v-slot:activator="{ on }">
-                <a v-on="on" :href="mirrorDesc.home" target="_blank">
-                  <!-- Mirror icon -->
-                  <img :src="mirrorDesc.mirrorIcon" />
-                </a>
-              </template>
-              <span>{{i18n("reader_click_go_mirror")}}</span>
-            </v-tooltip>
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on }">
-                <!-- Manga name -->
-                <a v-on="on" :href="manga.currentMangaURL" target="_blank">{{ mangaInfos && mangaInfos.displayName ? mangaInfos.displayName : manga.name }}</a>
-              </template>
-              <span>{{i18n("reader_click_go_manga")}}</span>
-            </v-tooltip>
-          </div>
-        </v-card-title>
-        <!-- Chapters navigation -->
-        <v-card-actions class="pa-0">
-          <v-row  no-gutters>
-            <v-col cols="12">
-              <v-toolbar class="pa-0 amr-chapters-toolbar">
-                <div class="d-flex align-center py-1">
-                <!-- Previous chapter button -->
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-btn class="select-btn" v-on="on" text small tile v-show="(shouldInvertKeys ?  !lastChapter : !firstChapter)"
-                      @click.stop="shouldInvertKeys ?  goNextChapter() : goPreviousChapter()">
-                      <v-icon>{{ icons.mdiChevronLeft }}</v-icon>
-                    </v-btn>
-                  </template>
-                  <span>
-                    {{ shouldInvertKeys ?
-                      i18n("list_mg_act_next") + ' ' + (nextchapLoading ? i18n("reader_loading", Math.floor(nextchapProgress)) : '') :
-                      i18n("list_mg_act_prev")
-                    }}
-                  </span>
-                </v-tooltip>
-                <!-- List of chapters -->
-                <v-select
-                  v-model="selchap"
-                  :items="chapters"
-                  item-text="title"
-                  item-value="url"
-                  solo dense single-line hide-details class="amr-chapter-select truncate"
-                  :loading="chapters.length === 0 ? 'primary' : false"
-                  @change="goToChapter"
-                ></v-select>
-                <v-spacer></v-spacer>
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on }">
-                    <!-- Next chapter button -->
-                    <v-btn class="select-btn" v-on="on" text small tile v-show="(shouldInvertKeys ? !firstChapter : !lastChapter)"
-                      @click.stop="shouldInvertKeys ? goPreviousChapter() : goNextChapter()">
-                      <v-icon>{{ icons.mdiChevronRight }}</v-icon>
-                    </v-btn>
-                  </template>
-                  <span>
-                    {{ shouldInvertKeys ?
-                      i18n("list_mg_act_prev") :
-                      i18n("list_mg_act_next") + ' ' + (nextchapLoading ? i18n("reader_loading", Math.floor(nextchapProgress)) : '')
-                    }}
-                  </span>
-                </v-tooltip>
-                </div>
-              </v-toolbar>
-            </v-col>
-            <!-- Next chapter preloading progression bar -->
-            <v-col cols="12" class="amr-chapter-progress-cont">
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-progress-linear v-show="nextchapLoading" v-on="on" class="amr-floting-progress"
-                    :height="3"
-                    :value="nextchapProgress"
+    <v-app id="amrapp">
+        <!-- Global cover for loading when transition from a chapter to another one -->
+        <div v-show="loading" class="amr-transition-cover" :class="darkreader ? 'grey darken-4' : 'grey lighten-5'">
+            <v-progress-circular indeterminate color="primary" :size="128" :width="12"></v-progress-circular>
+        </div>
+        <!-- Global component to show confirmation dialogs, alert dialogs / other -->
+        <WizDialog ref="wizdialog"></WizDialog>
+        <!-- Global component to show bookmarks dialog -->
+        <BookmarkPopup ref="book"></BookmarkPopup>
+        <!-- Popup displaying shortcuts -->
+        <ShortcutsPopup ref="shortcuts"></ShortcutsPopup>
+        <!-- Global always visible buttons -->
+        <v-hover>
+            <div class="d-flex flex-column fab-container" slot-scope="{ hover }">
+                <!-- Button to open side drawer -->
+                <v-btn
+                    :class="`elevation-${hover ? 12 : 2} opacity-${hover || drawer ? 'full' : 'transparent'}`"
                     color="red darken-2"
-                  ></v-progress-linear>
-                </template>
-                <span>{{ i18n('reader_loading', Math.floor(nextchapProgress)) }}</span>
-              </v-tooltip>
-            </v-col>
-            <!-- Action buttons -->
-            <v-col class="text-center pa-2" cols="12">
-              <v-menu offset-y>
-                <!-- Bookmarks button -->
-                <template v-slot:activator="{ on: menu }">
-                  <v-tooltip bottom class="ml-1">
-                    <template v-slot:activator="{ on: tooltip }">
-                      <v-btn v-on="{...tooltip, ...menu}" icon
-                        :color="(bookstate.booked ? 'yellow' : 'yellow text--lighten-4')">
-                          <v-icon>{{ icons.mdiStar }}</v-icon>
-                      </v-btn>
+                    dark
+                    small
+                    fab
+                    @click="drawer = !drawer">
+                    <v-icon> {{ icons.mdiMenu }}</v-icon>
+                </v-btn>
+                <!-- Quick button to go to next chapter -->
+                <v-tooltip left>
+                    <template v-slot:activator="{ on }">
+                        <v-progress-circular
+                            v-on="on"
+                            class="mt-2 amr-floting-progress"
+                            :rotate="90"
+                            :size="42"
+                            :width="3"
+                            :value="nextchapProgress"
+                            color="green lighten-2"
+                            v-show="!lastChapter && nextchapLoading && !drawer && hover">
+                            <v-btn small fab @click.stop="goNextChapter" class="green--text">
+                                <v-icon>{{ shouldInvertKeys ? icons.mdiChevronLeft : icons.mdiChevronRight }}</v-icon>
+                            </v-btn>
+                        </v-progress-circular>
+                        <v-progress-circular
+                            v-on="on"
+                            class="mt-2 amr-floting-progress"
+                            :rotate="90"
+                            :size="42"
+                            :width="3"
+                            :value="nextchapProgress"
+                            indeterminate
+                            color="red darken-2"
+                            v-show="!lastChapter && !nextchapLoading && !drawer && hover">
+                            <v-btn small fab @click.stop="goNextChapter" class="red--text">
+                                <v-icon>{{ shouldInvertKeys ? icons.mdiChevronLeft : icons.mdiChevronRight }}</v-icon>
+                            </v-btn>
+                        </v-progress-circular>
                     </template>
-                    <span>{{i18n("content_nav_click_bm")}}</span>
-                  </v-tooltip>
-                </template>
-                <!-- Menu displayed when bookmarks button activate -->
-                <v-card>
-                  <!-- Bookmark note of the chapter -->
-                  <v-card-title v-if="bookstate.note">
-                    {{i18n("reader_bookmarked_note", bookstate.note)}}
-                  </v-card-title>
-                  <v-card-actions>
-                    <!-- Action to update / delete bookmark for chapter > open popup -->
-                    <v-btn @click="bookmarkChapter"
-                      :color="!darkreader ? (bookstate.booked ? 'yellow grey--text text--darken-3' : 'yellow grey--text') : (bookstate.booked ? 'yellow--text' : 'yellow--text text--lighten-4')">
-                      <v-icon>{{ icons.mdiStar }}</v-icon>&nbsp;
-                      {{ bookstate.booked ?
-                        i18n("reader_bookmark_update") :
-                        i18n("reader_bookmark_create") }}
-                    </v-btn>
-                    <v-spacer></v-spacer>
-                    <v-tooltip bottom>
-                      <template v-slot:activator="{ on }">
-                        <v-btn v-on="on" icon @click="openBookmarksTab" color="blue">
-                          <v-icon>{{ icons.mdiOpenInNew }}</v-icon>
+                    <span
+                        >{{ i18n("list_mg_act_next") }}
+                        {{ nextchapLoading ? i18n("reader_loading", Math.floor(nextchapProgress)) : "" }}</span
+                    >
+                </v-tooltip>
+                <v-tooltip left>
+                    <template v-slot:activator="{ on }">
+                        <v-btn
+                            v-on="on"
+                            small
+                            class="mt-2"
+                            fab
+                            v-show="hover && !drawer && lastChapter"
+                            color="orange--text">
+                            <v-icon>{{ icons.mdiAlert }}</v-icon>
                         </v-btn>
-                      </template>
-                      <span>{{i18n("reader_open_bookmarks_tab")}}</span>
-                    </v-tooltip>
-                  </v-card-actions>
-                  <v-card-text>
-                    <!-- No bookmarked scans in chapter -->
-                    <div v-if="bookedScans.length === 0">
-                      {{i18n("reader_no_bookmarked_scans")}}
-                    </div>
-                    <!-- List of bookmarked scans -->
-                    <v-container v-else class="amr-bookmarked-scans-cont pa-0">
-                      <v-row dense>
-                        <v-col cols="4" v-for="(scan, i) in bookedScans" :key="i" @click.stop="$refs.reader.goScan(scan.page)" class="amr-bookmarked-scan">
-                          <v-tooltip bottom v-if="scan.note">
+                    </template>
+                    <span>{{ i18n("content_nav_last_chap") }}</span>
+                </v-tooltip>
+                <!-- Quick button to add a manga to reading list -->
+                <v-tooltip left>
+                    <template v-slot:activator="{ on }">
+                        <v-btn
+                            v-on="on"
+                            small
+                            class="mt-2"
+                            fab
+                            v-show="!mangaExists && options.addauto === 0 && hover && !drawer"
+                            color="green--text"
+                            @click.stop="addManga">
+                            <v-icon>{{ icons.mdiPlus }} </v-icon>
+                        </v-btn>
+                    </template>
+                    <span>{{ i18n("content_nav_add_list") }}</span>
+                </v-tooltip>
+            </div>
+        </v-hover>
+        <!-- AMR Reader side bar -->
+        <v-navigation-drawer
+            v-model="drawer"
+            clipped
+            right
+            fixed
+            app
+            :class="'amr-drawer ' + backcolor()"
+            ref="navdrawer"
+            width="300">
+            <v-card tile :color="backcolor()" class="white--text">
+                <!-- Manga Title -->
+                <v-card-title class="white--text amr-manga-title">
+                    <div class="text-subtitle-1">
+                        <v-tooltip bottom v-if="mirrorDesc">
                             <template v-slot:activator="{ on }">
-                              <Scan 
-                                v-on="on"
-                                :full="false"
-                                :src="scan.url"
-                                resize="container"
-                                :bookmark="false"
-                              />
+                                <a v-on="on" :href="mirrorDesc.home" target="_blank">
+                                    <!-- Mirror icon -->
+                                    <img :src="mirrorDesc.mirrorIcon" />
+                                </a>
                             </template>
-                            <span>{{scan.note}}</span>
-                          </v-tooltip>
-                          <Scan 
-                            v-else
-                            slot="activator"
-                            :full="false"
-                            :src="scan.url"
-                            resize="container"
-                            :bookmark="false"
-                          />
+                            <span>{{ i18n("reader_click_go_mirror") }}</span>
+                        </v-tooltip>
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                                <!-- Manga name -->
+                                <a v-on="on" :href="manga.currentMangaURL" target="_blank">{{
+                                    mangaInfos && mangaInfos.displayName ? mangaInfos.displayName : manga.name
+                                }}</a>
+                            </template>
+                            <span>{{ i18n("reader_click_go_manga") }}</span>
+                        </v-tooltip>
+                    </div>
+                </v-card-title>
+                <!-- Chapters navigation -->
+                <v-card-actions class="pa-0">
+                    <v-row no-gutters>
+                        <v-col cols="12">
+                            <v-toolbar class="pa-0 amr-chapters-toolbar">
+                                <div class="d-flex align-center py-1">
+                                    <!-- Previous chapter button -->
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on }">
+                                            <v-btn
+                                                class="select-btn"
+                                                v-on="on"
+                                                text
+                                                small
+                                                tile
+                                                v-show="shouldInvertKeys ? !lastChapter : !firstChapter"
+                                                @click.stop="shouldInvertKeys ? goNextChapter() : goPreviousChapter()">
+                                                <v-icon>{{ icons.mdiChevronLeft }}</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>
+                                            {{
+                                                shouldInvertKeys
+                                                    ? i18n("list_mg_act_next") +
+                                                      " " +
+                                                      (nextchapLoading
+                                                          ? i18n("reader_loading", Math.floor(nextchapProgress))
+                                                          : "")
+                                                    : i18n("list_mg_act_prev")
+                                            }}
+                                        </span>
+                                    </v-tooltip>
+                                    <!-- List of chapters -->
+                                    <v-select
+                                        v-model="selchap"
+                                        :items="chapters"
+                                        item-text="title"
+                                        item-value="url"
+                                        solo
+                                        dense
+                                        single-line
+                                        hide-details
+                                        class="amr-chapter-select truncate"
+                                        :loading="chapters.length === 0 ? 'primary' : false"
+                                        @change="goToChapter"></v-select>
+                                    <v-spacer></v-spacer>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on }">
+                                            <!-- Next chapter button -->
+                                            <v-btn
+                                                class="select-btn"
+                                                v-on="on"
+                                                text
+                                                small
+                                                tile
+                                                v-show="shouldInvertKeys ? !firstChapter : !lastChapter"
+                                                @click.stop="shouldInvertKeys ? goPreviousChapter() : goNextChapter()">
+                                                <v-icon>{{ icons.mdiChevronRight }}</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>
+                                            {{
+                                                shouldInvertKeys
+                                                    ? i18n("list_mg_act_prev")
+                                                    : i18n("list_mg_act_next") +
+                                                      " " +
+                                                      (nextchapLoading
+                                                          ? i18n("reader_loading", Math.floor(nextchapProgress))
+                                                          : "")
+                                            }}
+                                        </span>
+                                    </v-tooltip>
+                                </div>
+                            </v-toolbar>
                         </v-col>
-                      </v-row>
-                    </v-container>
-                  </v-card-text>
-                </v-card>
-              </v-menu>
-              <!-- Mark as latest chapter read button -->
-              <v-tooltip bottom class="ml-1">
-                <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon color="orange"
-                    v-show="showLatestRead" @click.stop="markAsLatest">
-                      <v-icon>{{ icons.mdiPageLast }}</v-icon>
-                  </v-btn>
-                </template>
-                <span>{{i18n("content_nav_mark_read")}}</span>
-              </v-tooltip>
-              <!-- Add to reading list button -->
-              <v-tooltip bottom class="ml-1">
-                <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon color="green"
-                    v-show="!mangaExists && options.addauto === 0" @click.stop="addManga">
-                      <v-icon>{{ icons.mdiPlus }}</v-icon>
-                  </v-btn>
-                </template>
-                <span>{{i18n("content_nav_add_list")}}</span>
-              </v-tooltip>
-              <!-- Remove from reading list button -->
-              <v-tooltip bottom class="ml-1">
-                <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon color="red"
-                    v-show="mangaExists" @click.stop="deleteManga">
-                      <v-icon>{{ icons.mdiDelete }}</v-icon>
-                  </v-btn>
-                </template>
-                <span>{{i18n("reader_delete_manga")}}</span>
-              </v-tooltip>
-              <!-- Pause following updates on manga -->
-              <v-tooltip bottom  class="ml-1">
-                <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon color="blue" @click.stop="markMangaReadTop(1)" v-show="mangaExists && mangaInfos && mangaInfos.read === 0">
-                      <v-icon>{{ icons.mdiPause }}</v-icon>
-                  </v-btn>
-                </template>
-                <span>{{i18n("content_nav_stopfollow")}}</span>
-              </v-tooltip>
-              <!-- Follow updates on manga -->
-              <v-tooltip bottom  class="ml-1">
-                <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon color="blue" @click.stop="markMangaReadTop(0)" v-show="mangaExists && mangaInfos && mangaInfos.read === 1">
-                      <v-icon>{{ icons.mdiPlay }}</v-icon>
-                  </v-btn>
-                </template>
-                <span>{{i18n("content_nav_follow")}}</span>
-              </v-tooltip>
-              <!-- Reload all scan errors -->
-              <v-tooltip bottom class="ml-1">
-                <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon color="red" @click.stop="reloadErrors">
-                      <v-icon>{{ icons.mdiReplay }}</v-icon>
-                  </v-btn>
-                </template>
-                <span>{{i18n("content_nav_reload")}}</span>
-              </v-tooltip>
-              <!-- download chapter button -->
-              <v-tooltip bottom class="ml-1">
-                <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon color="red" @click.stop="DownloadChapter">
-                      <v-progress-circular indeterminate v-if="zip" />
-                      <v-icon v-if="!zip">{{ icons.mdiDownloadOutline }}</v-icon>
-                  </v-btn>
-                </template>
-                <span>{{i18n("content_nav_downlaod")}}</span>
-              </v-tooltip>
-            </v-col>
-          </v-row>
-        </v-card-actions>
-      </v-card>
-      <!-- Display options -->
-      <v-card tile :color="backcolor(1)" class="white--text">
-        <v-card-title>
-          <v-row dense>
-            <v-col cols="12">
-              <!-- Display book checkbox -->
-              <v-switch dense v-model="book" :label="i18n('option_read_book')" hide-details class="pb-1"></v-switch>
-              <span>
-                <v-tooltip top>
-                  <template v-slot:activator="{ on }">
-                    <!-- Book offset button -->
-                    <v-switch :disabled="!book" dense v-show="displayBookOffsetButton" v-on="on" @click="offsetBook" :label="i18n('reader_book_offset')" hide-details class="pb-1"></v-switch>
-                  </template>
-                  <span>{{i18n("reader_book_offset_description")}}</span>
-                </v-tooltip>
-              </span>
-            </v-col>
-            <v-col cols="12">
-              <v-divider></v-divider>
-            </v-col>
-            <v-col cols="12">
-              <!-- Display full chapter checkbox -->
-              <v-switch dense v-model="fullchapter" :label="i18n('option_read_fullchapter')" hide-details class="pb-1"></v-switch>
-            </v-col>
-            <v-col cols="12">
-              <!-- Webtoon Mode checkbox -->
-              <v-switch dense v-model="webtoonMode" :label="i18n('option_read_webtoon')" hide-details class="pb-1" :disabled="!fullchapter"></v-switch>
-            </v-col>
-            <v-col cols="12">
-              <v-divider></v-divider>
-            </v-col>
-            <v-col cols="12">
-              <!-- Scale Up Image checkbox -->
-              <v-switch dense v-model="scaleUp" :label="i18n('option_read_scaleup')" hide-details class="pb-1"></v-switch>
-            </v-col>
-          </v-row>
-          <v-row dense>
-            <!-- Reading direction -->
-            <v-col class="text-center mt-2" cols="12">
-              <v-btn-toggle v-model="direction" mandatory color="primary" :background-color="backcolor(1)">
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-btn v-on="on" text value="ltr">
-                      <!--<span>Left to right</span>-->
-                      <v-icon>{{  icons.mdiArrowRight }}</v-icon>
-                    </v-btn>
-                  </template>
-                  <span>{{i18n("option_read_book_ltr")}}</span>
-                </v-tooltip>
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-btn text v-on="on" value="rtl">
-                      <!--<span>Right to left</span>-->
-                      <v-icon>{{ icons.mdiArrowLeft }}</v-icon>
-                    </v-btn>
-                  </template>
-                  <span>{{i18n("option_read_book_rtl")}}</span>
-                </v-tooltip>
-              </v-btn-toggle>
-            </v-col>
-            <!-- Resize mode -->
-            <v-col class="text-center" cols="12">
-              <v-btn-toggle v-model="resize" mandatory color="primary" :background-color="backcolor(1)">
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-btn v-on="on" text value="width">
-                      <!--<span>Width</span>-->
-                      <v-icon>{{ icons.mdiArrowExpandHorizontal }}</v-icon>
-                    </v-btn>
-                  </template>
-                  <span>{{i18n("option_read_resize_w")}}</span>
-                </v-tooltip>
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-btn v-on="on" text value="height" v-show="!fullchapter">
-                      <!--<span>Height</span>-->
-                      <v-icon>{{ icons.mdiArrowExpandVertical }}</v-icon>
-                    </v-btn>
-                  </template>
-                  <span>{{i18n("option_read_resize_h")}}</span>
-                </v-tooltip>
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-btn v-on="on" text value="container" v-show="!fullchapter">
-                      <!--<span>Container</span>-->
-                      <v-icon>{{ icons.mdiArrowExpandAll }}</v-icon>
-                    </v-btn>
-                  </template>
-                  <span>{{i18n("option_read_resize_c")}}</span>
-                </v-tooltip>
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-btn v-on="on" text value="none">
-                      <!--<span>None</span>-->
-                      <v-icon>{{ icons.mdiBorderNoneVariant }}</v-icon>
-                    </v-btn>
-                  </template>
-                  <span>{{i18n("option_read_resize_n")}}</span>
-                </v-tooltip>
-              </v-btn-toggle>
-            </v-col>
-            <!-- Zoom Value -->
-            <v-col class="text-center mt-2" cols="12" v-if="showMaxWidth">
-              <v-slider
-                v-model="maxWidthValueStore"
-                dense
-                min="10"
-                max="100"
-                track-fill-color="primary"
-                :thumb-color="backcolor(3)"
-                thumb-label="always"
-                hide-details
-              >
-                <template v-slot:prepend>
-                  <v-icon
-                    :color="backcolor(3)"
-                    @click="zoomOut"
-                  >
-                    {{ icons.mdiMinus }}
-                  </v-icon>
-                </template>
-                <template v-slot:append>
-                  <v-icon
-                    :color="backcolor(3)"
-                    @click="zoomIn"
-                  >
-                    {{ icons.mdiPlus }}
-                  </v-icon>
-                </template>
-              </v-slider>
-            </v-col>
-            <v-col cols="12" class="mt-2" style="min-height:40px!important;" v-else />
-            <v-col class="text-center mt-2" cols="12">
-              <v-tooltip top>
-                <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon @click="toggleDark" :color="darkreader ? 'white' : 'black'" class="ma-0">
-                    <v-icon>{{ icons.mdiBrightness6 }}</v-icon>
-                  </v-btn>
-                </template>
-                <span>{{!darkreader ? i18n("reader_button_dark") : i18n("reader_button_light")}}</span>
-              </v-tooltip>
-              <v-tooltip top>
-                <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon @click="toggleFullScreen" class="ma-0">
-                    <v-icon>{{fullscreen ? icons.mdiFullscreenExit : icons.mdiFullscreen }}</v-icon>
-                  </v-btn>
-                </template>
-                <span>{{!fullscreen ? i18n("reader_button_fullscreen") : i18n("reader_button_exit_fullscreen")}}</span>
-              </v-tooltip>
-              <v-tooltip top>
-                <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon @click="showMaxWidth = !showMaxWidth" class="ma-0" :disabled="['height', 'none'].includes(resize)">
-                    <v-icon>{{ icons.mdiMagnify }}</v-icon>
-                  </v-btn>
-                </template>
-                <span>{{i18n("reader_zoom_show")}}</span>
-              </v-tooltip>
-              <v-tooltip top>
-                <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon @click="openShortcuts" class="ma-0">
-                    <v-icon>{{ icons.mdiKeyboard }}</v-icon>
-                  </v-btn>
-                </template>
-                <span>{{i18n("reader_shortcuts_tooltip")}}</span>
-              </v-tooltip>
-              <v-tooltip top>
-                <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon @click="displayTips" color="blue" class="ma-0">
-                    <v-icon>{{ icons.mdiLightbulbOn }}</v-icon>
-                  </v-btn>
-                </template>
-                <span>{{i18n("reader_button_tips")}}</span>
-              </v-tooltip>
-            </v-col>
-            <v-col class="text-center mt-2" cols="12">
-              <v-tooltip top>
-                <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon @click="saveOptionsAsDefault(false)" color="primary" v-if="layoutDiffFromOptions" class="ma-0">
-                    <v-icon>{{ icons.mdiContentSave }}</v-icon>
-                  </v-btn>
-                  <v-btn v-else icon disabled class="select-btn" />
-                </template>
-                <span>{{i18n("reader_button_saveoptions")}}</span>
-              </v-tooltip>
-              <v-tooltip top>
-                <template v-slot:activator="{ on }">
-                  <v-btn v-on="on" icon @click="resetOptionsToDefault" color="primary" v-if="layoutDiffFromOptions" class="ma-0">
-                    <v-icon>{{ icons.mdiReload }}</v-icon>
-                  </v-btn>
-                  <v-btn v-else icon disabled class="select-btn" />
-                </template>
-                <span>{{i18n("reader_button_resetoptions")}}</span>
-              </v-tooltip>
-            </v-col>
-          </v-row>
-        </v-card-title>
-      </v-card>
-    </v-navigation-drawer>
-    <SocialBar v-show="drawer" />
-    <!-- End AMR Reader Side bar -->
-    <v-main>
-      <Reader ref="reader"
-              :book="book"
-              :direction="direction"
-              :invertKeys="invertKeys"
-              :fullchapter="fullchapter"
-              :resize="resize"
-              :drawer="drawer"
-              :webtoonMode="webtoonMode"
-              :maxWidthValue="maxWidthValue"
-              :scaleUp="scaleUp"
-              :shouldInvertKeys="shouldInvertKeys" />
-    </v-main>
-  </v-app>
+                        <!-- Next chapter preloading progression bar -->
+                        <v-col cols="12" class="amr-chapter-progress-cont">
+                            <v-tooltip bottom>
+                                <template v-slot:activator="{ on }">
+                                    <v-progress-linear
+                                        v-show="nextchapLoading"
+                                        v-on="on"
+                                        class="amr-floting-progress"
+                                        :height="3"
+                                        :value="nextchapProgress"
+                                        color="red darken-2"></v-progress-linear>
+                                </template>
+                                <span>{{ i18n("reader_loading", Math.floor(nextchapProgress)) }}</span>
+                            </v-tooltip>
+                        </v-col>
+                        <!-- Action buttons -->
+                        <v-col class="text-center pa-2" cols="12">
+                            <v-menu offset-y>
+                                <!-- Bookmarks button -->
+                                <template v-slot:activator="{ on: menu }">
+                                    <v-tooltip bottom class="ml-1">
+                                        <template v-slot:activator="{ on: tooltip }">
+                                            <v-btn
+                                                v-on="{ ...tooltip, ...menu }"
+                                                icon
+                                                :color="bookstate.booked ? 'yellow' : 'yellow text--lighten-4'">
+                                                <v-icon>{{ icons.mdiStar }}</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>{{ i18n("content_nav_click_bm") }}</span>
+                                    </v-tooltip>
+                                </template>
+                                <!-- Menu displayed when bookmarks button activate -->
+                                <v-card>
+                                    <!-- Bookmark note of the chapter -->
+                                    <v-card-title v-if="bookstate.note">
+                                        {{ i18n("reader_bookmarked_note", bookstate.note) }}
+                                    </v-card-title>
+                                    <v-card-actions>
+                                        <!-- Action to update / delete bookmark for chapter > open popup -->
+                                        <v-btn
+                                            @click="bookmarkChapter"
+                                            :color="
+                                                !darkreader
+                                                    ? bookstate.booked
+                                                        ? 'yellow grey--text text--darken-3'
+                                                        : 'yellow grey--text'
+                                                    : bookstate.booked
+                                                    ? 'yellow--text'
+                                                    : 'yellow--text text--lighten-4'
+                                            ">
+                                            <v-icon>{{ icons.mdiStar }}</v-icon
+                                            >&nbsp;
+                                            {{
+                                                bookstate.booked
+                                                    ? i18n("reader_bookmark_update")
+                                                    : i18n("reader_bookmark_create")
+                                            }}
+                                        </v-btn>
+                                        <v-spacer></v-spacer>
+                                        <v-tooltip bottom>
+                                            <template v-slot:activator="{ on }">
+                                                <v-btn v-on="on" icon @click="openBookmarksTab" color="blue">
+                                                    <v-icon>{{ icons.mdiOpenInNew }}</v-icon>
+                                                </v-btn>
+                                            </template>
+                                            <span>{{ i18n("reader_open_bookmarks_tab") }}</span>
+                                        </v-tooltip>
+                                    </v-card-actions>
+                                    <v-card-text>
+                                        <!-- No bookmarked scans in chapter -->
+                                        <div v-if="bookedScans.length === 0">
+                                            {{ i18n("reader_no_bookmarked_scans") }}
+                                        </div>
+                                        <!-- List of bookmarked scans -->
+                                        <v-container v-else class="amr-bookmarked-scans-cont pa-0">
+                                            <v-row dense>
+                                                <v-col
+                                                    cols="4"
+                                                    v-for="(scan, i) in bookedScans"
+                                                    :key="i"
+                                                    @click.stop="$refs.reader.goScan(scan.page)"
+                                                    class="amr-bookmarked-scan">
+                                                    <v-tooltip bottom v-if="scan.note">
+                                                        <template v-slot:activator="{ on }">
+                                                            <Scan
+                                                                v-on="on"
+                                                                :full="false"
+                                                                :src="scan.url"
+                                                                resize="container"
+                                                                :bookmark="false" />
+                                                        </template>
+                                                        <span>{{ scan.note }}</span>
+                                                    </v-tooltip>
+                                                    <Scan
+                                                        v-else
+                                                        slot="activator"
+                                                        :full="false"
+                                                        :src="scan.url"
+                                                        resize="container"
+                                                        :bookmark="false" />
+                                                </v-col>
+                                            </v-row>
+                                        </v-container>
+                                    </v-card-text>
+                                </v-card>
+                            </v-menu>
+                            <!-- Mark as latest chapter read button -->
+                            <v-tooltip bottom class="ml-1">
+                                <template v-slot:activator="{ on }">
+                                    <v-btn
+                                        v-on="on"
+                                        icon
+                                        color="orange"
+                                        v-show="showLatestRead"
+                                        @click.stop="markAsLatest">
+                                        <v-icon>{{ icons.mdiPageLast }}</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>{{ i18n("content_nav_mark_read") }}</span>
+                            </v-tooltip>
+                            <!-- Add to reading list button -->
+                            <v-tooltip bottom class="ml-1">
+                                <template v-slot:activator="{ on }">
+                                    <v-btn
+                                        v-on="on"
+                                        icon
+                                        color="green"
+                                        v-show="!mangaExists && options.addauto === 0"
+                                        @click.stop="addManga">
+                                        <v-icon>{{ icons.mdiPlus }}</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>{{ i18n("content_nav_add_list") }}</span>
+                            </v-tooltip>
+                            <!-- Remove from reading list button -->
+                            <v-tooltip bottom class="ml-1">
+                                <template v-slot:activator="{ on }">
+                                    <v-btn v-on="on" icon color="red" v-show="mangaExists" @click.stop="deleteManga">
+                                        <v-icon>{{ icons.mdiDelete }}</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>{{ i18n("reader_delete_manga") }}</span>
+                            </v-tooltip>
+                            <!-- Pause following updates on manga -->
+                            <v-tooltip bottom class="ml-1">
+                                <template v-slot:activator="{ on }">
+                                    <v-btn
+                                        v-on="on"
+                                        icon
+                                        color="blue"
+                                        @click.stop="markMangaReadTop(1)"
+                                        v-show="mangaExists && mangaInfos && mangaInfos.read === 0">
+                                        <v-icon>{{ icons.mdiPause }}</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>{{ i18n("content_nav_stopfollow") }}</span>
+                            </v-tooltip>
+                            <!-- Follow updates on manga -->
+                            <v-tooltip bottom class="ml-1">
+                                <template v-slot:activator="{ on }">
+                                    <v-btn
+                                        v-on="on"
+                                        icon
+                                        color="blue"
+                                        @click.stop="markMangaReadTop(0)"
+                                        v-show="mangaExists && mangaInfos && mangaInfos.read === 1">
+                                        <v-icon>{{ icons.mdiPlay }}</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>{{ i18n("content_nav_follow") }}</span>
+                            </v-tooltip>
+                            <!-- Reload all scan errors -->
+                            <v-tooltip bottom class="ml-1">
+                                <template v-slot:activator="{ on }">
+                                    <v-btn v-on="on" icon color="red" @click.stop="reloadErrors">
+                                        <v-icon>{{ icons.mdiReplay }}</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>{{ i18n("content_nav_reload") }}</span>
+                            </v-tooltip>
+                            <!-- download chapter button -->
+                            <v-tooltip bottom class="ml-1">
+                                <template v-slot:activator="{ on }">
+                                    <v-btn v-on="on" icon color="red" @click.stop="DownloadChapter">
+                                        <v-progress-circular indeterminate v-if="zip" />
+                                        <v-icon v-if="!zip">{{ icons.mdiDownloadOutline }}</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>{{ i18n("content_nav_downlaod") }}</span>
+                            </v-tooltip>
+                        </v-col>
+                    </v-row>
+                </v-card-actions>
+            </v-card>
+            <!-- Display options -->
+            <v-card tile :color="backcolor(1)" class="white--text">
+                <v-card-title>
+                    <v-row dense>
+                        <v-col cols="12">
+                            <!-- Display book checkbox -->
+                            <v-switch
+                                dense
+                                v-model="book"
+                                :label="i18n('option_read_book')"
+                                hide-details
+                                class="pb-1"></v-switch>
+                            <span>
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on }">
+                                        <!-- Book offset button -->
+                                        <v-switch
+                                            :disabled="!book"
+                                            dense
+                                            v-show="displayBookOffsetButton"
+                                            v-on="on"
+                                            @click="offsetBook"
+                                            :label="i18n('reader_book_offset')"
+                                            hide-details
+                                            class="pb-1"></v-switch>
+                                    </template>
+                                    <span>{{ i18n("reader_book_offset_description") }}</span>
+                                </v-tooltip>
+                            </span>
+                        </v-col>
+                        <v-col cols="12">
+                            <v-divider></v-divider>
+                        </v-col>
+                        <v-col cols="12">
+                            <!-- Display full chapter checkbox -->
+                            <v-switch
+                                dense
+                                v-model="fullchapter"
+                                :label="i18n('option_read_fullchapter')"
+                                hide-details
+                                class="pb-1"></v-switch>
+                        </v-col>
+                        <v-col cols="12">
+                            <!-- Webtoon Mode checkbox -->
+                            <v-switch
+                                dense
+                                v-model="webtoonMode"
+                                :label="i18n('option_read_webtoon')"
+                                hide-details
+                                class="pb-1"
+                                :disabled="!fullchapter"></v-switch>
+                        </v-col>
+                        <v-col cols="12">
+                            <v-divider></v-divider>
+                        </v-col>
+                        <v-col cols="12">
+                            <!-- Scale Up Image checkbox -->
+                            <v-switch
+                                dense
+                                v-model="scaleUp"
+                                :label="i18n('option_read_scaleup')"
+                                hide-details
+                                class="pb-1"></v-switch>
+                        </v-col>
+                    </v-row>
+                    <v-row dense>
+                        <!-- Reading direction -->
+                        <v-col class="text-center mt-2" cols="12">
+                            <v-btn-toggle
+                                v-model="direction"
+                                mandatory
+                                color="primary"
+                                :background-color="backcolor(1)">
+                                <v-tooltip bottom>
+                                    <template v-slot:activator="{ on }">
+                                        <v-btn v-on="on" text value="ltr">
+                                            <!--<span>Left to right</span>-->
+                                            <v-icon>{{ icons.mdiArrowRight }}</v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{ i18n("option_read_book_ltr") }}</span>
+                                </v-tooltip>
+                                <v-tooltip bottom>
+                                    <template v-slot:activator="{ on }">
+                                        <v-btn text v-on="on" value="rtl">
+                                            <!--<span>Right to left</span>-->
+                                            <v-icon>{{ icons.mdiArrowLeft }}</v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{ i18n("option_read_book_rtl") }}</span>
+                                </v-tooltip>
+                            </v-btn-toggle>
+                        </v-col>
+                        <!-- Resize mode -->
+                        <v-col class="text-center" cols="12">
+                            <v-btn-toggle v-model="resize" mandatory color="primary" :background-color="backcolor(1)">
+                                <v-tooltip bottom>
+                                    <template v-slot:activator="{ on }">
+                                        <v-btn v-on="on" text value="width">
+                                            <!--<span>Width</span>-->
+                                            <v-icon>{{ icons.mdiArrowExpandHorizontal }}</v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{ i18n("option_read_resize_w") }}</span>
+                                </v-tooltip>
+                                <v-tooltip bottom>
+                                    <template v-slot:activator="{ on }">
+                                        <v-btn v-on="on" text value="height" v-show="!fullchapter">
+                                            <!--<span>Height</span>-->
+                                            <v-icon>{{ icons.mdiArrowExpandVertical }}</v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{ i18n("option_read_resize_h") }}</span>
+                                </v-tooltip>
+                                <v-tooltip bottom>
+                                    <template v-slot:activator="{ on }">
+                                        <v-btn v-on="on" text value="container" v-show="!fullchapter">
+                                            <!--<span>Container</span>-->
+                                            <v-icon>{{ icons.mdiArrowExpandAll }}</v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{ i18n("option_read_resize_c") }}</span>
+                                </v-tooltip>
+                                <v-tooltip bottom>
+                                    <template v-slot:activator="{ on }">
+                                        <v-btn v-on="on" text value="none">
+                                            <!--<span>None</span>-->
+                                            <v-icon>{{ icons.mdiBorderNoneVariant }}</v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{ i18n("option_read_resize_n") }}</span>
+                                </v-tooltip>
+                            </v-btn-toggle>
+                        </v-col>
+                        <!-- Zoom Value -->
+                        <v-col class="text-center mt-2" cols="12" v-if="showMaxWidth">
+                            <v-slider
+                                v-model="maxWidthValueStore"
+                                dense
+                                min="10"
+                                max="100"
+                                track-fill-color="primary"
+                                :thumb-color="backcolor(3)"
+                                thumb-label="always"
+                                hide-details>
+                                <template v-slot:prepend>
+                                    <v-icon :color="backcolor(3)" @click="zoomOut">
+                                        {{ icons.mdiMinus }}
+                                    </v-icon>
+                                </template>
+                                <template v-slot:append>
+                                    <v-icon :color="backcolor(3)" @click="zoomIn">
+                                        {{ icons.mdiPlus }}
+                                    </v-icon>
+                                </template>
+                            </v-slider>
+                        </v-col>
+                        <v-col cols="12" class="mt-2" style="min-height: 40px !important" v-else />
+                        <v-col class="text-center mt-2" cols="12">
+                            <v-tooltip top>
+                                <template v-slot:activator="{ on }">
+                                    <v-btn
+                                        v-on="on"
+                                        icon
+                                        @click="toggleDark"
+                                        :color="darkreader ? 'white' : 'black'"
+                                        class="ma-0">
+                                        <v-icon>{{ icons.mdiBrightness6 }}</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>{{
+                                    !darkreader ? i18n("reader_button_dark") : i18n("reader_button_light")
+                                }}</span>
+                            </v-tooltip>
+                            <v-tooltip top>
+                                <template v-slot:activator="{ on }">
+                                    <v-btn v-on="on" icon @click="toggleFullScreen" class="ma-0">
+                                        <v-icon>{{
+                                            fullscreen ? icons.mdiFullscreenExit : icons.mdiFullscreen
+                                        }}</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>{{
+                                    !fullscreen
+                                        ? i18n("reader_button_fullscreen")
+                                        : i18n("reader_button_exit_fullscreen")
+                                }}</span>
+                            </v-tooltip>
+                            <v-tooltip top>
+                                <template v-slot:activator="{ on }">
+                                    <v-btn
+                                        v-on="on"
+                                        icon
+                                        @click="showMaxWidth = !showMaxWidth"
+                                        class="ma-0"
+                                        :disabled="['height', 'none'].includes(resize)">
+                                        <v-icon>{{ icons.mdiMagnify }}</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>{{ i18n("reader_zoom_show") }}</span>
+                            </v-tooltip>
+                            <v-tooltip top>
+                                <template v-slot:activator="{ on }">
+                                    <v-btn v-on="on" icon @click="openShortcuts" class="ma-0">
+                                        <v-icon>{{ icons.mdiKeyboard }}</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>{{ i18n("reader_shortcuts_tooltip") }}</span>
+                            </v-tooltip>
+                            <v-tooltip top>
+                                <template v-slot:activator="{ on }">
+                                    <v-btn v-on="on" icon @click="displayTips" color="blue" class="ma-0">
+                                        <v-icon>{{ icons.mdiLightbulbOn }}</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>{{ i18n("reader_button_tips") }}</span>
+                            </v-tooltip>
+                        </v-col>
+                        <v-col class="text-center mt-2" cols="12">
+                            <v-tooltip top>
+                                <template v-slot:activator="{ on }">
+                                    <v-btn
+                                        v-on="on"
+                                        icon
+                                        @click="saveOptionsAsDefault(false)"
+                                        color="primary"
+                                        v-if="layoutDiffFromOptions"
+                                        class="ma-0">
+                                        <v-icon>{{ icons.mdiContentSave }}</v-icon>
+                                    </v-btn>
+                                    <v-btn v-else icon disabled class="select-btn" />
+                                </template>
+                                <span>{{ i18n("reader_button_saveoptions") }}</span>
+                            </v-tooltip>
+                            <v-tooltip top>
+                                <template v-slot:activator="{ on }">
+                                    <v-btn
+                                        v-on="on"
+                                        icon
+                                        @click="resetOptionsToDefault"
+                                        color="primary"
+                                        v-if="layoutDiffFromOptions"
+                                        class="ma-0">
+                                        <v-icon>{{ icons.mdiReload }}</v-icon>
+                                    </v-btn>
+                                    <v-btn v-else icon disabled class="select-btn" />
+                                </template>
+                                <span>{{ i18n("reader_button_resetoptions") }}</span>
+                            </v-tooltip>
+                        </v-col>
+                    </v-row>
+                </v-card-title>
+            </v-card>
+        </v-navigation-drawer>
+        <SocialBar v-show="drawer" />
+        <!-- End AMR Reader Side bar -->
+        <v-main>
+            <Reader
+                ref="reader"
+                :book="book"
+                :direction="direction"
+                :invertKeys="invertKeys"
+                :fullchapter="fullchapter"
+                :resize="resize"
+                :drawer="drawer"
+                :webtoonMode="webtoonMode"
+                :maxWidthValue="maxWidthValue"
+                :scaleUp="scaleUp"
+                :shouldInvertKeys="shouldInvertKeys" />
+        </v-main>
+    </v-app>
 </template>
 
 <script>
-  import browser from "webextension-polyfill";
-  import { i18nmixin } from "../mixins/i18n-mixin"
+import browser from "webextension-polyfill"
+import { i18nmixin } from "../mixins/i18n-mixin"
 
-  import mirrorImpl from './state/mirrorimpl';
-  import pageData from './state/pagedata';
-  import options from './state/options';
-  import bookmarks from "./state/bookmarks";
+import mirrorImpl from "./state/mirrorimpl"
+import pageData from "./state/pagedata"
+import options from "./state/options"
+import bookmarks from "./state/bookmarks"
 
-  import util from "./helpers/util";
-  import * as dialogs from "./helpers/dialogs";
-  import ChapterLoader from "./helpers/ChapterLoader";
-  import EventBus from "./helpers/EventBus";
+import util from "./helpers/util"
+import * as dialogs from "./helpers/dialogs"
+import ChapterLoader from "./helpers/ChapterLoader"
+import EventBus from "./helpers/EventBus"
 
-  import Reader from "./components/Reader";
-  import Scan from "./components/Scan";
-  import WizDialog from "./components/WizDialog";
-  import BookmarkPopup from "./components/BookmarkPopup";
-  import ShortcutsPopup from "./components/ShortcutsPopup";
-  import SocialBar from "./components/SocialBar";
-  import { THINSCAN } from '../amr/options';
-  import { mdiMenu, mdiChevronRight, mdiChevronLeft, mdiAlert, mdiPlus, mdiMinus, mdiStar, mdiOpenInNew, mdiPageLast, mdiDelete, 
-    mdiPause, mdiPlay, mdiReplay, mdiDownloadOutline, mdiBookOpenPageVariant, mdiArrowRight, mdiArrowLeft, mdiArrowExpandHorizontal,
-    mdiArrowExpandVertical, mdiArrowExpandAll, mdiBorderNoneVariant, mdiPlusCircle, mdiMinusCircle, mdiContentSave, mdiReload,
-    mdiBrightness6, mdiFullscreen, mdiFullscreenExit, mdiKeyboard, mdiLightbulbOn, mdiMagnify} from '@mdi/js'
+import Reader from "./components/Reader"
+import Scan from "./components/Scan"
+import WizDialog from "./components/WizDialog"
+import BookmarkPopup from "./components/BookmarkPopup"
+import ShortcutsPopup from "./components/ShortcutsPopup"
+import SocialBar from "./components/SocialBar"
+import { THINSCAN } from "../amr/options"
+import {
+    mdiMenu,
+    mdiChevronRight,
+    mdiChevronLeft,
+    mdiAlert,
+    mdiPlus,
+    mdiMinus,
+    mdiStar,
+    mdiOpenInNew,
+    mdiPageLast,
+    mdiDelete,
+    mdiPause,
+    mdiPlay,
+    mdiReplay,
+    mdiDownloadOutline,
+    mdiBookOpenPageVariant,
+    mdiArrowRight,
+    mdiArrowLeft,
+    mdiArrowExpandHorizontal,
+    mdiArrowExpandVertical,
+    mdiArrowExpandAll,
+    mdiBorderNoneVariant,
+    mdiPlusCircle,
+    mdiMinusCircle,
+    mdiContentSave,
+    mdiReload,
+    mdiBrightness6,
+    mdiFullscreen,
+    mdiFullscreenExit,
+    mdiKeyboard,
+    mdiLightbulbOn,
+    mdiMagnify
+} from "@mdi/js"
 
-  /** Possible values for resize (readable), the stored value is the corresponding index */
-  const resize_values = ['width', 'height', 'container', 'none']
+/** Possible values for resize (readable), the stored value is the corresponding index */
+const resize_values = ["width", "height", "container", "none"]
 
-  export default {
+export default {
     mixins: [i18nmixin],
     data: () => ({
-      zip: false,
-      drawer: false, /* Display the side drawer or not */
-      loading: false, /* Display the loading cover */
+        zip: false,
+        drawer: false /* Display the side drawer or not */,
+        loading: false /* Display the loading cover */,
 
-      chapters: [], /* List of chapters */
-      selchap: null, /* Current chapter */
-      mirrorDesc: null, /* Current mirror description */
+        chapters: [] /* List of chapters */,
+        selchap: null /* Current chapter */,
+        mirrorDesc: null /* Current mirror description */,
 
-      direction: options.readingDirection === 0 ? 'ltr' : 'rtl', /* Reading from left to right or right to left */
-      invertKeys: options.invertKeys === 1, /* Invert keys in right to left mode */
-      book: true, /* Do we display side by side pages */
-      resize: 'width', /* Mode of resize : width, height, container */
-      fullchapter: true, /* Do we display whole chapter or just current page */
-      scaleUp: options.scaleUp, /* Does the image scale up larger than its native size */
-      webtoonMode: options.webtoonDefault === 1, /* Removes whitespace between images for webtoons */
+        direction: options.readingDirection === 0 ? "ltr" : "rtl" /* Reading from left to right or right to left */,
+        invertKeys: options.invertKeys === 1 /* Invert keys in right to left mode */,
+        book: true /* Do we display side by side pages */,
+        resize: "width" /* Mode of resize : width, height, container */,
+        fullchapter: true /* Do we display whole chapter or just current page */,
+        scaleUp: options.scaleUp /* Does the image scale up larger than its native size */,
+        webtoonMode: options.webtoonDefault === 1 /* Removes whitespace between images for webtoons */,
 
-      mangaExists: null, /* Does manga exists in reading list */
-      mangaInfos: null, /* specific manga information (layout state, read top, latest read chapter) */
+        mangaExists: null /* Does manga exists in reading list */,
+        mangaInfos: null /* specific manga information (layout state, read top, latest read chapter) */,
 
-      displayBookOffsetButton: false, /* This button will offset the chapter in book mode if there is a title page. Only display after chapter loads */
+        displayBookOffsetButton: false /* This button will offset the chapter in book mode if there is a title page. Only display after chapter loads */,
 
-      nextChapterLoader: null, /* A ChapterLoader object to preload next chapter scans */
-      nextchapProgress: 0, /* Progression of next chapter loading */
+        nextChapterLoader: null /* A ChapterLoader object to preload next chapter scans */,
+        nextchapProgress: 0 /* Progression of next chapter loading */,
 
-      bookstate: bookmarks.state, /* bookmarks state */
-      thinscan: options.thinscan, /* top telling that the chapter is containing thin scans (height >= 3 * width) */
+        bookstate: bookmarks.state /* bookmarks state */,
+        thinscan: options.thinscan /* top telling that the chapter is containing thin scans (height >= 3 * width) */,
 
-      darkreader: options.darkreader === 1, /* Top for using dark background */
-      options: options, /* Make it reactive so update to local options object will be reflected in computed properties */
-      fullscreen: window.fullScreen, /* fullscreen window state */
+        darkreader: options.darkreader === 1 /* Top for using dark background */,
+        options:
+            options /* Make it reactive so update to local options object will be reflected in computed properties */,
+        fullscreen: window.fullScreen /* fullscreen window state */,
 
-      chaploaded: false, /* Top telling if all scans have been loaded */
-      pageData: pageData.state, /* reactive data from pageData */
+        chaploaded: false /* Top telling if all scans have been loaded */,
+        pageData: pageData.state /* reactive data from pageData */,
 
-      showMaxWidth: false, /* Show the max width */
-      maxWidthValue: 100,
-      maxWidthTimeout: null,
+        showMaxWidth: false /* Show the max width */,
+        maxWidthValue: 100,
+        maxWidthTimeout: null,
 
-      icons: {
-        mdiMenu,
-        mdiChevronRight, 
-        mdiChevronLeft,
-        mdiAlert,
-        mdiPlus,
-        mdiStar,
-        mdiOpenInNew,
-        mdiPageLast,
-        mdiDelete,
-        mdiPause,
-        mdiPlay,
-        mdiReplay,
-        mdiDownloadOutline,
-        mdiBookOpenPageVariant,
-        mdiArrowRight,
-        mdiArrowLeft,
-        mdiArrowExpandHorizontal,
-        mdiArrowExpandVertical,
-        mdiArrowExpandAll,
-        mdiBorderNoneVariant,
-        mdiPlus,
-        mdiPlusCircle,
-        mdiMinus,
-        mdiMinusCircle,
-        mdiContentSave,
-        mdiReload,
-        mdiBrightness6,
-        mdiFullscreen,
-        mdiFullscreenExit,
-        mdiKeyboard,
-        mdiLightbulbOn,
-        mdiMagnify,
-      }      
+        icons: {
+            mdiMenu,
+            mdiChevronRight,
+            mdiChevronLeft,
+            mdiAlert,
+            mdiPlus,
+            mdiStar,
+            mdiOpenInNew,
+            mdiPageLast,
+            mdiDelete,
+            mdiPause,
+            mdiPlay,
+            mdiReplay,
+            mdiDownloadOutline,
+            mdiBookOpenPageVariant,
+            mdiArrowRight,
+            mdiArrowLeft,
+            mdiArrowExpandHorizontal,
+            mdiArrowExpandVertical,
+            mdiArrowExpandAll,
+            mdiBorderNoneVariant,
+            mdiPlus,
+            mdiPlusCircle,
+            mdiMinus,
+            mdiMinusCircle,
+            mdiContentSave,
+            mdiReload,
+            mdiBrightness6,
+            mdiFullscreen,
+            mdiFullscreenExit,
+            mdiKeyboard,
+            mdiLightbulbOn,
+            mdiMagnify
+        }
     }),
     created() {
-      /** Register keys */
-      this.handlekeys()
-      /** Check if manga exists */
-      this.checkExists()
-      /** Load current manga informations */
-      this.loadMangaInformations().then(() => {
-        /* retrieve current page if current chapter was the last opened */
-        if (this.mangaInfos && util.matchChapUrl(this.pageData.currentChapterURL, this.mangaInfos.currentChapter) && this.mangaInfos.currentScanUrl) {
-          // set current page to last currentScanUrl
-          EventBus.$emit("go-to-scanurl", this.mangaInfos.currentScanUrl)
-        }
-      })
-      /** Load current bar state (drawer visible or not) */
-      this.loadBarState()
-      /** Listen to global bus events */
-      EventBus.$on('open-bookmarks', (obj) => { // request to open bookmarks popup
-        this.$refs.book.open(obj)
-      })
-      EventBus.$on('thin-scan', (obj) => { // a thin scan (height >= 3 * width) has been detected
-        this.handleThinScan()
-      })
-      EventBus.$on('go-next-chapter', (obj) => { // go to next chapter
-        this.goNextChapter()
-      })
-      EventBus.$on('go-previous-chapter', (obj) => { // go to previous chapter
-        this.goPreviousChapter()
-      })
-      EventBus.$on('temporary-dialog', (obj) => { // display a temporary message
-        this.$refs.wizdialog.temporary(obj.message, obj.duration)
-      })
-      EventBus.$on('pages-loaded', obj => { // Allow book mode offset button to display
-        this.displayBookOffsetButton = true
-      })
-      EventBus.$on('chapter-loaded', (obj) => { // consult current manga
-        this.chaploaded = true
-        // Preload next chapter
-        if (options.prefetch == 1) {
-            this.preloadNextChapter();
-        }
-        // Mark current chapter as read if option mark as read when dowloaded checked
-        if (options.markwhendownload === 1) {
-            this.consultManga()
-        }
-      })
+        /** Register keys */
+        this.handlekeys()
+        /** Check if manga exists */
+        this.checkExists()
+        /** Load current manga informations */
+        this.loadMangaInformations().then(() => {
+            /* retrieve current page if current chapter was the last opened */
+            if (
+                this.mangaInfos &&
+                util.matchChapUrl(this.pageData.currentChapterURL, this.mangaInfos.currentChapter) &&
+                this.mangaInfos.currentScanUrl
+            ) {
+                // set current page to last currentScanUrl
+                EventBus.$emit("go-to-scanurl", this.mangaInfos.currentScanUrl)
+            }
+        })
+        /** Load current bar state (drawer visible or not) */
+        this.loadBarState()
+        /** Listen to global bus events */
+        EventBus.$on("open-bookmarks", obj => {
+            // request to open bookmarks popup
+            this.$refs.book.open(obj)
+        })
+        EventBus.$on("thin-scan", obj => {
+            // a thin scan (height >= 3 * width) has been detected
+            this.handleThinScan()
+        })
+        EventBus.$on("go-next-chapter", obj => {
+            // go to next chapter
+            this.goNextChapter()
+        })
+        EventBus.$on("go-previous-chapter", obj => {
+            // go to previous chapter
+            this.goPreviousChapter()
+        })
+        EventBus.$on("temporary-dialog", obj => {
+            // display a temporary message
+            this.$refs.wizdialog.temporary(obj.message, obj.duration)
+        })
+        EventBus.$on("pages-loaded", obj => {
+            // Allow book mode offset button to display
+            this.displayBookOffsetButton = true
+        })
+        EventBus.$on("chapter-loaded", obj => {
+            // consult current manga
+            this.chaploaded = true
+            // Preload next chapter
+            if (options.prefetch == 1) {
+                this.preloadNextChapter()
+            }
+            // Mark current chapter as read if option mark as read when dowloaded checked
+            if (options.markwhendownload === 1) {
+                this.consultManga()
+            }
+        })
     },
     mounted() {
-      /* Load chapters list */
-      this.loadChapters()
-      /* Load mirror */
-      this.loadMirror()
+        /* Load chapters list */
+        this.loadChapters()
+        /* Load mirror */
+        this.loadMirror()
 
-      /** Handle first time reader is opened */
-      this.handleFirstTime()
-      /** Handle tips */
-      dialogs.handleTips(this.$refs.wizdialog)
-      /** Handle help us dialogs once in a while */
-      dialogs.handleHelps(this.$refs.wizdialog)
+        /** Handle first time reader is opened */
+        this.handleFirstTime()
+        /** Handle tips */
+        dialogs.handleTips(this.$refs.wizdialog)
+        /** Handle help us dialogs once in a while */
+        dialogs.handleHelps(this.$refs.wizdialog)
 
-      // mark manga as read
-      if (options.markwhendownload === 0) {
-          this.consultManga()
-      }
+        // mark manga as read
+        if (options.markwhendownload === 0) {
+            this.consultManga()
+        }
     },
     watch: {
-      /** Change resize value if passing from !fullchapter to fullchapter (height and container are no more available) */
-      fullchapter(nVal, oVal) {
-        if (nVal && !oVal) {
-          if (['height', 'container'].includes(this.resize)) {
-            this.resize = "width"
-          }
+        /** Change resize value if passing from !fullchapter to fullchapter (height and container are no more available) */
+        fullchapter(nVal, oVal) {
+            if (nVal && !oVal) {
+                if (["height", "container"].includes(this.resize)) {
+                    this.resize = "width"
+                }
+            }
+        },
+        /** Keep drawer state */
+        drawer(nVal, oVal) {
+            browser.runtime.sendMessage({
+                action: "setBarState",
+                barstate: nVal ? 1 : 0
+            })
+        },
+        /**
+         * Update the specific layout value for the current manga
+         */
+        layoutValue(nVal, oVal) {
+            // check if nVal <> options val ; if not reset layout to undefined
+            let optVal =
+                this.options.displayBook * 1000 +
+                this.options.readingDirection * 100 +
+                this.options.displayFullChapter * 10 +
+                this.options.resizeMode
+            if (optVal === nVal) {
+                nVal = undefined
+            }
+            // Update current value only if manga is in reading list
+            if (this.mangaExists) {
+                browser.runtime.sendMessage({
+                    action: "setLayoutMode",
+                    url: this.pageData.currentMangaURL,
+                    layout: nVal,
+                    language: this.pageData.language,
+                    mirror: this.mirror.mirrorName
+                })
+            }
+        },
+        /** hide zoom slider if resize method isn't compatible */
+        resize(nVal) {
+            if (["height", "none"].includes(nVal)) this.showMaxWidth = false
+        },
+        webtoonMode(nVal, oVal) {
+            if (this.mangaExists) {
+                browser.runtime.sendMessage({
+                    action: "setWebtoonMode",
+                    url: this.pageData.currentMangaURL,
+                    webtoon: nVal,
+                    language: this.pageData.language,
+                    mirror: this.mirror.mirrorName
+                })
+            }
         }
-      },
-      /** Keep drawer state */
-      drawer(nVal, oVal) {
-        browser.runtime.sendMessage({
-            action: "setBarState",
-            barstate: nVal ? 1 : 0
-        })
-      },
-      /**
-       * Update the specific layout value for the current manga
-       */
-      layoutValue(nVal, oVal) {
-        // check if nVal <> options val ; if not reset layout to undefined
-        let optVal = this.options.displayBook * 1000 + this.options.readingDirection * 100 + this.options.displayFullChapter * 10 + this.options.resizeMode
-        if (optVal === nVal) {
-          nVal = undefined
-        }
-        // Update current value only if manga is in reading list
-        if (this.mangaExists) {
-          browser.runtime.sendMessage({
-              action: "setLayoutMode",
-              url: this.pageData.currentMangaURL,
-              layout: nVal,
-              language: this.pageData.language,
-              mirror: this.mirror.mirrorName
-          })
-        }
-      },
-      /** hide zoom slider if resize method isn't compatible */
-      resize(nVal) {
-        if(['height', 'none'].includes(nVal)) this.showMaxWidth = false
-      },
-      webtoonMode(nVal, oVal) {
-        if (this.mangaExists) {
-          browser.runtime.sendMessage({
-              action: "setWebtoonMode",
-              url: this.pageData.currentMangaURL,
-              webtoon: nVal,
-              language: this.pageData.language,
-              mirror: this.mirror.mirrorName
-          })
-        }
-      }
     },
     computed: {
-      console: () => console,
-      // Current manga informations retrieved from implementation
-      manga() {
-        return this.pageData
-      },
-      // Current mirror implementation
-      mirror() {
-        return mirrorImpl.get()
-      },
-      /** True if latest published chapter */
-      lastChapter() {
-        if (this.selchap === null || this.chapters.length === 0) return true
-        return this.chapters.findIndex(el => el.url === this.selchap) === 0
-      },
-      /** Next chapter url */
-      nextChapter() {
-        if (this.selchap === null) return
-        if (this.lastChapter) return
-        let cur = this.chapters.findIndex(el => el.url === this.selchap)
-        return this.chapters[cur - 1].url
-      },
-      /** True if first published chapter */
-      firstChapter() {
-        if (this.selchap === null || this.chapters.length === 0) return true
-        return this.chapters.findIndex(el => el.url === this.selchap) === this.chapters.length - 1
-      },
-      /** The layout value for this manga, a value containing all specific reading options */
-      layoutValue() {
-        let cbook = this.book ? 1 : 0,
-            cdirection = this.direction === 'ltr' ? 0 : 1,
-            cfullchapter = this.fullchapter ? 1 : 0,
-            cresize = resize_values.findIndex(r => r === this.resize),
-            cscaleup = this.scaleUp ? 1 : 0
-
-        return 1000 * cbook + 100 * cdirection + 10 * cfullchapter + cresize
-      },
-      /** can you mark this chapter as latest read */
-      showLatestRead() {
-        return this.mangaExists && (this.mangaInfos && !util.matchChapUrl(this.mangaInfos.lastchapter, this.pageData.currentChapterURL))
-      },
-      /** list of bookmarked scans urls */
-      bookedScans() {
-        return this.bookstate.scans.filter(sc => sc.booked).map(sc => {
-          sc.page = this.$refs.reader.getPageIndexFromScanUrl(sc.url)
-          return sc
-        })
-      },
-      layoutDiffFromOptions() {
-        if (this.book !== (this.options.displayBook === 1)) return true
-        if (this.direction !== (this.options.readingDirection === 0 ? 'ltr' : 'rtl')) return true
-        if (this.fullchapter !== (this.options.displayFullChapter === 1)) return true
-        if (this.resize !== (resize_values[this.options.resizeMode])) return true
-        if (this.scaleUp !== (this.options.scaleUp === 1)) return true
-        return false
-      },
-      maxWidthValueStore: {
-        get() {
-          return this.maxWidthValue
+        console: () => console,
+        // Current manga informations retrieved from implementation
+        manga() {
+            return this.pageData
         },
-        set(val) {
-          if(this.maxWidthValue === val) return;
-          this.maxWidthValue = val
-          if(this.maxWidthTimeout) clearTimeout(this.maxWidthTimeout)
-          this.maxWidthTimeout = setTimeout(() => {
-            browser.runtime.sendMessage({
-                action: "setZoomMode",
-                url: this.pageData.currentMangaURL,
-                zoom: val,
-                language: this.pageData.language,
-                mirror: this.mirror.mirrorName
-            })
-          }, 2000)
+        // Current mirror implementation
+        mirror() {
+            return mirrorImpl.get()
+        },
+        /** True if latest published chapter */
+        lastChapter() {
+            if (this.selchap === null || this.chapters.length === 0) return true
+            return this.chapters.findIndex(el => el.url === this.selchap) === 0
+        },
+        /** Next chapter url */
+        nextChapter() {
+            if (this.selchap === null) return
+            if (this.lastChapter) return
+            let cur = this.chapters.findIndex(el => el.url === this.selchap)
+            return this.chapters[cur - 1].url
+        },
+        /** True if first published chapter */
+        firstChapter() {
+            if (this.selchap === null || this.chapters.length === 0) return true
+            return this.chapters.findIndex(el => el.url === this.selchap) === this.chapters.length - 1
+        },
+        /** The layout value for this manga, a value containing all specific reading options */
+        layoutValue() {
+            let cbook = this.book ? 1 : 0,
+                cdirection = this.direction === "ltr" ? 0 : 1,
+                cfullchapter = this.fullchapter ? 1 : 0,
+                cresize = resize_values.findIndex(r => r === this.resize),
+                cscaleup = this.scaleUp ? 1 : 0
+
+            return 1000 * cbook + 100 * cdirection + 10 * cfullchapter + cresize
+        },
+        /** can you mark this chapter as latest read */
+        showLatestRead() {
+            return (
+                this.mangaExists &&
+                this.mangaInfos &&
+                !util.matchChapUrl(this.mangaInfos.lastchapter, this.pageData.currentChapterURL)
+            )
+        },
+        /** list of bookmarked scans urls */
+        bookedScans() {
+            return this.bookstate.scans
+                .filter(sc => sc.booked)
+                .map(sc => {
+                    sc.page = this.$refs.reader.getPageIndexFromScanUrl(sc.url)
+                    return sc
+                })
+        },
+        layoutDiffFromOptions() {
+            if (this.book !== (this.options.displayBook === 1)) return true
+            if (this.direction !== (this.options.readingDirection === 0 ? "ltr" : "rtl")) return true
+            if (this.fullchapter !== (this.options.displayFullChapter === 1)) return true
+            if (this.resize !== resize_values[this.options.resizeMode]) return true
+            if (this.scaleUp !== (this.options.scaleUp === 1)) return true
+            return false
+        },
+        maxWidthValueStore: {
+            get() {
+                return this.maxWidthValue
+            },
+            set(val) {
+                if (this.maxWidthValue === val) return
+                this.maxWidthValue = val
+                if (this.maxWidthTimeout) clearTimeout(this.maxWidthTimeout)
+                this.maxWidthTimeout = setTimeout(() => {
+                    browser.runtime.sendMessage({
+                        action: "setZoomMode",
+                        url: this.pageData.currentMangaURL,
+                        zoom: val,
+                        language: this.pageData.language,
+                        mirror: this.mirror.mirrorName
+                    })
+                }, 2000)
+            }
+        },
+        /* Top telling if we already tried loading next chapter */
+        nextchapLoading() {
+            return this.nextChapterLoader && this.nextChapterLoader.scansProvider
+        },
+        /**
+         * If UI buttons and keys should be flipped
+         */
+        shouldInvertKeys() {
+            return this.direction === "rtl" && this.invertKeys && !this.fullchapter
         }
-      },
-      /* Top telling if we already tried loading next chapter */
-      nextchapLoading() {
-        return this.nextChapterLoader && this.nextChapterLoader.scansProvider
-      },
-      /**
-       * If UI buttons and keys should be flipped
-       */
-      shouldInvertKeys() {
-        return this.direction === 'rtl' && this.invertKeys && !this.fullchapter;
-      },
     },
     components: { Reader, Scan, WizDialog, BookmarkPopup, ShortcutsPopup, SocialBar },
     methods: {
-      /** Return drawer background color taking a light into account and the dark or not back */
-      backcolor(light = 0) {
-        return "grey " + (!this.darkreader ? 'lighten-' + (4 - light) : 'darken-' + (4 - light))
-      },
-      /** Inform background that current chapter has been read (will update reading state and eventually add manga to list) */
-      async consultManga(force) {
-        await util.consultManga(force)
-        await this.loadMangaInformations() // reload last chapter read
-      },
-      /** Decrement Zoom value */
-      zoomOut() {
-        this.maxWidthValueStore = Math.max(10, this.maxWidthValueStore - 5)
-      },
-      /** Increment Zoom value */
-      zoomIn() {
-        this.maxWidthValueStore = Math.min(100, this.maxWidthValueStore + 5)
-      },
-      /** Check if current manga is in reading list */
-      async checkExists() {
-        this.mangaExists = await util.mangaExists()
-      },
-      /** Load the state of the side bar (hidden / shown) */
-      async loadBarState() {
-        let barState = await browser.runtime.sendMessage({action: "barState"})
-        if (barState) {
-          this.drawer = parseInt(barState.barVis) === 1
-        }
-      },
-      /** Load current manga preferences (layout mode, read top, latest read chapter) */
-      async loadMangaInformations() {
-        //Get specific informations for currentManga (layout mode, reading mode, lastest read chapter)
-        let cbook = -1, cdirection = -1, cfullchapter = -1, cresize = -1, cscaleup = -1
-        let specific = await browser.runtime.sendMessage({
-            action: "mangaInfos",
-            url: this.pageData.currentMangaURL,
-            mirror: mirrorImpl.get().mirrorName,
-            language: this.pageData.language
-        });
-        // Save returned manga informations in state
-        this.mangaInfos = specific
-        if (specific) this.mangaExists = true
-        // Compute current layout
-        if (specific && specific.layout) { // check specific layout for the current manga
-            let l = specific.layout;
-            cscaleup = Math.floor(l / 10000)
-            l -= 10000 * cscaleup
-            cbook = Math.floor(l / 1000)
-            l -= 1000 * cbook
-            cdirection = Math.floor(l / 100)
-            l -= 100 * cdirection
-            cfullchapter = Math.floor(l / 10)
-            l -= 10 * cfullchapter
-            cresize = l
-        }
-        //If not use default options mode
-        if (cscaleup === -1) cscaleup = this.options.scaleUp
-        if (cbook === -1) cbook = this.options.displayBook
-        if (cdirection === -1) cdirection = this.options.readingDirection
-        if (cfullchapter === -1) cfullchapter = this.options.displayFullChapter
-        if (cresize === -1) cresize = this.options.resizeMode
-        // Set current layout
-        this.scaleUp = cscaleup === 1
-        this.book = cbook === 1
-        this.direction = cdirection === 0 ? 'ltr': 'rtl'
-        this.fullchapter = cfullchapter === 1
-        this.resize = resize_values[cresize]
-    
-        /** Set webtoon and zoom option */
-        if (specific) {
-          this.webtoonMode = specific.webtoon || false
-          this.maxWidthValue = specific.zoom || 100
-        }
-      },
-      /** Load mirror description (containing icon and home page) */
-      async loadMirror() {
-        this.mirrorDesc = await browser.runtime.sendMessage({
-            action: "mirrorInfos",
-            name: this.mirror.mirrorName
-        });
-      },
-      /** Load chapters list for current manga */
-      async loadChapters() {
-        // try to get list chap from background (already loaded in local db)
-        let alreadyLoadedListChaps = await browser.runtime.sendMessage({
-            action: "getListChaps",
-            url: this.pageData.currentMangaURL,
-            language: this.pageData.language
-        });
-        if (alreadyLoadedListChaps && alreadyLoadedListChaps.length > 0) {
-            this.chapters = alreadyLoadedListChaps.map(arr => { return { url: arr[1], title: arr[0] } })
-        } else {
-            let list = []
-            // we need to load chapters using background page
-            list = await browser.runtime.sendMessage({
-                action: "loadListChaps",
-                mirror: this.mirror.mirrorName,
+        /** Return drawer background color taking a light into account and the dark or not back */
+        backcolor(light = 0) {
+            return "grey " + (!this.darkreader ? "lighten-" + (4 - light) : "darken-" + (4 - light))
+        },
+        /** Inform background that current chapter has been read (will update reading state and eventually add manga to list) */
+        async consultManga(force) {
+            await util.consultManga(force)
+            await this.loadMangaInformations() // reload last chapter read
+        },
+        /** Decrement Zoom value */
+        zoomOut() {
+            this.maxWidthValueStore = Math.max(10, this.maxWidthValueStore - 5)
+        },
+        /** Increment Zoom value */
+        zoomIn() {
+            this.maxWidthValueStore = Math.min(100, this.maxWidthValueStore + 5)
+        },
+        /** Check if current manga is in reading list */
+        async checkExists() {
+            this.mangaExists = await util.mangaExists()
+        },
+        /** Load the state of the side bar (hidden / shown) */
+        async loadBarState() {
+            let barState = await browser.runtime.sendMessage({ action: "barState" })
+            if (barState) {
+                this.drawer = parseInt(barState.barVis) === 1
+            }
+        },
+        /** Load current manga preferences (layout mode, read top, latest read chapter) */
+        async loadMangaInformations() {
+            //Get specific informations for currentManga (layout mode, reading mode, lastest read chapter)
+            let cbook = -1,
+                cdirection = -1,
+                cfullchapter = -1,
+                cresize = -1,
+                cscaleup = -1
+            let specific = await browser.runtime.sendMessage({
+                action: "mangaInfos",
+                url: this.pageData.currentMangaURL,
+                mirror: mirrorImpl.get().mirrorName,
+                language: this.pageData.language
+            })
+            // Save returned manga informations in state
+            this.mangaInfos = specific
+            if (specific) this.mangaExists = true
+            // Compute current layout
+            if (specific && specific.layout) {
+                // check specific layout for the current manga
+                let l = specific.layout
+                cscaleup = Math.floor(l / 10000)
+                l -= 10000 * cscaleup
+                cbook = Math.floor(l / 1000)
+                l -= 1000 * cbook
+                cdirection = Math.floor(l / 100)
+                l -= 100 * cdirection
+                cfullchapter = Math.floor(l / 10)
+                l -= 10 * cfullchapter
+                cresize = l
+            }
+            //If not use default options mode
+            if (cscaleup === -1) cscaleup = this.options.scaleUp
+            if (cbook === -1) cbook = this.options.displayBook
+            if (cdirection === -1) cdirection = this.options.readingDirection
+            if (cfullchapter === -1) cfullchapter = this.options.displayFullChapter
+            if (cresize === -1) cresize = this.options.resizeMode
+            // Set current layout
+            this.scaleUp = cscaleup === 1
+            this.book = cbook === 1
+            this.direction = cdirection === 0 ? "ltr" : "rtl"
+            this.fullchapter = cfullchapter === 1
+            this.resize = resize_values[cresize]
+
+            /** Set webtoon and zoom option */
+            if (specific) {
+                this.webtoonMode = specific.webtoon || false
+                this.maxWidthValue = specific.zoom || 100
+            }
+        },
+        /** Load mirror description (containing icon and home page) */
+        async loadMirror() {
+            this.mirrorDesc = await browser.runtime.sendMessage({
+                action: "mirrorInfos",
+                name: this.mirror.mirrorName
+            })
+        },
+        /** Load chapters list for current manga */
+        async loadChapters() {
+            // try to get list chap from background (already loaded in local db)
+            let alreadyLoadedListChaps = await browser.runtime.sendMessage({
+                action: "getListChaps",
                 url: this.pageData.currentMangaURL,
                 language: this.pageData.language
-            });
-            if (list !== undefined && !Array.isArray(list)) { // case of returned list is an object keys are languages and values are list of mangas
-              if (list[this.manga.language] && list[this.manga.language].length > 0) {
-                  this.chapters = list[this.manga.language].map(arr => { return { url: arr[1], title: arr[0] } })
-              } else { // current language chapter does not exist in returned chapter list... shrödinger case...
-                this.chapters = []
-              }
-            } else if (list.length > 0) { // normal use case, one language
-              this.chapters = list.map(arr => { return { url: arr[1], title: arr[0] } })
-            } else { // no chapters
-              this.chapters = []
+            })
+            if (alreadyLoadedListChaps && alreadyLoadedListChaps.length > 0) {
+                this.chapters = alreadyLoadedListChaps.map(arr => {
+                    return { url: arr[1], title: arr[0] }
+                })
+            } else {
+                let list = []
+                // we need to load chapters using background page
+                list = await browser.runtime.sendMessage({
+                    action: "loadListChaps",
+                    mirror: this.mirror.mirrorName,
+                    url: this.pageData.currentMangaURL,
+                    language: this.pageData.language
+                })
+                if (list !== undefined && !Array.isArray(list)) {
+                    // case of returned list is an object keys are languages and values are list of mangas
+                    if (list[this.manga.language] && list[this.manga.language].length > 0) {
+                        this.chapters = list[this.manga.language].map(arr => {
+                            return { url: arr[1], title: arr[0] }
+                        })
+                    } else {
+                        // current language chapter does not exist in returned chapter list... shrödinger case...
+                        this.chapters = []
+                    }
+                } else if (list.length > 0) {
+                    // normal use case, one language
+                    this.chapters = list.map(arr => {
+                        return { url: arr[1], title: arr[0] }
+                    })
+                } else {
+                    // no chapters
+                    this.chapters = []
+                }
             }
-        }
-        this.chapters.forEach(chap => {
-          if (util.matchChapUrl(this.pageData.currentChapterURL, chap.url)) {
-              this.selchap = chap.url
-              pageData.add("currentChapter", chap.title);
-              return false
-          }
-        })
-        if (!this.nextchapLoading && this.chaploaded) {
-          // chapters list loading took longer than scans loading... o_O but possible...
-          // Preload next chapter
-          if (options.prefetch == 1) {
-              this.preloadNextChapter();
-          }
-        }
-      },
-      /** Change updating mode for this manga (1 : stop updating, 0 : check updates) */
-      async markMangaReadTop(nTop) {
-        await util.markMangaReadTop(nTop)
-        this.loadMangaInformations()
-      },
-      /** Mark current chapter as latest read in reading list */
-      async markAsLatest() {
-        if (await this.$refs.wizdialog.confirm(
-            this.i18n("content_nav_mark_read"),
-            this.i18n("content_nav_mark_read_confirm"))) {
-          await util.markAsLatest()
-          this.loadMangaInformations()
-        }
-      },
-      /** Add the current manga to reading list */
-      async addManga() {
-        await this.consultManga(true)
-        this.mangaExists = true
-      },
-      /** Remove the current manga from reading list */
-      async deleteManga() {
-        if (await this.$refs.wizdialog.confirm(
-          this.i18n("list_mg_act_delete"),
-          this.i18n("list_mg_delete_question", this.manga.name, mirrorImpl.get().mirrorName))) {
+            this.chapters.forEach(chap => {
+                if (util.matchChapUrl(this.pageData.currentChapterURL, chap.url)) {
+                    this.selchap = chap.url
+                    pageData.add("currentChapter", chap.title)
+                    return false
+                }
+            })
+            if (!this.nextchapLoading && this.chaploaded) {
+                // chapters list loading took longer than scans loading... o_O but possible...
+                // Preload next chapter
+                if (options.prefetch == 1) {
+                    this.preloadNextChapter()
+                }
+            }
+        },
+        /** Change updating mode for this manga (1 : stop updating, 0 : check updates) */
+        async markMangaReadTop(nTop) {
+            await util.markMangaReadTop(nTop)
+            this.loadMangaInformations()
+        },
+        /** Mark current chapter as latest read in reading list */
+        async markAsLatest() {
+            if (
+                await this.$refs.wizdialog.confirm(
+                    this.i18n("content_nav_mark_read"),
+                    this.i18n("content_nav_mark_read_confirm")
+                )
+            ) {
+                await util.markAsLatest()
+                this.loadMangaInformations()
+            }
+        },
+        /** Add the current manga to reading list */
+        async addManga() {
+            await this.consultManga(true)
+            this.mangaExists = true
+        },
+        /** Remove the current manga from reading list */
+        async deleteManga() {
+            if (
+                await this.$refs.wizdialog.confirm(
+                    this.i18n("list_mg_act_delete"),
+                    this.i18n("list_mg_delete_question", this.manga.name, mirrorImpl.get().mirrorName)
+                )
+            ) {
+                browser.runtime.sendMessage({
+                    action: "deleteManga",
+                    key: this.mangaInfos.key
+                })
+                this.mangaExists = false
+            }
+        },
+        /** Try to delete a chapter loader scans from RAM. Will be effectively deleted later by garbage collector */
+        deleteChapterLoader(obj) {
+            // encapsulate chaploader in object to be able to delete it in sctrict mode
+            if (obj.chaploader) {
+                if (obj.chaploader.scansLoader) delete obj.chaploader.scansLoader
+                delete obj.chaploader
+            }
+        },
+        /**
+         * Switch the current loaded chapter in the reader to another one
+         *  - url : the url of the chapter to load
+         */
+        async loadChapterInReader(url) {
+            // add a covering loader
+            this.loading = true
+            console.log("Change Reader chapter : load chapter " + url)
+            let chap = new ChapterLoader(url)
+            await chap.checkAndLoadInfos() // get is a chapter ?, infos (current manga, chapter) and scans urls
+            this.loadChapterInReaderUsingChapterLoader(chap)
+        },
+        /**
+         * Switch the current loaded chapter in the reader to another one
+         *  - chapterloader : the chapterloader to load in reader
+         */
+        async loadChapterInReaderUsingChapterLoader(chapterloader) {
+            // delete references to the old chapter loader
+            if (window["__current_chapterloader__"] && window["__current_chapterloader__"].url !== chapterloader.url) {
+                this.deleteChapterLoader({ chaploader: window["__current_chapterloader__"] })
+            }
+            if (this.nextChapterLoader && this.nextChapterLoader.url !== chapterloader.url) {
+                this.deleteChapterLoader({ chaploader: this.nextChapterLoader }) // delete loaded next chapter reference if not navigating to this one
+            }
+
+            //keep a reference to the one loading
+            window["__current_chapterloader__"] = chapterloader
+
+            // reinitialize state of the reader
+            this.loading = true
+            this.nextChapterLoader = null
+            this.nextchapProgress = 0
+            this.thinscan = options.thinscan
+            this.chaploaded = false
+            // change current chapter --> do it now, if not, loadInReader will trigger nextChapterLoad and it will be the current one...
+            this.selchap = chapterloader.url
+            this.chapters.forEach(chap => {
+                if (util.matchChapUrl(this.selchap, chap.url)) {
+                    pageData.add("currentChapter", chap.title) // actualize chapter name in pageData from chapters list
+                    return false
+                }
+            })
+
+            let done = chapterloader.loadInReader(options)
+            if (!done) {
+                // loading chapter failed
+                // reload chapter so it will be the first time and the restorePage will work properly
+                window.location.href = chapterloader.url
+            } else {
+                // that worked ! scans state and bookmarks state are correctly initialized with new chapter data, pageData with manga url, name and current chapter url too, we now need to tweak the ui
+
+                // prevent pushState from triggering AMR reload
+                window["__AMR_IS_LOADING_CHAPTER__"] = true
+                // update window history so navigation bar has the right url
+                const relativeUrlWithoutSchema = chapterloader.url.replace(/^https?:\/\//, "//")
+                window.history.pushState({ title: chapterloader.title }, chapterloader.title, relativeUrlWithoutSchema)
+
+                // reinitialize all $data props so everything goes well
+                this.loadMangaInformations()
+
+                // Reader
+                let reader = this.$refs.reader
+                reader.originalTitle = chapterloader.title
+                document.title = chapterloader.title
+                reader.goScan(0)
+                window.scroll(0, 0)
+
+                /** Handle help us dialogs once in a while */
+                dialogs.handleHelps(this.$refs.wizdialog)
+
+                // mark manga as read
+                if (options.markwhendownload === 0) {
+                    this.consultManga()
+                }
+            }
+            this.loading = false
+        },
+        /** Go read a specific chapter */
+        goToChapter() {
+            if (this.selchap === null) return
+            let cur = this.chapters.findIndex(el => el.url === this.selchap)
+            this.loadChapterInReader(this.chapters[cur].url)
+        },
+        /** Go to next chapter */
+        goNextChapter() {
+            if (this.lastChapter) {
+                // display an alert because there is no next chapter
+                this.$refs.wizdialog.temporary(this.i18n("content_nav_last_chap"), 1000, { important: true })
+            }
+            if (!this.nextChapter) return
+            if (!this.options.smoothNavigation) {
+                window.location.href = this.nextChapter
+            } else if (this.nextchapLoading) {
+                this.loadChapterInReaderUsingChapterLoader(this.nextChapterLoader)
+            } else {
+                this.loadChapterInReader(this.nextChapter)
+            }
+        },
+        /** Go to previous chapter */
+        goPreviousChapter() {
+            if (this.selchap === null) return false
+            if (this.firstChapter) {
+                // display an alert because there is no previous chapter
+                this.$refs.wizdialog.temporary(this.i18n("reader_alert_firstchapter"), 1000, { important: true })
+                return
+            }
+            let cur = this.chapters.findIndex(el => el.url === this.selchap)
+            if (!this.options.smoothNavigation) {
+                window.location.href = this.chapters[cur + 1].url
+            } else {
+                this.loadChapterInReader(this.chapters[cur + 1].url)
+            }
+        },
+        /** Preloads the next chapter scans */
+        async preloadNextChapter() {
+            if (!this.nextChapter) return
+            util.debug("Loading next chapter...")
+            // instanciate a chapter loader for the next chapter
+            this.nextChapterLoader = new ChapterLoader(this.nextChapter)
+            await this.nextChapterLoader.checkAndLoadInfos() // get is a chapter ?, infos (current manga, chapter) and scans urls
+            if (!this.nextChapterLoader.isAChapter) {
+                this.nextChapterLoader = null // next is not recognized as a chapter
+            } else {
+                // preload the scans
+                let scansProvider = this.nextChapterLoader.loadScans()
+                /** Compute scans loading progress when a scan is loaded */
+                scansProvider.onloadscan = () => {
+                    let nbloaded = scansProvider.scans.reduce((acc, sc) => acc + (sc.loading ? 0 : 1), 0)
+                    this.nextchapProgress = Math.floor((nbloaded / scansProvider.scans.length) * 100)
+                }
+            }
+        },
+        /** Handle key shortcuts */
+        handlekeys() {
+            let registerKeys = e => {
+                e = e || window.event
+                let t = e.target || e.srcElement
+                let prevent = () => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    e.stopImmediatePropagation()
+                }
+                if (!((t.type && t.type === "text") || t.nodeName.toLowerCase() === "textarea")) {
+                    if (!e.shiftKey && !e.altKey) {
+                        if (e.which === 66) {
+                            //b
+                            // previous chapter
+                            this.goPreviousChapter()
+                            prevent()
+                        }
+                        if (e.which === 78) {
+                            //n
+                            // next chapter
+                            this.goNextChapter()
+                            prevent()
+                        }
+                        if (e.which === 112) {
+                            //F1
+                            this.openShortcuts()
+                            prevent()
+                        }
+                    }
+                    if (e.shiftKey && !e.altKey) {
+                        // Go to next chapter
+                        if (e.which === 39 || e.which === 68) {
+                            // shift + d or shift + right arrow
+                            this.shouldInvertKeys ? this.goPreviousChapter() : this.goNextChapter()
+                            prevent()
+                        }
+                        // Go to previous chapter
+                        if (e.which === 37 || e.which === 65) {
+                            // shift + a or shift + left arrow
+                            this.shouldInvertKeys ? this.goNextChapter() : this.goPreviousChapter()
+                            prevent()
+                        }
+                        // Toggle drawer
+                        if (e.which === 77) {
+                            // shift + m
+                            this.drawer = !this.drawer
+                            prevent()
+                        }
+                        // Switch resizes mode
+                        if (e.which === 67) {
+                            // shift + c
+                            if (!this.fullchapter) this.resize = "container"
+                            prevent()
+                        }
+                        if (e.which === 87) {
+                            // shift + w
+                            this.resize = "width"
+                            prevent()
+                        }
+                        if (e.which === 72) {
+                            // shift + h
+                            if (!this.fullchapter) this.resize = "height"
+                            prevent()
+                        }
+                        // Switch fullchapter
+                        if (e.which === 70) {
+                            // shift + f
+                            this.fullchapter = !this.fullchapter
+                            prevent()
+                        }
+                        // Switch book
+                        if (e.which === 66) {
+                            // shift + b
+                            this.book = !this.book
+                            prevent()
+                        }
+                        // Switch direction
+                        if (e.which === 68) {
+                            // shift + d
+                            this.direction = this.direction === "ltr" ? "rtl" : "ltr"
+                            prevent()
+                        }
+                        // Add manga to reading list
+                        if (e.which === 107 || e.which === 187) {
+                            // shift + '+'
+                            if (!this.mangaExists && this.options.addauto === 0) this.addManga()
+                            prevent()
+                        }
+                        // Remove manga from reading list
+                        if (e.which === 109 || e.which === 54) {
+                            // shift + '-'
+                            if (this.mangaExists) this.deleteManga()
+                            prevent()
+                        }
+                        // Pause / Play notifications on manga
+                        if (e.which === 80) {
+                            // shift + p
+                            if (this.mangaExists && this.mangaInfos) {
+                                if (this.mangaInfos.read === 1) this.markMangaReadTop(0)
+                                else this.markMangaReadTop(1)
+                                prevent()
+                            }
+                        }
+                        // Mark current chapter as latest read
+                        if (e.which === 76) {
+                            // shift + l
+                            if (this.showLatestRead) this.markAsLatest()
+                            prevent()
+                        }
+                        // Reload all errored scans
+                        if (e.which === 82) {
+                            // alt + r
+                            this.reloadErrors()
+                            prevent()
+                        }
+                    }
+                    if (e.altKey && !e.shiftKey) {
+                        // Toggle fullscreen
+                        if (e.which === 70) {
+                            // alt + f
+                            this.toggleFullScreen()
+                            prevent()
+                        }
+                    }
+                    if (e.altKey && !e.shiftKey) {
+                        // Display current manga name, chapter name and progression in the manga
+                        if (e.which === 67) {
+                            // alt + c
+                            let chapName = "",
+                                chapPos = 0
+                            if (this.selchap !== null && this.chapters.length !== 0) {
+                                let chap = this.chapters.findIndex(el => el.url === this.selchap)
+                                if (chap >= 0) {
+                                    chapName = this.chapters[chap].title
+                                    chapPos = this.chapters.length - chap
+                                }
+                            }
+
+                            let str = "**" + this.manga.name + "**\n"
+                            str += (chapName === "" ? this.i18n("reader_display_chapname_none") : chapName) + "\n"
+                            if (this.chapters.length > 0) {
+                                str += this.i18n(
+                                    "reader_display_chap_progression",
+                                    chapPos,
+                                    this.chapters.length,
+                                    Math.floor((chapPos / this.chapters.length) * 100)
+                                )
+                            }
+
+                            this.$refs.wizdialog.temporary(str, 2000)
+                            prevent()
+                        }
+                    }
+                    if (e.shiftKey && e.altKey) {
+                        // Jump to last chapter
+                        if (e.which === 39 || e.which === 68) {
+                            // alt + shift + d or alt + shift + right arrow
+                            this.selchap = this.chapters[0].url
+                            this.goToChapter()
+                            prevent()
+                        }
+                        // Jump to first chapter
+                        if (e.which === 37 || e.which === 65) {
+                            // alt + shift + a or alt + shift + left arrow
+                            this.selchap = this.chapters[this.chapters.length - 1].url
+                            this.goToChapter()
+                            prevent()
+                        }
+                        // Go to random chapter
+                        if (e.which === 82) {
+                            // alt + shift + r
+                            this.selchap = this.chapters[Math.floor(Math.random() * this.chapters.length)].url
+                            this.goToChapter()
+                            prevent()
+                        }
+                    }
+                }
+            }
+            window.addEventListener("keydown", registerKeys, true)
+
+            //disable default websites shortcuts
+            let stopProp = e => e.stopImmediatePropagation()
+            window.addEventListener("keyup", stopProp, true)
+            window.addEventListener("keypress", stopProp, true)
+        },
+        /** Open shortcuts popup */
+        openShortcuts() {
+            this.$refs.shortcuts.open()
+        },
+        /** Open popup to bookmark chapter with note */
+        bookmarkChapter() {
+            this.$refs.book.open()
+        },
+        /** Open AMR bookmarks in a new tab */
+        openBookmarksTab() {
             browser.runtime.sendMessage({
-              action: 'deleteManga',
-              key: this.mangaInfos.key
+                action: "opentab",
+                url: "/pages/bookmarks/bookmarks.html"
             })
-          this.mangaExists = false
-        }
-      },
-      /** Try to delete a chapter loader scans from RAM. Will be effectively deleted later by garbage collector */
-      deleteChapterLoader(obj) { // encapsulate chaploader in object to be able to delete it in sctrict mode
-        if (obj.chaploader) {
-          if (obj.chaploader.scansLoader) delete obj.chaploader.scansLoader
-          delete obj.chaploader
-        }
-      },
-      /**
-       * Switch the current loaded chapter in the reader to another one
-       *  - url : the url of the chapter to load
-       */
-      async loadChapterInReader(url) {
-        // add a covering loader
-        this.loading = true
-        console.log("Change Reader chapter : load chapter " + url)
-        let chap = new ChapterLoader(url)
-        await chap.checkAndLoadInfos() // get is a chapter ?, infos (current manga, chapter) and scans urls
-        this.loadChapterInReaderUsingChapterLoader(chap)
-      },
-      /**
-       * Switch the current loaded chapter in the reader to another one
-       *  - chapterloader : the chapterloader to load in reader
-       */
-      async loadChapterInReaderUsingChapterLoader(chapterloader) {
-        // delete references to the old chapter loader
-        if (window["__current_chapterloader__"] && window["__current_chapterloader__"].url !== chapterloader.url) {
-          this.deleteChapterLoader({chaploader: window["__current_chapterloader__"]})
-        }
-        if (this.nextChapterLoader && this.nextChapterLoader.url !== chapterloader.url) {
-          this.deleteChapterLoader({chaploader: this.nextChapterLoader}) // delete loaded next chapter reference if not navigating to this one
-        }
-
-        //keep a reference to the one loading
-        window["__current_chapterloader__"] = chapterloader
-
-        // reinitialize state of the reader
-        this.loading = true
-        this.nextChapterLoader = null
-        this.nextchapProgress = 0
-        this.thinscan = options.thinscan
-        this.chaploaded = false
-        // change current chapter --> do it now, if not, loadInReader will trigger nextChapterLoad and it will be the current one...
-        this.selchap = chapterloader.url
-        this.chapters.forEach(chap => {
-          if (util.matchChapUrl(this.selchap, chap.url)) {
-              pageData.add("currentChapter", chap.title); // actualize chapter name in pageData from chapters list
-              return false
-          }
-        })
-
-        let done = chapterloader.loadInReader(options)
-        if (!done) { // loading chapter failed
-            // reload chapter so it will be the first time and the restorePage will work properly
-            window.location.href = chapterloader.url
-        } else {
-          // that worked ! scans state and bookmarks state are correctly initialized with new chapter data, pageData with manga url, name and current chapter url too, we now need to tweak the ui
-
-          // prevent pushState from triggering AMR reload
-          window["__AMR_IS_LOADING_CHAPTER__"] = true
-          // update window history so navigation bar has the right url
-          const relativeUrlWithoutSchema = chapterloader.url.replace(/^https?:\/\//, '//')
-          window.history.pushState({title: chapterloader.title}, chapterloader.title, relativeUrlWithoutSchema);
-
-          // reinitialize all $data props so everything goes well
-          this.loadMangaInformations()
-
-          // Reader
-          let reader = this.$refs.reader
-          reader.originalTitle = chapterloader.title
-          document.title = chapterloader.title
-          reader.goScan(0)
-          window.scroll(0, 0)
-
-          /** Handle help us dialogs once in a while */
-          dialogs.handleHelps(this.$refs.wizdialog)
-
-          // mark manga as read
-          if (options.markwhendownload === 0) {
-              this.consultManga()
-          }
-        }
-        this.loading = false
-      },
-      /** Go read a specific chapter */
-      goToChapter() {
-        if (this.selchap === null) return
-        let cur = this.chapters.findIndex(el => el.url === this.selchap)
-        this.loadChapterInReader(this.chapters[cur].url)
-      },
-      /** Go to next chapter */
-      goNextChapter() {
-        if (this.lastChapter) { // display an alert because there is no next chapter
-            this.$refs.wizdialog.temporary(this.i18n("content_nav_last_chap"), 1000, {important: true})
-        }
-        if (!this.nextChapter) return
-        if (!this.options.smoothNavigation) {
-          window.location.href = this.nextChapter
-        } else if (this.nextchapLoading) {
-          this.loadChapterInReaderUsingChapterLoader(this.nextChapterLoader)
-        } else {
-          this.loadChapterInReader(this.nextChapter)
-        }
-      },
-      /** Go to previous chapter */
-      goPreviousChapter() {
-        if (this.selchap === null) return false
-        if (this.firstChapter) { // display an alert because there is no previous chapter
-          this.$refs.wizdialog.temporary(this.i18n("reader_alert_firstchapter"), 1000, {important: true})
-          return
-        }
-        let cur = this.chapters.findIndex(el => el.url === this.selchap)
-        if (!this.options.smoothNavigation) {
-          window.location.href = this.chapters[cur + 1].url
-        } else {
-          this.loadChapterInReader(this.chapters[cur + 1].url)
-        }
-      },
-      /** Preloads the next chapter scans */
-      async preloadNextChapter() {
-          if (!this.nextChapter) return
-          util.debug("Loading next chapter...");
-          // instanciate a chapter loader for the next chapter
-          this.nextChapterLoader = new ChapterLoader(this.nextChapter)
-          await this.nextChapterLoader.checkAndLoadInfos() // get is a chapter ?, infos (current manga, chapter) and scans urls
-          if (!this.nextChapterLoader.isAChapter) {
-            this.nextChapterLoader = null // next is not recognized as a chapter
-          } else {
-            // preload the scans
-            let scansProvider = this.nextChapterLoader.loadScans()
-            /** Compute scans loading progress when a scan is loaded */
-            scansProvider.onloadscan = () => {
-              let nbloaded = scansProvider.scans.reduce((acc, sc) => acc + (sc.loading ? 0 : 1), 0)
-              this.nextchapProgress = Math.floor(nbloaded / scansProvider.scans.length * 100)
+        },
+        /** Save current layout options as the default ones */
+        async saveOptionsAsDefault(force = false) {
+            if (!force) {
+                if (
+                    !(await this.$refs.wizdialog.confirm(
+                        this.i18n("reader_save_options_title"),
+                        this.i18n("reader_save_options_confirm")
+                    ))
+                ) {
+                    return
+                }
             }
-          }
-      },
-      /** Handle key shortcuts */
-      handlekeys() {
-        let registerKeys = (e) => {
-          e = e || window.event;
-          let t = e.target || e.srcElement;
-          let prevent = () => {
-              e.preventDefault()
-              e.stopPropagation()
-              e.stopImmediatePropagation()
-          }
-          if (!((t.type && t.type === "text") || t.nodeName.toLowerCase() === "textarea")) {
-            if (!e.shiftKey && !e.altKey) {
-              if (e.which === 66) { //b
-                // previous chapter
-                this.goPreviousChapter()
-                prevent()
-              }
-              if (e.which === 78) { //n
-                // next chapter
-                this.goNextChapter()
-                prevent()
-              }
-              if (e.which === 112) { //F1
-                this.openShortcuts()
-                prevent()
-              }
+            this.options.displayBook = this.book ? 1 : 0
+            this.options.readingDirection = this.direction === "ltr" ? 0 : 1
+            this.options.displayFullChapter = this.fullchapter ? 1 : 0
+            this.options.resizeMode = resize_values.findIndex(val => val === this.resize)
+            this.options.scaleUp = this.scaleUp ? 1 : 0
+            util.saveOption("displayBook", this.options.displayBook)
+            util.saveOption("readingDirection", this.options.readingDirection)
+            util.saveOption("displayFullChapter", this.options.displayFullChapter)
+            util.saveOption("resizeMode", this.options.resizeMode)
+            util.saveOption("scaleUp", this.options.scaleUp)
+            if (!force) this.$refs.wizdialog.temporary(this.i18n("action_done"))
+        },
+        /** Reset current layout options to the default ones */
+        resetOptionsToDefault() {
+            this.book = this.options.displayBook === 1
+            this.direction = this.options.readingDirection === 0 ? "ltr" : "rtl"
+            this.fullchapter = this.options.displayFullChapter === 1
+            this.resize = resize_values[this.options.resizeMode]
+            this.scaleUp = this.options.scaleUp === 1
+            this.$refs.wizdialog.temporary(this.i18n("action_done"))
+        },
+        offsetBook() {
+            EventBus.$emit("offset-book")
+        },
+        /** Toggle dark / light theme and save option */
+        toggleDark() {
+            this.darkreader = !this.darkreader
+            this.$vuetify.theme.dark = this.darkreader
+            util.saveOption("darkreader", this.darkreader ? 1 : 0)
+        },
+        /** Display tips popup */
+        displayTips() {
+            dialogs.handleTips(this.$refs.wizdialog, true)
+        },
+        /** Toggle full screen mode */
+        toggleFullScreen() {
+            if (this.fullscreen) {
+                /** Exit full screen mode */
+                if (document.exitFullscreen) {
+                    document.exitFullscreen()
+                } else if (document.mozCancelFullScreen) {
+                    /* Firefox */
+                    document.mozCancelFullScreen()
+                } else if (document.webkitExitFullscreen) {
+                    /* Chrome, and Opera */
+                    document.webkitExitFullscreen()
+                }
+            } else {
+                /** Request full screen mode */
+                let elem = document.documentElement
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen()
+                } else if (elem.mozRequestFullScreen) {
+                    /* Firefox */
+                    elem.mozRequestFullScreen()
+                } else if (elem.webkitRequestFullscreen) {
+                    /* Chrome, and Opera */
+                    elem.webkitRequestFullscreen()
+                }
             }
-            if (e.shiftKey && !e.altKey) {
-              // Go to next chapter
-              if ((e.which === 39) || (e.which === 68)) { // shift + d or shift + right arrow
-                  this.shouldInvertKeys ? this.goPreviousChapter() : this.goNextChapter()
-                  prevent()
-              }
-              // Go to previous chapter
-              if ((e.which === 37) || (e.which === 65)) { // shift + a or shift + left arrow
-                  this.shouldInvertKeys ? this.goNextChapter() : this.goPreviousChapter()
-                  prevent()
-              }
-              // Toggle drawer
-              if (e.which === 77) { // shift + m
-                this.drawer = !this.drawer
-                prevent()
-              }
-              // Switch resizes mode
-              if (e.which === 67) { // shift + c
-                if (!this.fullchapter) this.resize = "container"
-                prevent()
-              }
-              if (e.which === 87) { // shift + w
+            this.fullscreen = !this.fullscreen
+        },
+        /** Called on reader's creation, display a welcome message first time reader is opened */
+        async handleFirstTime() {
+            let isfirst = await util.getStorage("reader_firsttime")
+            if (!isfirst) {
+                // Button to set default layout with preferde choice : long strip
+                let butlongstrip = {
+                    title: this.i18n("reader_firsttime_but_longstrip"),
+                    color: "primary",
+                    click: ({ agree }) => {
+                        this.fullchapter = true
+                        this.resize = "width"
+                        this.book = window.innerWidth >= 1200 // display as a book is screen is wide enough
+                        this.saveOptionsAsDefault(true)
+                        agree()
+                    }
+                }
+                // Button to set default layout with preferde choice : single page
+                let butsingle = {
+                    title: this.i18n("reader_firsttime_but_single"),
+                    color: "primary",
+                    click: ({ agree }) => {
+                        this.fullchapter = false
+                        this.resize = window.innerHeight >= 800 ? "container" : "width" // resize container if screen is tall enough
+                        this.book = window.innerWidth >= 1200 // display as a book is screen is wide enough
+                        this.saveOptionsAsDefault(true)
+                        agree()
+                    }
+                }
+                await this.$refs.wizdialog.open(
+                    this.i18n("reader_firsttime_title"),
+                    this.i18n("reader_firsttime_description"),
+                    {
+                        cancel: false,
+                        buttons: [butlongstrip, butsingle],
+                        important: true
+                    }
+                )
+                await util.setStorage("reader_firsttime", "true")
+            }
+        },
+        /** Called when a thin scan (height >= 3 * width) is detected */
+        async handleThinScan() {
+            if (
+                this.thinscan === THINSCAN.no_adjust ||
+                (!this.book && !["height", "container"].includes(this.resize))
+            ) {
+                return // parameters are already adapted for thin scans
+            }
+
+            if (this.thinscan === THINSCAN.adjust) {
+                return this.adjustThinScan()
+            }
+
+            // Must be asking user
+            const modalResult = await this.$refs.wizdialog.yesno(
+                this.i18n("reader_thinscan_title"),
+                this.i18n("reader_thinscan_description")
+            )
+
+            if (modalResult) {
+                this.adjustThinScan()
+                this.thinscan = THINSCAN.adjust
+            } else {
+                this.thinscan = THINSCAN.no_adjust
+            }
+        },
+        adjustThinScan() {
+            this.book = false
+            if (["height", "container"].includes(this.resize)) {
                 this.resize = "width"
-                prevent()
-              }
-              if (e.which === 72) { // shift + h
-                if (!this.fullchapter) this.resize = "height"
-                prevent()
-              }
-              // Switch fullchapter
-              if (e.which === 70) { // shift + f
-                this.fullchapter = !this.fullchapter
-                prevent()
-              }
-              // Switch book
-              if (e.which === 66) { // shift + b
-                this.book = !this.book
-                prevent()
-              }
-              // Switch direction
-              if (e.which === 68) { // shift + d
-                this.direction = this.direction === 'ltr' ? 'rtl' : 'ltr'
-                prevent()
-              }
-              // Add manga to reading list
-              if (e.which === 107 || e.which === 187) { // shift + '+'
-                if (!this.mangaExists && this.options.addauto === 0) this.addManga()
-                prevent()
-              }
-              // Remove manga from reading list
-              if (e.which === 109 || e.which === 54) { // shift + '-'
-                if (this.mangaExists) this.deleteManga()
-                prevent()
-              }
-              // Pause / Play notifications on manga
-              if (e.which === 80) { // shift + p
-                if (this.mangaExists && this.mangaInfos) {
-                  if (this.mangaInfos.read === 1) this.markMangaReadTop(0)
-                  else this.markMangaReadTop(1)
-                  prevent()
-                }
-              }
-              // Mark current chapter as latest read
-              if (e.which === 76) { // shift + l
-                if (this.showLatestRead) this.markAsLatest()
-                prevent()
-              }
-              // Reload all errored scans
-              if (e.which === 82) { // alt + r
-                this.reloadErrors()
-                prevent()
-              }
             }
-            if (e.altKey && !e.shiftKey) {
-              // Toggle fullscreen
-              if (e.which === 70) { // alt + f
-                this.toggleFullScreen()
-                prevent()
-              }
-            }
-            if (e.altKey && !e.shiftKey) {
-              // Display current manga name, chapter name and progression in the manga
-              if (e.which === 67) { // alt + c
-                let chapName = "", chapPos = 0
-                if (this.selchap !== null && this.chapters.length !== 0) {
-                  let chap = this.chapters.findIndex(el => el.url === this.selchap)
-                  if (chap >= 0) {
-                    chapName = this.chapters[chap].title
-                    chapPos = this.chapters.length - chap
-                  }
-                }
-
-                let str = "**" + this.manga.name + "**\n"
-                str += (chapName === "" ? this.i18n("reader_display_chapname_none") : chapName) + "\n"
-                if (this.chapters.length > 0) {
-                  str += this.i18n("reader_display_chap_progression",
-                    chapPos,
-                    this.chapters.length,
-                    Math.floor(chapPos / this.chapters.length * 100))
-                }
-
-                this.$refs.wizdialog.temporary(str, 2000)
-                prevent()
-              }
-            }
-            if (e.shiftKey && e.altKey) {
-              // Jump to last chapter
-              if ((e.which === 39) || (e.which === 68)) { // alt + shift + d or alt + shift + right arrow
-                  this.selchap = this.chapters[0].url
-                  this.goToChapter()
-                  prevent()
-              }
-              // Jump to first chapter
-              if ((e.which === 37) || (e.which === 65)) { // alt + shift + a or alt + shift + left arrow
-                  this.selchap = this.chapters[this.chapters.length - 1].url
-                  this.goToChapter()
-                  prevent()
-              }
-              // Go to random chapter
-              if (e.which === 82) { // alt + shift + r
-                  this.selchap = this.chapters[Math.floor(Math.random() * this.chapters.length)].url
-                  this.goToChapter()
-                  prevent()
-              }
-            }
-          }
+        },
+        reloadErrors() {
+            EventBus.$emit("reload-all-errors")
+        },
+        async DownloadChapter() {
+            this.zip = true
+            await browser.runtime
+                .sendMessage({
+                    action: "DownloadChapter",
+                    urls: this.$refs.reader.scansState.scans.map(ele => ele.scan.currentSrc).reverse(),
+                    chapterName: this.pageData.currentChapter,
+                    seriesName:
+                        this.mangaInfos && this.mangaInfos.displayName ? this.mangaInfos.displayName : this.manga.name
+                })
+                .catch(() => (this.zip = false))
+            this.zip = false
         }
-        window.addEventListener('keydown', registerKeys, true);
-
-        //disable default websites shortcuts
-        let stopProp = (e) => e.stopImmediatePropagation();
-        window.addEventListener('keyup', stopProp, true);
-        window.addEventListener('keypress', stopProp, true);
-      },
-      /** Open shortcuts popup */
-      openShortcuts() {
-        this.$refs.shortcuts.open()
-      },
-      /** Open popup to bookmark chapter with note */
-      bookmarkChapter() {
-        this.$refs.book.open()
-      },
-      /** Open AMR bookmarks in a new tab */
-      openBookmarksTab() {
-        browser.runtime.sendMessage({
-            action: "opentab",
-            url: "/pages/bookmarks/bookmarks.html"
-        });
-      },
-      /** Save current layout options as the default ones */
-      async saveOptionsAsDefault(force = false) {
-        if (!force) {
-          if (!await this.$refs.wizdialog.confirm(
-            this.i18n("reader_save_options_title"),
-            this.i18n("reader_save_options_confirm"))) {
-              return
-          }
-        }
-        this.options.displayBook = this.book ? 1 : 0
-        this.options.readingDirection = this.direction === "ltr" ? 0 : 1
-        this.options.displayFullChapter = this.fullchapter ? 1 : 0
-        this.options.resizeMode = resize_values.findIndex(val => val === this.resize)
-        this.options.scaleUp = this.scaleUp ? 1 : 0;
-        util.saveOption("displayBook", this.options.displayBook)
-        util.saveOption("readingDirection", this.options.readingDirection)
-        util.saveOption("displayFullChapter", this.options.displayFullChapter)
-        util.saveOption("resizeMode", this.options.resizeMode)
-        util.saveOption("scaleUp", this.options.scaleUp)
-        if (!force) this.$refs.wizdialog.temporary(this.i18n("action_done"))
-      },
-      /** Reset current layout options to the default ones */
-      resetOptionsToDefault() {
-        this.book = this.options.displayBook === 1
-        this.direction = this.options.readingDirection === 0 ? 'ltr' : 'rtl'
-        this.fullchapter = this.options.displayFullChapter === 1
-        this.resize = resize_values[this.options.resizeMode]
-        this.scaleUp = this.options.scaleUp === 1
-        this.$refs.wizdialog.temporary(this.i18n("action_done"))
-      },
-      offsetBook() {
-        EventBus.$emit('offset-book')
-      },
-      /** Toggle dark / light theme and save option */
-      toggleDark() {
-        this.darkreader = !this.darkreader
-        this.$vuetify.theme.dark = this.darkreader
-        util.saveOption("darkreader", this.darkreader ? 1 : 0)
-      },
-      /** Display tips popup */
-      displayTips() {
-        dialogs.handleTips(this.$refs.wizdialog, true)
-      },
-      /** Toggle full screen mode */
-      toggleFullScreen() {
-        if (this.fullscreen) { /** Exit full screen mode */
-          if (document.exitFullscreen) {
-            document.exitFullscreen();
-          } else if (document.mozCancelFullScreen) { /* Firefox */
-            document.mozCancelFullScreen();
-          } else if (document.webkitExitFullscreen) { /* Chrome, and Opera */
-            document.webkitExitFullscreen();
-          }
-        } else { /** Request full screen mode */
-          let elem = document.documentElement
-          if (elem.requestFullscreen) {
-            elem.requestFullscreen()
-          } else if (elem.mozRequestFullScreen) { /* Firefox */
-            elem.mozRequestFullScreen()
-          } else if (elem.webkitRequestFullscreen) { /* Chrome, and Opera */
-            elem.webkitRequestFullscreen()
-          }
-        }
-        this.fullscreen = ! this.fullscreen
-      },
-      /** Called on reader's creation, display a welcome message first time reader is opened */
-      async handleFirstTime() {
-        let isfirst = await util.getStorage("reader_firsttime")
-        if (!isfirst) {
-          // Button to set default layout with preferde choice : long strip
-          let butlongstrip = {
-            title: this.i18n("reader_firsttime_but_longstrip"),
-            color: "primary",
-            click: ({ agree }) => {
-              this.fullchapter = true
-              this.resize = "width"
-              this.book = window.innerWidth >= 1200 // display as a book is screen is wide enough
-              this.saveOptionsAsDefault(true)
-              agree()
-            }
-          }
-          // Button to set default layout with preferde choice : single page
-          let butsingle = {
-            title: this.i18n("reader_firsttime_but_single"),
-            color: "primary",
-            click: ({ agree }) => {
-              this.fullchapter = false
-              this.resize = window.innerHeight >= 800 ? "container" : "width" // resize container if screen is tall enough
-              this.book = window.innerWidth >= 1200 // display as a book is screen is wide enough
-              this.saveOptionsAsDefault(true)
-              agree()
-            }
-          }
-          await this.$refs.wizdialog.open(
-            this.i18n("reader_firsttime_title"),
-            this.i18n("reader_firsttime_description"), {
-              cancel: false,
-              buttons: [butlongstrip, butsingle],
-              important: true
-            })
-          await util.setStorage("reader_firsttime", "true")
-        }
-      },
-      /** Called when a thin scan (height >= 3 * width) is detected */
-      async handleThinScan() {
-        if (this.thinscan === THINSCAN.no_adjust || (!this.book && !["height", "container"].includes(this.resize))) {
-          return // parameters are already adapted for thin scans
-        }
-
-        if (this.thinscan === THINSCAN.adjust) {
-          return this.adjustThinScan();
-        }
-
-        // Must be asking user
-        const modalResult = await this.$refs.wizdialog.yesno(
-            this.i18n("reader_thinscan_title"),
-            this.i18n("reader_thinscan_description")
-        );
-
-        if (modalResult) {
-            this.adjustThinScan();
-            this.thinscan = THINSCAN.adjust;
-        } else {
-          this.thinscan = THINSCAN.no_adjust;
-        }
-      },
-      adjustThinScan() {
-        this.book = false
-        if (["height", "container"].includes(this.resize)) {
-          this.resize = "width"
-        }
-      },
-      reloadErrors() {
-        EventBus.$emit('reload-all-errors')
-      },
-      async DownloadChapter() {
-        this.zip = true
-        await browser.runtime.sendMessage({
-            action: "DownloadChapter",
-            urls: this.$refs.reader.scansState.scans.map(ele => ele.scan.currentSrc).reverse(),
-            chapterName: this.pageData.currentChapter,
-            seriesName: this.mangaInfos && this.mangaInfos.displayName ? this.mangaInfos.displayName : this.manga.name
-        }).catch(() => this.zip = false)
-        this.zip = false
-      },
     }
-  }
+}
 </script>
 
 <style data-amr="true">
 #amrapp {
-  width: 100%;
+    width: 100%;
 }
 /** Drawer content below menu button */
 .amr-drawer {
-  padding-top:36px;
-  padding-bottom:64px;
+    padding-top: 36px;
+    padding-bottom: 64px;
 }
 /** Center manga title */
 .amr-manga-title div {
- margin-left: auto;
- margin-right: auto;
- text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
 }
 /** Align mirror icon */
 .amr-manga-title img {
-  vertical-align: middle;
+    vertical-align: middle;
 }
 /** Manga title link */
 .amr-manga-title a {
-  color: #424242;
-  text-decoration: none;
-  vertical-align: middle;
-  word-break: break-word;
-  font-weight: bold;
+    color: #424242;
+    text-decoration: none;
+    vertical-align: middle;
+    word-break: break-word;
+    font-weight: bold;
 }
 .theme--dark .amr-manga-title a {
-  color: white;
+    color: white;
 }
 /** Break work in chapter title */
 .amr-drawer .v-select {
-  white-space: pre-wrap;
-  word-break: break-word;
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 /** To prevent select to be too small due to large padding */
 .v-toolbar.pa-0 .v-toolbar__content {
-  padding: 0px 5px;
+    padding: 0px 5px;
 }
 /** So the dropdown can hover the rest... */
 .amr-chapters-toolbar {
-  z-index: 8;
-  height: auto!important;
+    z-index: 8;
+    height: auto !important;
 }
 .amr-chapters-toolbar .v-toolbar__content {
-  height: auto!important;
+    height: auto !important;
 }
 .opacity-full {
-  opacity: 1;
+    opacity: 1;
 }
 .opacity-transparent {
-  opacity: 0.7;
+    opacity: 0.7;
 }
 /** Floating buttons */
 .fab-container {
-  position: fixed;
-  top: 15px;
-  right: 15px;
-  z-index: 10;
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 10;
 }
 /** Progress bars for next chapter loading */
 .amr-floting-progress .v-btn {
-  width: 36px;
-  height: 36px;
+    width: 36px;
+    height: 36px;
 }
 .amr-chapter-progress-cont .v-progress-linear {
-  margin: 0px;
+    margin: 0px;
 }
 /** Scrollbars style (only works for chrome, firefox does not support that */
 ::-webkit-scrollbar {
-  width: 10px;
+    width: 10px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #ddd;
+    background: #ddd;
 }
 ::-webkit-scrollbar-track {
-  background: #666;
+    background: #666;
 }
 /** Loading cover */
 .amr-transition-cover {
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  position: fixed;
-  opacity: 0.8;
-  z-index: 42; /* Because when you search for a high z-index, 42 is always the right answer */
-  text-align: center;
-  display: block;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    position: fixed;
+    opacity: 0.8;
+    z-index: 42; /* Because when you search for a high z-index, 42 is always the right answer */
+    text-align: center;
+    display: block;
 }
 .amr-transition-cover .v-progress-circular {
-   position: absolute;
-   top: 50%;
-   left: 50%;
-   width: 128px;
-   height: 128px;
-   margin-top: -64px; /* Half the height */
-   margin-left: -64px; /* Half the width */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 128px;
+    height: 128px;
+    margin-top: -64px; /* Half the height */
+    margin-left: -64px; /* Half the width */
 }
 .v-select__selection--comma {
-  white-space: normal;
+    white-space: normal;
 }
-label.v-label, span {
-  word-break: break-word!important;
+label.v-label,
+span {
+    word-break: break-word !important;
 }
 /* truncate chapter text in v-select */
 .truncate {
-  width: 180px;
-  white-space: nowrap!important;
-  overflow: hidden!important;
-  text-overflow: ellipsis!important;
+    width: 180px;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
 }
 .v-select__selection--comma {
-    white-space: nowrap!important;
+    white-space: nowrap !important;
 }
 /* disable hover effect for select buttons */
 .select-btn::before {
-  display:none!important;
+    display: none !important;
 }
 
 /** reduce switches margin and padding */

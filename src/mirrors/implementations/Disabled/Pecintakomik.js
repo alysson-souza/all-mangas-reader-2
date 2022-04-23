@@ -1,10 +1,10 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "Pecintakomik",
         canListFullMangas: false,
         disabled: true,
         mirrorIcon: "pecintakomik.png",
-        domains: ["www.pecintakomik.net","pecintakomik.net"],
+        domains: ["www.pecintakomik.net", "pecintakomik.net"],
         home: "https://www.pecintakomik.net/",
         chapter_url: /^\/m[0-9]+\/$/g,
         languages: "id",
@@ -16,7 +16,6 @@ if (typeof registerMangaObject === 'function') {
             search_option: "&post_type=manga",
             manga_title_attr: true,
             chapters_a_sel: "div.bxcl > ul > li > span.lchx > a"
-
-        },
+        }
     })
 }

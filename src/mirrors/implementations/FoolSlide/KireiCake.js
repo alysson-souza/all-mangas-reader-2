@@ -1,12 +1,12 @@
-if (typeof registerMangaObject === 'function') {
-	registerMangaObject({
-        mirrorName : "Kirei Cake",
-        mirrorIcon : "kireicake.png",
-        languages : "en",
+if (typeof registerMangaObject === "function") {
+    registerMangaObject({
+        mirrorName: "Kirei Cake",
+        mirrorIcon: "kireicake.png",
+        languages: "en",
         domains: ["reader.kireicake.com"],
         home: "https://kireicake.com/",
         chapter_url: /^\/read\/.+$/g,
-        
+
         abstract: "FoolSlide",
         abstract_options: {
             base_url: "https://reader.kireicake.com",

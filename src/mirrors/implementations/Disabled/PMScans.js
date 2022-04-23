@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         disabled: true,
         mirrorName: "PM Scans",
@@ -14,6 +14,6 @@ if (typeof registerMangaObject === 'function') {
             search_url: "https://reader.pmscans.com/",
             chapters_a_sel: "div.bixbox.bxcl ul li div.eph-num a",
             chapters_text_sel: "span.chapternum"
-        },
+        }
     })
 }

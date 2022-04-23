@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "Dragon Tea",
         mirrorIcon: "dragon-tea.png",
@@ -11,8 +11,7 @@ if (typeof registerMangaObject === 'function') {
         abstract_options: {
             search_url: "https://dragontea.ink/",
             chapter_list_ajax: true,
-            isekai_chapter_url: true,
+            isekai_chapter_url: true
         }
     })
 }
-

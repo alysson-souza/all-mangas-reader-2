@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "Westmanga",
         canListFullMangas: false,
@@ -16,7 +16,6 @@ if (typeof registerMangaObject === 'function') {
             manga_title_attr: false,
             chapters_a_sel: "div.cl > ul > li > span.leftoff > a",
             search_json: false
-
-        },
+        }
     })
 }

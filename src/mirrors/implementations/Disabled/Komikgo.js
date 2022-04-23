@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "Komikgo",
         canListFullMangas: false,
@@ -11,7 +11,7 @@ if (typeof registerMangaObject === 'function') {
         abstract: "Madara",
         abstract_options: {
             search_url: "https://komikgo.com/",
-            img_src: "data-src",
-        },
+            img_src: "data-src"
+        }
     })
 }

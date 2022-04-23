@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "Night Comic",
         mirrorIcon: "nightcomic.png",
@@ -11,8 +11,7 @@ if (typeof registerMangaObject === 'function') {
         abstract_options: {
             search_url: "https://www.nightcomic.com/",
             img_src: "data-src",
-            chapter_list_ajax: true,
+            chapter_list_ajax: true
         }
     })
 }
-

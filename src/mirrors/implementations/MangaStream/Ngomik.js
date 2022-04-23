@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "Ngomik",
         canListFullMangas: false,
@@ -12,6 +12,6 @@ if (typeof registerMangaObject === 'function') {
             search_url: "https://ngomik.in/",
             search_a_sel: "div.luf > a",
             chapters_a_sel: "div.lch> a"
-        },
+        }
     })
 }

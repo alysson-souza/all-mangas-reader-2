@@ -3,10 +3,10 @@
  */
 class Options {
     constructor() {
-        this.__data__ = null;
+        this.__data__ = null
     }
     get() {
-        return this.__data__;
+        return this.__data__
     }
     /**
      * When scripts are loaded in page, AMR options are injected too
@@ -14,9 +14,9 @@ class Options {
      * @param {*} name
      */
     load(object) {
-        Object.assign(this, object);
-        this.__data__ = object;
+        Object.assign(this, object)
+        this.__data__ = object
     }
 }
 
-export default (new Options);
+export default new Options()

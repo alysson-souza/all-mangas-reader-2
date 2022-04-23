@@ -1,21 +1,21 @@
-const path = require('path')
+const path = require("path")
 /**
  * Check if file is a png
- * @param {String} filePath 
+ * @param {String} filePath
  * @returns {Boolean}
  */
- exports.isPng = function(filePath) {
-  return filePath.endsWith('.png')
+exports.isPng = function (filePath) {
+    return filePath.endsWith(".png")
 }
 
 /**
  * Check if file is already optimized
- * @param {Srting} filePath 
+ * @param {Srting} filePath
  * @returns {Boolean}
  */
 exports.isOptimzedPng = function (filePath) {
-  const parsedFile = path.parse(filePath)
-  return parsedFile.name.endsWith('-optimized') && parsedFile.ext === '.png'
+    const parsedFile = path.parse(filePath)
+    return parsedFile.name.endsWith("-optimized") && parsedFile.ext === ".png"
 }
 
 /**
@@ -23,8 +23,8 @@ exports.isOptimzedPng = function (filePath) {
  * @param {String} filePath
  * @returns {String}
  */
- exports.renameToOptimized = function (filePath) {
-  const newFileExt = '.png'
-  const newFileName = path.parse(filePath).name + '-optimized' + newFileExt
-  return path.join(path.parse(filePath).dir, newFileName)
+exports.renameToOptimized = function (filePath) {
+    const newFileExt = ".png"
+    const newFileName = path.parse(filePath).name + "-optimized" + newFileExt
+    return path.join(path.parse(filePath).dir, newFileName)
 }

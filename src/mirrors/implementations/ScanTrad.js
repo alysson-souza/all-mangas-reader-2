@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "Scan Trad",
         mirrorIcon: "scantrad.png",
@@ -7,7 +7,7 @@ if (typeof registerMangaObject === 'function') {
         home: "https://scantrad.net/",
         chapter_url: /^\/mangas\/.*\/[0-9]+.*$/g,
 
-        getMangaList: async function(search) {
+        getMangaList: async function (search) {
             let doc = await amr.loadPage("https://scantrad.net/", {
                 nocache: true,
                 preventimages: true,
@@ -15,40 +15,40 @@ if (typeof registerMangaObject === 'function') {
                 data: {
                     q: search
                 }
-            });
-            let res = [];
-            $('a.recherche-g', doc).each(function(index) {
-                res[index] = [$(".rgr-titre", $(this)).text(), "https://scantrad.net" + $(this).attr('href')];
-            });
-            return res;
+            })
+            let res = []
+            $("a.recherche-g", doc).each(function (index) {
+                res[index] = [$(".rgr-titre", $(this)).text(), "https://scantrad.net" + $(this).attr("href")]
+            })
+            return res
         },
 
-        getListChaps: async function(urlManga) {
+        getListChaps: async function (urlManga) {
             let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
-            let res = [];
-            $('#chapitres div.chapsca', doc).each(function() {
+            let res = []
+            $("#chapitres div.chapsca", doc).each(function () {
                 let url = $("a.hm-link", $(this)).attr("href")
                 if (url.indexOf("/mangas") === 0) {
-                    res[res.length] = [$("span.chl-num", $(this)).text().trim(), "https://scantrad.net" + url];
+                    res[res.length] = [$("span.chl-num", $(this)).text().trim(), "https://scantrad.net" + url]
                 }
-            });
-            return res;
+            })
+            return res
         },
 
-        getInformationsFromCurrentPage: async function(doc, curUrl) {
-            let mangaUrl = $("a.logo_box", doc).attr("href");
-            let mangaDoc = await amr.loadPage(mangaUrl, { nocache: true, preventimages: true });
-            var mangaTitle = $(".titre", mangaDoc).contents().get(0).textContent;
+        getInformationsFromCurrentPage: async function (doc, curUrl) {
+            let mangaUrl = $("a.logo_box", doc).attr("href")
+            let mangaDoc = await amr.loadPage(mangaUrl, { nocache: true, preventimages: true })
+            var mangaTitle = $(".titre", mangaDoc).contents().get(0).textContent
             return {
-                "name": mangaTitle,
-                "currentMangaURL": mangaUrl,
-                "currentChapterURL": $("#selectCh", doc).attr("href")
+                name: mangaTitle,
+                currentMangaURL: mangaUrl,
+                currentChapterURL: $("#selectCh", doc).attr("href")
             }
         },
 
-        getListImages: async function(doc, curUrl) {
+        getListImages: async function (doc, curUrl) {
             let res = []
-            $(".main_img img", doc).each(function() {
+            $(".main_img img", doc).each(function () {
                 let url = $(this).attr("data-src")
                 if (!url) {
                     return
@@ -59,12 +59,12 @@ if (typeof registerMangaObject === 'function') {
             return res
         },
 
-        getImageFromPageAndWrite: async function(urlImg, image) {
-            $(image).attr("src", urlImg);
+        getImageFromPageAndWrite: async function (urlImg, image) {
+            $(image).attr("src", urlImg)
         },
 
-        isCurrentPageAChapterPage: function(doc, curUrl) {
-            return $(".main_img img", doc).length > 0;
+        isCurrentPageAChapterPage: function (doc, curUrl) {
+            return $(".main_img img", doc).length > 0
         }
     })
 }

@@ -4,34 +4,33 @@
  */
 
 import Vue from "vue"
-import 'vuetify/dist/vuetify.min.css';
-import Vuetify from 'vuetify';
-import vuetifyOptions from '../pages/vuetifyOptions';
-import VueScrollTo from "vue-scrollto";
-import Clipboard from 'v-clipboard'
+import "vuetify/dist/vuetify.min.css"
+import Vuetify from "vuetify"
+import vuetifyOptions from "../pages/vuetifyOptions"
+import VueScrollTo from "vue-scrollto"
+import Clipboard from "v-clipboard"
 
-import AmrReader from './AmrReader.vue';
+import AmrReader from "./AmrReader.vue"
 
-import browser from "webextension-polyfill";
-import mirrorImpl from './state/mirrorimpl';
-import options from './state/options';
-import ChapterLoader from "./helpers/ChapterLoader";
-import store from '../store'
+import browser from "webextension-polyfill"
+import mirrorImpl from "./state/mirrorimpl"
+import options from "./state/options"
+import ChapterLoader from "./helpers/ChapterLoader"
+import store from "../store"
 
-vuetifyOptions.icons.iconfont = 'mdiSvg' // Forves embedded svg font for reader, we use the cdn based one for the popup still
+vuetifyOptions.icons.iconfont = "mdiSvg" // Forves embedded svg font for reader, we use the cdn based one for the popup still
 
 /** DO NOT REMOVE, not used here but define a global object used in loaded implementation */
-import mirrorHelper from '../amr/mirrors-helper';
+import mirrorHelper from "../amr/mirrors-helper"
 
-let ourCss = [
-    'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700'
-]
+let ourCss = ["https://fonts.googleapis.com/css?family=Roboto:300,400,500,700"]
 
-if (window["__armreader__"] === undefined) { // avoid loading script twice
+if (window["__armreader__"] === undefined) {
+    // avoid loading script twice
     window["__armreader__"] = {}
-    window['AMR_STORE'] = store
+    window["AMR_STORE"] = store
 
-    window['onPushState'] = async function () {
+    window["onPushState"] = async function () {
         //Do load manga only if it's not AMR that triggered the pushState
         if (window["__AMR_IS_LOADING_CHAPTER__"]) {
             //console.log("Push state from within AMR")
@@ -52,13 +51,13 @@ if (window["__armreader__"] === undefined) { // avoid loading script twice
      */
     window["registerMangaObject"] = async function (object) {
         // initialize options
-        if (typeof options.load === 'function') {
-            options.load(await browser.runtime.sendMessage({action: "getoptions"}));
+        if (typeof options.load === "function") {
+            options.load(await browser.runtime.sendMessage({ action: "getoptions" }))
         }
-        console.log("Mirror implementation " + object.mirrorName + " loaded in page.");
+        console.log("Mirror implementation " + object.mirrorName + " loaded in page.")
         // initialize Mirror Implementation
-        if (typeof mirrorImpl.load === 'function') {
-            mirrorImpl.load(object);
+        if (typeof mirrorImpl.load === "function") {
+            mirrorImpl.load(object)
         }
         // initialize current chapter from data collected from current page
         let chap = new ChapterLoader()
@@ -79,18 +78,18 @@ if (window["__armreader__"] === undefined) { // avoid loading script twice
     }
 }
 
-
 /**
  * This function replaces the current page by a custom reader, AMR Reader
  *  - No more glitches depending on the online reader css
  *  - more options, resize fit height, width
  */
 function initReader() {
-    if (!document.body) { // create body element if non existing (thanks mangarock)
+    if (!document.body) {
+        // create body element if non existing (thanks mangarock)
         let bd = document.createElement("body")
         document.children[0].appendChild(bd)
     }
-    document.body.innerHTML = ""; //empty the dom page
+    document.body.innerHTML = "" //empty the dom page
     let amrdiv = document.createElement("div")
     amrdiv.id = "app"
     document.body.appendChild(amrdiv)
@@ -98,10 +97,10 @@ function initReader() {
     removeStyles(true)
 
     // add this line for mobile : <meta name="viewport" content="width=device-width, initial-scale=1">
-    var metaview = document.createElement( "meta" )
+    var metaview = document.createElement("meta")
     metaview.name = "viewport"
     metaview.content = "width=device-width, initial-scale=1"
-    document.getElementsByTagName( "head" )[0].appendChild( metaview )
+    document.getElementsByTagName("head")[0].appendChild(metaview)
 
     // document is the only node we keep from the page, ensure it won't break our css :
     document.body.style.padding = "0px"
@@ -112,8 +111,7 @@ function initReader() {
     // if (options.darkreader === 1) document.body.style.backgroundColor = "#303030"
     // else document.body.style.backgroundColor = "white"
 
-    for (let css of ourCss)
-        loadCss(css)
+    for (let css of ourCss) loadCss(css)
 
     // Load vue
     Vue.config.productionTip = false
@@ -125,7 +123,7 @@ function initReader() {
         el: amrdiv,
         vuetify: new Vuetify(vuetifyOptions),
         render: h => h(AmrReader)
-    });
+    })
 
     setTimeout(removeJsAddedStuff, 1500)
 }
@@ -139,8 +137,7 @@ function removeJsAddedStuff(times = 10) {
     document.body.style.setProperty("width", "auto", "important")
 
     for (let child of document.body.children) {
-        if (child.getAttribute('id') !== 'amrapp')
-            child.remove()
+        if (child.getAttribute("id") !== "amrapp") child.remove()
     }
 
     if (times > 0) {
@@ -150,28 +147,35 @@ function removeJsAddedStuff(times = 10) {
 
 /** Remove styles from original page to avoid interference with AMR reader */
 function removeStyles(withInline = false, times = 10) {
-    let stylesheets = document.getElementsByTagName('link'), i, sheet;
-    for(i in stylesheets) {
+    let stylesheets = document.getElementsByTagName("link"),
+        i,
+        sheet
+    for (i in stylesheets) {
         if (stylesheets.hasOwnProperty(i)) {
-            sheet = stylesheets[i];
-            if(((sheet.getAttribute("rel") && sheet.getAttribute("rel") == "stylesheet") || (sheet.getAttribute('type') && sheet.getAttribute('type').toLowerCase() == 'text/css'))
-                && !ourCss.includes(sheet.getAttribute('href'))) {
-                sheet.parentNode.removeChild(sheet);
+            sheet = stylesheets[i]
+            if (
+                ((sheet.getAttribute("rel") && sheet.getAttribute("rel") == "stylesheet") ||
+                    (sheet.getAttribute("type") && sheet.getAttribute("type").toLowerCase() == "text/css")) &&
+                !ourCss.includes(sheet.getAttribute("href"))
+            ) {
+                sheet.parentNode.removeChild(sheet)
             }
         }
     }
 
     if (withInline) {
-        let inline = document.getElementsByTagName('style')
-        for(i in inline) {
+        let inline = document.getElementsByTagName("style")
+        for (i in inline) {
             if (inline.hasOwnProperty(i)) {
-                sheet = inline[i];
-                if(!sheet.getAttribute('data-amr') 
-                    && (sheet.getAttribute('type') && sheet.getAttribute('type').toLowerCase() == 'text/css')
-                    && sheet.getAttribute('id') !== 'vuetify-theme-stylesheet'
-                    && sheet.getAttribute('id') !== 'custom-scrollbar-css'
+                sheet = inline[i]
+                if (
+                    !sheet.getAttribute("data-amr") &&
+                    sheet.getAttribute("type") &&
+                    sheet.getAttribute("type").toLowerCase() == "text/css" &&
+                    sheet.getAttribute("id") !== "vuetify-theme-stylesheet" &&
+                    sheet.getAttribute("id") !== "custom-scrollbar-css"
                 ) {
-                    sheet.parentNode.removeChild(sheet);
+                    sheet.parentNode.removeChild(sheet)
                     // console.log('Removing Sheet')
                     // console.log(sheet)
                 }
@@ -185,13 +189,13 @@ function removeStyles(withInline = false, times = 10) {
 }
 /** Load css in the page for AMR reader needs */
 function loadCss(file) {
-    var link = document.createElement( "link" )
+    var link = document.createElement("link")
     link.href = file
     link.type = "text/css"
     link.rel = "stylesheet"
     link.media = "screen,print"
 
-    document.getElementsByTagName( "head" )[0].appendChild( link )
+    document.getElementsByTagName("head")[0].appendChild(link)
 }
 /**
  * Restore the page as it was before we included our scripts tags and code
@@ -208,13 +212,14 @@ function restorePage() {
     // For some reason the first run does not actually remove them all, a couple of runs are needed
     for (let a = 0; a < 10; a++) {
         // remove included style
-        let styles = document.getElementsByTagName('style'), st;
+        let styles = document.getElementsByTagName("style"),
+            st
         for (let i in styles) {
             if (styles.hasOwnProperty(i)) {
-                st = styles[i];
+                st = styles[i]
                 // remove our own styles...
                 if (st.innerHTML.indexOf(".amr-") >= 0 || st.innerHTML.indexOf("Vuetify") >= 0) {
-                    st.parentNode.removeChild(st);
+                    st.parentNode.removeChild(st)
                 }
             }
         }

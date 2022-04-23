@@ -1,16 +1,18 @@
 # ![](src/icons/icon_32.png) All Mangas Reader V2
 
 ## What is All Mangas Reader
+
 All Mangas Reader is a browser extension which is designed to help you read and follow mangas on a lot of manga websites.
 
-* Read whole chapters on manga websites
-* Follow mangas you like with your reading list
-* Be notified when new chapters are published
-* Order, classify mangas in your reading list
-* A lot of supported websites
-* Synchronization across multiple devices
+-   Read whole chapters on manga websites
+-   Follow mangas you like with your reading list
+-   Be notified when new chapters are published
+-   Order, classify mangas in your reading list
+-   A lot of supported websites
+-   Synchronization across multiple devices
 
 ### Browser compatibility
+
 <table>
     <thead>
         <tr align="center">
@@ -67,6 +69,7 @@ All Mangas Reader is a browser extension which is designed to help you read and 
 </table>
 
 ### Supported websites
+
 <details>
     <summary>Click to unfold</summary>
     <table>
@@ -242,19 +245,20 @@ All Mangas Reader is a browser extension which is designed to help you read and 
     </table>
 </details>
 
-Your favorite website not listed yet? [Submit a request on discord](https://discord.gg/bdzk9hR)  
+Your favorite website not listed yet? [Submit a request on discord](https://discord.gg/bdzk9hR)
 
 ### 🔐 Privacy
+
 All Mangas Reader creates cookies to force English on the Webtoons website, and pass an "I am adult" cookie to websites that have verifications
 for more explicit content. Not allowing AMR to read / create cookies will hinder or break compatibility with these websites. This option can
 be turned off / on at any time from the settings menu.
 
 <h2 id="#firefox-install"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Firefox_logo.png/255px-Firefox_logo.png" width="30" title="Firefox"/> Firefox</h2>
 
-- Download the latest stable version from the Mozilla add-ons explorer
-  - **[Stable](https://addons.mozilla.org/firefox/addon/all-mangas-reader/)**
-- Beta versions for firefox are currently on hold but still available here :
-  - **[Beta](https://release.allmangasreader.com/all-mangas-reader-beta-latest.xpi)**
+-   Download the latest stable version from the Mozilla add-ons explorer
+    -   **[Stable](https://addons.mozilla.org/firefox/addon/all-mangas-reader/)**
+-   Beta versions for firefox are currently on hold but still available here :
+    -   **[Beta](https://release.allmangasreader.com/all-mangas-reader-beta-latest.xpi)**
 
 <h2 id="#chromium-install"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Chromium_Material_Icon.svg/langfr-1024px-Chromium_Material_Icon.svg.png" width="30" title="Chromium"/> Chromium</h2>
  
@@ -265,34 +269,38 @@ If you are not sure your browser is based on chromium you can check our [Browser
 All Mangas Reader do not comply with Google Chrome Extensions terms of services, thus cannot be downloaded directly from their store.
 
 1.  **Right-click -> `Save Link` or `Save link content as`** on the version you wish to use
-    - **[Stable](https://release.allmangasreader.com/all-mangas-reader-latest.crx)**
-    - **[Beta](https://release.allmangasreader.com/all-mangas-reader-beta-latest.crx)**
-2. Extract the file .crx file you just downloaded to a location you wish to use for this extension, you will need to remember where this folder is in order to update the extension.
-    - **Windows**: Change the file extension from `.crx`to `.7z` and use [7zip](https://www.7-zip.org/download.html) to extract the file. ([how to extract file with 7z](https://www.webhostinghub.com/help/learn/website/managing-files/extract-file))
-    - **MacOS X** / **Linux**: open a terminal and use [unzip](https://superuser.com/a/1026504)
-3. Open the extensions page in your browser, enable developer mode and click `Load unpacked extension`.
-4. Select the folder you extracted to install AMR.
+    -   **[Stable](https://release.allmangasreader.com/all-mangas-reader-latest.crx)**
+    -   **[Beta](https://release.allmangasreader.com/all-mangas-reader-beta-latest.crx)**
+2.  Extract the file .crx file you just downloaded to a location you wish to use for this extension, you will need to remember where this folder is in order to update the extension.
+    -   **Windows**: Change the file extension from `.crx`to `.7z` and use [7zip](https://www.7-zip.org/download.html) to extract the file. ([how to extract file with 7z](https://www.webhostinghub.com/help/learn/website/managing-files/extract-file))
+    -   **MacOS X** / **Linux**: open a terminal and use [unzip](https://superuser.com/a/1026504)
+3.  Open the extensions page in your browser, enable developer mode and click `Load unpacked extension`.
+4.  Select the folder you extracted to install AMR.
 
 ### Update AMR on a chromium browser
+
 1. Download the lasted version of All Mangas Reader directly from within the extension when prompted  
-![](/images/new_version.PNG)
-2. Extract the file .crx file you just downloaded into your (already existing) All Mangas Reader's installation folder 
+   ![](/images/new_version.PNG)
+2. Extract the file .crx file you just downloaded into your (already existing) All Mangas Reader's installation folder
 3. Restart browser
 
 ## 📡 Synchronization
+
 ### Browser Sync
-*Browser sync* uses your browser capabilities to synchronize your manga list:  
+
+_Browser sync_ uses your browser capabilities to synchronize your manga list:  
 ⚠️**only works with Firefox**.
 
-- ✔️ 🖥️💻📱 <small>(Firefox)</small> **⬌** 🖥️💻📱 <small>(Firefox)</small>
+-   ✔️ 🖥️💻📱 <small>(Firefox)</small> **⬌** 🖥️💻📱 <small>(Firefox)</small>
 
-Enable *Browser sync* in All Mangas Reader under `Settings (cog icon in the top-right corner) > General > Synchronization > Enable browser sync`
+Enable _Browser sync_ in All Mangas Reader under `Settings (cog icon in the top-right corner) > General > Synchronization > Enable browser sync`
 
 ### Synchronization with Gist (3rd-party)
-*Gist Sync* is an alernative method to synchornize your manga list using a third party service.  
+
+_Gist Sync_ is an alernative method to synchornize your manga list using a third party service.  
 :information_source: Although more [difficult to setup](#enable-gist-sync), this synchronization method is compatible with all (chromium/firefox) browsers.
 
-- ✔️ 🖥️💻📱 <small>(any browser)</small> **⬌** 🖥️💻📱 <small>(any browser)</small>
+-   ✔️ 🖥️💻📱 <small>(any browser)</small> **⬌** 🖥️💻📱 <small>(any browser)</small>
 
 ##### Enable Gist Sync
 
@@ -317,22 +325,24 @@ Enable *Browser sync* in All Mangas Reader under `Settings (cog icon in the top-
     - You can use `Revision` to see/restore past version of your synced data
 6. Enable Gist Sync in All Mangas Reader for all other devices, make sure they each have their own token and use the same Gist ID.
 
-:information_source: ***Browser Sync* doesn't need to be enabled for *Gist Sync* to work.**
+:information*source: \*\*\_Browser Sync* doesn't need to be enabled for _Gist Sync_ to work.\*\*
 
 ## Contribute
+
 **❗ Before contributing to the project, please read our [Contribution guide](CONTRIBUTING.md).**
 
 To contribute, fork the project and work on opened issues. Once fixed, submit a pull request which owners will merge as soon as possible
 
 You can submit issues through GitLab issues tool, please submit a test case to reproduce your issue.
 
-⚠️ Developers working on sites implementation **MUST** read [this](SITES_REQUIREMENTS.md)  
+⚠️ Developers working on sites implementation **MUST** read [this](SITES_REQUIREMENTS.md)
 
 **If you are not a developer, you can still contribute as a translator** too, to do so, clone the repository locally and work on the `messages.json` file in your language as explained in [this doc](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/i18n/Locale-Specific_Message_reference).
 
 You can also work on the [wiki](https://gitlab.com/all-mangas-reader/all-mangas-reader-2/wikis/) to help us explain to everyone how All Mangas Reader works.
 
 ### Developer installation
+
 1. First clone this repository locally and install it using `yarn` (if you don't have yarn, [install it](https://yarnpkg.com)).
 2. Install dependencies: `yarn install`
 3. Build the extension (note that you will need to run this command when updating extension code) `yarn run build:dev`
@@ -341,20 +351,21 @@ You can also work on the [wiki](https://gitlab.com/all-mangas-reader/all-mangas-
     - **Chromium**: Go to Menu > Extensions and switch to developer mode (in the top right hand corner). Click on **LOAD UNPACKED** and select the `dist` folder of your local repository.
     - **Quantum**: Go to [about:debugging#addons](about:debugging#addons) and click on **Load temporal module**. Select the `manifest.json` file from the `dist`
         - ⚠️ If you want to debug the extension while testing you will need web-ext.
-            `yarn global add web-ext`            
+          `yarn global add web-ext`
         - To load your browser with All Mangas Reader in debug mode, execute the following command in the `dist` folder of your local repository :
-            `web-ext run`
-
+          `web-ext run`
 
 ⚠️ Syncing data using `browser.storage.sync` across different devices require same extension id on both devices.
 
 extension id can be set in manifest.json
-* for chrome - "key" field
-* for firefox - "applications.gecko.id"
+
+-   for chrome - "key" field
+-   for firefox - "applications.gecko.id"
 
 The easiest way to build and set know id by simply running two yarn commands
-* `yarn build:dev && yarn manifest:specify -chrome`
-* `yarn build:dev && yarn manifest:specify -firefox`
+
+-   `yarn build:dev && yarn manifest:specify -chrome`
+-   `yarn build:dev && yarn manifest:specify -firefox`
 
 #### Caveats:
 
@@ -365,6 +376,7 @@ As a temporary solution, the `manifest.json` file in src directly can be modifie
 Right fields can be copied from `dist/manifest.json` to `src/manifest.json` after running `yarn manifest:specify` command`
 
 ### Firefox for Android
+
 To test the extension while developing on Firefox for Android, install Firefox on your computer and adb, follow the steps in the [Set up your computer and Android emulator or device](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Developing_WebExtensions_for_Firefox_for_Android) to configure your debugging environment
 
 1. Build the extension as [explained here](#developer-installation) (step 1 to 4)
@@ -376,43 +388,49 @@ To test the extension while developing on Firefox for Android, install Firefox o
 7. You can now debug it using Firefox WebIDE and connect to your phone.
 
 ### Dependencies
- - Vue : One of the most popular reactive framework, Vue allows to create great UI
- - Vuex : Reactive store for vue, vuex organizes the data model properly
- - Vuetify : a set of UI components for view based on Material design
- - vuex-shared-mutations : a great plugin for Vuex which allows to synchronize vuex data model through different instances of Vue using localStorage events
- - webextension-polyfill : web extension API has been normalize and is implemented in Chrome, Firefox, Edge, ... but with still a few differences, thanks to this polyfill, the code works everywhere
- - axios : for xhr
- - jQuery : jQuery is still there, to manipulate DOM, it's still the best. Mirrors implementations are based on jQuery and the content script uses it as well.
- - dompurify to sanitize the dom before parsing it
- 
+
+-   Vue : One of the most popular reactive framework, Vue allows to create great UI
+-   Vuex : Reactive store for vue, vuex organizes the data model properly
+-   Vuetify : a set of UI components for view based on Material design
+-   vuex-shared-mutations : a great plugin for Vuex which allows to synchronize vuex data model through different instances of Vue using localStorage events
+-   webextension-polyfill : web extension API has been normalize and is implemented in Chrome, Firefox, Edge, ... but with still a few differences, thanks to this polyfill, the code works everywhere
+-   axios : for xhr
+-   jQuery : jQuery is still there, to manipulate DOM, it's still the best. Mirrors implementations are based on jQuery and the content script uses it as well.
+-   dompurify to sanitize the dom before parsing it
+
 ### Dev dependencies
+
 All Mangas Reader V2 is based on Webpack to compile the code.
 
 ### Integration with Vue devtools
+
 Make sure "Allow access to file URLs" is enabled
 Install [Vue Remote tools](https://github.com/vuejs/vue-devtools/blob/master/shells/electron/README.md)
 
 if you installed vue-devtools globally, run it with `vue-devtools`
 Open AMR popup, vue-devtools should now be connected
 
-
 **Note**: Browser extension does not work due to security restrictions
+
 ```
 Unchecked runtime.lastError while running tabs.executeScript: Cannot access a chrome-extension:// URL of different extension
 ```
 
 ## For repository admins only
+
 **Release version**
 
 Beta channel is automatically updated on each commit.
 
-Process to release a stable version : 
- - Commit version change with message `Update version to x.y.z before tag NO-CI`
-    - CI will run on gitlab but webhook (which generates xpi and crx server side) will not consider artefacts as a version because of the `NO-CI` in commit message
-    - **⚠️ Do not forget NO-CI**, if not, beta Vx.y.z.157 will be generated and will prevent next commits to create valid versions because after the version is tagged, beta version will start at 1 after the first commit after tag
- - Merge develop into master
- - Tag version on master (will generate release Vx.y.z when the tag CI runs on master)
+Process to release a stable version :
+
+-   Commit version change with message `Update version to x.y.z before tag NO-CI`
+    -   CI will run on gitlab but webhook (which generates xpi and crx server side) will not consider artefacts as a version because of the `NO-CI` in commit message
+    -   **⚠️ Do not forget NO-CI**, if not, beta Vx.y.z.157 will be generated and will prevent next commits to create valid versions because after the version is tagged, beta version will start at 1 after the first commit after tag
+-   Merge develop into master
+-   Tag version on master (will generate release Vx.y.z when the tag CI runs on master)
 
 ## License
+
 All Mangas Reader is licensed under GPL V3
 [View LICENSE FILE](LICENSE)

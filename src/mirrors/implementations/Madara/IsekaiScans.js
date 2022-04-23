@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "IsekaiScans",
         mirrorIcon: "isekaiscans.png",
@@ -16,4 +16,3 @@ if (typeof registerMangaObject === 'function') {
         }
     })
 }
-

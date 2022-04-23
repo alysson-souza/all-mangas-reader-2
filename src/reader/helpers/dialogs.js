@@ -1,6 +1,6 @@
-import util from "./util";
-import { i18n } from "../../mixins/i18n-mixin";
-import browser from "webextension-polyfill";
+import util from "./util"
+import { i18n } from "../../mixins/i18n-mixin"
+import browser from "webextension-polyfill"
 
 /**
  * Display tips
@@ -25,8 +25,9 @@ export const handleTips = async function ($ref, force = false) {
         let lasttip = await util.getStorage("reader_tips_last")
         if (lasttip) lasttip = parseInt(lasttip)
         // load tips in i18n
-        let tips = [], tip
-        while (tip = i18n("reader_tips_" + (tips.length + 1))) {
+        let tips = [],
+            tip
+        while ((tip = i18n("reader_tips_" + (tips.length + 1)))) {
             tips.push(tip)
         }
         // get the next tip
@@ -68,12 +69,10 @@ export const handleTips = async function ($ref, force = false) {
             }
         }
         let ntip = await nextTip()
-        await $ref.open(
-            i18n("reader_tips_title"),
-            ntip, {
-                cancel: false,
-                buttons: force ? [butclose, butnexttip] : [butstop, butnexttip, butnexttomorrow]
-            })
+        await $ref.open(i18n("reader_tips_title"), ntip, {
+            cancel: false,
+            buttons: force ? [butclose, butnexttip] : [butstop, butnexttip, butnexttomorrow]
+        })
         await util.setStorage("reader_tips_ts", "" + Date.now())
     }
 }
@@ -83,7 +82,7 @@ export const handleTips = async function ($ref, force = false) {
  */
 function isFirefox() {
     // Firefox 1.0+ (tested on Firefox 45 - 53)
-    return typeof InstallTrigger !== 'undefined';
+    return typeof InstallTrigger !== "undefined"
 }
 
 /**
@@ -108,7 +107,8 @@ export const handleHelps = async function ($ref) {
      * importance: if multiple are eligible, the greater wins the battle, if multiple same, randomly chosen
      */
     let popups = [
-        { // rate us on Firefox Addons
+        {
+            // rate us on Firefox Addons
             title: i18n("reader_help_rate_title"),
             message: i18n("reader_help_rate_message"),
             action_name: i18n("reader_help_rate_action"),
@@ -116,7 +116,7 @@ export const handleHelps = async function ($ref) {
                 browser.runtime.sendMessage({
                     action: "opentab",
                     url: "https://addons.mozilla.org/firefox/addon/all-mangas-reader/"
-                });
+                })
             },
             id: "rate",
             importance: 1,
@@ -124,7 +124,8 @@ export const handleHelps = async function ($ref) {
                 return isFirefox() && nbread % 20 === 0
             }
         },
-        { // patreon popup
+        {
+            // patreon popup
             title: i18n("reader_help_patreon_title"),
             message: i18n("reader_help_patreon_message"),
             action_name: i18n("reader_help_patreon_action"),
@@ -132,13 +133,14 @@ export const handleHelps = async function ($ref) {
                 browser.runtime.sendMessage({
                     action: "opentab",
                     url: "https://www.patreon.com/allmangasreader"
-                });
+                })
             },
             id: "patreon",
             importance: 2,
             condition: () => nbread % 50 === 0
         },
-        { // 1000 mangas read !!
+        {
+            // 1000 mangas read !!
             title: i18n("reader_help_1000_title", nbread),
             message: i18n("reader_help_1000_message", nbread),
             id: "1000",
@@ -147,7 +149,8 @@ export const handleHelps = async function ($ref) {
         }
     ]
 
-    let displayable_popups = [], topimp = 0
+    let displayable_popups = [],
+        topimp = 0
     for (let pop of popups) {
         if (await util.getStorage("dialog_" + pop.id + "_stop")) continue
         if (pop.condition()) {
@@ -191,10 +194,8 @@ export const handleHelps = async function ($ref) {
         dispbuts.push(butcustom)
     }
     // display dialog
-    await $ref.open(
-        to_display.title,
-        to_display.message, {
-            cancel: false,
-            buttons: dispbuts
-        })
+    await $ref.open(to_display.title, to_display.message, {
+        cancel: false,
+        buttons: dispbuts
+    })
 }
