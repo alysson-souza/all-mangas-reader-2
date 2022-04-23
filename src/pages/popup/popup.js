@@ -1,9 +1,8 @@
-import "vuetify/dist/vuetify.min.css"
 import "./popup.css"
 
 import browser from "webextension-polyfill"
 import Vue from "vue"
-import Vuetify from "vuetify"
+import Vuetify from "vuetify/lib"
 import App from "./App.vue"
 import store from "../../store"
 import vuetifyOptions from "../vuetifyOptions"
