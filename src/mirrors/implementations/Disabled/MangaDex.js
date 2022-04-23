@@ -1,9 +1,47 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "MangaDex",
         canListFullMangas: false,
         mirrorIcon: "mangadex.png",
-        languages: ['en', "sa", "bd", "bg", "ct", "cn", "hk", "cz", "dk", "nl", "gb", "ph", "fi", "fr", "de", "gr", "hu", "id", "it", "jp", "kr", "my", "mn", "ir", "pl", "br", "pt", "ro", "ru", "rs", "es", "mx", "se", "th", "tr", "ua", "vn"].join(","),
+        languages: [
+            "en",
+            "sa",
+            "bd",
+            "bg",
+            "ct",
+            "cn",
+            "hk",
+            "cz",
+            "dk",
+            "nl",
+            "gb",
+            "ph",
+            "fi",
+            "fr",
+            "de",
+            "gr",
+            "hu",
+            "id",
+            "it",
+            "jp",
+            "kr",
+            "my",
+            "mn",
+            "ir",
+            "pl",
+            "br",
+            "pt",
+            "ro",
+            "ru",
+            "rs",
+            "es",
+            "mx",
+            "se",
+            "th",
+            "tr",
+            "ua",
+            "vn"
+        ].join(","),
         domains: ["*.mangadex.org", "mangadex.org"],
         home: "https://www.mangadex.org/",
         chapter_url: /\/chapter\/.*/g,
@@ -12,26 +50,20 @@ if (typeof registerMangaObject === 'function') {
         // api: "https://mangadex.org/api/v2/",
 
         getMangaList: async function (search) {
-            let doc = await amr.loadPage(
-                "https://mangadex.org/?page=search&title=" + search,
-                { preventimages: true }
-            )
-            res = [];
+            let doc = await amr.loadPage("https://mangadex.org/?page=search&title=" + search, { preventimages: true })
+            res = []
             $("a.manga_title", doc).each(function (ind) {
-                res.push([
-                    $(this).text(),
-                    "https://mangadex.org/manga/" + $(this).attr("href").split("/")[2]
-                ])
+                res.push([$(this).text(), "https://mangadex.org/manga/" + $(this).attr("href").split("/")[2]])
             })
             return res
         },
 
         getListChaps: async function (urlManga) {
-            let amrOptions = window['AMR_STORE'].state.options
-            let blockedGroups = amrOptions.mangadexBlockedGroups.split(',') || []
+            let amrOptions = window["AMR_STORE"].state.options
+            let blockedGroups = amrOptions.mangadexBlockedGroups.split(",") || []
             let id = urlManga.split("/")[4]
             let json = await amr.loadJson(this.api + "manga/" + id + "/chapters")
-            let ut = Math.round((new Date()).getTime() / 1000)
+            let ut = Math.round(new Date().getTime() / 1000)
             let chaps = json.data.chapters
             let res = {}
             let done = [] // to avoid duplicate chapters. pick randomly a version
@@ -46,17 +78,17 @@ if (typeof registerMangaObject === 'function') {
                 // })
                 // if (blockedGroup) return
 
-                if (done.indexOf(chap.language + chap.chapter) >= 0) return;
+                if (done.indexOf(chap.language + chap.chapter) >= 0) return
                 if (!res[chap.language]) res[chap.language] = []
                 done.push(chap.language + chap.chapter)
                 if (chap.timestamp > ut) return // Skip chapters that are delayed
                 res[chap.language].push([
                     (chap.chapter.length > 0 ? chap.chapter + " - " : "") + chap.title,
                     "https://mangadex.org/chapter/" + chap.id
-                ]);
+                ])
             })
 
-            // sort each chaps list 
+            // sort each chaps list
             let extractnum = a => Number(a.substr(0, a.indexOf(" "))) || -1
             for (let lang in res) {
                 res[lang] = res[lang].sort((a, b) => {
@@ -75,11 +107,11 @@ if (typeof registerMangaObject === 'function') {
             res.currentMangaURL = "https://mangadex.org/manga/" + chapter.data.mangaId
             res.currentChapterURL = "https://mangadex.org/chapter/" + chid
             res.language = chapter.data.language
-            return res;
+            return res
         },
 
         getListImages: async function (doc, curUrl) {
-            let amrOptions = window['AMR_STORE'].state.options
+            let amrOptions = window["AMR_STORE"].state.options
             let chid = curUrl.split("/")[4]
 
             let url = this.api + "chapter/" + chid + "?"
@@ -104,5 +136,5 @@ if (typeof registerMangaObject === 'function') {
         isCurrentPageAChapterPage: function (doc, curUrl) {
             return curUrl.split("/")[3] === "chapter" && curUrl.split("/")[5] !== "comments"
         }
-    });
+    })
 }

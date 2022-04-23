@@ -10,16 +10,15 @@ if (typeof registerMangaObject === "function") {
         disabled: true,
 
         getMangaList: async function (search) {
-            let doc = await amr.loadPage("http://mangachan.me/engine/ajax/search.php",
-                {
-                    nocache: true,
-                    post: true,
-                    preventimages: true,
-                    dataType: "text",
-                    data: { query: search }
-                })
+            let doc = await amr.loadPage("http://mangachan.me/engine/ajax/search.php", {
+                nocache: true,
+                post: true,
+                preventimages: true,
+                dataType: "text",
+                data: { query: search }
+            })
             if ($(".notfound", doc).length) return [] //No mangas found
-            let res = [];
+            let res = []
             $("> a", doc).each(function (index) {
                 res[res.length] = [
                     this.innerText,
@@ -28,7 +27,7 @@ if (typeof registerMangaObject === "function") {
             })
             return res
         },
-    
+
         getListChaps: async function (urlManga) {
             let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
             let res = []
@@ -42,30 +41,30 @@ if (typeof registerMangaObject === "function") {
         },
 
         getInformationsFromCurrentPage: async function (doc, curUrl) {
-            var name_eng = doc.body.innerHTML.match(/"name"\s*:\s*"(.*?)"/)[1];
-            var name_rus = doc.body.innerHTML.match(/"rus_name"\s*:\s*"(.*?)"/)[1];
-            var manga_url = doc.body.innerHTML.match(/"content_id"\s*:\s*"(.*?)"/)[1];
+            var name_eng = doc.body.innerHTML.match(/"name"\s*:\s*"(.*?)"/)[1]
+            var name_rus = doc.body.innerHTML.match(/"rus_name"\s*:\s*"(.*?)"/)[1]
+            var manga_url = doc.body.innerHTML.match(/"content_id"\s*:\s*"(.*?)"/)[1]
             return {
-                "name": name_eng + " " + name_rus,
-                "currentMangaURL": "http://mangachan.me" + manga_url,
-                "currentChapterURL": curUrl
+                name: name_eng + " " + name_rus,
+                currentMangaURL: "http://mangachan.me" + manga_url,
+                currentChapterURL: curUrl
             }
         },
-    
+
         getListImages: async function (doc, curUrl) {
-            var res = [];
-            var fullimgStr = doc.body.innerHTML.match(/"fullimg"\s*:\s*(\[.*\]?)/)[1];
-            fullimgStr = fullimgStr.replace(/,\]/, ']');
-            res = JSON.parse(fullimgStr); 
-            return res;
+            var res = []
+            var fullimgStr = doc.body.innerHTML.match(/"fullimg"\s*:\s*(\[.*\]?)/)[1]
+            fullimgStr = fullimgStr.replace(/,\]/, "]")
+            res = JSON.parse(fullimgStr)
+            return res
         },
-    
+
         getImageFromPageAndWrite: async function (urlImg, image) {
-            $(image).attr("src", urlImg);
+            $(image).attr("src", urlImg)
         },
 
         isCurrentPageAChapterPage: async function (doc, curUrl) {
-            return $("#image", doc).length > 0;
+            return $("#image", doc).length > 0
         }
     })
 }

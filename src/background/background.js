@@ -1,30 +1,30 @@
-import Handler from './handler';
-import IconHelper from '../amr/icon-helper';
-import store from '../store';
-import * as utils from '../amr/utils';
-import amrUpdater from '../amr/amr-updater';
-import amrInit from '../amr/amr-init';
-import browser from "webextension-polyfill";
-import HandleManga from './handle-manga';
-import converToMangadexV5 from './misc/mangedex-v5-converter'
-import {Mangadex} from './misc/mangadex-v5-integration'
-import mirrorsHelper from '../amr/mirrors-helper';
+import Handler from "./handler"
+import IconHelper from "../amr/icon-helper"
+import store from "../store"
+import * as utils from "../amr/utils"
+import amrUpdater from "../amr/amr-updater"
+import amrInit from "../amr/amr-init"
+import browser from "webextension-polyfill"
+import HandleManga from "./handle-manga"
+import converToMangadexV5 from "./misc/mangedex-v5-converter"
+import { Mangadex } from "./misc/mangadex-v5-integration"
+import mirrorsHelper from "../amr/mirrors-helper"
 
 // Blue icon while loading
-IconHelper.setBlueIcon();
+IconHelper.setBlueIcon()
 
 // Initialize store
-(async () => {
+;(async () => {
     /**
      * Make the store a global variable so we can avoid circular depandancies
      */
-    window['AMR_STORE'] = store
+    window["AMR_STORE"] = store
 
     /**
      * Initialize AMR options from locaStorage
      */
-    utils.debug("Initialize options");
-    await store.dispatch('initOptions');
+    utils.debug("Initialize options")
+    await store.dispatch("initOptions")
 
     /**
      * Initialize extension versioning --> after options because versionning update can affect options
@@ -34,69 +34,69 @@ IconHelper.setBlueIcon();
     /**
      * Initialize mirrors list in store from DB or repo
      */
-    utils.debug("Initialize mirrors");
-    await store.dispatch('initMirrors');
+    utils.debug("Initialize mirrors")
+    await store.dispatch("initMirrors")
 
     /**
      * Initialize manga list in store from DB
      */
-    utils.debug("Initialize mangas");
-    await store.dispatch('initMangasFromDB');
+    utils.debug("Initialize mangas")
+    await store.dispatch("initMangasFromDB")
 
     /**
      * Reset watchers for components that can collide.
      */
-    await store.dispatch("setOption", {key: 'isSyncing', value: 0})
-    await store.dispatch("setOption", {key: 'isUpdatingChapterLists', value: 0})
-    await store.dispatch('setOption', {key: "isConverting", value:0})
+    await store.dispatch("setOption", { key: "isSyncing", value: 0 })
+    await store.dispatch("setOption", { key: "isUpdatingChapterLists", value: 0 })
+    await store.dispatch("setOption", { key: "isConverting", value: 0 })
     /**
      * Start sync process between local and remote storage
      */
-    await store.dispatch('setMangaTsOpts')
+    await store.dispatch("setMangaTsOpts")
     await store.dispatch("initSync")
     /**
      * Initialize bookmarks list in store from DB
      */
-    utils.debug("Initialize bookmarks");
-    await store.dispatch('initBookmarksFromDB');
+    utils.debug("Initialize bookmarks")
+    await store.dispatch("initBookmarksFromDB")
 
     /**
      * Call function if there is anything to do after mirrors and mangas loading
      */
-    if (typeof afterLoadingCall === 'function') await afterLoadingCall()
+    if (typeof afterLoadingCall === "function") await afterLoadingCall()
 
     // set icon and badge
-    amrUpdater.refreshBadgeAndIcon();
+    amrUpdater.refreshBadgeAndIcon()
     /**
      * If option update chapters lists on startup --> do it
      */
     if (store.state.options.checkmgstart === 1) {
-        store.dispatch("updateChaptersLists", {force: false}); // force to false to avoid updating if not necessary
+        store.dispatch("updateChaptersLists", { force: false }) // force to false to avoid updating if not necessary
     }
 
     // Starts message handling
-    utils.debug("Initialize message handler");
-    Handler.handle();
+    utils.debug("Initialize message handler")
+    Handler.handle()
 
     // Check if we need to refresh chapters lists, mirrors lists and launch automatic checker
-    amrUpdater.load();
+    amrUpdater.load()
     // Check the latest published version of AMR
-    amrUpdater.checkLatestPublishedVersion();
+    amrUpdater.checkLatestPublishedVersion()
 
-    utils.debug('Running mangadex converter')
+    utils.debug("Running mangadex converter")
     converToMangadexV5()
-    if(store.state.options.mangadexIntegrationEnable) new Mangadex(store.getters.md_allOptions)
+    if (store.state.options.mangadexIntegrationEnable) new Mangadex(store.getters.md_allOptions)
     // content script included, test if a mirror match the page and load AMR in tab
     /*browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
         if (changeInfo.status === "loading") { // just load scripts once, when the tab is loading
             HandleManga.matchUrlAndLoadScripts(tabInfo.url, tabId)
         }
     });*/
-    
+
     let timers = [] // This is used to keep websites from spamming with calls. It fucks up the reader
 
-    browser.webNavigation.onCommitted.addListener((args) => {
-        if ("auto_subframe" === args.transitionType) return; // do not reload amr on embedded iframes
+    browser.webNavigation.onCommitted.addListener(args => {
+        if ("auto_subframe" === args.transitionType) return // do not reload amr on embedded iframes
 
         timers.push(args.tabId)
 
@@ -107,11 +107,10 @@ IconHelper.setBlueIcon();
         HandleManga.matchUrlAndLoadScripts(args.url, args.tabId)
     })
 
-    
     // pushstate events are listened from content script (if from background, we reload the page on amr navigation)
-    browser.webNavigation.onHistoryStateUpdated.addListener((args) => {
-        if ("auto_subframe" === args.transitionType) return; // do not reload amr on embedded iframes
-        
+    browser.webNavigation.onHistoryStateUpdated.addListener(args => {
+        if ("auto_subframe" === args.transitionType) return // do not reload amr on embedded iframes
+
         if (timers.includes(args.tabId)) return // History spam
 
         timers.push(args.tabId)
@@ -121,7 +120,6 @@ IconHelper.setBlueIcon();
         }, 500)
 
         HandleManga.sendPushState(args.url, args.tabId)
-
     })
 
     /**

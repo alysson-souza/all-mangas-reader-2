@@ -1,18 +1,18 @@
-import mirrorImpl from '../state/mirrorimpl';
-import EventBus from "./EventBus";
+import mirrorImpl from "../state/mirrorimpl"
+import EventBus from "./EventBus"
 
 /**
  * This file handles Scans Loading, (unique scan and all scans from a chapter)
  * and keeps the state of the current chapter scans
  */
 
- /** Current chapter's scans state */
+/** Current chapter's scans state */
 export const scansProvider = {
     /** Current shared state of scans */
     state: {
         scans: [], // list of scans [{url, loading, error, doublepage, scan HTMLImage}]
         progress: 0, // percentage (0 - 100) loaded of the whole chapter
-        loaded: false, // top indicating all scans are loaded
+        loaded: false // top indicating all scans are loaded
     },
 
     /**
@@ -26,7 +26,7 @@ export const scansProvider = {
         scp.onloadscan = () => {
             // change progress when scan loads
             let nbloaded = this.state.scans.reduce((acc, sc) => acc + (sc.loading ? 0 : 1), 0)
-            this.state.progress = Math.floor(nbloaded / this.state.scans.length * 100)
+            this.state.progress = Math.floor((nbloaded / this.state.scans.length) * 100)
             this.state.loaded = nbloaded === this.state.scans.length
             EventBus.$emit("loaded-scan")
             if (this.state.scans.filter(sc => sc.thinscan).length > 0) {
@@ -54,7 +54,7 @@ export const scansProvider = {
 
         // initialize scans
         scp.load(inorder)
-    },
+    }
 }
 
 /**
@@ -74,16 +74,22 @@ export const ScansLoader = class {
     /** Load all scans */
     async load(inorder = false) {
         // we create a new Promise to encapsulate the scan's load function because we need to call onloadscan after each load unitarily. We can't use then() to chain the load because that will trigger the load promise and we want to be able to call it in order OR all at the same time)
-        let pload = this.scans.map(sc => new Promise(async (resolve, reject) => {
-            await sc.load() // loads the scan
-            this.onloadscan() // raise event to notify than the scan has been loaded (for example to update progress)
-            resolve() // resolve current promise (in case scans are loaded in order, allows to load next scan)
-        }))
-        if (inorder) { // Load scans in their appearing order
-            await pload.reduce((promise, func) =>
-                promise.then(result => func.then(Array.prototype.concat.bind(result))),
-                Promise.resolve([]))
-        } else { // Load all scans at once
+        let pload = this.scans.map(
+            sc =>
+                new Promise(async (resolve, reject) => {
+                    await sc.load() // loads the scan
+                    this.onloadscan() // raise event to notify than the scan has been loaded (for example to update progress)
+                    resolve() // resolve current promise (in case scans are loaded in order, allows to load next scan)
+                })
+        )
+        if (inorder) {
+            // Load scans in their appearing order
+            await pload.reduce(
+                (promise, func) => promise.then(result => func.then(Array.prototype.concat.bind(result))),
+                Promise.resolve([])
+            )
+        } else {
+            // Load all scans at once
             await Promise.all(pload)
         }
         this.loaded = true // done loading scans
@@ -98,7 +104,8 @@ export const ScansLoader = class {
 class ScanLoader {
     /** Build the scan initial state */
     constructor(url) {
-        this.url = url /* url of the image, not necessarily the url of the picture but the one used to retrieve the picture */
+        this.url =
+            url /* url of the image, not necessarily the url of the picture but the one used to retrieve the picture */
         this.loading = true /* is currently loading */
         this.error = false /* is the scan rendering error */
         this.doublepage = false /* is the scan a double page */
@@ -120,21 +127,22 @@ class ScanLoader {
         }*/
 
         return new Promise(async (resolve, reject) => {
-            this.scan.addEventListener('load', () => {
+            this.scan.addEventListener("load", () => {
                 let img = this.scan
                 if (!img) return
                 /** Check if scan is double page */
                 if (img.width > img.height) {
                     this.doublepage = true
                 }
-                if (img.height >= 3 * img.width) { // super thin scan, raise an event
+                if (img.height >= 3 * img.width) {
+                    // super thin scan, raise an event
                     this.thinscan = true
                 }
                 this.loading = false
                 this.error = false
                 resolve()
             })
-            let manageError = (e) => {
+            let manageError = e => {
                 console.error("An error occurred while loading an image")
                 console.error(e)
                 this.loading = false
@@ -145,15 +153,13 @@ class ScanLoader {
                 // }
                 resolve()
             }
-            this.scan.addEventListener('error', (e) => {
+            this.scan.addEventListener("error", e => {
                 manageError(e)
             })
             try {
                 // Load the scan using implementation method
-                await mirrorImpl.get().getImageFromPageAndWrite(
-                    this.url.replace(/(^\w+:|^)/, ''),
-                    this.scan)
-            } catch(e) {
+                await mirrorImpl.get().getImageFromPageAndWrite(this.url.replace(/(^\w+:|^)/, ""), this.scan)
+            } catch (e) {
                 manageError(e)
             }
         })

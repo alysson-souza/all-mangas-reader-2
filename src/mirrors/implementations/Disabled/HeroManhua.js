@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "Hero Manhua",
         canListFullMangas: false,
@@ -9,7 +9,7 @@ if (typeof registerMangaObject === 'function') {
         languages: "en",
         search_json: false,
         abstract: "Madara",
-        disabled:true,
+        disabled: true,
         abstract_options: {
             search_url: "https://heromanhua.com/",
             img_src: "data-src",

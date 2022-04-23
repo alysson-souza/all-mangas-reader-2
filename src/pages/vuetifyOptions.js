@@ -1,8 +1,8 @@
-import colors from 'vuetify/es5/util/colors'
+import colors from "vuetify/es5/util/colors"
 
 export default {
     icons: {
-        iconfont: 'mdi'
+        iconfont: "mdi"
     },
     theme: {
         themes: {

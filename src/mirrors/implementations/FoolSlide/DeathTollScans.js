@@ -1,8 +1,8 @@
-if (typeof registerMangaObject === 'function') {
-	registerMangaObject({
-        mirrorName : "Death Toll Scans",
-        mirrorIcon : "deathtollscans.png",
-        languages : "en",
+if (typeof registerMangaObject === "function") {
+    registerMangaObject({
+        mirrorName: "Death Toll Scans",
+        mirrorIcon: "deathtollscans.png",
+        languages: "en",
         domains: ["reader.deathtollscans.net"],
         home: "https://reader.deathtollscans.net/",
         chapter_url: /^\/read\/.+$/g,

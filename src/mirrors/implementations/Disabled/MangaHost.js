@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "MangaHost",
         canListFullMangas: false,
@@ -15,8 +15,8 @@ if (typeof registerMangaObject === 'function') {
             })
             let res = []
             $(".table-search h3.entry-title a", doc).each(function (index) {
-                res.push([$(this).text(), $(this).attr("href")]);
-            });
+                res.push([$(this).text(), $(this).attr("href")])
+            })
             return res
         },
 
@@ -26,15 +26,15 @@ if (typeof registerMangaObject === 'function') {
                 nocache: true,
                 preventimages: true
             })
-            let res = [];
+            let res = []
             if ($("ul.list_chapters li a", doc).length > 0) {
                 $("ul.list_chapters li a", doc).each(function (index) {
-                    res.push([$(this).attr("title"), urlManga + "/" + $(this).attr("id")]);
-                });
+                    res.push([$(this).attr("title"), urlManga + "/" + $(this).attr("id")])
+                })
             } else {
                 $("a.capitulo", doc).each(function (index) {
-                    res.push([$(this).text(), $(this).attr("href")]);
-                });
+                    res.push([$(this).text(), $(this).attr("href")])
+                })
             }
             // https://mangahost2.com/manga/one-punch-man-mh96344/166
             // https://mangahost2.com/manga/one-punch-man/166
@@ -47,15 +47,15 @@ if (typeof registerMangaObject === 'function') {
             let url = mg.attr("href")
             //let urlnomh = url.substr(0, url.indexOf("-mh"))
             return {
-                "name": mg.text(),
-                "currentMangaURL": url,
+                name: mg.text(),
+                currentMangaURL: url,
                 //"currentChapterURL": (curUrl.indexOf(url) >= 0 ? url : urlnomh) + "/" + $("select.chapters option:selected", doc).val()
-                "currentChapterURL": url + "/" + $("select.chapters option:selected", doc).val()
+                currentChapterURL: url + "/" + $("select.chapters option:selected", doc).val()
             }
         },
 
         getListImages: async function (doc, curUrl) {
-            var res = [];
+            var res = []
             var images = amr.getVariable("images", doc)
             return images.map(astr => {
                 return $("img", $(astr)).attr("src")
@@ -63,11 +63,11 @@ if (typeof registerMangaObject === 'function') {
         },
 
         getImageFromPageAndWrite: async function (urlImg, image) {
-            $(image).attr("src", urlImg);
+            $(image).attr("src", urlImg)
         },
 
         isCurrentPageAChapterPage: function (doc, curUrl) {
-            return $("#imageWrapper img", doc).length > 0;
+            return $("#imageWrapper img", doc).length > 0
         }
     })
 }

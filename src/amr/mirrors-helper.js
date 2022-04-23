@@ -1,18 +1,18 @@
-import browser from "webextension-polyfill";
-import * as domutils from '../amr/domutils';
-import CryptoJS from 'crypto-js'
+import browser from "webextension-polyfill"
+import * as domutils from "../amr/domutils"
+import CryptoJS from "crypto-js"
 
 /**
  * Mirrors implementation helper
  */
 class MirrorsHelper {
     constructor() {
-        (function () {
+        ;(function () {
             /**
              * Helper for implementations.
              * Exist from version 2.0.2.140 and V4 from mirrors
              */
-            window["amr"] = window["amr"] || {};
+            window["amr"] = window["amr"] || {}
 
             /**
              * Loads a page and return an element in which page is loaded
@@ -25,16 +25,16 @@ class MirrorsHelper {
              * @param {*} url
              * @param {*} options
              */
-            amr.loadPage = function(url, options) {
+            amr.loadPage = function (url, options) {
                 return new Promise((resolve, reject) => {
-                    let ajaxObj = {url : url}
+                    let ajaxObj = { url: url }
                     let headers = {}
                     if (options && options.nocache) {
                         headers["Cache-Control"] = "no-cache"
                         headers["Pragma"] = "no-cache"
                     }
                     if (options && options.post) {
-                        ajaxObj.method = 'POST'
+                        ajaxObj.method = "POST"
                     }
                     if (options && options.dataType !== undefined) {
                         ajaxObj.dataType = options.dataType
@@ -50,14 +50,14 @@ class MirrorsHelper {
                     }
                     ajaxObj.beforeSend = function (xhr) {
                         for (let dt in headers) {
-                            xhr.setRequestHeader(dt, headers[dt]);
+                            xhr.setRequestHeader(dt, headers[dt])
                         }
                     }
                     ajaxObj.error = (jqXhr, error, e) => reject(error)
-                    ajaxObj.success = (data) => {
+                    ajaxObj.success = data => {
                         let toparse = data
                         if (options && options.preventimages) {
-                            toparse = data.replace(/<img/gi, '<noload')
+                            toparse = data.replace(/<img/gi, "<noload")
                         }
                         let htmlDocument = domutils.sanitizeDom(toparse)
                         resolve(htmlDocument)
@@ -69,14 +69,13 @@ class MirrorsHelper {
                      */
                     ajaxObj.xhr = () => {
                         try {
-                            return XPCNativeWrapper(new window.wrappedJSObject.XMLHttpRequest());
-                        }
-                        catch (evt) {
-                            return new XMLHttpRequest();
+                            return XPCNativeWrapper(new window.wrappedJSObject.XMLHttpRequest())
+                        } catch (evt) {
+                            return new XMLHttpRequest()
                         }
                     }
                     $.ajax(ajaxObj)
-                });
+                })
             }
             /**
              * Loads a url and get JSON
@@ -88,12 +87,12 @@ class MirrorsHelper {
              * @param {*} url
              * @param {*} options
              */
-            amr.loadJson = function(url, options) {
+            amr.loadJson = function (url, options) {
                 return new Promise((resolve, reject) => {
-                    let ajaxObj = {url : url}
+                    let ajaxObj = { url: url }
                     let headers = {}
                     if (options && options.post) {
-                        ajaxObj.method = 'POST'
+                        ajaxObj.method = "POST"
                     }
                     if (options && options.nocache) {
                         ajaxObj.cache = false
@@ -109,24 +108,24 @@ class MirrorsHelper {
                     }
                     ajaxObj.beforeSend = function (xhr) {
                         for (let dt in headers) {
-                            xhr.setRequestHeader(dt, headers[dt]);
+                            xhr.setRequestHeader(dt, headers[dt])
                         }
                     }
                     let contenttype = true
                     if (options && options.nocontenttype) {
                         contenttype = false
                     }
-                    if (contenttype) ajaxObj.contentType = "application/json";
+                    if (contenttype) ajaxObj.contentType = "application/json"
                     ajaxObj.error = (jqXhr, error, e) => reject(error)
-                    ajaxObj.success = (data) => {
+                    ajaxObj.success = data => {
                         if (typeof data === "string") {
                             try {
-                                resolve(JSON.parse(data));
+                                resolve(JSON.parse(data))
                             } catch (e) {
-                                resolve(data);
+                                resolve(data)
                             }
                         } else {
-                            resolve(data);
+                            resolve(data)
                         }
                     }
                     /**
@@ -136,29 +135,31 @@ class MirrorsHelper {
                      */
                     ajaxObj.xhr = () => {
                         try {
-                            return XPCNativeWrapper(new window.wrappedJSObject.XMLHttpRequest());
-                        }
-                        catch (evt) {
-                            return new XMLHttpRequest();
+                            return XPCNativeWrapper(new window.wrappedJSObject.XMLHttpRequest())
+                        } catch (evt) {
+                            return new XMLHttpRequest()
                         }
                     }
                     $.ajax(ajaxObj)
-                });
+                })
             }
             /**
              * Get a variable value from a script tag, parse it manually
              * @param {*} varname
              */
-            amr.getVariable = function(varname, doc) {
+            amr.getVariable = function (varname, doc) {
                 return amr.getVariableFromScript(varname, $("#__amr_text_dom__", doc).text())
             }
 
             /**
              * Get a variable value from a snippet
              */
-            amr.getVariableFromScript = function(varname, sc) {
+            amr.getVariableFromScript = function (varname, sc) {
                 let res = undefined
-                let rx = new RegExp("(var|let|const)\\s+" + varname + "\\s*=\\s*([0-9]+|\\\"|\\\'|\\\{|\\\[|JSON\\s*\\\.\\s*parse\\\()", "gmi")
+                let rx = new RegExp(
+                    "(var|let|const)\\s+" + varname + "\\s*=\\s*([0-9]+|\\\"|\\'|\\{|\\[|JSON\\s*\\.\\s*parse\\()",
+                    "gmi"
+                )
                 let match = rx.exec(sc)
                 if (match) {
                     let ind = match.index
@@ -167,10 +168,11 @@ class MirrorsHelper {
                     if (varchar.match(/[0-9]+/)) {
                         res = Number(varchar)
                     } else {
-                        if (varchar === '"' || varchar === "'") { // var is a string
+                        if (varchar === '"' || varchar === "'") {
+                            // var is a string
                             let found = false,
                                 curpos = start,
-                                prevbs = false;
+                                prevbs = false
                             while (!found) {
                                 let c = sc.charAt(curpos++)
                                 if (c === varchar && !prevbs) {
@@ -180,18 +182,20 @@ class MirrorsHelper {
                                 prevbs = c === "\\"
                             }
                             res = sc.substring(start, curpos - 1)
-                        } else { // if (varchar === '[' || varchar === "{" || varchar === 'JSON.parse(') { // var is object or array or parsable
+                        } else {
+                            // if (varchar === '[' || varchar === "{" || varchar === 'JSON.parse(') { // var is object or array or parsable
                             let curpos = start + varchar.length - 1,
                                 openings = 1,
-                                opening = varchar === 'JSON.parse(' ? '(' : varchar,
-                                opposite = varchar === '[' ? ']' : (varchar === '{' ? '}' : ')')
+                                opening = varchar === "JSON.parse(" ? "(" : varchar,
+                                opposite = varchar === "[" ? "]" : varchar === "{" ? "}" : ")"
                             while (openings > 0 && curpos < sc.length) {
                                 let c = sc.charAt(curpos++)
                                 if (c === opening) openings++
                                 if (c === opposite) openings--
                             }
                             let toparse = sc.substring(start - 1 + varchar.length - 1, curpos)
-                            if (toparse.match(/atob\s*\(/g)) { // if data to parse is encoded using btoa
+                            if (toparse.match(/atob\s*\(/g)) {
+                                // if data to parse is encoded using btoa
                                 let m = /(?:'|").*(?:'|")/g.exec(toparse)
                                 toparse = atob(m[0].substring(1, m[0].length - 1))
                             }
@@ -204,19 +208,19 @@ class MirrorsHelper {
             /**
              * Set a cookie on a domain
              */
-            amr.setCookie = async function(setCookieObj) {
-                if (window['AMR_STORE'].state.options.allowcookies) {
+            amr.setCookie = async function (setCookieObj) {
+                if (window["AMR_STORE"].state.options.allowcookies) {
                     await browser.cookies.set(setCookieObj)
                 }
             }
 
-            amr.getOption = function(option) {
-                return window['AMR_STORE'].state.options[option] || ''
+            amr.getOption = function (option) {
+                return window["AMR_STORE"].state.options[option] || ""
             }
 
             amr.crypto = CryptoJS
-        })(this);
+        })(this)
     }
 }
 
-export default (new MirrorsHelper)
+export default new MirrorsHelper()

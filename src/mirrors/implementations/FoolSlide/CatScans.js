@@ -1,8 +1,8 @@
-if (typeof registerMangaObject === 'function') {
-	registerMangaObject({
-        mirrorName : "The Cat Scans",
-        mirrorIcon : "catscans.png",
-        languages : "en",
+if (typeof registerMangaObject === "function") {
+    registerMangaObject({
+        mirrorName: "The Cat Scans",
+        mirrorIcon: "catscans.png",
+        languages: "en",
         domains: ["reader2.thecatscans.com"],
         home: "http://reader2.thecatscans.com/",
         chapter_url: /^\/read\/.+$/g,

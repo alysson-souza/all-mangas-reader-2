@@ -1,5 +1,5 @@
-if (typeof registerMangaObject === 'function') {
-	registerMangaObject({
+if (typeof registerMangaObject === "function") {
+    registerMangaObject({
         mirrorName: "ReadMangaToday",
         canListFullMangas: true,
         mirrorIcon: "readmangatoday.png",

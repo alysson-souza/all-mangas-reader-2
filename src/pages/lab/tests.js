@@ -1,5 +1,5 @@
-import browser from "webextension-polyfill";
-import * as utils from "../../amr/utils";
+import browser from "webextension-polyfill"
+import * as utils from "../../amr/utils"
 
 const tests = [
     {
@@ -7,19 +7,20 @@ const tests = [
         tests: [
             function mirrorName(mirror) {
                 if (mirror.mirrorName && mirror.mirrorName.length > 0) {
-                    return [true, "Mirror name is : " + mirror.mirrorName];
+                    return [true, "Mirror name is : " + mirror.mirrorName]
                 } else {
-                    return [false, "Mirror name is missing, check the mirrorName atribute of the implementation"];
+                    return [false, "Mirror name is missing, check the mirrorName atribute of the implementation"]
                 }
             },
             function mirrorLanguages(mirror) {
                 if (mirror.languages && mirror.languages.length > 0) {
-                    let spl = mirror.languages.split(",");
+                    let spl = mirror.languages.split(",")
                     if (spl.length > 0) {
-                        let notfound = [], alllangs = utils.languages.reduce((arr, el) => {
-                            Array.isArray(el) ? arr.push(...el) : arr.push(el)
-                            return arr
-                        }, [])
+                        let notfound = [],
+                            alllangs = utils.languages.reduce((arr, el) => {
+                                Array.isArray(el) ? arr.push(...el) : arr.push(el)
+                                return arr
+                            }, [])
                         for (let lang of spl) {
                             if (!alllangs.includes(lang)) {
                                 notfound.push(lang)
@@ -34,23 +35,32 @@ const tests = [
                         return [false, "Languages string is malformed, must be languages separated by commas"]
                     }
                 } else {
-                    return [false, "No languages defined for this mirror, check the languages attribute of the implementation"]
+                    return [
+                        false,
+                        "No languages defined for this mirror, check the languages attribute of the implementation"
+                    ]
                 }
             },
             function mirrorIcon(mirror) {
                 if (mirror.mirrorIcon) {
-                    return [true, "Mirror icon of this mirror is <img src='" + mirror.mirrorIcon + "' />"];
+                    return [true, "Mirror icon of this mirror is <img src='" + mirror.mirrorIcon + "' />"]
                 } else {
-                    return [false, "No mirror icon for this mirror, check the mirrorIcon attribute of the implementation"];
+                    return [
+                        false,
+                        "No mirror icon for this mirror, check the mirrorIcon attribute of the implementation"
+                    ]
                 }
             },
             function mirrorWebSites(mirror) {
                 if (mirror.domains && mirror.domains.length > 0) {
-                    return [true, "Domains on which this mirror will be loaded : " + mirror.domains.join(", ")];
+                    return [true, "Domains on which this mirror will be loaded : " + mirror.domains.join(", ")]
                 } else {
-                    return [false, "No domains to load this mirror on, check the domains attribute of the implementation"];
+                    return [
+                        false,
+                        "No domains to load this mirror on, check the domains attribute of the implementation"
+                    ]
                 }
-            },
+            }
         ],
         comment: "Your mirror icon must be a png file with transparency."
     },
@@ -67,10 +77,12 @@ const tests = [
                         torun: "search",
                         search: this.search,
                         mirror: mirror.mirrorName
-                    });
+                    })
                     if (result) {
                         if (!Array.isArray(result)) {
-                            let nb = 0, listlangs = [], pickable = []
+                            let nb = 0,
+                                listlangs = [],
+                                pickable = []
                             for (let lang in result) {
                                 if (result[lang].length > 0) pickable.push(lang)
                                 nb += result[lang].length
@@ -78,29 +90,67 @@ const tests = [
                             }
                             let picked = pickable[Math.floor(Math.random() * pickable.length)]
                             if (nb > 0) {
-                                return [true, "<strong>" + nb + " mangas found</strong> for the search phrase : <i>" + this.search + "</i> in " + listlangs.length + " different languages (" + listlangs.join(", ") + "), pick language " + picked + " for test, containing " + result[picked].length + " mangas", result[picked].map(arr => {
-                                    return {
-                                        value: arr[1],
-                                        text: arr[0]
-                                    }
-                                }), picked];
+                                return [
+                                    true,
+                                    "<strong>" +
+                                        nb +
+                                        " mangas found</strong> for the search phrase : <i>" +
+                                        this.search +
+                                        "</i> in " +
+                                        listlangs.length +
+                                        " different languages (" +
+                                        listlangs.join(", ") +
+                                        "), pick language " +
+                                        picked +
+                                        " for test, containing " +
+                                        result[picked].length +
+                                        " mangas",
+                                    result[picked].map(arr => {
+                                        return {
+                                            value: arr[1],
+                                            text: arr[0]
+                                        }
+                                    }),
+                                    picked
+                                ]
                             } else {
-                                return [false, "Return value is an object, supposed to contain list of results for different languages but no mangas found in these lists for the search phrase : <i>" + this.search + "</i>. Fix the implementation method <strong>getMangaList</strong>"];
+                                return [
+                                    false,
+                                    "Return value is an object, supposed to contain list of results for different languages but no mangas found in these lists for the search phrase : <i>" +
+                                        this.search +
+                                        "</i>. Fix the implementation method <strong>getMangaList</strong>"
+                                ]
                             }
                         } else {
                             if (result.length > 0) {
-                                return [true, "<strong>" + result.length + " mangas found</strong> for the search phrase : <i>" + this.search + "</i>", result.map(arr => {
-                                    return {
-                                        value: arr[1],
-                                        text: arr[0]
-                                    }
-                                })];
+                                return [
+                                    true,
+                                    "<strong>" +
+                                        result.length +
+                                        " mangas found</strong> for the search phrase : <i>" +
+                                        this.search +
+                                        "</i>",
+                                    result.map(arr => {
+                                        return {
+                                            value: arr[1],
+                                            text: arr[0]
+                                        }
+                                    })
+                                ]
                             } else {
-                                return [false, "No mangas found for the search phrase : " + this.search + ". Change the search phrase or fix the implementation method <strong>getMangaList</strong>"];
+                                return [
+                                    false,
+                                    "No mangas found for the search phrase : " +
+                                        this.search +
+                                        ". Change the search phrase or fix the implementation method <strong>getMangaList</strong>"
+                                ]
                             }
                         }
                     } else {
-                        return [false, "No object returned by the imlementation. Fix the implementation method <strong>getMangaList</strong>"];
+                        return [
+                            false,
+                            "No object returned by the imlementation. Fix the implementation method <strong>getMangaList</strong>"
+                        ]
                     }
                 }
             }
@@ -120,17 +170,27 @@ const tests = [
                         torun: "chapters",
                         url: manga_url,
                         mirror: mirror.mirrorName
-                    });
+                    })
                     if (result !== undefined) {
                         if (result.length > 0) {
-                            return [true, "<strong>" + result.length + " chapters found</strong> for manga url : <i>" + manga_url + "</i>", result.map(arr => {
-                                return {
-                                    value: arr[1],
-                                    text: arr[0]
-                                }
-                            })];
+                            return [
+                                true,
+                                "<strong>" +
+                                    result.length +
+                                    " chapters found</strong> for manga url : <i>" +
+                                    manga_url +
+                                    "</i>",
+                                result.map(arr => {
+                                    return {
+                                        value: arr[1],
+                                        text: arr[0]
+                                    }
+                                })
+                            ]
                         } else {
-                            let nb = 0, listlangs = [], pickable = []
+                            let nb = 0,
+                                listlangs = [],
+                                pickable = []
                             for (let lang in result) {
                                 if (result[lang].length > 0) pickable.push(lang)
                                 nb += result[lang].length
@@ -138,23 +198,51 @@ const tests = [
                             }
                             let picked = pickable[Math.floor(Math.random() * pickable.length)]
                             if (nb > 0) {
-                                return [true, "<strong>" + nb + " chapters found</strong> for manga url : <i>" + manga_url + "</i> in " + listlangs.length + " different languages (" + listlangs.join(", ") + "), pick language " + picked + " for test, containing " + result[picked].length + " chapters", result[picked].map(arr => {
-                                    return {
-                                        value: arr[1],
-                                        text: arr[0]
-                                    }
-                                }), picked];
+                                return [
+                                    true,
+                                    "<strong>" +
+                                        nb +
+                                        " chapters found</strong> for manga url : <i>" +
+                                        manga_url +
+                                        "</i> in " +
+                                        listlangs.length +
+                                        " different languages (" +
+                                        listlangs.join(", ") +
+                                        "), pick language " +
+                                        picked +
+                                        " for test, containing " +
+                                        result[picked].length +
+                                        " chapters",
+                                    result[picked].map(arr => {
+                                        return {
+                                            value: arr[1],
+                                            text: arr[0]
+                                        }
+                                    }),
+                                    picked
+                                ]
                             } else {
-                                return [false, "No chapters found for manga url : <i>" + manga_url + "</i>. Fix the implementation method <strong>getListChaps</strong>"];
+                                return [
+                                    false,
+                                    "No chapters found for manga url : <i>" +
+                                        manga_url +
+                                        "</i>. Fix the implementation method <strong>getListChaps</strong>"
+                                ]
                             }
                         }
                     } else {
-                        return [false, "No chapters found for manga url : <i>" + manga_url + "</i>. Fix the implementation method <strong>getListChaps</strong>"];
+                        return [
+                            false,
+                            "No chapters found for manga url : <i>" +
+                                manga_url +
+                                "</i>. Fix the implementation method <strong>getListChaps</strong>"
+                        ]
                     }
                 }
             }
         ],
-        comment: "<strong>Verify that the list of chapter is in descending order. The latest Chapter must be the first on the list</strong>"
+        comment:
+            "<strong>Verify that the list of chapter is in descending order. The latest Chapter must be the first on the list</strong>"
     },
     {
         name: "implementation script will be included in chapters pages found",
@@ -165,26 +253,29 @@ const tests = [
                     if (!mirror.domains || mirror.domains.length === 0) {
                         return [false, "Can't run test because the domains attribute is missing on implementation"]
                     }
-                    let nbok = 0;
-                    let lstko = [];
+                    let nbok = 0
+                    let lstko = []
                     for (let res of list) {
-                        let found = false;
+                        let found = false
                         let host = utils.extractHostname(res.value)
                         for (let u of mirror.domains) {
                             if (utils.matchDomain(host, u)) {
-                                found = true;
-                                nbok++;
-                                break;
+                                found = true
+                                nbok++
+                                break
                             }
                         }
                         if (!found) {
-                            lstko.push(res.value);
+                            lstko.push(res.value)
                         }
                     }
                     if (lstko.length === 0) {
                         return [true, "All chapters url can be discovered by the mirror domains entries."]
                     } else {
-                        return [false, "The following chapters urls do not match the mirror domains entry : " + lstko.join(", ")]
+                        return [
+                            false,
+                            "The following chapters urls do not match the mirror domains entry : " + lstko.join(", ")
+                        ]
                     }
                 }
             }
@@ -203,38 +294,75 @@ const tests = [
                         task: "containScans",
                         url: chapter_url,
                         mirror: mirror.mirrorName
-                    });
+                    })
                     if (result) {
-                        return [true, "The chapter " + chapter_url + " is recognized as a chapter page by the mirror implementation"]
+                        return [
+                            true,
+                            "The chapter " +
+                                chapter_url +
+                                " is recognized as a chapter page by the mirror implementation"
+                        ]
                     } else {
-                        return [false, "The chapter " + chapter_url + " is not recognized as a chapter page by the mirror implementation. Fix the implementation method <strong>isCurrentPageAChapterPage</strong> or check that this chapter is really a chapter"]
+                        return [
+                            false,
+                            "The chapter " +
+                                chapter_url +
+                                " is not recognized as a chapter page by the mirror implementation. Fix the implementation method <strong>isCurrentPageAChapterPage</strong> or check that this chapter is really a chapter"
+                        ]
                     }
                 }
             },
             {
-                input: ["valueof chaptersList", "textof chaptersList", "valueof searchList", "textof searchList", "optional:pickedLanguage"],
+                input: [
+                    "valueof chaptersList",
+                    "textof chaptersList",
+                    "valueof searchList",
+                    "textof searchList",
+                    "optional:pickedLanguage"
+                ],
                 output: ["chapterInformations"],
                 display: ["object"],
-                test: async function getInformations(mirror, chapter_url, chapter_name, manga_url, manga_name, pickedLanguage) {
+                test: async function getInformations(
+                    mirror,
+                    chapter_url,
+                    chapter_name,
+                    manga_url,
+                    manga_name,
+                    pickedLanguage
+                ) {
                     let infos = await browser.runtime.sendMessage({
                         action: "lab",
                         torun: "loadChapterAndDo",
                         task: "informations",
                         url: chapter_url,
                         mirror: mirror.mirrorName
-                    });
+                    })
                     if (infos) {
-                        let listresults = [];
+                        let listresults = []
                         listresults.push([true, "Informations retrieved from chapter page", infos])
                         if (manga_name === infos.name) {
                             listresults.push([true, "Manga name retrieved match selected manga"])
                         } else {
-                            listresults.push([false, "Manga name retrieved does not match selected manga : name retrieved : <i>" + infos.name + "</i>, name must be <i>" + manga_name + "</i>. Fix the implementation method <strong>getInformationsFromCurrentPage</strong>"])
+                            listresults.push([
+                                false,
+                                "Manga name retrieved does not match selected manga : name retrieved : <i>" +
+                                    infos.name +
+                                    "</i>, name must be <i>" +
+                                    manga_name +
+                                    "</i>. Fix the implementation method <strong>getInformationsFromCurrentPage</strong>"
+                            ])
                         }
                         if (manga_url === infos.currentMangaURL) {
                             listresults.push([true, "Manga url retrieved match selected manga"])
                         } else {
-                            listresults.push([false, "Manga url retrieved does not match selected manga : url retrieved : <i>" + infos.currentMangaURL + "</i>, url must be <i>" + manga_url + "</i>. Fix the implementation method <strong>getInformationsFromCurrentPage</strong>"])
+                            listresults.push([
+                                false,
+                                "Manga url retrieved does not match selected manga : url retrieved : <i>" +
+                                    infos.currentMangaURL +
+                                    "</i>, url must be <i>" +
+                                    manga_url +
+                                    "</i>. Fix the implementation method <strong>getInformationsFromCurrentPage</strong>"
+                            ])
                         }
                         // No more chapter name required, get it for chapters list results
                         /*if (chapter_name === infos.currentChapter) {
@@ -245,16 +373,35 @@ const tests = [
                         if (chapter_url === infos.currentChapterURL) {
                             listresults.push([true, "Chapter url retrieved match selected chapter"])
                         } else {
-                            listresults.push([false, "Chapter url retrieved does not match selected chapter : url retrieved : <i>" + infos.currentChapterURL + "</i>, url must be <i>" + chapter_url + "</i>. Fix the implementation method <strong>getInformationsFromCurrentPage</strong>"])
+                            listresults.push([
+                                false,
+                                "Chapter url retrieved does not match selected chapter : url retrieved : <i>" +
+                                    infos.currentChapterURL +
+                                    "</i>, url must be <i>" +
+                                    chapter_url +
+                                    "</i>. Fix the implementation method <strong>getInformationsFromCurrentPage</strong>"
+                            ])
                         }
                         if (pickedLanguage !== undefined && pickedLanguage === infos.language) {
                             listresults.push([true, "Selected language match language returned"])
                         } else if (pickedLanguage !== undefined) {
-                            listresults.push([false, "Selected language does not match language returned : language retrieved : <i>" + infos.language + "</i>, language must be <i>" + pickedLanguage + "</i>. Fix the implementation method <strong>getInformationsFromCurrentPage</strong>"])
+                            listresults.push([
+                                false,
+                                "Selected language does not match language returned : language retrieved : <i>" +
+                                    infos.language +
+                                    "</i>, language must be <i>" +
+                                    pickedLanguage +
+                                    "</i>. Fix the implementation method <strong>getInformationsFromCurrentPage</strong>"
+                            ])
                         }
-                        return listresults;
+                        return listresults
                     } else {
-                        return [false, "The chapter " + chapter_url + " do not return any information. Fix the implementation method <strong>getInformationsFromCurrentPage</strong>"]
+                        return [
+                            false,
+                            "The chapter " +
+                                chapter_url +
+                                " do not return any information. Fix the implementation method <strong>getInformationsFromCurrentPage</strong>"
+                        ]
                     }
                 }
             }
@@ -275,13 +422,26 @@ const tests = [
                         task: "listScans",
                         url: chapter_url,
                         mirror: mirror.mirrorName
-                    });
+                    })
                     if (result && result.length > 0) {
-                        return [true, "<strong>" + result.length + " scans found</strong> for the manga chapter : <i>" + chapter_url + "</i>", result.map(url => {
-                            return { value: url, text: url }
-                        })];
+                        return [
+                            true,
+                            "<strong>" +
+                                result.length +
+                                " scans found</strong> for the manga chapter : <i>" +
+                                chapter_url +
+                                "</i>",
+                            result.map(url => {
+                                return { value: url, text: url }
+                            })
+                        ]
                     } else {
-                        return [false, "No scans found for the manga chapter : <i>" + chapter_url + "</i>. Fix the implementation method <strong>getListImages</strong>"];
+                        return [
+                            false,
+                            "No scans found for the manga chapter : <i>" +
+                                chapter_url +
+                                "</i>. Fix the implementation method <strong>getListImages</strong>"
+                        ]
                     }
                 }
             }
@@ -300,12 +460,12 @@ const tests = [
                         torun: "getScanUrl",
                         url: scan_url,
                         mirror: mirror.mirrorName
-                    });
-                    return [true, "Scan loaded with url <i>" + url + "</i>.", url];
+                    })
+                    return [true, "Scan loaded with url <i>" + url + "</i>.", url]
                 }
             }
         ],
         comment: "<strong>Check if the image loads well !</strong>"
     }
 ]
-export default tests;
+export default tests

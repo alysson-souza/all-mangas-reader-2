@@ -1,8 +1,8 @@
-if (typeof registerMangaObject === 'function') {
-	registerMangaObject({
-        mirrorName : "Twisted Hel Scans",
-        mirrorIcon : "twistedhelscans.png",
-        languages : "en",
+if (typeof registerMangaObject === "function") {
+    registerMangaObject({
+        mirrorName: "Twisted Hel Scans",
+        mirrorIcon: "twistedhelscans.png",
+        languages: "en",
         domains: ["www.twistedhelscans.com"],
         home: "http://www.twistedhelscans.com/",
         chapter_url: /^\/read\/.+$/g,

@@ -1,8 +1,8 @@
-if (typeof registerMangaObject === 'function') {
-	registerMangaObject({
-        mirrorName : "Phoenix Serenade",
-        mirrorIcon : "serenade.png",
-        languages : "en",
+if (typeof registerMangaObject === "function") {
+    registerMangaObject({
+        mirrorName: "Phoenix Serenade",
+        mirrorIcon: "serenade.png",
+        languages: "en",
         domains: ["reader.serenade.moe"],
         home: "https://serenade.moe/",
         chapter_url: /^\/read\/.+$/g,

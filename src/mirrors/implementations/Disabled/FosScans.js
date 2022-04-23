@@ -1,8 +1,8 @@
-if (typeof registerMangaObject === 'function') {
-	registerMangaObject({
-        mirrorName : "Forgotten Scans",
-        mirrorIcon : "fos.png",
-        languages : "en",
+if (typeof registerMangaObject === "function") {
+    registerMangaObject({
+        mirrorName: "Forgotten Scans",
+        mirrorIcon: "fos.png",
+        languages: "en",
         domains: ["reader.fos-scans.com"],
         home: "http://fos-scans.com/",
         disabled: true,

@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "Ult Manga",
         mirrorIcon: "ultmanga.jpg",
@@ -10,9 +10,8 @@ if (typeof registerMangaObject === 'function') {
         abstract: "Madara",
         abstract_options: {
             search_url: "https://ultmanga.com/",
-            img_src: "data-src",
+            img_src: "data-src"
             // chapter_list_ajax: true,
         }
     })
 }
-

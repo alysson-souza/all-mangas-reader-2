@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "Kun Manga",
         mirrorIcon: "kun-manga.png",
@@ -9,8 +9,7 @@ if (typeof registerMangaObject === 'function') {
         canListFullMangas: false,
         abstract: "Madara",
         abstract_options: {
-            search_url: "https://kunmanga.com/",
+            search_url: "https://kunmanga.com/"
         }
     })
 }
-

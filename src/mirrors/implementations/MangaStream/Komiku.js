@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "Komiku",
         canListFullMangas: false,
@@ -17,9 +17,9 @@ if (typeof registerMangaObject === 'function') {
             page_container_sel: "#readerareaimg",
             manga_url_sel: "#hot > p > a",
             chapters_a_sel: "td.judulseries > a",
-            manga_name_replace:"Manga",
+            manga_name_replace: "Manga",
             img_sel: "#readerareaimg img",
             search_json: false
-        },
+        }
     })
 }

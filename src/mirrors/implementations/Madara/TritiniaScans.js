@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "Tritinia Scans",
         mirrorIcon: "tritiniascans.png",
@@ -11,7 +11,7 @@ if (typeof registerMangaObject === 'function') {
         abstract_options: {
             search_url: "https://tritinia.com/",
             chapter_list_ajax: true,
-            isekai_chapter_url: true,
+            isekai_chapter_url: true
         }
     })
 }

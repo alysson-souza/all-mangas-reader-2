@@ -1,9 +1,9 @@
-import storedb from '../../amr/storedb'
+import storedb from "../../amr/storedb"
 // import * as utils from '../../amr/utils'
-import iconHelper from '../../amr/icon-helper';
-import mirrorsImpl from '../../amr/mirrors-impl';
-import amrUpdater from '../../amr/amr-updater';
-import { websitesDescription } from '../../mirrors/register_implementations'
+import iconHelper from "../../amr/icon-helper"
+import mirrorsImpl from "../../amr/mirrors-impl"
+import amrUpdater from "../../amr/amr-updater"
+import { websitesDescription } from "../../mirrors/register_implementations"
 
 /**
  *  initial state of the mirrors module
@@ -28,14 +28,14 @@ const getters = {
     /**
      * Count mirrors
      */
-    countMirrors: (state) => {
-        return state.all.length;
+    countMirrors: state => {
+        return state.all.length
     },
     /**
      * List of activated mirrors
      */
-    activatedMirrors: (state) => {
-        return state.all.filter(mirror => mirror.activated);
+    activatedMirrors: state => {
+        return state.all.filter(mirror => mirror.activated)
     }
 }
 
@@ -46,18 +46,18 @@ const actions = {
      * @param {*} param0
      */
     async initMirrors({ commit, dispatch }) {
-        let websites = await storedb.getWebsites(); // Get mirrors from local database
+        let websites = await storedb.getWebsites() // Get mirrors from local database
 
         // No mirrors known yet, get the list
-        websites = await dispatch("updateMirrorsLists");
+        websites = await dispatch("updateMirrorsLists")
 
         if (!websites.length) {
-            document.dispatchEvent(new CustomEvent("mirrorsError"));
+            document.dispatchEvent(new CustomEvent("mirrorsError"))
         } else {
             // set mirrors list in store
-            commit('setMirrors', websites);
+            commit("setMirrors", websites)
             // set abstract mirrors list in store
-            commit('setAbstractMirrors', websites);
+            commit("setAbstractMirrors", websites)
         }
     },
     /**
@@ -67,33 +67,33 @@ const actions = {
      */
     async updateMirror({ commit }, mirror) {
         // utils.debug("update description of " + mirror.mirrorName + " in db");
-        await storedb.storeWebsite(mirror);
+        await storedb.storeWebsite(mirror)
     },
 
     // update mirrors from repository
     async updateMirrorsLists({ commit, dispatch, rootState }) {
         // set the blue badge
-        iconHelper.setBlueIcon();
+        iconHelper.setBlueIcon()
 
         // reset implementations
-        commit('resetImplementations');
+        commit("resetImplementations")
 
         // update last update ts
-        dispatch("setOption", {key: "lastMirrorsUpdate", value: Date.now()});
+        dispatch("setOption", { key: "lastMirrorsUpdate", value: Date.now() })
 
-        let websitesdb = await storedb.getWebsites();
-        if (websitesdb === undefined) websitesdb = [];
+        let websitesdb = await storedb.getWebsites()
+        if (websitesdb === undefined) websitesdb = []
 
-        let websites = websitesDescription;
+        let websites = websitesDescription
 
         let updts = []
         for (let w of websites) {
             // get activated property in db, do not overright it
-            let act = true;
+            let act = true
             // languages is undefined for abstract implementations --> always activated
             if (w.languages !== undefined && rootState.options["deactivateunreadable"]) {
                 let langs = w.languages.split(",")
-                let hasReadable = false;
+                let hasReadable = false
                 for (let l of langs) {
                     if (rootState.options["readlanguages"].includes(l)) {
                         hasReadable = true
@@ -102,42 +102,43 @@ const actions = {
                 }
                 if (!hasReadable) act = false // default activation to false for a new implementation that does not match a readable language if option is checked
             }
-            let wdb = websitesdb.find(m => m.mirrorName === w.mirrorName);
-            if (wdb != undefined) act = wdb.activated;
+            let wdb = websitesdb.find(m => m.mirrorName === w.mirrorName)
+            if (wdb != undefined) act = wdb.activated
 
             // Komga shit
-            if (w.mirrorName == 'Komga') {
+            if (w.mirrorName == "Komga") {
                 w.home = rootState.options.komgaUrl
             }
             // tachidesk shit
-            if (w.mirrorName == 'Tachidesk') {
+            if (w.mirrorName == "Tachidesk") {
                 w.home = rootState.options.tachideskUrl
             }
 
-            w.activated = act;
+            w.activated = act
             updts.push(
                 dispatch("updateMirror", w).catch(e => e) // avoid blocking the Promise.all due to an update failure
-            );
+            )
         }
         // do not wait that all implementations are in db... few seconds. as the stores have been updated instantly, we do not need to wait for it to be in db
-        Promise.all(updts);
+        Promise.all(updts)
 
-        if (!websites.length) { // hum should not happen now :)
-            document.dispatchEvent(new CustomEvent("mirrorsError"));
+        if (!websites.length) {
+            // hum should not happen now :)
+            document.dispatchEvent(new CustomEvent("mirrorsError"))
         } else {
             // set mirrors list in store
-            commit('setMirrors', websites);
+            commit("setMirrors", websites)
             // set abstract mirrors list in store
-            commit('setAbstractMirrors', websites);
+            commit("setAbstractMirrors", websites)
         }
 
         // remove deleted mirrors
         // TODO --> what do we do if there are mangas in list from these mirrors ?
 
         // update badges and icon state
-        amrUpdater.refreshBadgeAndIcon();
+        amrUpdater.refreshBadgeAndIcon()
 
-        return websites;
+        return websites
     },
     /**
      * Reset mirrors manga lists from db
@@ -152,8 +153,8 @@ const actions = {
      * @param {*} mirror
      */
     changeMirrorActivation({ commit, dispatch, rootState }, mirror) {
-        commit('changeMirrorActivation', mirror);
-        dispatch("updateMirror", mirror);
+        commit("changeMirrorActivation", mirror)
+        dispatch("updateMirror", mirror)
     }
 }
 
@@ -172,7 +173,7 @@ const mutations = {
      */
     setMirrors(state, mirrors) {
         state.all = []
-        state.all.push(...mirrors.filter(mirror => mirror.type !== 'abstract'))
+        state.all.push(...mirrors.filter(mirror => mirror.type !== "abstract"))
     },
     /**
      * Set the list of abstract mirrors in the store
@@ -183,7 +184,7 @@ const mutations = {
      */
     setAbstractMirrors(state, mirrors) {
         state.abstracts = []
-        state.abstracts.push(...mirrors.filter(mirror => mirror.type === 'abstract'))
+        state.abstracts.push(...mirrors.filter(mirror => mirror.type === "abstract"))
     },
 
     /**
@@ -192,7 +193,7 @@ const mutations = {
      * @param {*} mirrors
      */
     resetImplementations(state, mirrors) {
-        mirrorsImpl.resetImplementations();
+        mirrorsImpl.resetImplementations()
     },
 
     /**
@@ -203,7 +204,7 @@ const mutations = {
     changeMirrorActivation(state, mirror) {
         let mir = state.all.find(m => m.mirrorName === mirror.mirrorName)
         if (mir !== undefined) {
-            mir.activated = mirror.activated;
+            mir.activated = mirror.activated
         }
     }
 }

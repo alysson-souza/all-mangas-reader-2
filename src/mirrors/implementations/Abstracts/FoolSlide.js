@@ -1,7 +1,7 @@
 /**
  * Abstract implementation for all sites based on FoolSlide
  */
-window["FoolSlide"] = function(options) {
+window["FoolSlide"] = function (options) {
     this.default_options = {
         base_url: "http://foo.slide/",
         series_list_url: "/directory/",
@@ -24,10 +24,11 @@ window["FoolSlide"] = function(options) {
         let res = []
         let self = this
 
-        if (this.options.search_all) { // search all pages,
+        if (this.options.search_all) {
+            // search all pages,
             res = await this.searchPage(this.options.base_url + this.options.series_list_url)
         } else {
-            res = await this.searchPage(this.options.base_url + '/search/', {post: true, data: {search: search}})
+            res = await this.searchPage(this.options.base_url + "/search/", { post: true, data: { search: search } })
         }
         return res
     }
@@ -35,19 +36,13 @@ window["FoolSlide"] = function(options) {
     this.searchPage = async function (url, options) {
         let res = []
         let self = this
-        let doc = await amr.loadPage(
-            url,
-            Object.assign({ nocache: true, preventimages: true }, options)
-        )
+        let doc = await amr.loadPage(url, Object.assign({ nocache: true, preventimages: true }, options))
         $(this.options.mglist_selector, doc).each(function (index) {
-            res[res.length] = [
-                self.options.mglist_look_title_from_a(this).trim(),
-                $(this).attr("href")
-            ]
+            res[res.length] = [self.options.mglist_look_title_from_a(this).trim(), $(this).attr("href")]
         })
         let nextpage_but = $(this.options.mglist_nextpage, doc)
         if (nextpage_but.length > 0) {
-            res = [...res, ...await this.searchPage(nextpage_but.attr("href"), options)]
+            res = [...res, ...(await this.searchPage(nextpage_but.attr("href"), options))]
         }
         return res
     }
@@ -58,10 +53,7 @@ window["FoolSlide"] = function(options) {
         let res = []
         let self = this
         $("a[href*='/read/']", doc).each(function (index) {
-            res[res.length] = [
-                self.options.listchaps_look_title_from_a(this).trim(),
-                $(this).attr("href")
-            ]
+            res[res.length] = [self.options.listchaps_look_title_from_a(this).trim(), $(this).attr("href")]
         })
         if (this.options.listchaps_reverse) {
             res = res.reverse()
@@ -75,40 +67,38 @@ window["FoolSlide"] = function(options) {
         let mga = $(this.options.info_manga_a, doc)
         let base_url = amr.getVariable(this.options.info_chapter_var, doc)
         return {
-            "name" : this.options.info_look_title_from_a(mga).trim(),
-            "currentMangaURL" : mga.attr("href"),
-            "currentChapterURL" : base_url
+            name: this.options.info_look_title_from_a(mga).trim(),
+            currentMangaURL: mga.attr("href"),
+            currentChapterURL: base_url
         }
     }
-
-    this.getListImages = async function (doc, curUrl) {
+    ;(this.getListImages = async function (doc, curUrl) {
         doc = await this.passAdult(doc, curUrl)
 
-        let pages = amr.getVariable("pages", doc);
-        return pages.map(page => page.url);
-    },
-
-    /**
-     * For some manga, adult reading confirmation is required, lets do it
-     * @param {*} doc
-     * @param {*} curUrl
-     */
-    this.passAdult = async function(doc, curUrl) {
-        if ($("input[name='adult']", doc).length > 0) {
-            doc = await amr.loadPage(curUrl, {post: true, data: {adult: true}})
-        }
-        return doc;
-    }
+        let pages = amr.getVariable("pages", doc)
+        return pages.map(page => page.url)
+    }),
+        /**
+         * For some manga, adult reading confirmation is required, lets do it
+         * @param {*} doc
+         * @param {*} curUrl
+         */
+        (this.passAdult = async function (doc, curUrl) {
+            if ($("input[name='adult']", doc).length > 0) {
+                doc = await amr.loadPage(curUrl, { post: true, data: { adult: true } })
+            }
+            return doc
+        })
     this.getImageFromPageAndWrite = async function (urlImg, image) {
-        $(image).attr("src", urlImg);
+        $(image).attr("src", urlImg)
     }
 
     this.isCurrentPageAChapterPage = async function (doc, curUrl) {
         doc = await this.passAdult(doc, curUrl)
-        return $("#page img", doc).length > 0;
+        return $("#page img", doc).length > 0
     }
 }
 
-if (typeof registerAbstractImplementation === 'function') {
+if (typeof registerAbstractImplementation === "function") {
     registerAbstractImplementation("FoolSlide")
 }

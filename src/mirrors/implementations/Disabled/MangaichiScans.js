@@ -1,8 +1,8 @@
-if (typeof registerMangaObject === 'function') {
-	registerMangaObject({
-        mirrorName : "Mangaichi Scans",
-        mirrorIcon : "mangaichiscans.png",
-        languages : "en",
+if (typeof registerMangaObject === "function") {
+    registerMangaObject({
+        mirrorName: "Mangaichi Scans",
+        mirrorIcon: "mangaichiscans.png",
+        languages: "en",
         domains: ["mangaichiscans.mokkori.fr"],
         home: "http://mangaichiscans.mokkori.fr/",
         chapter_url: /^\/fs\/read\/.+$/g,

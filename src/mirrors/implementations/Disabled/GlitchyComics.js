@@ -9,58 +9,53 @@ if (typeof registerMangaObject === "function") {
         home: "https://glitchycomics.com/",
         chapter_url: /\/chapter-.*?\/.*$/g,
 
-        getMangaList: async function(search) {
+        getMangaList: async function (search) {
             let doc = await amr.loadPage("https://glitchycomics.com/series-list", {
                 nocache: true,
-                preventimages: true,
-            });
-            let res = [];
+                preventimages: true
+            })
+            let res = []
 
-            $("article h6 > a", doc).each(function() {
-                res.push([
-                    $(this)
-                        .text()
-                        .trim(),
-                    $(this).attr("href"),
-                ]);
-            });
+            $("article h6 > a", doc).each(function () {
+                res.push([$(this).text().trim(), $(this).attr("href")])
+            })
 
-            return res;
+            return res
         },
 
-        getListChaps: async function(urlManga) {
-            let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true });
-            let res = [];
+        getListChaps: async function (urlManga) {
+            let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
+            let res = []
 
-            $(".ult_acord h2 a", doc).each(function() {
-                res[res.length] = [$(this).text(), $(this).attr("href")];
-            });
+            $(".ult_acord h2 a", doc).each(function () {
+                res[res.length] = [$(this).text(), $(this).attr("href")]
+            })
 
-            return res;
+            return res
         },
 
-        getInformationsFromCurrentPage: async function(doc, curUrl) {
-            const title = $("p.s-post-cat-links > a", doc);
+        getInformationsFromCurrentPage: async function (doc, curUrl) {
+            const title = $("p.s-post-cat-links > a", doc)
 
             return {
                 name: title.text().trim(),
                 currentMangaURL: title.attr("href"),
-                currentChapterURL: curUrl,
-            };
+                currentChapterURL: curUrl
+            }
         },
 
-        getListImages: async function(doc) {
+        getListImages: async function (doc) {
             return $("div.s-post-content img[class^='wp-image-']", doc)
                 .toArray()
-                .map((img) => img.src);
+                .map(img => img.src)
         },
 
-        getImageFromPageAndWrite: async function(urlImg, image) {
-            $(image).attr("src", urlImg);
+        getImageFromPageAndWrite: async function (urlImg, image) {
+            $(image).attr("src", urlImg)
         },
 
-        isCurrentPageAChapterPage: function(doc) {
-            return $("div.s-post-content img[class^='wp-image-']", doc).length > 0;
-        },
-    });
+        isCurrentPageAChapterPage: function (doc) {
+            return $("div.s-post-content img[class^='wp-image-']", doc).length > 0
+        }
+    })
 }

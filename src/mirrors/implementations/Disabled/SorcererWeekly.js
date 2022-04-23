@@ -1,8 +1,8 @@
-if (typeof registerMangaObject === 'function') {
-	registerMangaObject({
-        mirrorName : "Sorcerer Weekly",
-        mirrorIcon : "sorcererweekly.png",
-        languages : "en",
+if (typeof registerMangaObject === "function") {
+    registerMangaObject({
+        mirrorName: "Sorcerer Weekly",
+        mirrorIcon: "sorcererweekly.png",
+        languages: "en",
         domains: ["sorcererweekly.com"],
         home: "https://sorcererweekly.com/",
         chapter_url: /^\/read\/.+$/g,

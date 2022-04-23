@@ -1,4 +1,4 @@
-import DOMPurify from "dompurify";
+import DOMPurify from "dompurify"
 
 /**
  * This method sanitize an xhr result containing html and returns a safe dom node
@@ -6,7 +6,7 @@ import DOMPurify from "dompurify";
  * in scripts, this is just text, never ever evaluated
  */
 export function sanitizeDom(stringDom) {
-    let htmlDocument = DOMPurify.sanitize(stringDom, {RETURN_DOM: true, FORCE_BODY: true});
+    let htmlDocument = DOMPurify.sanitize(stringDom, { RETURN_DOM: true, FORCE_BODY: true })
     let docText = document.createElement("div")
     docText.id = "__amr_text_dom__"
     docText.innerText = stringDom

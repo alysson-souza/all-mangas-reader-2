@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "Manga Dods",
         mirrorIcon: "mangadods.png",
@@ -13,8 +13,7 @@ if (typeof registerMangaObject === 'function') {
             img_src: "src",
             chapter_list_ajax: false,
             secondary_img_src: "data-src",
-            chapters_a_sel: "li.wp-manga-chapter a",
+            chapters_a_sel: "li.wp-manga-chapter a"
         }
     })
 }
-

@@ -1,8 +1,8 @@
-import pageData from '../state/pagedata';
-import bookmarks from '../state/bookmarks';
-import { scansProvider, ScansLoader } from "./ScansProvider";
-import mirrorImpl from '../state/mirrorimpl';
-import browser from "webextension-polyfill";
+import pageData from "../state/pagedata"
+import bookmarks from "../state/bookmarks"
+import { scansProvider, ScansLoader } from "./ScansProvider"
+import mirrorImpl from "../state/mirrorimpl"
+import browser from "webextension-polyfill"
 
 /**
  * This class loads a chapter, retrieve informations, scans, and initialize or reinitialize the reader with all this data
@@ -44,7 +44,9 @@ export default class ChapterLoader {
      * This method allows to pre load the scans without switching to this chapter in the current state
      */
     loadScans() {
-        console.log((this.url ? this.url : 'current page') + " --> " + this.images.length + " images to load in background");
+        console.log(
+            (this.url ? this.url : "current page") + " --> " + this.images.length + " images to load in background"
+        )
         this.scansProvider = new ScansLoader(this.images)
         this.scansProvider.load() // pre load scans
         return this.scansProvider
@@ -56,17 +58,17 @@ export default class ChapterLoader {
      */
     loadInReader(options) {
         if (this.isAChapter) {
-            console.log("Informations for " + (this.url ? this.url : 'current page') + " loaded : ");
-            console.log(this.infos);
+            console.log("Informations for " + (this.url ? this.url : "current page") + " loaded : ")
+            console.log(this.infos)
             // Initialize pageData state
-            pageData.load(this.infos);
+            pageData.load(this.infos)
 
             if (!this.images || this.images.length === 0) {
                 // No images, chapter loading fails
-                console.log((this.url ? this.url : 'Current page') + " does not contain any images");
-                return false;
+                console.log((this.url ? this.url : "Current page") + " does not contain any images")
+                return false
             }
-            console.log((this.url ? this.url : 'current page') + " --> " + this.images.length + " images to load");
+            console.log((this.url ? this.url : "current page") + " --> " + this.images.length + " images to load")
 
             bookmarks.init(this.images) // initialize scans bookmarks state
             // initialize scans loading
@@ -77,7 +79,9 @@ export default class ChapterLoader {
             }
             return true
         } else {
-            console.log((this.url ? this.url : 'Current page') + " is not recognize as a chapter page by mirror implementation");
+            console.log(
+                (this.url ? this.url : "Current page") + " is not recognize as a chapter page by mirror implementation"
+            )
             return false
         }
     }

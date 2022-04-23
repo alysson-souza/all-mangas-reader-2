@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         disabled: true,
         mirrorName: "Aloalivn",
@@ -15,4 +15,3 @@ if (typeof registerMangaObject === 'function') {
         }
     })
 }
-

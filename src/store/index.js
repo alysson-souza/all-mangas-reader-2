@@ -1,13 +1,13 @@
-import browser from "webextension-polyfill";
-import Vue from 'vue'
-import Vuex from 'vuex'
-import createMutationsSharer from 'vuex-shared-mutations';
-import mangas from './modules/mangas';
-import mirrors from './modules/mirrors';
-import options from './modules/options';
-import bookmarks from './modules/bookmarks';
-import importexport from './modules/importexport'
-Vue.use(Vuex);
+import browser from "webextension-polyfill"
+import Vue from "vue"
+import Vuex from "vuex"
+import createMutationsSharer from "vuex-shared-mutations"
+import mangas from "./modules/mangas"
+import mirrors from "./modules/mirrors"
+import options from "./modules/options"
+import bookmarks from "./modules/bookmarks"
+import importexport from "./modules/importexport"
+Vue.use(Vuex)
 
 /**
  * This store exposes the object to vue (both in popup and background)
@@ -36,7 +36,8 @@ export default new Vuex.Store({
          */
         async getStateFromReference({ commit }, { module, key, mutation }) {
             return new Promise(async (resolve, reject) => {
-                await browser.runtime.sendMessage({ action: "vuex_initstate", module: module, key: key })
+                await browser.runtime
+                    .sendMessage({ action: "vuex_initstate", module: module, key: key })
                     .then(async object => {
                         await commit(mutation, object)
                         resolve()

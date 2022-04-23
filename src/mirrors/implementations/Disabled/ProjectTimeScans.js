@@ -1,5 +1,5 @@
-if (typeof registerMangaObject === 'function') {
-	registerMangaObject({
+if (typeof registerMangaObject === "function") {
+    registerMangaObject({
         mirrorName: "Project Time Scans",
         mirrorIcon: "projecttimescans.png",
         languages: "en",
@@ -12,6 +12,5 @@ if (typeof registerMangaObject === 'function') {
         abstract_options: {
             reader_url: "https://read.ptscans.com"
         }
-
-    });
+    })
 }
