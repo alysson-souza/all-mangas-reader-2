@@ -1464,6 +1464,14 @@ export default {
                         }
                     }
                     if (e.altKey && !e.shiftKey) {
+                        // Toggle fullscreen
+                        if (e.which === 70) {
+                            // alt + f
+                            this.toggleFullScreen()
+                            prevent()
+                        }
+                    }
+                    if (e.altKey && !e.shiftKey) {
                         // Display current manga name, chapter name and progression in the manga
                         if (e.which === 67) {
                             // alt + c
