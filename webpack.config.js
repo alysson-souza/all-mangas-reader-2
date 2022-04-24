@@ -6,6 +6,7 @@ const TerserPlugin = require("terser-webpack-plugin")
 const ExtensionReloader = require("webpack-extension-reloader")
 const VueLoaderPlugin = require("vue-loader/lib/plugin")
 const CircularDependencyPlugin = require("circular-dependency-plugin")
+const VuetifyLoaderPlugin = require("vuetify-loader/lib/plugin")
 const ejs = require("ejs")
 
 const AMR_BROWSER = process.env.AMR_BROWSER
@@ -55,17 +56,21 @@ const config = {
                 use: ["style-loader", "css-loader"]
             },
             {
+                test: /\.s[ac]ss$/i,
+                use: ["style-loader", "css-loader", "sass-loader"]
+            },
+            {
                 test: /\.(png|jp(e*)g|gif|svg|ico)$/,
-                loader: "url-loader",
-                options: {
-                    limit: 8000,
-                    name: "img/[name].[ext]"
+                type: "asset",
+                generator: {
+                    filename: "img/[name].[ext]"
                 }
             }
         ]
     },
     plugins: [
         new VueLoaderPlugin(),
+        new VuetifyLoaderPlugin(),
         new CopyWebpackPlugin({
             patterns: [
                 { from: "icons", to: "icons", globOptions: { ignore: ["icon.xcf"] } },

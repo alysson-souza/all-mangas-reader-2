@@ -9,7 +9,7 @@
 
 <script>
 import i18n from "../../amr/i18n"
-import "../flags.css"
+import("../flags.css")
 
 export default {
     props: {
