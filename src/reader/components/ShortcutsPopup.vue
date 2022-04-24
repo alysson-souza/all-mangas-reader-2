@@ -73,6 +73,7 @@ export default {
             ],
             shortcuts_layout: [
                 // shortcuts linked to layout options
+                { keys: [[alt, "f"]], i18n: "reader_shortcut_toggle_fullscreen" },
                 { keys: [[shift, "m"]], i18n: "reader_shortcut_layout_drawer" },
                 {
                     keys: [
