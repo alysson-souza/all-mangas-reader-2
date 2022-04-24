@@ -11,10 +11,10 @@ const isFirefox = function () {
  */
 const default_options = {
     debug: 0, // display debug traces in content script, background, popup, ...
-
     /**
-     * New reader layout options (specific layout value for a manga is displayBook * 1000 + readingDirection + 100 + displayFullChapter * 10 + resizeMode (ex : 1110))
+     * New reader layout options (specific layout value for a manga is scaleUp * 10000 + displayBook * 1000 + readingDirection + 100 + displayFullChapter * 10 + resizeMode (ex : 01110))
      */
+    scaleUp: 0 /* If we should scale up smaller images than the viewport */,
     displayBook: 1 /* Display pages side by side */,
     readingDirection: 1 /* ltr (0) for left to right or rtl (1) */,
     invertKeys: 0 /* If we should sync the previous/next page logic with the reading direction */,

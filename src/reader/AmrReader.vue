@@ -900,6 +900,7 @@ export default {
         layoutValue(nVal, oVal) {
             // check if nVal <> options val ; if not reset layout to undefined
             let optVal =
+                this.options.scaleUp * 10000 +
                 this.options.displayBook * 1000 +
                 this.options.readingDirection * 100 +
                 this.options.displayFullChapter * 10 +
@@ -969,7 +970,7 @@ export default {
                 cresize = resize_values.findIndex(r => r === this.resize),
                 cscaleup = this.scaleUp ? 1 : 0
 
-            return 1000 * cbook + 100 * cdirection + 10 * cfullchapter + cresize
+            return 10000 * cscaleup + 1000 * cbook + 100 * cdirection + 10 * cfullchapter + cresize
         },
         /** can you mark this chapter as latest read */
         showLatestRead() {
