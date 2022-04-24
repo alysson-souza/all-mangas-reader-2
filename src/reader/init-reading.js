@@ -4,8 +4,7 @@
  */
 
 import Vue from "vue"
-import "vuetify/dist/vuetify.min.css"
-import Vuetify from "vuetify"
+import Vuetify from "vuetify/lib"
 import vuetifyOptions from "../pages/vuetifyOptions"
 import VueScrollTo from "vue-scrollto"
 import Clipboard from "v-clipboard"
