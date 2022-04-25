@@ -1,8 +1,8 @@
-import { THINSCAN } from '../../amr/options';
+import { THINSCAN } from "../../amr/options"
 
-const isFirefox = function() {
+const isFirefox = function () {
     // Firefox 1.0+ (tested on Firefox 45 - 53)
-    return typeof InstallTrigger !== 'undefined';
+    return typeof InstallTrigger !== "undefined"
 }
 
 /**
@@ -11,16 +11,15 @@ const isFirefox = function() {
  */
 const default_options = {
     debug: 0, // display debug traces in content script, background, popup, ...
-
-
     /**
-     * New reader layout options (specific layout value for a manga is displayBook * 1000 + readingDirection + 100 + displayFullChapter * 10 + resizeMode (ex : 1110))
+     * New reader layout options (specific layout value for a manga is scaleUp * 10000 + displayBook * 1000 + readingDirection + 100 + displayFullChapter * 10 + resizeMode (ex : 01110))
      */
-    displayBook: 1, /* Display pages side by side */
-    readingDirection: 1, /* ltr (0) for left to right or rtl (1) */
-    invertKeys: 0, /* If we should sync the previous/next page logic with the reading direction */
-    displayFullChapter: 1, /* Display full chapter long strip or current scan (doucle scan) */
-    resizeMode: 0, /* How to resize scans width (0), height (1) (only if displayFullChapter = 0), container (2) or none (3) */
+    scaleUp: 0 /* If we should scale up smaller images than the viewport */,
+    displayBook: 1 /* Display pages side by side */,
+    readingDirection: 1 /* ltr (0) for left to right or rtl (1) */,
+    invertKeys: 0 /* If we should sync the previous/next page logic with the reading direction */,
+    displayFullChapter: 1 /* Display full chapter long strip or current scan (doucle scan) */,
+    resizeMode: 0 /* How to resize scans width (0), height (1) (only if displayFullChapter = 0), container (2) or none (3) */,
 
     addauto: 1, // automatically mark chapters as read while reading
     markwhendownload: 0, // mark mangas as read when all images downloaded
@@ -47,7 +46,7 @@ const default_options = {
     dark: 0, // Use a dark backgroud for AMR pages,
     colornew: "green", // color of mangas with new chapters
     colorread: "blue", // color of mangas with all chapters read
-    colornotfollow: "blue-grey",  // color of mangas which are not followed
+    colornotfollow: "blue-grey", // color of mangas which are not followed
     groupmgs: 1, // group manga with similar name (one piece and One Piece)
 
     /** Updates options */
@@ -88,7 +87,6 @@ const default_options = {
     searchOpenSeries: 0,
     
 
-
     /** Language options */
     readlanguages: ["en", "gb"], // default language is english. On install, the user language is added to this list
     deactivateunreadable: false, // deactivate automatically mirrors in languages that do not match readable languages
@@ -116,13 +114,12 @@ const default_options = {
 
     /** Manga List options */
     perPageMangas: 25, // Manga entries per page
-    pageNavigationPosition: 'top', // Should the page navigation/settings bar be up top or on bottom
+    pageNavigationPosition: "top", // Should the page navigation/settings bar be up top or on bottom
     alternateColors: 0, // This applies a alternating color scheme to the manga list
-    sortOrder: 'updates', // Order to sort manga list
+    sortOrder: "updates", // Order to sort manga list
     alpha_asc_desc: false, // Order by name asending/descending
 
     /** Mangadex specific options */
-    
 
     /** Mangadex Options */
     mangadexDataSaver: 0, // Use the datasaver option when getting chapter images
@@ -131,26 +128,24 @@ const default_options = {
     mangadexIntegrationEnable: 0, // enable integration
     mangadexValidCredentials: 0, // watcher for credentials validity
     mangadexDontRemindMe: 0, // Stop reminding the user that they need to login again
-    mangadexToken: '', // current token
+    mangadexToken: "", // current token
     mangadexTokenExpire: Date.now(), // current token expiration date
-    mangadexRefresh: '', // refresh token
+    mangadexRefresh: "", // refresh token
     mangadexRefreshExpire: Date.now(), // refresh token expiration date
     mangadexUpdateReadStatus: 0, // mark as read on mangadex
     mangadexExportToList: 0, // auto export added manga to MDlist
     mangadexExportToFollows: 0, // auto export added manga to Follows (removed onces are moved to "dropped")
-    // 
-
+    //
 
     /** Komga specific options */
-    komgaUrl: 'http://localhost:8080',
-    komgaUser: '',
-    komgaPassword: '',
+    komgaUrl: "http://localhost:8080",
+    komgaUser: "",
+    komgaPassword: "",
 
-    tachideskUrl: 'http://localhost:4567 '
-
+    tachideskUrl: "http://localhost:4567 "
 }
 
-const jsonOptions = ["categoriesStates", "readlanguages"];
+const jsonOptions = ["categoriesStates", "readlanguages"]
 const stringOptions = [
     "colornew",
     "colorread",
@@ -160,12 +155,12 @@ const stringOptions = [
     "komgaUrl",
     "komgaUser",
     "komgaPassword",
-    'mangadexToken',
-    'mangadexRefresh',
+    "mangadexToken",
+    "mangadexRefresh",
     "pageNavigationPosition",
     "sortOrder",
-    "tachideskUrl",
-];
+    "tachideskUrl"
+]
 
 /**
  *  initial state of amr options
@@ -177,7 +172,7 @@ const getters = {
     /**
      * Return the whole options object
      */
-    options: state => state,
+    options: state => state
 }
 
 // actions
@@ -188,19 +183,19 @@ const actions = {
      */
     initOptions({ commit, dispatch, state }) {
         for (let key of Object.keys(state)) {
-            let storedVal = localStorage["o." + key];
+            let storedVal = localStorage["o." + key]
             if (storedVal) {
-                if (jsonOptions.includes(key)) storedVal = JSON.parse(storedVal);
+                if (jsonOptions.includes(key)) storedVal = JSON.parse(storedVal)
                 else {
                     if (!stringOptions.includes(key)) {
-                        storedVal = parseInt(storedVal); // all non Json and non String values are considered Integers --> this is right for now
+                        storedVal = parseInt(storedVal) // all non Json and non String values are considered Integers --> this is right for now
                     }
                 }
                 // do not display broken categories
-                if(key === 'categoriesStates') {
-                    storedVal = storedVal.filter(cat => typeof cat.name !== 'undefined')
+                if (key === "categoriesStates") {
+                    storedVal = storedVal.filter(cat => typeof cat.name !== "undefined")
                 }
-                commit('setOption', { key: key, value: storedVal });
+                commit("setOption", { key: key, value: storedVal })
             }
         }
     },
@@ -210,8 +205,8 @@ const actions = {
      * @param {*} keyValObj object with key and value fields
      */
     setOption({ commit, dispatch }, keyValObj) {
-        commit('setOption', keyValObj);
-        localStorage["o." + keyValObj.key] = keyValObj.value;
+        commit("setOption", keyValObj)
+        localStorage["o." + keyValObj.key] = keyValObj.value
     },
     /**
      * Adds a category in categories states and save
@@ -219,8 +214,8 @@ const actions = {
      * @param {*} name
      */
     addCategory({ commit, dispatch, state }, name) {
-        commit('addCategory', name);
-        localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates);
+        commit("addCategory", name)
+        localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates)
     },
     /**
      * Remove a non native category from categories states and save
@@ -228,11 +223,11 @@ const actions = {
      * @param {*} name
      */
     removeCategory({ commit, dispatch, state, rootState }, name) {
-        commit('removeCategory', name);
-        localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates);
+        commit("removeCategory", name)
+        localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates)
         for (let mg of rootState.mangas.all) {
             if (mg.cats.includes(name)) {
-                dispatch("removeCategoryFromManga", { key: mg.key, name: name });
+                dispatch("removeCategoryFromManga", { key: mg.key, name: name })
             }
         }
     },
@@ -242,15 +237,15 @@ const actions = {
      * @param {{oldname: string, newname: string}} nameChange Information about the category name change.
      */
     editCategory({ commit, dispatch, state, rootState }, nameChange) {
-        commit('updateCategoryName', nameChange);
-        localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates);
-        const { oldname, newname } = nameChange;
+        commit("updateCategoryName", nameChange)
+        localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates)
+        const { oldname, newname } = nameChange
 
         // Not very efficient way, but re-using existing methods
         for (let mg of rootState.mangas.all) {
             if (mg.cats.includes(oldname)) {
-                dispatch("removeCategoryFromManga", { key: mg.key, name: oldname });
-                dispatch("addCategoryToManga", { key: mg.key, name: newname });
+                dispatch("removeCategoryFromManga", { key: mg.key, name: oldname })
+                dispatch("addCategoryToManga", { key: mg.key, name: newname })
             }
         }
     },
@@ -260,17 +255,17 @@ const actions = {
      * @param {*} name
      */
     addLanguageCategory({ commit, dispatch, state }, name) {
-        commit('addLanguageCategory', name);
-        localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates);
+        commit("addLanguageCategory", name)
+        localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates)
     },
     /**
      * Adds a native category in categories states and save
      * @param {*} param0
      * @param {*} name
      */
-     addNativeCategory({ commit, dispatch, state }, name) {
-        commit('addNativeCategory', name);
-        localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates);
+    addNativeCategory({ commit, dispatch, state }, name) {
+        commit("addNativeCategory", name)
+        localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates)
     },
     /**
      * Remove a language category from categories states and save
@@ -278,8 +273,8 @@ const actions = {
      * @param {*} name
      */
     removeLanguageCategory({ commit, dispatch, state, rootState }, name) {
-        commit('removeLanguageCategory', name);
-        localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates);
+        commit("removeLanguageCategory", name)
+        localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates)
     },
     /**
      * Updates a categories state and save
@@ -287,8 +282,8 @@ const actions = {
      * @param {*} catObj
      */
     updateCategory({ commit, dispatch, state }, catObj) {
-        commit('updateCategory', catObj);
-        localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates);
+        commit("updateCategory", catObj)
+        localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates)
     },
     /**
      * Updates a categories name and save, use to upgrade native categories names for i18n
@@ -296,8 +291,8 @@ const actions = {
      * @param {{oldname: string, newname: string}} oldnew Information about the category name change.
      */
     updateCategoryName({ commit, dispatch, state }, oldnew) {
-        commit('updateCategoryName', oldnew);
-        localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates);
+        commit("updateCategoryName", oldnew)
+        localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates)
     },
     /**
      * Add a language to readable languages list
@@ -305,8 +300,8 @@ const actions = {
      * @param {*} lang
      */
     addReadLanguage({ commit, state }, lang) {
-        commit('addReadLanguage', lang);
-        localStorage["o.readlanguages"] = JSON.stringify(state.readlanguages);
+        commit("addReadLanguage", lang)
+        localStorage["o.readlanguages"] = JSON.stringify(state.readlanguages)
     },
     /**
      * Remove a language from readable languages list
@@ -314,9 +309,9 @@ const actions = {
      * @param {*} lang
      */
     removeReadLanguage({ commit, state }, lang) {
-        commit('removeReadLanguage', lang);
-        localStorage["o.readlanguages"] = JSON.stringify(state.readlanguages);
-    },
+        commit("removeReadLanguage", lang)
+        localStorage["o.readlanguages"] = JSON.stringify(state.readlanguages)
+    }
 }
 
 /**
@@ -333,7 +328,7 @@ const mutations = {
      * @param {*} opts object ovveriding defaults
      */
     extendOptions(state, opts) {
-        Object.assign(state, opts);
+        Object.assign(state, opts)
     },
     /**
      * Set {key, value} option
@@ -341,8 +336,8 @@ const mutations = {
      * @param {*} obj containing key and value
      */
     setOption(state, { key, value }) {
-        if (!key) console.error("Impossible to set option with undefined key; value is " + value);
-        else state[key] = value;
+        if (!key) console.error("Impossible to set option with undefined key; value is " + value)
+        else state[key] = value
     },
     /**
      * Adds a category in categories states
@@ -354,7 +349,7 @@ const mutations = {
             name: name,
             state: "include"
         }
-        state.categoriesStates.push(toadd);
+        state.categoriesStates.push(toadd)
     },
     /**
      * Remove a non native category from categories states
@@ -362,21 +357,23 @@ const mutations = {
      * @param {*} name
      */
     removeCategory(state, name) {
-        let index = state.categoriesStates.findIndex(cat => cat.type !== "native" && cat.type !== "language" && cat.name === name);
-        if (index >= 0) state.categoriesStates.splice(index, 1);
+        let index = state.categoriesStates.findIndex(
+            cat => cat.type !== "native" && cat.type !== "language" && cat.name === name
+        )
+        if (index >= 0) state.categoriesStates.splice(index, 1)
     },
     /**
      * Adds a native category in categories states
      * @param {*} state
      * @param {*} name
      */
-     addNativeCategory(state, name) {
+    addNativeCategory(state, name) {
         let toadd = {
             name: name,
             type: "native",
             state: "include"
         }
-        state.categoriesStates.push(toadd);
+        state.categoriesStates.push(toadd)
     },
     /**
      * Adds a language category in categories states
@@ -389,7 +386,7 @@ const mutations = {
             type: "language",
             state: "include"
         }
-        state.categoriesStates.push(toadd);
+        state.categoriesStates.push(toadd)
     },
     /**
      * Remove a language category from categories states
@@ -397,8 +394,8 @@ const mutations = {
      * @param {*} name
      */
     removeLanguageCategory(state, name) {
-        let index = state.categoriesStates.findIndex(cat => cat.type === "language" && cat.name === name);
-        if (index >= 0) state.categoriesStates.splice(index, 1);
+        let index = state.categoriesStates.findIndex(cat => cat.type === "language" && cat.name === name)
+        if (index >= 0) state.categoriesStates.splice(index, 1)
     },
     /**
      * Updates a categories state
@@ -406,8 +403,8 @@ const mutations = {
      * @param {*} param1
      */
     updateCategory(state, { name, catstate }) {
-        let cat = state.categoriesStates.find(cat => cat.name === name);
-        cat.state = catstate;
+        let cat = state.categoriesStates.find(cat => cat.name === name)
+        cat.state = catstate
     },
     /**
      * Updates a categories name
@@ -415,8 +412,8 @@ const mutations = {
      * @param {*} param1
      */
     updateCategoryName(state, { oldname, newname }) {
-        let cat = state.categoriesStates.find(cat => cat.name === oldname);
-        if (cat !== undefined) cat.name = newname;
+        let cat = state.categoriesStates.find(cat => cat.name === oldname)
+        if (cat !== undefined) cat.name = newname
     },
     /**
      * Adds a readable language to the list
@@ -424,7 +421,7 @@ const mutations = {
      * @param {*} lang
      */
     addReadLanguage(state, lang) {
-        state.readlanguages.push(lang);
+        state.readlanguages.push(lang)
     },
     /**
      * Removes a readable language from the list
@@ -432,9 +429,9 @@ const mutations = {
      * @param {*} lang
      */
     removeReadLanguage(state, lang) {
-        let index = state.readlanguages.indexOf(lang);
-        if (index >= 0) state.readlanguages.splice(index, 1);
-    },
+        let index = state.readlanguages.indexOf(lang)
+        if (index >= 0) state.readlanguages.splice(index, 1)
+    }
 }
 
 export default {

@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "Mixed Manga",
         mirrorIcon: "mixed-manga.png",
@@ -10,8 +10,7 @@ if (typeof registerMangaObject === 'function') {
         abstract: "Madara",
         abstract_options: {
             search_url: "https://mixedmanga.com/",
-            img_src: 'data-lazy-src'
+            img_src: "data-lazy-src"
         }
     })
 }
-

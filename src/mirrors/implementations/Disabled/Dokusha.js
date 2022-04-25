@@ -1,9 +1,9 @@
-if (typeof registerMangaObject === 'function') {
-	registerMangaObject({
+if (typeof registerMangaObject === "function") {
+    registerMangaObject({
         disabled: true,
-        mirrorName : "Dokusha",
-        mirrorIcon : "dokusha.png",
-        languages : "en",
+        mirrorName: "Dokusha",
+        mirrorIcon: "dokusha.png",
+        languages: "en",
         domains: ["dokusha.info"],
         home: "http://dokusha.info",
         chapter_url: /^\/read\/.+$/g,

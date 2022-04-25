@@ -1,22 +1,22 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
-        mirrorName: 'SK Scans',
-        mirrorIcon: 'skscans.png',
-        languages: 'en',
-        domains: ['skscans.com'],
-        home: 'https://skscans.com/home',
+        mirrorName: "SK Scans",
+        mirrorIcon: "skscans.png",
+        languages: "en",
+        domains: ["skscans.com"],
+        home: "https://skscans.com/home",
         chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
 
-        abstract: 'Madara',
+        abstract: "Madara",
         abstract_options: {
-            search_url: 'https://skscans.com/',
+            search_url: "https://skscans.com/",
             chapter_list_ajax: true
-        },
+        }
         // canListFullMangas: true,
         // chapter_url: /^\/comics\/.*\/.+$/g,
         // abstract: 'GenkanAbs',
         // abstract_options: {
         //     base_url: 'https://skscans.com/',
         // },
-    });
+    })
 }

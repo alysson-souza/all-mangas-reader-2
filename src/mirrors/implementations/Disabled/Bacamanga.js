@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "Bacamanga",
         canListFullMangas: false,
@@ -12,6 +12,6 @@ if (typeof registerMangaObject === 'function') {
         abstract_options: {
             search_url: "https://bacamanga.co/",
             chapters_a_sel: "div.bixbox.bxcl > ul > li > span.lchx a"
-        },
+        }
     })
 }

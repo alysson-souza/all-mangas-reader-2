@@ -1,8 +1,8 @@
-if (typeof registerMangaObject === 'function') {
-	registerMangaObject({
-        mirrorName : "Helvetica Scans",
-        mirrorIcon : "helvetica.png",
-        languages : "en",
+if (typeof registerMangaObject === "function") {
+    registerMangaObject({
+        mirrorName: "Helvetica Scans",
+        mirrorIcon: "helvetica.png",
+        languages: "en",
         domains: ["helveticascans.com"],
         home: "https://helveticascans.com/",
         disabled: true,

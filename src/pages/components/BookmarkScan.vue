@@ -1,33 +1,29 @@
 <template>
     <!-- Before mangas are loaded into popup -->
-    <v-img
-        :src="scanUrl"
-        :height="height"
-        @click="$emit('click-scan')"
-        class="amr-scan"
-     />
+    <v-img :src="scanUrl" :height="height" @click="$emit('click-scan')" class="amr-scan" />
 </template>
 
 <script>
-import browser from "webextension-polyfill";
+import browser from "webextension-polyfill"
 
 export default {
     data() {
         return {
-            scanUrl: "",
+            scanUrl: ""
         }
     },
     created() {
         if (this.bookmark.displayedUrl !== undefined) {
-            this.scanUrl = this.bookmark.displayedUrl; // already loaded
+            this.scanUrl = this.bookmark.displayedUrl // already loaded
         } else {
-            this.scanUrl = this.bookmark.scanUrl; // default url to bookmark scanUrl
+            this.scanUrl = this.bookmark.scanUrl // default url to bookmark scanUrl
             this.$emit("change-url", {
                 key: this.bookmark.key,
                 url: this.scanUrl
-            });
-            if ((this.scanUrl.match(/\.(jpeg|jpg|gif|png)$/) == null)) { // keep url matching image url
-                this.getScanUrl(); // load the others
+            })
+            if (this.scanUrl.match(/\.(jpeg|jpg|gif|png)$/) == null) {
+                // keep url matching image url
+                this.getScanUrl() // load the others
             }
         }
     },
@@ -43,13 +39,13 @@ export default {
                 action: "getScanUrl",
                 url: this.bookmark.scanUrl,
                 mirror: this.bookmark.mirror
-            });
+            })
             //set scan url on image
-            this.scanUrl = scan;
+            this.scanUrl = scan
             this.$emit("change-url", {
                 key: this.bookmark.key,
                 url: this.scanUrl
-            });
+            })
         }
     }
 }

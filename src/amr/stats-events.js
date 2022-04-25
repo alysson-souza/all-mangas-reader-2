@@ -1,4 +1,3 @@
-
 /**
  * This class sends tracking information or statistical purposes
  * All tracking information are used to improve manga reading knowledge and are anonymous
@@ -24,7 +23,7 @@ class StatsEvents {
         // return window.location.href.substring(lp + 1);
     }
     getAdaptedUrl() {
-        return 'https://ext.allmangasreader.com/' + this.getCurPage();
+        return "https://ext.allmangasreader.com/" + this.getCurPage()
     }
     trackEvent(category, action, label) {
         // try {
@@ -51,4 +50,4 @@ class StatsEvents {
         // }
     }
 }
-export default (new StatsEvents)
+export default new StatsEvents()

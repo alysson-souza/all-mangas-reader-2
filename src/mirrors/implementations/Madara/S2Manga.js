@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "S2 Manga",
         mirrorIcon: "s2-manga.png",
@@ -9,8 +9,7 @@ if (typeof registerMangaObject === 'function') {
         canListFullMangas: false,
         abstract: "Madara",
         abstract_options: {
-            search_url: "https://s2manga.com/",
+            search_url: "https://s2manga.com/"
         }
     })
 }
-

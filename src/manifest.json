@@ -1,63 +1,63 @@
 {
-  "name": "All Mangas Reader",
-  "description": "__MSG_description__",
-  "author": "",
-  "version": "2.4.5",
-  "manifest_version": 2,
-  "default_locale": "en",
-  "icons": {
-    "48": "icons/icon_48.png",
-    "96": "icons/icon_96.png",
-    "128": "icons/icon_128.png"
-  },
-  "browser_action": {
-    "default_title": "All Mangas Reader",
-    "default_popup": "pages/popup/popup.html"
-  },
-  "options_ui": {
-    "page": "pages/options/options.html"
-  },
-  "background": {
-    "page": "background/background.html"
-  },
-  "permissions": [
-    "tabs",
-    "https://*/*",
-    "http://*/*",
-    "unlimitedStorage",
-    "storage",
-    "contextMenus",
-    "notifications",
-    "downloads",
-    "cookies",
-    "webNavigation",
-    "webRequest",
-    "webRequestBlocking"
-  ],
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
-  "web_accessible_resources": [
-    "icons/icon_32.png",
-    "icons/icon_128.png",
-    "icons/down.png",
-    "icons/bookmark.png",
-    "icons/read_stop.png",
-    "icons/lefttoright.png",
-    "icons/stop.gif",
-    "icons/loading.gif",
-    "icons/cancel.png",
-    "icons/ontop.png",
-    "icons/righttoleft.png",
-    "icons/load16.gif",
-    "icons/add.png",
-    "icons/bookmarkred.png",
-    "icons/warn.png",
-    "icons/read_play.png",
-    "icons/amrlittle.png",
-    "icons/dev.png",
-    "icons/ltload.gif",
-    "icons/imgerror.png",
-    "icons/load10.gif",
-    "icons/find.png"
-  ],
-  "homepage_url" : "https://www.allmangasreader.com/"
+    "name": "All Mangas Reader",
+    "description": "__MSG_description__",
+    "author": "",
+    "version": "2.4.6",
+    "manifest_version": 2,
+    "default_locale": "en",
+    "icons": {
+        "48": "icons/icon_48.png",
+        "96": "icons/icon_96.png",
+        "128": "icons/icon_128.png"
+    },
+    "browser_action": {
+        "default_title": "All Mangas Reader",
+        "default_popup": "pages/popup/popup.html"
+    },
+    "options_ui": {
+        "page": "pages/options/options.html"
+    },
+    "background": {
+        "page": "background/background.html"
+    },
+    "permissions": [
+        "tabs",
+        "https://*/*",
+        "http://*/*",
+        "unlimitedStorage",
+        "storage",
+        "contextMenus",
+        "notifications",
+        "downloads",
+        "cookies",
+        "webNavigation",
+        "webRequest",
+        "webRequestBlocking"
+    ],
+    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+    "web_accessible_resources": [
+        "icons/icon_32.png",
+        "icons/icon_128.png",
+        "icons/down.png",
+        "icons/bookmark.png",
+        "icons/read_stop.png",
+        "icons/lefttoright.png",
+        "icons/stop.gif",
+        "icons/loading.gif",
+        "icons/cancel.png",
+        "icons/ontop.png",
+        "icons/righttoleft.png",
+        "icons/load16.gif",
+        "icons/add.png",
+        "icons/bookmarkred.png",
+        "icons/warn.png",
+        "icons/read_play.png",
+        "icons/amrlittle.png",
+        "icons/dev.png",
+        "icons/ltload.gif",
+        "icons/imgerror.png",
+        "icons/load10.gif",
+        "icons/find.png"
+    ],
+    "homepage_url": "https://www.allmangasreader.com/"
 }

@@ -1,4 +1,4 @@
-if (typeof registerMangaObject === 'function') {
+if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "Union Leitor",
         canListFullMangas: false,
@@ -20,14 +20,11 @@ if (typeof registerMangaObject === 'function') {
             })
             var res = []
             $(".bloco-manga", doc).each(function (index, bloc) {
-                let link = $(bloc).find('a:last')
+                let link = $(bloc).find("a:last")
                 if (link) {
-                    res.push([
-                        link.text().trim(),
-                        link.attr('href')
-                    ])
+                    res.push([link.text().trim(), link.attr("href")])
                 }
-            });
+            })
             return res
         },
 
@@ -35,38 +32,35 @@ if (typeof registerMangaObject === 'function') {
             let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
             let res = []
             $('.col-md-8 .capitulos a[href*="/leitor/"]', doc).each(function () {
-                res.push([
-                    $(this).text().trim(),
-                    $(this).attr('href')
-                ])
+                res.push([$(this).text().trim(), $(this).attr("href")])
             })
             return res
         },
 
         getInformationsFromCurrentPage: async function (doc, curUrl) {
-            let mga = $('.breadcrumbs div div a:last', doc)
+            let mga = $(".breadcrumbs div div a:last", doc)
             return {
-                "name": mga.text().trim(),
-                "currentMangaURL": mga.attr("href"),
-                "currentChapterURL": curUrl
-            };
+                name: mga.text().trim(),
+                currentMangaURL: mga.attr("href"),
+                currentChapterURL: curUrl
+            }
         },
 
         getListImages: async function (doc, curUrl) {
             let res = []
 
-            $('img.img-manga', doc).each(function(index, element) {
-                res.push($(this).attr('src'))
+            $("img.img-manga", doc).each(function (index, element) {
+                res.push($(this).attr("src"))
             })
-            return res;
+            return res
         },
 
         getImageFromPageAndWrite: async function (urlImg, image) {
-            $(image).attr("src", urlImg);
+            $(image).attr("src", urlImg)
         },
 
         isCurrentPageAChapterPage: function (doc, curUrl) {
-            return $('img.img-manga', doc).length > 0
+            return $("img.img-manga", doc).length > 0
         }
     })
 }

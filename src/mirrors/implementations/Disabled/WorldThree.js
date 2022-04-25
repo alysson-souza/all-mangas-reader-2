@@ -1,9 +1,9 @@
-if (typeof registerMangaObject === 'function') {
-	registerMangaObject({
+if (typeof registerMangaObject === "function") {
+    registerMangaObject({
         disabled: true,
-        mirrorName : "World Three",
-        mirrorIcon : "worldthree.png",
-        languages : "en",
+        mirrorName: "World Three",
+        mirrorIcon: "worldthree.png",
+        languages: "en",
         domains: ["www.slide.world-three.org"],
         home: "http://www.world-three.org/",
         chapter_url: /^\/read\/.+$/g,
