@@ -9,7 +9,7 @@ if (typeof registerMangaObject === "function") {
 
         abstract: "MyMangaReaderCMS",
         abstract_options: {
-            base_url: "https://www.scan-fr.cc",
+            base_url: "https://www.scan-fr.org",
             chapters_element: "ul.chapterszozo a[href*='/manga/']"
         }
     })

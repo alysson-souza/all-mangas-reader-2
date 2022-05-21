@@ -3,8 +3,8 @@ if (typeof registerMangaObject === "function") {
         mirrorName: "MangaKawaii",
         mirrorIcon: "mangakawaii.png",
         languages: "fr",
-        domains: ["www.mangakawaii.net"],
-        home: "https://www.mangakawaii.net",
+        domains: ["www.mangakawaii.io"],
+        home: "https://www.mangakawaii.io",
         chapter_url: /\/manga\/.*\/.*\/?.*$/g,
 
         getMangaList: async function (search) {
@@ -56,7 +56,7 @@ if (typeof registerMangaObject === "function") {
 
             for (page of pages) {
                 res.push(
-                    `https://cdn.mangakawaii.net/uploads/manga/${oeuvre_slug}/chapters_${applocale}/${chapter_slug}/${page.page_image}?${page.page_version}`
+                    `https://cdn.mangakawaii.pics/uploads/manga/${oeuvre_slug}/chapters_${applocale}/${chapter_slug}/${page.page_image}?${page.page_version}`
                 )
             }
             return res
