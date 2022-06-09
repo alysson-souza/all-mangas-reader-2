@@ -46,6 +46,24 @@ if (typeof registerMangaObject === "function") {
         },
 
         getListImages: async function (doc, curUrl) {
+            let images = amr.getVariable("imgHttpLis", doc)
+
+            let regex = /const batoPass = (.*?);/g
+            let matches = regex.exec(doc.innerText)
+            let batoPass = eval(matches[1])
+
+            regex = /const batoWord = (.*?);/g
+            matches = regex.exec(doc.innerText)
+            let batoWord = eval(matches[1])
+
+            let decrypted = JSON.parse(amr.crypto.AES.decrypt(batoWord, batoPass).toString(amr.crypto.enc.Utf8))
+            console.debug("Batoto shit", batoPass, batoWord, decrypted)
+
+            return images.map((image, index) => image + "?" + decrypted[index])
+            // return images
+
+            /*
+            This new thing seems temp since its a full url so I am leaving the old code commented out for easier access later
             let images = amr.getVariable("images", doc)
             let server = amr.getVariable("server", doc)
             regex = /const batojs = (.*?);/g
@@ -54,6 +72,7 @@ if (typeof registerMangaObject === "function") {
 
             let cdnPath = JSON.parse(amr.crypto.AES.decrypt(server, key).toString(amr.crypto.enc.Utf8))
             return images.map(image => cdnPath + image)
+            */
         },
 
         getImageFromPageAndWrite: async function (urlImg, image) {
