@@ -104,7 +104,7 @@ if (typeof registerMangaObject === "function") {
             const id = urlManga.split("/")[4]
             const res = {}
             // Loop with 15 iterations at most
-            for (const [page, emptyVal] of Array(15).entries()) {
+            for (const [page, emptyVal] of Array(20).entries()) {
                 // fetch data
                 const jsonChapFeed = await amr.loadJson(
                     `${this.api}/manga/${id}/feed?limit=${this.pageLimit}&order[chapter]=desc&offset=${
