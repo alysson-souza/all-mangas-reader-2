@@ -6,9 +6,9 @@ import { OptionStorage } from "./shared/OptionStorage"
 import { HandleManga } from "./background/handle-manga"
 import { AmrInit } from "./background/amr-init"
 import storedb from "./amr/storedb"
+import { converToMangadexV5 } from "./background/misc/mangedex-v5-converter"
 // import { IconHelper } from './amr/icon-helper';
-// import converToMangadexV5 from "./background/misc/mangedex-v5-converter"
-// import { Mangadex } from "./background/misc/mangadex-v5-integration"
+import { Mangadex } from "./background/misc/mangadex-v5-integration"
 
 // browser.alarms.onAlarm.addListener(function (args) {
 //     console.log(args)
@@ -89,8 +89,10 @@ const init = async () => {
     // amrUpdater.checkLatestPublishedVersion()
 
     logger.debug("Running mangadex converter")
-    // converToMangadexV5()
-    // if (store.state.options.mangadexIntegrationEnable) new Mangadex(store.getters.md_allOptions)
+    converToMangadexV5(store)
+    if (store.state.options.mangadexIntegrationEnable) {
+        new Mangadex(store.getters.md_allOptions, store.dispatch)
+    }
 
     let timers = [] // This is used to keep websites from spamming with calls. It fucks up the reader
 

@@ -9,7 +9,6 @@ import { HandleNavigation } from "./handle-navigation"
 import { OptionStorage } from "../shared/OptionStorage"
 // import HandleBookmarks from "./handle-bookmarks"
 // import HandleLab from "./handle-lab"
-// import HandleSync from "./handle-sync"
 
 /**
  * Background message listener used to communicate with service worker and pages
@@ -48,6 +47,8 @@ export class Handler {
                     mod_state_obj = mod_state_obj[message.key]
                 }
                 return serializeVuexObject(mod_state_obj)
+            case "sync_update":
+                return this.store.dispatch("updateSync", true)
         }
     }
 

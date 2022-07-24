@@ -1,16 +1,16 @@
 import * as utils from "../../amr/utils"
 
-async function converToMangadexV5() {
+export async function converToMangadexV5(store) {
     // retry later if one of these is running
-    if (window["AMR_STORE"].state.options.isUpdatingChapterLists || window["AMR_STORE"].state.options.isSyncing) {
+    if (store.state.options.isUpdatingChapterLists || store.state.options.isSyncing) {
         setTimeout(() => {
             converToMangadexV5()
         }, 30 * 1000)
         return
     }
 
-    window["AMR_STORE"].dispatch("setOption", { key: "isConverting", value: 1 }) // Set watcher
-    let mangaToUpdate = window["AMR_STORE"].state.mangas.all.filter(manga => manga.mirror == "MangaDex")
+    store.dispatch("setOption", { key: "isConverting", value: 1 }) // Set watcher
+    let mangaToUpdate = store.state.mangas.all.filter(manga => manga.mirror == "MangaDex")
 
     for (const manga of mangaToUpdate) {
         try {
@@ -64,9 +64,9 @@ async function converToMangadexV5() {
 
                 await new Promise(r => setTimeout(r, 1000))
 
-                await window["AMR_STORE"].dispatch("readManga", readmg)
+                await store.dispatch("readManga", readmg)
 
-                await window["AMR_STORE"].dispatch("deleteManga", manga)
+                await store.dispatch("deleteManga", manga)
             }
         } catch (e) {
             // Do nothing because I don't care if it fails
@@ -75,7 +75,5 @@ async function converToMangadexV5() {
 
         await new Promise(r => setTimeout(r, 2000)) // Pause to give mangadex servers a rest
     }
-    window["AMR_STORE"].dispatch("setOption", { key: "isConverting", value: 0 }) // Unset watcher
+    store.dispatch("setOption", { key: "isConverting", value: 0 }) // Unset watcher
 }
-
-export default converToMangadexV5

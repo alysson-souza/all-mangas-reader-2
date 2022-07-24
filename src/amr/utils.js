@@ -46,25 +46,6 @@ export function matchDomain(str, rule) {
 }
 
 /**
- * Test if an url matches a mirror implementation
- * Return the mirror description of the matched mirror, null if none
- * @param {*} url of the current page
- */
-export function currentPageMatch(url) {
-    let host = extractHostname(url)
-    for (let mir of window["AMR_STORE"].state.mirrors.all) {
-        if (mir.activated && mir.domains && !mir.disabled) {
-            let wss = mir.domains
-            for (let u of wss) {
-                if (matchDomain(host, u)) {
-                    return mir
-                }
-            }
-        }
-    }
-    return null
-}
-/**
  * Logs a message if debug mode
  */
 export function debug(message) {
