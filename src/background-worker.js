@@ -1,11 +1,11 @@
 import browser from "webextension-polyfill"
 import store from "./store"
 import { Handler } from "./background/handler"
-import { getLogger } from "./shared/Logger"
+import { getAppLogger } from "./shared/AppLogger"
 import { OptionStorage } from "./shared/OptionStorage"
-// import * as utils from "./amr/utils"
-// import amrInit from "./amr/amr-init"
-// import HandleManga from "./background/handle-manga"
+// import { HandleManga } from "./background/handle-manga"
+import { AmrInit } from "./background/amr-init"
+import storedb from "./amr/storedb"
 // import converToMangadexV5 from "./background/misc/mangedex-v5-converter"
 // import { Mangadex } from "./background/misc/mangadex-v5-integration"
 
@@ -28,13 +28,14 @@ chrome.alarms.onAlarm.addListener(function (...args) {
 // Initialize store
 const init = async () => {
     const optionsStorage = new OptionStorage()
-
-    /**
-     * Initialize AMR options from locaStorage
-     */
     const options = await optionsStorage.getVueOptions()
 
-    const logger = getLogger(options)
+    const logger = getAppLogger(options)
+
+    const amrInit = new AmrInit(store, storedb, optionsStorage, logger)
+
+    // const handleManga = new HandleManga(store)
+
     if (typeof globalThis.window === undefined) {
         globalThis.window = {}
     }
@@ -44,7 +45,7 @@ const init = async () => {
     /**
      * Initialize extension versioning --> after options because versionning update can affect options
      */
-    // let afterLoadingCall = await amrInit()
+    let afterLoadingCall = await amrInit.init()
 
     /**
      * Initialize mirrors list in store from DB or repo
@@ -72,7 +73,7 @@ const init = async () => {
     /**
      * Initialize bookmarks list in store from DB
      */
-    // utils.debug("Initialize bookmarks")
+    logger.debug("Initialize bookmarks")
     await store.dispatch("initBookmarksFromDB")
 
     /**
@@ -92,7 +93,7 @@ const init = async () => {
     // }
 
     // Starts message handling
-    // utils.debug("Initialize message handler")
+    logger.debug("Initialize message handler")
     handler.handle()
 
     // Check if we need to refresh chapters lists, mirrors lists and launch automatic checker
@@ -100,15 +101,9 @@ const init = async () => {
     // Check the latest published version of AMR
     // amrUpdater.checkLatestPublishedVersion()
 
-    // utils.debug("Running mangadex converter")
+    logger.debug("Running mangadex converter")
     // converToMangadexV5()
     // if (store.state.options.mangadexIntegrationEnable) new Mangadex(store.getters.md_allOptions)
-    // content script included, test if a mirror match the page and load AMR in tab
-    /*browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
-      if (changeInfo.status === "loading") { // just load scripts once, when the tab is loading
-          HandleManga.matchUrlAndLoadScripts(tabInfo.url, tabId)
-      }
-  });*/
 
     let timers = [] // This is used to keep websites from spamming with calls. It fucks up the reader
 
@@ -136,7 +131,7 @@ const init = async () => {
             timers = timers.filter(id => id != args.tabId)
         }, 500)
 
-        // HandleManga.sendPushState(args.url, args.tabId)
+        // handleManga.sendPushState(args.url, args.tabId)
     })
 }
 init()
