@@ -18,6 +18,7 @@ const stringOptions = [
     "tachideskUrl"
 ]
 
+type NumberOption = 0 | 1
 export const defaultOptions = {
     debug: 1, // display debug traces in content script, background, popup, ...
     /**
@@ -49,25 +50,25 @@ export const defaultOptions = {
      */
 
     /** Customization options */
-    newTab: 0, //Open popup in new tab
-    displastup: 0, // Display a badge with last time updated in popup
-    disppercentage: 1, // Display a circular icon with progression
-    dark: 0, // Use a dark backgroud for AMR pages,
+    newTab: 0 as NumberOption, //Open popup in new tab
+    displastup: 0 as NumberOption, // Display a badge with last time updated in popup
+    disppercentage: 1 as NumberOption, // Display a circular icon with progression
+    dark: 0 as NumberOption, // Use a dark backgroud for AMR pages,
     colornew: "green", // color of mangas with new chapters
     colorread: "blue", // color of mangas with all chapters read
     colornotfollow: "blue-grey", // color of mangas which are not followed
-    groupmgs: 1, // group manga with similar name (one piece and One Piece)
+    groupmgs: 1 as NumberOption, // group manga with similar name (one piece and One Piece)
 
     /** Updates options */
-    updatechap: 21600000, // update chapters frequency (6 hours default)
-    updatemg: 86400000, // update mirrors frequency
-    stopupdateforaweek: 0, // stop updates for a week after last chapter was found
-    checkmgstart: 0, // update chapters lists on startup
-    refreshspin: 1, // spin the icon while loading chapters
-    savebandwidth: 1, // save bandwidth while loading chapters
-    waitbetweenupdates: 2, // wait for n seconds betwwen two manga chapters update request
-    displayzero: 0, // display a grey zero when no new chapter
-    nocount: 1, // 1 : display gray sharingan and normal if new chaps; 0 : badge
+    updatechap: 21600000 as number, // update chapters frequency (6 hours default)
+    updatemg: 86400000 as number, // update mirrors frequency
+    stopupdateforaweek: 0 as number, // stop updates for a week after last chapter was found
+    checkmgstart: 0 as number, // update chapters lists on startup
+    refreshspin: 1 as number, // spin the icon while loading chapters
+    savebandwidth: 1 as number, // save bandwidth while loading chapters
+    waitbetweenupdates: 2 as number, // wait for n seconds betwwen two manga chapters update request
+    displayzero: 0 as number, // display a grey zero when no new chapter
+    nocount: 1 as number, // 1 : display gray sharingan and normal if new chaps; 0 : badge
 
     /** Notification options */
     shownotifications: 1, //display notifications on new chapter

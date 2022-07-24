@@ -83,14 +83,6 @@ const config = {
     plugins: [
         new VueLoaderPlugin(),
         new VuetifyLoaderPlugin(),
-        new ExtReloader({
-            reloadPage: true, // Force the reload of the page also
-            entries: {
-                // The entries used for the content/background scripts or extension pages
-                background: "background-worker",
-                extensionPage: "popup"
-            }
-        }),
         new CopyWebpackPlugin({
             patterns: [
                 { from: "icons", to: "icons", globOptions: { ignore: ["icon.xcf"] } },
@@ -133,16 +125,16 @@ const config = {
                 { from: "../node_modules/jquery/dist/jquery.min.js", to: "lib/jquery.min.js" }
             ]
         }),
-        // new WebpackShellPluginNext({
-        //     onBuildStart: {
-        //         //scripts: ['node ./src/mirrors/update-ws.js && echo "Mirrors Rebuilt"'],
-        //         scripts: ["node ./scripts/optimize-mirrors-icons.js", "node ./scripts/compile-mirrors.js"],
-        //         blocking: true
-        //     },
-        //     onBuildEnd: {
-        //         scripts: ["node scripts/remove-evals.js"]
-        //     }
-        // }),
+        new WebpackShellPluginNext({
+            onBuildStart: {
+                //scripts: ['node ./src/mirrors/update-ws.js && echo "Mirrors Rebuilt"'],
+                scripts: ["node ./scripts/optimize-mirrors-icons.js", "node ./scripts/compile-mirrors.js"],
+                blocking: true
+            },
+            onBuildEnd: {
+                scripts: ["node scripts/remove-evals.js"]
+            }
+        }),
         new CircularDependencyPlugin({
             // exclude detection of files based on a RegExp
             exclude: /a\.js|node_modules/,
@@ -180,17 +172,18 @@ if (process.env.NODE_ENV === "production") {
         minimizer: [new TerserPlugin()]
     }
 } else {
-    // if (process.env["--watch"]) {
-    //     config.plugins = (config.plugins || []).concat([
-    //         new webpack.HotModuleReplacementPlugin(),
-    //         new ExtensionReloader({
-    //             entries: {
-    //                 background: "background-worker",
-    //                 extensionPage: ["pages/options/options", "pages/popup/popup"]
-    //             }
-    //         })
-    //     ])
-    // }
+    if (process.argv.includes("--watch")) {
+        config.plugins = (config.plugins || []).concat([
+            new ExtReloader({
+                reloadPage: true, // Force the reload of the page also
+                entries: {
+                    // The entries used for the content/background scripts or extension pages
+                    background: "background-worker",
+                    extensionPage: "popup"
+                }
+            })
+        ])
+    }
 
     // Add manifest update after
     if (AMR_BROWSER) {
