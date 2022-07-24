@@ -39,7 +39,7 @@ const init = async () => {
      * Initialize mirrors list in store from DB or repo
      */
     logger.debug("Initialize mirrors")
-    // await store.dispatch("initMirrors")
+    await store.dispatch("initMirrors")
 
     /**
      * Initialize manga list in store from DB

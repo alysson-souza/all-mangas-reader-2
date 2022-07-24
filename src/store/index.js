@@ -2,12 +2,13 @@ import browser from "webextension-polyfill"
 import Vue from "vue"
 import Vuex from "vuex"
 // import createMutationsSharer from "vuex-shared-mutations"
-import VuexWebExtensions from "vuex-webextensions"
+// import VuexWebExtensions from "vuex-webextensions"
 import mangas from "./modules/mangas"
 import mirrors from "./modules/mirrors"
 import options from "./modules/options"
 import bookmarks from "./modules/bookmarks"
 import importexport from "./modules/importexport"
+import VuexMutationSharer from "./sharer/VuexMutationSharer"
 Vue.use(Vuex)
 
 /**
@@ -28,10 +29,9 @@ export default new Vuex.Store({
         importexport
     },
     plugins: [
-        VuexWebExtensions({
-            loggerLevel: "debug"
-        })
-    ], // share the state for every mutation
+        // share the state for every mutation
+        VuexMutationSharer({ predicate: () => true })
+    ],
     actions: {
         /**
          * Retrieve current state from reference store (background store)
