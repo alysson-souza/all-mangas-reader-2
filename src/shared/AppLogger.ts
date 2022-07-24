@@ -2,17 +2,13 @@ interface LoggerConfig {
     debug?: 0 | 1
 }
 
+type Message = string | undefined | Error
+
 export class AppLogger {
     constructor(private config: LoggerConfig) {}
 
-    log(message: string) {
-        console.log(this.getPrefix() + ": " + message)
-    }
-
-    debug(message: string) {
-        if (this.config.debug === 1) {
-            console.log(this.getPrefix() + ": " + message)
-        }
+    log(level: "log" | "info" | "error" | "debug", message: Message) {
+        console[level](this.getPrefix() + ": " + message)
     }
 
     private getPrefix() {
@@ -20,8 +16,18 @@ export class AppLogger {
         return `${t.getHours()}:${t.getMinutes()}:${t.getSeconds()} ${t.getMilliseconds()}`
     }
 
-    info(message: string) {
-        this.log(message)
+    debug(message: Message) {
+        if (this.config.debug === 1) {
+            this.log("debug", message)
+        }
+    }
+
+    info(message: Message) {
+        this.log("info", message)
+    }
+
+    error(message: Message) {
+        this.log("error", message)
     }
 }
 

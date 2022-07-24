@@ -3,9 +3,10 @@ import store from "./store"
 import { Handler } from "./background/handler"
 import { getAppLogger } from "./shared/AppLogger"
 import { OptionStorage } from "./shared/OptionStorage"
-// import { HandleManga } from "./background/handle-manga"
+import { HandleManga } from "./background/handle-manga"
 import { AmrInit } from "./background/amr-init"
 import storedb from "./amr/storedb"
+// import { IconHelper } from './amr/icon-helper';
 // import converToMangadexV5 from "./background/misc/mangedex-v5-converter"
 // import { Mangadex } from "./background/misc/mangadex-v5-integration"
 
@@ -23,8 +24,9 @@ const init = async () => {
     const logger = getAppLogger(options)
 
     const amrInit = new AmrInit(store, storedb, optionsStorage, logger)
+    // const iconHelper = new IconHelper(store)
 
-    // const handleManga = new HandleManga(store)
+    const handleManga = new HandleManga(store)
 
     const handler = new Handler(store)
 
@@ -121,7 +123,9 @@ const init = async () => {
             timers = timers.filter(id => id != args.tabId)
         }, 500)
 
-        // handleManga.sendPushState(args.url, args.tabId)
+        handleManga.sendPushState(args.url, args.tabId).catch(err => {
+            logger.error(err)
+        })
     })
 }
 init().then(() => console.info("completed background init"))

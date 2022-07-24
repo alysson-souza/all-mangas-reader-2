@@ -3,13 +3,14 @@ import * as zip from "@zip.js/zip.js"
 import saveAs from "file-saver"
 import mimedb from "mime-db"
 import axios from "axios"
-import amrUpdater from "../amr/amr-updater"
 
-zip.configure({
-    useWebWorkers: false
-})
+zip.configure({ useWebWorkers: false })
 
-class HandleMisc {
+export class HandleMisc {
+    constructor(store) {
+        this.store = store
+    }
+
     handle(message, sender) {
         switch (message.action) {
             // get options array
@@ -19,7 +20,7 @@ class HandleMisc {
                 })
                 return Promise.resolve()
             case "mirrorInfos":
-                let mirror = window["AMR_STORE"].state.mirrors.all.find(mir => mir.mirrorName === message.name)
+                let mirror = this.store.state.mirrors.all.find(mir => mir.mirrorName === message.name)
                 return Promise.resolve({
                     // can't send a vuex object through js instances on Firefox --> convert
                     activated: mirror.activated,
@@ -32,11 +33,12 @@ class HandleMisc {
             case "reloadStats":
                 return Promise.resolve(/*statsEvents.reloadStats()*/)
             case "fetchImage":
-                return window["AMR_STORE"].dispatch("fetchImage", message)
+                return this.store.dispatch("fetchImage", message)
             case "DownloadChapter":
                 return this.DownloadChapter(message)
         }
     }
+
     async DownloadChapter(message) {
         return new Promise(async (resolve, reject) => {
             const { urls, chapterName, seriesName } = message
@@ -68,4 +70,3 @@ class HandleMisc {
         })
     }
 }
-export default new HandleMisc()

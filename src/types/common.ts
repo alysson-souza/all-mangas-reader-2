@@ -3,7 +3,7 @@ import type { AppConfig } from "../shared/OptionStorage"
 
 export type AppStore = Store<{
     options: AppConfig
-    mangas: any[]
+    mangas: { all: any[] }
 }>
 
 interface AbstractOptions {

@@ -271,14 +271,14 @@ export class HandleManga {
      */
     async sendPushState(url, tabId) {
         browser.tabs
-            .executeScript(tabId, { code: "window['__armreader__'] === undefined" })
+            .executeScript(tabId, { code: "globalThis['__armreader__'] === undefined" })
             .then(async result => {
                 if (result[0]) {
                     await this.matchUrlAndLoadScripts(url, tabId)
                 } else {
                     browser.tabs
                         .executeScript(tabId, {
-                            code: "if (typeof window['onPushState'] === 'function') window['onPushState']();"
+                            code: "if (typeof globalThis['onPushState'] === 'function') globalThis['onPushState']();"
                         })
                         .catch(utils.debug)
                 }

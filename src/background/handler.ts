@@ -2,6 +2,8 @@ import browser from "webextension-polyfill"
 import { HandleVueInit } from "./handle-vue-init"
 import { AppStore } from "../types/common"
 import { serializeVuexObject } from "../amr/utils"
+import { HandleManga } from "./handle-manga"
+import { HandleMisc } from "./handle-misc"
 // import HandleManga from "./handle-manga"
 // import HandleNavigation from "./handle-navigation"
 // import HandleBookmarks from "./handle-bookmarks"
@@ -25,9 +27,9 @@ export class Handler {
             new HandleVueInit(store),
             {
                 handle: this.inlineHandleHandle
-            }
-            // HandleMisc,
-            // HandleManga,
+            },
+            new HandleManga(store),
+            new HandleMisc(store)
             // HandleNavigation,
             // HandleBookmarks,
             // HandleLab,
