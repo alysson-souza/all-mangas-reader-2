@@ -1,8 +1,6 @@
 import browser from "webextension-polyfill"
 import Vue from "vue"
 import Vuex from "vuex"
-// import createMutationsSharer from "vuex-shared-mutations"
-// import VuexWebExtensions from "vuex-webextensions"
 import mangas from "./modules/mangas"
 import mirrors from "./modules/mirrors"
 import options from "./modules/options"
