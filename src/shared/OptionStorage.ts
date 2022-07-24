@@ -96,7 +96,7 @@ export const defaultOptions = {
     searchOpenSeries: 0,
 
     /** Language options */
-    readlanguages: ["en", "gb"], // default language is english. On install, the user language is added to this list
+    readlanguages: ["en", "gb"] as string[], // default language is english. On install, the user language is added to this list
     deactivateunreadable: false, // deactivate automatically mirrors in languages that do not match readable languages
 
     /**
@@ -153,20 +153,16 @@ export const defaultOptions = {
     tachideskUrl: "http://localhost:4567 "
 } as const
 
-type AppConfig = typeof defaultOptions
+export type AppConfig = typeof defaultOptions
 
 export class OptionStorage {
     constructor() {}
-
-    private getOptionKey(key) {
-        return "o." + key
-    }
 
     private getLookupRecord() {
         return Object.entries(defaultOptions).reduce((a, [key, value]) => {
             return {
                 ...a,
-                [this.getOptionKey(key)]: value
+                [key]: value
             }
         }, {} as AppConfig)
     }

@@ -452,6 +452,7 @@ import browser from "webextension-polyfill"
 import * as utils from "../utils"
 import * as amrutils from "../../amr/utils"
 import Flag from "./Flag"
+import { chapPath } from "../../shared/utils"
 
 export default {
     data() {
@@ -494,7 +495,7 @@ export default {
         },
         // current selected value
         selValue: function () {
-            return amrutils.chapPath(this.manga.lastChapterReadURL)
+            return chapPath(this.manga.lastChapterReadURL)
         },
         // AMR options
         options: function () {
@@ -514,7 +515,7 @@ export default {
         // format chapters list to be displayed
         chapsForSelect: function () {
             return this.listChaps.map(arr => {
-                return { value: amrutils.chapPath(arr[1]), text: arr[0], url: arr[1] }
+                return { value: chapPath(arr[1]), text: arr[0], url: arr[1] }
             })
         },
         showProgress: function () {
@@ -617,7 +618,7 @@ export default {
         },
         /** get the real url from the value (url path used in select) in the manga list */
         urlFromValue: function (val) {
-            return this.listChaps.find(arr => amrutils.chapPath(arr[1]) === val)[1]
+            return this.listChaps.find(arr => chapPath(arr[1]) === val)[1]
         },
         /**
          * Mark last chapter as read

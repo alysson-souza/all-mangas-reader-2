@@ -24,21 +24,21 @@ import mirrorHelper from "../amr/mirrors-helper"
 
 let ourCss = ["https://fonts.googleapis.com/css?family=Roboto:300,400,500,700"]
 
-if (window["__armreader__"] === undefined) {
+if (globalThis["__armreader__"] === undefined) {
     // avoid loading script twice
-    window["__armreader__"] = {}
-    window["AMR_STORE"] = store
+    globalThis["__armreader__"] = {}
+    globalThis["AMR_STORE"] = store
 
-    window["onPushState"] = async function () {
+    globalThis["onPushState"] = async function () {
         //Do load manga only if it's not AMR that triggered the pushState
-        if (window["__AMR_IS_LOADING_CHAPTER__"]) {
+        if (globalThis["__AMR_IS_LOADING_CHAPTER__"]) {
             //console.log("Push state from within AMR")
-            delete window["__AMR_IS_LOADING_CHAPTER__"]
-        } else if (window["__AMR_RESTORED_PAGE__"]) {
+            delete globalThis["__AMR_IS_LOADING_CHAPTER__"]
+        } else if (globalThis["__AMR_RESTORED_PAGE__"]) {
             //console.log("Website pushed state, load AMR")
             // load AMR ! pushState comes from website
-            //window["registerMangaObject"](mirrorImpl.get()) --> css may have been lost... we need to reload the page
-            window.location.reload()
+            //globalThis["registerMangaObject"](mirrorImpl.get()) --> css may have been lost... we need to reload the page
+            globalThis.location.reload()
         } // else should reload through normal behavior
     }
 
@@ -48,7 +48,7 @@ if (window["__armreader__"] === undefined) {
      * This script is injected by background script if the page could be a manga page.
      * Once loaded, the mirror implementation is called and results in this function call
      */
-    window["registerMangaObject"] = async function (object) {
+    globalThis["registerMangaObject"] = async function (object) {
         // initialize options
         if (typeof options.load === "function") {
             options.load(await browser.runtime.sendMessage({ action: "getoptions" }))
@@ -67,13 +67,13 @@ if (window["__armreader__"] === undefined) {
         } else {
             initReader() // create the reader if this is the first chapter loaded in this environment, else, the state mutation will be enough to load new chapter
         }
-        window["__current_chapterloader__"] = chap // keep a reference to delete it later
+        globalThis["__current_chapterloader__"] = chap // keep a reference to delete it later
     }
     /**
      * This function is called when an abstraction is loaded
      */
-    window["registerAbstractImplementation"] = function (mirrorName) {
-        // do nothing there, the abstract object is loaded on the window and referenced by its name
+    globalThis["registerAbstractImplementation"] = function (mirrorName) {
+        // do nothing there, the abstract object is loaded on the globalThis and referenced by its name
     }
 }
 
@@ -204,7 +204,7 @@ function loadCss(file) {
  */
 function restorePage() {
     console.log("Restore page")
-    window["__AMR_RESTORED_PAGE__"] = true
+    globalThis["__AMR_RESTORED_PAGE__"] = true
     let cover = document.getElementById("amr-loading-cover")
     if (cover) cover.parentNode.removeChild(cover)
 

@@ -1,5 +1,6 @@
 import i18n from "./i18n"
 import axios from "axios"
+
 /**
  * Test if current browser is Firefox
  * - used to display icons in browser (Firefix supports animated svg, chrome does not)
@@ -233,13 +234,6 @@ export function fdate() {
         "-" +
         twodigits(d.getSeconds())
     )
-}
-/**
- * Return the path from a url (used for chapters url)
- */
-export function chapPath(chap_url) {
-    if (!chap_url) return chap_url
-    return chap_url.split("/").slice(3).join("/") //new URL(chap_url).pathname
 }
 /**
  * Return the list of pathname elements

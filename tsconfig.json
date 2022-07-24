@@ -5,6 +5,7 @@
         "module": "ES2022",
         "moduleResolution": "node",
         "sourceMap": true,
-        "allowSyntheticDefaultImports": true
+        "allowSyntheticDefaultImports": true,
+        "allowJs": true
     }
 }

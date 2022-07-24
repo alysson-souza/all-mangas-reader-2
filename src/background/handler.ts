@@ -1,6 +1,7 @@
 import browser from "webextension-polyfill"
 import { HandleVueInit } from "./handle-vue-init"
-import * as utils from "../amr/utils"
+import { AppStore } from "../types/common"
+import { serializeVuexObject } from "../amr/utils"
 // import HandleManga from "./handle-manga"
 // import HandleNavigation from "./handle-navigation"
 // import HandleBookmarks from "./handle-bookmarks"
@@ -14,7 +15,10 @@ import * as utils from "../amr/utils"
  * Background message listener used to communicate with service worker and pages
  */
 export class Handler {
-    constructor(store) {
+    private readonly store: AppStore
+    private readonly handlers: { handle: (message, sender) => Promise<unknown> }[]
+
+    constructor(store: AppStore) {
         this.store = store
 
         this.handlers = [
@@ -35,7 +39,7 @@ export class Handler {
     inlineHandleHandle(message, sender) {
         switch (message.action) {
             case "getoptions":
-                return Promise.resolve(utils.serializeVuexObject(this.store.state.options)) // doing that because content script is not vue aware, the reactive vuex object needs to be converted to POJSO
+                return Promise.resolve(serializeVuexObject(this.store.state.options)) // doing that because content script is not vue aware, the reactive vuex object needs to be converted to POJSO
         }
     }
 

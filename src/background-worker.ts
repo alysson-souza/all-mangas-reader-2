@@ -9,21 +9,11 @@ import storedb from "./amr/storedb"
 // import converToMangadexV5 from "./background/misc/mangedex-v5-converter"
 // import { Mangadex } from "./background/misc/mangadex-v5-integration"
 
-browser.runtime.onMessage.addListener(({ type, name }, target) => {
-    if (type === "set-name") {
-        browser.storage.local.set({ name })
-    }
-    console.log({ type, name, target })
-})
-
-browser.runtime.onSuspend.addListener(function () {
-    console.log("Unloading.")
-    browser.action.setBadgeText({ text: "U" })
-})
-
-chrome.alarms.onAlarm.addListener(function (...args) {
+browser.alarms.onAlarm.addListener(function (args) {
     console.log(args)
 })
+
+// browser.alarms.create('updateMangaList', {delayInMinutes: 0.1, periodInMinutes: 1 }, )
 
 // Initialize store
 const init = async () => {
@@ -36,14 +26,10 @@ const init = async () => {
 
     // const handleManga = new HandleManga(store)
 
-    if (typeof globalThis.window === undefined) {
-        globalThis.window = {}
-    }
-
     const handler = new Handler(store)
 
     /**
-     * Initialize extension versioning --> after options because versionning update can affect options
+     * Initialize extension versioning --> after options because versioning update can affect options
      */
     let afterLoadingCall = await amrInit.init()
 
@@ -73,8 +59,8 @@ const init = async () => {
     /**
      * Initialize bookmarks list in store from DB
      */
-    logger.debug("Initialize bookmarks")
-    await store.dispatch("initBookmarksFromDB")
+    // logger.debug("Initialize bookmarks")
+    // await store.dispatch("initBookmarksFromDB")
 
     /**
      * Call function if there is anything to do after mirrors and mangas loading
@@ -88,9 +74,9 @@ const init = async () => {
     /**
      * If option update chapters lists on startup --> do it
      */
-    // if (store.state.options.checkmgstart === 1) {
-    //     store.dispatch("updateChaptersLists", {force: false}) // force to false to avoid updating if not necessary
-    // }
+    if (store.state.options.checkmgstart === 1) {
+        store.dispatch("updateChaptersLists", { force: false }) // force to false to avoid updating if not necessary
+    }
 
     // Starts message handling
     logger.debug("Initialize message handler")
@@ -108,7 +94,9 @@ const init = async () => {
     let timers = [] // This is used to keep websites from spamming with calls. It fucks up the reader
 
     browser.webNavigation.onCommitted.addListener(args => {
-        if ("auto_subframe" === args.transitionType) return // do not reload amr on embedded iframes
+        if ("auto_subframe" === args["transitionType"]) {
+            return // do not reload amr on embedded iframes
+        }
 
         timers.push(args.tabId)
 
@@ -119,9 +107,11 @@ const init = async () => {
         // HandleManga.matchUrlAndLoadScripts(args.url, args.tabId)
     })
 
-    // pushstate events are listened from content script (if from background, we reload the page on amr navigation)
+    // push state events are listened from content script (if from background, we reload the page on amr navigation)
     browser.webNavigation.onHistoryStateUpdated.addListener(args => {
-        if ("auto_subframe" === args.transitionType) return // do not reload amr on embedded iframes
+        if ("auto_subframe" === args["transitionType"]) {
+            return
+        } // do not reload amr on embedded iframes
 
         if (timers.includes(args.tabId)) return // History spam
 
@@ -134,4 +124,4 @@ const init = async () => {
         // handleManga.sendPushState(args.url, args.tabId)
     })
 }
-init()
+init().then(() => console.info("completed background init"))

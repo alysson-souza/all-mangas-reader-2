@@ -4,6 +4,11 @@ import { amrLanguages } from "../constants/language"
 import { OptionStorage } from "../shared/OptionStorage"
 import { AppLogger } from "../shared/AppLogger"
 
+const isPositiveInteger = (x: string) => {
+    // http://stackoverflow.com/a/1019526/11236
+    return /^\d+$/.test(x)
+}
+
 export class AmrInit {
     constructor(
         private store: AppStore,
@@ -136,7 +141,7 @@ export class AmrInit {
 
         // First, validate both numbers are true version numbers
         function validateParts(parts) {
-            for (var i = 0; i < parts.length; ++i) {
+            for (let i = 0; i < parts.length; ++i) {
                 if (!isPositiveInteger(parts[i])) {
                     return false
                 }
@@ -147,7 +152,7 @@ export class AmrInit {
             return NaN
         }
 
-        for (var i = 0; i < v1parts.length; ++i) {
+        for (let i = 0; i < v1parts.length; ++i) {
             if (v2parts.length === i) {
                 return 1
             }
@@ -170,18 +175,20 @@ export class AmrInit {
 
     /**
      * Test if a version is after another
-     * return true if version > totest
+     * return true if version > toTest
      */
-    versionAfter(version: string, totest: string) {
-        return this.compareVersionNumbers(version, totest) > 0
+    versionAfter(version: string, toTest: string) {
+        return this.compareVersionNumbers(version, toTest) > 0
     }
 
     checkLangSet() {
         let curlang = navigator.language.slice(0, 2)
         // is language supported ? --> pb, sometimes, language code does not match amr code... let it be
-        const languages = amrLanguages.reduce((arr, el) => {
-            return Array.isArray(el) ? [...arr, ...el] : [...arr, el]
-        }, [] as string[])
+
+        const languages: string[] = []
+        amrLanguages.forEach(el => {
+            languages.push(...(Array.isArray(el) ? el : [el]))
+        })
 
         if (languages.includes(curlang)) {
             let readLangs = this.store.state.options.readlanguages

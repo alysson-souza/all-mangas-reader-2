@@ -21,8 +21,7 @@ const config = {
     context: __dirname + "/src",
     mode: "development",
     entry: {
-        "background/background": "./background/background.js",
-        "background-worker": "./background-worker.js",
+        "background-worker": "./background-worker.ts",
         "reader/init-reading": "./reader/init-reading.js",
         "pages/popup/popup": "./pages/popup/popup.js",
         "pages/lab/lab": "./pages/lab/lab.js",
@@ -95,8 +94,6 @@ const config = {
         new CopyWebpackPlugin({
             patterns: [
                 { from: "icons", to: "icons", globOptions: { ignore: ["icon.xcf"] } },
-                { from: "background/background.html", to: "background/background.html" },
-                { from: "background-worker.js", to: "background-worker.js" },
                 { from: "pages/popup/popup.html", to: "pages/popup/popup.html", transform: transformHtml },
                 { from: "pages/lab/lab.html", to: "pages/lab/lab.html", transform: transformHtml },
                 { from: "pages/options/options.html", to: "pages/options/options.html", transform: transformHtml },

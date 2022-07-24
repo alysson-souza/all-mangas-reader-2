@@ -3,7 +3,7 @@ import Vue from "vue"
 import Vuex from "vuex"
 // import createMutationsSharer from "vuex-shared-mutations"
 import VuexWebExtensions from "vuex-webextensions"
-// import mangas from "./modules/mangas"
+import mangas from "./modules/mangas"
 // import mirrors from "./modules/mirrors"
 import options from "./modules/options"
 // import bookmarks from "./modules/bookmarks"
@@ -21,7 +21,7 @@ Vue.use(Vuex)
  */
 export default new Vuex.Store({
     modules: {
-        // mangas,
+        mangas,
         // mirrors,
         options
         // bookmarks,

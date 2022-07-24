@@ -24,17 +24,20 @@ class StoreDB {
         this.db = undefined
         let store = this
         return new Promise((resolve, reject) => {
-            if (!window.indexedDB) {
-                window.indexedDB =
-                    window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB
+            if (!globalThis.indexedDB) {
+                globalThis.indexedDB =
+                    globalThis.indexedDB ||
+                    globalThis.mozIndexedDB ||
+                    globalThis.webkitIndexedDB ||
+                    globalThis.msIndexedDB
             }
-            if (!window.indexedDB) {
+            if (!globalThis.indexedDB) {
                 console.error("Browser does not support IndexedDB. Storage will fail")
                 store.status = 2
                 reject()
             }
 
-            let request = window.indexedDB.open("AllMangasReader", this.dbversion)
+            let request = globalThis.indexedDB.open("AllMangasReader", this.dbversion)
             request.onerror = function (event) {
                 console.error("Impossible to open database All Mangas Reader. Error code : " + event.target.errorCode)
                 store.status = 2

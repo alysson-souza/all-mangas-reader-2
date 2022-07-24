@@ -1,18 +1,16 @@
 import * as amrutils from "../amr/utils"
+import { chapPath } from "../shared/utils"
 
 export function hasNew(manga) {
     return (
         manga.read === 0 &&
         manga.listChaps.length > 0 &&
-        amrutils.chapPath(manga.lastChapterReadURL) !== amrutils.chapPath(manga.listChaps[0][1])
+        chapPath(manga.lastChapterReadURL) !== chapPath(manga.listChaps[0][1])
     )
 }
 
 export function hasBeenRead(manga) {
-    return (
-        manga.listChaps.length &&
-        amrutils.chapPath(manga.lastChapterReadURL) === amrutils.chapPath(manga.listChaps[0][1])
-    )
+    return manga.listChaps.length && chapPath(manga.lastChapterReadURL) === chapPath(manga.listChaps[0][1])
 }
 
 export function displayFilterCats(manga, categories, mirror) {

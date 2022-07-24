@@ -12,14 +12,14 @@ class MirrorsImpl {
             /**
              * This function is called when an implementation is loaded
              */
-            window["registerMangaObject"] = function (object) {
+            globalThis["registerMangaObject"] = function (object) {
                 if (mirrorsImpl.implementations === undefined) mirrorsImpl.implementations = {}
                 mirrorsImpl.implementations[object.mirrorName] = object
             }
             /**
              * This function is called when an abstraction is loaded
              */
-            window["registerAbstractImplementation"] = function (mirrorName) {
+            globalThis["registerAbstractImplementation"] = function (mirrorName) {
                 if (mirrorsImpl.abstracts === undefined) mirrorsImpl.abstracts = {}
                 mirrorsImpl.abstracts[mirrorName] = { loaded: true }
             }

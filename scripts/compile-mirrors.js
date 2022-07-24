@@ -107,9 +107,9 @@ function writeWebsites(allAbstracts, allMirrors) {
         ${allMirrors.map(conditionalExec).join("\n;")}
     }
     const websitesDescription = ${json};
-    
+
     module.exports = { loadMirrors, websitesDescription };
-    window["amrLoadMirrors"] = loadMirrors;
+    globalThis["amrLoadMirrors"] = loadMirrors;
     `
     fs.writeFile(implementationFilePath, content, () => {})
 }
