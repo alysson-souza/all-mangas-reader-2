@@ -3,10 +3,8 @@ import GistStorage from "../storage/gist-storage"
 import BrowserStorage from "../storage/browser-storage"
 import { createLocalStorage } from "../storage/local-storage"
 import * as syncUtils from "./utils"
-import * as utils from "../../amr/utils"
 import { debug } from "../utils"
 import Storage from "../storage/model-storage"
-import Manga from "../manga"
 
 const remoteStorages = {
     GistStorage,

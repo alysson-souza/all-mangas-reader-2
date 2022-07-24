@@ -758,7 +758,7 @@ import Flag from "./Flag"
 import Mangadex from "./Options.Mangadex.vue"
 import * as amrutils from "../../amr/utils"
 import * as utils from "../utils"
-import { THINSCAN } from "../../amr/options"
+import { THINSCAN } from "../../shared/Options"
 
 /**
  * Converters to format options in db and in page (ex : booleans are store as 0:1 in db)

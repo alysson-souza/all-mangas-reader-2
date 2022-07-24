@@ -76,7 +76,7 @@ IconHelper.setBlueIcon()
 
     // Starts message handling
     utils.debug("Initialize message handler")
-    Handler.handle()
+    // Handler.handle()
 
     // Check if we need to refresh chapters lists, mirrors lists and launch automatic checker
     amrUpdater.load()

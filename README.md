@@ -325,7 +325,7 @@ _Gist Sync_ is an alernative method to synchornize your manga list using a third
     - You can use `Revision` to see/restore past version of your synced data
 6. Enable Gist Sync in All Mangas Reader for all other devices, make sure they each have their own token and use the same Gist ID.
 
-:information_source: **_Browser Sync_ doesn't need to be enabled for _Gist Sync_ to work.**
+:information*source: \*\*\_Browser Sync* doesn't need to be enabled for _Gist Sync_ to work.\*\*
 
 ## Contribute
 
@@ -413,7 +413,7 @@ Open AMR popup, vue-devtools should now be connected
 **Note**: Browser extension does not work due to security restrictions
 
 ```
-Unchecked runtime.lastError while running tabs.executeScript: Cannot access a chrome-extension:// URL of different extension
+Unchecked runtime.lastError while running scripting.executeScript: Cannot access a chrome-extension:// URL of different extension
 ```
 
 ## For repository admins only

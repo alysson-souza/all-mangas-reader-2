@@ -50,7 +50,7 @@ class Notification {
             // Notification data added to letiables to be used by the old or by the new notification API.
             let description = i18n("notif_message", mangaData.mirror)
             let title = mangaData.name
-            let icon = browser.extension.getURL("/icons/icon_32.png")
+            let icon = browser.runtime.getURL("/icons/icon_32.png")
             let url = mangaData.url
             if (browser.notifications) {
                 // The new API have no notification object, so can't save data on it.

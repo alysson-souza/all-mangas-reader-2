@@ -1,9 +1,10 @@
 const webpack = require("webpack")
+const ExtReloader = require("webpack-ext-reloader")
 const { CleanWebpackPlugin } = require("clean-webpack-plugin")
 const WebpackShellPluginNext = require("webpack-shell-plugin-next")
+const path = require("path")
 const CopyWebpackPlugin = require("copy-webpack-plugin")
 const TerserPlugin = require("terser-webpack-plugin")
-const ExtensionReloader = require("webpack-extension-reloader")
 const VueLoaderPlugin = require("vue-loader/lib/plugin")
 const CircularDependencyPlugin = require("circular-dependency-plugin")
 const VuetifyLoaderPlugin = require("vuetify-loader/lib/plugin")
@@ -14,21 +15,22 @@ const isFirefox = AMR_BROWSER === "firefox"
 const isChrome = AMR_BROWSER === "chrome"
 
 const config = {
-    devtool:
-        "cheap-module-source-map" /* In Webpack 4, defaults devtool outputs an eval() for speeding compil but this obvioulsy fail in chrome extension due to CSP */,
+    /* In Webpack 4, defaults devtool outputs an eval() for speeding compile
+  but this obviously fail in chrome extension due to CSP */
+    devtool: "cheap-module-source-map",
     context: __dirname + "/src",
     mode: "development",
     entry: {
         "background/background": "./background/background.js",
+        "background-worker": "./background-worker.js",
         "reader/init-reading": "./reader/init-reading.js",
         "pages/popup/popup": "./pages/popup/popup.js",
         "pages/lab/lab": "./pages/lab/lab.js",
         "pages/options/options": "./pages/options/options.js",
         "pages/bookmarks/bookmarks": "./pages/bookmarks/bookmarks.js",
         "pages/importexport/importexport": "./pages/importexport/importexport.js",
-        "backup/index": "./backup/amr-backup.js",
-        // 'stats/piwik': './stats/piwik.js',
-        "mirrors/register_implementations": "./mirrors/register_implementations.js"
+        "backup/index": "./backup/amr-backup.js"
+        // "mirrors/register_implementations": "./mirrors/register_implementations.js"
     },
     output: {
         path: __dirname + "/dist",
@@ -38,7 +40,7 @@ const config = {
         alias: {
             vue$: "vue/dist/vue.runtime.esm.js"
         },
-        extensions: ["*", ".js", ".vue", ".json"],
+        extensions: ["*", ".ts", ".js", ".vue", ".json"],
         fallback: {
             crypto: require.resolve("crypto-browserify"),
             stream: require.resolve("stream-browserify"),
@@ -48,8 +50,19 @@ const config = {
     module: {
         rules: [
             {
+                test: /\.ts$/,
+                exclude: /node_modules|vue\/src/,
+                loader: "ts-loader",
+                options: {
+                    appendTsSuffixTo: [/\.vue$/]
+                }
+            },
+            {
                 test: /\.vue$/,
-                loader: "vue-loader"
+                loader: "vue-loader",
+                options: {
+                    esModule: true
+                }
             },
             {
                 test: /\.css$/,
@@ -71,10 +84,19 @@ const config = {
     plugins: [
         new VueLoaderPlugin(),
         new VuetifyLoaderPlugin(),
+        new ExtReloader({
+            reloadPage: true, // Force the reload of the page also
+            entries: {
+                // The entries used for the content/background scripts or extension pages
+                background: "background-worker",
+                extensionPage: "popup"
+            }
+        }),
         new CopyWebpackPlugin({
             patterns: [
                 { from: "icons", to: "icons", globOptions: { ignore: ["icon.xcf"] } },
                 { from: "background/background.html", to: "background/background.html" },
+                { from: "background-worker.js", to: "background-worker.js" },
                 { from: "pages/popup/popup.html", to: "pages/popup/popup.html", transform: transformHtml },
                 { from: "pages/lab/lab.html", to: "pages/lab/lab.html", transform: transformHtml },
                 { from: "pages/options/options.html", to: "pages/options/options.html", transform: transformHtml },
@@ -98,13 +120,14 @@ const config = {
                         if (config.mode !== "development") {
                             return content
                         }
-                        const ext = JSON.parse(content)
-                        // Add dev env tools
-                        const extra = " 'unsafe-eval' http://localhost:8098 'unsafe-inline'"
-                        const [scriptSource, ...rest] = ext.content_security_policy.split(";")
-                        ext.content_security_policy = `${scriptSource} ${extra}; ${rest.join(";")}`
-
-                        return JSON.stringify(ext, null, 2)
+                        return content
+                        // const ext = JSON.parse(content)
+                        // // Add dev env tools
+                        // const extra = " 'unsafe-eval' http://localhost:8098 'unsafe-inline'"
+                        // const [scriptSource, ...rest] = ext.content_security_policy.extension_pages.split(";")
+                        // ext.content_security_policy.extension_pages = `${scriptSource} ${extra}; ${rest.join(";")}`
+                        //
+                        // return JSON.stringify(ext, null, 2)
                     }
                 },
                 { from: "reader/*.css", to: "." },
@@ -113,16 +136,16 @@ const config = {
                 { from: "../node_modules/jquery/dist/jquery.min.js", to: "lib/jquery.min.js" }
             ]
         }),
-        new WebpackShellPluginNext({
-            onBuildStart: {
-                //scripts: ['node ./src/mirrors/update-ws.js && echo "Mirrors Rebuilt"'],
-                scripts: ["node ./scripts/optimize-mirrors-icons.js", "node ./scripts/compile-mirrors.js"],
-                blocking: true
-            },
-            onBuildEnd: {
-                scripts: ["node scripts/remove-evals.js"]
-            }
-        }),
+        // new WebpackShellPluginNext({
+        //     onBuildStart: {
+        //         //scripts: ['node ./src/mirrors/update-ws.js && echo "Mirrors Rebuilt"'],
+        //         scripts: ["node ./scripts/optimize-mirrors-icons.js", "node ./scripts/compile-mirrors.js"],
+        //         blocking: true
+        //     },
+        //     onBuildEnd: {
+        //         scripts: ["node scripts/remove-evals.js"]
+        //     }
+        // }),
         new CircularDependencyPlugin({
             // exclude detection of files based on a RegExp
             exclude: /a\.js|node_modules/,
@@ -160,17 +183,17 @@ if (process.env.NODE_ENV === "production") {
         minimizer: [new TerserPlugin()]
     }
 } else {
-    if (process.env["--watch"]) {
-        config.plugins = (config.plugins || []).concat([
-            new webpack.HotModuleReplacementPlugin(),
-            new ExtensionReloader({
-                entries: {
-                    background: "background/background",
-                    extensionPage: ["pages/options/options", "pages/popup/popup"]
-                }
-            })
-        ])
-    }
+    // if (process.env["--watch"]) {
+    //     config.plugins = (config.plugins || []).concat([
+    //         new webpack.HotModuleReplacementPlugin(),
+    //         new ExtensionReloader({
+    //             entries: {
+    //                 background: "background-worker",
+    //                 extensionPage: ["pages/options/options", "pages/popup/popup"]
+    //             }
+    //         })
+    //     ])
+    // }
 
     // Add manifest update after
     if (AMR_BROWSER) {

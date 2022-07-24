@@ -8,7 +8,8 @@ import store from "../../store"
 import vuetifyOptions from "../vuetifyOptions"
 import * as util from "../utils"
 // import 'vuetify/src/stylus/main.styl'
-;(async function () {
+
+const init = async () => {
     window["AMR_STORE"] = store
 
     // Load options in store before everything
@@ -77,4 +78,5 @@ import * as util from "../utils"
         })
         window.close()
     }
-})()
+}
+init()

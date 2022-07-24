@@ -688,7 +688,6 @@ import WizDialog from "./components/WizDialog"
 import BookmarkPopup from "./components/BookmarkPopup"
 import ShortcutsPopup from "./components/ShortcutsPopup"
 import SocialBar from "./components/SocialBar"
-import { THINSCAN } from "../amr/options"
 import {
     mdiMenu,
     mdiChevronRight,
@@ -722,6 +721,7 @@ import {
     mdiLightbulbOn,
     mdiMagnify
 } from "@mdi/js"
+import { THINSCAN } from "../shared/Options"
 
 /** Possible values for resize (readable), the stored value is the corresponding index */
 const resize_values = ["width", "height", "container", "none"]

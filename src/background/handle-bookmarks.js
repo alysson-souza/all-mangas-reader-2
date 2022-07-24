@@ -30,7 +30,7 @@ class HandleBookmarks {
                         title: i18n("background_bookmark_menu"),
                         contexts: ["image", "link"],
                         onclick: function (info, tab) {
-                            browser.tabs.executeScript(tab.id, {
+                            browser.scripting.executeScript(tab.id, {
                                 code: 'clickOnBM("' + info.srcUrl + '")'
                             })
                         },

@@ -1,6 +1,7 @@
-import iconHelper from "./icon-helper"
+import { IconHelper } from "./icon-helper"
 import Axios from "axios"
 
+const iconHelper = new IconHelper(window["AMR_STORE"])
 /**
  * This class is used to update periodically manga chapters lists and mirrors list
  */

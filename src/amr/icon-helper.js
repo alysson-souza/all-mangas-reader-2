@@ -1,15 +1,15 @@
 import browser from "webextension-polyfill"
 import * as utils from "./utils"
-import amrUpdater from "./amr-updater"
 
 /**
  * Class used to change AMR icon
  */
-class IconHelper {
+export class IconHelper {
     /**
      * Initialize canvas to draw icon on chrome which does not support animated svg as icon
      */
-    constructor() {
+    constructor(store) {
+        this.store = store
         // We spin the sharingan programmatically even in Firefox (which supports animated svg) because this way, we can pass from grey to colored sharingan smoothly and stop the spinning properly
         //if (!utils.isFirefox()) {
         this.doEase = true
@@ -38,7 +38,7 @@ class IconHelper {
         } else {
             // white text + red background (same red as AMR icon)
             if (utils.isFirefox()) browser.browserAction.setBadgeTextColor({ color: "#ffffff" })
-            browser.browserAction.setBadgeBackgroundColor({ color: "#bd0000" })
+            browser.action.setBadgeBackgroundColor({ color: "#bd0000" })
         }
     }
     resetBadge() {
@@ -105,7 +105,7 @@ class IconHelper {
         this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height)
         this.canvasContext.translate(this.canvas.width / 2, this.canvas.height / 2)
         this.canvasContext.rotate(2 * Math.PI * (doEase ? this.ease(this.rotation) : this.rotation))
-        if (window["AMR_STORE"].state.options.nocount == 1 && !window["AMR_STORE"].getters.hasNewMangas) {
+        if (this.store.state.options.nocount == 1 && !this.store.getters.hasNewMangas) {
             this.canvasContext.drawImage(this.icon_bw, -this.canvas.width / 2, -this.canvas.height / 2)
         } else {
             this.canvasContext.drawImage(this.icon, -this.canvas.width / 2, -this.canvas.height / 2)
@@ -126,7 +126,7 @@ class IconHelper {
                 this.requireStop = false
                 this.spinning = false
                 // update the badge and icon one last time
-                amrUpdater.refreshBadgeAndIcon()
+                // amrUpdater.refreshBadgeAndIcon()
                 return
             }
             this.rotation = this.rotation - 1
@@ -135,6 +135,31 @@ class IconHelper {
         this.drawIconAtRotation(false)
         setTimeout(this.waitSpinning.bind(this), this.animationSpeed)
     }
+
+    /**
+     * Refresh badge and icon
+     */
+    refreshBadgeAndIcon() {
+        let nbnew = this.store.getters.nbNewMangas
+        if (this.store.state.options.nocount == 1) {
+            this.resetBadge() // remove badge
+            // display a grey badge if no new mangas
+            if (nbnew > 0) {
+                this.resetIcon()
+            } else {
+                this.setBWIcon()
+            }
+        } else {
+            this.resetIcon()
+            if (this.store.state.options.displayzero === 1) {
+                this.updateBadge(nbnew)
+            } else {
+                if (nbnew == 0) this.resetBadge()
+                else this.updateBadge(nbnew)
+            }
+        }
+    }
+
     /**
      * Ease for rotation
      * @param {*} x

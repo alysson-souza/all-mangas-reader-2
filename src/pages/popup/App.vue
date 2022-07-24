@@ -322,10 +322,7 @@ export default {
          * Opens a url
          */
         opentab(url) {
-            browser.runtime.sendMessage({
-                action: "opentab",
-                url: url
-            })
+            browser.tabs.create({ url })
         },
         /** Opens import export tab. If Firefox, opens it in a new tab because file input closes the extension : https://bugzilla.mozilla.org/show_bug.cgi?id=1292701 */
         openImportExport() {

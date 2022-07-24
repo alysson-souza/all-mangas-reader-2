@@ -8,8 +8,8 @@ import storedb from "../amr/storedb"
 /** Scripts to inject in pages containing mangas for new reader */
 const contentScriptsV2 = [
     { file: "/lib/jquery.min.js" },
-    { file: "/reader/init-reading.js" },
-    { file: "/mirrors/register_implementations.js" }
+    { file: "/reader/init-reading.js" }
+    // { file: "/mirrors/register_implementations.js" }
 ]
 
 class HandleManga {
@@ -176,7 +176,7 @@ class HandleManga {
      * @param {*} tabId
      */
     async waitForCloudflare(tabId) {
-        const firstTry = await browser.tabs.executeScript(tabId, {
+        const firstTry = await browser.scripting.executeScript(tabId, {
             code: "document.body.innerText;"
         })
         const firstCheck = firstTry[0].match(/checking your browser before accessing/gim)
@@ -184,7 +184,7 @@ class HandleManga {
         return new Promise((resolve, reject) => {
             let tries = 0
             let interval = setInterval(async () => {
-                const results = await browser.tabs.executeScript(tabId, {
+                const results = await browser.scripting.executeScript(tabId, {
                     code: "document.body.innerText;"
                 })
                 const checks = results[0].match(/checking your browser before accessing/gim)
@@ -232,7 +232,7 @@ class HandleManga {
         let bgcolor = "#424242"
         if (window["AMR_STORE"].state.options.darkreader === 0) bgcolor = "white"
         loading.push(
-            browser.tabs.executeScript(tabId, {
+            browser.scripting.executeScript(tabId, {
                 code: `
                 let amr_icon_url = '${browser.extension.getURL("/icons/icon_128.png")}';
                 let cover = document.createElement("div")
@@ -254,9 +254,9 @@ class HandleManga {
 
         // Inject content scripts in matched tab
         for (let script of contentScriptsV2) {
-            await browser.tabs.executeScript(tabId, script)
+            await browser.scripting.executeScript(tabId, script)
         }
-        await browser.tabs.executeScript(tabId, { code: `window["amrLoadMirrors"]("${mir.mirrorName}")` })
+        await browser.scripting.executeScript(tabId, { code: `window["amrLoadMirrors"]("${mir.mirrorName}")` })
         return Promise.resolve(utils.serializeVuexObject(mir)) // doing that because content script is not vue aware, the reactive vuex object needs to be converted to POJSO
     }
     /**

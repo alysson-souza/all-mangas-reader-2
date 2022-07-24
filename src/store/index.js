@@ -1,12 +1,13 @@
 import browser from "webextension-polyfill"
 import Vue from "vue"
 import Vuex from "vuex"
-import createMutationsSharer from "vuex-shared-mutations"
-import mangas from "./modules/mangas"
-import mirrors from "./modules/mirrors"
+// import createMutationsSharer from "vuex-shared-mutations"
+import VuexWebExtensions from "vuex-webextensions"
+// import mangas from "./modules/mangas"
+// import mirrors from "./modules/mirrors"
 import options from "./modules/options"
-import bookmarks from "./modules/bookmarks"
-import importexport from "./modules/importexport"
+// import bookmarks from "./modules/bookmarks"
+// import importexport from "./modules/importexport"
 Vue.use(Vuex)
 
 /**
@@ -20,13 +21,17 @@ Vue.use(Vuex)
  */
 export default new Vuex.Store({
     modules: {
-        mangas,
-        mirrors,
-        options,
-        bookmarks,
-        importexport
+        // mangas,
+        // mirrors,
+        options
+        // bookmarks,
+        // importexport
     },
-    plugins: [createMutationsSharer({ predicate: () => true })], // share the state for every mutation
+    plugins: [
+        VuexWebExtensions({
+            loggerLevel: "debug"
+        })
+    ], // share the state for every mutation
     actions: {
         /**
          * Retrieve current state from reference store (background store)
@@ -39,8 +44,13 @@ export default new Vuex.Store({
                 await browser.runtime
                     .sendMessage({ action: "vuex_initstate", module: module, key: key })
                     .then(async object => {
+                        console.log({ object })
                         await commit(mutation, object)
                         resolve()
+                    })
+                    .catch(e => {
+                        console.error(e, "getStateFromReference")
+                        reject(e)
                     })
             })
         }

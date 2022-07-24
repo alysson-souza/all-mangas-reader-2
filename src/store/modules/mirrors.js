@@ -1,6 +1,6 @@
 import storedb from "../../amr/storedb"
 // import * as utils from '../../amr/utils'
-import iconHelper from "../../amr/icon-helper"
+// import iconHelper from "../../amr/icon-helper"
 import mirrorsImpl from "../../amr/mirrors-impl"
 import amrUpdater from "../../amr/amr-updater"
 import { websitesDescription } from "../../mirrors/register_implementations"
@@ -73,7 +73,7 @@ const actions = {
     // update mirrors from repository
     async updateMirrorsLists({ commit, dispatch, rootState }) {
         // set the blue badge
-        iconHelper.setBlueIcon()
+        // iconHelper.setBlueIcon()
 
         // reset implementations
         commit("resetImplementations")
