@@ -1,9 +1,8 @@
 import Vue from "vue"
 import storedb from "../../amr/storedb"
 import Manga, { MANGA_READ_STOP, MANGA_UPDATE_STOP } from "../../amr/manga"
-// import mirrorsImpl from "../../amr/mirrors-impl"
-// import notifications from "../../amr/notifications"
-// import statsEvents from "../../amr/stats-events"
+import mirrorsImpl from "../../amr/mirrors-impl"
+import { getNotifications } from "../../amr/notifications"
 import samples from "../../amr/samples"
 import * as syncUtils from "../../amr/sync/utils"
 import { getSyncManager } from "../../amr/sync/sync-manager"
@@ -232,7 +231,7 @@ const actions = {
             url: message.url,
             mirror: message.mirror,
             language: message.language,
-            mirrors: rootState.state.mirrors.all
+            rootState
         })
         message.key = key
         const mg = state.all.find(manga => manga.key === key)
@@ -248,12 +247,12 @@ const actions = {
      * @param {*} vuex object
      * @param {*} message containing url of the manga and new layout mode
      */
-    async setMangaLayoutMode({ dispatch, commit, getters }, message, fromSync) {
+    async setMangaLayoutMode({ dispatch, commit, getters, rootState }, message, fromSync) {
         const key = mangaKey({
             url: message.url,
             mirror: message.mirror,
             language: message.language,
-            mirrors: rootState.state.mirrors.all
+            rootState
         })
         message.key = key
         const mg = state.all.find(manga => manga.key === key)
@@ -274,7 +273,7 @@ const actions = {
             url: message.url,
             mirror: message.mirror,
             language: message.language,
-            mirrors: rootState.state.mirrors.all
+            rootState
         })
 
         message.key = key
@@ -296,7 +295,7 @@ const actions = {
             url: message.url,
             mirror: message.mirror,
             language: message.language,
-            mirrors: rootState.state.mirrors.all
+            rootState
         })
         message.key = key
         const mg = state.all.find(manga => manga.key === key)
@@ -332,7 +331,7 @@ const actions = {
             url: message.url,
             mirror: message.mirror,
             language: message.language,
-            mirrors: rootState.state.mirrors.all
+            rootState
         })
         commit("resetManga", message)
         let mg = state.all.find(manga => manga.key === key)
@@ -352,7 +351,7 @@ const actions = {
             url: message.url,
             mirror: message.mirror,
             language: message.language,
-            mirrors: rootState.state.mirrors.all
+            rootState
         })
         commit("saveCurrentState", message)
         let mg = state.all.find(manga => manga.key === key)
@@ -365,7 +364,7 @@ const actions = {
             url: message.url,
             mirror: message.mirror,
             language: message.language,
-            mirrors: rootState.state.mirrors.all
+            rootState
         })
         const mg = state.all.find(manga => manga.key === key)
         try {
@@ -396,7 +395,7 @@ const actions = {
             url: message.url,
             mirror: message.mirror,
             language: message.language,
-            mirrors: rootState.state.mirrors.all
+            rootState
         })
         if (key.indexOf("unknown") === 0) {
             console.error("Impossible to import manga because mirror can't be found. Perhaps has it been deleted...")
@@ -419,10 +418,6 @@ const actions = {
 
         dispatch("findAndUpdateManga", mg)
 
-        // Ignore sync updates for stats
-        if (!message.isSync && !message.fromSite) {
-            // statsEvents.trackReadManga(mg);
-        }
         // refresh badge
         amrUpdater.refreshBadgeAndIcon()
     },
@@ -431,8 +426,7 @@ const actions = {
      */
     async getMangaListOfChapters({ dispatch, commit, getters }, manga) {
         debug("getMangaListOfChapters : get implementation of " + manga.mirror)
-        // @TODO resolve
-        const impl = undefined // await mirrorsImpl.getImpl(manga.mirror)
+        const impl = await mirrorsImpl.getImpl(manga.mirror)
         if (!impl || impl.disabled) {
             await dispatch("disabledManga", manga)
             throw new Error(`Failed to get implementation for mirror ${manga.mirror}`)
@@ -469,7 +463,7 @@ const actions = {
             url: message.url,
             mirror: message.mirror,
             language: message.language,
-            mirrors: rootState.state.mirrors.all
+            rootState
         })
         let posOld = -1,
             posNew = -1,
@@ -645,7 +639,7 @@ const actions = {
             url: message.url,
             mirror: message.mirror,
             language: message.language,
-            mirrors: rootState.state.mirrors.all
+            rootState
         })
         const mg = state.all.find(manga => manga.key === key)
         if (mg.update !== 1) {
@@ -665,7 +659,9 @@ const actions = {
         const newLastChap = mg.listChaps[0][1]
 
         if (newLastChap !== oldLastChap && oldLastChap !== undefined) {
-            // if (!fromSync && !message.isSync) notifications.notifyNewChapter(mg)
+            if (!fromSync && !message.isSync) {
+                this.notifications.notifyNewChapter(mg)
+            }
             commit("updateMangaLastChapTime", { key: mg.key })
         }
 
@@ -811,7 +807,7 @@ const actions = {
             }
 
             // we update if it has been forced by the user (through option or timers page) or if we need to update
-            if (force || shouldCheckForUpdate(mg, rootState.options)) {
+            if (force || shouldCheckForUpdate(mg, rootState.options, logger)) {
                 if (!(mg.mirror in mirrorTasks)) {
                     mirrorTasks[mg.mirror] = []
                 }
@@ -856,7 +852,7 @@ const actions = {
             url: message.url,
             mirror: message.mirror,
             language: message.language,
-            mirrors: rootState.state.mirrors.all
+            rootState
         })
         const mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
@@ -881,7 +877,7 @@ const actions = {
             url: message.url,
             mirror: message.mirror,
             language: message.language,
-            mirrors: rootState.state.mirrors.all
+            rootState
         })
         const mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
@@ -1342,6 +1338,9 @@ const mutations = {
 }
 
 export default {
+    created() {
+        this.notifications = getNotifications(this.$store)
+    },
     state,
     getters,
     actions,

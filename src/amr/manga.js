@@ -10,7 +10,7 @@ export const MANGA_UPDATE_STOP = 0
 /**
  * Manga entry followed in AMR
  */
-export default class {
+export default class Manga {
     /**
      * Manga object constructor, copy properties and check validation
      * @param {*} obj

@@ -1,5 +1,7 @@
-import { afterHostURL, debug, extractHostname, getUnifiedLang, matchDomain, urlwords } from "../amr/utils"
-import { Mirror } from "../types/common"
+import { AppManga, AppStore, Mirror } from "../types/common"
+import { AppLogger } from "./AppLogger"
+import { AppConfig } from "./OptionStorage"
+import { amrLanguages } from "../constants/language"
 
 /**
  * Return the path from a url (used for chapters url)
@@ -7,6 +9,40 @@ import { Mirror } from "../types/common"
 export function chapPath(chap_url: string | undefined) {
     if (!chap_url) return chap_url
     return chap_url.split("/").slice(3).join("/") //new URL(chap_url).pathname
+}
+
+export const getUrlParts = url => url.split("/").slice(3)
+
+/**
+ * Extract the part of a url following the domain
+ * @param {*} url
+ */
+export function afterHostURL(url) {
+    //find & remove protocol (http, ftp, etc.) and get hostname
+    if (url.indexOf("://") > -1 || url.indexOf("//") === 0) {
+        return url.split("/").splice(3).join("/")
+    }
+    return url.split("/").splice(1).join("/")
+}
+
+/**
+ * Extract the full host name
+ * @param {*} url
+ */
+function extractHostname(url) {
+    return new URL(url).host
+}
+
+export function getUnifiedLang(lang) {
+    if (amrLanguages.includes(lang)) {
+        return lang
+    }
+    for (let l of amrLanguages) {
+        if (Array.isArray(l) && l.includes(lang)) {
+            return l[0]
+        }
+    }
+    return undefined
 }
 
 function safename(name: string | null | undefined) {
@@ -52,11 +88,8 @@ export function isMultiLanguageList(listChaps) {
  * check if we are in a pause case (if pause for a week option is checked,
  * we check updates only during 2 days (one before and one after)
  * around each 7 days after last chapter found)
- * @param mg
- * @param {{ stopupdateforaweek: number }} options
- * @return {boolean}
  */
-export const shouldCheckForUpdate = (mg, options) => {
+export const shouldCheckForUpdate = (mg: AppManga, options: AppConfig, logger: AppLogger) => {
     if (!mg.upts || options.stopupdateforaweek !== 1) {
         // No update time or stopupdateforaweek is not enabled
         return true
@@ -71,7 +104,7 @@ export const shouldCheckForUpdate = (mg, options) => {
     const shouldUpdate = mg.upts + week * nbweeks - day <= Date.now() && Date.now() <= mg.upts + week * nbweeks + day
 
     if (shouldUpdate) {
-        debug(
+        logger.debug(
             "Manga " +
                 mg.key +
                 " has been updated less than " +
@@ -79,7 +112,7 @@ export const shouldCheckForUpdate = (mg, options) => {
                 " ago. We are in the minus one day to plus one day gap for this week number. We update the chapters list."
         )
     } else {
-        debug(
+        logger.debug(
             "Manga " +
                 mg.key +
                 " has been updated less than " +
@@ -109,19 +142,18 @@ export function readLanguage(manga: any, mirrors: Mirror[]) {
  * Return n the number of matched pathname parts
  */
 export function matchurl(url, paths) {
-    let chps = urlwords(url)
-    let res = chps.reduce((nb, path) => (paths.findIndex(p => path === p) >= 0 ? nb + 1 : nb), 0)
-    return res
+    return getUrlParts(url).reduce((nb, path) => (paths.findIndex(p => path === p) >= 0 ? nb + 1 : nb), 0)
 }
+
 /**
  * Find the probable chapter from its url and list of chapters
  */
 export function findProbableChapter(lastReadURL, list) {
-    let lws = urlwords(lastReadURL)
+    const urlParts = getUrlParts(lastReadURL)
     let max = 0
     let lstMax = []
     for (let arr of list) {
-        let prob = matchurl(arr[1], lws)
+        let prob = matchurl(arr[1], urlParts)
         if (prob > max) {
             max = prob
             lstMax = [arr]
@@ -137,10 +169,23 @@ interface MangaKeyParams {
     url: string | undefined
     mirror: any
     shouldConcat: any
-    mirrors: Mirror[]
+    rootState: AppStore
 }
 
-export function mangaKey({ url, mirror, shouldConcat, mirrors }: MangaKeyParams) {
+/**
+ * Test if an url match an url pattern containing wildcards
+ */
+export function matchDomain(str: string, rule: string, store: AppStore) {
+    if (rule == "komga") {
+        rule = new URL(store.state.options.komgaUrl).host
+    }
+    if (rule == "tachidesk") {
+        rule = new URL(store.state.options.tachideskUrl).host
+    }
+    return new RegExp("^" + rule.replace(/\*/g, ".*") + "$").test(str)
+}
+
+export function mangaKey({ url, mirror, shouldConcat, rootState }: MangaKeyParams) {
     if (!url) {
         console.error(
             "A manga key has been requested for undefined url, it will be melted in your database with other mangas with same issue, check the implementation of the mirror where your read this manga."
@@ -148,13 +193,15 @@ export function mangaKey({ url, mirror, shouldConcat, mirrors }: MangaKeyParams)
         return "_no_key_" // should not happen !
     }
 
+    const mirrors = rootState.state.mirrors.all
+
     let mstr = "unknown" // should never be unknown. Old domains need to be kept in domains description in the implementations
     if (mirror !== undefined) {
         mstr = safename(mirror)
     } else {
         const host = extractHostname(url)
         // look for mirror implementation matching this root domain
-        let mirror = mirrors.find(mir => mir.domains.some(ws => matchDomain(host, ws)))
+        let mirror = mirrors.find(mir => mir.domains.some(ws => matchDomain(host, ws, rootState)))
         if (mirror) {
             mstr = safename(mirror.mirrorName)
         }

@@ -11,8 +11,6 @@ import { OptionStorage } from "../../shared/OptionStorage"
 // import 'vuetify/src/stylus/main.styl'
 
 const init = async () => {
-    globalThis["AMR_STORE"] = store
-
     // Load options in store before everything
     const optionStore = new OptionStorage()
     const options = await optionStore.getVueOptions()

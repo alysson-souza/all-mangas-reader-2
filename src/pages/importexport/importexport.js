@@ -3,9 +3,8 @@ import Vuetify from "vuetify/lib"
 import App from "./App.vue"
 import store from "../../store"
 import vuetifyOptions from "../vuetifyOptions"
-;(async function () {
-    window["AMR_STORE"] = store
 
+const init = async () => {
     // Load options in store before everything
     await store.dispatch("getStateFromReference", {
         module: "options",
@@ -15,7 +14,7 @@ import vuetifyOptions from "../vuetifyOptions"
     // Load vue
     Vue.config.productionTip = false
     Vue.use(Vuetify)
-    vuetifyOptions.theme.dark = window["AMR_STORE"].state.options.dark === 1
+    vuetifyOptions.theme.dark = store.state.options.dark === 1
     new Vue({
         el: "#app",
         store,
@@ -23,4 +22,5 @@ import vuetifyOptions from "../vuetifyOptions"
 
         render: h => h(App)
     })
-})()
+}
+init()

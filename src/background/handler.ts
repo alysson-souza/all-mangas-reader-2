@@ -4,6 +4,7 @@ import { AppStore } from "../types/common"
 import { serializeVuexObject } from "../amr/utils"
 import { HandleManga } from "./handle-manga"
 import { HandleMisc } from "./handle-misc"
+import { HandleImportExport } from "./handle-import-export"
 // import HandleManga from "./handle-manga"
 // import HandleNavigation from "./handle-navigation"
 // import HandleBookmarks from "./handle-bookmarks"
@@ -11,7 +12,6 @@ import { HandleMisc } from "./handle-misc"
 // import HandleVueInit from "./handle-vue-init"
 // import HandleLab from "./handle-lab"
 // import HandleSync from "./handle-sync"
-// import HandleImportExport from "./handle-importexport"
 
 /**
  * Background message listener used to communicate with service worker and pages
@@ -29,12 +29,12 @@ export class Handler {
                 handle: this.inlineHandleHandle
             },
             new HandleManga(store),
-            new HandleMisc(store)
+            new HandleMisc(store),
             // HandleNavigation,
             // HandleBookmarks,
             // HandleLab,
             // HandleSync,
-            // HandleImportExport
+            new HandleImportExport(store)
         ]
     }
 

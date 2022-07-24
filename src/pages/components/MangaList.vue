@@ -637,9 +637,8 @@ export default {
                         : 1
                 }
             }
-            return items.sort(function (a, b) {
-                return AMR_STORE.getters.options.alpha_asc_desc ? cmp(b, a) : cmp(a, b)
-            })
+            const sortOption = this.$store.getters.options.alpha_asc_desc
+            return items.sort((a, b) => (sortOption ? cmp(b, a) : cmp(a, b)))
         },
         moveNavigation: function () {
             let newDir = ""

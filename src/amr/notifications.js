@@ -6,7 +6,8 @@ import i18n from "./i18n"
  * Managa browser notifications
  */
 class Notification {
-    constructor() {
+    constructor(store) {
+        this.store = store
         // store current opened notifications
         this.notifications = {}
         // last id of notification
@@ -40,7 +41,7 @@ class Notification {
      * @param {} mg manga to notify for
      */
     notifyNewChapter(mg) {
-        if (mg.read === 0 && window["AMR_STORE"].state.options.shownotifications === 1) {
+        if (mg.read === 0 && this.store.state.options.shownotifications === 1) {
             let urls = mg.listChaps.map(chap => chap[1])
             let mangaData = {
                 name: mg.displayName ? mg.displayName : mg.name,
@@ -69,14 +70,20 @@ class Notification {
                 // opens the notification.
                 browser.notifications.create("amr_" + curId, notificationOptions)
                 //Auto close notification if required
-                if (window["AMR_STORE"].state.options.notificationtimer > 0) {
+                if (this.store.state.options.notificationtimer > 0) {
                     setTimeout(function () {
                         browser.notifications.clear("amr_" + curId)
-                    }, window["AMR_STORE"].state.options.notificationtimer)
+                    }, this.store.state.options.notificationtimer)
                 }
             }
         }
     }
 }
 
-export default new Notification()
+let instance
+export const getNotifications = store => {
+    if (!instance) {
+        instance = new Notification(store)
+    }
+    return instance
+}

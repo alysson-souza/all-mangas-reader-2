@@ -232,7 +232,6 @@ export default {
             .getKeys(["beta", "version", "notifynewversion", "latestBetaVersion"])
             .then(({ beta, version, notifynewversion, latestBetaVersion }) => {
                 this.beta = beta
-                console.log({ beta, version, notifynewversion, latestBetaVersion })
 
                 if (
                     notifynewversion === 1 &&
