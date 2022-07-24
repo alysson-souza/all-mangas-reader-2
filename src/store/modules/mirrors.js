@@ -2,7 +2,7 @@ import storedb from "../../amr/storedb"
 // import * as utils from '../../amr/utils'
 // import iconHelper from "../../amr/icon-helper"
 import mirrorsImpl from "../../amr/mirrors-impl"
-import amrUpdater from "../../amr/amr-updater"
+// import amrUpdater from "../../amr/amr-updater"
 import { websitesDescription } from "../../mirrors/register_implementations"
 
 /**
@@ -136,7 +136,7 @@ const actions = {
         // TODO --> what do we do if there are mangas in list from these mirrors ?
 
         // update badges and icon state
-        amrUpdater.refreshBadgeAndIcon()
+        // amrUpdater.refreshBadgeAndIcon()
 
         return websites
     },

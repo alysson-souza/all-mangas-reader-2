@@ -38,10 +38,12 @@ export class Handler {
         ]
     }
 
-    inlineHandleHandle(message, sender) {
+    async inlineHandleHandle(message, sender) {
         switch (message.action) {
             case "getoptions":
-                return Promise.resolve(serializeVuexObject(this.store.state.options)) // doing that because content script is not vue aware, the reactive vuex object needs to be converted to POJSO
+                // doing that because content script is not vue aware,
+                // the reactive vuex object needs to be converted to POJSO
+                return serializeVuexObject(this.store.state.options)
         }
     }
 

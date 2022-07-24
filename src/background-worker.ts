@@ -10,9 +10,9 @@ import storedb from "./amr/storedb"
 // import converToMangadexV5 from "./background/misc/mangedex-v5-converter"
 // import { Mangadex } from "./background/misc/mangadex-v5-integration"
 
-browser.alarms.onAlarm.addListener(function (args) {
-    console.log(args)
-})
+// browser.alarms.onAlarm.addListener(function (args) {
+//     console.log(args)
+// })
 
 // browser.alarms.create('updateMangaList', {delayInMinutes: 0.1, periodInMinutes: 1 }, )
 

@@ -29,7 +29,7 @@ const actions = {
      */
     setOption({ commit, dispatch }, keyValObj) {
         commit("setOption", keyValObj)
-        optionStorage.setKey("o." + keyValObj.key, keyValObj.value)
+        optionStorage.setKey(keyValObj.key, keyValObj.value)
     },
     /**
      * Adds a category in categories states and save
@@ -38,7 +38,7 @@ const actions = {
      */
     addCategory({ commit, dispatch, state }, name) {
         commit("addCategory", name)
-        optionStorage.setKey("o.categoriesStates", JSON.stringify(state.categoriesStates))
+        optionStorage.setKey("categoriesStates", state.categoriesStates)
     },
     /**
      * Remove a non native category from categories states and save
@@ -47,7 +47,7 @@ const actions = {
      */
     removeCategory({ commit, dispatch, state, rootState }, name) {
         commit("removeCategory", name)
-        optionStorage.setKey("o.categoriesStates", JSON.stringify(state.categoriesStates))
+        optionStorage.setKey("categoriesStates", state.categoriesStates)
         for (let mg of rootState.mangas.all) {
             if (mg.cats.includes(name)) {
                 dispatch("removeCategoryFromManga", { key: mg.key, name: name })
@@ -61,7 +61,7 @@ const actions = {
      */
     editCategory({ commit, dispatch, state, rootState }, nameChange) {
         commit("updateCategoryName", nameChange)
-        optionStorage.setKey("o.categoriesStates", JSON.stringify(state.categoriesStates))
+        optionStorage.setKey("categoriesStates", state.categoriesStates)
         const { oldname, newname } = nameChange
 
         // Not very efficient way, but re-using existing methods
@@ -72,6 +72,9 @@ const actions = {
             }
         }
     },
+    updateCategories: function (state) {
+        optionStorage.setKey("categoriesStates", state.categoriesStates)
+    },
     /**
      * Adds a language category in categories states and save
      * @param {*} param0
@@ -79,7 +82,7 @@ const actions = {
      */
     addLanguageCategory({ commit, dispatch, state }, name) {
         commit("addLanguageCategory", name)
-        optionStorage.setKey("o.categoriesStates", JSON.stringify(state.categoriesStates))
+        this.updateCategories(state)
     },
     /**
      * Adds a native category in categories states and save
@@ -88,7 +91,7 @@ const actions = {
      */
     addNativeCategory({ commit, dispatch, state }, name) {
         commit("addNativeCategory", name)
-        optionStorage.setKey("o.categoriesStates", JSON.stringify(state.categoriesStates))
+        this.updateCategories(state)
     },
     /**
      * Remove a language category from categories states and save
@@ -97,7 +100,7 @@ const actions = {
      */
     removeLanguageCategory({ commit, dispatch, state, rootState }, name) {
         commit("removeLanguageCategory", name)
-        optionStorage.setKey("o.categoriesStates", JSON.stringify(state.categoriesStates))
+        this.updateCategories(state)
     },
     /**
      * Updates a categories state and save
@@ -106,7 +109,7 @@ const actions = {
      */
     updateCategory({ commit, dispatch, state }, catObj) {
         commit("updateCategory", catObj)
-        optionStorage.setKey("o.categoriesStates", JSON.stringify(state.categoriesStates))
+        this.updateCategories(state)
     },
     /**
      * Updates a categories name and save, use to upgrade native categories names for i18n
@@ -115,7 +118,7 @@ const actions = {
      */
     updateCategoryName({ commit, dispatch, state }, oldnew) {
         commit("updateCategoryName", oldnew)
-        optionStorage.setKey("o.categoriesStates", JSON.stringify(state.categoriesStates))
+        this.updateCategories(state)
     },
     /**
      * Add a language to readable languages list
@@ -124,7 +127,7 @@ const actions = {
      */
     addReadLanguage({ commit, state }, lang) {
         commit("addReadLanguage", lang)
-        optionStorage.setKey("o.readlanguages", JSON.stringify(state.readlanguages))
+        optionStorage.setKey("readlanguages", state.readlanguages)
     },
     /**
      * Remove a language from readable languages list
@@ -133,7 +136,7 @@ const actions = {
      */
     removeReadLanguage({ commit, state }, lang) {
         commit("removeReadLanguage", lang)
-        optionStorage.setKey("o.readlanguages", JSON.stringify(state.readlanguages))
+        optionStorage.setKey("readlanguages", state.readlanguages)
     }
 }
 

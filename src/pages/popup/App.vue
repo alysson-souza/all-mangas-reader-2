@@ -193,8 +193,8 @@ import * as utils from "../../amr/utils"
 
 import streamSaver from "streamsaver"
 import "streamsaver/examples/zip-stream"
-import mimedb from "mime-db"
 import * as ponyfill from "web-streams-polyfill/ponyfill"
+import { OptionStorage } from "../../shared/OptionStorage"
 streamSaver.WritableStream = ponyfill.WritableStream
 
 export default {
@@ -218,6 +218,8 @@ export default {
     created() {
         this.trackingDone = true //this.$store.state.options.allowtrackingdone == 1; // Forced to true to disable this
         this.cookiesDone = this.$store.state.options.allowcookiesdone == 1
+
+        this.optionStorage = new OptionStorage(this.$store)
         document.title = i18n("page_popup_title")
         // initialize state for store in popup from background
         this.$store.dispatch("getStateFromReference", {
@@ -225,14 +227,21 @@ export default {
             key: "all",
             mutation: "setMirrors"
         })
-        if (
-            this.$store.state.options.notifynewversion == 1 &&
-            ((localStorage.beta == 1 && localStorage.version != localStorage.latestBetaVersion) ||
-                (localStorage.beta == 0 && localStorage.version != localStorage.latestStableVersion))
-        ) {
-            this.alertmessage = this.i18n("amr_newversion")
-            this.tooltipalert = this.i18n("amr_newversion_long")
-        }
+
+        this.optionStorage
+            .getKeys(["beta", "version", "notifynewversion", "latestBetaVersion"])
+            .then(({ beta, version, notifynewversion, latestBetaVersion }) => {
+                this.beta = beta
+                console.log({ beta, version, notifynewversion, latestBetaVersion })
+
+                if (
+                    notifynewversion === 1 &&
+                    ((beta === 1 && version !== latestBetaVersion) || (beta === 0 && version !== latestStableVersion))
+                ) {
+                    this.alertmessage = this.i18n("amr_newversion")
+                    this.tooltipalert = this.i18n("amr_newversion_long")
+                }
+            })
     },
     computed: {
         // initialize mangadex integration options
@@ -336,7 +345,7 @@ export default {
             let url = "https://release.allmangasreader.com/all-mangas-reader-latest.crx"
             let filename =
                 window.navigator.platform === "Win32" ? "all-mangas-reader-latest.7z" : "all-mangas-reader-latest.zip"
-            if (localStorage.beta) {
+            if (this.beta) {
                 url = "https://release.allmangasreader.com/all-mangas-reader-beta-latest.crx"
                 filename =
                     window.navigator.platform === "Win32"

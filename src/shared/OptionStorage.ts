@@ -198,6 +198,10 @@ export class OptionStorage {
         return browser.storage.local.get(key).then(data => data[key])
     }
 
+    getKeys(keys?: null | string | string[] | Record<string, any>) {
+        return browser.storage.local.get(keys)
+    }
+
     setKey(key: string, value: string | number) {
         return browser.storage.local.set({ [key]: value })
     }

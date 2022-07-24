@@ -7,16 +7,17 @@ import App from "./App.vue"
 import store from "../../store"
 import vuetifyOptions from "../vuetifyOptions"
 import * as util from "../utils"
+import { OptionStorage } from "../../shared/OptionStorage"
 // import 'vuetify/src/stylus/main.styl'
 
 const init = async () => {
-    window["AMR_STORE"] = store
+    globalThis["AMR_STORE"] = store
 
     // Load options in store before everything
-    await store.dispatch("getStateFromReference", {
-        module: "options",
-        mutation: "extendOptions"
-    })
+    const optionStore = new OptionStorage()
+    const options = await optionStore.getVueOptions()
+
+    store.commit("extendOptions", options)
 
     let popup = true
     if (window.location.href.indexOf("mode=tab") >= 0) {
@@ -43,7 +44,7 @@ const init = async () => {
     Vue.prototype.$isPopup = popup
     Vue.prototype.$eventBus = new Vue()
     Vue.use(Vuetify)
-    vuetifyOptions.theme.dark = window["AMR_STORE"].state.options.dark === 1
+    vuetifyOptions.theme.dark = store.state.options.dark === 1
     new Vue({
         el: "#app",
         store,

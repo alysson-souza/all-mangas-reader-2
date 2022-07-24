@@ -1,11 +1,16 @@
-import { IconHelper } from "./icon-helper"
+import { IconHelper } from "../amr/icon-helper"
 import Axios from "axios"
+import store from "../store"
 
-const iconHelper = new IconHelper(window["AMR_STORE"])
 /**
  * This class is used to update periodically manga chapters lists and mirrors list
  */
-class Updater {
+export class Updater {
+    constructor(store) {
+        this.store = store
+        this.iconHelper = new IconHelper(store)
+    }
+
     /**
      * Initialize refresh checkers
      */
@@ -13,27 +18,29 @@ class Updater {
         this.checkChaptersUpdates()
         this.checkMirrorsUpdates()
     }
+
     /**
      * Check if we need to refresh chapters lists according to frequency every minutes
      */
     checkChaptersUpdates() {
-        let lastUpdt = window["AMR_STORE"].state.options.lastChaptersUpdate
-        let frequency = window["AMR_STORE"].state.options.updatechap
+        let lastUpdt = this.store.state.options.lastChaptersUpdate
+        let frequency = this.store.state.options.updatechap
         if (navigator.onLine && lastUpdt + frequency < Date.now()) {
             // time to refresh !
-            window["AMR_STORE"].dispatch("updateChaptersLists", { force: false }) // force to false to avoid updating if not necessary
+            this.store.dispatch("updateChaptersLists", { force: false }) // force to false to avoid updating if not necessary
         }
         setTimeout(this.checkChaptersUpdates.bind(this), 60 * 1000) // check every minutes
     }
+
     /**
      * Check if we need to refresh mirrors lists according to frequency every minutes
      */
     checkMirrorsUpdates() {
-        let lastUpdt = window["AMR_STORE"].state.options.lastMirrorsUpdate
-        let frequency = window["AMR_STORE"].state.options.updatemg
+        let lastUpdt = this.store.state.options.lastMirrorsUpdate
+        let frequency = this.store.state.options.updatemg
         if (navigator.onLine && lastUpdt + frequency < Date.now()) {
             // time to refresh !
-            window["AMR_STORE"].dispatch("updateMirrorsLists")
+            this.store.dispatch("updateMirrorsLists")
             this.checkLatestPublishedVersion()
         }
         setTimeout(this.checkMirrorsUpdates.bind(this), 60 * 1000) // check every minutes
@@ -78,26 +85,13 @@ class Updater {
             }
         }
     }
+
     /**
      * Refresh badge and icon
      */
     refreshBadgeAndIcon() {
-        let nbnew = window["AMR_STORE"].getters.nbNewMangas
-        if (window["AMR_STORE"].state.options.nocount == 1) {
-            iconHelper.resetBadge() // remove badge
-            // display a grey badge if no new mangas
-            if (nbnew > 0) iconHelper.resetIcon()
-            else iconHelper.setBWIcon()
-        } else {
-            iconHelper.resetIcon()
-            if (window["AMR_STORE"].state.options.displayzero === 1) {
-                iconHelper.updateBadge(nbnew)
-            } else {
-                if (nbnew == 0) iconHelper.resetBadge()
-                else iconHelper.updateBadge(nbnew)
-            }
-        }
+        this.iconHelper.refreshBadgeAndIcon()
     }
 }
 
-export default new Updater()
+export default new Updater(store)

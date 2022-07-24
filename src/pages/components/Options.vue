@@ -753,7 +753,7 @@
 <script>
 import i18n from "../../amr/i18n"
 import browser from "webextension-polyfill"
-import amrUpdater from "../../amr/amr-updater"
+import amrUpdater from "../../pages/amr-updater"
 import Flag from "./Flag"
 import Mangadex from "./Options.Mangadex.vue"
 import * as amrutils from "../../amr/utils"
