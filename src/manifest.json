@@ -29,6 +29,7 @@
         "alarms",
         "contextMenus",
         "notifications",
+        "scripting",
         "downloads",
         "cookies",
         "webNavigation",
@@ -62,9 +63,12 @@
                 "icons/ltload.gif",
                 "icons/imgerror.png",
                 "icons/load10.gif",
-                "icons/find.png"
+                "icons/find.png",
+                "reader/pre-loader.css",
+                "lib/jquery.min.js",
+                "reader/init-reading.js"
             ],
-            "matches": [],
+            "matches": ["<all_urls>"],
             "extension_ids": []
         }
     ],

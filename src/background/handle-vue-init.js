@@ -1,4 +1,4 @@
-import * as utils from "../amr/utils"
+import { serializeVuexObject } from "../shared/utils"
 
 export class HandleVueInit {
     constructor(store) {
@@ -13,7 +13,7 @@ export class HandleVueInit {
                 if (message.key) {
                     mod_state_obj = mod_state_obj[message.key]
                 }
-                return utils.serializeVuexObject(mod_state_obj)
+                return serializeVuexObject(mod_state_obj)
         }
     }
 }

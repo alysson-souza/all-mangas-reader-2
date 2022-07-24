@@ -1,9 +1,9 @@
 import Axios from "axios"
 import browser from "webextension-polyfill"
 import mirrorsImpl from "../amr/mirrors-impl"
-import * as utils from "../amr/utils"
-import * as domutils from "../amr/domutils"
 import storedb from "../amr/storedb"
+import { afterHostURL, formatMangaName, mangaKey, matchDomain, serializeVuexObject } from "../shared/utils"
+import { sanitizeDom } from "../amr/domutils"
 
 /** Scripts to inject in pages containing mangas for new reader */
 const contentScriptsV2 = [
@@ -13,16 +13,14 @@ const contentScriptsV2 = [
 ]
 
 export class HandleManga {
-    /**
-     * @param store
-     */
-    constructor(store) {
+    constructor(store, logger) {
         this.store = store
+        this.logger = logger
     }
 
-    handle(message, sender) {
-        let key
-        if (message.url) key = utils.mangaKey(message.url, message.mirror, message.language)
+    handle(message) {
+        const key = this.getMangaKey(message)
+
         switch (message.action) {
             case "mangaExists":
                 return Promise.resolve(this.store.state.mangas.all.find(manga => manga.key === key) !== undefined)
@@ -50,13 +48,13 @@ export class HandleManga {
                 //count number of chapters read
                 let nb = localStorage["nb_read"] ? parseInt(localStorage["nb_read"]) : 1
                 localStorage["nb_read"] = "" + (nb + 1)
-                utils.debug("Read manga " + message.url)
+                this.logger.debug("Read manga " + message.url)
                 // call store method to update reading list appropriately
                 return this.store.dispatch("readManga", message)
             case "initMangasFromDB":
                 return this.store.dispatch("initMangasFromDB", true)
             case "deleteManga":
-                utils.debug("Delete manga key " + message.key)
+                this.logger.debug("Delete manga key " + message.key)
                 return this.store.dispatch("deleteManga", { key: message.key })
             case ("getNextChapterImages", "getChapterData"): //returns boolean telling if url is a chapter page, infos from page and list of images for prefetch of next chapter in content script
                 return this.getChapterData(message)
@@ -105,6 +103,18 @@ export class HandleManga {
             case "importMangas":
                 return this.importMangas(message)
         }
+    }
+
+    getMangaKey(message) {
+        if (!message.url) {
+            return undefined
+        }
+        return mangaKey({
+            url: message.url,
+            mirror: message.mirror,
+            language: message.language,
+            rootState: this.store
+        })
     }
 
     /**
@@ -165,7 +175,7 @@ export class HandleManga {
      * @param {*} search
      */
     filterSearchList(list, search) {
-        return list.filter(arr => utils.formatMgName(arr[0]).indexOf(utils.formatMgName(search)) !== -1)
+        return list.filter(arr => formatMangaName(arr[0]).indexOf(formatMangaName(search)) !== -1)
     }
     /**
      * Call search function from remote website
@@ -181,19 +191,14 @@ export class HandleManga {
      * @param {*} tabId
      */
     async waitForCloudflare(tabId) {
-        const firstTry = await browser.scripting.executeScript(tabId, {
-            code: "document.body.innerText;"
-        })
-        const firstCheck = firstTry[0].match(/checking your browser before accessing/gim)
-        if (!firstCheck) return
+        if (!(await this.executeCheck(tabId))) {
+            return
+        }
+
         return new Promise((resolve, reject) => {
             let tries = 0
-            let interval = setInterval(async () => {
-                const results = await browser.scripting.executeScript(tabId, {
-                    code: "document.body.innerText;"
-                })
-                const checks = results[0].match(/checking your browser before accessing/gim)
-                if (!checks) {
+            const interval = setInterval(async () => {
+                if (!(await this.executeCheck(tabId))) {
                     clearInterval(interval)
                     return resolve()
                 }
@@ -205,6 +210,24 @@ export class HandleManga {
             }, 500)
         })
     }
+
+    async executeCheck(tabId) {
+        const checkInnerBody = function () {
+            return document.body.innerText
+        }
+
+        const [first] = await browser.scripting.executeScript({
+            target: { tabId },
+            func: checkInnerBody
+        })
+
+        if (first.error) {
+            throw first.error
+        }
+
+        return first.result.match(/checking your browser before accessing/gim)
+    }
+
     /**
      * Test if the url matches a mirror implementation.
      * If so, inject content script to transform the page and the mirror implementation inside the tab
@@ -212,78 +235,144 @@ export class HandleManga {
      * @param {*} tabId
      */
     async matchUrlAndLoadScripts(url, tabId) {
-        const mir = utils.currentPageMatch(url)
-        if (mir === null) return Promise.resolve(null)
+        const mir = this.getMir(url)
+        if (mir === null) {
+            return mir
+        }
 
+        this.logger.debug({
+            url,
+            tab: tabId,
+            mir: mir.domains,
+            chapter: mir.chapter_url
+        })
         // check if we need to load preload (it could be annoying to have preload on each pages of the website)
         // websites which provide a chapter_url regexp will have their chapters with a preload
         if (mir.chapter_url) {
             let parts = /\/(.*)\/(.*)/.exec(mir.chapter_url)
             let chaprx = new RegExp(parts[1], parts[2])
-            if (!chaprx.test("/" + utils.afterHostURL(url))) {
+            if (!chaprx.test("/" + afterHostURL(url))) {
+                console.log("Not matching!", parts)
                 return // returns if there is no match
             }
         }
+
         try {
             // wait for cloudflare browser integrety check if needed
             await this.waitForCloudflare(tabId)
-        } catch {
+        } catch (e) {
+            this.logger.error(e)
             return
         }
 
         // Load amr preload
         let loading = []
-        loading.push(browser.tabs.insertCSS(tabId, { file: "/reader/pre-loader.css" }))
-        let bgcolor = "#424242"
-        if (this.store.state.options.darkreader === 0) bgcolor = "white"
         loading.push(
-            browser.scripting.executeScript(tabId, {
-                code: `
-                let amr_icon_url = '${browser.extension.getURL("/icons/icon_128.png")}';
-                let cover = document.createElement("div")
-                cover.id = "amr-loading-cover"
-                cover.style.backgroundColor = "${bgcolor}"
-
-                let img = document.createElement("img")
-                img.src = amr_icon_url;
-                cover.appendChild(img)
-
-                document.body.appendChild(cover)
-                setTimeout(() => {
-                    try {cover.parentNode.remove(cover)} catch(e) {}
-                }, 5000)
-            `
+            browser.scripting.insertCSS({
+                target: { tabId },
+                files: ["/reader/pre-loader.css"]
             })
         )
-        Promise.all(loading)
+
+        const bgColor = this.store.state.options.darkreader === 0 ? "white" : "#424242"
+        const iconUrl = browser.runtime.getURL("/icons/icon_128.png")
+
+        function initAmr(imgSrc, bgColor) {
+            let cover = document.createElement("div")
+            cover.id = "amr-loading-cover"
+            cover.style.backgroundColor = bgColor
+            let img = document.createElement("img")
+            img.src = imgSrc
+            cover.appendChild(img)
+
+            document.body.appendChild(cover)
+            setTimeout(() => {
+                try {
+                    cover.parentNode.remove(cover)
+                } catch (e) {}
+            }, 5000)
+
+            return {
+                success: true,
+                message: "Loaded AMR with bg: " + bgColor
+            }
+        }
+
+        loading.push(
+            browser.scripting.executeScript({
+                target: { tabId },
+                func: initAmr,
+                args: [iconUrl, bgColor]
+            })
+        )
+        await Promise.all(loading)
 
         // Inject content scripts in matched tab
-        for (let script of contentScriptsV2) {
-            await browser.scripting.executeScript(tabId, script)
-        }
-        await browser.scripting.executeScript(tabId, { code: `window["amrLoadMirrors"]("${mir.mirrorName}")` })
-        return Promise.resolve(utils.serializeVuexObject(mir)) // doing that because content script is not vue aware, the reactive vuex object needs to be converted to POJSO
+        const [libResult] = await browser.scripting.executeScript({
+            target: { tabId },
+            files: ["/lib/jquery.min.js", "/reader/init-reading.js"]
+        })
+        this.logger.debug({ libResult })
+
+        const [mirrorResult] = await browser.scripting.executeScript({
+            target: { tabId },
+            func: function (mirrorName) {
+                return globalThis["amrLoadMirrors"](mirrorName)
+            },
+            args: [mir.mirrorName]
+        })
+        this.logger.debug(mirrorResult)
+
+        // doing that because content script is not vue aware,
+        // the reactive vuex object needs to be converted to POJSO
+        return serializeVuexObject(mir)
     }
+
+    getMir(url) {
+        let host = new URL(url).host
+        for (let mir of this.store.state.mirrors.all) {
+            if (mir.activated && mir.domains && !mir.disabled) {
+                let wss = mir.domains
+                for (let u of wss) {
+                    if (matchDomain(host, u, this.store)) {
+                        return mir
+                    }
+                }
+            }
+        }
+        return null
+    }
+
     /**
      * Send an event to the tab telling that url has been changed. If it's done by AMR, nothing to do, if it's inner website navigation, load amr
      * @param {*} url
      * @param {*} tabId
      */
     async sendPushState(url, tabId) {
-        browser.tabs
-            .executeScript(tabId, { code: "globalThis['__armreader__'] === undefined" })
-            .then(async result => {
-                if (result[0]) {
-                    await this.matchUrlAndLoadScripts(url, tabId)
-                } else {
-                    browser.tabs
-                        .executeScript(tabId, {
-                            code: "if (typeof globalThis['onPushState'] === 'function') globalThis['onPushState']();"
-                        })
-                        .catch(utils.debug)
+        if (url.includes("chrome://")) {
+            return
+        }
+        browser.scripting
+            .executeScript({
+                target: { tabId },
+                func: function () {
+                    return globalThis["__armreader__"] === undefined
                 }
             })
-            .catch(utils.debug)
+            .then(async result => {
+                if (result[0]) {
+                    return this.matchUrlAndLoadScripts(url, tabId)
+                }
+                return browser.scripting.executeScript({
+                    target: { tabId },
+                    func: function () {
+                        if (typeof globalThis["onPushState"] === "function") {
+                            globalThis["onPushState"]()
+                        }
+                    }
+                })
+            })
+            .catch(this.logger.error)
     }
     /**
      * Return the list of images urls from a chapter
@@ -293,7 +382,7 @@ export class HandleManga {
         return Axios.get(message.url)
             .then(resp => {
                 return new Promise(async (resolve, reject) => {
-                    let htmlDocument = domutils.sanitizeDom(resp.data)
+                    let htmlDocument = sanitizeDom(resp.data)
                     // loads the implementation code
                     let impl = await mirrorsImpl.getImpl(message.mirrorName)
                     // Check if this is a chapter page

@@ -13,7 +13,6 @@ import storedb from "./amr/storedb"
 // browser.alarms.onAlarm.addListener(function (args) {
 //     console.log(args)
 // })
-
 // browser.alarms.create('updateMangaList', {delayInMinutes: 0.1, periodInMinutes: 1 }, )
 
 // Initialize store
@@ -26,9 +25,9 @@ const init = async () => {
     const amrInit = new AmrInit(store, storedb, optionsStorage, logger)
     // const iconHelper = new IconHelper(store)
 
-    const handleManga = new HandleManga(store)
+    const handleManga = new HandleManga(store, logger)
 
-    const handler = new Handler(store)
+    const handler = new Handler(store, logger, optionsStorage)
 
     /**
      * Initialize extension versioning --> after options because versioning update can affect options
@@ -106,7 +105,7 @@ const init = async () => {
             timers = timers.filter(id => id != args.tabId)
         }, 500)
 
-        // HandleManga.matchUrlAndLoadScripts(args.url, args.tabId)
+        handleManga.matchUrlAndLoadScripts(args.url, args.tabId)
     })
 
     // push state events are listened from content script (if from background, we reload the page on amr navigation)

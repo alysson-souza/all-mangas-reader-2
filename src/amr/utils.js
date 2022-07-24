@@ -7,7 +7,7 @@ import axios from "axios"
  */
 export function isFirefox() {
     // Firefox 1.0+ (tested on Firefox 45 - 53)
-    return typeof InstallTrigger !== "undefined"
+    return typeof globalThis.InstallTrigger !== "undefined"
 }
 
 /**
@@ -109,15 +109,6 @@ export async function gistDebug(secret, id, filename, content) {
 }
 
 /**
- * Serialize a vuex object.
- * Doing that because content script is not vue aware, the reactive vuex object needs to be
- * converted to POJSO to work in non vue environment (else it will be {})
- * @param {*} obj
- */
-export function serializeVuexObject(obj) {
-    return JSON.parse(JSON.stringify(obj)) // For an unknown reason, better than Object.assign({}, obj) in Firefox
-}
-/**
  * Extract the full host name
  * @param {*} url
  */
@@ -125,27 +116,7 @@ export function extractHostname(url) {
     let uid = new URL(url)
     return uid.host
 }
-/**
- * Extract the root domain of a url without subdomain
- * @param {*} url
- */
-const extractRootDomain = function (url) {
-    var domain = extractHostname(url),
-        splitArr = domain.split("."),
-        arrLen = splitArr.length
 
-    //extracting the root domain here
-    //if there is a subdomain
-    if (arrLen > 2) {
-        domain = splitArr[arrLen - 2] + "." + splitArr[arrLen - 1]
-        //check to see if it's using a Country Code Top Level Domain (ccTLD) (i.e. ".me.uk")
-        if (splitArr[arrLen - 2].length == 2 && splitArr[arrLen - 1].length == 2) {
-            //this is using a ccTLD
-            domain = splitArr[arrLen - 3] + "." + domain
-        }
-    }
-    return domain
-}
 /**
  * Extract the part of a url following the domain
  * @param {*} url

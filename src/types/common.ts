@@ -58,6 +58,7 @@ export interface AppManga {
 }
 
 export interface Mirror {
+    activated?: boolean
     mirrorName: string
     canListFullMangas: boolean
     mirrorIcon: string

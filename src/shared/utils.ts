@@ -57,6 +57,16 @@ function safename(name: string | null | undefined) {
 }
 
 /**
+ * Serialize a vuex object.
+ * Doing that because content script is not vue aware, the reactive vuex object needs to be
+ * converted to POJSO to work in non vue environment (else it will be {})
+ * @param {*} obj
+ */
+export function serializeVuexObject(obj) {
+    return JSON.parse(JSON.stringify(obj)) // For an unknown reason, better than Object.assign({}, obj) in Firefox
+}
+
+/**
  * Format manga name to test similarities
  * @param {*} name
  */

@@ -1,10 +1,13 @@
 import browser from "webextension-polyfill"
 import { HandleVueInit } from "./handle-vue-init"
 import { AppStore } from "../types/common"
-import { serializeVuexObject } from "../amr/utils"
 import { HandleManga } from "./handle-manga"
 import { HandleMisc } from "./handle-misc"
 import { HandleImportExport } from "./handle-import-export"
+import { AppLogger } from "../shared/AppLogger"
+import { serializeVuexObject } from "../shared/utils"
+import { HandleNavigation } from "./handle-navigation"
+import { OptionStorage } from "../shared/OptionStorage"
 // import HandleManga from "./handle-manga"
 // import HandleNavigation from "./handle-navigation"
 // import HandleBookmarks from "./handle-bookmarks"
@@ -17,20 +20,21 @@ import { HandleImportExport } from "./handle-import-export"
  * Background message listener used to communicate with service worker and pages
  */
 export class Handler {
-    private readonly store: AppStore
     private readonly handlers: { handle: (message, sender) => Promise<unknown> }[]
 
-    constructor(store: AppStore) {
-        this.store = store
-
+    constructor(
+        private readonly store: AppStore,
+        private readonly logger: AppLogger,
+        private readonly optionStorage: OptionStorage
+    ) {
         this.handlers = [
             new HandleVueInit(store),
             {
                 handle: this.inlineHandleHandle
             },
-            new HandleManga(store),
+            new HandleManga(store, logger),
             new HandleMisc(store),
-            // HandleNavigation,
+            new HandleNavigation(store, optionStorage),
             // HandleBookmarks,
             // HandleLab,
             // HandleSync,
@@ -51,9 +55,10 @@ export class Handler {
         /**
          * Message from popup and content script handler
          */
-        browser.runtime.onMessage.addListener((message, sender) => {
+        browser.runtime.onMessage.addListener(async (message, sender) => {
+            console.info(message)
             for (let handler of this.handlers) {
-                const result = handler.handle(message, sender)
+                const result = await handler.handle(message, sender)
                 if (result !== undefined) {
                     return result
                 }
