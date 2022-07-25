@@ -5,6 +5,19 @@ export interface RootState {
     options: AppConfig
     mangas: { all: any[] }
     mirrors: { all: Mirror[] }
+    bookmarks: { all: Bookmark[] }
+}
+
+interface Bookmark {
+    key: string
+    url: string
+    chapUtrl: string
+    type: string
+    name: string
+    chapName: string
+    scanUrl: string
+    scanName: string
+    note: string
 }
 
 export type AppStore = Store<RootState>

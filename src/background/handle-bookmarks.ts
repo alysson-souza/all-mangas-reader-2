@@ -1,24 +1,26 @@
-import * as utils from "../amr/utils"
 import i18n from "../amr/i18n"
 import browser from "webextension-polyfill"
 import mirrorsImpl from "../amr/mirrors-impl"
+import { AppStore } from "../types/common"
+import { mangaKey } from "../shared/utils"
 
-class HandleBookmarks {
-    constructor() {
+export class HandleBookmarks {
+    private context_ids: string[]
+    constructor(private store: AppStore) {
         this.context_ids = []
     }
-    handle(message, sender) {
+    async handle(message, sender) {
         switch (message.action) {
             case "getBookmarkNote":
-                let noteBM = this.getBookmark(message)
-                return Promise.resolve({
+                const noteBM = this.getBookmark(message)
+                return {
                     isBooked: noteBM.booked,
                     note: noteBM.note,
                     scanSrc: noteBM.scanSrc
-                })
+                }
             case "deleteBookmark":
                 this.deleteBookmark(message)
-                return Promise.resolve({})
+                return {}
             case "addUpdateBookmark":
                 this.addBookmark(message)
                 return Promise.resolve({})
@@ -30,8 +32,14 @@ class HandleBookmarks {
                         title: i18n("background_bookmark_menu"),
                         contexts: ["image", "link"],
                         onclick: function (info, tab) {
-                            browser.scripting.executeScript(tab.id, {
-                                code: 'clickOnBM("' + info.srcUrl + '")'
+                            browser.scripting.executeScript({
+                                target: { tabId: tab.id },
+                                func: function (srcUrl) {
+                                    if (typeof globalThis.clickOnBM === "function") {
+                                        globalThis.clickOnBM(srcUrl)
+                                    }
+                                },
+                                args: [info.srcUrl]
                             })
                         },
                         targetUrlPatterns: [encodeURI(url), url]
@@ -48,9 +56,9 @@ class HandleBookmarks {
      */
     async getScanUrl(message) {
         return new Promise(async (resolve, reject) => {
-            let img = new Image()
+            const img = new Image()
             img.onerror = e => reject(e)
-            let impl = await mirrorsImpl.getImpl(message.mirror)
+            const impl = await mirrorsImpl.getImpl(message.mirror)
             await impl.getImageFromPageAndWrite(message.url, img)
             ;(function wait() {
                 if (img.src && img.src != "") {
@@ -65,33 +73,40 @@ class HandleBookmarks {
      * @param {*} obj
      */
     findBookmark(obj) {
-        let key =
-            utils.mangaKey(obj.chapUrl, obj.mirror) + (obj.scanUrl ? "_" + utils.mangaKey(obj.scanUrl, obj.mirror) : "")
-        return window["AMR_STORE"].state.bookmarks.all.find(bookmark => bookmark.key === key)
+        const prefixKey = mangaKey({
+            url: obj.chapUrl,
+            mirror: obj.mirror,
+            rootState: this.store
+        })
+
+        const scanUrl = mangaKey({
+            url: obj.scanUrl,
+            mirror: obj.mirror,
+            rootState: this.store
+        })
+
+        const key = prefixKey + (obj.scanUrl ? `_${scanUrl}` : "")
+        return this.store.state.bookmarks.all.find(bookmark => bookmark.key === key)
     }
-    /**
-     * Retrieve a stored bookmark
-     * @param {*} obj
-     */
+
     getBookmark(obj) {
         let bm = this.findBookmark(obj)
-        if (bm !== undefined) {
-            if (obj.type === "chapter") {
-                return {
-                    booked: true,
-                    note: bm.note
-                }
-            } else {
-                return {
-                    booked: true,
-                    note: bm.note,
-                    scanSrc: obj.scanUrl
-                }
+        if (bm === undefined) {
+            return {
+                booked: false,
+                note: ""
+            }
+        }
+        if (obj.type === "chapter") {
+            return {
+                booked: true,
+                note: bm.note
             }
         }
         return {
-            booked: false,
-            note: ""
+            booked: true,
+            note: bm.note,
+            scanSrc: obj.scanUrl
         }
     }
 
@@ -114,10 +129,10 @@ class HandleBookmarks {
         }
         if (bm === undefined) {
             // adds a new bookmark
-            window["AMR_STORE"].dispatch("createBookmark", tosave)
+            this.store.dispatch("createBookmark", tosave)
         } else {
             // update bookmark note
-            window["AMR_STORE"].dispatch("updateBookmarkNote", tosave)
+            this.store.dispatch("updateBookmarkNote", tosave)
         }
     }
 
@@ -127,11 +142,10 @@ class HandleBookmarks {
      */
     deleteBookmark(obj) {
         // adds a new bookmark
-        window["AMR_STORE"].dispatch("deleteBookmark", {
+        this.store.dispatch("deleteBookmark", {
             chapUrl: obj.chapUrl,
             scanUrl: obj.scanUrl,
             mirror: obj.mirror
         })
     }
 }
-export default new HandleBookmarks()

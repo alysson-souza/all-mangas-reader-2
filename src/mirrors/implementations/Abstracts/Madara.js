@@ -1,7 +1,7 @@
 /**
  * Abstract implementation for all sites based on madara theme http://demo.mangabooth.com
  */
-window["Madara"] = function (options) {
+globalThis["Madara"] = function (options) {
     ;(this.default_options = {
         search_a_sel: "div.post-title > h4 > a",
         chapters_a_sel: "li.wp-manga-chapter > a",

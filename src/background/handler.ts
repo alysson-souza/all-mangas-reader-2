@@ -7,7 +7,7 @@ import { AppLogger } from "../shared/AppLogger"
 import { serializeVuexObject } from "../shared/utils"
 import { HandleNavigation } from "./handle-navigation"
 import { OptionStorage } from "../shared/OptionStorage"
-// import HandleBookmarks from "./handle-bookmarks"
+import { HandleBookmarks } from "./handle-bookmarks"
 // import HandleLab from "./handle-lab"
 
 /**
@@ -28,9 +28,8 @@ export class Handler {
             new HandleManga(store, logger),
             new HandleMisc(store),
             new HandleNavigation(store, optionStorage),
-            // HandleBookmarks,
+            new HandleBookmarks(store),
             // HandleLab,
-            // HandleSync,
             new HandleImportExport(store)
         ]
     }

@@ -1,6 +1,4 @@
-import * as utils from "../../amr/utils"
-
-export async function converToMangadexV5(store) {
+export async function converToMangadexV5(store, logger) {
     // retry later if one of these is running
     if (store.state.options.isUpdatingChapterLists || store.state.options.isSyncing) {
         setTimeout(() => {
@@ -15,7 +13,7 @@ export async function converToMangadexV5(store) {
     for (const manga of mangaToUpdate) {
         try {
             // let manga = mangaToUpdate[0]
-            utils.debug("Checking for manga id", manga.key)
+            logger.debug("Checking for manga id", manga.key)
             let id = parseInt(manga.url.split("/").pop())
 
             let seriesUpdate = await fetch("https://api.mangadex.org/legacy/mapping", {
@@ -70,7 +68,7 @@ export async function converToMangadexV5(store) {
             }
         } catch (e) {
             // Do nothing because I don't care if it fails
-            utils.debug("Error updating mangadex entry", e)
+            logger.debug("Error updating mangadex entry", e)
         }
 
         await new Promise(r => setTimeout(r, 2000)) // Pause to give mangadex servers a rest

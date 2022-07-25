@@ -8,22 +8,29 @@ class MirrorsImpl {
     constructor() {
         this.implementations = {}
         this.abstracts = {}
-        ;(function (mirrorsImpl) {
-            /**
-             * This function is called when an implementation is loaded
-             */
-            globalThis["registerMangaObject"] = function (object) {
-                if (mirrorsImpl.implementations === undefined) mirrorsImpl.implementations = {}
-                mirrorsImpl.implementations[object.mirrorName] = object
+        this.createCache()
+    }
+
+    createCache() {
+        const self = this
+        /**
+         * This function is called when an implementation is loaded
+         */
+        globalThis["registerMangaObject"] = function (object) {
+            if (self.implementations === undefined) {
+                self.implementations = {}
             }
-            /**
-             * This function is called when an abstraction is loaded
-             */
-            globalThis["registerAbstractImplementation"] = function (mirrorName) {
-                if (mirrorsImpl.abstracts === undefined) mirrorsImpl.abstracts = {}
-                mirrorsImpl.abstracts[mirrorName] = { loaded: true }
+            self.implementations[object.mirrorName] = object
+        }
+        /**
+         * This function is called when an abstraction is loaded
+         */
+        globalThis["registerAbstractImplementation"] = function (mirrorName) {
+            if (self.abstracts === undefined) {
+                self.abstracts = {}
             }
-        })(this)
+            self.abstracts[mirrorName] = { loaded: true }
+        }
     }
 
     /**
