@@ -206,4 +206,8 @@ export class OptionStorage {
     setKey(key: string, value: string | number) {
         return browser.storage.local.set({ [key]: value })
     }
+
+    updateCategories(categories: string[]) {
+        this.setKey("categoriesStates", categories)
+    }
 }

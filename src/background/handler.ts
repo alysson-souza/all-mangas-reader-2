@@ -1,14 +1,14 @@
 import browser from "webextension-polyfill"
 import { AppStore } from "../types/common"
+import { AppLogger } from "../shared/AppLogger"
+import { serializeVuexObject } from "../shared/utils"
 import { HandleManga } from "./handle-manga"
 import { HandleMisc } from "./handle-misc"
 import { HandleImportExport } from "./handle-import-export"
-import { AppLogger } from "../shared/AppLogger"
-import { serializeVuexObject } from "../shared/utils"
 import { HandleNavigation } from "./handle-navigation"
 import { OptionStorage } from "../shared/OptionStorage"
 import { HandleBookmarks } from "./handle-bookmarks"
-// import HandleLab from "./handle-lab"
+import { HandleLab } from "./handle-lab"
 
 /**
  * Background message listener used to communicate with service worker and pages
@@ -29,7 +29,7 @@ export class Handler {
             new HandleMisc(store),
             new HandleNavigation(store, optionStorage),
             new HandleBookmarks(store),
-            // HandleLab,
+            new HandleLab(),
             new HandleImportExport(store)
         ]
     }

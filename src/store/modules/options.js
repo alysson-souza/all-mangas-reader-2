@@ -72,9 +72,6 @@ const actions = {
             }
         }
     },
-    updateCategories: function (state) {
-        optionStorage.setKey("categoriesStates", state.categoriesStates)
-    },
     /**
      * Adds a language category in categories states and save
      * @param {*} param0
@@ -82,7 +79,7 @@ const actions = {
      */
     addLanguageCategory({ commit, dispatch, state }, name) {
         commit("addLanguageCategory", name)
-        this.updateCategories(state)
+        optionStorage.updateCategories(state.categoriesStates)
     },
     /**
      * Adds a native category in categories states and save
@@ -91,7 +88,7 @@ const actions = {
      */
     addNativeCategory({ commit, dispatch, state }, name) {
         commit("addNativeCategory", name)
-        this.updateCategories(state)
+        optionStorage.updateCategories(state.categoriesStates)
     },
     /**
      * Remove a language category from categories states and save
@@ -100,7 +97,7 @@ const actions = {
      */
     removeLanguageCategory({ commit, dispatch, state, rootState }, name) {
         commit("removeLanguageCategory", name)
-        this.updateCategories(state)
+        optionStorage.updateCategories(state.categoriesStates)
     },
     /**
      * Updates a categories state and save
@@ -109,7 +106,7 @@ const actions = {
      */
     updateCategory({ commit, dispatch, state }, catObj) {
         commit("updateCategory", catObj)
-        this.updateCategories(state)
+        optionStorage.updateCategories(state.categoriesStates)
     },
     /**
      * Updates a categories name and save, use to upgrade native categories names for i18n
@@ -118,7 +115,7 @@ const actions = {
      */
     updateCategoryName({ commit, dispatch, state }, oldnew) {
         commit("updateCategoryName", oldnew)
-        this.updateCategories(state)
+        optionStorage.updateCategories(state.categoriesStates)
     },
     /**
      * Add a language to readable languages list
