@@ -4,7 +4,7 @@
         <v-row no-gutters>
             <v-col cols="12" class="d-flex align-center filter-container">
                 <v-card class="hover-card">
-                    <Categories v-on="on" :categories="categories" :static-cats="false" :delegate-delete="false" />
+                    <Categories :categories="categories" :static-cats="false" :delegate-delete="false" />
                 </v-card>
                 <!-- Filters -->
                 <v-card class="hover-card d-flex">
