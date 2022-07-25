@@ -203,7 +203,7 @@ export class OptionStorage {
         return browser.storage.local.get(keys)
     }
 
-    setKey(key: string, value: string | number) {
+    setKey(key: string, value: string | number | string[]) {
         return browser.storage.local.set({ [key]: value })
     }
 

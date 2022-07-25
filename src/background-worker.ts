@@ -60,8 +60,8 @@ const init = async () => {
     /**
      * Initialize bookmarks list in store from DB
      */
-    // logger.debug("Initialize bookmarks")
-    // await store.dispatch("initBookmarksFromDB")
+    logger.debug("Initialize bookmarks")
+    await store.dispatch("initBookmarksFromDB")
 
     /**
      * Call function if there is anything to do after mirrors and mangas loading
