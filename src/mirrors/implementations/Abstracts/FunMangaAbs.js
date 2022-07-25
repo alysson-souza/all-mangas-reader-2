@@ -1,7 +1,7 @@
 /**
  * Abstract implementation for all sites based on FoolSlide
  */
-window["FunMangaAbs"] = function (options) {
+globalThis["FunMangaAbs"] = function (options) {
     this.default_options = {
         search_url: "http://funmanga/",
         search_data_field: "search",

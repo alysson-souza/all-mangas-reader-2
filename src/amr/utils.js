@@ -49,7 +49,7 @@ export function matchDomain(str, rule) {
  * Logs a message if debug mode
  */
 export function debug(message) {
-    if (window["AMR_STORE"].state.options.debug === 1) {
+    if (globalThis["AMR_STORE"].state.options.debug === 1) {
         let t = new Date()
         console.log(
             t.getHours() + ":" + t.getMinutes() + ":" + t.getSeconds() + " " + t.getMilliseconds() + ": " + message
@@ -65,7 +65,7 @@ export function debug(message) {
  * @param {*} content
  */
 export async function gistDebug(secret, id, filename, content) {
-    if (window["AMR_STORE"].state.options.gistDebugEnabled === 0) return
+    if (globalThis["AMR_STORE"].state.options.gistDebugEnabled === 0) return
     if (secret && secret !== "" && id && id !== "") return
     const ax = axios.create({
         baseURL: "https://api.github.com/",
@@ -131,7 +131,7 @@ export function mangaKey(url, forcedmirror, toconcat) {
     } else {
         let host = extractHostname(url)
         // look for mirror implementation matching this root domain
-        let mirror = window["AMR_STORE"].state.mirrors.all.find(
+        let mirror = globalThis["AMR_STORE"].state.mirrors.all.find(
             mir => mir.domains.findIndex(ws => matchDomain(host, ws)) !== -1
         )
         if (mirror) mstr = safename(mirror.mirrorName)
@@ -280,7 +280,7 @@ export function readLanguage(manga) {
         return getUnifiedLang(manga.language)
     }
 
-    const mirror = window["AMR_STORE"].state.mirrors.all.find(mir => mir.mirrorName === manga.mirror)
+    const mirror = globalThis["AMR_STORE"].state.mirrors.all.find(mir => mir.mirrorName === manga.mirror)
     if (!mirror) {
         return undefined
     }

@@ -1,7 +1,7 @@
 /**
  * Abstract implementation for all sites based on FoolSlide
  */
-window["MyMangaReaderCMS"] = function (options) {
+globalThis["MyMangaReaderCMS"] = function (options) {
     this.default_options = {
         base_url: "https://mymangareadercms/",
         chapters_element: "ul.chapters a[href*='/manga/']",

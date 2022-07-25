@@ -24,9 +24,6 @@ let syncManager
 // actually have specific meaning, does not get saved to db
 const ABSTRACT_MANGA_MSG = "abstract_manga"
 
-const logger = getAppLogger({})
-const debug = logger.debug
-
 /**
  *  initial state of the mangas module
  */
@@ -379,7 +376,7 @@ const actions = {
             console.error(e)
         }
 
-        debug("saving new manga to database")
+        this.logger.debug("saving new manga to database")
         dispatch("addManga", { manga: mg, fromSync: message.isSync })
         // update native language categories
         dispatch("updateLanguageCategories")
@@ -425,13 +422,13 @@ const actions = {
      * Get list of chapters for a manga
      */
     async getMangaListOfChapters({ dispatch, commit, getters }, manga) {
-        debug("getMangaListOfChapters : get implementation of " + manga.mirror)
+        this.logger.debug("getMangaListOfChapters : get implementation of " + manga.mirror)
         const impl = await mirrorsImpl.getImpl(manga.mirror)
         if (!impl || impl.disabled) {
             await dispatch("disabledManga", manga)
             throw new Error(`Failed to get implementation for mirror ${manga.mirror}`)
         }
-        debug(
+        this.logger.debug(
             "getMangaListOfChapters : implementation found, get list of chapters for manga " +
                 manga.name +
                 " key " +
@@ -500,7 +497,7 @@ const actions = {
                                 // set current list chaps to the right one
                                 listChaps = listChaps[mg.language]
                             } else {
-                                debug(
+                                this.logger.debug(
                                     "required language " +
                                         mg.language +
                                         " does not exist in resulting list of chapters for manga " +
@@ -559,7 +556,7 @@ const actions = {
             throw new Error("Refreshing " + mg.key + " has been timeout... seems unreachable...")
         }, 60000)
 
-        debug("waiting for manga list of chapters for " + mg.name + " on " + mg.mirror)
+        this.logger.debug("waiting for manga list of chapters for " + mg.name + " on " + mg.mirror)
         let listChaps = await dispatch("getMangaListOfChapters", mg)
         clearTimeout(timeOutRefresh)
 
@@ -601,7 +598,7 @@ const actions = {
             throw ABSTRACT_MANGA_MSG
         }
 
-        debug(
+        this.logger.debug(
             "chapters in multiple languages found for " +
                 mg.name +
                 " on " +
@@ -617,7 +614,7 @@ const actions = {
             return listChaps[mg.language]
         }
 
-        debug(
+        this.logger.debug(
             "required language " +
                 mg.language +
                 " does not exist in resulting list of chapters. Existing languages are : " +
@@ -653,7 +650,7 @@ const actions = {
 
         const oldLastChap = typeof mg.listChaps[0] === "object" ? mg.listChaps[0][1] : undefined
 
-        debug(listChaps.length + " chapters found for " + mg.name + " on " + mg.mirror)
+        this.logger.debug(listChaps.length + " chapters found for " + mg.name + " on " + mg.mirror)
         commit("updateMangaListChaps", { key: mg.key, listChaps: listChaps })
 
         const newLastChap = mg.listChaps[0][1]
@@ -685,7 +682,7 @@ const actions = {
             return
         }
 
-        debug(
+        this.logger.debug(
             "Manga " +
                 mg.name +
                 " on " +
@@ -699,7 +696,7 @@ const actions = {
         const probable = findProbableChapter(mg.lastChapterReadURL, mg.listChaps)
         if (probable !== undefined) {
             const [name, url] = probable
-            debug(`Found probable chapter : ${name} : ${url}`)
+            this.logger.debug(`Found probable chapter : ${name} : ${url}`)
             commit("updateMangaLastChapter", {
                 key: mg.key,
                 obj: {
@@ -719,7 +716,7 @@ const actions = {
         //     newName: listChaps[listChaps.length - 1][0],
         //     dateTime: new Date().toLocaleString()
         // })
-        debug("No list entry or multiple list entries match the known last chapter. Reset to first chapter")
+        this.logger.debug("No list entry or multiple list entries match the known last chapter. Reset to first chapter")
         commit("updateMangaLastChapter", {
             key: mg.key,
             obj: {
@@ -750,7 +747,7 @@ const actions = {
         }
         if (isConverting) timeout = 60 * 1000
         if (timeout > 0) {
-            debug("Skipped chapter lists update")
+            this.logger.debug("Skipped chapter lists update")
             setTimeout(() => {
                 actions.updateChaptersLists(
                     { dispatch, commit, getters, state, rootState },
@@ -760,7 +757,7 @@ const actions = {
             return
         }
         dispatch("setOption", { key: "isUpdatingChapterLists", value: 1 }) // Set watcher
-        debug("Starting chapter lists update")
+        this.logger.debug("Starting chapter lists update")
         let tsstopspin, tsresetupdating
 
         tsresetupdating = setTimeout(
@@ -832,7 +829,7 @@ const actions = {
         if (tsresetupdating) {
             clearTimeout(tsresetupdating)
         }
-        debug("Done updating chapter lists")
+        this.logger.debug("Done updating chapter lists")
         if (rootState.options.refreshspin === 1) {
             //stop the spinning
             iconHelper.stopSpinning()
@@ -933,7 +930,7 @@ const actions = {
      * @param {*} param0
      */
     importSamples({ dispatch }) {
-        debug("Importing samples manga in AMR (" + samples.length + " mangas to import)")
+        this.logger.debug("Importing samples manga in AMR (" + samples.length + " mangas to import)")
         for (let sample of samples) {
             sample.auto = true
             dispatch("readManga", sample)
@@ -1340,6 +1337,7 @@ const mutations = {
 export default {
     created() {
         this.notifications = getNotifications(this.$store)
+        this.logger = getAppLogger(this.store.state.options)
     },
     state,
     getters,

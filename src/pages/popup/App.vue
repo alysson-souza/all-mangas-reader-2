@@ -219,7 +219,7 @@ export default {
         this.trackingDone = true //this.$store.state.options.allowtrackingdone == 1; // Forced to true to disable this
         this.cookiesDone = this.$store.state.options.allowcookiesdone == 1
 
-        this.optionStorage = new OptionStorage(this.$store)
+        this.optionStorage = new OptionStorage()
         document.title = i18n("page_popup_title")
         // initialize state for store in popup from background
         this.$store.dispatch("getStateFromReference", {

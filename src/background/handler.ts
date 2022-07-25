@@ -34,7 +34,7 @@ export class Handler {
         ]
     }
 
-    async inlineHandleHandle(message, sender) {
+    inlineHandleHandle = async (message, sender) => {
         switch (message.action) {
             case "getoptions":
                 // doing that because content script is not vue aware,
@@ -48,6 +48,9 @@ export class Handler {
                 return serializeVuexObject(mod_state_obj)
             case "sync_update":
                 return this.store.dispatch("updateSync", true)
+            case "logger":
+                this.logger.debug(message)
+                return true
         }
     }
 
@@ -56,7 +59,7 @@ export class Handler {
          * Message from popup and content script handler
          */
         browser.runtime.onMessage.addListener(async (message, sender) => {
-            this.logger.debug(message)
+            this.logger.info(message)
             for (let handler of this.handlers) {
                 const result = await handler.handle(message, sender)
                 if (result !== undefined) {

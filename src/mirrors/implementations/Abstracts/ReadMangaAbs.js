@@ -1,4 +1,4 @@
-window["ReadMangaAbs"] = function (options) {
+globalThis["ReadMangaAbs"] = function (options) {
     this.defaultOptions = {
         base_url: ""
     }

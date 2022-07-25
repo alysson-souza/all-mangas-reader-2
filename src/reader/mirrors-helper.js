@@ -12,7 +12,7 @@ class MirrorsHelper {
              * Helper for implementations.
              * Exist from version 2.0.2.140 and V4 from mirrors
              */
-            window["amr"] = window["amr"] || {}
+            globalThis["amr"] = globalThis["amr"] || {}
 
             /**
              * Loads a page and return an element in which page is loaded
@@ -69,7 +69,7 @@ class MirrorsHelper {
                      */
                     ajaxObj.xhr = () => {
                         try {
-                            return XPCNativeWrapper(new window.wrappedJSObject.XMLHttpRequest())
+                            return XPCNativeWrapper(new globalThis.wrappedJSObject.XMLHttpRequest())
                         } catch (evt) {
                             return new XMLHttpRequest()
                         }
@@ -135,7 +135,7 @@ class MirrorsHelper {
                      */
                     ajaxObj.xhr = () => {
                         try {
-                            return XPCNativeWrapper(new window.wrappedJSObject.XMLHttpRequest())
+                            return XPCNativeWrapper(new globalThis.wrappedJSObject.XMLHttpRequest())
                         } catch (evt) {
                             return new XMLHttpRequest()
                         }
@@ -209,13 +209,13 @@ class MirrorsHelper {
              * Set a cookie on a domain
              */
             amr.setCookie = async function (setCookieObj) {
-                if (window["AMR_STORE"].state.options.allowcookies) {
+                if (globalThis["AMR_STORE"].state.options.allowcookies) {
                     await browser.cookies.set(setCookieObj)
                 }
             }
 
             amr.getOption = function (option) {
-                return window["AMR_STORE"].state.options[option] || ""
+                return globalThis["AMR_STORE"].state.options[option] || ""
             }
 
             amr.crypto = CryptoJS

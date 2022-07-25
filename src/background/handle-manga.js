@@ -3,14 +3,7 @@ import browser from "webextension-polyfill"
 import mirrorsImpl from "../amr/mirrors-impl"
 import storedb from "../amr/storedb"
 import { afterHostURL, formatMangaName, mangaKey, matchDomain, serializeVuexObject } from "../shared/utils"
-import { sanitizeDom } from "../amr/domutils"
-
-/** Scripts to inject in pages containing mangas for new reader */
-const contentScriptsV2 = [
-    { file: "/lib/jquery.min.js" },
-    { file: "/reader/init-reading.js" }
-    // { file: "/mirrors/register_implementations.js" }
-]
+import * as cheerio from "cheerio"
 
 export class HandleManga {
     constructor(store, logger) {
@@ -379,44 +372,41 @@ export class HandleManga {
      * @param {*} message
      */
     async getChapterData(message) {
-        return Axios.get(message.url)
-            .then(resp => {
-                return new Promise(async (resolve, reject) => {
-                    let htmlDocument = sanitizeDom(resp.data)
-                    // loads the implementation code
-                    let impl = await mirrorsImpl.getImpl(message.mirrorName)
-                    // Check if this is a chapter page
-                    let isChapter = impl.isCurrentPageAChapterPage(htmlDocument, message.url)
-                    let infos,
-                        imagesUrl = []
-                    if (isChapter) {
-                        try {
-                            // Retrieve informations relative to current chapter / manga read
-                            infos = await impl.getInformationsFromCurrentPage(htmlDocument, message.url)
+        return fetch(message.url)
+            .then(async resp => {
+                let htmlDocument = cheerio.load(await resp.text())
+                globalThis.$ = htmlDocument
+                // loads the implementation code
+                let impl = await mirrorsImpl.getImpl(message.mirrorName)
+                // Check if this is a chapter page
+                let isChapter = impl.isCurrentPageAChapterPage(htmlDocument, message.url)
+                let infos,
+                    imagesUrl = []
+                if (isChapter) {
+                    try {
+                        // Retrieve informations relative to current chapter / manga read
+                        infos = await impl.getInformationsFromCurrentPage(htmlDocument, message.url)
 
-                            // retrieve images to load
-                            imagesUrl = await impl.getListImages(htmlDocument, message.url)
-                        } catch (e) {
-                            console.error("Error while loading infos and images from url " + message.url)
-                            console.error(e)
-                        }
+                        // retrieve images to load
+                        imagesUrl = await impl.getListImages(htmlDocument, message.url)
+                    } catch (e) {
+                        console.error("Error while loading infos and images from url " + message.url)
+                        console.error(e)
                     }
-                    let title = htmlDocument.title || htmlDocument.querySelector("title").text
+                }
+                const title = htmlDocument.title || htmlDocument("title").text
 
-                    resolve({
-                        isChapter: isChapter ? true : false,
-                        infos: infos,
-                        images: imagesUrl,
-                        title: title
-                    })
-                })
+                return {
+                    isChapter: !!isChapter,
+                    infos: infos,
+                    images: imagesUrl,
+                    title: title
+                }
             })
             .catch(e => {
                 console.error("error while loading images from chapter " + message.url)
                 console.error(e)
-                return Promise.resolve({
-                    images: null
-                })
+                return Promise.resolve({ images: null })
             })
     }
     /**

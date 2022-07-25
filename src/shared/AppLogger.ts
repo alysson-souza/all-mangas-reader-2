@@ -8,7 +8,11 @@ export class AppLogger {
     constructor(private config: LoggerConfig) {}
 
     log(level: "log" | "info" | "error" | "debug", message: Message) {
-        console[level](this.getPrefix() + ": " + message)
+        if (typeof message === "string") {
+            console[level](this.getPrefix() + ": " + message)
+        }
+
+        console[level](this.getPrefix(), message)
     }
 
     private getPrefix() {

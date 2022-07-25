@@ -59,7 +59,7 @@ if (typeof registerMangaObject === "function") {
         },
 
         getListChaps: async function (urlManga) {
-            let amrOptions = window["AMR_STORE"].state.options
+            let amrOptions = globalThis["AMR_STORE"].state.options
             let blockedGroups = amrOptions.mangadexBlockedGroups.split(",") || []
             let id = urlManga.split("/")[4]
             let json = await amr.loadJson(this.api + "manga/" + id + "/chapters")
@@ -111,7 +111,7 @@ if (typeof registerMangaObject === "function") {
         },
 
         getListImages: async function (doc, curUrl) {
-            let amrOptions = window["AMR_STORE"].state.options
+            let amrOptions = globalThis["AMR_STORE"].state.options
             let chid = curUrl.split("/")[4]
 
             let url = this.api + "chapter/" + chid + "?"

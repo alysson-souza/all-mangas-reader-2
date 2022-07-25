@@ -1,7 +1,7 @@
 /**
  * Abstract implementation for all sites based on Mangakakalot
  */
-window["MangakakalotAbs"] = function (options) {
+globalThis["MangakakalotAbs"] = function (options) {
     this.default_options = {
         base_url: "",
         search_url: "search/",
