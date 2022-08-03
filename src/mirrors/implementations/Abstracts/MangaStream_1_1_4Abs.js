@@ -6,7 +6,7 @@ window["MangaStream_1_1_4Abs"] = function (options) {
         manga_url_selector: ".allc a"
     }
     this.options = Object.assign(this.defaultOptions, options)
-    this.mirrorName = "ReadMangaAbs"
+    this.mirrorName = "MangaStream_1_1_4Abs"
     this.canListFullMangas = false
 
     this.getMangaList = async function (search) {
