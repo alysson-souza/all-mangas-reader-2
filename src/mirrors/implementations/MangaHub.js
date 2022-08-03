@@ -52,8 +52,29 @@ if (typeof registerMangaObject === "function") {
 
             let json = await amr.loadJson("https://api.mghubcdn.com/graphql", {
                 post: true,
-                data: `{"query":"{chapter(x:m01,slug:\\"${slug}\\",number:${chapter}){id,title,mangaID,number,slug,date,pages,noAd,manga{id,title,slug,mainSlug,author,isWebtoon,isYaoi,isPorn,isSoftPorn,unauthFile,isLicensed}}}\"}`
+                data: `{"query":"{chapter(x:m01,slug:\\"${slug}\\",number:${chapter}){id,title,mangaID,number,slug,date,pages,noAd,manga{id,title,slug,mainSlug,author,isWebtoon,isYaoi,isPorn,isSoftPorn,unauthFile,isLicensed}}}\"}`,
+                headers: {
+                    "x-amr-change-Referer": this.home,
+                    "x-amr-change-Origin": this.home,
+                    accept: "application/json",
+                    "x-amr-change-sec-fetch-site": "cross-site"
+                }
             })
+
+            // let req = await fetch('https://api.mghubcdn.com/graphql', {
+            //     method: 'POST',
+            //     mode: 'cors',
+            //     cache: 'no-cache',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //         'accept': 'application/json',
+            //         'origin': curUrl,
+            //         'x-referer': curUrl
+            //     },
+            //     body: `{"query":"{chapter(x:m01,slug:\\"${slug}\\",number:${chapter}){id,title,mangaID,number,slug,date,pages,noAd,manga{id,title,slug,mainSlug,author,isWebtoon,isYaoi,isPorn,isSoftPorn,unauthFile,isLicensed}}}\"}`,
+            // })
+
+            // let json = req.json()
 
             let res = []
             let cdnUrl = "https://img.mghubcdn.com/file/imghub/"

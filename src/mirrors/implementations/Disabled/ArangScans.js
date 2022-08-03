@@ -6,6 +6,7 @@ if (typeof registerMangaObject === "function") {
         domains: ["arangscans.org"],
         home: "https://arangscans.org/",
         canListFullMangas: true,
+        disabled: true,
         chapter_url: /^\/chapters\/.*\/.+$/g,
 
         getMangaList: async function (search) {

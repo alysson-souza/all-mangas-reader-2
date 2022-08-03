@@ -122,6 +122,28 @@ IconHelper.setBlueIcon()
         HandleManga.sendPushState(args.url, args.tabId)
     })
 
+    function customRequestHeaders(event) {
+        let custom = event.requestHeaders.filter(h => h.name.toLowerCase().startsWith("x-amr-change-"))
+
+        custom = custom.map(h => {
+            h.name = h.name.substr(13)
+            return h
+        })
+
+        let out = event.requestHeaders
+            .filter(s => !s.name.startsWith("x-amr-change-"))
+            .filter(h => !custom.find(h2 => h["name"] == h2["name"]))
+            .concat(custom)
+
+        return { requestHeaders: out }
+    }
+
+    browser.webRequest.onBeforeSendHeaders.addListener(customRequestHeaders, { urls: ["https://*/*", "http://*/*"] }, [
+        "blocking",
+        "requestHeaders",
+        "extraHeaders"
+    ])
+
     /**
      * The function below increments the reading of each manga in the list from a chapter each 2 seconds
      * You can observe that when you open the popup, these modifications are propagated in real time to the popup
