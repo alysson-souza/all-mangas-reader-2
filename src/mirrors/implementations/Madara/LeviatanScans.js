@@ -15,6 +15,7 @@ if (typeof registerMangaObject === "function") {
             path_length: 2,
             sort_chapters: true,
             isekai_chapter_url: true,
+            title_selector: "#manga-title > h1",
             urlProcessor: url => {
                 let t = url.split("/")
                 if (t[3] != "manga") t.splice(3, 1)
