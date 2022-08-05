@@ -275,18 +275,6 @@ export function getUnifiedLang(lang) {
     return undefined
 }
 
-export function readLanguage(manga, mirror) {
-    if (manga.language !== undefined) {
-        return getUnifiedLang(manga.language)
-    }
-
-    if (!mirror) {
-        return undefined
-    }
-
-    return mirror.languages.split(",").length > 1 ? "aa" : getUnifiedLang(mirror.languages)
-}
-
 export function arrayToObject(array, keyField) {
     return array.reduce((obj, item) => {
         obj[item[keyField]] = item

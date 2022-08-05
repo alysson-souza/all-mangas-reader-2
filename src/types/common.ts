@@ -31,6 +31,10 @@ interface AbstractOptions {
 
 export interface AppManga {
     key: string | undefined
+
+    /** Mirror name **/
+    mirror: string
+
     name: string
     url: string
 

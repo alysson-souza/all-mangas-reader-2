@@ -134,7 +134,7 @@ export const shouldCheckForUpdate = (mg: AppManga, options: AppConfig, logger: A
     return shouldUpdate
 }
 
-export function readLanguage(manga: any, mirrors: Mirror[]) {
+export function readLanguage(manga: AppManga, mirrors: Mirror[]) {
     if (manga.language !== undefined) {
         return getUnifiedLang(manga.language)
     }
