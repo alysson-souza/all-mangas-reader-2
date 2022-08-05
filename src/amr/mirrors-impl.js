@@ -34,13 +34,6 @@ class MirrorsImpl {
     }
 
     /**
-     * Removes the implementation cache
-     */
-    resetImplementations() {
-        // Nothing to do...
-    }
-
-    /**
      * Return mirror implementation object from mirrorName
      * @param {*} mirrorName
      */

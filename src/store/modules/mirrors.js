@@ -75,9 +75,6 @@ const actions = {
         // set the blue badge
         // iconHelper.setBlueIcon()
 
-        // reset implementations
-        commit("resetImplementations")
-
         // update last update ts
         dispatch("setOption", { key: "lastMirrorsUpdate", value: Date.now() })
 
@@ -185,15 +182,6 @@ const mutations = {
     setAbstractMirrors(state, mirrors) {
         state.abstracts = []
         state.abstracts.push(...mirrors.filter(mirror => mirror.type === "abstract"))
-    },
-
-    /**
-     * Reset implementations is called in a mutation to affect all js instances (background, lab)
-     * @param {*} state
-     * @param {*} mirrors
-     */
-    resetImplementations(state, mirrors) {
-        mirrorsImpl.resetImplementations()
     },
 
     /**
