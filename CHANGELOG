@@ -1,3 +1,19 @@
+### V2.4.8
+  Mirror Fixes:
+    * Leviatan Scans - Fixed issue getting series name
+    * Mangahub - Fixed issue getting images
+    * Read Manga - Domain Change
+    * Reset Scans - Chapter url pattern change
+    * LHTranslation - Fix chapter list
+    * Luminous Scans - Removed timestamps from chapter list
+    * Mangadex - Increased the max chapter count to handle larger lists
+    * Manga Sushi - Domain Change
+
+  Disabled Mirrors:
+    * Arang Scans
+
+  Changes:
+    * Added code to allow us to customize any request header, even normally protected ones    
 ### V2.4.7
   Mirror Fixes:
     * Zero Scans - Changed site software
