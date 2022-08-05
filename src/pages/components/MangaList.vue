@@ -325,7 +325,7 @@ import Categories from "./Categories"
 import MultiMangaAction from "./MultiMangaAction"
 import browser from "webextension-polyfill"
 import * as utilsamr from "../../amr/utils"
-import * as utils from "../utils"
+import { convertIcons, displayFilterCats, hasNew } from "../../shared/utils"
 
 const default_sort = (a, b) => {
     let af = utilsamr.formatMgName(a.displayName && a.displayName !== "" ? a.displayName : a.name),
@@ -466,13 +466,7 @@ export default {
             if (this.mirrorSelection !== i18n("list_page_all")) {
                 return this.allMangas.filter(mg => mg.mirror == this.mirrorSelection)
             }
-            return this.allMangas.filter(mg =>
-                utils.displayFilterCats(
-                    mg,
-                    this.options.categoriesStates,
-                    this.mirrors.find(mir => mir.mirrorName === mg.mirror)
-                )
-            )
+            return this.allMangas.filter(mg => displayFilterCats(mg, this.options.categoriesStates, this.mirrors))
         },
         /**
          * Returns a list of all mirrors that have series
@@ -493,7 +487,7 @@ export default {
          * Return all visible mangas having new chapters to read
          */
         visNewMangas: function () {
-            return this.visMangas.filter(mg => utils.hasNew(mg))
+            return this.visMangas.filter(mg => hasNew(mg))
         },
         /**
          * Build mangas groups (by name)
@@ -503,7 +497,7 @@ export default {
                 // make a copy of manga add a "hasNew" key and remove chapters
                 const mangaCopy = Object.assign({}, manga)
                 delete mangaCopy.listChaps
-                mangaCopy.hasNew = utils.hasNew(manga)
+                mangaCopy.hasNew = hasNew(manga)
 
                 // free memory early
                 manga = null
@@ -546,7 +540,7 @@ export default {
     components: { Categories, MangaGroup, MultiMangaAction },
     methods: {
         i18n: (message, ...args) => i18n(message, ...args),
-        convertIcons: str => utils.convertIcons(str),
+        convertIcons: str => convertIcons(str),
         importSamples() {
             // we don't do this.$store.dispatch("importSamples"); because to load list of chapters, implementations rely on jQuery, which is not loaded in pages, rely on background page to do so
             browser.runtime.sendMessage({ action: "importSamples" })
@@ -601,8 +595,8 @@ export default {
                 cmp = default_sort
             } else if (this.sort === "updates-mostunread") {
                 cmp = function (a, b) {
-                    let ha = utils.hasNew(a),
-                        hb = utils.hasNew(b)
+                    let ha = hasNew(a),
+                        hb = hasNew(b)
                     // primary sort on manga amount of new chapters, secondary on alphabetical
                     return ha && hb
                         ? num_chapters_to_read_sort(a, b)
@@ -614,8 +608,8 @@ export default {
                 }
             } else if (this.sort === "updates") {
                 cmp = function (a, b) {
-                    let ha = utils.hasNew(a),
-                        hb = utils.hasNew(b)
+                    let ha = hasNew(a),
+                        hb = hasNew(b)
                     // primary sort on manga has new chapter, secondary on alphabetical
                     return ha === hb ? default_sort(a, b) : ha && !hb ? -1 : 1
                 }
@@ -623,8 +617,8 @@ export default {
                 cmp = function (a, b) {
                     let na = a.upts != 0,
                         nb = b.upts != 0
-                    let ha = utils.hasNew(a),
-                        hb = utils.hasNew(b)
+                    let ha = hasNew(a),
+                        hb = hasNew(b)
                     // primary sort on manga when last chapter, secondary on number unread, tertiary on alphabetical
                     return na || nb
                         ? sort_chapters_upts(a, b)

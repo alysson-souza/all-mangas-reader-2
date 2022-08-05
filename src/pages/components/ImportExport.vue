@@ -82,7 +82,7 @@
 <script>
 import i18n from "../../amr/i18n"
 import * as utils from "../../amr/utils"
-import * as mgutils from "../utils"
+import { displayFilterCats } from "../../shared/utils"
 import browser from "webextension-polyfill"
 
 export default {
@@ -167,11 +167,7 @@ export default {
             let mgs = this.$store.state.mangas.all
             if (this.viewable) {
                 mgs = mgs.filter(mg =>
-                    mgutils.displayFilterCats(
-                        mg,
-                        self.$store.state.options.categoriesStates,
-                        self.$store.state.mirrors.all.find(mir => mir.mirrorName === mg.name)
-                    )
+                    displayFilterCats(mg, self.$store.state.options.categoriesStates, self.$store.state.mirrors.all)
                 )
             }
             mgs = mgs.map(mg => {
@@ -215,11 +211,11 @@ export default {
                     bms = bms.filter(bm => {
                         let mgbm = this.$store.state.mangas.all.find(mg => mg.key.indexOf(utils.mangaKey(bm.url)) >= 0) // find manga associated with bookmark
                         if (mgbm !== undefined) {
-                            return mgutils.displayFilterCats(
+                            return displayFilterCats(
                                 // check if manga is viewable
                                 mgbm,
                                 self.$store.state.options.categoriesStates,
-                                self.$store.state.mirrors.all.find(mir => mir.mirrorName === mgbm.name)
+                                self.$store.state.mirrors.all
                             )
                         } else {
                             // do not export bookmarks from deleted mangas in viewable mode

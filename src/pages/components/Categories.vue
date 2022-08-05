@@ -154,7 +154,7 @@
 </template>
 <script>
 import i18n from "../../amr/i18n"
-import * as utils from "../utils"
+import { countUsed } from "../../shared/utils"
 import Flag from "./Flag"
 
 const types_order = ["native", "language", undefined] // order of displayed categories types
@@ -265,7 +265,7 @@ export default {
             }
         },
         countUsed(cat) {
-            return utils.countUsed(cat, this.$store.state.mangas.all, this.$store.state.mirrors.all)
+            return countUsed(cat, this.$store.state.mangas.all, this.$store.state.mirrors.all)
         },
         stateAll(state) {
             for (let c of this.categories) {

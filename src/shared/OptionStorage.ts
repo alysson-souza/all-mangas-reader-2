@@ -154,7 +154,7 @@ export const defaultOptions = {
     tachideskUrl: "http://localhost:4567 "
 } as const
 
-export type AppConfig = typeof defaultOptions
+export type AppOptions = typeof defaultOptions
 
 export class OptionStorage {
     constructor() {}
@@ -165,13 +165,13 @@ export class OptionStorage {
                 ...a,
                 [key]: value
             }
-        }, {} as AppConfig)
+        }, {} as AppOptions)
     }
 
     public async getVueOptions() {
         const options = await browser.storage.local.get(this.getLookupRecord())
 
-        const vueOptions: Partial<AppConfig> = {}
+        const vueOptions: Partial<AppOptions> = {}
         Object.entries(options).forEach(([key, value]) => {
             if (value === undefined || value === null || value === "") {
                 return // Skip

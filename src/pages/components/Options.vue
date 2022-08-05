@@ -757,7 +757,7 @@ import amrUpdater from "../../pages/amr-updater"
 import Flag from "./Flag"
 import Mangadex from "./Options.Mangadex.vue"
 import * as amrutils from "../../amr/utils"
-import * as utils from "../utils"
+import { computeColorLight } from "../../shared/utils"
 import { THINSCAN } from "../../shared/Options"
 
 /**
@@ -1194,13 +1194,13 @@ export default {
          * Compute special color (like colorname#d|lx d for darken, l for lighten and x vuetify lighten scale)
          */
         getColor(c) {
-            return utils.computeColorLight(c, 0)
+            return computeColorLight(c, 0)
         },
         /**
          * Compute special color for text (like colorname#d|lx d for darken, l for lighten and x vuetify lighten scale)
          */
         getTextColor(c) {
-            let col = utils.computeColorLight(c, 0)
+            let col = computeColorLight(c, 0)
             let sp = col.split(" ")
             return sp[0] + "--text" + (sp.length > 1 ? " text--" + sp[1] : "")
         },

@@ -6,9 +6,13 @@ import Vuetify from "vuetify/lib"
 import App from "./App.vue"
 import store from "../../store"
 import vuetifyOptions from "../vuetifyOptions"
-import * as util from "../utils"
+import { isFirefoxAndroid } from "../../amr/utils"
 import { OptionStorage } from "../../shared/OptionStorage"
 // import 'vuetify/src/stylus/main.styl'
+
+function isSmallDevice() {
+    return isFirefoxAndroid() && window.innerWidth <= 700
+}
 
 const init = async () => {
     // Load options in store before everything
@@ -30,7 +34,7 @@ const init = async () => {
         })
         window.close()
     }
-    if (popup && !util.isSmallDevice()) {
+    if (popup && !isSmallDevice()) {
         document.body.classList.add("popup")
         document.documentElement.style.fontSize = "14px"
     } else {

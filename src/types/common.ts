@@ -1,8 +1,8 @@
 import { Store } from "vuex"
-import type { AppConfig } from "../shared/OptionStorage"
+import type { AppOptions } from "../shared/OptionStorage"
 
 export interface RootState {
-    options: AppConfig
+    options: AppOptions
     mangas: { all: any[] }
     mirrors: { all: Mirror[] }
     bookmarks: { all: Bookmark[] }
@@ -27,6 +27,12 @@ interface AbstractOptions {
     chapters_text_sel?: string
     search_url?: string
     chapters_a_sel?: string
+}
+
+export interface Category {
+    name: string
+    state: "include" | "exclude"
+    type: "native" | "language"
 }
 
 export interface AppManga {
@@ -85,4 +91,5 @@ export interface Mirror {
     languages: string
     abstract: string
     abstract_options: AbstractOptions
+    disabled?: boolean
 }

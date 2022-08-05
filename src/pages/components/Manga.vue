@@ -449,10 +449,9 @@
 <script>
 import i18n from "../../amr/i18n"
 import browser from "webextension-polyfill"
-import * as utils from "../utils"
 import * as amrutils from "../../amr/utils"
 import Flag from "./Flag"
-import { chapPath } from "../../shared/utils"
+import { chapPath, darkText, getColor } from "../../shared/utils"
 
 export default {
     data() {
@@ -579,7 +578,7 @@ export default {
             }
         },
         isDarkText: function () {
-            return utils.darkText(this.manga, this.manga.hasNew, this.options)
+            return darkText(this.manga, this.manga.hasNew, this.options)
         },
         categories() {
             return this.options.categoriesStates.filter(cat => cat.type !== "native" && cat.type != "language")
@@ -614,7 +613,7 @@ export default {
                 let odd = (this.groupIndex + 1) % 2 == 1
                 light += odd ? -2 : 1
             }
-            return utils.getColor(this.manga, this.manga.hasNew, this.options, light)
+            return getColor(this.manga, this.manga.hasNew, this.options, light)
         },
         /** get the real url from the value (url path used in select) in the manga list */
         urlFromValue: function (val) {

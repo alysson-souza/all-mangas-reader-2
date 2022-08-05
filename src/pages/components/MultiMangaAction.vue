@@ -82,7 +82,8 @@
 
 <script>
 import i18n from "../../amr/i18n"
-import * as utils from "../utils"
+import { convertIcons } from "../../shared/utils"
+
 export default {
     name: "MultiMangaAction",
     data() {
@@ -108,7 +109,7 @@ export default {
     },
     methods: {
         i18n: (message, ...args) => i18n(message, ...args),
-        convertIcons: str => utils.convertIcons(str),
+        convertIcons: str => convertIcons(str),
         addCategory: function () {
             for (let manga of this.selected) {
                 this.$store.dispatch("addCategoryToManga", {
