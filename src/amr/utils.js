@@ -275,12 +275,11 @@ export function getUnifiedLang(lang) {
     return undefined
 }
 
-export function readLanguage(manga) {
+export function readLanguage(manga, mirror) {
     if (manga.language !== undefined) {
         return getUnifiedLang(manga.language)
     }
 
-    const mirror = globalThis["AMR_STORE"].state.mirrors.all.find(mir => mir.mirrorName === manga.mirror)
     if (!mirror) {
         return undefined
     }

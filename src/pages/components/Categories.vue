@@ -265,7 +265,7 @@ export default {
             }
         },
         countUsed(cat) {
-            return utils.countUsed(cat, this.$store.state.mangas.all)
+            return utils.countUsed(cat, this.$store.state.mangas.all, this.$store.state.mirrors.all)
         },
         stateAll(state) {
             for (let c of this.categories) {
