@@ -46,7 +46,7 @@ if (typeof registerMangaObject === "function") {
         },
 
         getInformationsFromCurrentPage: async function (doc, curUrl) {
-            var mgtitle = $($('.MainContainer a[href*="manga"]', doc)[0])
+            const mgtitle = $('.MainContainer a[href*="manga"]', doc).first()
             return {
                 name: mgtitle.text().trim().split("\n")[0].trim(),
                 currentMangaURL: this.home + mgtitle.attr("href"),
@@ -58,21 +58,22 @@ if (typeof registerMangaObject === "function") {
             let fullUrl = curUrl.replace("-page-1.html", ".html")
             doc = await amr.loadPage(fullUrl, { nocache: true })
             let regex, matches
+            const text = typeof doc === "string" ? doc : doc.innerText
 
             regex = /vm\.CurChapter =(.*?);/g
-            matches = regex.exec(doc.innerText)
+            matches = regex.exec(text)
             let vars = JSON.parse(matches[1])
 
             // regex = /vm\.CurChapter\s*=\s*\{.*?\};\s*vm\.\w+\s*=\s*"(.*?)";/g
             regex = /vm\.(\w+?)\s*=\s*\w+\.data\.val\.PathName/g
-            matches = regex.exec(doc.innerText)
+            matches = regex.exec(text)
             regex = new RegExp("vm\\." + matches[1] + '\\s*=\\s*\\"(.*?)\\"', "g")
 
-            matches = regex.exec(doc.innerText)
+            matches = regex.exec(text)
             let cdnPath = matches[1]
 
             regex = /vm\.IndexName = "(.*?)";/g
-            matches = regex.exec(doc.innerText)
+            matches = regex.exec(text)
             let titlePath = matches[1]
 
             let res = []

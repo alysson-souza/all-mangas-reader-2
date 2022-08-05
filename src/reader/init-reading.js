@@ -17,10 +17,11 @@ import options from "./state/options"
 import ChapterLoader from "./helpers/ChapterLoader"
 import store from "../store"
 
-vuetifyOptions.icons.iconfont = "mdiSvg" // Forves embedded svg font for reader, we use the cdn based one for the popup still
+// Forves embedded svg font for reader, we use the cdn based one for the popup still
+vuetifyOptions.icons.iconfont = "mdiSvg"
 
-/** DO NOT REMOVE, not used here but define a global object used in loaded implementation */
-import mirrorHelper from "./mirrors-helper"
+import { MirrorHelper } from "./MirrorHelper"
+globalThis["amr"] = globalThis["amr"] || new MirrorHelper(store.state.options)
 
 let ourCss = ["https://fonts.googleapis.com/css?family=Roboto:300,400,500,700"]
 

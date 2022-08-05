@@ -46,6 +46,7 @@
     },
     "devDependencies": {
         "@mdi/js": "^6.2.95",
+        "@types/crypto-js": "^4.1.1",
         "@types/file-saver": "^2.0.5",
         "@types/mime-db": "^1.43.1",
         "circular-dependency-plugin": "^5.2.2",

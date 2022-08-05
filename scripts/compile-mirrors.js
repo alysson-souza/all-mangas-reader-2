@@ -101,6 +101,15 @@ function writeWebsites(allAbstracts, allMirrors) {
         }`
     }
     let content = `
+
+    const cheerio = require("cheerio")
+    const $ = (selector, domElement) => {
+        if (typeof domElement === 'object') {
+          return domElement(selector)
+        }
+       return cheerio.load(domElement)(selector)
+    }
+
     const utils = require('../amr/utils')
     const loadMirrors = function(current) {
         ${allAbstracts.map(conditionalExec).join("\n;")}

@@ -1,4 +1,3 @@
-import Axios from "axios"
 import browser from "webextension-polyfill"
 import mirrorsImpl from "../amr/mirrors-impl"
 import storedb from "../amr/storedb"
@@ -374,8 +373,7 @@ export class HandleManga {
     async getChapterData(message) {
         return fetch(message.url)
             .then(async resp => {
-                let htmlDocument = cheerio.load(await resp.text())
-                globalThis.$ = htmlDocument
+                let htmlDocument = await resp.text()
                 // loads the implementation code
                 let impl = await mirrorsImpl.getImpl(message.mirrorName)
                 // Check if this is a chapter page
@@ -394,7 +392,8 @@ export class HandleManga {
                         console.error(e)
                     }
                 }
-                const title = htmlDocument.title || htmlDocument("title").text
+                const body = cheerio.load(htmlDocument)
+                const title = body.title || body("title").text
 
                 return {
                     isChapter: !!isChapter,

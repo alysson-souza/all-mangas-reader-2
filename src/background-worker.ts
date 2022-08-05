@@ -9,6 +9,7 @@ import storedb from "./amr/storedb"
 import { converToMangadexV5 } from "./background/misc/mangedex-v5-converter"
 // import { IconHelper } from './amr/icon-helper';
 import { Mangadex } from "./background/misc/mangadex-v5-integration"
+import { MirrorHelper } from "./reader/MirrorHelper"
 
 // browser.alarms.onAlarm.addListener(function (args) {
 //     console.log(args)
@@ -24,6 +25,8 @@ const init = async () => {
 
     const amrInit = new AmrInit(store, storedb, optionsStorage, logger)
     // const iconHelper = new IconHelper(store)
+
+    globalThis["amr"] = new MirrorHelper(store.state.options)
 
     const handleManga = new HandleManga(store, logger)
 
