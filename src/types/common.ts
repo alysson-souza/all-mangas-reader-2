@@ -89,7 +89,25 @@ export interface Mirror {
     home: string
     chapter_url: RegExp
     languages: string
-    abstract: string
-    abstract_options: AbstractOptions
+    abstract?: string
+    abstract_options?: AbstractOptions
     disabled?: boolean
+}
+
+interface CurrentPageInfo {
+    name: string
+    currentMangaURL: string
+    currentChapterURL: string
+}
+
+export interface MirrorImplementation extends Mirror {
+    getMangaList(search?: string): Promise<[string, string][]>
+    getListChaps(urlManga: string): Promise<[string, string][]>
+    getInformationsFromCurrentPage(doc: string, curUrl: string): Promise<CurrentPageInfo>
+    getListImages(doc: string, curUrl: string): Promise<string[]>
+
+    /** Not safe to use in service worker context **/
+    getImageFromPageAndWrite(urlImage: string, image: HTMLImageElement)
+
+    isCurrentPageAChapterPage(doc: string): boolean
 }
