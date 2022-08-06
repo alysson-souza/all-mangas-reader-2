@@ -4,11 +4,12 @@ import saveAs from "file-saver"
 import mimedb from "mime-db"
 import axios from "axios"
 import { AppStore } from "../types/common"
+import { MirrorLoader } from "../mirrors/MirrorLoader"
 
 zip.configure({ useWebWorkers: false })
 
 export class HandleMisc {
-    constructor(private readonly store: AppStore) {}
+    constructor(private readonly store: AppStore, private readonly mirrorLoader: MirrorLoader) {}
 
     async handle(message) {
         switch (message.action) {
@@ -16,7 +17,8 @@ export class HandleMisc {
             case "opentab":
                 return browser.tabs.create({ url: message.url })
             case "mirrorInfos":
-                let mirror = this.store.state.mirrors.all.find(mir => mir.mirrorName === message.name)
+                // @TODO deprecate and load directly from mirrorLoader
+                const mirror = this.mirrorLoader.getMirror(message.name)
                 return Promise.resolve({
                     // can't send a vuex object through js instances on Firefox --> convert
                     activated: mirror.activated,
@@ -42,6 +44,7 @@ export class HandleMisc {
         const writer = new zip.ZipWriter(blobWriter)
         for (const [i, url] of urls.entries()) {
             let ext = "jpg"
+            // @TODO this probably not working and should be using fetch
             const resp = await axios.get(url, { responseType: "blob" })
 
             const content = resp.data

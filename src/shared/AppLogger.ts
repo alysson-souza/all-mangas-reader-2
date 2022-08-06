@@ -1,8 +1,8 @@
 interface LoggerConfig {
-    debug?: 0 | 1
+    debug?: number
 }
 
-type Message = string | undefined | Error
+type Message = string | undefined | Error | unknown
 
 export class AppLogger {
     constructor(private config: LoggerConfig) {}

@@ -78,6 +78,8 @@ export interface AppManga {
     languages: string[]
 
     currentChapter: string
+
+    zoom?: number
 }
 
 export interface Mirror {
@@ -100,16 +102,19 @@ interface CurrentPageInfo {
     currentChapterURL: string
 }
 
+export interface ChapterData {
+    isChapter?: boolean
+    infos?: CurrentPageInfo
+    images: string[] | null
+    title?: string
+}
+
+export type InfoResult = [url: string, name: string]
 export interface MirrorImplementation extends Mirror {
-    getMangaList(search?: string): Promise<[string, string][]>
-    getListChaps(urlManga: string): Promise<[string, string][]>
+    getMangaList(search?: string): Promise<InfoResult[]>
+    getListChaps(urlManga: string): Promise<InfoResult[]>
     getCurrentPageInfo(doc: string, curUrl: string): Promise<CurrentPageInfo>
     getListImages(doc: string, curUrl: string): Promise<string[]>
     getImageUrlFromPage(urlImage: string): Promise<string>
     isCurrentPageAChapterPage(doc: string, curUrl: string): boolean
-}
-
-export interface MirrorBrowser extends MirrorImplementation {
-    /** Not safe to use in service worker context **/
-    getImageFromPageAndWrite(urlImage: string, image: HTMLImageElement)
 }

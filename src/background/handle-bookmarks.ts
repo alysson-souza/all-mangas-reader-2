@@ -1,13 +1,13 @@
 import i18n from "../amr/i18n"
 import browser from "webextension-polyfill"
-import { AppStore, MirrorImplementation } from "../types/common"
+import { AppStore } from "../types/common"
 import { mangaKey } from "../shared/utils"
 import { MirrorLoader } from "../mirrors/MirrorLoader"
 
 export class HandleBookmarks {
     private context_ids: string[]
 
-    constructor(private store: AppStore, private mirrorLoader: MirrorLoader<MirrorImplementation>) {
+    constructor(private store: AppStore, private mirrorLoader: MirrorLoader) {
         this.context_ids = []
     }
     async handle(message, sender) {

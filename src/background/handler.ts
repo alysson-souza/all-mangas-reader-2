@@ -21,14 +21,14 @@ export class Handler {
         private readonly store: AppStore,
         private readonly logger: AppLogger,
         private readonly optionStorage: OptionStorage,
-        private readonly mirrorLoader: MirrorLoader<MirrorImplementation>
+        private readonly mirrorLoader: MirrorLoader
     ) {
         this.handlers = [
             {
                 handle: this.inlineHandleHandle
             },
             new HandleManga(store, logger, mirrorLoader),
-            new HandleMisc(store),
+            new HandleMisc(store, mirrorLoader),
             new HandleNavigation(store, optionStorage),
             new HandleBookmarks(store, mirrorLoader),
             new HandleLab(mirrorLoader),

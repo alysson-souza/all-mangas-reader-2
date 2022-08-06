@@ -1,15 +1,18 @@
-import { MirrorBrowser, MirrorImplementation } from "../types/common"
+import { Mirror, MirrorImplementation } from "../types/common"
 import { MirrorHelper } from "../reader/MirrorHelper"
 import { Manga4Life } from "./sites/Manga4Life"
 
-export class MirrorLoader<T extends MirrorImplementation = MirrorBrowser> {
-    lookupMap: Map<string, T>
+export class MirrorLoader {
+    lookupMap: Map<string, MirrorImplementation>
 
-    constructor(private mirrors: T[]) {
+    constructor(private mirrors: MirrorImplementation[]) {
         this.lookupMap = new Map(mirrors.map(mirror => [mirror.mirrorName, mirror]))
     }
 
-    getImpl(name: string) {
+    async getImpl(name: string) {
+        return this.lookupMap.get(name)
+    }
+    getMirror(name: string): Readonly<Mirror> {
         return this.lookupMap.get(name)
     }
 

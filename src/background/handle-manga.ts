@@ -2,28 +2,21 @@ import browser from "webextension-polyfill"
 import storedb from "../amr/storedb"
 import { afterHostURL, formatMangaName, mangaKey, matchDomain, serializeVuexObject } from "../shared/utils"
 import * as cheerio from "cheerio"
+import { AppManga, AppStore, ChapterData, InfoResult, Mirror, MirrorImplementation } from "../types/common"
+import { AppLogger } from "../shared/AppLogger"
+import { MirrorLoader } from "../mirrors/MirrorLoader"
 
 export class HandleManga {
-    /**
-     *
-     * @param store
-     * @param logger
-     * @param mirrorLoader
-     */
-    constructor(store, logger, mirrorLoader) {
-        this.store = store
-        this.logger = logger
-        this.mirrorLoader = mirrorLoader
-    }
+    constructor(private store: AppStore, private logger: AppLogger, private mirrorLoader: MirrorLoader) {}
 
-    handle(message) {
+    handle(message: { key: string; action: string; url: string }) {
         const key = this.getMangaKey(message)
 
         switch (message.action) {
             case "mangaExists":
                 return Promise.resolve(this.store.state.mangas.all.find(manga => manga.key === key) !== undefined)
             case "mangaInfos":
-                let mg = this.store.state.mangas.all.find(manga => manga.key === key)
+                const mg = this.store.state.mangas.all.find(manga => manga.key === key)
                 if (mg !== undefined) {
                     return Promise.resolve({
                         key: mg.key,
@@ -54,7 +47,8 @@ export class HandleManga {
             case "deleteManga":
                 this.logger.debug("Delete manga key " + message.key)
                 return this.store.dispatch("deleteManga", { key: message.key })
-            case ("getNextChapterImages", "getChapterData"): //returns boolean telling if url is a chapter page, infos from page and list of images for prefetch of next chapter in content script
+            //returns boolean telling if url is a chapter page, infos from page and list of images for prefetch of next chapter in content script
+            case "getChapterData":
                 return this.getChapterData(message)
             case "markMangaReadTop":
                 return this.store.dispatch("markMangaReadTop", message)
@@ -103,7 +97,7 @@ export class HandleManga {
         }
     }
 
-    getMangaKey(message) {
+    getMangaKey(message: any) {
         if (!message.url) {
             return undefined
         }
@@ -120,7 +114,7 @@ export class HandleManga {
      * @param {*} message
      */
     async loadListChaps(message) {
-        let impl = await this.mirrorLoader.getImpl(message.mirror)
+        const impl = await this.mirrorLoader.getImpl(message.mirror)
         return impl.getListChaps(message.url)
     }
 
@@ -129,12 +123,12 @@ export class HandleManga {
      * @param {*} message
      */
     async searchList(message) {
-        return new Promise(async (resolve, reject) => {
-            let impl = await this.mirrorLoader.getImpl(message.mirror)
+        return new Promise(async resolve => {
+            const impl = await this.mirrorLoader.getImpl(message.mirror)
             // check if mirror can list all mangas
             if (impl && impl.canListFullMangas) {
                 // check if mirror list is in local db and filter
-                let list = await storedb.getListOfMangaForMirror(message.mirror)
+                const list = (await storedb.getListOfMangaForMirror(message.mirror)) as InfoResult[]
                 if (list && list.length > 0) {
                     // filter entries on search phrase
                     resolve(this.resultSearchFromArray(this.filterSearchList(list, message.search), message.mirror))
@@ -154,40 +148,26 @@ export class HandleManga {
     }
     /**
      * Convert array of array (standard result from implementation) in proper result
-     * @param {*} list
-     * @param {*} mirror
      */
-    resultSearchFromArray(list, mirror) {
-        return list.map(arr => {
-            return {
-                url: arr[1],
-                name: arr[0],
-                mirror: mirror
-            }
-        })
+    resultSearchFromArray(list: InfoResult[], mirror: Mirror) {
+        return list.map(arr => ({ url: arr[1], name: arr[0], mirror: mirror }))
     }
     /**
      * Return entries matching the search phrase from a list of results
-     * @param {*} list
-     * @param {*} search
      */
-    filterSearchList(list, search) {
+    filterSearchList(list: InfoResult[], search: string) {
         return list.filter(arr => formatMangaName(arr[0]).indexOf(formatMangaName(search)) !== -1)
     }
     /**
      * Call search function from remote website
      */
-    async searchListRemote(search, impl) {
-        return new Promise(async (resolve, reject) => {
-            let res = await impl.getMangaList(search)
-            resolve(res)
-        })
+    async searchListRemote(search: string, impl: MirrorImplementation) {
+        return impl.getMangaList(search)
     }
     /**
-     * wait for cloudflare's browser integrity check to be done
-     * @param {*} tabId
+     * wait for Cloudflare browser integrity check to be done
      */
-    async waitForCloudflare(tabId) {
+    async waitForCloudflare(tabId: number) {
         if (!(await this.executeCheck(tabId))) {
             return
         }
@@ -197,25 +177,23 @@ export class HandleManga {
             const interval = setInterval(async () => {
                 if (!(await this.executeCheck(tabId))) {
                     clearInterval(interval)
-                    return resolve()
+                    return resolve(true)
                 }
                 tries++
                 if (tries >= 40) {
                     clearInterval(interval)
-                    return reject()
+                    return reject(new Error("Failed to pass Cloudflare after 40 tries"))
                 }
             }, 500)
         })
     }
 
-    async executeCheck(tabId) {
-        const checkInnerBody = function () {
-            return document.body.innerText
-        }
-
+    async executeCheck(tabId: number) {
         const [first] = await browser.scripting.executeScript({
             target: { tabId },
-            func: checkInnerBody
+            func: function () {
+                return document.body.innerText
+            }
         })
 
         if (first.error) {
@@ -228,10 +206,8 @@ export class HandleManga {
     /**
      * Test if the url matches a mirror implementation.
      * If so, inject content script to transform the page and the mirror implementation inside the tab
-     * @param {*} url
-     * @param {*} tabId
      */
-    async matchUrlAndLoadScripts(url, tabId) {
+    async matchUrlAndLoadScripts(url: string, tabId: number) {
         const mir = this.getMir(url)
         if (mir === null) {
             return mir
@@ -246,8 +222,9 @@ export class HandleManga {
         // check if we need to load preload (it could be annoying to have preload on each pages of the website)
         // websites which provide a chapter_url regexp will have their chapters with a preload
         if (mir.chapter_url) {
-            let parts = /\/(.*)\/(.*)/.exec(mir.chapter_url)
-            let chaprx = new RegExp(parts[1], parts[2])
+            const parts = /\/(.*)\/(.*)/.exec(String(mir.chapter_url))
+            // @TODO second part is suppose to be options?
+            const chaprx = new RegExp(parts[1], parts[2])
             if (!chaprx.test("/" + afterHostURL(url))) {
                 console.log("Not matching!", parts)
                 return // returns if there is no match
@@ -255,7 +232,7 @@ export class HandleManga {
         }
 
         try {
-            // wait for cloudflare browser integrety check if needed
+            // wait for cloudflare browser integrity check if needed
             await this.waitForCloudflare(tabId)
         } catch (e) {
             this.logger.error(e)
@@ -285,6 +262,7 @@ export class HandleManga {
             document.body.appendChild(cover)
             setTimeout(() => {
                 try {
+                    // @ts-ignore
                     cover.parentNode.remove(cover)
                 } catch (e) {}
             }, 5000)
@@ -325,8 +303,8 @@ export class HandleManga {
         return serializeVuexObject(mir)
     }
 
-    getMir(url) {
-        let host = new URL(url).host
+    getMir(url): Mirror | null {
+        const host = new URL(url).host
         for (let mir of this.store.state.mirrors.all) {
             if (mir.activated && mir.domains && !mir.disabled) {
                 let wss = mir.domains
@@ -342,10 +320,8 @@ export class HandleManga {
 
     /**
      * Send an event to the tab telling that url has been changed. If it's done by AMR, nothing to do, if it's inner website navigation, load amr
-     * @param {*} url
-     * @param {*} tabId
      */
-    async sendPushState(url, tabId) {
+    async sendPushState(url: string, tabId: number) {
         if (url.includes("chrome://")) {
             return
         }
@@ -384,10 +360,10 @@ export class HandleManga {
                 // Check if this is a chapter page
                 let isChapter = impl.isCurrentPageAChapterPage(htmlDocument, message.url)
                 let infos,
-                    imagesUrl = []
+                    imagesUrl: string[] = []
                 if (isChapter) {
                     try {
-                        // Retrieve informations relative to current chapter / manga read
+                        // Retrieve information relative to current chapter / manga read
                         infos = await impl.getCurrentPageInfo(htmlDocument, message.url)
 
                         // retrieve images to load
@@ -398,9 +374,9 @@ export class HandleManga {
                     }
                 }
                 const body = cheerio.load(htmlDocument)
-                const title = body.title || body("title").text
+                const title = body("title" as string).text()
 
-                return {
+                return <ChapterData>{
                     isChapter: !!isChapter,
                     infos: infos,
                     images: imagesUrl,
@@ -423,7 +399,7 @@ export class HandleManga {
         let cats = this.store.state.options.categoriesStates
         let catsToAdd = []
         if (imps.mangas && imps.mangas.length > 0) {
-            // add default category if inexistant
+            // add default category if it does not existent
             if (importcat !== "") {
                 if (-1 === cats.findIndex(cat => cat.name === importcat)) {
                     this.store.dispatch("addCategory", importcat)
@@ -434,7 +410,7 @@ export class HandleManga {
             let firstChapToImport = true
             for (let mg of imps.mangas) {
                 // convert manga to something matching readManga requirements
-                let readmg = {
+                let readmg: Partial<AppManga> & { action?: string } = {
                     mirror: mg.m,
                     name: mg.n,
                     url: mg.u
@@ -446,8 +422,8 @@ export class HandleManga {
                 if (mg.y) readmg.layout = mg.y
                 if (mg.c) {
                     readmg.cats = mg.c
-                    mg.c.forEach(cat => {
-                        if (-1 === cats.findIndex(cat => cat.name === cat) && !catsToAdd.includes(cat)) {
+                    mg.c.forEach((cat: string) => {
+                        if (-1 === cats.findIndex(c => c.name === cat) && !catsToAdd.includes(cat)) {
                             catsToAdd.push(cat)
                         }
                     })
@@ -478,7 +454,7 @@ export class HandleManga {
                         await new Promise(resolve => {
                             setTimeout(async () => {
                                 await mgimport
-                                resolve()
+                                resolve(true)
                             }, 1000 * this.store.state.options.waitbetweenupdates)
                         })
                     }

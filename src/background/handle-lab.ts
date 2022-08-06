@@ -2,13 +2,12 @@ import Axios from "axios"
 import { formatMangaName } from "../shared/utils"
 import { sanitizeDom } from "../amr/domutils"
 import { MirrorLoader } from "../mirrors/MirrorLoader"
-import { MirrorImplementation } from "../types/common"
 
 /**
  * Runs implementation functions for the lab
  */
 export class HandleLab {
-    constructor(private mirrorLoader: MirrorLoader<MirrorImplementation>) {}
+    constructor(private mirrorLoader: MirrorLoader) {}
 
     handle(message) {
         if ("lab" === message.action) {

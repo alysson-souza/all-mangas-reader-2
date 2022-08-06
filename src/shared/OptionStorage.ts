@@ -1,5 +1,6 @@
 import browser from "webextension-polyfill"
 import { isFirefox, THINSCAN } from "./Options"
+import type { Category } from "../types/common"
 
 const jsonOptions = ["categoriesStates", "readlanguages"]
 const stringOptions = [
@@ -38,7 +39,7 @@ export const defaultOptions = {
     imgorder: 0, //Load scans in order
     smoothNavigation: 1, // Should next/previous chapter load dynamically or force a page loag
 
-    darkreader: 1, // Reader is in dark mode, if not --> light mode
+    darkreader: 1 as NumberOption, // Reader is in dark mode, if not --> light mode
 
     thinscan: THINSCAN.default,
     webtoonDefault: 0, // Should webtoon mode be the default or not
@@ -80,21 +81,21 @@ export const defaultOptions = {
     allowcookiesdone: 0, // user has chosen to let amr read/create cookies / or not
 
     /** Sync options */
-    syncEnabled: 0,
-    gistSyncEnabled: 0,
-    gistSyncSecret: "",
-    gistSyncGitID: "",
+    syncEnabled: 0 as NumberOption,
+    gistSyncEnabled: 0 as NumberOption,
+    gistSyncSecret: "" as string,
+    gistSyncGitID: "" as string,
 
     /** Debug options */
-    gistDebugEnabled: 0,
+    gistDebugEnabled: 0 as NumberOption,
     /**
      * Sync/Update/Convert safener
      */
-    isUpdatingChapterLists: 0,
-    isSyncing: 0,
-    isConverting: 0,
+    isUpdatingChapterLists: 0 as NumberOption,
+    isSyncing: 0 as NumberOption,
+    isConverting: 0 as NumberOption,
     /** Search Options */
-    searchOpenSeries: 0,
+    searchOpenSeries: 0 as NumberOption,
 
     /** Language options */
     readlanguages: ["en", "gb"] as string[], // default language is english. On install, the user language is added to this list
@@ -113,13 +114,13 @@ export const defaultOptions = {
         { name: "category_unread", state: "include", type: "native" },
         { name: "category_oneshots", state: "include", type: "native" },
         { name: "category_disabled_mirrors", state: "include", type: "native" }
-    ],
+    ] as Category[],
 
     /** Internal timestamps and state booleans */
-    updated: 0, // last time something has been changed in the list
-    changesSinceSync: 0, // 1 : something has been changed since last sync
-    lastChaptersUpdate: 0, // last time chapters lists have been updated
-    lastMirrorsUpdate: 0, // last time mirrors have been updated
+    updated: 0 as number, // last time something has been changed in the list
+    changesSinceSync: 0 as NumberOption, // 1 : something has been changed since last sync
+    lastChaptersUpdate: 0 as number, // last time chapters lists have been updated
+    lastMirrorsUpdate: 0 as number, // last time mirrors have been updated
 
     /** Manga List options */
     perPageMangas: 25, // Manga entries per page

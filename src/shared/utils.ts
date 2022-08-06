@@ -299,7 +299,8 @@ export function findProbableChapter(lastReadURL, list) {
 
 interface MangaKeyParams {
     url: string | undefined
-    mirror: any
+    mirror?: string
+    language?: string
     shouldConcat?: boolean
     rootState: AppStore
 }

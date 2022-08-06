@@ -1,8 +1,8 @@
-import { MirrorBrowser } from "../../types/common"
+import { MirrorImplementation } from "../../types/common"
 import { MirrorHelper } from "../../reader/MirrorHelper"
 import { BaseMirror } from "./BaseMirror"
 
-export class Manga4Life extends BaseMirror implements MirrorBrowser {
+export class Manga4Life extends BaseMirror implements MirrorImplementation {
     constructor(amrLoader: MirrorHelper) {
         super(amrLoader)
     }
@@ -98,8 +98,8 @@ export class Manga4Life extends BaseMirror implements MirrorBrowser {
         let stupidvar1 = id.substr(0, 1)
         let chapterNumber = parseInt(id.slice(1, -1))
         let chapterPart = id.slice(-1)
-        let index = stupidvar1 != 1 ? "-index-" + stupidvar1 : ""
-        let chapterPartDisplay = chapterPart != 0 ? "." + chapterPart : ""
+        let index = Number(stupidvar1) !== 1 ? "-index-" + stupidvar1 : ""
+        let chapterPartDisplay = Number(chapterPart) !== 0 ? "." + chapterPart : ""
         return "-chapter-" + chapterNumber + chapterPartDisplay + index + ".html"
     }
 
@@ -107,23 +107,18 @@ export class Manga4Life extends BaseMirror implements MirrorBrowser {
         let blah = (type != "" ? type : "Chapter") + " "
         let chapterNumber = parseInt(id.slice(1, -1))
         let chapterPart = id[id.length - 1]
-        return (blah + (chapterPart == 0 ? chapterNumber : chapterNumber + "." + chapterPart)).trim()
+        return (blah + (Number(chapterPart) === 0 ? chapterNumber : chapterNumber + "." + chapterPart)).trim()
     }
 
     private ChapterImage(ChapterString: string) {
         const Chapter = ChapterString.slice(1, -1)
         const Odd = ChapterString.slice(-1)
-        return Odd == 0 ? Chapter : Chapter + "." + Odd
+        return Number(Odd) === 0 ? Chapter : Chapter + "." + Odd
     }
 
     private PageImage(PageString: string | number) {
         const s = "000" + PageString
         return s.substr(s.length - 3)
-    }
-
-    // This is not safe in background
-    public async getImageFromPageAndWrite(urlImg: string, image: HTMLImageElement) {
-        image.src = urlImg
     }
 
     public async getImageUrlFromPage(urlImage: string) {
