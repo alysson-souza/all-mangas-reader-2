@@ -16,6 +16,7 @@ import { MirrorLoader } from "../mirrors/MirrorLoader"
  */
 export class Handler {
     private readonly handlers: { handle: (message, sender) => Promise<unknown> }[]
+    private readonly handleManga: HandleManga
 
     constructor(
         private readonly store: AppStore,
@@ -23,17 +24,22 @@ export class Handler {
         private readonly optionStorage: OptionStorage,
         private readonly mirrorLoader: MirrorLoader
     ) {
+        this.handleManga = new HandleManga(store, logger, mirrorLoader, optionStorage)
         this.handlers = [
             {
                 handle: this.inlineHandleHandle
             },
-            new HandleManga(store, logger, mirrorLoader),
+            this.handleManga,
             new HandleMisc(store, mirrorLoader),
             new HandleNavigation(store, optionStorage),
             new HandleBookmarks(store, mirrorLoader),
             new HandleLab(mirrorLoader),
             new HandleImportExport(store)
         ]
+    }
+
+    public getHandleManga() {
+        return this.handleManga
     }
 
     inlineHandleHandle = async (message, sender) => {

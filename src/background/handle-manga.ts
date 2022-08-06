@@ -5,11 +5,17 @@ import * as cheerio from "cheerio"
 import { AppManga, AppStore, ChapterData, InfoResult, Mirror, MirrorImplementation } from "../types/common"
 import { AppLogger } from "../shared/AppLogger"
 import { MirrorLoader } from "../mirrors/MirrorLoader"
+import { OptionStorage } from "../shared/OptionStorage"
 
 export class HandleManga {
-    constructor(private store: AppStore, private logger: AppLogger, private mirrorLoader: MirrorLoader) {}
+    constructor(
+        private store: AppStore,
+        private logger: AppLogger,
+        private mirrorLoader: MirrorLoader,
+        private optionStorage: OptionStorage
+    ) {}
 
-    handle(message: { key: string; action: string; url: string }) {
+    async handle(message: { key: string; action: string; url: string }): Promise<unknown> {
         const key = this.getMangaKey(message)
 
         switch (message.action) {
@@ -17,29 +23,28 @@ export class HandleManga {
                 return Promise.resolve(this.store.state.mangas.all.find(manga => manga.key === key) !== undefined)
             case "mangaInfos":
                 const mg = this.store.state.mangas.all.find(manga => manga.key === key)
-                if (mg !== undefined) {
-                    return Promise.resolve({
-                        key: mg.key,
-                        read: mg.read /* Read top */,
-                        display: mg.display /* Display mode of the old reader */,
-                        layout: mg.layout /* Layout for the new reader */,
-                        lastchapter: mg.lastChapterReadURL /* last read chapter (the most advanced one) */,
-                        currentChapter: mg.currentChapter /* last read chapter, last chapter page opened */,
-                        // @TODO seems lieke typo, was "mg.currentScanUrlm"
-                        currentScanUrl: mg.currentScanUrl /* last viewed page in currentChapter */,
-                        webtoon: mg.webtoon || false /* webtoon mode */,
-                        displayName: mg.displayName,
-                        zoom: mg.zoom || 100 /* zoom level */
-                    })
-                } else {
-                    return Promise.resolve()
-                }
+                return mg
+                    ? {
+                          key: mg.key,
+                          read: mg.read /* Read top */,
+                          display: mg.display /* Display mode of the old reader */,
+                          layout: mg.layout /* Layout for the new reader */,
+                          lastchapter: mg.lastChapterReadURL /* last read chapter (the most advanced one) */,
+                          currentChapter: mg.currentChapter /* last read chapter, last chapter page opened */,
+                          // @TODO seems lieke typo, was "mg.currentScanUrlm"
+                          currentScanUrl: mg.currentScanUrl /* last viewed page in currentChapter */,
+                          webtoon: mg.webtoon || false /* webtoon mode */,
+                          displayName: mg.displayName,
+                          zoom: mg.zoom || 100 /* zoom level */
+                      }
+                    : null
             case "saveCurrentState":
                 return this.store.dispatch("saveCurrentState", message)
             case "readManga":
                 //count number of chapters read
-                let nb = localStorage["nb_read"] ? parseInt(localStorage["nb_read"]) : 1
-                localStorage["nb_read"] = "" + (nb + 1)
+                const nb = (await this.optionStorage.getKey("nb_read")) ?? 1
+                const value = (typeof nb === "string" ? parseInt(nb) : nb) + 1
+                await this.optionStorage.setKey("nb_read", value)
                 this.logger.debug("Read manga " + message.url)
                 // call store method to update reading list appropriately
                 return this.store.dispatch("readManga", message)

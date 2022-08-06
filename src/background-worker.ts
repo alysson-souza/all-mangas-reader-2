@@ -31,9 +31,8 @@ const init = async () => {
     globalThis["amr"] = mirrorHelper
     const mirrorLoader = getMirrorLoader(mirrorHelper)
 
-    const handleManga = new HandleManga(store, logger, mirrorLoader)
-
     const handler = new Handler(store, logger, optionsStorage, mirrorLoader)
+    const handleManga = handler.getHandleManga()
 
     /**
      * Initialize extension versioning --> after options because versioning update can affect options
