@@ -3,7 +3,7 @@ import type { AppOptions } from "../shared/OptionStorage"
 
 export interface RootState {
     options: AppOptions
-    mangas: { all: any[] }
+    mangas: { all: AppManga[] }
     mirrors: { all: Mirror[] }
     bookmarks: { all: Bookmark[] }
 }

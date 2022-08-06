@@ -4,11 +4,11 @@ import { AppStore } from "../types/common"
 export class HandleNavigation {
     constructor(private store: AppStore, private optionStorage: OptionStorage) {}
 
-    handle(message): Promise<undefined | unknown> {
+    async handle(message): Promise<undefined | unknown> {
         switch (message.action) {
             // Set bar state
             case "setBarState":
-                this.optionStorage.setKey("isBarVisible", message.barstate)
+                await this.optionStorage.setKey("isBarVisible", message.barstate)
                 return Promise.resolve({})
             // hide navigation bar --> keeps its state
             case "hideBar":
@@ -20,7 +20,7 @@ export class HandleNavigation {
                 })
             // show navigation bar
             case "showBar":
-                this.optionStorage.setKey("isBarVisible", 1)
+                await this.optionStorage.setKey("isBarVisible", 1)
                 return Promise.resolve({})
             // get current state of navigation bar
             case "barState":
@@ -29,10 +29,12 @@ export class HandleNavigation {
                     .then(current => ({ barVis: current === undefined ? 1 : current }))
             // get a value from localStorage
             case "get_storage":
-                return this.optionStorage.getKey(message.key)
+                const item = await this.optionStorage.getKey(message.key)
+                // undefined means not found handler
+                return item === undefined ? null : item
             // set a Value in localStorage
             case "set_storage":
-                this.optionStorage.setKey(message.key, message.value)
+                await this.optionStorage.setKey(message.key, message.value)
                 return Promise.resolve(true)
             // set a Value in localStorage
             case "save_option":
