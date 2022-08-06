@@ -1,5 +1,5 @@
 import browser from "webextension-polyfill"
-import { AppStore } from "../types/common"
+import { AppStore, MirrorImplementation } from "../types/common"
 import { AppLogger } from "../shared/AppLogger"
 import { serializeVuexObject } from "../shared/utils"
 import { HandleManga } from "./handle-manga"
@@ -9,6 +9,7 @@ import { HandleNavigation } from "./handle-navigation"
 import { OptionStorage } from "../shared/OptionStorage"
 import { HandleBookmarks } from "./handle-bookmarks"
 import { HandleLab } from "./handle-lab"
+import { MirrorLoader } from "../mirrors/MirrorLoader"
 
 /**
  * Background message listener used to communicate with service worker and pages
@@ -19,17 +20,18 @@ export class Handler {
     constructor(
         private readonly store: AppStore,
         private readonly logger: AppLogger,
-        private readonly optionStorage: OptionStorage
+        private readonly optionStorage: OptionStorage,
+        private readonly mirrorLoader: MirrorLoader<MirrorImplementation>
     ) {
         this.handlers = [
             {
                 handle: this.inlineHandleHandle
             },
-            new HandleManga(store, logger),
+            new HandleManga(store, logger, mirrorLoader),
             new HandleMisc(store),
             new HandleNavigation(store, optionStorage),
-            new HandleBookmarks(store),
-            new HandleLab(),
+            new HandleBookmarks(store, mirrorLoader),
+            new HandleLab(mirrorLoader),
             new HandleImportExport(store)
         ]
     }

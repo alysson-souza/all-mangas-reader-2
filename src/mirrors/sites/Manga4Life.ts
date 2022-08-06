@@ -1,8 +1,8 @@
-import { MirrorImplementation } from "../../types/common"
+import { MirrorBrowser } from "../../types/common"
 import { MirrorHelper } from "../../reader/MirrorHelper"
 import { BaseMirror } from "./BaseMirror"
 
-export class Manga4Life extends BaseMirror implements MirrorImplementation {
+export class Manga4Life extends BaseMirror implements MirrorBrowser {
     constructor(amrLoader: MirrorHelper) {
         super(amrLoader)
     }
@@ -16,42 +16,45 @@ export class Manga4Life extends BaseMirror implements MirrorImplementation {
     chapter_url = /^\/read-online\/.+$/g
 
     async getMangaList(search) {
-        let doc = await this.amrLoader.loadPage(this.home + "/directory/", { nocache: true, preventimages: true })
-        let res = []
-        let self = this
+        const response = await this.amrLoader.loadPage(`${this.home}/directory/`, {
+            nocache: true,
+            preventimages: true
+        })
 
-        let regex = /vm\.FullDirectory = (.*?)};/g
-        let matches = regex.exec(doc.innerText)
-        let directory = JSON.parse(matches[1] + "}")
+        const res = []
+
+        const regex = /vm\.FullDirectory = (.*?)};/g
+        const matches = regex.exec(response)
+        const directory = JSON.parse(matches[1] + "}")
 
         directory.Directory.forEach(manga => {
-            res.push([manga.s, self.home + "/manga/" + manga.i])
+            res.push([manga.s, this.home + "/manga/" + manga.i])
         })
         return res
     }
 
     async getListChaps(urlManga) {
-        let doc = await this.amrLoader.loadPage(urlManga, { nocache: true, preventimages: true })
-        let res = []
+        const text = await this.amrLoader.loadPage(urlManga, { nocache: true, preventimages: true })
+        const res = []
 
-        let regex = /vm\.Chapters = (.*?);/g
-        let matches = regex.exec(doc.innerText)
-        let chapters = JSON.parse(matches[1])
+        const regex = /vm\.Chapters = (.*?);/g
 
-        regex = /vm\.IndexName = "(.*?)";/g
-        matches = regex.exec(doc.innerText)
-        let titlePath = matches[1]
+        const matches = regex.exec(text)
+        const chapters = JSON.parse(matches[1])
+
+        const nameRegex = /vm\.IndexName = "(.*?)";/g
+        const titlePath = nameRegex.exec(text)[1]
 
         chapters.forEach(chapter => {
-            let linkPart = this.ChapterListLink(chapter.Chapter)
-            let name = this.ChapterListName(chapter.Type, chapter.Chapter)
+            const linkPart = this.ChapterListLink(chapter.Chapter)
+            const name = this.ChapterListName(chapter.Type, chapter.Chapter)
 
             res.push([name, this.home + "/read-online/" + titlePath + linkPart])
         })
         return res
     }
 
-    async getInformationsFromCurrentPage(doc: string, curUrl: string) {
+    async getCurrentPageInfo(doc: string, curUrl: string) {
         const title = this.parseHtml(doc, '.MainContainer a[href*="manga"]').first()
         return {
             name: title.text().trim().split("\n")[0].trim(),
@@ -62,9 +65,8 @@ export class Manga4Life extends BaseMirror implements MirrorImplementation {
 
     async getListImages(doc: string, curUrl: string) {
         let fullUrl = curUrl.replace("-page-1.html", ".html")
-        doc = await this.amrLoader.loadPage(fullUrl, { nocache: true })
+        const text = await this.amrLoader.loadPage(fullUrl, { nocache: true })
         let regex, matches
-        const text = typeof doc === "string" ? doc : doc.innerText
 
         regex = /vm\.CurChapter =(.*?);/g
         matches = regex.exec(text)
@@ -122,6 +124,10 @@ export class Manga4Life extends BaseMirror implements MirrorImplementation {
     // This is not safe in background
     public async getImageFromPageAndWrite(urlImg: string, image: HTMLImageElement) {
         image.src = urlImg
+    }
+
+    public async getImageUrlFromPage(urlImage: string) {
+        return urlImage
     }
 
     isCurrentPageAChapterPage(doc: string) {

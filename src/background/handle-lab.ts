@@ -1,12 +1,15 @@
-import mirrorsImpl from "../amr/mirrors-impl"
 import Axios from "axios"
 import { formatMangaName } from "../shared/utils"
 import { sanitizeDom } from "../amr/domutils"
+import { MirrorLoader } from "../mirrors/MirrorLoader"
+import { MirrorImplementation } from "../types/common"
 
 /**
  * Runs implementation functions for the lab
  */
 export class HandleLab {
+    constructor(private mirrorLoader: MirrorLoader<MirrorImplementation>) {}
+
     handle(message) {
         if ("lab" === message.action) {
             if (message.url && message.url.indexOf("//") === 0) {
@@ -16,7 +19,7 @@ export class HandleLab {
         }
     }
     async runFunction(message) {
-        const impl = await mirrorsImpl.getImpl(message.mirror)
+        const impl = await this.mirrorLoader.getImpl(message.mirror)
 
         if (message.torun === "search") {
             let res = await impl.getMangaList(message.search)
@@ -36,16 +39,7 @@ export class HandleLab {
         }
 
         if (message.torun === "getScanUrl") {
-            let img = new Image()
-            await impl.getImageFromPageAndWrite(message.url, img)
-            return new Promise(resolve => {
-                ;(function wait() {
-                    if (img.src && img.src != "") {
-                        return resolve(img.src)
-                    }
-                    setTimeout(wait, 100)
-                })()
-            })
+            return impl.getImageUrlFromPage(message.url)
         }
     }
     async loadChapterAndDo(message, impl) {

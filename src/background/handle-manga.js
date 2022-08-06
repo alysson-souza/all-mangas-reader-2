@@ -1,13 +1,19 @@
 import browser from "webextension-polyfill"
-import mirrorsImpl from "../amr/mirrors-impl"
 import storedb from "../amr/storedb"
 import { afterHostURL, formatMangaName, mangaKey, matchDomain, serializeVuexObject } from "../shared/utils"
 import * as cheerio from "cheerio"
 
 export class HandleManga {
-    constructor(store, logger) {
+    /**
+     *
+     * @param store
+     * @param logger
+     * @param mirrorLoader
+     */
+    constructor(store, logger, mirrorLoader) {
         this.store = store
         this.logger = logger
+        this.mirrorLoader = mirrorLoader
     }
 
     handle(message) {
@@ -114,9 +120,8 @@ export class HandleManga {
      * @param {*} message
      */
     async loadListChaps(message) {
-        let impl = await mirrorsImpl.getImpl(message.mirror)
-        let lst = await impl.getListChaps(message.url)
-        return Promise.resolve(lst)
+        let impl = await this.mirrorLoader.getImpl(message.mirror)
+        return impl.getListChaps(message.url)
     }
 
     /**
@@ -125,7 +130,7 @@ export class HandleManga {
      */
     async searchList(message) {
         return new Promise(async (resolve, reject) => {
-            let impl = await mirrorsImpl.getImpl(message.mirror)
+            let impl = await this.mirrorLoader.getImpl(message.mirror)
             // check if mirror can list all mangas
             if (impl && impl.canListFullMangas) {
                 // check if mirror list is in local db and filter
@@ -375,7 +380,7 @@ export class HandleManga {
             .then(async resp => {
                 let htmlDocument = await resp.text()
                 // loads the implementation code
-                let impl = await mirrorsImpl.getImpl(message.mirrorName)
+                let impl = await this.mirrorLoader.getImpl(message.mirrorName)
                 // Check if this is a chapter page
                 let isChapter = impl.isCurrentPageAChapterPage(htmlDocument, message.url)
                 let infos,
@@ -383,7 +388,7 @@ export class HandleManga {
                 if (isChapter) {
                     try {
                         // Retrieve informations relative to current chapter / manga read
-                        infos = await impl.getInformationsFromCurrentPage(htmlDocument, message.url)
+                        infos = await impl.getCurrentPageInfo(htmlDocument, message.url)
 
                         // retrieve images to load
                         imagesUrl = await impl.getListImages(htmlDocument, message.url)

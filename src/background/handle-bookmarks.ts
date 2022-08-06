@@ -1,12 +1,13 @@
 import i18n from "../amr/i18n"
 import browser from "webextension-polyfill"
-import mirrorsImpl from "../amr/mirrors-impl"
-import { AppStore } from "../types/common"
+import { AppStore, MirrorImplementation } from "../types/common"
 import { mangaKey } from "../shared/utils"
+import { MirrorLoader } from "../mirrors/MirrorLoader"
 
 export class HandleBookmarks {
     private context_ids: string[]
-    constructor(private store: AppStore) {
+
+    constructor(private store: AppStore, private mirrorLoader: MirrorLoader<MirrorImplementation>) {
         this.context_ids = []
     }
     async handle(message, sender) {
@@ -55,18 +56,8 @@ export class HandleBookmarks {
      * Gets a scan url
      */
     async getScanUrl(message) {
-        return new Promise(async (resolve, reject) => {
-            const img = new Image()
-            img.onerror = e => reject(e)
-            const impl = await mirrorsImpl.getImpl(message.mirror)
-            await impl.getImageFromPageAndWrite(message.url, img)
-            ;(function wait() {
-                if (img.src && img.src != "") {
-                    resolve(img.src)
-                }
-                setTimeout(wait, 20)
-            })()
-        })
+        const impl = await this.mirrorLoader.getImpl(message.mirror)
+        return impl.getImageUrlFromPage(message.url)
     }
     /**
      * Find a bookmark from store

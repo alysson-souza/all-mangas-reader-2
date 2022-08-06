@@ -103,11 +103,13 @@ interface CurrentPageInfo {
 export interface MirrorImplementation extends Mirror {
     getMangaList(search?: string): Promise<[string, string][]>
     getListChaps(urlManga: string): Promise<[string, string][]>
-    getInformationsFromCurrentPage(doc: string, curUrl: string): Promise<CurrentPageInfo>
+    getCurrentPageInfo(doc: string, curUrl: string): Promise<CurrentPageInfo>
     getListImages(doc: string, curUrl: string): Promise<string[]>
+    getImageUrlFromPage(urlImage: string): Promise<string>
+    isCurrentPageAChapterPage(doc: string, curUrl: string): boolean
+}
 
+export interface MirrorBrowser extends MirrorImplementation {
     /** Not safe to use in service worker context **/
     getImageFromPageAndWrite(urlImage: string, image: HTMLImageElement)
-
-    isCurrentPageAChapterPage(doc: string): boolean
 }

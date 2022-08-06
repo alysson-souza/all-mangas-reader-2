@@ -10,6 +10,7 @@ import { converToMangadexV5 } from "./background/misc/mangedex-v5-converter"
 // import { IconHelper } from './amr/icon-helper';
 import { Mangadex } from "./background/misc/mangadex-v5-integration"
 import { MirrorHelper } from "./reader/MirrorHelper"
+import { getMirrorLoader } from "./mirrors/MirrorLoader"
 
 // browser.alarms.onAlarm.addListener(function (args) {
 //     console.log(args)
@@ -26,11 +27,13 @@ const init = async () => {
     const amrInit = new AmrInit(store, storedb, optionsStorage, logger)
     // const iconHelper = new IconHelper(store)
 
-    globalThis["amr"] = new MirrorHelper(store.state.options)
+    const mirrorHelper = new MirrorHelper(store.state.options)
+    globalThis["amr"] = mirrorHelper
+    const mirrorLoader = getMirrorLoader(mirrorHelper)
 
-    const handleManga = new HandleManga(store, logger)
+    const handleManga = new HandleManga(store, logger, mirrorLoader)
 
-    const handler = new Handler(store, logger, optionsStorage)
+    const handler = new Handler(store, logger, optionsStorage, mirrorLoader)
 
     /**
      * Initialize extension versioning --> after options because versioning update can affect options
