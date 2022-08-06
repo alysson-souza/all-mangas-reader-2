@@ -25,7 +25,8 @@ export class HandleManga {
                         layout: mg.layout /* Layout for the new reader */,
                         lastchapter: mg.lastChapterReadURL /* last read chapter (the most advanced one) */,
                         currentChapter: mg.currentChapter /* last read chapter, last chapter page opened */,
-                        currentScanUrl: mg.currentScanUrlm /* last viewed page in currentChapter */,
+                        // @TODO seems lieke typo, was "mg.currentScanUrlm"
+                        currentScanUrl: mg.currentScanUrl /* last viewed page in currentChapter */,
                         webtoon: mg.webtoon || false /* webtoon mode */,
                         displayName: mg.displayName,
                         zoom: mg.zoom || 100 /* zoom level */

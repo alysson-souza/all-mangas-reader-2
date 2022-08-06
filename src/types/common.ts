@@ -78,6 +78,7 @@ export interface AppManga {
     languages: string[]
 
     currentChapter: string
+    currentScanUrl: string
 
     zoom?: number
 }
