@@ -119,6 +119,10 @@ if (typeof registerMangaObject === "function") {
         },
 
         getImageFromPageAndWrite: async function (urlImg, image) {
+            if (image instanceof Image) {
+                image.src = urlImg
+                return
+            }
             $(image).attr("src", urlImg)
         },
 

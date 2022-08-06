@@ -4,7 +4,7 @@ import { AppStore } from "../types/common"
 export class HandleNavigation {
     constructor(private store: AppStore, private optionStorage: OptionStorage) {}
 
-    handle(message) {
+    handle(message): Promise<undefined | unknown> {
         switch (message.action) {
             // Set bar state
             case "setBarState":
@@ -33,11 +33,11 @@ export class HandleNavigation {
             // set a Value in localStorage
             case "set_storage":
                 this.optionStorage.setKey(message.key, message.value)
-                return Promise.resolve()
+                return Promise.resolve(true)
             // set a Value in localStorage
             case "save_option":
                 this.store.dispatch("setOption", { key: message.key, value: message.value })
-                return Promise.resolve()
+                return Promise.resolve(true)
         }
     }
 }
