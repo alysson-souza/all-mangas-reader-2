@@ -63,6 +63,11 @@ const config = {
                     esModule: true
                 }
             },
+            // Allow to load images directly
+            {
+                test: /optimized.png$/i,
+                type: "asset/inline"
+            },
             {
                 test: /\.css$/,
                 use: ["style-loader", "css-loader"]

@@ -1,6 +1,7 @@
 import { MirrorImplementation } from "../../types/common"
 import { MirrorHelper } from "../../reader/MirrorHelper"
 import { BaseMirror } from "./BaseMirror"
+import mirrorIcon from "../icons/manga4life-optimized.png"
 
 export class Manga4Life extends BaseMirror implements MirrorImplementation {
     constructor(amrLoader: MirrorHelper) {
@@ -9,7 +10,7 @@ export class Manga4Life extends BaseMirror implements MirrorImplementation {
 
     mirrorName = "Manga4Life"
     canListFullMangas = true
-    mirrorIcon = "manga4life.png"
+    mirrorIcon = mirrorIcon
     languages = "en"
     domains = ["manga4life.com"]
     home = "https://manga4life.com"
