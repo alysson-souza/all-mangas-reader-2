@@ -3,6 +3,7 @@ import browser from "webextension-polyfill"
 import { AppStore } from "../types/common"
 import { mangaKey } from "../shared/utils"
 import { MirrorLoader } from "../mirrors/MirrorLoader"
+import { NOT_HANDLED_MESSAGE } from "./background-util"
 
 export class HandleBookmarks {
     private context_ids: string[]
@@ -49,6 +50,8 @@ export class HandleBookmarks {
                 return Promise.resolve({})
             case "getScanUrl":
                 return this.getScanUrl(message)
+            default:
+                return NOT_HANDLED_MESSAGE
         }
     }
 

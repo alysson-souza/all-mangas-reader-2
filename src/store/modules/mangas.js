@@ -376,7 +376,12 @@ const actions = {
             language: message.language,
             rootState: { state: rootState }
         })
-        commit("createManga", message, rootState)
+        commit("createManga", {
+            key,
+            // Setting webtoon default
+            webtoon: rootState.options.webtoonDefault === 1,
+            ...message
+        })
         const mg = state.all.find(manga => manga.key === key)
         try {
             await dispatch("refreshLastChapters", message)
@@ -1279,18 +1284,10 @@ const mutations = {
      * @param {*} state
      * @param {*} mgdef object containing manga info
      */
-    createManga(state, mgdef, rootState) {
-        const key = mangaKey({
-            url: mgdef.url,
-            mirror: mgdef.mirror,
-            language: mgdef.language,
-            rootState: { state: rootState }
-        })
-        const mg = new Manga(mgdef, key)
-        let titMg = formatMangaName(mg.name)
-        let smgs = state.all.filter(manga => formatMangaName(manga.name) === titMg)
-        // Setting webtoon default
-        mg.webtoon = rootState.options.webtoonDefault === 1
+    createManga(state, mgdef) {
+        const mg = new Manga(mgdef, mgdef.key)
+        const titMg = formatMangaName(mg.name)
+        const smgs = state.all.filter(manga => formatMangaName(manga.name) === titMg)
         for (let sim of smgs) {
             mg.cats.push(...sim.cats)
             mg.layout = sim.layout

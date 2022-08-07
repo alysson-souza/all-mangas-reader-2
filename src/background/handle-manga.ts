@@ -6,6 +6,7 @@ import { AppManga, AppStore, ChapterData, InfoResult, Mirror, MirrorImplementati
 import { AppLogger } from "../shared/AppLogger"
 import { MirrorLoader } from "../mirrors/MirrorLoader"
 import { OptionStorage } from "../shared/OptionStorage"
+import { NOT_HANDLED_MESSAGE } from "./background-util"
 
 export class HandleManga {
     constructor(
@@ -100,13 +101,15 @@ export class HandleManga {
                 if (mgch !== undefined) {
                     return Promise.resolve(mgch.listChaps)
                 } else {
-                    return Promise.resolve()
+                    return Promise.resolve(false)
                 }
             }
             case "loadListChaps":
                 return this.loadListChaps(message)
             case "importMangas":
                 return this.importMangas(message)
+            default:
+                return NOT_HANDLED_MESSAGE
         }
     }
 
@@ -239,7 +242,7 @@ export class HandleManga {
             if (!parts) {
                 this.logger.error({
                     message: "no parts are available from regex match",
-                    chapter_url: mir.chapter_url,
+                    chapter_url: String(mir.chapter_url),
                     regex: `/\\/(.*)\\/(.*)/`
                 })
                 return

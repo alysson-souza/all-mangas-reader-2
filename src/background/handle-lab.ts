@@ -1,6 +1,7 @@
 import Axios from "axios"
 import { formatMangaName } from "../shared/utils"
 import { MirrorLoader } from "../mirrors/MirrorLoader"
+import { NOT_HANDLED_MESSAGE } from "./background-util"
 
 /**
  * Runs implementation functions for the lab
@@ -15,6 +16,8 @@ export class HandleLab {
             }
             return this.runFunction(message)
         }
+
+        return NOT_HANDLED_MESSAGE
     }
     async runFunction(message) {
         const impl = await this.mirrorLoader.getImpl(message.mirror)

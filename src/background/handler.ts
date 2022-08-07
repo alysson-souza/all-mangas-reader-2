@@ -10,6 +10,7 @@ import { OptionStorage } from "../shared/OptionStorage"
 import { HandleBookmarks } from "./handle-bookmarks"
 import { HandleLab } from "./handle-lab"
 import { MirrorLoader } from "../mirrors/MirrorLoader"
+import { NOT_HANDLED_MESSAGE } from "./background-util"
 
 /**
  * Background message listener used to communicate with service worker and pages
@@ -60,6 +61,8 @@ export class Handler {
             case "logger":
                 this.logger.debug(message)
                 return true
+            default:
+                return NOT_HANDLED_MESSAGE
         }
     }
 
@@ -72,7 +75,7 @@ export class Handler {
             for (let handler of this.handlers) {
                 try {
                     const result = await handler.handle(message, sender)
-                    if (result !== undefined) {
+                    if (result !== NOT_HANDLED_MESSAGE) {
                         return result
                     }
                 } catch (e) {

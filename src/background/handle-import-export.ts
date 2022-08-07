@@ -1,4 +1,5 @@
 import { AppStore } from "../types/common"
+import { NOT_HANDLED_MESSAGE } from "./background-util"
 
 export class HandleImportExport {
     constructor(private store: AppStore) {}
@@ -21,6 +22,8 @@ export class HandleImportExport {
                 return this.store.dispatch("mangadexAddMangasInLang", message)
             case "exportReadStatus":
                 return this.store.dispatch("exportReadStatus", message)
+            default:
+                return NOT_HANDLED_MESSAGE
         }
     }
 }

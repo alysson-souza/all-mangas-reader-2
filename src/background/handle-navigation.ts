@@ -1,5 +1,6 @@
 import { OptionStorage } from "../shared/OptionStorage"
 import { AppStore } from "../types/common"
+import { NOT_HANDLED_MESSAGE } from "./background-util"
 
 export class HandleNavigation {
     constructor(private store: AppStore, private optionStorage: OptionStorage) {}
@@ -40,6 +41,8 @@ export class HandleNavigation {
             case "save_option":
                 this.store.dispatch("setOption", { key: message.key, value: message.value })
                 return Promise.resolve(true)
+            default:
+                return NOT_HANDLED_MESSAGE
         }
     }
 }

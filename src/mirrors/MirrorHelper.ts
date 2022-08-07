@@ -24,6 +24,8 @@ interface LoadOptions {
     referer?: string
 
     headers?: { [k: string]: string }
+
+    credentials?: RequestCredentials
 }
 
 type StateOptions = Record<string, string | undefined | null | number>
@@ -72,6 +74,7 @@ export class MirrorHelper {
 
     private getConfig(options: LoadOptions) {
         const config: RequestInit = {
+            credentials: options.credentials,
             cache: options.nocache ? "no-cache" : "default",
             method: options.post ? "post" : "get",
             mode: options.crossdomain ? "no-cors" : "same-origin",

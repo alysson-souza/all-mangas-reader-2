@@ -5,6 +5,7 @@ import mimedb from "mime-db"
 import axios from "axios"
 import { AppStore } from "../types/common"
 import { MirrorLoader } from "../mirrors/MirrorLoader"
+import { NOT_HANDLED_MESSAGE } from "./background-util"
 
 zip.configure({ useWebWorkers: false })
 
@@ -34,6 +35,8 @@ export class HandleMisc {
                 return this.store.dispatch("fetchImage", message)
             case "DownloadChapter":
                 return this.DownloadChapter(message)
+            default:
+                return NOT_HANDLED_MESSAGE
         }
     }
 
