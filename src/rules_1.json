@@ -1,0 +1,30 @@
+[
+    {
+        "id": 1,
+        "priority": 1,
+        "action": {
+            "type": "modifyHeaders",
+            "responseHeaders": [
+                {
+                    "header": "Referer",
+                    "operation": "set",
+                    "value": "https://mangahub.io/"
+                },
+                {
+                    "header": "Origin",
+                    "operation": "set",
+                    "value": "https://mangahub.io/"
+                },
+                {
+                    "header": "sec-fetch-site",
+                    "operation": "set",
+                    "value": "cross-site"
+                }
+            ]
+        },
+        "condition": {
+            "urlFilter": "https://api.mghubcdn.com/graphql",
+            "resourceTypes": ["main_frame"]
+        }
+    }
+]

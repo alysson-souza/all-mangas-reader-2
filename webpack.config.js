@@ -122,7 +122,8 @@ const config = {
                 { from: "reader/*.css", to: "." },
                 { from: "_locales/**/*", to: "." },
                 { from: "backup/amr-backup.html", to: "backup/index.html" },
-                { from: "../node_modules/jquery/dist/jquery.min.js", to: "lib/jquery.min.js" }
+                { from: "../node_modules/jquery/dist/jquery.min.js", to: "lib/jquery.min.js" },
+                { from: "rules_1.json", to: "rules_1.json" }
             ]
         }),
         new WebpackShellPluginNext({
