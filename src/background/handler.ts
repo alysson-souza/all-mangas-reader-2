@@ -15,7 +15,7 @@ import { MirrorLoader } from "../mirrors/MirrorLoader"
  * Background message listener used to communicate with service worker and pages
  */
 export class Handler {
-    private readonly handlers: { handle: (message, sender) => Promise<unknown> }[]
+    private readonly handlers: { name?: string; handle: (message, sender) => Promise<unknown> }[]
     private readonly handleManga: HandleManga
 
     constructor(
@@ -27,6 +27,7 @@ export class Handler {
         this.handleManga = new HandleManga(store, logger, mirrorLoader, optionStorage)
         this.handlers = [
             {
+                name: "inlineHandleHandle",
                 handle: this.inlineHandleHandle
             },
             this.handleManga,
@@ -67,9 +68,11 @@ export class Handler {
          * Message from popup and content script handler
          */
         browser.runtime.onMessage.addListener(async (message, sender) => {
-            this.logger.info(message)
+            this.logger.debug(message)
             for (let handler of this.handlers) {
-                const result = await handler.handle(message, sender)
+                const result = await handler.handle(message, sender).catch(e => {
+                    this.logger.error(e)
+                })
                 if (result !== undefined) {
                     return result
                 }

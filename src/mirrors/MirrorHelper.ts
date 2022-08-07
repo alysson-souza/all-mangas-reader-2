@@ -161,3 +161,11 @@ export class MirrorHelper {
         return this.options[option] || ""
     }
 }
+
+let instance: MirrorHelper
+export const getMirrorHelper = (options: StateOptions) => {
+    if (!instance) {
+        instance = new MirrorHelper(options)
+    }
+    return instance
+}

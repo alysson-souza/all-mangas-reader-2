@@ -29,7 +29,6 @@ const config = {
         "pages/bookmarks/bookmarks": "./pages/bookmarks/bookmarks.js",
         "pages/importexport/importexport": "./pages/importexport/importexport.js",
         "backup/index": "./backup/amr-backup.js"
-        // "mirrors/register_implementations": "./mirrors/register_implementations.js"
     },
     output: {
         path: __dirname + "/dist",
@@ -131,16 +130,16 @@ const config = {
                 { from: "rules_1.json", to: "rules_1.json" }
             ]
         }),
-        new WebpackShellPluginNext({
-            onBuildStart: {
-                //scripts: ['node ./src/mirrors/update-ws.js && echo "Mirrors Rebuilt"'],
-                scripts: ["node ./scripts/optimize-mirrors-icons.js", "node ./scripts/compile-mirrors.js"],
-                blocking: true
-            },
-            onBuildEnd: {
-                scripts: ["node scripts/remove-evals.js"]
-            }
-        }),
+        // new WebpackShellPluginNext({
+        //     onBuildStart: {
+        //         //scripts: ['node ./src/mirrors/update-ws.js && echo "Mirrors Rebuilt"'],
+        //         scripts: ["node ./scripts/optimize-mirrors-icons.js", "node ./scripts/compile-mirrors.js"],
+        //         blocking: true
+        //     },
+        //     onBuildEnd: {
+        //         scripts: ["node scripts/remove-evals.js"]
+        //     }
+        // }),
         new CircularDependencyPlugin({
             // exclude detection of files based on a RegExp
             exclude: /a\.js|node_modules/,

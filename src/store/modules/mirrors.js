@@ -1,9 +1,9 @@
 import storedb from "../../amr/storedb"
 // import * as utils from '../../amr/utils'
 // import iconHelper from "../../amr/icon-helper"
-import mirrorsImpl from "../../amr/mirrors-impl"
 // import amrUpdater from "../../amr/amr-updater"
-import { websitesDescription } from "../../mirrors/register_implementations"
+import { getMirrorLoader } from "../../mirrors/MirrorLoader"
+import { getMirrorHelper } from "../../mirrors/MirrorHelper"
 
 /**
  *  initial state of the mirrors module
@@ -81,7 +81,8 @@ const actions = {
         let websitesdb = await storedb.getWebsites()
         if (websitesdb === undefined) websitesdb = []
 
-        let websites = websitesDescription
+        const mirrorLoader = getMirrorLoader(getMirrorHelper(rootState.options))
+        const websites = mirrorLoader.getAll()
 
         let updts = []
         for (let w of websites) {

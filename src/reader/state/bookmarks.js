@@ -4,7 +4,6 @@
  */
 import browser from "webextension-polyfill"
 
-import mirrorImpl from "./mirrorimpl"
 import pageData from "./pagedata"
 
 export default {
@@ -14,8 +13,13 @@ export default {
         scans: [] // list of scans [{url, name, note, booked}]
     },
 
+    mirror: {
+        mirrorName: ""
+    },
+
     /** Initialize state with a whole list of scans urls */
-    init(scansUrl) {
+    init(scansUrl, mirror) {
+        this.mirror = mirror
         // initialize chapter
         this.loadBookmark()
         // initialize scans
@@ -44,7 +48,7 @@ export default {
     async saveBookmark({ note, scanUrl, scanName } = {}) {
         let obj = {
             action: "addUpdateBookmark",
-            mirror: mirrorImpl.get().mirrorName,
+            mirror: this.mirror.mirrorName,
             url: pageData.state.currentMangaURL,
             chapUrl: pageData.state.currentChapterURL,
             name: pageData.state.name,
@@ -75,7 +79,7 @@ export default {
     async deleteBookmark({ scanUrl } = {}) {
         let obj = {
             action: "deleteBookmark",
-            mirror: mirrorImpl.get().mirrorName,
+            mirror: this.mirror.mirrorName,
             url: pageData.state.currentMangaURL,
             chapUrl: pageData.state.currentChapterURL
         }
@@ -103,7 +107,7 @@ export default {
     async loadBookmark({ scanUrl } = {}) {
         let obj = {
             action: "getBookmarkNote",
-            mirror: mirrorImpl.get().mirrorName,
+            mirror: this.mirror.mirrorName,
             url: pageData.state.currentMangaURL,
             chapUrl: pageData.state.currentChapterURL
         }

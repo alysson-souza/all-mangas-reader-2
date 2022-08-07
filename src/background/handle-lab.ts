@@ -1,6 +1,5 @@
 import Axios from "axios"
 import { formatMangaName } from "../shared/utils"
-import { sanitizeDom } from "../amr/domutils"
 import { MirrorLoader } from "../mirrors/MirrorLoader"
 
 /**
@@ -46,7 +45,7 @@ export class HandleLab {
             .then(resp => {
                 return new Promise(async (resolve, reject) => {
                     try {
-                        let htmlDocument = sanitizeDom(resp.data)
+                        let htmlDocument = resp.data
 
                         //once the response has been parsed
                         if (message.task === "containScans") {

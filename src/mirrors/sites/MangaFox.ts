@@ -1,7 +1,7 @@
 import { BaseMirror } from "./BaseMirror"
 import { InfoResult, MirrorImplementation } from "../../types/common"
 import MangaFoxIcon from "../icons/mangafox-optimized.png"
-import { MirrorHelper } from "../../reader/MirrorHelper"
+import { MirrorHelper } from "../MirrorHelper"
 
 export class MangaFox extends BaseMirror implements MirrorImplementation {
     constructor(amrLoader: MirrorHelper) {

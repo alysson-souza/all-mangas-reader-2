@@ -1,4 +1,3 @@
-import util from "./util"
 import { i18n } from "../../mixins/i18n-mixin"
 import browser from "webextension-polyfill"
 
@@ -10,7 +9,7 @@ import browser from "webextension-polyfill"
  *  - force : force to display the popup (called on tips action button)
  * All the tips are retrieved from i18n starting by reader_tips_ followed with numbers starting from 1. Numbers must be consecutive
  */
-export const handleTips = async function ($ref, force = false) {
+export const handleTips = async function ($ref, force = false, util) {
     let display = true
     if (!force) {
         let lasttime = await util.getStorage("reader_tips_ts")
@@ -91,7 +90,7 @@ function isFirefox() {
  *  - link to leave a comment on Firefox
  * @param {} $ref
  */
-export const handleHelps = async function ($ref) {
+export const handleHelps = async function ($ref, util) {
     // number of read chapters with the extension since v2.1
     let nbread = await util.getStorage("nb_read")
     if (!nbread) return

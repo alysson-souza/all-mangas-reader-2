@@ -7,7 +7,7 @@
         <!-- Global component to show confirmation dialogs, alert dialogs / other -->
         <WizDialog ref="wizdialog"></WizDialog>
         <!-- Global component to show bookmarks dialog -->
-        <BookmarkPopup ref="book"></BookmarkPopup>
+        <BookmarkPopup :mirror="mirror" ref="book"></BookmarkPopup>
         <!-- Popup displaying shortcuts -->
         <ShortcutsPopup ref="shortcuts"></ShortcutsPopup>
         <!-- Global always visible buttons -->
@@ -654,6 +654,7 @@
         <v-main>
             <Reader
                 ref="reader"
+                :mirror="mirror"
                 :book="book"
                 :direction="direction"
                 :invertKeys="invertKeys"
@@ -672,12 +673,11 @@
 import browser from "webextension-polyfill"
 import { i18nmixin } from "../mixins/i18n-mixin"
 
-import mirrorImpl from "./state/mirrorimpl"
 import pageData from "./state/pagedata"
 import options from "./state/options"
 import bookmarks from "./state/bookmarks"
 
-import util from "./helpers/util"
+import { Util } from "./helpers/util"
 import * as dialogs from "./helpers/dialogs"
 import ChapterLoader from "./helpers/ChapterLoader"
 import EventBus from "./helpers/EventBus"
@@ -728,6 +728,11 @@ const resize_values = ["width", "height", "container", "none"]
 
 export default {
     mixins: [i18nmixin],
+
+    props: {
+        mirror: Object
+    },
+
     data: () => ({
         zip: false,
         drawer: false /* Display the side drawer or not */,
@@ -789,7 +794,6 @@ export default {
             mdiArrowExpandVertical,
             mdiArrowExpandAll,
             mdiBorderNoneVariant,
-            mdiPlus,
             mdiPlusCircle,
             mdiMinus,
             mdiMinusCircle,
@@ -804,6 +808,7 @@ export default {
         }
     }),
     created() {
+        this.util = new Util(this.mirror)
         /** Register keys */
         this.handlekeys()
         /** Check if manga exists */
@@ -813,7 +818,7 @@ export default {
             /* retrieve current page if current chapter was the last opened */
             if (
                 this.mangaInfos &&
-                util.matchChapUrl(this.pageData.currentChapterURL, this.mangaInfos.currentChapter) &&
+                this.util.matchChapUrl(this.pageData.currentChapterURL, this.mangaInfos.currentChapter) &&
                 this.mangaInfos.currentScanUrl
             ) {
                 // set current page to last currentScanUrl
@@ -869,9 +874,9 @@ export default {
         /** Handle first time reader is opened */
         this.handleFirstTime()
         /** Handle tips */
-        dialogs.handleTips(this.$refs.wizdialog)
+        dialogs.handleTips(this.$refs.wizdialog, false, this.util)
         /** Handle help us dialogs once in a while */
-        dialogs.handleHelps(this.$refs.wizdialog)
+        dialogs.handleHelps(this.$refs.wizdialog, this.util)
 
         // mark manga as read
         if (options.markwhendownload === 0) {
@@ -941,10 +946,6 @@ export default {
         manga() {
             return this.pageData
         },
-        // Current mirror implementation
-        mirror() {
-            return mirrorImpl.get()
-        },
         /** True if latest published chapter */
         lastChapter() {
             if (this.selchap === null || this.chapters.length === 0) return true
@@ -977,7 +978,7 @@ export default {
             return (
                 this.mangaExists &&
                 this.mangaInfos &&
-                !util.matchChapUrl(this.mangaInfos.lastchapter, this.pageData.currentChapterURL)
+                !this.util.matchChapUrl(this.mangaInfos.lastchapter, this.pageData.currentChapterURL)
             )
         },
         /** list of bookmarked scans urls */
@@ -1035,7 +1036,7 @@ export default {
         },
         /** Inform background that current chapter has been read (will update reading state and eventually add manga to list) */
         async consultManga(force) {
-            await util.consultManga(force)
+            await this.util.consultManga(force)
             await this.loadMangaInformations() // reload last chapter read
         },
         /** Decrement Zoom value */
@@ -1048,7 +1049,7 @@ export default {
         },
         /** Check if current manga is in reading list */
         async checkExists() {
-            this.mangaExists = await util.mangaExists()
+            this.mangaExists = await this.util.mangaExists()
         },
         /** Load the state of the side bar (hidden / shown) */
         async loadBarState() {
@@ -1068,7 +1069,7 @@ export default {
             let specific = await browser.runtime.sendMessage({
                 action: "mangaInfos",
                 url: this.pageData.currentMangaURL,
-                mirror: mirrorImpl.get().mirrorName,
+                mirror: this.mirror.mirrorName,
                 language: this.pageData.language
             })
             // Save returned manga informations in state
@@ -1156,7 +1157,7 @@ export default {
                 }
             }
             this.chapters.forEach(chap => {
-                if (util.matchChapUrl(this.pageData.currentChapterURL, chap.url)) {
+                if (this.util.matchChapUrl(this.pageData.currentChapterURL, chap.url)) {
                     this.selchap = chap.url
                     pageData.add("currentChapter", chap.title)
                     return false
@@ -1172,7 +1173,7 @@ export default {
         },
         /** Change updating mode for this manga (1 : stop updating, 0 : check updates) */
         async markMangaReadTop(nTop) {
-            await util.markMangaReadTop(nTop)
+            await this.util.markMangaReadTop(nTop)
             this.loadMangaInformations()
         },
         /** Mark current chapter as latest read in reading list */
@@ -1183,7 +1184,7 @@ export default {
                     this.i18n("content_nav_mark_read_confirm")
                 )
             ) {
-                await util.markAsLatest()
+                await this.util.markAsLatest()
                 this.loadMangaInformations()
             }
         },
@@ -1197,7 +1198,7 @@ export default {
             if (
                 await this.$refs.wizdialog.confirm(
                     this.i18n("list_mg_act_delete"),
-                    this.i18n("list_mg_delete_question", this.manga.name, mirrorImpl.get().mirrorName)
+                    this.i18n("list_mg_delete_question", this.manga.name, this.mirror.mirrorName)
                 )
             ) {
                 browser.runtime.sendMessage({
@@ -1223,7 +1224,7 @@ export default {
             // add a covering loader
             this.loading = true
             console.log("Change Reader chapter : load chapter " + url)
-            let chap = new ChapterLoader(url)
+            let chap = new ChapterLoader(url, this.mirror)
             await chap.checkAndLoadInfos() // get is a chapter ?, infos (current manga, chapter) and scans urls
             this.loadChapterInReaderUsingChapterLoader(chap)
         },
@@ -1252,7 +1253,7 @@ export default {
             // change current chapter --> do it now, if not, loadInReader will trigger nextChapterLoad and it will be the current one...
             this.selchap = chapterloader.url
             this.chapters.forEach(chap => {
-                if (util.matchChapUrl(this.selchap, chap.url)) {
+                if (this.util.matchChapUrl(this.selchap, chap.url)) {
                     pageData.add("currentChapter", chap.title) // actualize chapter name in pageData from chapters list
                     return false
                 }
@@ -1331,9 +1332,9 @@ export default {
         /** Preloads the next chapter scans */
         async preloadNextChapter() {
             if (!this.nextChapter) return
-            util.debug("Loading next chapter...")
+            this.util.debug("Loading next chapter...")
             // instanciate a chapter loader for the next chapter
-            this.nextChapterLoader = new ChapterLoader(this.nextChapter)
+            this.nextChapterLoader = new ChapterLoader(this.nextChapter, this.mirror)
             await this.nextChapterLoader.checkAndLoadInfos() // get is a chapter ?, infos (current manga, chapter) and scans urls
             if (!this.nextChapterLoader.isAChapter) {
                 this.nextChapterLoader = null // next is not recognized as a chapter
@@ -1565,11 +1566,11 @@ export default {
             this.options.displayFullChapter = this.fullchapter ? 1 : 0
             this.options.resizeMode = resize_values.findIndex(val => val === this.resize)
             this.options.scaleUp = this.scaleUp ? 1 : 0
-            util.saveOption("displayBook", this.options.displayBook)
-            util.saveOption("readingDirection", this.options.readingDirection)
-            util.saveOption("displayFullChapter", this.options.displayFullChapter)
-            util.saveOption("resizeMode", this.options.resizeMode)
-            util.saveOption("scaleUp", this.options.scaleUp)
+            this.util.saveOption("displayBook", this.options.displayBook)
+            this.util.saveOption("readingDirection", this.options.readingDirection)
+            this.util.saveOption("displayFullChapter", this.options.displayFullChapter)
+            this.util.saveOption("resizeMode", this.options.resizeMode)
+            this.util.saveOption("scaleUp", this.options.scaleUp)
             if (!force) this.$refs.wizdialog.temporary(this.i18n("action_done"))
         },
         /** Reset current layout options to the default ones */
@@ -1588,7 +1589,7 @@ export default {
         toggleDark() {
             this.darkreader = !this.darkreader
             this.$vuetify.theme.dark = this.darkreader
-            util.saveOption("darkreader", this.darkreader ? 1 : 0)
+            this.util.saveOption("darkreader", this.darkreader ? 1 : 0)
         },
         /** Display tips popup */
         displayTips() {
@@ -1624,7 +1625,7 @@ export default {
         },
         /** Called on reader's creation, display a welcome message first time reader is opened */
         async handleFirstTime() {
-            let isfirst = await util.getStorage("reader_firsttime")
+            let isfirst = await this.util.getStorage("reader_firsttime")
             if (!isfirst) {
                 // Button to set default layout with preferde choice : long strip
                 let butlongstrip = {
@@ -1659,7 +1660,7 @@ export default {
                         important: true
                     }
                 )
-                await util.setStorage("reader_firsttime", "true")
+                await this.util.setStorage("reader_firsttime", "true")
             }
         },
         /** Called when a thin scan (height >= 3 * width) is detected */

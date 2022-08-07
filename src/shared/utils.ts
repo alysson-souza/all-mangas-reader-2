@@ -334,7 +334,7 @@ export function mangaKey({ url, mirror, shouldConcat, rootState }: MangaKeyParam
     if (mirror !== undefined) {
         mstr = safename(mirror)
     } else {
-        const host = extractHostname(url)
+        const host = new URL(url).host
         // look for mirror implementation matching this root domain
         let mirror = mirrors.find(mir => mir.domains.some(ws => matchDomain(host, ws, rootState)))
         if (mirror) {

@@ -1,14 +1,14 @@
 import pageData from "../state/pagedata"
 import bookmarks from "../state/bookmarks"
 import { scansProvider, ScansLoader } from "./ScansProvider"
-import mirrorImpl from "../state/mirrorimpl"
 import browser from "webextension-polyfill"
 
 /**
  * This class loads a chapter, retrieve informations, scans, and initialize or reinitialize the reader with all this data
  */
 export default class ChapterLoader {
-    constructor(url) {
+    constructor(url, mirror) {
+        this.mirror = mirror
         this.url = url
         this.isAChapter = false
         this.infos = null
@@ -26,12 +26,15 @@ export default class ChapterLoader {
      */
     async checkAndLoadInfos() {
         let url = this.url
-        if (!url) url = window.location.href
+        if (!url) {
+            console.error("MISSING URL checkAndLoadInfos")
+            url = window.location.href
+        }
 
         let data = await browser.runtime.sendMessage({
             action: "getChapterData",
             url: url,
-            mirrorName: mirrorImpl.get().mirrorName, // assuming we read on the same mirror (no other possibilities for now...)
+            mirrorName: this.mirror.mirrorName, // assuming we read on the same mirror (no other possibilities for now...)
             language: pageData.state.language // and in the same language...
         })
         this.isAChapter = data.isChapter
@@ -47,7 +50,7 @@ export default class ChapterLoader {
         console.log(
             (this.url ? this.url : "current page") + " --> " + this.images.length + " images to load in background"
         )
-        this.scansProvider = new ScansLoader(this.images)
+        this.scansProvider = new ScansLoader(this.images, this.mirror)
         this.scansProvider.load() // pre load scans
         return this.scansProvider
     }
@@ -70,10 +73,10 @@ export default class ChapterLoader {
             }
             console.log((this.url ? this.url : "current page") + " --> " + this.images.length + " images to load")
 
-            bookmarks.init(this.images) // initialize scans bookmarks state
+            bookmarks.init(this.images, this.mirror) // initialize scans bookmarks state
             // initialize scans loading
             if (this.scansProvider === null) {
-                scansProvider.init(this.images, options.imgorder === 1) // new scan loader
+                scansProvider.init(this.images, this.mirror, options.imgorder === 1) // new scan loader
             } else {
                 scansProvider.initWithProvider(this.scansProvider) // scans already totally or partially loaded from this loader, switch the state to that scans loader
             }

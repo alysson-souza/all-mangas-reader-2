@@ -1,5 +1,6 @@
 import browser from "webextension-polyfill"
 import * as utils from "../../amr/utils"
+import { amrLanguages } from "../../constants/language"
 
 const tests = [
     {
@@ -17,7 +18,7 @@ const tests = [
                     let spl = mirror.languages.split(",")
                     if (spl.length > 0) {
                         let notfound = [],
-                            alllangs = utils.languages.reduce((arr, el) => {
+                            alllangs = amrLanguages.reduce((arr, el) => {
                                 Array.isArray(el) ? arr.push(...el) : arr.push(el)
                                 return arr
                             }, [])
@@ -257,7 +258,7 @@ const tests = [
                     let lstko = []
                     for (let res of list) {
                         let found = false
-                        let host = utils.extractHostname(res.value)
+                        let host = new URL(res.value).host
                         for (let u of mirror.domains) {
                             if (utils.matchDomain(host, u)) {
                                 found = true

@@ -1,14 +1,12 @@
 import browser from "webextension-polyfill"
 import options from "../state/options"
-import mirrorImpl from "../state/mirrorimpl"
 import pageData from "../state/pagedata"
 
-class Util {
-    removeProtocol(url) {
-        if (url.indexOf("https") == 0) return url.substring(6)
-        else if (url.indexOf("http") == 0) return url.substring(5)
-        return url
+export class Util {
+    constructor(mirror) {
+        this.mirror = mirror
     }
+
     debug(message) {
         if (options.debug === 1) console.log(message)
     }
@@ -29,7 +27,7 @@ class Util {
         return await browser.runtime.sendMessage({
             action: "mangaExists",
             url: pageData.state.currentMangaURL,
-            mirror: mirrorImpl.get().mirrorName,
+            mirror: this.mirror.mirrorName,
             language: pageData.state.language
         })
     }
@@ -48,7 +46,7 @@ class Util {
         await browser.runtime.sendMessage({
             action: "readManga",
             url: pageData.state.currentMangaURL,
-            mirror: mirrorImpl.get().mirrorName,
+            mirror: this.mirror.mirrorName,
             lastChapterReadName: pageData.state.currentChapter,
             lastChapterReadURL: pageData.state.currentChapterURL,
             name: pageData.state.name,
@@ -57,7 +55,7 @@ class Util {
         if (!force) {
             browser.runtime.sendMessage({
                 action: "exportReadStatus",
-                mirror: mirrorImpl.get().mirrorName,
+                mirror: this.mirror.mirrorName,
                 url: pageData.state.currentChapterURL
             })
         }
@@ -69,7 +67,7 @@ class Util {
         return await browser.runtime.sendMessage({
             action: "setMangaChapter",
             url: pageData.state.currentMangaURL,
-            mirror: mirrorImpl.get().mirrorName,
+            mirror: this.mirror.mirrorName,
             lastChapterReadName: pageData.state.currentChapter,
             lastChapterReadURL: pageData.state.currentChapterURL,
             name: pageData.state.name,
@@ -95,7 +93,7 @@ class Util {
         return await browser.runtime.sendMessage({
             action: "deleteManga",
             url: pageData.state.currentMangaURL,
-            mirror: mirrorImpl.get().mirrorName,
+            mirror: this.mirror.mirrorName,
             language: pageData.state.language
         })
     }
@@ -121,4 +119,3 @@ class Util {
         return await browser.runtime.sendMessage({ action: "save_option", key: key, value: value })
     }
 }
-export default new Util()

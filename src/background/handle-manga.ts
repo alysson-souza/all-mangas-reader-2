@@ -15,13 +15,14 @@ export class HandleManga {
         private optionStorage: OptionStorage
     ) {}
 
-    async handle(message: { key: string; action: string; url: string }): Promise<unknown> {
-        const key = this.getMangaKey(message)
-
+    async handle(message: { key: string; action: string; url: string; mirror?: string }): Promise<unknown> {
         switch (message.action) {
-            case "mangaExists":
+            case "mangaExists": {
+                const key = this.getMangaKey(message)
                 return Promise.resolve(this.store.state.mangas.all.find(manga => manga.key === key) !== undefined)
-            case "mangaInfos":
+            }
+            case "mangaInfos": {
+                const key = this.getMangaKey(message)
                 const mg = this.store.state.mangas.all.find(manga => manga.key === key)
                 return mg
                     ? {
@@ -38,6 +39,7 @@ export class HandleManga {
                           zoom: mg.zoom || 100 /* zoom level */
                       }
                     : null
+            }
             case "saveCurrentState":
                 return this.store.dispatch("saveCurrentState", message)
             case "readManga":
@@ -56,6 +58,8 @@ export class HandleManga {
             //returns boolean telling if url is a chapter page, infos from page and list of images for prefetch of next chapter in content script
             case "getChapterData":
                 return this.getChapterData(message)
+            case "getImageUrlFromPageUrl":
+                return this.getImageUrlFromPageUrl(message)
             case "markMangaReadTop":
                 return this.store.dispatch("markMangaReadTop", message)
             case "markMangaUpdateTop":
@@ -75,7 +79,7 @@ export class HandleManga {
                     .dispatch("resetManga", message) // reset reading to first chapter
                     .then(() => this.store.dispatch("readManga", message)) // set reading to current chapter
             case "resetManga":
-                return this.store.dispatch("resetManga", message)
+                return this.store.dispatch("resetManga", { key: this.getMangaKey(message) })
             case "removeCategoryFromManga":
                 return this.store.dispatch("removeCategoryFromManga", message)
             case "addCategoryToManga":
@@ -89,13 +93,15 @@ export class HandleManga {
                 return this.store.dispatch("updateChaptersLists") // update is forced by default (mangas are updated even if chapters has been found recently (less than a week ago) and the pause for a week option is checked) but is done manually by the user (this case is called from options page or for timers page)
             case "searchList":
                 return this.searchList(message)
-            case "getListChaps":
+            case "getListChaps": {
+                const key = this.getMangaKey(message)
                 let mgch = this.store.state.mangas.all.find(mg => mg.key === key)
                 if (mgch !== undefined) {
                     return Promise.resolve(mgch.listChaps)
                 } else {
                     return Promise.resolve()
                 }
+            }
             case "loadListChaps":
                 return this.loadListChaps(message)
             case "importMangas":
@@ -297,10 +303,10 @@ export class HandleManga {
 
         const [mirrorResult] = await browser.scripting.executeScript({
             target: { tabId },
-            func: function (mirrorName) {
-                return globalThis["amrLoadMirrors"](mirrorName)
+            func: function (mirror) {
+                return globalThis["amrLoadMirror"](mirror)
             },
-            args: [mir.mirrorName]
+            args: [mir]
         })
         this.logger.debug(mirrorResult)
 
@@ -325,7 +331,8 @@ export class HandleManga {
     }
 
     /**
-     * Send an event to the tab telling that url has been changed. If it's done by AMR, nothing to do, if it's inner website navigation, load amr
+     * Send an event to the tab telling that url has been changed.
+     * If it's done by AMR, nothing to do, if it's inner website navigation, load amr
      */
     async sendPushState(url: string, tabId: number) {
         if (url.includes("chrome://")) {
@@ -395,6 +402,16 @@ export class HandleManga {
                 return Promise.resolve({ images: null })
             })
     }
+
+    private async getImageUrlFromPageUrl(message: { mirror?: string; url: string }) {
+        if (!message.mirror) {
+            throw new Error(`message.mirror is required to resolve image from page`)
+        }
+
+        const impl = await this.mirrorLoader.getImpl(message.mirror)
+        return impl.getImageUrlFromPage(message.url)
+    }
+
     /**
      * Imports a list of mangas (only the long async part is in there)
      * @param {*} message

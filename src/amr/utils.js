@@ -58,15 +58,6 @@ export function debug(message) {
 }
 
 /**
- * Extract the full host name
- * @param {*} url
- */
-export function extractHostname(url) {
-    let uid = new URL(url)
-    return uid.host
-}
-
-/**
  * Tells in human language how much time has been spent since this ts
  * @param {*} ts
  */

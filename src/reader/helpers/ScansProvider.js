@@ -1,5 +1,6 @@
-import mirrorImpl from "../state/mirrorimpl"
 import EventBus from "./EventBus"
+import browser from "webextension-polyfill"
+import pageData from "../state/pagedata"
 
 /**
  * This file handles Scans Loading, (unique scan and all scans from a chapter)
@@ -46,10 +47,10 @@ export const scansProvider = {
     },
 
     /** Initialize state with a whole list of scans urls */
-    init(scansUrl, inorder = false) {
+    init(scansUrl, mirror, inorder = false) {
         if (!scansUrl || scansUrl.length === 0) return
 
-        let scp = new ScansLoader(scansUrl)
+        let scp = new ScansLoader(scansUrl, mirror)
         this.initWithProvider(scp)
 
         // initialize scans
@@ -61,14 +62,14 @@ export const scansProvider = {
  * Create a ScansLoader, which loads scans in background
  */
 export const ScansLoader = class {
-    constructor(scansUrl) {
+    constructor(scansUrl, mirror) {
         this.scans = [] // list of scans [{url, loading, error, doublepage, scan HTMLImage}]
         this.loaded = false // top indicating all scans are loaded
         this.onloadchapter = () => {} // function to call when chapter is fully loaded
         this.onloadscan = () => {} // function to call when scan is loaded
 
         // initialize scans
-        this.scans.push(...scansUrl.map(url => new ScanLoader(url)))
+        this.scans.push(...scansUrl.map(url => new ScanLoader(url, mirror)))
     }
 
     /** Load all scans */
@@ -102,8 +103,14 @@ export const ScansLoader = class {
  * Handle a scan load, keeps original Image object to clone to insert scan somewhere
  */
 class ScanLoader {
-    /** Build the scan initial state */
-    constructor(url) {
+    /**
+     * Build the scan initial state
+     * @param url {string}
+     * @param mirror {{ mirrorName: string }}
+     */
+    constructor(url, mirror) {
+        this.mirror = mirror
+
         /* url of the image, not necessarily the url of the picture but the one used to retrieve the picture */
         this.url = url
 
@@ -169,8 +176,17 @@ class ScanLoader {
                 manageError(e)
             })
             try {
+                // @TODO this used to replace url of prefix "https://.." to just "//.."
+                // Does not really work with fetch?
+                // const url = this.url.replace(/(^\w+:|^)/, "")
+
                 // Load the scan using implementation method
-                await mirrorImpl.get().getImageFromPageAndWrite(this.url.replace(/(^\w+:|^)/, ""), this.scan)
+                this.scan.src = await browser.runtime.sendMessage({
+                    action: "getImageUrlFromPageUrl",
+                    url: this.url,
+                    mirror: this.mirror.mirrorName,
+                    language: pageData.state.language
+                })
             } catch (e) {
                 manageError(e)
             }

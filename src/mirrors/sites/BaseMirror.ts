@@ -1,5 +1,5 @@
 import { AnyNode, BasicAcceptedElems, load } from "cheerio"
-import { MirrorHelper } from "../../reader/MirrorHelper"
+import { MirrorHelper } from "../MirrorHelper"
 
 export abstract class BaseMirror {
     protected constructor(protected mirrorHelper: MirrorHelper) {}

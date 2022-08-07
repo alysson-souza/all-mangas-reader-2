@@ -12,7 +12,6 @@ import Clipboard from "v-clipboard"
 import AmrReader from "./AmrReader.vue"
 
 import browser from "webextension-polyfill"
-import mirrorImpl from "./state/mirrorimpl"
 import options from "./state/options"
 import ChapterLoader from "./helpers/ChapterLoader"
 import store from "../store"
@@ -20,7 +19,7 @@ import store from "../store"
 // Forves embedded svg font for reader, we use the cdn based one for the popup still
 vuetifyOptions.icons.iconfont = "mdiSvg"
 
-import { MirrorHelper } from "./MirrorHelper"
+import { MirrorHelper } from "../mirrors/MirrorHelper"
 globalThis["amr"] = globalThis["amr"] || new MirrorHelper(store.state.options)
 
 let ourCss = ["https://fonts.googleapis.com/css?family=Roboto:300,400,500,700"]
@@ -49,24 +48,21 @@ if (globalThis["__armreader__"] === undefined) {
      * This script is injected by background script if the page could be a manga page.
      * Once loaded, the mirror implementation is called and results in this function call
      */
-    globalThis["registerMangaObject"] = async function (object) {
+    globalThis["amrLoadMirror"] = async function (mirror) {
         // initialize options
         if (typeof options.load === "function") {
             options.load(await browser.runtime.sendMessage({ action: "getoptions" }))
         }
-        console.log("Mirror implementation " + object.mirrorName + " loaded in page.")
-        // initialize Mirror Implementation
-        if (typeof mirrorImpl.load === "function") {
-            mirrorImpl.load(object)
-        }
+        console.log("Mirror implementation " + mirror.mirrorName + " loaded in page.")
+
         // initialize current chapter from data collected from current page
-        let chap = new ChapterLoader()
+        let chap = new ChapterLoader(globalThis.location.href, mirror)
         await chap.checkAndLoadInfos() // get is a chapter ?, infos (current manga, chapter) and scans urls
         let done = chap.loadInReader(options, true) // load chapter data in states
         if (!done) {
             restorePage()
         } else {
-            initReader() // create the reader if this is the first chapter loaded in this environment, else, the state mutation will be enough to load new chapter
+            initReader(mirror) // create the reader if this is the first chapter loaded in this environment, else, the state mutation will be enough to load new chapter
         }
         globalThis["__current_chapterloader__"] = chap // keep a reference to delete it later
     }
@@ -83,7 +79,7 @@ if (globalThis["__armreader__"] === undefined) {
  *  - No more glitches depending on the online reader css
  *  - more options, resize fit height, width
  */
-function initReader() {
+function initReader(mirror) {
     if (!document.body) {
         // create body element if non existing (thanks mangarock)
         let bd = document.createElement("body")
@@ -121,8 +117,9 @@ function initReader() {
     Vue.use(Clipboard)
     new Vue({
         el: amrdiv,
+        propsData: { mirror },
         vuetify: new Vuetify(vuetifyOptions),
-        render: h => h(AmrReader)
+        render: h => h(AmrReader, { props: { mirror } })
     })
 
     setTimeout(removeJsAddedStuff, 1500)

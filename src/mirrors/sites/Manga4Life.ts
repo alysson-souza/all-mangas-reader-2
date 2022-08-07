@@ -1,5 +1,5 @@
 import { MirrorImplementation } from "../../types/common"
-import { MirrorHelper } from "../../reader/MirrorHelper"
+import { MirrorHelper } from "../MirrorHelper"
 import { BaseMirror } from "./BaseMirror"
 import mirrorIcon from "../icons/manga4life-optimized.png"
 

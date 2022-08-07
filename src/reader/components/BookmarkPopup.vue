@@ -38,14 +38,14 @@
 
 <script>
 import { i18nmixin } from "../../mixins/i18n-mixin"
-import browser from "webextension-polyfill"
-
-import mirrorImpl from "../state/mirrorimpl"
 import pageData from "../state/pagedata"
 import bookmarks from "../state/bookmarks"
 
 export default {
     mixins: [i18nmixin],
+    props: {
+        mirror: Object
+    },
     data() {
         return {
             resolve: null,
@@ -63,7 +63,7 @@ export default {
     computed: {
         /** Return the current mirror name */
         mirrorName() {
-            return mirrorImpl.get().mirrorName
+            return this.mirror.mirrorName
         },
         /** Return the current chapter name */
         chapterName() {

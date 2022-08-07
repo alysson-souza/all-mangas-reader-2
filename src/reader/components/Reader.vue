@@ -62,10 +62,9 @@ import browser from "webextension-polyfill"
 
 import options from "../state/options"
 import pageData from "../state/pagedata"
-import mirrorImpl from "../state/mirrorimpl"
 
 import { scansProvider } from "../helpers/ScansProvider"
-import util from "../helpers/util"
+import { Util } from "../helpers/util"
 import EventBus from "../helpers/EventBus"
 
 import Page from "./Page"
@@ -106,6 +105,8 @@ export default {
         }
     },
     props: {
+        /** Currently loaded mirror implementation **/
+        mirror: Object,
         direction: String /* Reading from left to right or right to left */,
         invertKeys: Boolean /* Invert keys in right to left mode */,
         book: Boolean /* Do we display side by side pages */,
@@ -118,6 +119,7 @@ export default {
         shouldInvertKeys: Boolean /* If keys and buttons should be flipped */
     },
     created() {
+        this.util = new Util(this.mirror)
         /** Initialize key handlers */
         this.autoNextChapter = false
         this.handlekeys()
@@ -133,7 +135,7 @@ export default {
         EventBus.$on("loaded-scan", this.updateProgress)
         /** Listen for a request of going to specific scan url */
         EventBus.$on("go-to-scanurl", url => {
-            util.debug("Restore previous last scan : " + url)
+            this.util.debug("Restore previous last scan : " + url)
             EventBus.$on("pages-loaded", () => {
                 // wait for the pages to be fully loaded
                 setTimeout(() => this.goScanUrl(url), 0) // add additional wait so the scroll is correct enough, 0 is enough because we just need to do it after the nextTick (in nextTick, pages are rearranged and watcher on pages will reset currentPage, do it after that)
@@ -173,7 +175,7 @@ export default {
                 action: "saveCurrentState",
                 url: this.pageData.currentMangaURL,
                 language: this.pageData.language,
-                mirror: mirrorImpl.get().mirrorName,
+                mirror: this.mirror.mirrorName,
                 currentChapter: this.pageData.currentChapterURL,
                 currentScanUrl: this.getCurrentScanUrl()
             })
@@ -264,7 +266,7 @@ export default {
          * Click on the scans container, if single page mode, go to next or previous page
          */
         pageChange(e) {
-            util.clearSelection()
+            this.util.clearSelection()
             if (this.fullchapter) return
 
             if (e.clientX >= this.$refs.scancontainer.clientWidth / 2) {
@@ -291,7 +293,7 @@ export default {
          *  - if last scan and click right --> go to next chapter
          */
         tryChapterChange(e) {
-            util.clearSelection()
+            this.util.clearSelection()
             if (e.clientX >= this.$refs.scancontainer.clientWidth / 2) {
                 if (this.lastScan) {
                     clearTimeout(this.scanClickTimeout)

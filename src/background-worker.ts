@@ -3,13 +3,12 @@ import store from "./store"
 import { Handler } from "./background/handler"
 import { getAppLogger } from "./shared/AppLogger"
 import { OptionStorage } from "./shared/OptionStorage"
-import { HandleManga } from "./background/handle-manga"
 import { AmrInit } from "./background/amr-init"
 import storedb from "./amr/storedb"
 import { converToMangadexV5 } from "./background/misc/mangedex-v5-converter"
 // import { IconHelper } from './amr/icon-helper';
 import { Mangadex } from "./background/misc/mangadex-v5-integration"
-import { MirrorHelper } from "./reader/MirrorHelper"
+import { getMirrorHelper } from "./mirrors/MirrorHelper"
 import { getMirrorLoader } from "./mirrors/MirrorLoader"
 
 // browser.alarms.onAlarm.addListener(function (args) {
@@ -28,8 +27,7 @@ const init = async () => {
     const amrInit = new AmrInit(store, storedb, optionsStorage, logger)
     // const iconHelper = new IconHelper(store)
 
-    const mirrorHelper = new MirrorHelper(store.state.options)
-    globalThis["amr"] = mirrorHelper
+    const mirrorHelper = getMirrorHelper(store.state.options)
     const mirrorLoader = getMirrorLoader(mirrorHelper)
 
     const handler = new Handler(store, logger, optionsStorage, mirrorLoader)
@@ -113,6 +111,7 @@ const init = async () => {
             timers = timers.filter(id => id != args.tabId)
         }, 500)
 
+        // This where all frontend AMR Reader actually begins
         handleManga.matchUrlAndLoadScripts(args.url, args.tabId)
     })
 
@@ -158,4 +157,4 @@ const init = async () => {
     //     "extraHeaders"
     // ])
 }
-init().then(() => console.info("completed background init"))
+init().then(() => console.debug("completed background init"))
