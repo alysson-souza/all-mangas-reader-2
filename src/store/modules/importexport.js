@@ -289,6 +289,7 @@ const actions = {
             if (!mangadex) await dispatch("initMangadex")
             await mangadex.markAsRead(url)
         }
+        return true
     },
     /**
      * Triggered when updating chapter lists:

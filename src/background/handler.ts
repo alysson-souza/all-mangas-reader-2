@@ -1,5 +1,5 @@
 import browser from "webextension-polyfill"
-import { AppStore, MirrorImplementation } from "../types/common"
+import { AppStore } from "../types/common"
 import { AppLogger } from "../shared/AppLogger"
 import { serializeVuexObject } from "../shared/utils"
 import { HandleManga } from "./handle-manga"
@@ -70,11 +70,13 @@ export class Handler {
         browser.runtime.onMessage.addListener(async (message, sender) => {
             this.logger.debug(message)
             for (let handler of this.handlers) {
-                const result = await handler.handle(message, sender).catch(e => {
+                try {
+                    const result = await handler.handle(message, sender)
+                    if (result !== undefined) {
+                        return result
+                    }
+                } catch (e) {
                     this.logger.error(e)
-                })
-                if (result !== undefined) {
-                    return result
                 }
             }
 

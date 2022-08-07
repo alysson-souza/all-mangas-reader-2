@@ -366,6 +366,7 @@ const actions = {
         commit("saveCurrentState", { key, ...message })
         let mg = state.all.find(manga => manga.key === key)
         dispatch("findAndUpdateManga", mg)
+        return true
     },
 
     async createUnlistedManga({ dispatch, commit, rootState }, message) {
@@ -401,7 +402,6 @@ const actions = {
      * @param {*} message containing infos about the manga read
      */
     async readManga({ dispatch, commit, getters, rootState }, message) {
-        console.log(rootState)
         const key = mangaKey({
             url: message.url,
             mirror: message.mirror,
@@ -418,7 +418,7 @@ const actions = {
             console.error("readManga of an unlisted manga --> create it")
             await dispatch("createUnlistedManga", message)
             // amrUpdater.refreshBadgeAndIcon()
-            return
+            return false
         }
 
         try {
@@ -431,6 +431,7 @@ const actions = {
 
         // refresh badge
         // amrUpdater.refreshBadgeAndIcon()
+        return mg
     },
     /**
      * Get list of chapters for a manga

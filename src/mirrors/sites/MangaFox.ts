@@ -59,6 +59,8 @@ export class MangaFox extends BaseMirror implements MirrorImplementation {
             page: curpage,
             key: mkey
         }
+
+        console.log("LOADING JSON FROM " + chapfunurl)
         // get scan url (this function seems to work only within DM5, perhaps a control on Referer)
         const data = await this.mirrorHelper.loadJson(chapfunurl, {
             data: params,

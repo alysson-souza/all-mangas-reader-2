@@ -42,7 +42,7 @@ export class HandleManga {
             }
             case "saveCurrentState":
                 return this.store.dispatch("saveCurrentState", message)
-            case "readManga":
+            case "readManga": {
                 //count number of chapters read
                 const nb = (await this.optionStorage.getKey("nb_read")) ?? 1
                 const value = (typeof nb === "string" ? parseInt(nb) : nb) + 1
@@ -50,6 +50,7 @@ export class HandleManga {
                 this.logger.debug("Read manga " + message.url)
                 // call store method to update reading list appropriately
                 return this.store.dispatch("readManga", message)
+            }
             case "initMangasFromDB":
                 return this.store.dispatch("initMangasFromDB", true)
             case "deleteManga":

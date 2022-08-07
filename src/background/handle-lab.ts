@@ -8,7 +8,7 @@ import { MirrorLoader } from "../mirrors/MirrorLoader"
 export class HandleLab {
     constructor(private mirrorLoader: MirrorLoader) {}
 
-    handle(message) {
+    async handle(message) {
         if ("lab" === message.action) {
             if (message.url && message.url.indexOf("//") === 0) {
                 message.url = "http:" + message.url
