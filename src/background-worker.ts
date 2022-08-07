@@ -22,6 +22,7 @@ const init = async () => {
     const optionsStorage = new OptionStorage()
     const options = await optionsStorage.getVueOptions()
 
+    await store.dispatch("initOptions")
     const logger = getAppLogger(options)
 
     const amrInit = new AmrInit(store, storedb, optionsStorage, logger)

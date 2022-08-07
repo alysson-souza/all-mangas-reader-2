@@ -1,7 +1,8 @@
-import { AppManga, AppStore, Category, Mirror } from "../types/common"
+import { AppManga, AppStore, Bookmark, Category, Mirror } from "../types/common"
 import { AppLogger } from "./AppLogger"
 import { AppOptions } from "./OptionStorage"
 import { amrLanguages } from "../constants/language"
+import axios from "axios"
 
 export function hasBeenRead(manga: AppManga) {
     return manga.listChaps.length && chapPath(manga.lastChapterReadURL) === chapPath(manga.listChaps[0][1])
@@ -318,6 +319,7 @@ export function matchDomain(str: string, rule: string, store: AppStore) {
     return new RegExp("^" + rule.replace(/\*/g, ".*") + "$").test(str)
 }
 
+/** This will require rethink on how such common functionality depends on the root state... **/
 export function mangaKey({ url, mirror, shouldConcat, rootState }: MangaKeyParams) {
     if (!url) {
         console.error(
@@ -341,4 +343,101 @@ export function mangaKey({ url, mirror, shouldConcat, rootState }: MangaKeyParam
     }
 
     return mstr + "/" + afterHostURL(url) + (shouldConcat !== undefined ? "_" + shouldConcat : "")
+}
+
+export function bookmarkKey({
+    bookmark,
+    rootState
+}: {
+    bookmark: Pick<Bookmark, "chapUrl" | "mirror" | "scanUrl">
+    rootState: AppStore
+}) {
+    const mgKey = mangaKey({ url: bookmark.chapUrl, mirror: bookmark.mirror, rootState })
+    const scanKey = mangaKey({ url: bookmark.scanUrl, mirror: bookmark.mirror, rootState })
+    return mgKey + (bookmark.scanUrl ? "_" + scanKey : "")
+}
+
+const twodigits = (i: number) => (i < 10 ? "0" + i : i)
+
+/**
+ * Returns current date formatted
+ */
+export function fdate() {
+    const d = new Date()
+    return (
+        d.getFullYear() +
+        "-" +
+        twodigits(d.getMonth() + 1) +
+        "-" +
+        twodigits(d.getDate()) +
+        "_" +
+        twodigits(d.getHours()) +
+        "-" +
+        twodigits(d.getMinutes()) +
+        "-" +
+        twodigits(d.getSeconds())
+    )
+}
+
+export function arrayToObject(array, keyField) {
+    return array.reduce((obj, item) => {
+        obj[item[keyField]] = item
+        return obj
+    }, {})
+}
+
+export function objectMapToArray(obj) {
+    const data = []
+    Object.keys(obj).forEach(key => data.push(obj[key]))
+    return data
+}
+
+export function batchProps(obj, batchSize) {
+    const batches = []
+
+    let i = 0
+    let batch = {}
+
+    Object.keys(obj).forEach(key => {
+        batch[key] = obj[key]
+        i++
+        if (i >= batchSize) {
+            batches.push(batch)
+            i = 0
+            batch = {}
+        }
+    })
+
+    return batches
+}
+
+/**
+ *
+ * @param {string} secret
+ * @param {string} id
+ * @param {string} filename
+ * @param {*} content
+ */
+export async function gistDebug(secret, id, filename, content) {
+    if (secret && secret !== "" && id && id !== "") return
+    const ax = axios.create({
+        baseURL: "https://api.github.com/",
+        headers: {
+            Authorization: `Bearer ${secret}`,
+            "Cache-Control": "no-cache"
+        }
+    })
+    const request = await ax.get(`gists/${id}?cache=${Date.now()}`)
+    const data = request.data
+    let stringContent
+    if (data.files[filename]) {
+        const parsedContent = JSON.parse(data.files[filename].content)
+        parsedContent.push(content)
+        stringContent = JSON.stringify(parsedContent, null, 2)
+    } else {
+        data.files[filename] = { content: [] }
+        data.files[filename].content.push(content)
+        stringContent = JSON.stringify(data.files[filename].content, null, 2)
+    }
+    return ax.patch(`gists/${id}`, { files: { [filename]: { content: stringContent } } })
 }

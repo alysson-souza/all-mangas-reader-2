@@ -8,10 +8,11 @@ export interface RootState {
     bookmarks: { all: Bookmark[] }
 }
 
-interface Bookmark {
+export interface Bookmark {
     key: string
     url: string
-    chapUtrl: string
+    chapUrl: string
+    mirror: string
     type: string
     name: string
     chapName: string

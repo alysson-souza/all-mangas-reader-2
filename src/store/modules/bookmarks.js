@@ -1,6 +1,5 @@
 import storedb from "../../amr/storedb"
-import * as utils from "../../amr/utils"
-import mirrors from "./mirrors"
+import { bookmarkKey } from "../../shared/utils"
 
 /**
  *  initial state of the bookmarks module
@@ -36,28 +35,27 @@ const actions = {
      * @param {*} param0
      * @param {*} bm
      */
-    async createBookmark({ commit }, bm) {
+    async createBookmark({ commit, rootState }, bm) {
         commit("createBookmark", bm)
-        await storedb.storeBookmark(bm)
-        utils.debug("created description of bookmark " + bm.key + " in db")
+        await storedb.storeBookmark(bm, { state: rootState })
     },
     /**
      * Updates the note on a bookmark
      * @param {*} param0
      * @param {*} bm bookmark with new note
      */
-    async updateBookmarkNote({ commit }, bm) {
+    async updateBookmarkNote({ commit, rootState }, bm) {
         commit("updateBookmarkNote", bm)
-        await storedb.storeBookmark(bm)
+        await storedb.storeBookmark(bm, { state: rootState })
     },
     /**
      * Delete a bookmark in the store
      * @param {*} param0
      * @param {*} key
      */
-    async deleteBookmark({ commit }, { chapUrl, scanUrl, mirror }) {
-        let key = utils.mangaKey(chapUrl, mirror) + (scanUrl ? "_" + utils.mangaKey(scanUrl, mirror) : "")
-        let bm = state.all.find(bookmark => bookmark.key === key)
+    async deleteBookmark({ commit, rootState }, { chapUrl, scanUrl, mirror }) {
+        const bm = state.all.find(bookmark => bookmark.key === key)
+        const key = bookmarkKey({ bookmark: bm, rootState })
         if (bm !== undefined) {
             commit("deleteBookmark", key)
             await storedb.deleteBookmark(key)
@@ -89,8 +87,7 @@ const mutations = {
      */
     createBookmark(state, bm) {
         if (!bm.key) {
-            bm.key =
-                utils.mangaKey(bm.chapUrl, bm.mirror) + (bm.scanUrl ? "_" + utils.mangaKey(bm.scanUrl, bm.mirror) : "")
+            bm.key = bookmarkKey({ bookmark: bm, rootState: this.$store })
         }
         state.all.push(bm)
     },
@@ -100,9 +97,8 @@ const mutations = {
      * @param {*} bm bookmark with new note
      */
     async updateBookmarkNote(state, bm) {
-        let key =
-            utils.mangaKey(bm.chapUrl, bm.mirror) + (bm.scanUrl ? "_" + utils.mangaKey(bm.scanUrl, bm.mirror) : "")
-        let bmn = state.all.find(bookmark => bookmark.key === key)
+        const key = bookmarkKey({ bookmark: bm, rootState: this.$store })
+        const bmn = state.all.find(bookmark => bookmark.key === key)
         if (bmn !== undefined) {
             bmn.note = bm.note
         }

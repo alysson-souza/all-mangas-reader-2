@@ -1,4 +1,4 @@
-import * as utils from "./utils"
+import { bookmarkKey } from "../shared/utils"
 
 /**
  * Class helping to store data in IndexedDb
@@ -332,8 +332,9 @@ class StoreDB {
     /**
      * Store a bookmark entry
      * @param {*} bm {url, type (0: chapter, 1: scan), mgkey, title}
+     * @param rootState
      */
-    storeBookmark(bm) {
+    storeBookmark(bm, rootState) {
         let store = this
         return this.checkInit().then(() => {
             return new Promise((resolve, result) => {
@@ -345,9 +346,7 @@ class StoreDB {
 
                 let objectStore = transaction.objectStore("bookmarks")
                 if (!bm.key) {
-                    bm.key =
-                        utils.mangaKey(bm.chapUrl, bm.mirror) +
-                        (bm.scanUrl ? "_" + utils.mangaKey(bm.scanUrl, bm.mirror) : "")
+                    bm.key = bookmarkKey({ bookmark: bm, rootState })
                 }
                 let request = objectStore.put(bm)
                 request.onsuccess = function (event) {

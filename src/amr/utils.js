@@ -1,5 +1,4 @@
 import i18n from "./i18n"
-import axios from "axios"
 
 /**
  * Test if current browser is Firefox
@@ -19,6 +18,7 @@ export function isFirefoxAndroid() {
 
 /**
  * Format manga name to test similarities
+ * @deprecated
  * @param {*} name
  */
 export function formatMgName(name) {
@@ -58,38 +58,6 @@ export function debug(message) {
 }
 
 /**
- *
- * @param {string} secret
- * @param {string} id
- * @param {string} filename
- * @param {*} content
- */
-export async function gistDebug(secret, id, filename, content) {
-    if (globalThis["AMR_STORE"].state.options.gistDebugEnabled === 0) return
-    if (secret && secret !== "" && id && id !== "") return
-    const ax = axios.create({
-        baseURL: "https://api.github.com/",
-        headers: {
-            Authorization: `Bearer ${secret}`,
-            "Cache-Control": "no-cache"
-        }
-    })
-    const request = await ax.get(`gists/${id}?cache=${Date.now()}`).catch(debug)
-    const data = request.data
-    let stringContent
-    if (data.files[filename]) {
-        const parsedContent = JSON.parse(data.files[filename].content)
-        parsedContent.push(content)
-        stringContent = JSON.stringify(parsedContent, null, 2)
-    } else {
-        data.files[filename] = { content: [] }
-        data.files[filename].content.push(content)
-        stringContent = JSON.stringify(data.files[filename].content, null, 2)
-    }
-    await ax.patch(`gists/${id}`, { files: { [filename]: { content: stringContent } } }).catch(debug)
-}
-
-/**
  * Extract the full host name
  * @param {*} url
  */
@@ -98,55 +66,6 @@ export function extractHostname(url) {
     return uid.host
 }
 
-/**
- * Extract the part of a url following the domain
- * @param {*} url
- */
-export function afterHostURL(url) {
-    var after
-    //find & remove protocol (http, ftp, etc.) and get hostname
-
-    if (url.indexOf("://") > -1 || url.indexOf("//") === 0) {
-        after = url.split("/").splice(3).join("/")
-    } else {
-        after = url.split("/").splice(1).join("/")
-    }
-    return after
-}
-/**
- * Calculate manga key for a url (just host name, without subdomain followed by url of manga)
- * @param {*} url
- */
-export function mangaKey(url, forcedmirror, toconcat) {
-    if (!url) {
-        console.error(
-            "A manga key has been requested for undefined url, it will be melted in your database with other mangas with same issue, check the implementation of the mirror where your read this manga."
-        )
-        return "_no_key_" // should not happen !
-    }
-
-    let mstr = "unknown" // should never be unknown. Old domains need to be kept in domains description in the implementations
-    if (forcedmirror !== undefined) {
-        mstr = safename(forcedmirror)
-    } else {
-        let host = extractHostname(url)
-        // look for mirror implementation matching this root domain
-        let mirror = globalThis["AMR_STORE"].state.mirrors.all.find(
-            mir => mir.domains.findIndex(ws => matchDomain(host, ws)) !== -1
-        )
-        if (mirror) mstr = safename(mirror.mirrorName)
-    }
-
-    return mstr + "/" + afterHostURL(url) + (toconcat !== undefined ? "_" + toconcat : "")
-}
-
-function safename(name) {
-    if (name == undefined || name == null || name == "null") return ""
-    return name
-        .trim()
-        .replace(/[^0-9A-Za-z]/g, "")
-        .toLowerCase()
-}
 /**
  * Tells in human language how much time has been spent since this ts
  * @param {*} ts
@@ -164,63 +83,7 @@ export function lasttime(diffts) {
     diff = Math.floor(diff / 7)
     return i18n("options_weeks", diff) //TODO months , years ?  --> not needed in AMR yet
 }
-const twodigits = function (i) {
-    if (i < 10) return "0" + i
-    return i
-}
-/**
- * Returns current date formatted
- */
-export function fdate() {
-    var d = new Date()
-    return (
-        d.getFullYear() +
-        "-" +
-        twodigits(d.getMonth() + 1) +
-        "-" +
-        twodigits(d.getDate()) +
-        "_" +
-        twodigits(d.getHours()) +
-        "-" +
-        twodigits(d.getMinutes()) +
-        "-" +
-        twodigits(d.getSeconds())
-    )
-}
-/**
- * Return the list of pathname elements
- */
-export function urlwords(url) {
-    return url.split("/").slice(3)
-}
-/**
- * Test if a chapter url matchs another pathname
- * Return n the number of matched pathname parts
- */
-export function matchurl(url, paths) {
-    let chps = urlwords(url)
-    let res = chps.reduce((nb, path) => (paths.findIndex(p => path === p) >= 0 ? nb + 1 : nb), 0)
-    return res
-}
-/**
- * Find the probable chapter from its url and list of chapters
- */
-export function findProbableChapter(lastReadURL, list) {
-    let lws = urlwords(lastReadURL)
-    let max = 0
-    let lstMax = []
-    for (let arr of list) {
-        let prob = matchurl(arr[1], lws)
-        if (prob > max) {
-            max = prob
-            lstMax = [arr]
-        } else if (prob === max) {
-            lstMax.push(arr)
-        }
-    }
-    if (lstMax.length === 1) return lstMax[0]
-    return
-}
+
 /**
  * List of supported languages in AMR, some are not traditional language codes
  * Multiple codes can match a same language, in this case, the entry is a list of
@@ -266,103 +129,6 @@ export const languages = [
     "ua",
     "vn"
 ]
-
-export function getUnifiedLang(lang) {
-    if (languages.includes(lang)) return lang
-    for (let l of languages) {
-        if (Array.isArray(l) && l.includes(lang)) return l[0]
-    }
-    return undefined
-}
-
-export function arrayToObject(array, keyField) {
-    return array.reduce((obj, item) => {
-        obj[item[keyField]] = item
-        return obj
-    }, {})
-}
-
-export function objectMapToArray(obj) {
-    const data = []
-    Object.keys(obj).forEach(key => data.push(obj[key]))
-    return data
-}
-
-export function batchProps(obj, batchSize) {
-    const batches = []
-
-    let i = 0
-    let batch = {}
-
-    Object.keys(obj).forEach(key => {
-        batch[key] = obj[key]
-        i++
-        if (i >= batchSize) {
-            batches.push(batch)
-            i = 0
-            batch = {}
-        }
-    })
-
-    return batches
-}
-
-/**
- * MangaDex structure
- * {
- *  gb: [ ["121 - ", "https://mangadex.org/chapter/847019" ], [...]],
- *  br: [ ["121 - ", "https://mangadex.org/chapter/847019"], [...]],
- * }
- *
- * @param listChaps {[]|{}|undefined}
- * @return {boolean}
- */
-export function isMultiLanguageList(listChaps) {
-    return listChaps !== undefined && !Array.isArray(listChaps)
-}
-
-/**
- * check if we are in a pause case (if pause for a week option is checked,
- * we check updates only during 2 days (one before and one after)
- * around each 7 days after last chapter found)
- * @param mg
- * @param {{ stopupdateforaweek: number }} options
- * @return {boolean}
- */
-export const shouldCheckForUpdate = (mg, options) => {
-    if (!mg.upts || options.stopupdateforaweek !== 1) {
-        // No update time or stopupdateforaweek is not enabled
-        return true
-    }
-
-    const day = 1000 * 60 * 60 * 24
-    const week = day * 7
-    // number of weeks since last update
-    const nbweeks = Math.floor((Date.now() - mg.upts) / week) + 1
-
-    // check if we are in the gap between minus one day to plus one day compared to nbweeks weeks after last update
-    const shouldUpdate = mg.upts + week * nbweeks - day <= Date.now() && Date.now() <= mg.upts + week * nbweeks + day
-
-    if (shouldUpdate) {
-        debug(
-            "Manga " +
-                mg.key +
-                " has been updated less than " +
-                nbweeks +
-                " ago. We are in the minus one day to plus one day gap for this week number. We update the chapters list."
-        )
-    } else {
-        debug(
-            "Manga " +
-                mg.key +
-                " has been updated less than " +
-                nbweeks +
-                " week ago. We are NOT in the minus one day to plus one day gap for this week number. We do not update the chapters list."
-        )
-    }
-
-    return shouldUpdate
-}
 
 /**
  * Convert language to country

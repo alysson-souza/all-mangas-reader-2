@@ -12,6 +12,7 @@ import {
     chapPath,
     findProbableChapter,
     formatMangaName,
+    gistDebug,
     isMultiLanguageList,
     mangaKey,
     readLanguage,
@@ -107,13 +108,24 @@ const actions = {
      * Retrieve manga list from DB, initialize the store
      * @param {*} param0
      */
-    async initMangasFromDB({ commit, dispatch }, fromModule) {
+    async initMangasFromDB({ commit, dispatch, rootState }, fromModule) {
         // await dispatch("mdFixLang")
         await storedb.getMangaList().then(async mangasdb => {
             await dispatch("updateLanguageCategories")
             commit(
                 "setMangas",
-                mangasdb.map(mg => new Manga(mg))
+                mangasdb.map(
+                    mg =>
+                        new Manga(
+                            mg,
+                            mangaKey({
+                                url: mg.url,
+                                mirror: mg.mirror,
+                                language: mg.language,
+                                rootState: { state: rootState }
+                            })
+                        )
+                )
             )
         })
         if (fromModule) amrUpdater.refreshBadgeAndIcon()
@@ -707,15 +719,19 @@ const actions = {
             })
             return
         }
-        // utils.gistDebug(getters.syncOptions.gistSyncSecret, getters.syncOptions.gistSyncGitID, "amrResets.json", {
-        //     name: mg.name,
-        //     mirror: mg.mirror,
-        //     oldPath: mg.lastChapterReadURL,
-        //     oldName: mg.lastChapterReadName,
-        //     newPath: listChaps[listChaps.length - 1][1],
-        //     newName: listChaps[listChaps.length - 1][0],
-        //     dateTime: new Date().toLocaleString()
-        // })
+
+        if (this.$store.state.options.gistDebugEnabled === 0) {
+            gistDebug(getters.syncOptions.gistSyncSecret, getters.syncOptions.gistSyncGitID, "amrResets.json", {
+                name: mg.name,
+                mirror: mg.mirror,
+                oldPath: mg.lastChapterReadURL,
+                oldName: mg.lastChapterReadName,
+                newPath: listChaps[listChaps.length - 1][1],
+                newName: listChaps[listChaps.length - 1][0],
+                dateTime: new Date().toLocaleString()
+            }).catch(e => this.logger(e))
+        }
+
         this.logger.debug("No list entry or multiple list entries match the known last chapter. Reset to first chapter")
         commit("updateMangaLastChapter", {
             key: mg.key,
@@ -817,13 +833,13 @@ const actions = {
             return () =>
                 new Promise(async resolve => {
                     for (let seriesUpdate of list) {
-                        await seriesUpdate().catch(debug)
+                        await seriesUpdate().catch(this.logger.debug)
                     }
                     resolve()
                 })
         })
 
-        await Promise.all(mirrorTasks2.map(t => t())).catch(debug)
+        await Promise.all(mirrorTasks2.map(t => t())).catch(this.logger.debug)
         dispatch("setOption", { key: "isUpdatingChapterLists", value: 0 }) // Unset watcher when done
 
         if (tsresetupdating) {
@@ -1271,7 +1287,8 @@ const mutations = {
      * @param {*} mgdef object containing manga info
      */
     createManga(state, mgdef, rootState) {
-        let mg = new Manga(mgdef)
+        const key = mangaKey({ url: mgdef.url, mirror: mgdef.mirror, language: mgdef.language, rootState })
+        const mg = new Manga(mgdef, key)
         let titMg = formatMangaName(mg.name)
         let smgs = state.all.filter(manga => formatMangaName(manga.name) === titMg)
         // Setting webtoon default

@@ -81,8 +81,7 @@
 </template>
 <script>
 import i18n from "../../amr/i18n"
-import * as utils from "../../amr/utils"
-import { displayFilterCats } from "../../shared/utils"
+import { displayFilterCats, fdate, mangaKey } from "../../shared/utils"
 import browser from "webextension-polyfill"
 
 export default {
@@ -93,7 +92,7 @@ export default {
             viewable: false, // export only viewable mangas in list
             bookmarks: true, // export bookmarks
             exportMode: 1, // 1 is export all, 2 is without reading state
-            filename: "AMR_" + utils.fdate(), // name of the file to export
+            filename: "AMR_" + fdate(), // name of the file to export
             importmessage: "", // message describing data to import
             hasmgs: false, // data to import contain mangas
             hasbms: false, // data to import contain bookmarks
@@ -209,7 +208,8 @@ export default {
                 let bms = this.$store.state.bookmarks.all
                 if (this.viewable) {
                     bms = bms.filter(bm => {
-                        let mgbm = this.$store.state.mangas.all.find(mg => mg.key.indexOf(utils.mangaKey(bm.url)) >= 0) // find manga associated with bookmark
+                        const key = mangaKey({ url: bm.url, rootState: this.$store })
+                        let mgbm = this.$store.state.mangas.all.find(mg => mg.key.indexOf(key) >= 0) // find manga associated with bookmark
                         if (mgbm !== undefined) {
                             return displayFilterCats(
                                 // check if manga is viewable

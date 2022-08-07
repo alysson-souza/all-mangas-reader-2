@@ -449,9 +449,8 @@
 <script>
 import i18n from "../../amr/i18n"
 import browser from "webextension-polyfill"
-import * as amrutils from "../../amr/utils"
+import { chapPath, darkText, getColor, mangaKey } from "../../shared/utils"
 import Flag from "./Flag"
-import { chapPath, darkText, getColor } from "../../shared/utils"
 
 export default {
     data() {
@@ -540,7 +539,12 @@ export default {
         languages() {
             let alllangs = this.manga.languages === undefined ? [] : this.manga.languages.split(",")
             return alllangs.filter(lang => {
-                let keylang = amrutils.mangaKey(this.manga.url, this.manga.mirror, lang)
+                let keylang = mangaKey({
+                    url: this.manga.url,
+                    mirror: this.manga.mirror,
+                    language: lang,
+                    rootState: this.$store
+                })
                 return this.$store.state.mangas.all.findIndex(m => m.key === keylang) === -1
             })
         },
@@ -591,7 +595,10 @@ export default {
         },
         // bookmarks for this group
         bookmarks: function () {
-            return this.$store.state.bookmarks.all.filter(bm => this.manga.key.indexOf(amrutils.mangaKey(bm.url)) >= 0)
+            return this.$store.state.bookmarks.all.filter(bm => {
+                const key = mangaKey({ url: bm.url, rootState: this.$store })
+                return this.manga.key.indexOf(key) >= 0
+            })
         }
     },
     methods: {
