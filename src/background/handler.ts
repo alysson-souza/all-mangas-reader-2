@@ -77,6 +77,7 @@ export class Handler {
                     }
                 } catch (e) {
                     this.logger.error(e)
+                    return undefined
                 }
             }
 

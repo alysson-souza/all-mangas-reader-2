@@ -236,6 +236,14 @@ export class HandleManga {
         // websites which provide a chapter_url regexp will have their chapters with a preload
         if (mir.chapter_url) {
             const parts = /\/(.*)\/(.*)/.exec(String(mir.chapter_url))
+            if (!parts) {
+                this.logger.error({
+                    message: "no parts are available from regex match",
+                    chapter_url: mir.chapter_url,
+                    regex: `/\\/(.*)\\/(.*)/`
+                })
+                return
+            }
             // @TODO second part is suppose to be options?
             const chaprx = new RegExp(parts[1], parts[2])
             if (!chaprx.test("/" + afterHostURL(url))) {

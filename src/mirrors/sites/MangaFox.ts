@@ -43,7 +43,7 @@ export class MangaFox extends BaseMirror implements MirrorImplementation {
 
     async getImageUrlFromPage(urlImage: string) {
         // loads the page containing the current scan
-        let doc = await this.mirrorHelper.loadPage(urlImage)
+        let doc = await this.mirrorHelper.loadPage(urlImage, { crossdomain: true })
         const $ = this.parseHtml(doc)
 
         const [first] = $("#dm5_key")
@@ -60,7 +60,6 @@ export class MangaFox extends BaseMirror implements MirrorImplementation {
             key: mkey
         }
 
-        console.log("LOADING JSON FROM " + chapfunurl)
         // get scan url (this function seems to work only within DM5, perhaps a control on Referer)
         const data = await this.mirrorHelper.loadJson(chapfunurl, {
             data: params,

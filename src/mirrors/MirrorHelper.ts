@@ -59,7 +59,15 @@ export class MirrorHelper {
         }
 
         const response = await fetch(url, config)
-        return response.json()
+
+        // Manually try to parse json as original method
+        const data = await response.text()
+
+        try {
+            return JSON.parse(data)
+        } catch (e) {
+            return data
+        }
     }
 
     private getConfig(options: LoadOptions) {
