@@ -17,7 +17,7 @@ export class MirrorLoader {
     }
 
     getAll() {
-        return Array.from(this.lookupMap)
+        return Array.from(this.lookupMap.values())
     }
 }
 

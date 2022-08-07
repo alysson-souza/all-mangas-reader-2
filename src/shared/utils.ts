@@ -1,4 +1,4 @@
-import { AppManga, AppStore, Bookmark, Category, Mirror } from "../types/common"
+import { AppManga, AppState, Bookmark, Category, Mirror } from "../types/common"
 import { AppLogger } from "./AppLogger"
 import { AppOptions } from "./OptionStorage"
 import { amrLanguages } from "../constants/language"
@@ -303,13 +303,13 @@ interface MangaKeyParams {
     mirror?: string
     language?: string
     shouldConcat?: boolean
-    rootState: AppStore
+    rootState: AppState
 }
 
 /**
  * Test if an url match an url pattern containing wildcards
  */
-export function matchDomain(str: string, rule: string, store: AppStore) {
+export function matchDomain(str: string, rule: string, store: AppState) {
     if (rule == "komga") {
         rule = new URL(store.state.options.komgaUrl).host
     }
@@ -322,7 +322,7 @@ export function matchDomain(str: string, rule: string, store: AppStore) {
 /** This will require rethink on how such common functionality depends on the root state... **/
 export function mangaKey({ url, mirror, shouldConcat, rootState }: MangaKeyParams) {
     if (!url) {
-        console.error(
+        console.info(
             "A manga key has been requested for undefined url, it will be melted in your database with other mangas with same issue, check the implementation of the mirror where your read this manga."
         )
         return "_no_key_" // should not happen !
@@ -350,7 +350,7 @@ export function bookmarkKey({
     rootState
 }: {
     bookmark: Pick<Bookmark, "chapUrl" | "mirror" | "scanUrl">
-    rootState: AppStore
+    rootState: AppState
 }) {
     const mgKey = mangaKey({ url: bookmark.chapUrl, mirror: bookmark.mirror, rootState })
     const scanKey = mangaKey({ url: bookmark.scanUrl, mirror: bookmark.mirror, rootState })

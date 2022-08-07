@@ -22,6 +22,7 @@ export interface Bookmark {
 }
 
 export type AppStore = Store<RootState>
+export type AppState = Pick<AppStore, "state">
 
 interface AbstractOptions {
     base_url?: string
