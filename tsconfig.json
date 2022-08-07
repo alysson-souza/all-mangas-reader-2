@@ -7,5 +7,7 @@
         "sourceMap": true,
         "allowSyntheticDefaultImports": true,
         "allowJs": true
-    }
+    },
+    "include": ["src", "index.d.ts"],
+    "exclude": ["node_modules", "**/*.spec.ts", "**/*.test.ts"]
 }

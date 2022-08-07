@@ -99,7 +99,7 @@ export interface Mirror {
     disabled?: boolean
 }
 
-interface CurrentPageInfo {
+export interface CurrentPageInfo {
     name: string
     currentMangaURL: string
     currentChapterURL: string
@@ -112,7 +112,7 @@ export interface ChapterData {
     title?: string
 }
 
-export type InfoResult = [url: string, name: string]
+export type InfoResult = [name: string, url: string]
 export interface MirrorImplementation extends Mirror {
     getMangaList(search?: string): Promise<InfoResult[]>
     getListChaps(urlManga: string): Promise<InfoResult[]>

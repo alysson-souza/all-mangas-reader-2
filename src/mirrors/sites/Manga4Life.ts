@@ -17,7 +17,7 @@ export class Manga4Life extends BaseMirror implements MirrorImplementation {
     chapter_url = /^\/read-online\/.+$/g
 
     async getMangaList(search) {
-        const response = await this.amrLoader.loadPage(`${this.home}/directory/`, {
+        const response = await this.mirrorHelper.loadPage(`${this.home}/directory/`, {
             nocache: true,
             preventimages: true
         })
@@ -35,7 +35,7 @@ export class Manga4Life extends BaseMirror implements MirrorImplementation {
     }
 
     async getListChaps(urlManga) {
-        const text = await this.amrLoader.loadPage(urlManga, { nocache: true, preventimages: true })
+        const text = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
         const res = []
 
         const regex = /vm\.Chapters = (.*?);/g
@@ -56,7 +56,7 @@ export class Manga4Life extends BaseMirror implements MirrorImplementation {
     }
 
     async getCurrentPageInfo(doc: string, curUrl: string) {
-        const title = this.parseHtml(doc, '.MainContainer a[href*="manga"]').first()
+        const title = this.queryHtml(doc, '.MainContainer a[href*="manga"]').first()
         return {
             name: title.text().trim().split("\n")[0].trim(),
             currentMangaURL: this.home + title.attr("href"),
@@ -66,7 +66,7 @@ export class Manga4Life extends BaseMirror implements MirrorImplementation {
 
     async getListImages(doc: string, curUrl: string) {
         let fullUrl = curUrl.replace("-page-1.html", ".html")
-        const text = await this.amrLoader.loadPage(fullUrl, { nocache: true })
+        const text = await this.mirrorHelper.loadPage(fullUrl, { nocache: true })
         let regex, matches
 
         regex = /vm\.CurChapter =(.*?);/g
@@ -127,6 +127,6 @@ export class Manga4Life extends BaseMirror implements MirrorImplementation {
     }
 
     isCurrentPageAChapterPage(doc: string) {
-        return this.parseHtml(doc, "div.ImageGallery").length > 0
+        return this.queryHtml(doc, "div.ImageGallery").length > 0
     }
 }

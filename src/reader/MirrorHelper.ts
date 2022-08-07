@@ -20,6 +20,10 @@ interface LoadOptions {
     crossdomain?: boolean
 
     contentType?: string
+
+    referer?: string
+
+    headers?: { [k: string]: string }
 }
 
 type StateOptions = Record<string, string | undefined | null | number>
@@ -70,7 +74,7 @@ export class MirrorHelper {
     }
 
     private getDefaultHeaders(options: LoadOptions, defaults: Record<string, string> = {}): Record<string, string> {
-        const header = { ...defaults }
+        const header = { ...defaults, ...options.headers }
 
         if (options.nocontenttype) {
             delete header["Content-Type"]
@@ -79,6 +83,10 @@ export class MirrorHelper {
         return header
     }
 
+    /**
+     * @TODO Don't think we want to call this or use this anymore
+     * @deprecated
+     **/
     getVariable(variableName: string, doc: Document) {
         const textDom = doc.getElementById("__amr_text_dom__").innerText
         return this.getVariableFromScript(variableName, textDom)
@@ -86,8 +94,9 @@ export class MirrorHelper {
 
     /**
      * No idea what magic is this...
+     * @TODO Need to get rid of this somehow
      */
-    private getVariableFromScript = function (varname: string, sc: string) {
+    public getVariableFromScript = function (varname: string, sc: string) {
         let res = undefined
         let rx = new RegExp(
             "(var|let|const)\\s+" + varname + "\\s*=\\s*([0-9]+|\\\"|\\'|\\{|\\[|JSON\\s*\\.\\s*parse\\()",

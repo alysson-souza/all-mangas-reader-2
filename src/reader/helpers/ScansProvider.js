@@ -104,14 +104,26 @@ export const ScansLoader = class {
 class ScanLoader {
     /** Build the scan initial state */
     constructor(url) {
-        this.url =
-            url /* url of the image, not necessarily the url of the picture but the one used to retrieve the picture */
-        this.loading = true /* is currently loading */
-        this.error = false /* is the scan rendering error */
-        this.doublepage = false /* is the scan a double page */
-        this.thinscan = false /* is the scan super thin (height > 3 * width) */
-        this.scan = document.createElement("img") /* Image containing the loaded scan, will be cloned to be displayed */
-        this.retried = false /* Has an auto retry of errors been attempted */
+        /* url of the image, not necessarily the url of the picture but the one used to retrieve the picture */
+        this.url = url
+
+        /* is currently loading */
+        this.loading = true
+
+        /** is the scan rendering error **/
+        this.error = false
+
+        /** is the scan a double page **/
+        this.doublepage = false
+
+        /** is the scan super thin (height > 3 * width) **/
+        this.thinscan = false
+
+        /** Image containing the loaded scan, will be cloned to be displayed **/
+        this.scan = document.createElement("img")
+
+        /* Has an auto retry of errors been attempted */
+        this.retried = false
     }
     /** Loads the scan */
     load() {
