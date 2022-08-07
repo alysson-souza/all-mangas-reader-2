@@ -475,7 +475,7 @@ export default {
             return this.allMangas.reduce(
                 (mirrors, manga) => {
                     let name = manga.mirror
-                    if (!mirrors.includes(name)) {
+                    if (name && !mirrors.includes(name)) {
                         mirrors.push(name)
                     }
                     return mirrors

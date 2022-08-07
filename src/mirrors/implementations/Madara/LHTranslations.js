@@ -12,7 +12,8 @@ if (typeof registerMangaObject === "function") {
         abstract_options: {
             search_url: "https://lhtranslation.net/",
             chapter_list_ajax: true,
-            isekai_chapter_url: true
+            isekai_chapter_url: true,
+            chapters_a_sel: `li.wp-manga-chapter > a[href*="lhtranslation.net"]`
         }
         /*
         chapter_url: /\/read-.+$/g,

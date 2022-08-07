@@ -1,3 +1,29 @@
+### V2.4.8
+  Mirror Fixes:
+    * Leviatan Scans - Fixed issue getting series name
+    * Mangahub - Fixed issue getting images
+    * Read Manga - Domain Change
+    * Reset Scans - Chapter url pattern change
+    * LHTranslation - Fix chapter list
+    * Luminous Scans - Removed timestamps from chapter list
+    * Mangadex - Increased the max chapter count to handle larger lists
+    * Manga Sushi - Domain Change
+
+  Disabled Mirrors:
+    * Arang Scans
+
+  Changes:
+    * Added code to allow us to customize any request header, even normally protected ones    
+### V2.4.7
+  Mirror Fixes:
+    * Zero Scans - Changed site software
+    * MM Scans - Changed chapter list fetch
+    * Manga Kawii - Domain changed (Credit: @mmorain)
+    * Scan FR - Domain changed (Credit: @mmorain & @JiPai)
+    * Batoto - Changed how we get images
+    * Comic Kiba - Changed chapter list fetch
+    * Komikcast - Domain changed
+    
 ### V2.4.5
   Changes: (All changes credit @JiPai)
     * Added option to diplay all series on single page

@@ -12,6 +12,7 @@ globalThis["Madara"] = function (options) {
         chapter_list_ajax: false,
         chapter_list_ajax_selctor: "manga",
         chapter_list_ajax_selctor_type: "variable",
+        title_selector: "div.post-title > h1",
         img_src: "src",
         secondary_img_src: "data-src",
         sort_chapters: false,
@@ -136,7 +137,7 @@ globalThis["Madara"] = function (options) {
             let docmg = await amr.loadPage(mangaurl)
             mgname = $("div.post-title > h3", docmg).text().trim()
             if (mgname === undefined || mgname.trim() === "") {
-                mgname = $("div.post-title > h1", docmg).text().trim()
+                mgname = $(this.options.title_selector, docmg).text().trim()
             }
         }
         return {

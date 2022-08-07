@@ -10,7 +10,9 @@ if (typeof registerMangaObject === "function") {
         abstract: "Madara",
         abstract_options: {
             search_url: "https://mm-scans.org/",
-            chapter_list_ajax: true
+            chapter_list_ajax: true,
+            isekai_chapter_url: true,
+            chapters_a_sel: "li.chapter-li > a"
         }
     })
 }
