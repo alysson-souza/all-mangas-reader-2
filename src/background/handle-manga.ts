@@ -357,8 +357,9 @@ export class HandleManga {
                     return globalThis["__armreader__"] === undefined
                 }
             })
-            .then(async result => {
-                if (result[0]) {
+            .then(async ([injectResult]) => {
+                if (injectResult.result === true) {
+                    // Reader is not defined, load it
                     return this.matchUrlAndLoadScripts(url, tabId)
                 }
                 return browser.scripting.executeScript({

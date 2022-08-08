@@ -1,7 +1,7 @@
 import { BaseMirror } from "./BaseMirror"
 import { MirrorImplementation } from "../../types/common"
 import { MirrorHelper } from "../MirrorHelper"
-import browser from "webextension-polyfill"
+import MangaHubIcon from "../icons/mangahub-optimized.png"
 
 export class MangaHub extends BaseMirror implements MirrorImplementation {
     constructor(amrLoader: MirrorHelper) {
@@ -10,7 +10,7 @@ export class MangaHub extends BaseMirror implements MirrorImplementation {
 
     mirrorName = "Manga Hub"
     canListFullMangas = false
-    mirrorIcon = "mangahub.png"
+    mirrorIcon = MangaHubIcon
     languages = "en"
     domains = ["mangahub.io"]
     home = "https://mangahub.io/"

@@ -1198,7 +1198,6 @@ const mutations = {
      * @param {*} param1
      */
     updateMangaLastChapter(state, { key, obj }) {
-        console.log("from site:", obj.fromSite)
         let mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.lastChapterReadURL = obj.lastChapterReadURL
