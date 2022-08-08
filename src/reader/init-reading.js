@@ -61,12 +61,6 @@ if (globalThis["__armreader__"] === undefined) {
         }
         globalThis["__current_chapterloader__"] = chap // keep a reference to delete it later
     }
-    /**
-     * This function is called when an abstraction is loaded
-     */
-    globalThis["registerAbstractImplementation"] = function (mirrorName) {
-        // do nothing there, the abstract object is loaded on the globalThis and referenced by its name
-    }
 }
 
 /**
