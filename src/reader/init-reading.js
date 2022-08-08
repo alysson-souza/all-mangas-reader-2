@@ -14,7 +14,6 @@ import AmrReader from "./AmrReader.vue"
 import browser from "webextension-polyfill"
 import options from "./state/options"
 import ChapterLoader from "./helpers/ChapterLoader"
-import store from "../store"
 
 // Forves embedded svg font for reader, we use the cdn based one for the popup still
 vuetifyOptions.icons.iconfont = "mdiSvg"
@@ -24,7 +23,6 @@ let ourCss = ["https://fonts.googleapis.com/css?family=Roboto:300,400,500,700"]
 if (globalThis["__armreader__"] === undefined) {
     // avoid loading script twice
     globalThis["__armreader__"] = {}
-    globalThis["AMR_STORE"] = store
 
     globalThis["onPushState"] = async function () {
         //Do load manga only if it's not AMR that triggered the pushState
