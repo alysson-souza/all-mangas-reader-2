@@ -306,17 +306,21 @@ interface MangaKeyParams {
     rootState: AppState
 }
 
+export const matchDomainRule = ({ domain, urlHostname }: { domain: string; urlHostname: string }) => {
+    return new RegExp("^" + domain.replace(/\*/g, ".*") + "$").test(urlHostname)
+}
+
 /**
  * Test if an url match an url pattern containing wildcards
  */
-export function matchDomain(str: string, rule: string, store: AppState) {
-    if (rule == "komga") {
-        rule = new URL(store.state.options.komgaUrl).host
+export function matchDomain(urlHostname: string, domain: string, store: AppState) {
+    if (domain == "komga") {
+        domain = new URL(store.state.options.komgaUrl).host
     }
-    if (rule == "tachidesk") {
-        rule = new URL(store.state.options.tachideskUrl).host
+    if (domain == "tachidesk") {
+        domain = new URL(store.state.options.tachideskUrl).host
     }
-    return new RegExp("^" + rule.replace(/\*/g, ".*") + "$").test(str)
+    return matchDomainRule({ domain, urlHostname })
 }
 
 /** This will require rethink on how such common functionality depends on the root state... **/
@@ -336,7 +340,7 @@ export function mangaKey({ url, mirror, shouldConcat, rootState }: MangaKeyParam
     } else {
         const host = new URL(url).host
         // look for mirror implementation matching this root domain
-        let mirror = mirrors.find(mir => mir.domains.some(ws => matchDomain(host, ws, rootState)))
+        let mirror = mirrors.find(mir => mir.domains.some(domain => matchDomain(host, domain, rootState)))
         if (mirror) {
             mstr = safename(mirror.mirrorName)
         }

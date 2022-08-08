@@ -19,9 +19,6 @@ import store from "../store"
 // Forves embedded svg font for reader, we use the cdn based one for the popup still
 vuetifyOptions.icons.iconfont = "mdiSvg"
 
-import { MirrorHelper } from "../mirrors/MirrorHelper"
-globalThis["amr"] = globalThis["amr"] || new MirrorHelper(store.state.options)
-
 let ourCss = ["https://fonts.googleapis.com/css?family=Roboto:300,400,500,700"]
 
 if (globalThis["__armreader__"] === undefined) {

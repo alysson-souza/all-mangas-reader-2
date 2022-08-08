@@ -1,6 +1,7 @@
 import browser from "webextension-polyfill"
 import * as utils from "../../amr/utils"
 import { amrLanguages } from "../../constants/language"
+import { matchDomainRule } from "../../shared/utils"
 
 const tests = [
     {
@@ -258,9 +259,9 @@ const tests = [
                     let lstko = []
                     for (let res of list) {
                         let found = false
-                        let host = new URL(res.value).host
-                        for (let u of mirror.domains) {
-                            if (utils.matchDomain(host, u)) {
+                        const urlHostname = new URL(res.value).host
+                        for (let domain of mirror.domains) {
+                            if (matchDomainRule({ urlHostname, domain })) {
                                 found = true
                                 nbok++
                                 break

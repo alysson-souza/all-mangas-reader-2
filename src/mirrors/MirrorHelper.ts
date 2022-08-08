@@ -21,8 +21,6 @@ interface LoadOptions {
 
     contentType?: string
 
-    referer?: string
-
     headers?: { [k: string]: string }
 
     credentials?: RequestCredentials

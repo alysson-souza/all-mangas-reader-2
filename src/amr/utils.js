@@ -30,34 +30,6 @@ export function formatMgName(name) {
 }
 
 /**
- * Test if an url match an url pattern containing wildcards
- * @param {*} str a domain name
- * @param {*} rule
- */
-export function matchDomain(str, rule) {
-    if (rule == "komga") {
-        rule = new URL(AMR_STORE.state.options.komgaUrl).host
-    }
-    if (rule == "tachidesk") {
-        rule = new URL(AMR_STORE.state.options.tachideskUrl).host
-    }
-    let doMatch = new RegExp("^" + rule.replace(/\*/g, ".*") + "$").test(str)
-    return doMatch
-}
-
-/**
- * Logs a message if debug mode
- */
-export function debug(message) {
-    if (globalThis["AMR_STORE"].state.options.debug === 1) {
-        let t = new Date()
-        console.log(
-            t.getHours() + ":" + t.getMinutes() + ":" + t.getSeconds() + " " + t.getMilliseconds() + ": " + message
-        )
-    }
-}
-
-/**
  * Tells in human language how much time has been spent since this ts
  * @param {*} ts
  */
@@ -74,52 +46,6 @@ export function lasttime(diffts) {
     diff = Math.floor(diff / 7)
     return i18n("options_weeks", diff) //TODO months , years ?  --> not needed in AMR yet
 }
-
-/**
- * List of supported languages in AMR, some are not traditional language codes
- * Multiple codes can match a same language, in this case, the entry is a list of
- * codes matching a language
- * Each code must have a css rule in flags.css to display the right flag for the language code
- * and a message code to display the language name
- */
-export const languages = [
-    ["ar", "sa"],
-    "bd",
-    "bg",
-    "ct",
-    "cn",
-    "hk",
-    "cz",
-    "dk",
-    "nl",
-    ["en", "gb"],
-    "ph",
-    "fi",
-    "fr",
-    "de",
-    "gr",
-    "hu",
-    "id",
-    "it",
-    "jp",
-    "kr",
-    "my",
-    "mn",
-    "ir",
-    "pl",
-    "br",
-    "pt",
-    "ro",
-    "ru",
-    "rs",
-    "es",
-    "mx",
-    "se",
-    "th",
-    "tr",
-    "ua",
-    "vn"
-]
 
 /**
  * Convert language to country

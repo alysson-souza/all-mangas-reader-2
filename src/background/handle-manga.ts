@@ -241,6 +241,7 @@ export class HandleManga {
             const parts = /\/(.*)\/(.*)/.exec(String(mir.chapter_url))
             if (!parts) {
                 this.logger.error({
+                    url: mir.chapter_url,
                     message: "no parts are available from regex match",
                     chapter_url: String(mir.chapter_url),
                     regex: `/\\/(.*)\\/(.*)/`
@@ -328,12 +329,11 @@ export class HandleManga {
     }
 
     getMir(url): Mirror | null {
-        const host = new URL(url).host
+        const urlHostname = new URL(url).host
         for (let mir of this.store.state.mirrors.all) {
             if (mir.activated && mir.domains && !mir.disabled) {
-                let wss = mir.domains
-                for (let u of wss) {
-                    if (matchDomain(host, u, this.store)) {
+                for (let domain of mir.domains) {
+                    if (matchDomain(urlHostname, domain, this.store)) {
                         return mir
                     }
                 }

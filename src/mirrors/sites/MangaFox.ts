@@ -47,25 +47,29 @@ export class MangaFox extends BaseMirror implements MirrorImplementation {
         const $ = this.parseHtml(doc)
 
         const [first] = $("#dm5_key")
-        const mkey = first ? $(first).val() : ""
+        const mkey = first ? ($(first).val() as string) : ""
 
         let curl = urlImage.substr(0, urlImage.lastIndexOf("/") + 1),
             cid = this.getVariable({ doc, variableName: "chapterid" }),
             chapfunurl = curl + "chapterfun.ashx", // url to retrieve scan url
             curpage = this.getVariable({ doc, variableName: "imagepage" })
-        let params = {
-            // Build parameters for the request
+
+        const queryParams = new URLSearchParams({
             cid: cid,
             page: curpage,
             key: mkey
-        }
+        })
 
         // get scan url (this function seems to work only within DM5, perhaps a control on Referer)
-        const data = await this.mirrorHelper.loadJson(chapfunurl, {
-            data: params,
+        const url = `${chapfunurl}?${queryParams}`
+        const data = await this.mirrorHelper.loadPage(url, {
             nocontenttype: true,
-            headers: { "X-Requested-With": "XMLHttpRequest" },
-            referer: urlImage
+            headers: {
+                "x-cookie": "isAdult=1",
+                "x-referer": urlImage,
+                "X-Requested-With": "XMLHttpRequest",
+                Referer: urlImage
+            }
         })
         // the retrieved data is packed through an obfuscator
         // dm5 is unpacking the images url through an eval, we can't do that in AMR due to CSP

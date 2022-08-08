@@ -756,9 +756,9 @@ import browser from "webextension-polyfill"
 import amrUpdater from "../../pages/amr-updater"
 import Flag from "./Flag"
 import Mangadex from "./Options.Mangadex.vue"
-import * as amrutils from "../../amr/utils"
 import { computeColorLight } from "../../shared/utils"
 import { THINSCAN } from "../../shared/Options"
+import { amrLanguages } from "../../constants/language"
 
 /**
  * Converters to format options in db and in page (ex : booleans are store as 0:1 in db)
@@ -963,7 +963,7 @@ export default {
         },
         /** Return list of all languages supported in AMR */
         alllangs() {
-            return amrutils.languages.map(el => {
+            return amrLanguages.map(el => {
                 return {
                     flag: Array.isArray(el) ? el[0] : el,
                     languages: el

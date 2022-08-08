@@ -26,6 +26,8 @@ let syncManager
 // actually have specific meaning, does not get saved to db
 const ABSTRACT_MANGA_MSG = "abstract_manga"
 
+const logger = getAppLogger({ debug: 1 })
+
 /**
  *  initial state of the mangas module
  */
@@ -395,7 +397,6 @@ const actions = {
             console.error(e)
         }
 
-        this.logger.debug("saving new manga to database")
         dispatch("addManga", { manga: mg, fromSync: message.isSync })
         // update native language categories
         dispatch("updateLanguageCategories")
@@ -423,7 +424,7 @@ const actions = {
             console.error("readManga of an unlisted manga --> create it")
             await dispatch("createUnlistedManga", message)
             // amrUpdater.refreshBadgeAndIcon()
-            return false
+            return
         }
 
         try {
@@ -436,27 +437,18 @@ const actions = {
 
         // refresh badge
         // amrUpdater.refreshBadgeAndIcon()
-        return mg
     },
     /**
      * Get list of chapters for a manga
      */
     async getMangaListOfChapters({ dispatch, commit, getters, rootState }, manga) {
-        this.logger.debug("getMangaListOfChapters : get implementation of " + manga.mirror)
-
         // @TODO can this be injected somehow?
-        const mirrorLoader = getMirrorLoader(getMirrorHelper(rootState.state.options))
+        const mirrorLoader = getMirrorLoader(getMirrorHelper(rootState.options))
         const impl = await mirrorLoader.getImpl(manga.mirror)
         if (!impl || impl.disabled) {
             // await dispatch("disabledManga", manga)
             throw new Error(`Failed to get implementation for mirror ${manga.mirror}`)
         }
-        this.logger.debug(
-            "getMangaListOfChapters : implementation found, get list of chapters for manga " +
-                manga.name +
-                " key " +
-                manga.key
-        )
         return impl.getListChaps(manga.url)
     },
 
@@ -511,7 +503,11 @@ const actions = {
                         if (listChaps !== undefined && !Array.isArray(listChaps)) {
                             if (mg.language === undefined) {
                                 // should not happen there (the case is handled for new mangas but not here when manga already exists)
-                                reject()
+                                reject(
+                                    new Error(
+                                        "Mirror language is undefined. the case is handled for new mangas but not here when manga already exists"
+                                    )
+                                )
                             }
                             if (listChaps[mg.language] && listChaps[mg.language].length > 0) {
                                 // update list of existing languages
@@ -520,7 +516,7 @@ const actions = {
                                 // set current list chaps to the right one
                                 listChaps = listChaps[mg.language]
                             } else {
-                                this.logger.debug(
+                                logger.debug(
                                     "required language " +
                                         mg.language +
                                         " does not exist in resulting list of chapters for manga " +
@@ -551,7 +547,7 @@ const actions = {
                         }
                         resolve()
                     } catch (e) {
-                        reject()
+                        reject(e)
                     }
                 } else {
                     resolve()
@@ -579,7 +575,7 @@ const actions = {
             throw new Error("Refreshing " + mg.key + " has been timeout... seems unreachable...")
         }, 60000)
 
-        this.logger.debug("waiting for manga list of chapters for " + mg.name + " on " + mg.mirror)
+        logger.debug("waiting for manga list of chapters for " + mg.name + " on " + mg.mirror)
         let listChaps = await dispatch("getMangaListOfChapters", mg)
         clearTimeout(timeOutRefresh)
 
@@ -621,7 +617,7 @@ const actions = {
             throw ABSTRACT_MANGA_MSG
         }
 
-        this.logger.debug(
+        logger.debug(
             "chapters in multiple languages found for " +
                 mg.name +
                 " on " +
@@ -637,7 +633,7 @@ const actions = {
             return listChaps[mg.language]
         }
 
-        this.logger.debug(
+        logger.debug(
             "required language " +
                 mg.language +
                 " does not exist in resulting list of chapters. Existing languages are : " +
@@ -673,14 +669,14 @@ const actions = {
 
         const oldLastChap = typeof mg.listChaps[0] === "object" ? mg.listChaps[0][1] : undefined
 
-        this.logger.debug(listChaps.length + " chapters found for " + mg.name + " on " + mg.mirror)
+        logger.debug(listChaps.length + " chapters found for " + mg.name + " on " + mg.mirror)
         commit("updateMangaListChaps", { key: mg.key, listChaps: listChaps })
 
         const newLastChap = mg.listChaps[0][1]
 
         if (newLastChap !== oldLastChap && oldLastChap !== undefined) {
             if (!fromSync && !message.isSync) {
-                this.notifications.notifyNewChapter(mg)
+                getNotifications({ state: rootState }).notifyNewChapter(mg)
             }
             commit("updateMangaLastChapTime", { key: mg.key })
         }
@@ -705,7 +701,7 @@ const actions = {
             return
         }
 
-        this.logger.debug(
+        logger.debug(
             "Manga " +
                 mg.name +
                 " on " +
@@ -719,7 +715,7 @@ const actions = {
         const probable = findProbableChapter(mg.lastChapterReadURL, mg.listChaps)
         if (probable !== undefined) {
             const [name, url] = probable
-            this.logger.debug(`Found probable chapter : ${name} : ${url}`)
+            logger.debug(`Found probable chapter : ${name} : ${url}`)
             commit("updateMangaLastChapter", {
                 key: mg.key,
                 obj: {
@@ -743,7 +739,7 @@ const actions = {
             }).catch(e => this.logger(e))
         }
 
-        this.logger.debug("No list entry or multiple list entries match the known last chapter. Reset to first chapter")
+        logger.debug("No list entry or multiple list entries match the known last chapter. Reset to first chapter")
         commit("updateMangaLastChapter", {
             key: mg.key,
             obj: {
@@ -774,7 +770,7 @@ const actions = {
         }
         if (isConverting) timeout = 60 * 1000
         if (timeout > 0) {
-            this.logger.debug("Skipped chapter lists update")
+            logger.debug("Skipped chapter lists update")
             setTimeout(() => {
                 actions.updateChaptersLists(
                     { dispatch, commit, getters, state, rootState },
@@ -784,7 +780,7 @@ const actions = {
             return
         }
         dispatch("setOption", { key: "isUpdatingChapterLists", value: 1 }) // Set watcher
-        this.logger.debug("Starting chapter lists update")
+        logger.debug("Starting chapter lists update")
         let tsstopspin, tsresetupdating
 
         tsresetupdating = setTimeout(
@@ -844,19 +840,19 @@ const actions = {
             return () =>
                 new Promise(async resolve => {
                     for (let seriesUpdate of list) {
-                        await seriesUpdate().catch(this.logger.debug)
+                        await seriesUpdate().catch(logger.debug)
                     }
                     resolve()
                 })
         })
 
-        await Promise.all(mirrorTasks2.map(t => t())).catch(this.logger.debug)
+        await Promise.all(mirrorTasks2.map(t => t())).catch(logger.debug)
         dispatch("setOption", { key: "isUpdatingChapterLists", value: 0 }) // Unset watcher when done
 
         if (tsresetupdating) {
             clearTimeout(tsresetupdating)
         }
-        this.logger.debug("Done updating chapter lists")
+        logger.debug("Done updating chapter lists")
         if (rootState.options.refreshspin === 1) {
             //stop the spinning
             iconHelper.stopSpinning()
@@ -957,7 +953,7 @@ const actions = {
      * @param {*} param0
      */
     importSamples({ dispatch }) {
-        this.logger.debug("Importing samples manga in AMR (" + samples.length + " mangas to import)")
+        logger.debug("Importing samples manga in AMR (" + samples.length + " mangas to import)")
         for (let sample of samples) {
             sample.auto = true
             dispatch("readManga", sample)
@@ -1347,10 +1343,6 @@ const mutations = {
 }
 
 export default {
-    created() {
-        this.notifications = getNotifications(this.$store)
-        this.logger = getAppLogger(this.store.state.options)
-    },
     state,
     getters,
     actions,
