@@ -787,13 +787,14 @@ const actions = {
             () => dispatch("setOption", { key: "isUpdatingChapterLists", value: 0 }),
             1000 * 60 * 10
         ) // Reset this after 10 minutes
-        if (rootState.options.refreshspin === 1) {
-            // spin the badge
-            iconHelper.spinIcon()
-            tsstopspin = setTimeout(() => {
-                iconHelper.stopSpinning()
-            }, 1000 * 60 * 2) // stop spinning after two minutes if any error occured
-        }
+        // @TODO fix iconHelper
+        // if (rootState.options.refreshspin === 1) {
+        //     // spin the badge
+        //     iconHelper.spinIcon()
+        //     tsstopspin = setTimeout(() => {
+        //         iconHelper.stopSpinning()
+        //     }, 1000 * 60 * 2) // stop spinning after two minutes if any error occured
+        // }
 
         // update last update ts
         dispatch("setOption", { key: "lastChaptersUpdate", value: Date.now() })
@@ -853,13 +854,14 @@ const actions = {
             clearTimeout(tsresetupdating)
         }
         logger.debug("Done updating chapter lists")
-        if (rootState.options.refreshspin === 1) {
-            //stop the spinning
-            iconHelper.stopSpinning()
-            if (tsstopspin) {
-                clearTimeout(tsstopspin)
-            }
-        }
+        // @TODO fix iconHelper
+        // if (rootState.options.refreshspin === 1) {
+        //     //stop the spinning
+        //     iconHelper.stopSpinning()
+        //     if (tsstopspin) {
+        //         clearTimeout(tsstopspin)
+        //     }
+        // }
     },
 
     /**
@@ -918,14 +920,14 @@ const actions = {
      * @param {{ action: string, mangas: { url: string, mirror: any, language: any }[]}} message
      */
     async refreshMangas({ dispatch }, { manga }) {
-        iconHelper.spinIcon()
+        // iconHelper.spinIcon()
         try {
             await dispatch("refreshLastChapters", manga)
             await storedb.storeManga(manga)
         } catch (e) {
             console.error(e)
         }
-        iconHelper.stopSpinning()
+        // iconHelper.stopSpinning()
     },
     /**
      * Given its key, deletes a manga from reading list

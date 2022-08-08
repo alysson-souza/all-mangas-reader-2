@@ -154,8 +154,11 @@ export class IconHelper {
             if (this.store.state.options.displayzero === 1) {
                 this.updateBadge(nbnew)
             } else {
-                if (nbnew == 0) this.resetBadge()
-                else this.updateBadge(nbnew)
+                if (nbnew == 0) {
+                    this.resetBadge()
+                } else {
+                    this.updateBadge(nbnew)
+                }
             }
         }
     }
@@ -166,26 +169,5 @@ export class IconHelper {
      */
     ease(x) {
         return (1 - Math.sin(Math.PI / 2 + x * Math.PI)) / 2
-    }
-
-    /**
-     * Refresh badge and icon
-     */
-    refreshBadgeAndIcon() {
-        let nbnew = this.store.getters.nbNewMangas
-        if (this.store.state.options.nocount == 1) {
-            this.resetBadge() // remove badge
-            // display a grey badge if no new mangas
-            if (nbnew > 0) this.resetIcon()
-            else this.setBWIcon()
-        } else {
-            this.resetIcon()
-            if (this.store.state.options.displayzero === 1) {
-                this.updateBadge(nbnew)
-            } else {
-                if (nbnew == 0) this.resetBadge()
-                else this.updateBadge(nbnew)
-            }
-        }
     }
 }
