@@ -235,15 +235,19 @@ export class HandleManga {
             mir: mir.domains,
             chapter: mir.chapter_url
         })
+
+        // Store it as variable, vuex object String() can cause it to be [object Object]
+        const chapterUrl = mir.chapter_url
+
         // check if we need to load preload (it could be annoying to have preload on each pages of the website)
         // websites which provide a chapter_url regexp will have their chapters with a preload
-        if (mir.chapter_url) {
-            const parts = /\/(.*)\/(.*)/.exec(String(mir.chapter_url))
+        if (chapterUrl) {
+            const parts = /\/(.*)\/(.*)/.exec(String(chapterUrl))
             if (!parts) {
                 this.logger.error({
                     url: mir.chapter_url,
                     message: "no parts are available from regex match",
-                    chapter_url: String(mir.chapter_url),
+                    chapter_url: String(chapterUrl),
                     regex: `/\\/(.*)\\/(.*)/`
                 })
                 return
