@@ -16,7 +16,7 @@ export class HandleManga {
         private optionStorage: OptionStorage
     ) {}
 
-    async handle(message: { key: string; action: string; url: string; mirror?: string }): Promise<unknown> {
+    async handle(message: { key: string; action: string; url: string; mirror?: string }, sender): Promise<unknown> {
         switch (message.action) {
             case "mangaExists": {
                 const key = this.getMangaKey(message)
@@ -59,7 +59,7 @@ export class HandleManga {
                 return this.store.dispatch("deleteManga", { key: message.key })
             //returns boolean telling if url is a chapter page, infos from page and list of images for prefetch of next chapter in content script
             case "getChapterData":
-                return this.getChapterData(message)
+                return this.getChapterData(message, sender)
             case "getImageUrlFromPageUrl":
                 return this.getImageUrlFromPageUrl(message)
             case "markMangaReadTop":
@@ -374,9 +374,8 @@ export class HandleManga {
     }
     /**
      * Return the list of images urls from a chapter
-     * @param {*} message
      */
-    async getChapterData(message) {
+    async getChapterData(message, sender) {
         return fetch(message.url)
             .then(async resp => {
                 let htmlDocument = await resp.text()
@@ -392,7 +391,7 @@ export class HandleManga {
                         infos = await impl.getCurrentPageInfo(htmlDocument, message.url)
 
                         // retrieve images to load
-                        imagesUrl = await impl.getListImages(htmlDocument, message.url)
+                        imagesUrl = await impl.getListImages(htmlDocument, message.url, sender)
                     } catch (e) {
                         console.error("Error while loading infos and images from url " + message.url)
                         console.error(e)

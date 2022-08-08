@@ -15,7 +15,7 @@ interface LoadOptions {
     /** valid jQuery ajax dataType **/
     dataType?: boolean
     /** data: object to send in accordance with its dataType **/
-    data?: Record<string, unknown>
+    data?: Record<string, unknown> | string
 
     crossdomain?: boolean
 

@@ -113,11 +113,22 @@ export interface ChapterData {
 }
 
 export type InfoResult = [name: string, url: string]
+
+interface Sender {
+    tab: { id: number }
+}
+
+export interface ScriptJsonInject {
+    target: { tabId: number }
+    url: string
+    config?: RequestInit
+}
+
 export interface MirrorImplementation extends Mirror {
     getMangaList(search?: string): Promise<InfoResult[]>
     getListChaps(urlManga: string): Promise<InfoResult[]>
     getCurrentPageInfo(doc: string, curUrl: string): Promise<CurrentPageInfo>
-    getListImages(doc: string, curUrl: string): Promise<string[]>
+    getListImages(doc: string, curUrl: string, sender: Sender): Promise<string[]>
     getImageUrlFromPage(urlImage: string): Promise<string>
     isCurrentPageAChapterPage(doc: string, curUrl: string): boolean
 }

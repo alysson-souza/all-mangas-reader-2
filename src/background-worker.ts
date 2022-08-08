@@ -133,28 +133,5 @@ const init = async () => {
             logger.error(err)
         })
     })
-
-    // @TODO replace with v3 compatible version, verify rules_1.json works
-    // function customRequestHeaders(event) {
-    //     let custom = event.requestHeaders.filter(h => h.name.toLowerCase().startsWith("x-amr-change-"))
-    //
-    //     custom = custom.map(h => {
-    //         h.name = h.name.substr(13)
-    //         return h
-    //     })
-    //
-    //     let out = event.requestHeaders
-    //         .filter(s => !s.name.startsWith("x-amr-change-"))
-    //         .filter(h => !custom.find(h2 => h["name"] == h2["name"]))
-    //         .concat(custom)
-    //
-    //     return { requestHeaders: out }
-    // }
-    //
-    // browser.webRequest.onBeforeSendHeaders.addListener(customRequestHeaders, { urls: ["https://*/*", "http://*/*"] }, [
-    //     "blocking",
-    //     "requestHeaders",
-    //     "extraHeaders"
-    // ])
 }
 init().then(() => console.debug("completed background init"))
