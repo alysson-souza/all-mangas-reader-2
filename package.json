@@ -21,6 +21,7 @@
         "prepare": "husky install"
     },
     "dependencies": {
+        "@types/offscreencanvas": "^2019.7.0",
         "@zip.js/zip.js": "^2.3.15",
         "axios": "^0.21.0",
         "buffer": "^6.0.3",

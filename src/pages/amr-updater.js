@@ -1,14 +1,17 @@
-import { IconHelper } from "../amr/icon-helper"
-import Axios from "axios"
-import store from "../store"
-
 /**
  * This class is used to update periodically manga chapters lists and mirrors list
  */
-export class Updater {
-    constructor(store) {
+export class AmrUpdater {
+    /**
+     *
+     * @param store {AppStore}
+     * @param optionStorage {OptionStorage}
+     * @param iconHelper {IconHelper}
+     */
+    constructor(store, optionStorage, iconHelper) {
+        this.optionStorage = optionStorage
         this.store = store
-        this.iconHelper = new IconHelper(store)
+        this.iconHelper = iconHelper
     }
 
     /**
@@ -50,33 +53,32 @@ export class Updater {
      * Check latest version of stable and beta and keep it in localStorage
      */
     async checkLatestPublishedVersion() {
-        let vstable = await this.getVersionFromChromeUpdateFile(
-                "https://release.allmangasreader.com/update/chrome.xml"
-            ),
-            vbeta = await this.getVersionFromChromeUpdateFile(
-                "https://release.allmangasreader.com/update/chrome-beta.xml"
-            )
-        if (vstable) {
-            localStorage.latestStableVersion = vstable.version
-            //localStorage.latestStableUrl = vstable.url
+        const baseUrl = "https://release.allmangasreader.com/update"
+        const [stable, beta] = await Promise.all([
+            this.getVersionFromChromeUpdateFile(`${baseUrl}/chrome.xml`),
+            this.getVersionFromChromeUpdateFile(`${baseUrl}/chrome-beta.xml`)
+        ])
+
+        if (stable) {
+            this.optionStorage.setKey("latestStableVersion", stable.version)
         }
-        if (vbeta) {
-            localStorage.latestBetaVersion = vbeta.version
-            //localStorage.latestBetaUrl = vbeta.url
+        if (beta) {
+            this.optionStorage.setKey("latestBetaVersion", beta.version)
         }
     }
 
     async getVersionFromChromeUpdateFile(url) {
-        let config = {
+        const res = await fetch(url, {
             headers: {
                 "Cache-Control": "no-cache"
             }
-        }
-        let res = await Axios.get(url, config).catch(e => {
-            console.error("Failed to load " + url)
-            console.error(e)
-            return e
         })
+            .then(r => r.text())
+            .catch(e => {
+                console.error("Failed to load " + url)
+                console.error(e)
+            })
+
         if (res && res.data) {
             const regex = /codebase\=\'(.[^\']*)\'(\s+)version\=\'(.[^\']*)\'/gm
             let m = regex.exec(res.data)
@@ -93,5 +95,3 @@ export class Updater {
         this.iconHelper.refreshBadgeAndIcon()
     }
 }
-
-export default new Updater(store)

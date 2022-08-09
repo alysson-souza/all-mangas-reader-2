@@ -753,12 +753,14 @@
 <script>
 import i18n from "../../amr/i18n"
 import browser from "webextension-polyfill"
-import amrUpdater from "../../pages/amr-updater"
+import { AmrUpdater } from "../amr-updater"
 import Flag from "./Flag"
 import Mangadex from "./Options.Mangadex.vue"
 import { computeColorLight } from "../../shared/utils"
 import { THINSCAN } from "../../shared/Options"
 import { amrLanguages } from "../../constants/language"
+import { OptionStorage } from "../../shared/OptionStorage"
+import { getIconHelper } from "../../amr/icon-helper"
 
 /**
  * Converters to format options in db and in page (ex : booleans are store as 0:1 in db)
@@ -813,6 +815,15 @@ export default {
             }
         }
     },
+
+    beforeCreate() {
+        this.amrUpdater = new AmrUpdater(
+            this.$store,
+            new OptionStorage(this.$store.state.options),
+            getIconHelper(this.$store)
+        )
+    },
+
     data() {
         // default options
         let res = {
@@ -986,10 +997,10 @@ export default {
             this.setOption("waitbetweenupdates")
         },
         displayzero: function () {
-            amrUpdater.refreshBadgeAndIcon()
+            this.amrUpdater.refreshBadgeAndIcon()
         },
         nocount: function () {
-            amrUpdater.refreshBadgeAndIcon()
+            this.amrUpdater.refreshBadgeAndIcon()
         },
         /** If switch from single page to fullchapter and resize mode is height or container, set it to width */
         displayFullChapter(nVal, oVal) {

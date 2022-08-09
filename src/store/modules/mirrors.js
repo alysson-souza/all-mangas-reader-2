@@ -1,6 +1,4 @@
 import storedb from "../../amr/storedb"
-// import * as utils from '../../amr/utils'
-// import iconHelper from "../../amr/icon-helper"
 // import amrUpdater from "../../amr/amr-updater"
 import { getMirrorLoader } from "../../mirrors/MirrorLoader"
 import { getMirrorHelper } from "../../mirrors/MirrorHelper"
@@ -66,15 +64,11 @@ const actions = {
      * @param {*} manga
      */
     async updateMirror({ commit }, mirror) {
-        // utils.debug("update description of " + mirror.mirrorName + " in db");
         await storedb.storeWebsite(mirror)
     },
 
     // update mirrors from repository
     async updateMirrorsLists({ commit, dispatch, rootState }) {
-        // set the blue badge
-        // iconHelper.setBlueIcon()
-
         // update last update ts
         dispatch("setOption", { key: "lastMirrorsUpdate", value: Date.now() })
 

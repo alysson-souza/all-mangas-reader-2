@@ -6,10 +6,11 @@ import { OptionStorage } from "./shared/OptionStorage"
 import { AmrInit } from "./background/amr-init"
 import storedb from "./amr/storedb"
 import { converToMangadexV5 } from "./background/misc/mangedex-v5-converter"
-// import { IconHelper } from './amr/icon-helper';
 import { Mangadex } from "./background/misc/mangadex-v5-integration"
 import { getMirrorHelper } from "./mirrors/MirrorHelper"
 import { getMirrorLoader } from "./mirrors/MirrorLoader"
+import { AmrUpdater } from "./pages/amr-updater"
+import { getIconHelper } from "./amr/icon-helper"
 
 // browser.alarms.onAlarm.addListener(function (args) {
 //     console.log(args)
@@ -24,8 +25,10 @@ const init = async () => {
     await store.dispatch("initOptions")
     const logger = getAppLogger(options)
 
+    const iconHelper = getIconHelper(store)
+
     const amrInit = new AmrInit(store, storedb, optionsStorage, logger)
-    // const iconHelper = new IconHelper(store)
+    const amrUpdater = new AmrUpdater(store, optionsStorage, iconHelper)
 
     const mirrorHelper = getMirrorHelper(store.state.options)
     const mirrorLoader = getMirrorLoader(mirrorHelper)
@@ -75,7 +78,8 @@ const init = async () => {
     }
 
     // set icon and badge
-    // iconHelper.refreshBadgeAndIcon()
+    amrUpdater.refreshBadgeAndIcon()
+
     /**
      * If option update chapters lists on startup --> do it
      */
@@ -88,9 +92,9 @@ const init = async () => {
     handler.handle()
 
     // Check if we need to refresh chapters lists, mirrors lists and launch automatic checker
-    // amrUpdater.load()
+    amrUpdater.load()
     // Check the latest published version of AMR
-    // amrUpdater.checkLatestPublishedVersion()
+    await amrUpdater.checkLatestPublishedVersion()
 
     logger.debug("Running mangadex converter")
     converToMangadexV5(store, logger)

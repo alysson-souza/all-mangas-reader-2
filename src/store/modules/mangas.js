@@ -20,6 +20,7 @@ import {
 import { getAppLogger } from "../../shared/AppLogger"
 import { getMirrorLoader } from "../../mirrors/MirrorLoader"
 import { getMirrorHelper } from "../../mirrors/MirrorHelper"
+import { getIconHelper } from "../../amr/icon-helper"
 
 let syncManager
 // @TODO replace with actual error
@@ -787,14 +788,14 @@ const actions = {
             () => dispatch("setOption", { key: "isUpdatingChapterLists", value: 0 }),
             1000 * 60 * 10
         ) // Reset this after 10 minutes
-        // @TODO fix iconHelper
-        // if (rootState.options.refreshspin === 1) {
-        //     // spin the badge
-        //     iconHelper.spinIcon()
-        //     tsstopspin = setTimeout(() => {
-        //         iconHelper.stopSpinning()
-        //     }, 1000 * 60 * 2) // stop spinning after two minutes if any error occured
-        // }
+        if (rootState.options.refreshspin === 1) {
+            const iconHelper = getIconHelper({ state: rootState, getters })
+            // spin the badge
+            iconHelper.spinIcon()
+            tsstopspin = setTimeout(() => {
+                iconHelper.stopSpinning()
+            }, 1000 * 60 * 2) // stop spinning after two minutes if any error occured
+        }
 
         // update last update ts
         dispatch("setOption", { key: "lastChaptersUpdate", value: Date.now() })
@@ -855,13 +856,14 @@ const actions = {
         }
         logger.debug("Done updating chapter lists")
         // @TODO fix iconHelper
-        // if (rootState.options.refreshspin === 1) {
-        //     //stop the spinning
-        //     iconHelper.stopSpinning()
-        //     if (tsstopspin) {
-        //         clearTimeout(tsstopspin)
-        //     }
-        // }
+        if (rootState.options.refreshspin === 1) {
+            const iconHelper = getIconHelper({ state: rootState, getters })
+            //stop the spinning
+            iconHelper.stopSpinning()
+            if (tsstopspin) {
+                clearTimeout(tsstopspin)
+            }
+        }
     },
 
     /**
@@ -919,15 +921,16 @@ const actions = {
      * @param {*} param0
      * @param {{ action: string, mangas: { url: string, mirror: any, language: any }[]}} message
      */
-    async refreshMangas({ dispatch }, { manga }) {
-        // iconHelper.spinIcon()
+    async refreshMangas({ dispatch, getters, rootState }, { manga }) {
+        const iconHelper = getIconHelper({ state: rootState, getters })
+        iconHelper.spinIcon()
         try {
             await dispatch("refreshLastChapters", manga)
             await storedb.storeManga(manga)
         } catch (e) {
             console.error(e)
         }
-        // iconHelper.stopSpinning()
+        iconHelper.stopSpinning()
     },
     /**
      * Given its key, deletes a manga from reading list

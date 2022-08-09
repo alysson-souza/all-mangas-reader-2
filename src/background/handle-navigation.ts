@@ -15,7 +15,6 @@ export class HandleNavigation {
             case "hideBar":
                 return this.optionStorage.getKey("isBarVisible").then(current => {
                     const barVisible = (Number(current) + 1) % 2
-                    localStorage.isBarVisible = barVisible
                     this.optionStorage.setKey("isBarVisible", barVisible)
                     return { res: barVisible }
                 })
