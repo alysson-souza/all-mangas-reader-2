@@ -446,7 +446,3 @@ export async function gistDebug(secret, id, filename, content) {
     }
     return ax.patch(`gists/${id}`, { files: { [filename]: { content: stringContent } } })
 }
-
-export const refreshBadge = () => {
-    browser.runtime.sendMessage({ action: "refreshBadge" })
-}

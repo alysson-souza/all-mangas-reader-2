@@ -62,9 +62,9 @@ export class Handler {
                 return this.store.dispatch("updateSync", true)
             case "logger":
                 this.logger.debug(message)
-            case "refreshBadge":
-                this.iconHelper.refreshBadgeAndIcon()
                 return true
+            case "refreshBadge":
+                return this.iconHelper.refreshBadgeAndIcon()
             default:
                 return NOT_HANDLED_MESSAGE
         }

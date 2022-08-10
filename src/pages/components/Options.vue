@@ -755,9 +755,10 @@ import i18n from "../../amr/i18n"
 import browser from "webextension-polyfill"
 import Flag from "./Flag"
 import Mangadex from "./Options.Mangadex.vue"
-import { computeColorLight, refreshBadge } from "../../shared/utils"
+import { computeColorLight } from "../../shared/utils"
 import { THINSCAN } from "../../shared/Options"
 import { amrLanguages } from "../../constants/language"
+import { IconHelper } from "../../amr/icon-helper"
 
 /**
  * Converters to format options in db and in page (ex : booleans are store as 0:1 in db)
@@ -811,6 +812,9 @@ export default {
                 return { tab: "general", panel: undefined }
             }
         }
+    },
+    beforeCreate() {
+        this.iconHelper = new IconHelper(this.$store)
     },
     data() {
         // default options
@@ -985,10 +989,10 @@ export default {
             this.setOption("waitbetweenupdates")
         },
         displayzero: function () {
-            refreshBadge()
+            this.iconHelper.refreshBadgeAndIcon()
         },
         nocount: function () {
-            refreshBadge()
+            this.iconHelper.refreshBadgeAndIcon()
         },
         /** If switch from single page to fullchapter and resize mode is height or container, set it to width */
         displayFullChapter(nVal, oVal) {

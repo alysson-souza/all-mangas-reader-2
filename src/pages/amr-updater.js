@@ -25,7 +25,7 @@ export class AmrUpdater {
                 case "checkMirrorsUpdates":
                     return this.checkMirrorsUpdates()
                 default:
-                    console.error(`Received unknown alarm`, alarm)
+                    console.error(`Received unknown alarm "${alarm.name}"`)
             }
         })
         browser.alarms.create("checkChaptersUpdates", { delayInMinutes: 0.1, periodInMinutes: 1 })

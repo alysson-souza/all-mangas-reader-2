@@ -15,7 +15,6 @@ import {
     isMultiLanguageList,
     mangaKey,
     readLanguage,
-    refreshBadge,
     shouldCheckForUpdate
 } from "../../shared/utils"
 import { getAppLogger } from "../../shared/AppLogger"
@@ -113,7 +112,7 @@ const actions = {
      * Retrieve manga list from DB, initialize the store
      * @param {*} param0
      */
-    async initMangasFromDB({ commit, dispatch, rootState }, fromModule) {
+    async initMangasFromDB({ commit, dispatch, rootState }) {
         // await dispatch("mdFixLang")
         await storedb.getMangaList().then(async mangasdb => {
             await dispatch("updateLanguageCategories")
@@ -133,9 +132,6 @@ const actions = {
                 )
             )
         })
-        if (fromModule) {
-            refreshBadge()
-        }
     },
     // async mdFixLang({ getters, rootState, dispatch }) {
     //     const mangasdb = await storedb.getMangaList()
@@ -353,7 +349,6 @@ const actions = {
         let mg = state.all.find(manga => manga.key === key)
         dispatch("findAndUpdateManga", mg)
         await syncManager.setToRemote(mg, "ts")
-        refreshBadge()
     },
     /**
      * Save the state of reading (currentChapter and currentScanUrl)
@@ -422,11 +417,12 @@ const actions = {
             console.error(message)
             return
         }
+        const iconHelper = getIconHelper({ state: rootState, getters })
         const mg = state.all.find(manga => manga.key === key)
         if (mg === undefined) {
             console.error("readManga of an unlisted manga --> create it")
             await dispatch("createUnlistedManga", message)
-            refreshBadge()
+            iconHelper.refreshBadgeAndIcon()
             return
         }
 
@@ -437,8 +433,7 @@ const actions = {
         }
 
         dispatch("findAndUpdateManga", mg)
-
-        refreshBadge()
+        iconHelper.refreshBadgeAndIcon()
     },
     /**
      * Get list of chapters for a manga
@@ -765,6 +760,7 @@ const actions = {
         const isSyncEnabled = rootState.options.syncEnabled || rootState.options.gistSyncEnabled
         const isSyncing = rootState.options.isSyncing === 1
 
+        const iconHelper = getIconHelper({ state: rootState, getters })
         // retry later if sync or convert is running
         let timeout = 0
         if (isSyncEnabled) {
@@ -790,7 +786,6 @@ const actions = {
             1000 * 60 * 10
         ) // Reset this after 10 minutes
         if (rootState.options.refreshspin === 1) {
-            const iconHelper = getIconHelper({ state: rootState, getters })
             // spin the badge
             iconHelper.spinIcon()
             tsstopspin = setTimeout(() => {
@@ -811,7 +806,7 @@ const actions = {
                     await dispatch("refreshLastChapters", mg)
                         .then(() => {
                             dispatch("findAndUpdateManga", mg) //save updated manga do not wait
-                            refreshBadge()
+                            iconHelper.refreshBadgeAndIcon()
                         })
                         .catch(e => {
                             if (e !== ABSTRACT_MANGA_MSG) {
@@ -856,10 +851,7 @@ const actions = {
             clearTimeout(tsresetupdating)
         }
         logger.debug("Done updating chapter lists")
-        // @TODO fix iconHelper
         if (rootState.options.refreshspin === 1) {
-            const iconHelper = getIconHelper({ state: rootState, getters })
-            //stop the spinning
             iconHelper.stopSpinning()
             if (tsstopspin) {
                 clearTimeout(tsstopspin)
@@ -889,7 +881,8 @@ const actions = {
                 await syncManager.setToRemote(mg, "read")
             }
         }
-        refreshBadge()
+        const iconHelper = getIconHelper({ state: rootState, getters })
+        iconHelper.refreshBadgeAndIcon()
     },
     /**
      * Change the update top on a manga
@@ -913,8 +906,9 @@ const actions = {
                 await syncManager.setToRemote(mg, "update")
             }
         }
-        // refresh badge
-        refreshBadge()
+
+        const iconHelper = getIconHelper({ state: rootState, getters })
+        iconHelper.refreshBadgeAndIcon()
     },
     /**
      * Refresh chapters and update mangas from the message mangas list
@@ -948,7 +942,8 @@ const actions = {
                 await syncManager.deleteManga(message.key)
             }
         }
-        refreshBadge()
+        const iconHelper = getIconHelper({ state: rootState, getters })
+        iconHelper.refreshBadgeAndIcon()
         // update native language categories
         dispatch("updateLanguageCategories")
     },
