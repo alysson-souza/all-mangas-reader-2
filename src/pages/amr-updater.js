@@ -18,21 +18,30 @@ export class AmrUpdater {
      * Initialize refresh checkers
      */
     load() {
-        this.checkChaptersUpdates()
-        this.checkMirrorsUpdates()
+        browser.alarms.onAlarm.addListener(alarm => {
+            switch (alarm.name) {
+                case "checkChaptersUpdates":
+                    return this.checkChaptersUpdates()
+                case "checkMirrorsUpdates":
+                    return this.checkMirrorsUpdates()
+                default:
+                    console.error(`Received unknown alarm`, alarm)
+            }
+        })
+        browser.alarms.create("checkChaptersUpdates", { delayInMinutes: 0.1, periodInMinutes: 1 })
+        browser.alarms.create("checkMirrorsUpdates", { delayInMinutes: 0.1, periodInMinutes: 1 })
     }
 
     /**
      * Check if we need to refresh chapters lists according to frequency every minutes
      */
-    checkChaptersUpdates() {
-        let lastUpdt = this.store.state.options.lastChaptersUpdate
-        let frequency = this.store.state.options.updatechap
-        if (navigator.onLine && lastUpdt + frequency < Date.now()) {
+    async checkChaptersUpdates() {
+        const { lastChaptersUpdate, updatechap } = this.store.state.options
+        const nextUpdateTs = lastChaptersUpdate + updatechap
+        if (navigator.onLine && nextUpdateTs < Date.now()) {
             // time to refresh !
             this.store.dispatch("updateChaptersLists", { force: false }) // force to false to avoid updating if not necessary
         }
-        setTimeout(this.checkChaptersUpdates.bind(this), 60 * 1000) // check every minutes
     }
 
     /**
@@ -46,7 +55,6 @@ export class AmrUpdater {
             this.store.dispatch("updateMirrorsLists")
             this.checkLatestPublishedVersion()
         }
-        setTimeout(this.checkMirrorsUpdates.bind(this), 60 * 1000) // check every minutes
     }
 
     /**

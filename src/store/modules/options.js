@@ -14,13 +14,9 @@ const getters = {
 const actions = {
     /**
      * Override default options with options values in localStorage
-     * @param {*} param0
      */
-    async initOptions({ commit }) {
-        const options = optionStorage.getVueOptions()
-        Object.entries(options).forEach(([key, value]) => {
-            commit("setOption", { key, value })
-        })
+    async initOptions({ commit }, options) {
+        commit("extendOptions", options)
     },
     /**
      * Set an option

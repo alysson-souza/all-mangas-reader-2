@@ -1,7 +1,7 @@
 import storedb from "../../amr/storedb"
-// import amrUpdater from "../../amr/amr-updater"
 import { getMirrorLoader } from "../../mirrors/MirrorLoader"
 import { getMirrorHelper } from "../../mirrors/MirrorHelper"
+import { refreshBadge } from "../../shared/utils"
 
 /**
  *  initial state of the mirrors module
@@ -127,8 +127,7 @@ const actions = {
         // remove deleted mirrors
         // TODO --> what do we do if there are mangas in list from these mirrors ?
 
-        // update badges and icon state
-        // amrUpdater.refreshBadgeAndIcon()
+        refreshBadge()
 
         return websites
     },

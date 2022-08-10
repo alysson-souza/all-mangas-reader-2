@@ -12,17 +12,12 @@ import { getMirrorLoader } from "./mirrors/MirrorLoader"
 import { AmrUpdater } from "./pages/amr-updater"
 import { getIconHelper } from "./amr/icon-helper"
 
-// browser.alarms.onAlarm.addListener(function (args) {
-//     console.log(args)
-// })
-// browser.alarms.create('updateMangaList', {delayInMinutes: 0.1, periodInMinutes: 1 }, )
-
 // Initialize store
 const init = async () => {
     const optionsStorage = new OptionStorage()
     const options = await optionsStorage.getVueOptions()
 
-    await store.dispatch("initOptions")
+    await store.dispatch("initOptions", options)
     const logger = getAppLogger(options)
 
     const iconHelper = getIconHelper(store)
@@ -33,7 +28,7 @@ const init = async () => {
     const mirrorHelper = getMirrorHelper(store.state.options)
     const mirrorLoader = getMirrorLoader(mirrorHelper)
 
-    const handler = new Handler(store, logger, optionsStorage, mirrorLoader)
+    const handler = new Handler(store, logger, optionsStorage, mirrorLoader, iconHelper)
     const handleManga = handler.getHandleManga()
 
     /**

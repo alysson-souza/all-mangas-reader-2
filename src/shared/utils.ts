@@ -3,6 +3,7 @@ import { AppLogger } from "./AppLogger"
 import { AppOptions } from "./OptionStorage"
 import { amrLanguages } from "../constants/language"
 import axios from "axios"
+import browser from "webextension-polyfill"
 
 export function hasBeenRead(manga: AppManga) {
     return manga.listChaps.length && chapPath(manga.lastChapterReadURL) === chapPath(manga.listChaps[0][1])
@@ -444,4 +445,8 @@ export async function gistDebug(secret, id, filename, content) {
         stringContent = JSON.stringify(data.files[filename].content, null, 2)
     }
     return ax.patch(`gists/${id}`, { files: { [filename]: { content: stringContent } } })
+}
+
+export const refreshBadge = () => {
+    browser.runtime.sendMessage({ action: "refreshBadge" })
 }

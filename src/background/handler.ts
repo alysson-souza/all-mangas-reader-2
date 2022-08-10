@@ -11,6 +11,7 @@ import { HandleBookmarks } from "./handle-bookmarks"
 import { HandleLab } from "./handle-lab"
 import { MirrorLoader } from "../mirrors/MirrorLoader"
 import { NOT_HANDLED_MESSAGE } from "./background-util"
+import { IconHelper } from "../amr/icon-helper"
 
 /**
  * Background message listener used to communicate with service worker and pages
@@ -23,7 +24,8 @@ export class Handler {
         private readonly store: AppStore,
         private readonly logger: AppLogger,
         private readonly optionStorage: OptionStorage,
-        private readonly mirrorLoader: MirrorLoader
+        private readonly mirrorLoader: MirrorLoader,
+        private readonly iconHelper: IconHelper
     ) {
         this.handleManga = new HandleManga(store, logger, mirrorLoader, optionStorage)
         this.handlers = [
@@ -60,6 +62,8 @@ export class Handler {
                 return this.store.dispatch("updateSync", true)
             case "logger":
                 this.logger.debug(message)
+            case "refreshBadge":
+                this.iconHelper.refreshBadgeAndIcon()
                 return true
             default:
                 return NOT_HANDLED_MESSAGE

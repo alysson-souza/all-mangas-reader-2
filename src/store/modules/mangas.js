@@ -15,6 +15,7 @@ import {
     isMultiLanguageList,
     mangaKey,
     readLanguage,
+    refreshBadge,
     shouldCheckForUpdate
 } from "../../shared/utils"
 import { getAppLogger } from "../../shared/AppLogger"
@@ -132,7 +133,9 @@ const actions = {
                 )
             )
         })
-        // if (fromModule) amrUpdater.refreshBadgeAndIcon()
+        if (fromModule) {
+            refreshBadge()
+        }
     },
     // async mdFixLang({ getters, rootState, dispatch }) {
     //     const mangasdb = await storedb.getMangaList()
@@ -350,8 +353,7 @@ const actions = {
         let mg = state.all.find(manga => manga.key === key)
         dispatch("findAndUpdateManga", mg)
         await syncManager.setToRemote(mg, "ts")
-        // refresh badge
-        // amrUpdater.refreshBadgeAndIcon()
+        refreshBadge()
     },
     /**
      * Save the state of reading (currentChapter and currentScanUrl)
@@ -424,7 +426,7 @@ const actions = {
         if (mg === undefined) {
             console.error("readManga of an unlisted manga --> create it")
             await dispatch("createUnlistedManga", message)
-            // amrUpdater.refreshBadgeAndIcon()
+            refreshBadge()
             return
         }
 
@@ -436,8 +438,7 @@ const actions = {
 
         dispatch("findAndUpdateManga", mg)
 
-        // refresh badge
-        // amrUpdater.refreshBadgeAndIcon()
+        refreshBadge()
     },
     /**
      * Get list of chapters for a manga
@@ -810,7 +811,7 @@ const actions = {
                     await dispatch("refreshLastChapters", mg)
                         .then(() => {
                             dispatch("findAndUpdateManga", mg) //save updated manga do not wait
-                            // amrUpdater.refreshBadgeAndIcon()
+                            refreshBadge()
                         })
                         .catch(e => {
                             if (e !== ABSTRACT_MANGA_MSG) {
@@ -888,8 +889,7 @@ const actions = {
                 await syncManager.setToRemote(mg, "read")
             }
         }
-        // refresh badge
-        // amrUpdater.refreshBadgeAndIcon()
+        refreshBadge()
     },
     /**
      * Change the update top on a manga
@@ -914,7 +914,7 @@ const actions = {
             }
         }
         // refresh badge
-        // amrUpdater.refreshBadgeAndIcon()
+        refreshBadge()
     },
     /**
      * Refresh chapters and update mangas from the message mangas list
@@ -948,8 +948,7 @@ const actions = {
                 await syncManager.deleteManga(message.key)
             }
         }
-        // refresh badge
-        // amrUpdater.refreshBadgeAndIcon()
+        refreshBadge()
         // update native language categories
         dispatch("updateLanguageCategories")
     },
