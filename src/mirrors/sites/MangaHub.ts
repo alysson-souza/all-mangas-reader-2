@@ -1,4 +1,4 @@
-import { BaseMirror } from "./BaseMirror"
+import { BaseMirror } from "./abstract/BaseMirror"
 import { MirrorImplementation } from "../../types/common"
 import { MirrorHelper } from "../MirrorHelper"
 import MangaHubIcon from "../icons/mangahub-optimized.png"

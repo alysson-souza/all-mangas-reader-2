@@ -1,6 +1,6 @@
 import { MirrorImplementation } from "../../types/common"
 import { MirrorHelper } from "../MirrorHelper"
-import { BaseMirror } from "./BaseMirror"
+import { BaseMirror } from "./abstract/BaseMirror"
 import mirrorIcon from "../icons/manga4life-optimized.png"
 
 export class Manga4Life extends BaseMirror implements MirrorImplementation {

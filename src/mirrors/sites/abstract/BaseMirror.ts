@@ -1,7 +1,7 @@
 import { AnyNode, BasicAcceptedElems, load } from "cheerio"
-import { MirrorHelper } from "../MirrorHelper"
+import { MirrorHelper } from "../../MirrorHelper"
 import browser from "webextension-polyfill"
-import { ScriptJsonInject } from "../../types/common"
+import { ScriptJsonInject } from "../../../types/common"
 
 export abstract class BaseMirror {
     protected constructor(protected mirrorHelper: MirrorHelper) {}

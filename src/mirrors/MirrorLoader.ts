@@ -4,6 +4,7 @@ import { Manga4Life } from "./sites/Manga4Life"
 import { MangaFox } from "./sites/MangaFox"
 import { MangaHub } from "./sites/MangaHub"
 import { MangaHere } from "./sites/MangaHere"
+import { ToonilyNet } from "./sites/Madara/ToonilyNet"
 
 export class MirrorLoader {
     lookupMap: Map<string, MirrorImplementation>
@@ -47,7 +48,8 @@ export const getMirrorLoader = (mirrorHelper: MirrorHelper) => {
             new MangaFox(mirrorHelper),
             new MangaHere(mirrorHelper),
             new Manga4Life(mirrorHelper),
-            new MangaHub(mirrorHelper)
+            new MangaHub(mirrorHelper),
+            new ToonilyNet(mirrorHelper)
         ])
     }
     return instance

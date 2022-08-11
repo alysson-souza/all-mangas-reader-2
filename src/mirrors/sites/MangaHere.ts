@@ -1,4 +1,4 @@
-import { BaseMirror } from "./BaseMirror"
+import { BaseMirror } from "./abstract/BaseMirror"
 import { CurrentPageInfo, InfoResult, MirrorImplementation } from "../../types/common"
 import { MirrorHelper } from "../MirrorHelper"
 import MangaHereIcon from "../icons/mangahere-optimized.png"

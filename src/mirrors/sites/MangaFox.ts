@@ -1,4 +1,4 @@
-import { BaseMirror } from "./BaseMirror"
+import { BaseMirror } from "./abstract/BaseMirror"
 import { InfoResult, MirrorImplementation } from "../../types/common"
 import MangaFoxIcon from "../icons/mangafox-optimized.png"
 import { MirrorHelper } from "../MirrorHelper"
