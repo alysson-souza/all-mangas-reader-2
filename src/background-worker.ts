@@ -92,7 +92,7 @@ const init = async () => {
     await amrUpdater.checkLatestPublishedVersion()
 
     logger.debug("Running mangadex converter")
-    converToMangadexV5(store, logger)
+    converToMangadexV5(store, logger).catch(e => logger.error(e))
     if (store.state.options.mangadexIntegrationEnable) {
         new Mangadex(store.getters.md_allOptions, store.dispatch)
     }

@@ -1,4 +1,7 @@
-export async function converToMangadexV5(store, logger) {
+import { AppStore } from "../../types/common"
+import { AppLogger } from "../../shared/AppLogger"
+
+export async function converToMangadexV5(store: AppStore, logger: AppLogger) {
     // retry later if one of these is running
     if (store.state.options.isUpdatingChapterLists || store.state.options.isSyncing) {
         setTimeout(() => {
@@ -6,17 +9,20 @@ export async function converToMangadexV5(store, logger) {
         }, 30 * 1000)
         return
     }
+    const mangaToUpdate = store.state.mangas.all.filter(manga => manga.mirror == "MangaDex")
+    if (mangaToUpdate.length === 0) {
+        return
+    }
 
+    logger.debug(`Found ${mangaToUpdate.length} MangaDex mangas. Converting...`)
     store.dispatch("setOption", { key: "isConverting", value: 1 }) // Set watcher
-    let mangaToUpdate = store.state.mangas.all.filter(manga => manga.mirror == "MangaDex")
 
     for (const manga of mangaToUpdate) {
         try {
-            // let manga = mangaToUpdate[0]
-            logger.debug("Checking for manga id", manga.key)
-            let id = parseInt(manga.url.split("/").pop())
+            logger.debug("Checking for manga id " + manga.key)
+            const id = parseInt(manga.url.split("/").pop())
 
-            let seriesUpdate = await fetch("https://api.mangadex.org/legacy/mapping", {
+            const response = await fetch("https://api.mangadex.org/legacy/mapping", {
                 method: "POST",
                 headers: { "content-type": "application/json" },
                 body: JSON.stringify({
@@ -25,13 +31,11 @@ export async function converToMangadexV5(store, logger) {
                 })
             }).then(r => r.json())
 
-            // console.debug('MD Response', seriesUpdate)
+            if (response.result === "ok") {
+                const newId = response.data[0].attributes.newId
+                const chapterId = parseInt(manga.lastChapterReadURL.split("/").pop())
 
-            if (seriesUpdate[0].result == "ok") {
-                let newId = seriesUpdate[0].data.attributes.newId
-                let chapterId = parseInt(manga.lastChapterReadURL.split("/").pop())
-
-                let lastChapterUpdate = await fetch("https://api.mangadex.org/legacy/mapping", {
+                const lastChapterUpdate = await fetch("https://api.mangadex.org/legacy/mapping", {
                     method: "POST",
                     headers: { "content-type": "application/json" },
                     body: JSON.stringify({
@@ -40,13 +44,19 @@ export async function converToMangadexV5(store, logger) {
                     })
                 }).then(r => r.json())
 
-                let lastChapterInfo = await fetch(
-                    "https://api.mangadex.org/chapter/" + lastChapterUpdate[0].data.attributes.newId
+                if (lastChapterUpdate.result !== "ok") {
+                    throw new Error(JSON.stringify(lastChapterUpdate.error))
+                }
+
+                const lastChapterInfo = await fetch(
+                    "https://api.mangadex.org/chapter/" + lastChapterUpdate.data[0].attributes.newId
                 ).then(r => r.json())
 
-                if (lastChapterInfo.result !== "ok") throw new Error("Something failed")
+                if (lastChapterInfo.result !== "ok") {
+                    throw new Error(JSON.stringify(lastChapterInfo.error))
+                }
 
-                let readmg = {
+                const readmg = {
                     mirror: "MangaDex V5",
                     name: manga.name,
                     url: "https://mangadex.org/title/" + newId, ///
@@ -67,8 +77,7 @@ export async function converToMangadexV5(store, logger) {
                 await store.dispatch("deleteManga", manga)
             }
         } catch (e) {
-            // Do nothing because I don't care if it fails
-            logger.debug("Error updating mangadex entry", e)
+            logger.debug("Error updating mangadex entry: " + e.message)
         }
 
         await new Promise(r => setTimeout(r, 2000)) // Pause to give mangadex servers a rest
