@@ -1,60 +1,13 @@
-import i18n from "./i18n"
-
-/**
- * Test if current browser is Firefox
- * - used to display icons in browser (Firefix supports animated svg, chrome does not)
- */
-export function isFirefox() {
-    // Firefox 1.0+ (tested on Firefox 45 - 53)
-    return typeof globalThis.InstallTrigger !== "undefined"
-}
-
-/**
- * Test if current browser is Firefox on Android
- */
-export function isFirefoxAndroid() {
-    return isFirefox() && navigator.userAgent.indexOf("Android") > -1
-}
-
-/**
- * Format manga name to test similarities
- * @deprecated
- * @param {*} name
- */
-export function formatMgName(name) {
-    if (name == undefined || name == null || name == "null") return ""
-    return name
-        .trim()
-        .replace(/\s/g, "") /*.replace(/[^0-9A-Za-z]/g, '') // DO NOT Replace non alpha char so UTF8 works*/
-        .toLocaleLowerCase()
-}
-
-/**
- * Tells in human language how much time has been spent since this ts
- * @param {*} ts
- */
-export function lasttime(diffts) {
-    let diff = Math.floor(diffts / 1000)
-    if (diff < 0) diff = 0
-    if (diff < 60) return i18n("options_seconds", diff)
-    diff = Math.floor(diff / 60)
-    if (diff < 60) return i18n("options_minutes", diff)
-    diff = Math.floor(diff / 60)
-    if (diff < 24) return i18n("options_hours", diff)
-    diff = Math.floor(diff / 24)
-    if (diff < 7) return i18n("options_days", diff)
-    diff = Math.floor(diff / 7)
-    return i18n("options_weeks", diff) //TODO months , years ?  --> not needed in AMR yet
-}
-
 /**
  * Convert language to country
- * @param {String} langs language
  */
-export function mdFixLang(langs) {
+export function mdFixLang(languages: string | undefined) {
     const results = []
-    if (typeof langs !== "string") return "_United-Nations"
-    for (const lang of langs.split(",")) {
+    if (typeof languages !== "string") {
+        return "_United-Nations"
+    }
+
+    for (const lang of languages.split(",")) {
         switch (lang) {
             case "pt-br":
                 results.push("br")
@@ -134,7 +87,7 @@ export function mdFixLangKey(key) {
         return a.replace(b, "") + mdFixLang(b)
     })
 }
-export const mdFixLangsList = [
+const mdFixLangsList = [
     "pt-br",
     "es-la",
     "fa",

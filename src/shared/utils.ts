@@ -3,7 +3,23 @@ import { AppLogger } from "./AppLogger"
 import { AppOptions } from "./OptionStorage"
 import { amrLanguages } from "../constants/language"
 import axios from "axios"
-import browser from "webextension-polyfill"
+import i18n from "../amr/i18n"
+
+/**
+ * Test if current browser is Firefox
+ * - used to display icons in browser (Firefix supports animated svg, chrome does not)
+ */
+export function isFirefox() {
+    // Firefox 1.0+ (tested on Firefox 45 - 53)
+    return typeof globalThis.InstallTrigger !== "undefined"
+}
+
+/**
+ * Test if current browser is Firefox on Android
+ */
+export function isFirefoxAndroid() {
+    return isFirefox() && navigator.userAgent.indexOf("Android") > -1
+}
 
 export function hasBeenRead(manga: AppManga) {
     return manga.listChaps.length && chapPath(manga.lastChapterReadURL) === chapPath(manga.listChaps[0][1])
@@ -445,4 +461,31 @@ export async function gistDebug(secret, id, filename, content) {
         stringContent = JSON.stringify(data.files[filename].content, null, 2)
     }
     return ax.patch(`gists/${id}`, { files: { [filename]: { content: stringContent } } })
+}
+
+/**
+ * Tells in human language how much time has been spent since this ts
+ */
+export function lastTime(timestamp: number) {
+    let diff = Math.floor(timestamp / 1000)
+    if (diff < 0) {
+        diff = 0
+    }
+    if (diff < 60) {
+        return i18n("options_seconds", diff)
+    }
+    diff = Math.floor(diff / 60)
+    if (diff < 60) {
+        return i18n("options_minutes", diff)
+    }
+    diff = Math.floor(diff / 60)
+    if (diff < 24) {
+        return i18n("options_hours", diff)
+    }
+    diff = Math.floor(diff / 24)
+    if (diff < 7) {
+        return i18n("options_days", diff)
+    }
+    diff = Math.floor(diff / 7)
+    return i18n("options_weeks", diff) //TODO months , years ?  --> not needed in AMR yet
 }

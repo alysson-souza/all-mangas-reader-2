@@ -6,8 +6,8 @@ import Vuetify from "vuetify/lib"
 import App from "./App.vue"
 import store from "../../store"
 import vuetifyOptions from "../vuetifyOptions"
-import { isFirefoxAndroid } from "../../amr/utils"
 import { OptionStorage } from "../../shared/OptionStorage"
+import { isFirefoxAndroid } from "../../shared/utils"
 // import 'vuetify/src/stylus/main.styl'
 
 function isSmallDevice() {

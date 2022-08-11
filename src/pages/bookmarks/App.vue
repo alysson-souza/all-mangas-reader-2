@@ -104,7 +104,7 @@
 <script>
 import i18n from "../../amr/i18n"
 import Bookmarks from "../components/Bookmarks"
-import * as utils from "../../amr/utils"
+import { formatMangaName } from "../../shared/utils"
 import Vue from "vue"
 
 const sizes = [
@@ -131,8 +131,8 @@ export default {
         mangas: function () {
             return this.$store.state.bookmarks.all
                 .reduce((list, bm) => {
-                    let bmmgname = utils.formatMgName(bm.name)
-                    let pos = list.findIndex(mg => bmmgname === utils.formatMgName(mg.name))
+                    let bmmgname = formatMangaName(bm.name)
+                    let pos = list.findIndex(mg => bmmgname === formatMangaName(mg.name))
                     if (pos === -1) {
                         return [
                             ...list,
@@ -160,15 +160,15 @@ export default {
                 if (bm.type === "scan" && !this.toggle_type.includes(0)) return false
 
                 // by manga
-                let bmmgname = utils.formatMgName(bm.name)
+                let bmmgname = formatMangaName(bm.name)
                 if (this.mangasUnSel[bmmgname]) return false
 
                 // by search text
-                let sc = utils.formatMgName(this.search)
+                let sc = formatMangaName(this.search)
                 let contains = false
-                if (utils.formatMgName(bm.name).indexOf(sc) >= 0) contains = true
-                else if (utils.formatMgName(bm.note).indexOf(sc) >= 0) contains = true
-                else if (utils.formatMgName(bm.chapterName).indexOf(sc) >= 0) contains = true
+                if (formatMangaName(bm.name).indexOf(sc) >= 0) contains = true
+                else if (formatMangaName(bm.note).indexOf(sc) >= 0) contains = true
+                else if (formatMangaName(bm.chapterName).indexOf(sc) >= 0) contains = true
 
                 return contains
             })

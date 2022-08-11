@@ -93,7 +93,7 @@ import EventBus from "../helpers/EventBus"
 import i18n from "../../amr/i18n"
 import { i18nmixin } from "../../mixins/i18n-mixin"
 import { mdiImageBroken } from "@mdi/js"
-import { isFirefox } from "../../amr/utils"
+import { isFirefox } from "../../shared/utils"
 
 export default {
     mixins: [i18nmixin],

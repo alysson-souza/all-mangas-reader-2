@@ -1,5 +1,4 @@
 import browser from "webextension-polyfill"
-import * as utils from "../../amr/utils"
 import { amrLanguages } from "../../constants/language"
 import { matchDomainRule } from "../../shared/utils"
 

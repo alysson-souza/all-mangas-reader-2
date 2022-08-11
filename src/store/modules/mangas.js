@@ -21,6 +21,7 @@ import { getAppLogger } from "../../shared/AppLogger"
 import { getMirrorLoader } from "../../mirrors/MirrorLoader"
 import { getMirrorHelper } from "../../mirrors/MirrorHelper"
 import { getIconHelper } from "../../amr/icon-helper"
+import { mdFixLang, mdFixLangKey, mdFixLangsListPrefix } from "../../shared/mangaDexUtil"
 
 let syncManager
 // @TODO replace with actual error
@@ -133,24 +134,26 @@ const actions = {
             )
         })
     },
-    // async mdFixLang({ getters, rootState, dispatch }) {
-    //     const mangasdb = await storedb.getMangaList()
-    //     const mgs = mangasdb.filter(
-    //         mg => mg.mirror === "MangaDex V5" && new RegExp(utils.mdFixLangsListPrefix.join("|")).test(mg.key)
-    //     )
-    //     if (!mgs.length) return
-    //     const temporarySyncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
-    //     const payload = []
-    //     for (const oldManga of mgs) {
-    //         const newManga = new Manga(oldManga)
-    //         newManga.key = utils.mdFixLangKey(newManga.key)
-    //         newManga.language = utils.mdFixLang(newManga.language)
-    //         newManga.languages = utils.mdFixLang(newManga.languages)
-    //         payload.push({ oldManga, newManga })
-    //         await storedb.replace({ oldManga, newManga })
-    //     }
-    //     await temporarySyncManager.fixLang(payload)
-    // },
+    async mdFixLang({ getters, rootState, dispatch }) {
+        const mangasdb = await storedb.getMangaList()
+        const mgs = mangasdb.filter(
+            mg => mg.mirror === "MangaDex V5" && new RegExp(mdFixLangsListPrefix.join("|")).test(mg.key)
+        )
+        if (!mgs.length) {
+            return
+        }
+        const temporarySyncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
+        const payload = []
+        for (const oldManga of mgs) {
+            const key = mdFixLangKey(newManga.key)
+            const newManga = new Manga(oldManga, key)
+            newManga.language = mdFixLang(newManga.language)
+            newManga.languages = mdFixLang(newManga.languages)
+            payload.push({ oldManga, newManga })
+            await storedb.replace({ oldManga, newManga })
+        }
+        await temporarySyncManager.fixLang(payload)
+    },
     /**
      * Initialise syncManager
      * @param {*} param0

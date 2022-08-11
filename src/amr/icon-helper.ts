@@ -4,6 +4,7 @@ import DefaultIcon from "../icons/icon_32.png"
 import BwIcon from "../icons/icon_32_bw.png"
 import { AppStore } from "../types/common"
 import ImageDataType = DeclarativeContent.ImageDataType
+import { isFirefox, isFirefoxAndroid } from "../shared/utils"
 
 /**
  * Class used to change AMR icon
@@ -73,19 +74,19 @@ export class IconHelper {
     }
 
     updateBadge(nb) {
-        if (utils.isFirefoxAndroid()) {
+        if (isFirefoxAndroid()) {
             return
         }
         browser.action.setBadgeText({ text: "" + nb })
         if (nb === 0) {
             // white text + grey background
-            if (utils.isFirefox()) {
+            if (isFirefox()) {
                 browser.action.setBadgeTextColor({ color: "#ffffff" })
             }
             browser.action.setBadgeBackgroundColor({ color: "#646464" })
         } else {
             // white text + red background (same red as AMR icon)
-            if (utils.isFirefox()) {
+            if (isFirefox()) {
                 browser.action.setBadgeTextColor({ color: "#ffffff" })
             }
             browser.action.setBadgeBackgroundColor({ color: "#bd0000" })
@@ -93,7 +94,7 @@ export class IconHelper {
     }
 
     resetBadge() {
-        if (utils.isFirefoxAndroid()) {
+        if (isFirefoxAndroid()) {
             return
         }
         browser.action.setBadgeText({ text: "" })
@@ -106,7 +107,7 @@ export class IconHelper {
         if (this.spinning) {
             return
         }
-        if (utils.isFirefoxAndroid()) {
+        if (isFirefoxAndroid()) {
             return
         }
         browser.action.setIcon({ path: "/icons/icon_32_blue.png" })
@@ -119,7 +120,7 @@ export class IconHelper {
         if (this.spinning) {
             return
         }
-        if (utils.isFirefoxAndroid()) {
+        if (isFirefoxAndroid()) {
             return
         }
         browser.action.setIcon({ path: "/icons/icon_32_bw.png" })
@@ -132,7 +133,7 @@ export class IconHelper {
         if (this.spinning) {
             return
         }
-        if (utils.isFirefoxAndroid()) {
+        if (isFirefoxAndroid()) {
             return
         }
         browser.action.setIcon({ path: "/icons/icon_32.png" })
@@ -142,7 +143,7 @@ export class IconHelper {
      * Set AMR icon to spinning sharingan (normal or grayscale depending on options)
      */
     spinIcon() {
-        if (utils.isFirefoxAndroid()) {
+        if (isFirefoxAndroid()) {
             return
         }
         this.waitSpinning()

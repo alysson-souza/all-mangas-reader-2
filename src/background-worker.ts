@@ -5,7 +5,7 @@ import { getAppLogger } from "./shared/AppLogger"
 import { OptionStorage } from "./shared/OptionStorage"
 import { AmrInit } from "./background/amr-init"
 import storedb from "./amr/storedb"
-import { converToMangadexV5 } from "./background/misc/mangedex-v5-converter"
+import { convertToMangaDexV5 } from "./background/misc/mangedex-v5-converter"
 import { Mangadex } from "./background/misc/mangadex-v5-integration"
 import { getMirrorHelper } from "./mirrors/MirrorHelper"
 import { getMirrorLoader } from "./mirrors/MirrorLoader"
@@ -92,7 +92,7 @@ const init = async () => {
     await amrUpdater.checkLatestPublishedVersion()
 
     logger.debug("Running mangadex converter")
-    converToMangadexV5(store, logger).catch(e => logger.error(e))
+    convertToMangaDexV5(store, logger).catch(e => logger.error(e))
     if (store.state.options.mangadexIntegrationEnable) {
         new Mangadex(store.getters.md_allOptions, store.dispatch)
     }

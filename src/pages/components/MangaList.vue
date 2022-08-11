@@ -324,12 +324,11 @@ import MangaGroup from "./MangaGroup"
 import Categories from "./Categories"
 import MultiMangaAction from "./MultiMangaAction"
 import browser from "webextension-polyfill"
-import * as utilsamr from "../../amr/utils"
-import { convertIcons, displayFilterCats, hasNew } from "../../shared/utils"
+import { convertIcons, displayFilterCats, formatMangaName, hasNew } from "../../shared/utils"
 
 const default_sort = (a, b) => {
-    let af = utilsamr.formatMgName(a.displayName && a.displayName !== "" ? a.displayName : a.name),
-        bf = utilsamr.formatMgName(b.displayName && b.displayName !== "" ? b.displayName : b.name)
+    let af = formatMangaName(a.displayName && a.displayName !== "" ? a.displayName : a.name),
+        bf = formatMangaName(b.displayName && b.displayName !== "" ? b.displayName : b.name)
     let res = af === undefined ? -1 : af.localeCompare(bf)
     if (res === 0) {
         res = a.mirror === undefined ? -1 : a.mirror.localeCompare(b.mirror)
@@ -505,7 +504,7 @@ export default {
                 // get manga name, key or group key and group index
                 const name =
                     mangaCopy.displayName && mangaCopy.displayName !== "" ? mangaCopy.displayName : mangaCopy.name
-                const key = this.options.groupmgs === 0 ? mangaCopy.key : "group:" + utilsamr.formatMgName(name)
+                const key = this.options.groupmgs === 0 ? mangaCopy.key : "group:" + formatMangaName(name)
                 let index = groups.findIndex(group => group.key == key)
 
                 // if group doesn't exist, create it

@@ -40,9 +40,9 @@
 
 <script>
 import i18n from "../../amr/i18n"
-import * as utils from "../../amr/utils"
 import browser from "webextension-polyfill"
 import storedb from "../../amr/storedb"
+import { lastTime } from "../../shared/utils"
 
 export default {
     data() {
@@ -69,10 +69,10 @@ export default {
          * Convert timestamps in readable ... ago
          */
         lastchaps: function () {
-            return utils.lasttime(this.ticker - this.$store.state.options.lastChaptersUpdate)
+            return lastTime(this.ticker - this.$store.state.options.lastChaptersUpdate)
         },
         lastmirs: function () {
-            return utils.lasttime(this.ticker - this.$store.state.options.lastMirrorsUpdate)
+            return lastTime(this.ticker - this.$store.state.options.lastMirrorsUpdate)
         }
     },
     methods: {

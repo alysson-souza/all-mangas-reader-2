@@ -51,7 +51,7 @@
                         icon="mdi-alert-decagram"
                         slot="activator">
                         {{ alertmessage }}
-                        <v-btn light class="ml-2" x-small @v-if="!utils.isFirefox()" @click="DownloadAMR()">
+                        <v-btn light class="ml-2" x-small @v-if="!isFirefox()" @click="DownloadAMR()">
                             <v-icon>mdi-cloud-download</v-icon>
                         </v-btn>
                     </v-alert>
@@ -189,12 +189,12 @@ import PopupResizer from "./resizePopup"
 import Timers from "../components/Timers"
 import ImportExport from "../components/ImportExport"
 import browser from "webextension-polyfill"
-import * as utils from "../../amr/utils"
 
 import streamSaver from "streamsaver"
 import "streamsaver/examples/zip-stream"
 import * as ponyfill from "web-streams-polyfill/ponyfill"
 import { OptionStorage } from "../../shared/OptionStorage"
+import { isFirefox } from "../../shared/utils"
 streamSaver.WritableStream = ponyfill.WritableStream
 
 export default {
@@ -334,7 +334,7 @@ export default {
         },
         /** Opens import export tab. If Firefox, opens it in a new tab because file input closes the extension : https://bugzilla.mozilla.org/show_bug.cgi?id=1292701 */
         openImportExport() {
-            if (utils.isFirefox()) {
+            if (isFirefox()) {
                 setTimeout(() => (this.tabs = "refresh"), 150)
                 this.opentab("/pages/importexport/importexport.html")
                 // window.close();

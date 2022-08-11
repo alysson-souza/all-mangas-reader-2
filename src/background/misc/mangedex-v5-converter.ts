@@ -1,11 +1,11 @@
 import { AppStore } from "../../types/common"
 import { AppLogger } from "../../shared/AppLogger"
 
-export async function converToMangadexV5(store: AppStore, logger: AppLogger) {
+export async function convertToMangaDexV5(store: AppStore, logger: AppLogger) {
     // retry later if one of these is running
     if (store.state.options.isUpdatingChapterLists || store.state.options.isSyncing) {
         setTimeout(() => {
-            converToMangadexV5()
+            convertToMangaDexV5()
         }, 30 * 1000)
         return
     }
