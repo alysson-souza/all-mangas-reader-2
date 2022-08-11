@@ -224,10 +224,13 @@ export class HandleManga {
      * If so, inject content script to transform the page and the mirror implementation inside the tab
      */
     async matchUrlAndLoadScripts(url: string, tabId: number) {
-        const mir = this.getMir(url)
-        if (mir === null) {
-            return mir
+        const mirror = this.getMir(url)
+        if (mirror === null) {
+            return mirror
         }
+
+        // Store it as plain object, vuex object property String() can cause it to be [object Object]
+        const mir = Object.assign({}, mirror)
 
         this.logger.debug({
             url,
@@ -236,7 +239,6 @@ export class HandleManga {
             chapter: mir.chapter_url
         })
 
-        // Store it as variable, vuex object String() can cause it to be [object Object]
         const chapterUrl = mir.chapter_url
 
         // check if we need to load preload (it could be annoying to have preload on each pages of the website)

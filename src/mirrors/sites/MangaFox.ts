@@ -156,7 +156,6 @@ export class MangaFox extends BaseMirror implements MirrorImplementation {
 
     async getListImages(doc: string, curUrl: string) {
         const lastPage = this.getVariable({ doc, variableName: "imagecount" })
-        console.log(lastPage, curUrl)
         const curl = curUrl.substr(0, curUrl.lastIndexOf("/") + 1)
         const res = []
 

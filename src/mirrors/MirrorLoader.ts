@@ -3,6 +3,7 @@ import { MirrorHelper } from "./MirrorHelper"
 import { Manga4Life } from "./sites/Manga4Life"
 import { MangaFox } from "./sites/MangaFox"
 import { MangaHub } from "./sites/MangaHub"
+import { MangaHere } from "./sites/MangaHere"
 
 export class MirrorLoader {
     lookupMap: Map<string, MirrorImplementation>
@@ -44,6 +45,7 @@ export const getMirrorLoader = (mirrorHelper: MirrorHelper) => {
     if (!instance) {
         instance = new MirrorLoader([
             new MangaFox(mirrorHelper),
+            new MangaHere(mirrorHelper),
             new Manga4Life(mirrorHelper),
             new MangaHub(mirrorHelper)
         ])
