@@ -15,7 +15,7 @@ const AMR_BROWSER = process.env.AMR_BROWSER
 const config = {
     /* In Webpack 4, defaults devtool outputs an eval() for speeding compile
   but this obviously fail in chrome extension due to CSP */
-    devtool: "eval",
+    devtool: "cheap-module-source-map",
     context: __dirname + "/src",
     mode: "development",
     entry: {
