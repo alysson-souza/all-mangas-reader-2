@@ -11,8 +11,6 @@ const VuetifyLoaderPlugin = require("vuetify-loader/lib/plugin")
 const ejs = require("ejs")
 
 const AMR_BROWSER = process.env.AMR_BROWSER
-const isFirefox = AMR_BROWSER === "firefox"
-const isChrome = AMR_BROWSER === "chrome"
 
 const config = {
     /* In Webpack 4, defaults devtool outputs an eval() for speeding compile
@@ -26,9 +24,7 @@ const config = {
         "pages/popup/popup": "./pages/popup/popup.js",
         "pages/lab/lab": "./pages/lab/lab.js",
         "pages/options/options": "./pages/options/options.js",
-        "pages/bookmarks/bookmarks": "./pages/bookmarks/bookmarks.js",
-        "pages/importexport/importexport": "./pages/importexport/importexport.js",
-        "backup/index": "./backup/amr-backup.js"
+        "pages/bookmarks/bookmarks": "./pages/bookmarks/bookmarks.js"
     },
     output: {
         path: __dirname + "/dist",
@@ -99,11 +95,6 @@ const config = {
                     transform: transformHtml
                 },
                 {
-                    from: "pages/importexport/importexport.html",
-                    to: "pages/importexport/importexport.html",
-                    transform: transformHtml
-                },
-                {
                     from: "manifest.json",
                     to: "manifest.json",
                     transform(content) {
@@ -125,21 +116,10 @@ const config = {
                 },
                 { from: "reader/*.css", to: "." },
                 { from: "_locales/**/*", to: "." },
-                { from: "backup/amr-backup.html", to: "backup/index.html" },
                 { from: "../node_modules/jquery/dist/jquery.min.js", to: "lib/jquery.min.js" },
                 { from: "rules_1.json", to: "rules_1.json" }
             ]
         }),
-        // new WebpackShellPluginNext({
-        //     onBuildStart: {
-        //         //scripts: ['node ./src/mirrors/update-ws.js && echo "Mirrors Rebuilt"'],
-        //         scripts: ["node ./scripts/optimize-mirrors-icons.js", "node ./scripts/compile-mirrors.js"],
-        //         blocking: true
-        //     },
-        //     onBuildEnd: {
-        //         scripts: ["node scripts/remove-evals.js"]
-        //     }
-        // }),
         new CircularDependencyPlugin({
             // exclude detection of files based on a RegExp
             exclude: /a\.js|node_modules/,
@@ -161,6 +141,16 @@ if (process.env.NODE_ENV === "production") {
     config.mode = "production"
 
     config.plugins = (config.plugins || []).concat([
+        new WebpackShellPluginNext({
+            onBuildStart: {
+                //scripts: ['node ./src/mirrors/update-ws.js && echo "Mirrors Rebuilt"'],
+                scripts: ["node ./scripts/optimize-mirrors-icons.js", "node ./scripts/compile-mirrors.js"],
+                blocking: true
+            },
+            onBuildEnd: {
+                scripts: ["node scripts/remove-evals.js"]
+            }
+        }),
         new CleanWebpackPlugin(),
         new webpack.DefinePlugin({
             "process.env": {
