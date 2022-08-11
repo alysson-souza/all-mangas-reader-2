@@ -1,5 +1,4 @@
 import browser, { DeclarativeContent } from "webextension-polyfill"
-import * as utils from "./utils"
 import DefaultIcon from "../icons/icon_32.png"
 import BwIcon from "../icons/icon_32_bw.png"
 import { AppStore } from "../types/common"

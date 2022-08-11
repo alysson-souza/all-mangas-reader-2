@@ -5,7 +5,7 @@ export async function convertToMangaDexV5(store: AppStore, logger: AppLogger) {
     // retry later if one of these is running
     if (store.state.options.isUpdatingChapterLists || store.state.options.isSyncing) {
         setTimeout(() => {
-            convertToMangaDexV5()
+            convertToMangaDexV5(store, logger)
         }, 30 * 1000)
         return
     }
