@@ -114,7 +114,7 @@ const actions = {
      * @param {*} param0
      */
     async initMangasFromDB({ commit, dispatch, rootState }) {
-        // await dispatch("mdFixLang")
+        await dispatch("mdFixLang")
         await storedb.getMangaList().then(async mangasdb => {
             await dispatch("updateLanguageCategories")
             commit(
@@ -446,7 +446,7 @@ const actions = {
         const mirrorLoader = getMirrorLoader(getMirrorHelper(rootState.options))
         const impl = await mirrorLoader.getImpl(manga.mirror)
         if (!impl || impl.disabled) {
-            // await dispatch("disabledManga", manga)
+            // await dispatch("disabledManga", manga) // @TODO Re-enable @FIXME
             throw new Error(`Failed to get implementation for mirror ${manga.mirror}`)
         }
         return impl.getListChaps(manga.url)
