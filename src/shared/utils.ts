@@ -2,7 +2,6 @@ import { AppManga, AppState, Bookmark, Category, Mirror } from "../types/common"
 import { AppLogger } from "./AppLogger"
 import { AppOptions } from "./OptionStorage"
 import { amrLanguages } from "../constants/language"
-import axios from "axios"
 import i18n from "../amr/i18n"
 
 /**
@@ -432,35 +431,44 @@ export function batchProps(obj, batchSize) {
     return batches
 }
 
-/**
- *
- * @param {string} secret
- * @param {string} id
- * @param {string} filename
- * @param {*} content
- */
-export async function gistDebug(secret, id, filename, content) {
-    if (secret && secret !== "" && id && id !== "") return
-    const ax = axios.create({
-        baseURL: "https://api.github.com/",
-        headers: {
-            Authorization: `Bearer ${secret}`,
-            "Cache-Control": "no-cache"
-        }
-    })
-    const request = await ax.get(`gists/${id}?cache=${Date.now()}`)
-    const data = request.data
+export async function gistDebug(
+    secret: string | undefined,
+    id: string | undefined,
+    filename: string,
+    content: unknown
+) {
+    // Ensure we have the required options
+    if (!secret || !id) {
+        return
+    }
+
+    const url = `https://api.github.com/gists/${id}`
+    const headers = {
+        Authorization: `Bearer ${secret}`,
+        "Cache-Control": "no-cache"
+    }
+
+    const data = await fetch(`${url}?cache=${Date.now()}`, { headers }).then(r => r.json())
+
     let stringContent
     if (data.files[filename]) {
         const parsedContent = JSON.parse(data.files[filename].content)
         parsedContent.push(content)
         stringContent = JSON.stringify(parsedContent, null, 2)
     } else {
-        data.files[filename] = { content: [] }
-        data.files[filename].content.push(content)
+        data.files[filename] = { content: [content] }
         stringContent = JSON.stringify(data.files[filename].content, null, 2)
     }
-    return ax.patch(`gists/${id}`, { files: { [filename]: { content: stringContent } } })
+
+    return fetch(url, {
+        method: "PATCH",
+        headers: headers,
+        body: JSON.stringify({
+            files: {
+                [filename]: { content: stringContent }
+            }
+        })
+    }).then(r => r.json())
 }
 
 /**

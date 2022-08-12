@@ -69,7 +69,6 @@ export default class GistStorage extends Storage {
         const request = await this.ax("GET", `gists/${this.gistSyncGitID}?cache=${Date.now()}`)
 
         const amr = request.files["amr.json"]
-        console.log(amr)
         if (amr) {
             if (amr.truncated) {
                 return this.ax("GET", amr.raw_url)

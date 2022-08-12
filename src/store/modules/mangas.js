@@ -693,6 +693,17 @@ const actions = {
             })
             return
         }
+        if (rootState.options.gistDebugEnabled) {
+            gistDebug(getters.syncOptions.gistSyncSecret, getters.syncOptions.gistSyncGitID, "amrResets.json", {
+                name: mg.name,
+                mirror: mg.mirror,
+                oldPath: mg.lastChapterReadURL,
+                oldName: mg.lastChapterReadName,
+                newPath: listChaps[listChaps.length - 1][1],
+                newName: listChaps[listChaps.length - 1][0],
+                dateTime: new Date().toLocaleString()
+            }).catch(e => this.logger(e))
+        }
 
         // test if lastChapterRead is consistent (exists)
         const lastReadPath = chapPath(mg.lastChapterReadURL)
@@ -725,18 +736,6 @@ const actions = {
                 }
             })
             return
-        }
-
-        if (this.$store.state.options.gistDebugEnabled === 0) {
-            gistDebug(getters.syncOptions.gistSyncSecret, getters.syncOptions.gistSyncGitID, "amrResets.json", {
-                name: mg.name,
-                mirror: mg.mirror,
-                oldPath: mg.lastChapterReadURL,
-                oldName: mg.lastChapterReadName,
-                newPath: listChaps[listChaps.length - 1][1],
-                newName: listChaps[listChaps.length - 1][0],
-                dateTime: new Date().toLocaleString()
-            }).catch(e => this.logger(e))
         }
 
         logger.debug("No list entry or multiple list entries match the known last chapter. Reset to first chapter")
