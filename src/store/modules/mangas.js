@@ -5,8 +5,6 @@ import { getNotifications } from "../../amr/notifications"
 import samples from "../../amr/samples"
 import * as syncUtils from "../../amr/sync/utils"
 import { getSyncManager } from "../../amr/sync/sync-manager"
-import browser from "webextension-polyfill"
-import { Buffer } from "buffer"
 import {
     chapPath,
     findProbableChapter,
@@ -1019,40 +1017,6 @@ const actions = {
     },
     clearMangasSelect({ commit }) {
         commit("clearSelection")
-    },
-    /**
-     *
-     * @param {*} param0
-     * @param {Object} param1
-     * @param {String} param1.imageURL
-     * @param {String} param1.referer
-     * @returns
-     */
-    async fetchImage({}, { imageURL, referer }) {
-        const filter = { urls: ["https://*/*", "http://*/*"] }
-        const extraInfoSpec = ["requestHeaders", "blocking"]
-        const listener = details => {
-            var newRef = referer
-            var gotRef = false
-            for (var n in details.requestHeaders) {
-                gotRef = details.requestHeaders[n].name.toLowerCase() == "referer"
-                if (gotRef) {
-                    details.requestHeaders[n].value = newRef
-                    break
-                }
-            }
-            if (!gotRef) {
-                details.requestHeaders.push({ name: "Referer", value: newRef })
-            }
-            return { requestHeaders: details.requestHeaders }
-        }
-
-        browser.webRequest.onBeforeSendHeaders.addListener(listener, filter, extraInfoSpec)
-        const resp = await fetch(imageURL)
-        const arraybuffer = await resp.arrayBuffer()
-        const bs64 = new Buffer.from(arraybuffer).toString("base64")
-        browser.webRequest.onBeforeSendHeaders.removeListener(listener)
-        return "data:" + resp.headers["content-type"] + ";base64," + bs64
     }
 }
 

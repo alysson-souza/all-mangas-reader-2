@@ -86,7 +86,6 @@
 </template>
 
 <script>
-import browser from "webextension-polyfill"
 import bookmarks from "../state/bookmarks"
 import { scansProvider } from "../helpers/ScansProvider"
 import EventBus from "../helpers/EventBus"
@@ -94,6 +93,7 @@ import i18n from "../../amr/i18n"
 import { i18nmixin } from "../../mixins/i18n-mixin"
 import { mdiImageBroken } from "@mdi/js"
 import { isFirefox } from "../../shared/utils"
+import { saveAs } from "../helpers/util"
 
 export default {
     mixins: [i18nmixin],
@@ -108,7 +108,7 @@ export default {
             snackbarShow: false,
             snackbarText: "",
             snackbarColor: "",
-            snackbarTimeout: 1500,
+            snackbarTimeout: 3500,
             icons: { mdiImageBroken }
         }
     },
@@ -183,55 +183,44 @@ export default {
         EventBus.$off("reload-all-errors", this.reloadScan)
     },
     methods: {
+        setImgError: function (e) {
+            this.snackbarText = i18n("reader_snackbar_img_error", e)
+            this.snackbarColor = "error"
+            this.snackbarShow = true
+        },
         async copyIMG() {
             if (typeof ClipboardItem === "undefined" && isFirefox()) {
                 this.copyImageToClipboardWarning = true
                 return
             }
-            const img = await this.imageToBlob(this.scan.scan.currentSrc, window.location.href)
+
+            if (!navigator.clipboard) {
+                this.setImgError("navigator.clipboard is not supported")
+                return
+            }
+
             try {
-                await navigator.clipboard.write([
-                    new ClipboardItem({
-                        [img.type]: img
-                    })
-                ])
+                const url = this.scan.scan.currentSrc
+                const response = await fetch(url)
+                const blob = await response.blob()
+                await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })])
                 this.snackbarText = i18n("reader_snackbar_img_success")
                 this.snackbarColor = "success"
                 this.snackbarShow = true
             } catch (e) {
-                this.snackbarText = i18n("reader_snackbar_img_error", e)
-                this.snackbarColor = "error"
-                this.snackbarShow = true
+                this.setImgError(e)
             }
         },
 
         async downloadImage() {
-            const image = await this.imageToBlob(this.scan.scan.currentSrc, window.location.href)
-            const url = window.URL.createObjectURL(image)
-
-            let a = document.createElement("a")
-            document.body.appendChild(a)
-            a.style = "display: none"
-            a.href = url
-            a.download = this.src.split("/").pop().split("#")[0].split("?")[0]
-            a.click()
-            window.URL.revokeObjectURL(url)
-        },
-
-        async imageToBlob(imageURL, referer) {
-            const bs64 = await browser.runtime.sendMessage({ action: "fetchImage", imageURL, referer })
-            const img = new Image()
-            const c = document.createElement("canvas")
-            const ctx = c.getContext("2d")
-            return new Promise(resolve => {
-                img.onload = function () {
-                    c.width = this.naturalWidth
-                    c.height = this.naturalHeight
-                    ctx.drawImage(this, 0, 0)
-                    c.toBlob(resolve)
-                }
-                img.src = bs64
-            })
+            const url = this.scan.scan.currentSrc
+            fetch(url)
+                .then(async response => {
+                    const blob = await response.blob()
+                    const name = url.split("/").pop().split("#")[0].split("?")[0]
+                    saveAs(blob, name)
+                })
+                .catch(e => console.error(e))
         },
         /* check if we need to fit width */
         resizeW() {

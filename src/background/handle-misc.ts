@@ -2,7 +2,6 @@ import browser from "webextension-polyfill"
 import * as zip from "@zip.js/zip.js"
 import saveAs from "file-saver"
 import mimedb from "mime-db"
-import axios from "axios"
 import { AppStore } from "../types/common"
 import { MirrorLoader } from "../mirrors/MirrorLoader"
 import { NOT_HANDLED_MESSAGE } from "./background-util"
@@ -12,7 +11,7 @@ zip.configure({ useWebWorkers: false })
 export class HandleMisc {
     constructor(private readonly store: AppStore, private readonly mirrorLoader: MirrorLoader) {}
 
-    async handle(message) {
+    async handle(message, sender) {
         switch (message.action) {
             // get options array
             case "opentab":
@@ -30,16 +29,14 @@ export class HandleMisc {
                 })
             case "reloadStats":
                 return { result: false }
-            case "fetchImage":
-                return this.store.dispatch("fetchImage", message)
             case "DownloadChapter":
-                return this.DownloadChapter(message)
+                return this.DownloadChapter(message, sender)
             default:
                 return NOT_HANDLED_MESSAGE
         }
     }
 
-    async DownloadChapter(message) {
+    async DownloadChapter(message, sender) {
         const { urls, chapterName, seriesName } = message
         // setup zip
         const blobWriter = new zip.BlobWriter("application/zip")
@@ -47,9 +44,9 @@ export class HandleMisc {
         for (const [i, url] of urls.entries()) {
             let ext = "jpg"
             // @TODO this probably not working and should be using fetch
-            const resp = await axios.get(url, { responseType: "blob" })
+            const resp = await fetch(url)
+            const content = await resp.blob()
 
-            const content = resp.data
             const mime = content.type
             if (mime.indexOf("image") > -1) {
                 if (mimedb[mime].extensions) {

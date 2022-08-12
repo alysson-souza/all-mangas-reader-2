@@ -117,7 +117,7 @@ export interface ChapterData {
 
 export type InfoResult = [name: string, url: string]
 
-interface Sender {
+export interface Sender {
     tab: { id: number }
 }
 

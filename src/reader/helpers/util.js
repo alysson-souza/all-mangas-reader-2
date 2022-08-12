@@ -119,3 +119,12 @@ export class Util {
         return await browser.runtime.sendMessage({ action: "save_option", key: key, value: value })
     }
 }
+
+export const saveAs = (blob, filename) => {
+    const blobUrl = window.URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.download = filename
+    a.href = blobUrl
+    a.click()
+    window.URL.revokeObjectURL(blobUrl)
+}
