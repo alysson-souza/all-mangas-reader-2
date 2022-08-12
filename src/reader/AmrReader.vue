@@ -677,11 +677,11 @@ import pageData from "./state/pagedata"
 import options from "./state/options"
 import bookmarks from "./state/bookmarks"
 
-import { Util } from "./helpers/util"
+import { saveAs, Util } from "./helpers/util"
 import * as dialogs from "./helpers/dialogs"
 import ChapterLoader from "./helpers/ChapterLoader"
 import EventBus from "./helpers/EventBus"
-
+import mimedb from "mime-db"
 import Reader from "./components/Reader"
 import Scan from "./components/Scan"
 import WizDialog from "./components/WizDialog"
@@ -722,6 +722,7 @@ import {
     mdiMagnify
 } from "@mdi/js"
 import { THINSCAN } from "../shared/Options"
+import { BlobReader, BlobWriter, ZipWriter } from "@zip.js/zip.js"
 
 /** Possible values for resize (readable), the stored value is the corresponding index */
 const resize_values = ["width", "height", "container", "none"]
@@ -1700,15 +1701,35 @@ export default {
         },
         async DownloadChapter() {
             this.zip = true
-            await browser.runtime
-                .sendMessage({
-                    action: "DownloadChapter",
-                    urls: this.$refs.reader.scansState.scans.map(ele => ele.scan.currentSrc).reverse(),
-                    chapterName: this.pageData.currentChapter,
-                    seriesName:
-                        this.mangaInfos && this.mangaInfos.displayName ? this.mangaInfos.displayName : this.manga.name
-                })
-                .catch(() => (this.zip = false))
+            const seriesName =
+                this.mangaInfos && this.mangaInfos.displayName ? this.mangaInfos.displayName : this.manga.name
+            const chapterName = this.pageData.currentChapter
+            const urls = this.$refs.reader.scansState.scans.map(ele => ele.scan.currentSrc).reverse()
+
+            const blobWriter = new BlobWriter("application/zip")
+            const zipWriter = new ZipWriter(blobWriter)
+            for (const [i, url] of urls.entries()) {
+                let ext = "jpg"
+                const resp = await fetch(url)
+
+                const content = await resp.blob()
+                const mime = content.type
+                if (mime.indexOf("image") > -1) {
+                    if (mimedb[mime].extensions) {
+                        ext = mimedb[mime].extensions[0]
+                    } else {
+                        const match = url.match(/(\.\w{2,4})(?![^?])/)
+                        if (match) {
+                            ext = match[1].replace(".", "")
+                        }
+                    }
+                }
+                const name = `${String(i + 1).padStart(3, "0")}.${ext}`
+                await zipWriter.add(name, new BlobReader(content))
+            }
+            const blob = await zipWriter.close()
+
+            saveAs(blob, `${seriesName} - ${chapterName}.cbz`)
             this.zip = false
         }
     }

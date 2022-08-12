@@ -3,7 +3,6 @@ import { AppStore } from "../types/common"
 import { AppLogger } from "../shared/AppLogger"
 import { serializeVuexObject } from "../shared/utils"
 import { HandleManga } from "./handle-manga"
-import { HandleMisc } from "./handle-misc"
 import { HandleImportExport } from "./handle-import-export"
 import { HandleNavigation } from "./handle-navigation"
 import { OptionStorage } from "../shared/OptionStorage"
@@ -34,7 +33,6 @@ export class Handler {
                 handle: this.inlineHandleHandle
             },
             this.handleManga,
-            new HandleMisc(store, mirrorLoader),
             new HandleNavigation(store, optionStorage),
             new HandleBookmarks(store, mirrorLoader),
             new HandleLab(mirrorLoader),
@@ -65,6 +63,21 @@ export class Handler {
                 return true
             case "refreshBadge":
                 return this.iconHelper.refreshBadgeAndIcon()
+            case "opentab":
+                return browser.tabs.create({ url: message.url })
+            case "mirrorInfos":
+                const mirror = this.store.state.mirrors.all.find(mir => mir.mirrorName === message.name)
+                return Promise.resolve({
+                    // can't send a vuex object through js instances on Firefox --> convert
+                    activated: mirror.activated,
+                    domains: mirror.domains,
+                    home: mirror.home,
+                    languages: mirror.languages,
+                    mirrorIcon: mirror.mirrorIcon,
+                    mirrorName: mirror.mirrorName
+                })
+            case "reloadStats":
+                return { result: false }
             default:
                 return NOT_HANDLED_MESSAGE
         }
