@@ -8,12 +8,13 @@ interface LoadOptions {
 
     /** true to prevent page to be loaded from cache **/
     nocache?: boolean
+
     /** true to prevent images in page to be loaded **/
     preventimages?: boolean
+
     /** true to send message using POST **/
     post?: boolean
-    /** valid jQuery ajax dataType **/
-    dataType?: boolean
+
     /** data: object to send in accordance with its dataType **/
     data?: Record<string, unknown> | string
 

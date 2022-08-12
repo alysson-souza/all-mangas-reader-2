@@ -75,7 +75,6 @@
                 "icons/load10.gif",
                 "icons/find.png",
                 "reader/pre-loader.css",
-                "lib/jquery.min.js",
                 "reader/init-reading.js"
             ],
             "matches": ["<all_urls>"],

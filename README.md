@@ -393,9 +393,6 @@ To test the extension while developing on Firefox for Android, install Firefox o
 -   Vuetify : a set of UI components for view based on Material design
 -   vuex-shared-mutations : a great plugin for Vuex which allows to synchronize vuex data model through different instances of Vue using localStorage events
 -   webextension-polyfill : web extension API has been normalize and is implemented in Chrome, Firefox, Edge, ... but with still a few differences, thanks to this polyfill, the code works everywhere
--   axios : for xhr
--   jQuery : jQuery is still there, to manipulate DOM, it's still the best. Mirrors implementations are based on jQuery and the content script uses it as well.
--   dompurify to sanitize the dom before parsing it
 
 ### Dev dependencies
 

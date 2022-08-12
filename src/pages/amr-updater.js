@@ -1,3 +1,5 @@
+import browser from "webextension-polyfill"
+
 /**
  * This class is used to update periodically manga chapters lists and mirrors list
  */

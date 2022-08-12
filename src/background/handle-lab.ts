@@ -1,4 +1,3 @@
-import Axios from "axios"
 import { formatMangaName } from "../shared/utils"
 import { MirrorLoader } from "../mirrors/MirrorLoader"
 import { NOT_HANDLED_MESSAGE } from "./background-util"
@@ -44,29 +43,18 @@ export class HandleLab {
         }
     }
     async loadChapterAndDo(message, impl) {
-        return Axios.get(message.url)
-            .then(resp => {
-                return new Promise(async (resolve, reject) => {
-                    try {
-                        let htmlDocument = resp.data
+        const resp = await fetch(message.url)
+        const htmlDocument = await resp.text()
 
-                        //once the response has been parsed
-                        if (message.task === "containScans") {
-                            resolve(impl.isCurrentPageAChapterPage(htmlDocument, message.url))
-                        } else if (message.task === "informations") {
-                            let infos = await impl.getInformationsFromCurrentPage(htmlDocument, message.url)
-                            resolve(infos)
-                        } else if (message.task === "listScans") {
-                            let imagesUrl = await impl.getListImages(htmlDocument, message.url)
-                            resolve(imagesUrl)
-                        }
-                    } catch (e) {
-                        reject(e)
-                    }
-                })
-            })
-            .catch(e => {
-                return Promise.reject(e)
-            })
+        switch (message.task) {
+            case "containScans":
+                return impl.isCurrentPageAChapterPage(htmlDocument, message.url)
+            case "informations":
+                return impl.getInformationsFromCurrentPage(htmlDocument, message.url)
+            case "listScans":
+                return impl.getListImages(htmlDocument, message.url)
+            default:
+                throw new Error(`Unsupported task ${message.task}`)
+        }
     }
 }
