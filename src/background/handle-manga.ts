@@ -243,23 +243,9 @@ export class HandleManga {
 
         // check if we need to load preload (it could be annoying to have preload on each pages of the website)
         // websites which provide a chapter_url regexp will have their chapters with a preload
-        if (chapterUrl) {
-            const parts = /\/(.*)\/(.*)/.exec(String(chapterUrl))
-            if (!parts) {
-                this.logger.error({
-                    url: mir.chapter_url,
-                    message: "no parts are available from regex match",
-                    chapter_url: String(chapterUrl),
-                    regex: `/\\/(.*)\\/(.*)/`
-                })
-                return
-            }
-            // @TODO second part is suppose to be options?
-            const chaprx = new RegExp(parts[1], parts[2])
-            if (!chaprx.test("/" + afterHostURL(url))) {
-                console.log("Not matching!", parts)
-                return // returns if there is no match
-            }
+        if (!this.isUrlMatch(chapterUrl, url)) {
+            this.logger.info({ result: "Chapter url is not matching, skipping...", chapterUrl, url })
+            return
         }
 
         try {
@@ -316,7 +302,7 @@ export class HandleManga {
         // Inject content scripts in matched tab
         const [libResult] = await browser.scripting.executeScript({
             target: { tabId },
-            files: ["/lib/jquery.min.js", "/reader/init-reading.js"]
+            files: ["/reader/init-reading.js"]
         })
         this.logger.debug({ libResult })
 
@@ -332,6 +318,11 @@ export class HandleManga {
         // doing that because content script is not vue aware,
         // the reactive vuex object needs to be converted to POJSO
         return serializeVuexObject(mir)
+    }
+
+    private isUrlMatch(chapterUrl: RegExp | string | object | undefined, url: string) {
+        const chapterRegex = this.getChapterUrlRegex(chapterUrl)
+        return chapterRegex ? chapterRegex.test("/" + afterHostURL(url)) : false
     }
 
     getMir(url): Mirror | null {
@@ -510,5 +501,24 @@ export class HandleManga {
                 catsToAdd.forEach(cat => this.store.dispatch("addCategory", cat))
             }
         }
+    }
+
+    private getChapterUrlRegex(chapterUrl: RegExp | string | object | undefined): RegExp | undefined {
+        if (chapterUrl instanceof RegExp) {
+            return chapterUrl
+        }
+
+        if (typeof chapterUrl === "string") {
+            const parts = /\/(.*)\/(.*)/.exec(chapterUrl)
+            if (parts) {
+                return new RegExp(parts[1], parts[2])
+            }
+        }
+
+        this.logger.error({
+            chapterUrl,
+            message: "Failed to generate valid regex for chapter_url",
+            chapter_url: String(chapterUrl)
+        })
     }
 }

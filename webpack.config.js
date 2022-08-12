@@ -2,7 +2,6 @@ const webpack = require("webpack")
 const ExtReloader = require("webpack-ext-reloader")
 const { CleanWebpackPlugin } = require("clean-webpack-plugin")
 const WebpackShellPluginNext = require("webpack-shell-plugin-next")
-const path = require("path")
 const CopyWebpackPlugin = require("copy-webpack-plugin")
 const TerserPlugin = require("terser-webpack-plugin")
 const VueLoaderPlugin = require("vue-loader/lib/plugin")
@@ -116,7 +115,6 @@ const config = {
                 },
                 { from: "reader/*.css", to: "." },
                 { from: "_locales/**/*", to: "." },
-                { from: "../node_modules/jquery/dist/jquery.min.js", to: "lib/jquery.min.js" },
                 { from: "rules_1.json", to: "rules_1.json" }
             ]
         }),
