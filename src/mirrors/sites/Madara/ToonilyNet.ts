@@ -10,7 +10,6 @@ export class ToonilyNet extends Madara {
     home = "https://toonily.net"
     chapter_url = /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g
     canListFullMangas = false
-    abstract = "Madara"
 
     constructor(mirrorHelper: MirrorHelper) {
         super(mirrorHelper, {

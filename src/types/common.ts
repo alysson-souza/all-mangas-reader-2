@@ -85,8 +85,8 @@ export interface AppManga {
     zoom?: number
 }
 
-export interface Mirror {
-    activated?: boolean
+/** Plain javascript object with static properties defined **/
+export interface MirrorObject {
     mirrorName: string
     canListFullMangas: boolean
     mirrorIcon: string
@@ -94,9 +94,12 @@ export interface Mirror {
     home: string
     chapter_url: RegExp
     languages: string
-    abstract?: string
-    abstract_options?: AbstractOptions
     disabled?: boolean
+}
+
+/** Mirror really represent vuex object that have additional activated property **/
+export interface Mirror extends MirrorObject {
+    activated?: boolean
 }
 
 export interface CurrentPageInfo {
@@ -124,7 +127,7 @@ export interface ScriptJsonInject {
     config?: RequestInit
 }
 
-export interface MirrorImplementation extends Mirror {
+export interface MirrorImplementation extends MirrorObject {
     getMangaList(search?: string): Promise<InfoResult[]>
     getListChaps(urlManga: string): Promise<InfoResult[]>
     getCurrentPageInfo(doc: string, curUrl: string): Promise<CurrentPageInfo>

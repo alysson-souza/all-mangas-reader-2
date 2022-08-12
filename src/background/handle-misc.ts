@@ -18,8 +18,7 @@ export class HandleMisc {
             case "opentab":
                 return browser.tabs.create({ url: message.url })
             case "mirrorInfos":
-                // @TODO deprecate and load directly from mirrorLoader
-                const mirror = this.mirrorLoader.getMirror(message.name)
+                const mirror = this.store.state.mirrors.all.find(mir => mir.mirrorName === message.name)
                 return Promise.resolve({
                     // can't send a vuex object through js instances on Firefox --> convert
                     activated: mirror.activated,

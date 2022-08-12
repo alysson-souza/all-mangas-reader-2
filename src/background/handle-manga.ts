@@ -226,11 +226,16 @@ export class HandleManga {
     async matchUrlAndLoadScripts(url: string, tabId: number) {
         const mirror = this.getMir(url)
         if (mirror === null) {
-            return mirror
+            return null
         }
 
-        // Store it as plain object, vuex object property String() can cause it to be [object Object]
-        const mir = Object.assign({}, mirror)
+        // Store it as plain object, vuex object property String() can cause
+        // it to be [object Object], due to chapter_url : {__ob__: Observer }
+        // therefore load plain javascript object instead
+        const mir = this.mirrorLoader.getMirror(mirror.mirrorName)
+        if (!mir) {
+            return null
+        }
 
         this.logger.debug({
             url,
@@ -243,7 +248,7 @@ export class HandleManga {
 
         // check if we need to load preload (it could be annoying to have preload on each pages of the website)
         // websites which provide a chapter_url regexp will have their chapters with a preload
-        if (!this.isUrlMatch(chapterUrl, url)) {
+        if (!chapterUrl.test("/" + afterHostURL(url))) {
             this.logger.info({ result: "Chapter url is not matching, skipping...", chapterUrl, url })
             return
         }
@@ -318,11 +323,6 @@ export class HandleManga {
         // doing that because content script is not vue aware,
         // the reactive vuex object needs to be converted to POJSO
         return serializeVuexObject(mir)
-    }
-
-    private isUrlMatch(chapterUrl: RegExp | string | object | undefined, url: string) {
-        const chapterRegex = this.getChapterUrlRegex(chapterUrl)
-        return chapterRegex ? chapterRegex.test("/" + afterHostURL(url)) : false
     }
 
     getMir(url): Mirror | null {
@@ -501,24 +501,5 @@ export class HandleManga {
                 catsToAdd.forEach(cat => this.store.dispatch("addCategory", cat))
             }
         }
-    }
-
-    private getChapterUrlRegex(chapterUrl: RegExp | string | object | undefined): RegExp | undefined {
-        if (chapterUrl instanceof RegExp) {
-            return chapterUrl
-        }
-
-        if (typeof chapterUrl === "string") {
-            const parts = /\/(.*)\/(.*)/.exec(chapterUrl)
-            if (parts) {
-                return new RegExp(parts[1], parts[2])
-            }
-        }
-
-        this.logger.error({
-            chapterUrl,
-            message: "Failed to generate valid regex for chapter_url",
-            chapter_url: String(chapterUrl)
-        })
     }
 }

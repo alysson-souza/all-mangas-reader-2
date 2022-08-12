@@ -1,4 +1,4 @@
-import { Mirror, MirrorImplementation } from "../types/common"
+import { MirrorImplementation, MirrorObject } from "../types/common"
 import { MirrorHelper } from "./MirrorHelper"
 import { Manga4Life } from "./sites/Manga4Life"
 import { MangaFox } from "./sites/MangaFox"
@@ -16,26 +16,24 @@ export class MirrorLoader {
     async getImpl(name: string) {
         return this.lookupMap.get(name)
     }
-    getMirror(name: string): Readonly<Mirror> {
-        return this.lookupMap.get(name)
+    getMirror(name: string) {
+        return this.toMirror(this.lookupMap.get(name))
     }
 
-    getAll(): Readonly<Mirror[]> {
+    getAll() {
         return Array.from(this.lookupMap.values()).map(m => this.toMirror(m))
     }
 
-    private toMirror(m: MirrorImplementation): Required<Mirror> {
+    private toMirror(m: MirrorImplementation): MirrorObject {
+        // Ensure we clone the object properties, so it will not mutate original object
         return {
-            activated: m.activated,
             mirrorName: m.mirrorName,
             canListFullMangas: m.canListFullMangas,
             mirrorIcon: m.mirrorIcon,
-            domains: m.domains,
+            domains: [...m.domains],
             home: m.home,
-            chapter_url: m.chapter_url,
+            chapter_url: new RegExp(m.chapter_url),
             languages: m.languages,
-            abstract: m.abstract,
-            abstract_options: m.abstract_options,
             disabled: m.disabled
         }
     }
