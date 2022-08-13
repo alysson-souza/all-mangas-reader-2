@@ -19,7 +19,7 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
                 mirrorName: "Manga Komi",
                 mirrorIcon: MangaKomiIcon,
                 languages: "en",
-                domains: ["mangakomi.io"],
+                domains: ["mangakomi.io", "mangakomi.com"],
                 home: "https://mangakomi.io/",
                 chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g
             },
