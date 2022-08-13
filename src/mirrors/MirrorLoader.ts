@@ -5,9 +5,8 @@ import { MangaFox } from "./sites/MangaFox"
 import { MangaHub } from "./sites/MangaHub"
 import { MangaHere } from "./sites/MangaHere"
 import { ToonilyNet } from "./sites/Madara/ToonilyNet"
-import { Mangakakalot } from "./sites/MangaKakalot/Mangakakalot"
-import { Manganelo } from "./sites/MangaKakalot/Manganelo"
 import { Toonily } from "./sites/Madara/Toonily"
+import { getMangaKakalotImplementations } from "./sites/abstract/MangakakalotAbs"
 
 export class MirrorLoader {
     lookupMap: Map<string, MirrorImplementation>
@@ -52,8 +51,7 @@ export const getMirrorLoader = (mirrorHelper: MirrorHelper) => {
             new MangaHub(mirrorHelper),
             new ToonilyNet(mirrorHelper),
             new Toonily(mirrorHelper),
-            new Mangakakalot(mirrorHelper),
-            new Manganelo(mirrorHelper)
+            ...getMangaKakalotImplementations(mirrorHelper)
         ])
     }
     return instance

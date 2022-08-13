@@ -1,7 +1,9 @@
 import { BaseMirror } from "./BaseMirror"
-import { MirrorImplementation } from "../../../types/common"
+import { MirrorImplementation, MirrorObject } from "../../../types/common"
 import { MirrorHelper } from "../../MirrorHelper"
 import { CheerioAPI } from "cheerio"
+import MangakakalotIcon from "../../icons/mangakakalot-optimized.png"
+import ManganeloIcon from "../../icons/manganelo-optimized.png"
 
 const defaultOptions = {
     base_url: "",
@@ -13,20 +15,35 @@ const defaultOptions = {
     images_selector: ".container-chapter-reader img"
 }
 
-export abstract class MangakakalotAbs extends BaseMirror implements MirrorImplementation {
+export class MangakakalotAbs extends BaseMirror implements MirrorImplementation {
     canListFullMangas = false
-    abstract mirrorName
-    abstract mirrorIcon
-    abstract languages
-    abstract domains
-    abstract home
-    abstract chapter_url
 
-    private options: typeof defaultOptions
+    chapter_url: RegExp
+    domains: string[]
+    home: string
+    languages: string
+    mirrorIcon: string
+    mirrorName: string
+    disabled: boolean | undefined
 
-    protected constructor(mirrorHelper: MirrorHelper, options: Partial<typeof defaultOptions>) {
+    private readonly options: typeof defaultOptions
+
+    constructor(mirrorHelper: MirrorHelper, mirror: MirrorObject, options: Partial<typeof defaultOptions> = {}) {
         super(mirrorHelper)
-        this.options = { ...defaultOptions, ...options }
+
+        this.mirrorName = mirror.mirrorName
+        this.mirrorIcon = mirror.mirrorIcon
+        this.domains = mirror.domains
+        this.home = mirror.home
+        this.chapter_url = mirror.chapter_url
+        this.languages = mirror.languages
+        this.disabled = mirror.disabled
+
+        this.options = {
+            ...defaultOptions,
+            base_url: mirror.home,
+            ...options
+        }
     }
 
     async getMangaList(search) {
@@ -102,4 +119,46 @@ export abstract class MangakakalotAbs extends BaseMirror implements MirrorImplem
     isCurrentPageAChapterPage(doc: string, curUrl: string): boolean {
         return false
     }
+}
+
+/**
+ * All implementations based of Mangakakalot are placed here
+ * avoids the need to create new file for each implementation
+ */
+export const getMangaKakalotImplementations = (mirrorHelper: MirrorHelper): MirrorImplementation[] => {
+    return [
+        new MangakakalotAbs(mirrorHelper, {
+            mirrorName: "Mangakakalot",
+            mirrorIcon: MangakakalotIcon,
+            languages: "en",
+            domains: ["mangakakalot.com"],
+            home: "https://mangakakalot.com/",
+            chapter_url: /^\/chapter\/.*\/.+$/g
+        }),
+        new MangakakalotAbs(
+            mirrorHelper,
+            {
+                mirrorName: "Manganelo",
+                mirrorIcon: ManganeloIcon,
+                languages: "en",
+                domains: [
+                    "manganato.com",
+                    "chap.manganato.com",
+                    "m.manganato.com",
+                    "readmanganato.com",
+                    "m.manganelo.com",
+                    "chap.manganelo.com"
+                ],
+                home: "https://manganato.com/",
+                chapter_url: /^\/manga-.*\/chapter-\d+.*$/g
+            },
+            {
+                series_list_selector: ".search-story-item a.item-title",
+                chapter_list_selector: ".row-content-chapter a",
+                chapter_information_selector:
+                    '.panel-breadcrumb:first a[href*="/manga/"]:first, .panel-breadcrumb:first a[href*="/manga-"]:first',
+                images_selector: ".container-chapter-reader img"
+            }
+        )
+    ]
 }

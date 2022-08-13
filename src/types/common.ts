@@ -81,7 +81,7 @@ export interface AppManga {
 /** Plain javascript object with static properties defined **/
 export interface MirrorObject {
     mirrorName: string
-    canListFullMangas: boolean
+    canListFullMangas?: boolean
     mirrorIcon: string
     domains: string[]
     home: string
