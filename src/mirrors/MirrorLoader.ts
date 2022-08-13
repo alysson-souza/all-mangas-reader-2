@@ -6,6 +6,7 @@ import { MangaHub } from "./sites/MangaHub"
 import { MangaHere } from "./sites/MangaHere"
 import { getMangaKakalotImplementations } from "./sites/abstract/MangakakalotAbs"
 import { getMadaraImplementations } from "./sites/Madara/MadaraImplementations"
+import { WebToon } from "./sites/WebToon"
 
 export class MirrorLoader {
     lookupMap: Map<string, MirrorImplementation>
@@ -49,7 +50,8 @@ export const getMirrorLoader = (mirrorHelper: MirrorHelper) => {
             new Manga4Life(mirrorHelper),
             new MangaHub(mirrorHelper),
             ...getMadaraImplementations(mirrorHelper),
-            ...getMangaKakalotImplementations(mirrorHelper)
+            ...getMangaKakalotImplementations(mirrorHelper),
+            new WebToon(mirrorHelper)
         ])
     }
     return instance
