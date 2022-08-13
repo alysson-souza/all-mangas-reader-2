@@ -1,6 +1,6 @@
-import { BaseMirror } from "./BaseMirror"
+import { BaseMirror } from "../abstract/BaseMirror"
 import { MirrorHelper } from "../../MirrorHelper"
-import { MirrorImplementation } from "../../../types/common"
+import { MirrorImplementation, MirrorObject } from "../../../types/common"
 
 const defaultOptions = {
     search_url: "",
@@ -22,21 +22,35 @@ const defaultOptions = {
     doBefore: () => {}
 }
 
-export abstract class Madara extends BaseMirror implements MirrorImplementation {
+export class Madara extends BaseMirror implements MirrorImplementation {
     canListFullMangas = false
 
-    abstract mirrorName
-    abstract mirrorIcon
-    abstract languages
-    abstract domains
-    abstract home
-    abstract chapter_url
+    chapter_url: RegExp
+    domains: string[]
+    home: string
+    languages: string
+    mirrorIcon: string
+    mirrorName: string
+    disabled: boolean | undefined
 
-    private options: typeof defaultOptions
+    private readonly options: typeof defaultOptions
 
-    protected constructor(mirrorHelper: MirrorHelper, options: Partial<typeof defaultOptions>) {
+    constructor(mirrorHelper: MirrorHelper, mirror: MirrorObject, options: Partial<typeof defaultOptions> = {}) {
         super(mirrorHelper)
-        this.options = Object.assign(defaultOptions, options)
+
+        this.mirrorName = mirror.mirrorName
+        this.mirrorIcon = mirror.mirrorIcon
+        this.domains = mirror.domains
+        this.home = mirror.home
+        this.chapter_url = mirror.chapter_url
+        this.languages = mirror.languages
+        this.disabled = mirror.disabled
+
+        this.options = {
+            ...defaultOptions,
+            search_url: mirror.home,
+            ...options
+        }
     }
 
     async getMangaList(search) {
