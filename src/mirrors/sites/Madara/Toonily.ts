@@ -11,7 +11,7 @@ export class Toonily extends Madara {
     chapter_url = /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g
     canListFullMangas = false
 
-    constructor(mirrorHelper = MirrorHelper) {
+    constructor(mirrorHelper: MirrorHelper) {
         super(mirrorHelper, { search_url: "https://toonily.com/" })
     }
 }
