@@ -60,12 +60,18 @@ export class MangaHub extends BaseMirror implements MirrorImplementation {
 
         const query = `{"query":"{chapter(x:m01,slug:\\"${slug}\\",number:${chapter}){id,title,mangaID,number,slug,date,pages,noAd,manga{id,title,slug,mainSlug,author,isWebtoon,isYaoi,isPorn,isSoftPorn,unauthFile,isLicensed}}}\"}`
 
+        const mhubCookie = await this.mirrorHelper.getCookie({
+            url: curUrl,
+            name: "mhub_access"
+        })
+
         const json = await this.scriptJson({
             url: "https://api.mghubcdn.com/graphql",
             target: { tabId: sender.tab.id },
             config: {
                 method: "post",
-                body: query
+                body: query,
+                headers: { "x-mhub-access": mhubCookie?.value }
             }
         })
 

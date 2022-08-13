@@ -1,5 +1,4 @@
-import browser from "webextension-polyfill"
-
+import browser, { Cookies } from "webextension-polyfill"
 import CryptoJS from "crypto-js"
 
 interface LoadOptions {
@@ -211,9 +210,15 @@ export class MirrorHelper {
     /**
      * Set a cookie on a domain
      */
-    async setCookie(setCookieObj) {
+    async setCookie(setCookieObj: Cookies.SetDetailsType) {
         if (this.options.allowcookies) {
             await browser.cookies.set(setCookieObj)
+        }
+    }
+
+    async getCookie(details: Cookies.GetDetailsType) {
+        if (this.options.allowcookies) {
+            return browser.cookies.get(details)
         }
     }
 
