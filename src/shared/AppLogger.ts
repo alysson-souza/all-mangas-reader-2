@@ -10,6 +10,7 @@ export class AppLogger {
     log(level: "log" | "info" | "error" | "debug", message: Message) {
         if (typeof message === "string") {
             console[level](this.getPrefix() + ": " + message)
+            return
         }
 
         console[level](this.getPrefix(), message)

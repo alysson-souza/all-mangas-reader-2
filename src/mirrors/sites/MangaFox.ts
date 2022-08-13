@@ -65,12 +65,17 @@ export class MangaFox extends BaseMirror implements MirrorImplementation {
         const data = await this.mirrorHelper.loadPage(url, {
             nocontenttype: true,
             headers: {
-                "x-cookie": "isAdult=1",
-                "x-referer": urlImage,
+                "X-Cookie": "isAdult=1",
+                "X-Referer": urlImage,
                 "X-Requested-With": "XMLHttpRequest",
                 Referer: urlImage
             }
         })
+
+        if (!data) {
+            throw new Error(`Failed to load unpack data from ${url}`)
+        }
+
         // the retrieved data is packed through an obfuscator
         // dm5 is unpacking the images url through an eval, we can't do that in AMR due to CSP
         // we do it manually (below is the unpack function shipped with the data to decode)
@@ -114,9 +119,8 @@ export class MangaFox extends BaseMirror implements MirrorImplementation {
                 pvalue = this.mirrorHelper.getVariableFromScript("pvalue", sc) // array of scan urls (contains current one and next one)
             pvalue = pvalue.map(img => pix + img + "?cid=" + cid + "&key=" + key) // mimic the returned function which rebuilds the url depending on its parts
             return pvalue[0]
-        } else {
-            return "error"
         }
+        throw new Error(`Failed to find matching arguments for unpack function`)
     }
 
     async getListChaps(urlManga: string) {
