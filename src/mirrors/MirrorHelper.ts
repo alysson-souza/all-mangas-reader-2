@@ -16,7 +16,7 @@ interface LoadOptions {
     post?: boolean
 
     /** data: object to send in accordance with its dataType **/
-    data?: Record<string, unknown> | string
+    data?: Record<string, unknown> | string | URLSearchParams | FormData
 
     crossdomain?: boolean
 
@@ -78,9 +78,30 @@ export class MirrorHelper {
             method: options.post ? "post" : "get",
             mode: options.crossdomain ? "no-cors" : "same-origin",
             headers: this.getDefaultHeaders(options),
-            body: options.data ? JSON.stringify(options.data) : undefined
+            body: this.getData(options)
         }
         return config
+    }
+
+    private getData(options: LoadOptions): BodyInit | undefined {
+        if (options.data instanceof URLSearchParams) {
+            return options.data
+        }
+
+        if (options.data instanceof FormData) {
+            return options.data
+        }
+
+        if (typeof options.data === "object") {
+            return JSON.stringify(options.data)
+        }
+
+        if (typeof options.data === "string") {
+            return options.data
+        }
+
+        // In theory should never reach this
+        return options.data ? JSON.stringify(options.data) : undefined
     }
 
     private getDefaultHeaders(options: LoadOptions, defaults: Record<string, string> = {}): Record<string, string> {

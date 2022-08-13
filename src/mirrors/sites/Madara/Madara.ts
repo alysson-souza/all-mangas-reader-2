@@ -118,10 +118,10 @@ export class Madara extends BaseMirror implements MirrorImplementation {
                 nocache: true,
                 preventimages: true,
                 post: true,
-                data: {
+                data: new URLSearchParams({
                     action: "manga_get_chapters",
                     manga: mangaVar
-                }
+                })
             })
         }
 
