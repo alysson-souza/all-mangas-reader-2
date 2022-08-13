@@ -1,5 +1,5 @@
 import { BaseMirror } from "../abstract/BaseMirror"
-import { MirrorHelper } from "../../MirrorHelper"
+import { JsonOptions, MirrorHelper } from "../../MirrorHelper"
 import { MirrorImplementation, MirrorObject } from "../../../types/common"
 
 const defaultOptions = {
@@ -58,38 +58,28 @@ export class Madara extends BaseMirror implements MirrorImplementation {
         const res = []
 
         if (this.options.search_json) {
-            let json = await this.mirrorHelper.loadJson(searchApiUrl, {
+            const urlSearchParams = new URLSearchParams({
+                action: "wp-manga-search-manga",
+                title: search
+            })
+            const jsonData = await this.mirrorHelper.loadJson(searchApiUrl, {
                 nocache: true,
-                preventimages: true,
-                post: true,
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest",
-                    "Content-type": "application/x-www-form-urlencoded"
-                },
-                data: {
-                    action: "wp-manga-search-manga",
-                    title: search
-                }
-            })
-
-            if (json.success) {
-                for (let i in json.data) {
-                    let item = json.data[i]
-                    res.push([item.title, item.url])
-                }
-            }
-        } else {
-            // Load search page
-            const urlManga = this.options.search_url + "?s=" + search + "&post_type=wp-manga"
-            const doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
-            const self = this
-
-            const $ = this.parseHtml(doc)
-
-            $(this.options.search_a_sel).each(function () {
-                res[res.length] = [$(this).text(), self.options.urlProcessor($(this).attr("href"))]
-            })
+                method: "POST",
+                data: urlSearchParams
+            } as JsonOptions)
+            return jsonData.data.map(item => [item.title, item.url])
         }
+
+        // Load search page
+        const urlManga = this.options.search_url + "?s=" + search + "&post_type=wp-manga"
+        const doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
+        const self = this
+
+        const $ = this.parseHtml(doc)
+
+        $(this.options.search_a_sel).each(function () {
+            res[res.length] = [$(this).text(), self.options.urlProcessor($(this).attr("href"))]
+        })
         return res
     }
 

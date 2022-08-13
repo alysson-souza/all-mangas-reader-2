@@ -3,7 +3,7 @@ import browser from "webextension-polyfill"
 import CryptoJS from "crypto-js"
 
 interface LoadOptions {
-    /** Do not sent content type **/
+    /** @deprecated Do not sent content type **/
     nocontenttype?: boolean
 
     /** true to prevent page to be loaded from cache **/
@@ -12,15 +12,18 @@ interface LoadOptions {
     /** true to prevent images in page to be loaded **/
     preventimages?: boolean
 
-    /** true to send message using POST **/
+    /**
+     * @deprecated use method instead
+     * true to send message using POST
+     **/
     post?: boolean
+
+    method?: "GET" | "PATCH" | "POST" | "DELETE"
 
     /** data: object to send in accordance with its dataType **/
     data?: Record<string, unknown> | string | URLSearchParams | FormData
 
     crossdomain?: boolean
-
-    contentType?: string
 
     headers?: { [k: string]: string }
 
@@ -28,6 +31,8 @@ interface LoadOptions {
 }
 
 type StateOptions = Record<string, string | undefined | null | number>
+
+export type JsonOptions = Omit<LoadOptions, "preventimages">
 
 /**
  * Abstract common functionality that needs to handed by the reader
@@ -51,15 +56,26 @@ export class MirrorHelper {
         return text
     }
 
-    public async loadJson(url: string, options: LoadOptions = {}) {
-        const config: RequestInit = {
-            cache: options.nocache ? "no-cache" : "default",
-            method: options.post ? "post" : "get",
-            mode: options.crossdomain ? "no-cors" : "same-origin",
-            headers: this.getDefaultHeaders(options, { "Content-Type": "application/json" })
-        }
-
+    /**
+     * This method was really miss used in a lot of places in previous implementations
+     * where it was not loading json at all, but instead text....
+     */
+    public async loadJson(url: string, options?: JsonOptions) {
+        const config = this.getConfig(options, { "Content-Type": "application/json" })
         const response = await fetch(url, config)
+
+        if (!response.ok) {
+            const message = `Failed to load manga list from url ${url}`
+            console.error({
+                fn: "loadJson",
+                message,
+                url,
+                method: config.method,
+                cache: config.cache,
+                body: config.body ? config.body.toString() : config.body
+            })
+            throw new Error(message)
+        }
 
         // Manually try to parse json as original method
         const data = await response.text()
@@ -67,20 +83,20 @@ export class MirrorHelper {
         try {
             return JSON.parse(data)
         } catch (e) {
+            console.error(e)
             return data
         }
     }
 
-    private getConfig(options: LoadOptions) {
-        const config: RequestInit = {
+    private getConfig(options: LoadOptions = {}, defaultHeaders?: Record<string, string>): RequestInit {
+        return {
             credentials: options.credentials,
             cache: options.nocache ? "no-cache" : "default",
-            method: options.post ? "post" : "get",
+            method: options.post ? "POST" : options.method ?? "GET",
             mode: options.crossdomain ? "no-cors" : "same-origin",
-            headers: this.getDefaultHeaders(options),
+            headers: this.getDefaultHeaders(options, defaultHeaders),
             body: this.getData(options)
         }
-        return config
     }
 
     private getData(options: LoadOptions): BodyInit | undefined {
@@ -107,7 +123,10 @@ export class MirrorHelper {
     private getDefaultHeaders(options: LoadOptions, defaults: Record<string, string> = {}): Record<string, string> {
         const header = { ...defaults, ...options.headers }
 
-        if (options.nocontenttype) {
+        if (options.data instanceof URLSearchParams) {
+            // Must be  application/x-www-form-urlencoded
+            header["Content-Type"] = "application/x-www-form-urlencoded"
+        } else if (options.nocontenttype) {
             delete header["Content-Type"]
         }
 

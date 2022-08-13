@@ -8,6 +8,8 @@ import MangaKomiIcon from "../../icons/mangakomi-optimized.png"
 /**
  * All implementations based of Madara are placed here
  * avoids the need to create new file for each implementation
+ *
+ * @NOTE: home or search_url option must end in "/"
  */
 export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImplementation[] => {
     return [
@@ -41,7 +43,7 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
             mirrorIcon: ToonilyNetIcon,
             languages: "en",
             domains: ["toonily.net"],
-            home: "https://toonily.net",
+            home: "https://toonily.net/",
             chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g
         })
     ]
