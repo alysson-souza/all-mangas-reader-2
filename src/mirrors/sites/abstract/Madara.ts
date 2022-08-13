@@ -1,60 +1,42 @@
 import { BaseMirror } from "./BaseMirror"
 import { MirrorHelper } from "../../MirrorHelper"
-import { AbstractOptions, MirrorImplementation } from "../../../types/common"
+import { MirrorImplementation } from "../../../types/common"
 
-interface DefaultOptions {
-    search_a_sel: string
-    chapters_a_sel: string
-    page_container_sel: string
-    img_sel: string
-    path_length: number
-    search_json: boolean
-    chapter_list_ajax: boolean
-    chapter_list_ajax_selctor: string
-    chapter_list_ajax_selctor_type: string
-    title_selector: string
-    img_src: string
-    secondary_img_src: string
-    sort_chapters: boolean
-    isekai_chapter_url: boolean
-    urlProcessor: (url) => any
-    doBefore: () => void
+const defaultOptions = {
+    search_url: "",
+    search_a_sel: "div.post-title > h4 > a",
+    chapters_a_sel: "li.wp-manga-chapter > a",
+    page_container_sel: "div.reading-content",
+    img_sel: "div.reading-content img",
+    path_length: 2,
+    search_json: true,
+    chapter_list_ajax: false,
+    chapter_list_ajax_selctor: "manga",
+    chapter_list_ajax_selctor_type: "variable",
+    title_selector: "div.post-title > h1",
+    img_src: "src",
+    secondary_img_src: "data-src",
+    sort_chapters: false,
+    isekai_chapter_url: false,
+    urlProcessor: url => url,
+    doBefore: () => {}
 }
 
 export abstract class Madara extends BaseMirror implements MirrorImplementation {
-    default_options: DefaultOptions = {
-        search_a_sel: "div.post-title > h4 > a",
-        chapters_a_sel: "li.wp-manga-chapter > a",
-        page_container_sel: "div.reading-content",
-        img_sel: "div.reading-content img",
-        path_length: 2,
-        search_json: true,
-        chapter_list_ajax: false,
-        chapter_list_ajax_selctor: "manga",
-        chapter_list_ajax_selctor_type: "variable",
-        title_selector: "div.post-title > h1",
-        img_src: "src",
-        secondary_img_src: "data-src",
-        sort_chapters: false,
-        isekai_chapter_url: false,
-        urlProcessor: url => url,
-        doBefore: () => {}
-    }
-
-    mirrorName = "Madara"
     canListFullMangas = false
 
+    abstract mirrorName
     abstract mirrorIcon
     abstract languages
     abstract domains
     abstract home
     abstract chapter_url
 
-    private options: DefaultOptions & AbstractOptions
+    private options: typeof defaultOptions
 
-    protected constructor(mirrorHelper: MirrorHelper, options: Partial<AbstractOptions>) {
+    protected constructor(mirrorHelper: MirrorHelper, options: Partial<typeof defaultOptions>) {
         super(mirrorHelper)
-        this.options = Object.assign(this.default_options, options)
+        this.options = Object.assign(defaultOptions, options)
     }
 
     async getMangaList(search) {

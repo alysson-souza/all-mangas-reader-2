@@ -7,6 +7,7 @@ import { MangaHere } from "./sites/MangaHere"
 import { ToonilyNet } from "./sites/Madara/ToonilyNet"
 import { Mangakakalot } from "./sites/MangaKakalot/Mangakakalot"
 import { Manganelo } from "./sites/MangaKakalot/Manganelo"
+import { Toonily } from "./sites/Madara/Toonily"
 
 export class MirrorLoader {
     lookupMap: Map<string, MirrorImplementation>
@@ -50,6 +51,7 @@ export const getMirrorLoader = (mirrorHelper: MirrorHelper) => {
             new Manga4Life(mirrorHelper),
             new MangaHub(mirrorHelper),
             new ToonilyNet(mirrorHelper),
+            new Toonily(mirrorHelper),
             new Mangakakalot(mirrorHelper),
             new Manganelo(mirrorHelper)
         ])
