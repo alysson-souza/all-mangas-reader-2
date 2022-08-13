@@ -27,9 +27,9 @@ export class MangaHub extends BaseMirror implements MirrorImplementation {
             res.push([$(this).text(), $(this).attr("href")])
         })
 
-        const nextPage = $("ul.pager li.next:first")
-        if (nextPage.length > 0) {
-            res = [...res, ...(await this.searchPage(nextPage.attr("href")))]
+        const nextPageLink = $("ul.pager li.next a").first()
+        if (nextPageLink.length > 0) {
+            res.push(...(await this.searchPage(nextPageLink.attr("href"))))
         }
         return res
     }

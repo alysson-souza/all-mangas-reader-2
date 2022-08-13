@@ -49,6 +49,12 @@ export class MirrorHelper {
         const config = this.getConfig(options)
         const response = await fetch(url, config)
 
+        if (!response.ok) {
+            const message = `Failed to load manga list from url ${url}`
+            this.logError("loadPage", message, url, config)
+            throw new Error(message)
+        }
+
         let text = await response.text()
         if (options.preventimages) {
             text = text.replace(/<img/gi, "<noload")
@@ -66,14 +72,7 @@ export class MirrorHelper {
 
         if (!response.ok) {
             const message = `Failed to load manga list from url ${url}`
-            console.error({
-                fn: "loadJson",
-                message,
-                url,
-                method: config.method,
-                cache: config.cache,
-                body: config.body ? config.body.toString() : config.body
-            })
+            this.logError("loadJson", message, url, config)
             throw new Error(message)
         }
 
@@ -86,6 +85,17 @@ export class MirrorHelper {
             console.error(e)
             return data
         }
+    }
+
+    private logError(fn: string, message: string, url: string, config: RequestInit) {
+        console.error({
+            fn,
+            message,
+            url,
+            method: config.method,
+            cache: config.cache,
+            body: config.body ? config.body.toString() : config.body
+        })
     }
 
     private getConfig(options: LoadOptions = {}, defaultHeaders?: Record<string, string>): RequestInit {

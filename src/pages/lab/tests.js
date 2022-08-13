@@ -350,7 +350,7 @@ const tests = [
                                     infos.name +
                                     "</i>, name must be <i>" +
                                     manga_name +
-                                    "</i>. Fix the implementation method <strong>getInformationsFromCurrentPage</strong>"
+                                    "</i>. Fix the implementation method <strong>getCurrentPageInfo</strong>"
                             ])
                         }
                         if (manga_url === infos.currentMangaURL) {
@@ -362,14 +362,14 @@ const tests = [
                                     infos.currentMangaURL +
                                     "</i>, url must be <i>" +
                                     manga_url +
-                                    "</i>. Fix the implementation method <strong>getInformationsFromCurrentPage</strong>"
+                                    "</i>. Fix the implementation method <strong>getCurrentPageInfo</strong>"
                             ])
                         }
                         // No more chapter name required, get it for chapters list results
                         /*if (chapter_name === infos.currentChapter) {
                             listresults.push([true, "Chapter name retrieved match selected chapter"])
                         } else {
-                            listresults.push([false, "Chapter name retrieved does not match selected chapter : name retrieved : <i>" + infos.currentChapter + "</i>, name must be <i>" + chapter_name + "</i>. Fix the implementation method <strong>getInformationsFromCurrentPage</strong>"])
+                            listresults.push([false, "Chapter name retrieved does not match selected chapter : name retrieved : <i>" + infos.currentChapter + "</i>, name must be <i>" + chapter_name + "</i>. Fix the implementation method <strong>getCurrentPageInfo</strong>"])
                         }*/
                         if (chapter_url === infos.currentChapterURL) {
                             listresults.push([true, "Chapter url retrieved match selected chapter"])
@@ -380,7 +380,7 @@ const tests = [
                                     infos.currentChapterURL +
                                     "</i>, url must be <i>" +
                                     chapter_url +
-                                    "</i>. Fix the implementation method <strong>getInformationsFromCurrentPage</strong>"
+                                    "</i>. Fix the implementation method <strong>getCurrentPageInfo</strong>"
                             ])
                         }
                         if (pickedLanguage !== undefined && pickedLanguage === infos.language) {
@@ -392,7 +392,7 @@ const tests = [
                                     infos.language +
                                     "</i>, language must be <i>" +
                                     pickedLanguage +
-                                    "</i>. Fix the implementation method <strong>getInformationsFromCurrentPage</strong>"
+                                    "</i>. Fix the implementation method <strong>getCurrentPageInfo</strong>"
                             ])
                         }
                         return listresults
@@ -401,7 +401,7 @@ const tests = [
                             false,
                             "The chapter " +
                                 chapter_url +
-                                " do not return any information. Fix the implementation method <strong>getInformationsFromCurrentPage</strong>"
+                                " do not return any information. Fix the implementation method <strong>getCurrentPageInfo</strong>"
                         ]
                     }
                 }
