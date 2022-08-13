@@ -4,6 +4,7 @@ import { Madara } from "./Madara"
 import ToonilyIcon from "../../icons/toonily-optimized.png"
 import ToonilyNetIcon from "../../icons/toonily_net-optimized.png"
 import MangaKomiIcon from "../../icons/mangakomi-optimized.png"
+import WebtoonXYZ from "../../icons/webtoon-xyz-optimized.png"
 
 /**
  * All implementations based of Madara are placed here
@@ -30,6 +31,14 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
                 chapter_list_ajax: true
             }
         ),
+        new Madara(mirrorHelper, {
+            mirrorName: "Webtoon.xyz",
+            mirrorIcon: WebtoonXYZ,
+            languages: "en",
+            domains: ["www.webtoon.xyz"],
+            home: "https://www.webtoon.xyz/",
+            chapter_url: /^\/read\/.*\/.+$/g
+        }),
         new Madara(mirrorHelper, {
             mirrorName: "Toonily",
             mirrorIcon: ToonilyIcon,
