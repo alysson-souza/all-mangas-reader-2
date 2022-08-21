@@ -218,7 +218,7 @@ const actions = {
             dispatch("setOption", { key: "updated", value: Date.now() })
             dispatch("setOption", { key: "changesSinceSync", value: 1 })
         } catch (e) {
-            console.error("Error while updating sync timestamp")
+            console.error("Error while running findAndUpdateManga", manga)
             console.error(e)
         }
     },
@@ -475,92 +475,93 @@ const actions = {
             language: message.language,
             rootState: { state: rootState }
         })
-        let posOld = -1,
-            posNew = -1,
-            isNew = false,
-            mg = state.all.find(manga => manga.key === key)
 
-        let mgchap = chapPath(mg.lastChapterReadURL),
-            messchap = chapPath(message.lastChapterReadURL)
+        let posOld = -1
+        let posNew = -1
+        const mg = state.all.find(manga => manga.key === key)
+
+        const mgchap = chapPath(mg.lastChapterReadURL)
+        const messchap = chapPath(message.lastChapterReadURL)
+
         for (let i = 0; i < mg.listChaps.length; i++) {
-            if (chapPath(mg.listChaps[i][1]) === mgchap) posOld = i
-            if (chapPath(mg.listChaps[i][1]) === messchap) posNew = i
+            if (chapPath(mg.listChaps[i][1]) === mgchap) {
+                posOld = i
+            }
+            if (chapPath(mg.listChaps[i][1]) === messchap) {
+                posNew = i
+            }
         }
 
         commit("updateMangaEntryWithInfos", { key: mg.key, obj: message })
 
-        return new Promise(async (resolve, reject) => {
-            if (posNew === -1) {
-                if (mg.update === 1) {
-                    try {
-                        let listChaps = await dispatch("getMangaListOfChapters", mg)
-                        /**
-                         * Manage the case in which the returned list contains multiple chapters list
-                         * for different languages
-                         */
-                        if (listChaps !== undefined && !Array.isArray(listChaps)) {
-                            if (mg.language === undefined) {
-                                // should not happen there (the case is handled for new mangas but not here when manga already exists)
-                                reject(
-                                    new Error(
-                                        "Mirror language is undefined. the case is handled for new mangas but not here when manga already exists"
-                                    )
-                                )
-                            }
-                            if (listChaps[mg.language] && listChaps[mg.language].length > 0) {
-                                // update list of existing languages
-                                let listLangs = Object.keys(listChaps).join(",")
-                                commit("updateMangaListLangs", { key: mg.key, langs: listLangs })
-                                // set current list chaps to the right one
-                                listChaps = listChaps[mg.language]
-                            } else {
-                                logger.debug(
-                                    "required language " +
-                                        mg.language +
-                                        " does not exist in resulting list of chapters for manga " +
-                                        mg.name +
-                                        " on " +
-                                        mg.mirror +
-                                        ". Existing languages are : " +
-                                        Object.keys(listChaps).join(",")
-                                )
-                            }
-                        }
-                        if (listChaps.length > 0) {
-                            commit("updateMangaListChaps", { key: mg.key, listChaps: listChaps })
-                            let mgchap = chapPath(mg.lastChapterReadURL),
-                                messchap = chapPath(message.lastChapterReadURL)
-                            for (let i = 0; i < listChaps.length; i++) {
-                                if (chapPath(listChaps[i][1]) === mgchap) posOld = i
-                                if (chapPath(listChaps[i][1]) === messchap) posNew = i
-                            }
-                            if (posNew !== -1 && (message.fromSite || posNew < posOld || posOld === -1)) {
-                                commit("updateMangaLastChapter", { key: mg.key, obj: message })
-                                if (!message.isSync) {
-                                    if (!syncManager)
-                                        syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
-                                    await syncManager.setToRemote(mg, "ts")
-                                }
-                            }
-                        }
-                        resolve()
-                    } catch (e) {
-                        reject(e)
+        if (posNew !== -1) {
+            if (message.fromSite || posNew < posOld || posOld === -1) {
+                commit("updateMangaLastChapter", { key: mg.key, obj: message }, { root: true })
+                if (!message.isSync) {
+                    if (!syncManager) {
+                        syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
                     }
-                } else {
-                    resolve()
+                    await syncManager.setToRemote(mg, "ts")
                 }
-            } else {
-                if (message.fromSite || posNew < posOld || posOld === -1) {
-                    commit("updateMangaLastChapter", { key: mg.key, obj: message }, { root: true })
-                    if (!message.isSync) {
-                        if (!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
-                        await syncManager.setToRemote(mg, "ts")
-                    }
-                }
-                resolve()
             }
-        })
+            return
+        }
+
+        if (mg.update !== 1) {
+            // Nothing to do
+            return
+        }
+
+        // Main logic
+        let listChaps = await dispatch("getMangaListOfChapters", mg)
+        /**
+         * Manage the case in which the returned list contains multiple chapters list
+         * for different languages
+         */
+        if (listChaps !== undefined && !Array.isArray(listChaps)) {
+            if (mg.language === undefined) {
+                // should not happen there (the case is handled for new mangas but not here when manga already exists)
+                reject(
+                    new Error(
+                        "Mirror language is undefined. the case is handled for new mangas but not here when manga already exists"
+                    )
+                )
+            }
+            if (listChaps[mg.language] && listChaps[mg.language].length > 0) {
+                // update list of existing languages
+                let listLangs = Object.keys(listChaps).join(",")
+                commit("updateMangaListLangs", { key: mg.key, langs: listLangs })
+                // set current list chaps to the right one
+                listChaps = listChaps[mg.language]
+            } else {
+                logger.debug(
+                    "required language " +
+                        mg.language +
+                        " does not exist in resulting list of chapters for manga " +
+                        mg.name +
+                        " on " +
+                        mg.mirror +
+                        ". Existing languages are : " +
+                        Object.keys(listChaps).join(",")
+                )
+            }
+        }
+        if (listChaps.length > 0) {
+            commit("updateMangaListChaps", { key: mg.key, listChaps: listChaps })
+            let mgchap = chapPath(mg.lastChapterReadURL),
+                messchap = chapPath(message.lastChapterReadURL)
+            for (let i = 0; i < listChaps.length; i++) {
+                if (chapPath(listChaps[i][1]) === mgchap) posOld = i
+                if (chapPath(listChaps[i][1]) === messchap) posNew = i
+            }
+            if (posNew !== -1 && (message.fromSite || posNew < posOld || posOld === -1)) {
+                commit("updateMangaLastChapter", { key: mg.key, obj: message })
+                if (!message.isSync) {
+                    if (!syncManager) syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
+                    await syncManager.setToRemote(mg, "ts")
+                }
+            }
+        }
     },
 
     /**
