@@ -99,6 +99,8 @@ export interface CurrentPageInfo {
     name: string
     currentMangaURL: string
     currentChapterURL: string
+    /** Seems like only used by MangaDex to populate list of languages 'en,de,...' **/
+    language?: string
 }
 
 export interface ChapterData {
@@ -122,9 +124,14 @@ export interface ScriptJsonInject {
 
 export interface MirrorImplementation extends MirrorObject {
     getMangaList(search?: string): Promise<InfoResult[]>
-    getListChaps(urlManga: string): Promise<InfoResult[]>
+
+    getListChaps(urlManga: string): Promise<InfoResult[] | Record<string, InfoResult[]>>
+
     getCurrentPageInfo(doc: string, curUrl: string): Promise<CurrentPageInfo>
+
     getListImages(doc: string, curUrl: string, sender: Sender): Promise<string[]>
+
     getImageUrlFromPage(urlImage: string): Promise<string>
+
     isCurrentPageAChapterPage(doc: string, curUrl: string): boolean
 }

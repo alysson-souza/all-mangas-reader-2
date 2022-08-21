@@ -82,7 +82,7 @@ export function mdFixLang(languages: string | undefined) {
     }
     return results.join(",")
 }
-export function mdFixLangKey(key) {
+export function mdFixLangKey(key: string) {
     return key.replace(/.*_(.*)$/, function (a, b) {
         return a.replace(b, "") + mdFixLang(b)
     })

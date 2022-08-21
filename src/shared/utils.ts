@@ -318,7 +318,6 @@ interface MangaKeyParams {
     url: string | undefined
     mirror?: string
     language?: string
-    shouldConcat?: boolean
     rootState: AppState
 }
 
@@ -340,7 +339,7 @@ export function matchDomain(urlHostname: string, domain: string, store: AppState
 }
 
 /** This will require rethink on how such common functionality depends on the root state... **/
-export function mangaKey({ url, mirror, shouldConcat, rootState }: MangaKeyParams) {
+export function mangaKey({ url, mirror, language, rootState }: MangaKeyParams) {
     if (!url) {
         console.info(
             "A manga key has been requested for undefined url, it will be melted in your database with other mangas with same issue, check the implementation of the mirror where your read this manga."
@@ -362,7 +361,7 @@ export function mangaKey({ url, mirror, shouldConcat, rootState }: MangaKeyParam
         }
     }
 
-    return mstr + "/" + afterHostURL(url) + (shouldConcat !== undefined ? "_" + shouldConcat : "")
+    return mstr + "/" + afterHostURL(url) + (language !== undefined ? "_" + language : "")
 }
 
 export function bookmarkKey({

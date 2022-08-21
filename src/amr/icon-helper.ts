@@ -243,7 +243,7 @@ export class IconHelper {
 }
 
 let instance: IconHelper
-export const getIconHelper = (store: AppStore) => {
+export const getIconHelper = (store: Pick<AppStore, "state" | "getters">) => {
     if (!instance) {
         instance = new IconHelper(store)
     }
