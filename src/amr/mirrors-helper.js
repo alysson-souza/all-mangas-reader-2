@@ -214,6 +214,13 @@ class MirrorsHelper {
                 }
             }
 
+            amr.getCookie = async function (options) {
+                if (window["AMR_STORE"].state.options.allowcookies) {
+                    return await browser.cookies.get(options)
+                }
+                return null
+            }
+
             amr.getOption = function (option) {
                 return window["AMR_STORE"].state.options[option] || ""
             }

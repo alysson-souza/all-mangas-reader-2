@@ -50,6 +50,11 @@ if (typeof registerMangaObject === "function") {
             let slug = parts[4]
             let chapter = parts[5].replace("chapter-", "")
 
+            let cookie = await amr.getCookie({
+                url: this.home,
+                name: "mhub_access"
+            })
+
             let json = await amr.loadJson("https://api.mghubcdn.com/graphql", {
                 post: true,
                 data: `{"query":"{chapter(x:m01,slug:\\"${slug}\\",number:${chapter}){id,title,mangaID,number,slug,date,pages,noAd,manga{id,title,slug,mainSlug,author,isWebtoon,isYaoi,isPorn,isSoftPorn,unauthFile,isLicensed}}}\"}`,
@@ -57,7 +62,8 @@ if (typeof registerMangaObject === "function") {
                     "x-amr-change-Referer": this.home,
                     "x-amr-change-Origin": this.home,
                     accept: "application/json",
-                    "x-amr-change-sec-fetch-site": "cross-site"
+                    "x-amr-change-sec-fetch-site": "cross-site",
+                    "x-mhub-access": cookie.value
                 }
             })
 
