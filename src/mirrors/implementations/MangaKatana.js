@@ -56,12 +56,9 @@ if (typeof registerMangaObject === "function") {
 
         getListImages: async function (doc, curUrl) {
             let txt = $("#__amr_text_dom__", doc).text()
-            let a = txt.match(/ytaw=\[.+?\];/g)[0]
-            let b = a.replace("ytaw=[", "[").replace(",];", "]").replace(/'/g, '"')
+            let a = txt.match(/htnc=\[.+?\];/g)[0]
+            let b = a.replace("htnc=[", "[").replace(",];", "]").replace(/'/g, '"')
             let res = JSON.parse(b)
-
-            console.log("Images")
-            console.log(res)
 
             return res
         },
