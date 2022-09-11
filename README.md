@@ -232,6 +232,7 @@ All Mangas Reader is a browser extension which is designed to help you read and 
             </tr>
             <tr>
                 <td><img src="src/mirrors/icons/unionleitor-optimized.png" width="16" title="Union Leitor"></td>
+                <td><img src="src/mirrors/icons/voidscans-optimized.png" width="16" title="Void Scans"></td>
                 <td><img src="src/mirrors/icons/vortexscans-optimized.png" width="16" title="Vortex Scans"></td>
                 <td><img src="src/mirrors/icons/webtoons-optimized.png" width="16" title="WebToons"></td>
                 <td><img src="src/mirrors/icons/webtoon-xyz-optimized.png" width="16" title="Webtoon.xyz"></td>

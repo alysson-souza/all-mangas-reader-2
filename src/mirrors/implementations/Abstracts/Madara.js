@@ -88,7 +88,7 @@ window["Madara"] = function (options) {
         var res = []
         $(this.options.chapters_a_sel, doc).each(function (index) {
             let chapterName = $(this).text()
-            let stringsToStrip = [mangaName, $(".chapter-release-date", this).text()]
+            let stringsToStrip = [mangaName, $(".chapter-release-date", this).text(), $(".view", this).text()]
 
             stringsToStrip.forEach(x => (chapterName = chapterName.replace(x, "")))
 
