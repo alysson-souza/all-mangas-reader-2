@@ -9,6 +9,7 @@ if (typeof registerMangaObject === "function") {
         chapter_url: /\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
 
         abstract: "Madara",
+        // Random comment for non empty commit
         abstract_options: {
             search_url: "https://en.leviatanscans.com/",
             chapter_list_ajax: true,
