@@ -125,8 +125,8 @@ if (typeof registerMangaObject === "function") {
                 jsonChapFeed.data = Object.values(uniq)
                     .reduce((acc, list) => {
                         list.sort(
-                            (a, b) => new Date(a.attributes.publishAt) - new Date(b.attributes.publishAt) /*&&
-                                b.attributes.chapter - a.attributes.chapter*/
+                            (a, b) => new Date(a.attributes.publishAt) - new Date(b.attributes.publishAt)
+                            /* &&  b.attributes.chapter - a.attributes.chapter*/
                         )
                         acc.push(list[0])
                         return acc
