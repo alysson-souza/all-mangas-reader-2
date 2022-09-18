@@ -1,3 +1,20 @@
+### V2.4.9
+  New Mirrors:
+    * Leviatan Scans Spanish (https://es.leviatanscans.com/)
+    * Void Scans - Re-added void scans under the new domain for the group that took over the name
+
+  Mirror Fixes:
+    * Mangahub - Added api key to call
+    * MangaKatana - Fixed image fetching
+    * Twilight Scans - Fixed chapter list loading
+    * Luminous Scans - Removed the promo images from being loaded in the reader
+    * Leviatan Scans - Changed domain for new multi language releases
+    * Mangadex - 
+
+  Notes:
+    * Mangahub is currently working however with a api limit rate you can only read a few chapters at a time. I would advise using a different mirror
+    * The mangadex change has not been tested large scale because of an issue release beta versions, but it should not cause any issues
+    
 ### V2.4.8
   Mirror Fixes:
     * Leviatan Scans - Fixed issue getting series name

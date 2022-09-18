@@ -11,6 +11,7 @@ if (typeof registerMangaObject === "function") {
         abstract_options: {
             search_url: "https://twilightscans.com/",
             chapter_list_ajax: true,
+            isekai_chapter_url: true,
             secondary_img_src: "data-src"
         }
     })
