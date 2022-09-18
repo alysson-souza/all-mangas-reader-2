@@ -1,17 +1,16 @@
 if (typeof registerMangaObject === "function") {
     registerMangaObject({
-        mirrorName: "Leviatan Scans",
+        mirrorName: "Leviatan Scans Spanish",
         mirrorIcon: "leviatanscans.png",
-        languages: "en",
-        domains: ["leviatanscans.com", "en.leviatanscans.com"],
-        home: "https://en.leviatanscans.com/",
+        languages: "es",
+        domains: ["leviatanscans.com", "es.leviatanscans.com"],
+        home: "https://es.leviatanscans.com/",
         canListFullMangas: true,
         chapter_url: /\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
 
         abstract: "Madara",
-        // Random comment for non empty commit
         abstract_options: {
-            search_url: "https://en.leviatanscans.com/",
+            search_url: "https://es.leviatanscans.com/",
             chapter_list_ajax: true,
             path_length: 2,
             sort_chapters: true,
