@@ -38,12 +38,19 @@ const buildZip = (src, dist, zipFilename) => {
 }
 
 const main = () => {
-    const { name, version } = extractExtensionData()
+    let { name, version } = extractExtensionData()
     let extension = ".zip"
     if (process.argv.includes("-xpi")) {
         extension = ".xpi"
     }
-    const zipFilename = `${name}-v${version}${extension}`
+
+    if (process.argv.includes("-patch")) {
+        let inc = process.argv[process.argv.findIndex(el => el === "-patch") + 1]
+        version = version + "." + inc
+        name = name + "-beta"
+    }
+
+    const zipFilename = `${name}-${version}${extension}`
 
     makeDestZipDirIfNotExists()
 
