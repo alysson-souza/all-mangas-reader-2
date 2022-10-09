@@ -336,15 +336,11 @@ export default {
             }
         },
         async DownloadAMR() {
-            let url = "https://release.allmangasreader.com/all-mangas-reader-latest.crx"
-            let filename =
-                window.navigator.platform === "Win32" ? "all-mangas-reader-latest.7z" : "all-mangas-reader-latest.zip"
+            let url = "https://amr-releases.com/chrome/release/all-mangas-reader-latest.zip"
+            let filename = "all-mangas-reader-latest.zip"
             if (localStorage.beta) {
-                url = "https://release.allmangasreader.com/all-mangas-reader-beta-latest.crx"
-                filename =
-                    window.navigator.platform === "Win32"
-                        ? "all-mangas-reader-beta-latest.7z"
-                        : "all-mangas-reader-beta-latest.zip"
+                url = "https://amr-releases.com/chrome/beta//all-mangas-reader-beta-latest.zip"
+                filename = "all-mangas-reader-beta-latest.zip"
             }
             const res = await fetch(url)
             const fileStream = streamSaver.createWriteStream(filename, {

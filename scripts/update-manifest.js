@@ -33,12 +33,12 @@ if (process.argv.includes("-chrome")) {
         // Chrome public key
         ext.key =
             "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2auEKHQ6Te138RdBhkI0iaCAkCQIddSyMYebuy//9xgtvYlFOKo0eX7S1FYaAUTccU0ZfkJGWUvzXiXTJ9eoKl+Wh4YHw/Yn4wHotDzbKl/ekl2icgMAldxcahXd4gLaBdMkEh/rQPFInJlm4oRAfQhoFIQtD3eHFxrYk4+B65hVEVhtiKGVF3Q9JTLeGaWTnYB6pnw+ch+/4zUG8i0OYjehmzKCCVERRb5w3QGG8DowbMsRojPpjfdAvXK6phURKbbQXh3pXRo5GfXtkdObnTd6TBS7txGIPjY5FjbFvyVXw8VJRVTEWoZ2feG9X4WPLuLs6XMzhcHSB1fR2HVFgQIDAQAB"
-        ext.update_url = "https://release.allmangasreader.com/update/chrome.xml"
+        ext.update_url = "https://amr-releases.com/versions/chrome.xml"
     } else {
         // Chrome public key
         ext.key =
             "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwEXrIivz3obLG3bW6G+r3GJr+4OGo/QLWVRBwzO64Nnzlert7fAgZWT1suTchA5kc+nZRVwyE4cbi3HRSKcnMYFK1oQjq83XgeXD9uRee743P8S3Ek09TUecI/wYm1mi0r9khrBZgGIpO07Bj23/70VktYLBU4Sei8au2evcdJXcuNJ89LqwhagQGdfQGvN9RrAU/opk99Wn2OWjD6sYFhOMx/EBxgokJUeYHeBOmNNbyDrAoz8CkaEm2gqSRJ1AntoUfNgbwGtvmA4YYsR2jp8XMBQiPr75pE85t2I6spSDvIM0/uuH65cwcmBkrW3P4AohWD4DyCFThxQUjB534wIDAQAB"
-        ext.update_url = "https://release.allmangasreader.com/update/chrome-beta.xml"
+        ext.update_url = "https://amr-releases.com/versions/chrome-beta.xml"
     }
 } else if (process.argv.includes("-firefox")) {
     ext.applications = ext.applications || {}
@@ -49,7 +49,7 @@ if (process.argv.includes("-chrome")) {
     } else {
         ext.applications.gecko = {
             id: "beta@allmangasreader.com",
-            update_url: "https://release.allmangasreader.com/update/firefox-beta.json"
+            update_url: "https://amr-releases.com/versions/firefox-beta.json"
         }
     }
 }

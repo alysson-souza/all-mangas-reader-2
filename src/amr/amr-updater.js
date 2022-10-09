@@ -42,12 +42,8 @@ class Updater {
      * Check latest version of stable and beta and keep it in localStorage
      */
     async checkLatestPublishedVersion() {
-        let vstable = await this.getVersionFromChromeUpdateFile(
-                "https://release.allmangasreader.com/update/chrome.xml"
-            ),
-            vbeta = await this.getVersionFromChromeUpdateFile(
-                "https://release.allmangasreader.com/update/chrome-beta.xml"
-            )
+        let vstable = await this.getVersionFromChromeUpdateFile("https://amr-releases.com/versions/chrome.xml"),
+            vbeta = await this.getVersionFromChromeUpdateFile("https://amr-releases.com/versions/chrome-beta.xml")
         if (vstable) {
             localStorage.latestStableVersion = vstable.version
             //localStorage.latestStableUrl = vstable.url

@@ -26,19 +26,6 @@ build:
     <<: *build_common
     script: yarn run build
 
-.zip_common: &zip_common
-    stage: package
-    script: yarn run build-zip
-    artifacts:
-        paths:
-            - dist-zip/*.zip
-        expire_in: 1 week
-
-zip:
-    <<: *zip_common
-    dependencies:
-        - build
-
 xpi-beta:
     stage: package
     script:
@@ -77,7 +64,7 @@ crx-beta:
     stage: package
     script:
         - yarn run manifest:specify -chrome -checkver $VERSION -patch $PATCH
-        - yarn run build-zip
+        - yarn run build-zip -patch $PATCH
     artifacts:
         paths:
             - dist-zip/*.zip
