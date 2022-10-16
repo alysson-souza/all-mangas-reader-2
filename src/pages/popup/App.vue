@@ -339,7 +339,7 @@ export default {
             let url = "https://amr-releases.com/chrome/release/all-mangas-reader-latest.zip"
             let filename = "all-mangas-reader-latest.zip"
             if (localStorage.beta) {
-                url = "https://amr-releases.com/chrome/beta//all-mangas-reader-beta-latest.zip"
+                url = "https://amr-releases.com/chrome/beta/all-mangas-reader-beta-latest.zip"
                 filename = "all-mangas-reader-beta-latest.zip"
             }
             const res = await fetch(url)
