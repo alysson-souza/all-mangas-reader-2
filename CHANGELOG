@@ -1,3 +1,12 @@
+### V2.5.1
+  Changes:
+    * Added last updated timestamp to import/export option
+
+  Mirror Fixes:
+    * Aqua Manga - made change to remove ?style=list from chapter urls
+    * Astral Library - Removed www. from domain
+    * Sawamics - Fixed chapter list
+
 ### V2.5.0
   This release comes with a new server to host them. There are issues with the automation on the existing server and I do not have access to change it.
   All future chrome releases and firefox beta releases will come from https://amr-releases.com
@@ -9,7 +18,6 @@
     * MangaFreak - Changed domain
     * Reaper Scans - New website design
     * Asura Scans - Changed domain
-
 
 ### V2.4.9
   New Mirrors:
