@@ -25,7 +25,7 @@ All Mangas Reader is a browser extension which is designed to help you read and 
     <tr align="center">
         <td colspan=2></td>
         <td>
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Firefox_logo.png/255px-Firefox_logo.png" width="20" title="Firefox"/>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a0/Firefox_logo%2C_2019.svg" width="20" title="Firefox"/>
         </td>
         <td>
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Chrome_icon_%28September_2014%29.svg/512px-Google_Chrome_icon_%28September_2014%29.svg.png" width="16" title="Chrome"/>
@@ -271,7 +271,7 @@ All Mangas Reader do not comply with Google Chrome Extensions terms of services,
 
 1.  **Right-click -> `Save Link` or `Save link content as`** on the version you wish to use
     -   **[Stable](https://amr-releases.com/chrome/release/all-mangas-reader-latest.zip)**
-    -   **[Beta](https://amr-releases.com/chrome/release/all-mangas-reader-beta-latest.zip)**
+    -   **[Beta](https://amr-releases.com/chrome/beta/all-mangas-reader-beta-latest.zip)**
 2.  Extract the file .zip file you just downloaded to a location you wish to use for this extension, you will need to remember where this folder is in order to update the extension.
     -   **Windows**: Use the built in windows unzip via right click or [7zip](https://www.7-zip.org/download.html) to extract the file. ([how to extract file with 7z](https://www.webhostinghub.com/help/learn/website/managing-files/extract-file))
     -   **MacOS X** / **Linux**: open a terminal and use [unzip](https://superuser.com/a/1026504)
