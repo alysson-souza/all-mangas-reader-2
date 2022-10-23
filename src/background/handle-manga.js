@@ -356,6 +356,7 @@ class HandleManga {
                 if (mg.p) readmg.update = mg.p
                 if (mg.d) readmg.display = mg.d
                 if (mg.y) readmg.layout = mg.y
+                if (mg.ut) readmg.upts = mg.ut
                 if (mg.c) {
                     readmg.cats = mg.c
                     mg.c.forEach(cat => {

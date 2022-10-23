@@ -17,14 +17,14 @@ if (typeof registerMangaObject === "function") {
             let res = []
             let self = this
 
-            $("li a", doc).each(function (index) {
+            $("li a[href*='/chapters/']", doc).each(function (index) {
                 res.push([$("p:first", this).text().trim(), $(this).attr("href")])
             })
             return res
         },
 
         getInformationsFromCurrentPage: async function (doc, curUrl) {
-            var mgtitle = $($("main h2", doc)[0])
+            var mgtitle = $($("main p:first", doc)[0])
             return {
                 name: mgtitle.text(),
                 currentMangaURL: curUrl.split("/", 5).join("/"),

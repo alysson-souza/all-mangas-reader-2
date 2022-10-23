@@ -15,9 +15,12 @@ window["Madara"] = function (options) {
         title_selector: "div.post-title > h1",
         img_src: "src",
         secondary_img_src: "data-src",
+        add_list_to_chapter_url: true,
         sort_chapters: false,
         isekai_chapter_url: false,
         urlProcessor: url => url,
+        chapterInformationsSeriesName: (doc, url) => undefined,
+        chapterInformationsSeriesUrl: (doc, url) => null,
         doBefore: () => {}
     }),
         (this.options = Object.assign(this.default_options, options))
@@ -88,7 +91,12 @@ window["Madara"] = function (options) {
         var res = []
         $(this.options.chapters_a_sel, doc).each(function (index) {
             let chapterName = $(this).text()
-            let stringsToStrip = [mangaName, $(".chapter-release-date", this).text(), $(".view", this).text()]
+            let stringsToStrip = [
+                mangaName,
+                $(".chapter-release-date", this).text(),
+                $(".view", this).text(),
+                $(".chapterdate", this).text()
+            ]
 
             stringsToStrip.forEach(x => (chapterName = chapterName.replace(x, "")))
 
@@ -125,13 +133,21 @@ window["Madara"] = function (options) {
         let path = url.pathname
         let pathSplitted = path.split("/").filter(p => p != "")
         let mangaPath = pathSplitted.slice(0, this.options.path_length)
-        let mangaurl = url.origin + "/" + mangaPath.join("/") + "/"
-        let mgname
-        if ($(`a[href="${mangaurl}"]:not(:contains("Manga Info")):not(:contains("Novel Info"))`, doc).length > 0) {
-            mgname = $(`a[href="${mangaurl}"]:not(:contains("Manga Info")):not(:contains("Novel Info"))`, doc)
-                .first()
-                .text()
-                .trim()
+        console.debug(
+            this.options.chapterInformationsSeriesUrl(doc, curUrl) || url.origin + "/" + mangaPath.join("/") + "/",
+            this.options.chapterInformationsSeriesUrl(doc, curUrl),
+            url.origin + "/" + mangaPath.join("/") + "/"
+        )
+        let mangaurl =
+            this.options.chapterInformationsSeriesUrl(doc, curUrl) || url.origin + "/" + mangaPath.join("/") + "/"
+        let mgname = this.options.chapterInformationsSeriesName(doc, curUrl)
+        if (mgname === undefined || mgname.trim() === "") {
+            if ($(`a[href="${mangaurl}"]:not(:contains("Manga Info")):not(:contains("Novel Info"))`, doc).length > 0) {
+                mgname = $(`a[href="${mangaurl}"]:not(:contains("Manga Info")):not(:contains("Novel Info"))`, doc)
+                    .first()
+                    .text()
+                    .trim()
+            }
         }
         if (mgname === undefined || mgname.trim() === "") {
             let docmg = await amr.loadPage(mangaurl)
@@ -175,7 +191,7 @@ window["Madara"] = function (options) {
 
     this.makeChapterUrl = function (url) {
         let t = new URL(url)
-        return this.stripLastSlash(t.origin + t.pathname) + "?style=list"
+        return this.stripLastSlash(t.origin + t.pathname) + (this.options.add_list_to_chapter_url ? "?style=list" : "")
     }
 
     this.stripLastSlash = function (url) {

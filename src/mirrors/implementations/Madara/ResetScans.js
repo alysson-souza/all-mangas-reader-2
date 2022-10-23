@@ -10,9 +10,9 @@ if (typeof registerMangaObject === "function") {
         abstract: "Madara",
         abstract_options: {
             search_url: "https://reset-scans.com/",
-            chapters_a_sel: "li.wp-manga-chapter a"
-            // chapter_list_ajax: true,
-            // isekai_chapter_url: true
+            chapters_a_sel: "li.wp-manga-chapter a",
+            chapter_list_ajax: true,
+            isekai_chapter_url: true
         }
     })
 }

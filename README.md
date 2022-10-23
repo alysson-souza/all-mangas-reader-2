@@ -258,8 +258,8 @@ be turned off / on at any time from the settings menu.
 
 -   Download the latest stable version from the Mozilla add-ons explorer
     -   **[Stable](https://addons.mozilla.org/firefox/addon/all-mangas-reader/)**
--   Beta versions for firefox are currently on hold but still available here :
-    -   **[Beta](https://release.allmangasreader.com/all-mangas-reader-beta-latest.xpi)**
+-   Beta versions for firefox are available here :
+    -   **[Beta](https://amr-releases.com/firefox/release/all-mangas-reader-beta-latest.xpi)**
 
 <h2 id="#chromium-install"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Chromium_Material_Icon.svg/langfr-1024px-Chromium_Material_Icon.svg.png" width="30" title="Chromium"/> Chromium</h2>
  
@@ -270,10 +270,10 @@ If you are not sure your browser is based on chromium you can check our [Browser
 All Mangas Reader do not comply with Google Chrome Extensions terms of services, thus cannot be downloaded directly from their store.
 
 1.  **Right-click -> `Save Link` or `Save link content as`** on the version you wish to use
-    -   **[Stable](https://release.allmangasreader.com/all-mangas-reader-latest.crx)**
-    -   **[Beta](https://release.allmangasreader.com/all-mangas-reader-beta-latest.crx)**
-2.  Extract the file .crx file you just downloaded to a location you wish to use for this extension, you will need to remember where this folder is in order to update the extension.
-    -   **Windows**: Change the file extension from `.crx`to `.7z` and use [7zip](https://www.7-zip.org/download.html) to extract the file. ([how to extract file with 7z](https://www.webhostinghub.com/help/learn/website/managing-files/extract-file))
+    -   **[Stable](https://amr-releases.com/chrome/release/all-mangas-reader-latest.zip)**
+    -   **[Beta](https://amr-releases.com/chrome/release/all-mangas-reader-beta-latest.zip)**
+2.  Extract the file .zip file you just downloaded to a location you wish to use for this extension, you will need to remember where this folder is in order to update the extension.
+    -   **Windows**: Use the built in windows unzip via right click or [7zip](https://www.7-zip.org/download.html) to extract the file. ([how to extract file with 7z](https://www.webhostinghub.com/help/learn/website/managing-files/extract-file))
     -   **MacOS X** / **Linux**: open a terminal and use [unzip](https://superuser.com/a/1026504)
 3.  Open the extensions page in your browser, enable developer mode and click `Load unpacked extension`.
 4.  Select the folder you extracted to install AMR.
