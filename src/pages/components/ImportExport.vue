@@ -180,7 +180,8 @@ export default {
                         m: mg.mirror,
                         n: mg.name,
                         u: mg.url,
-                        l: mg.lastChapterReadURL
+                        l: mg.lastChapterReadURL,
+                        ut: mg.upts
                     }
                     try {
                         if (mg.listChaps.find(ele => ele[1] == mg.lastChapterReadURL) > 0)
@@ -280,7 +281,8 @@ export default {
                         y: mg.layout,
                         c: mg.cats,
                         wt: mg.webtoon,
-                        z: mg.zoom
+                        z: mg.zoom,
+                        ut: mg.upts
                     }
                 })
             }

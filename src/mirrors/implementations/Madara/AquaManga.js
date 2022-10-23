@@ -9,7 +9,8 @@ if (typeof registerMangaObject === "function") {
         canListFullMangas: false,
         abstract: "Madara",
         abstract_options: {
-            search_url: "https://aquamanga.com/"
+            search_url: "https://aquamanga.com/",
+            add_list_to_chapter_url: false
         }
     })
 }

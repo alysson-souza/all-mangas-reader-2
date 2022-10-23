@@ -15,6 +15,7 @@ window["Madara"] = function (options) {
         title_selector: "div.post-title > h1",
         img_src: "src",
         secondary_img_src: "data-src",
+        add_list_to_chapter_url: true,
         sort_chapters: false,
         isekai_chapter_url: false,
         urlProcessor: url => url,
@@ -190,7 +191,7 @@ window["Madara"] = function (options) {
 
     this.makeChapterUrl = function (url) {
         let t = new URL(url)
-        return this.stripLastSlash(t.origin + t.pathname) + "?style=list"
+        return this.stripLastSlash(t.origin + t.pathname) + (this.options.add_list_to_chapter_url ? "?style=list" : "")
     }
 
     this.stripLastSlash = function (url) {
