@@ -269,7 +269,7 @@ If you are not sure your browser is based on chromium you can check our [Browser
 ### Install AMR on a chromium browser
 All Mangas Reader do not comply with Google Chrome Extensions terms of services, thus cannot be downloaded directly from their store.
 
-1.  **Right-click -> `Save Link` or `Save link content as`** on the version you wish to use
+1.  Click link below for the version you wish to use
     -   **[Stable](https://amr-releases.com/chrome/release/all-mangas-reader-latest.zip)**
     -   **[Beta](https://amr-releases.com/chrome/beta/all-mangas-reader-beta-latest.zip)**
 2.  Extract the file .zip file you just downloaded to a location you wish to use for this extension, you will need to remember where this folder is in order to update the extension.
