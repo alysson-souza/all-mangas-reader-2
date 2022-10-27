@@ -1028,11 +1028,11 @@ export default {
             // retrieve Sync options, must follow current naming convention : providerSyncEnabled
             if (optstr.toLowerCase().includes("syncenabled") || optstr.toLowerCase().includes("sync")) {
                 this.updateSync(optstr, val)
-                this.dispatch("updateSync", false)
+                this.$store.dispatch("updateSync", false)
             }
             if (optstr.toLowerCase().includes("syncenabled") || optstr.toLowerCase().includes("sync")) {
                 this.updateSync(optstr, val)
-                this.dispatch("updateSync", false)
+                this.$store.dispatch("updateSync", false)
             }
         },
 
