@@ -19,6 +19,12 @@ if (typeof registerMangaObject === "function") {
             fixChapterUrl: origUrl => {
                 let parts = origUrl.split("/")
 
+                if (parts.length > 5) {
+                    parts.splice(3, 1)
+                }
+
+                console.debug("Chapter Url:", parts)
+
                 let parts2 = parts[3].split("-")
 
                 if (!isNaN(parts2[0]) && !isNaN(parseFloat(parts2[0]))) parts2.shift()
@@ -28,6 +34,10 @@ if (typeof registerMangaObject === "function") {
             },
             fixSeriesUrl: origUrl => {
                 let parts = origUrl.split("/")
+                if (parts[3] !== "series") {
+                    parts.splice(3, 1)
+                }
+                console.debug("Series Url:", parts)
 
                 let parts2 = parts[4].split("-")
 
