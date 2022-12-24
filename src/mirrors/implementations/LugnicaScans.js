@@ -5,16 +5,18 @@ if (typeof registerMangaObject === "function") {
         languages: "fr",
         domains: ["lugnica-scans.com"],
         home: "https://lugnica-scans.com/",
-        chapter_url: /\/lecture\/.*\/.*\/$/g,
+        chapter_url: /\/manga\/.*\/.*\/$/g,
 
         getMangaList: async function (search) {
             let res = []
-            let resultPage = await amr.loadPage(`${this.home}/search/?q=${search}`, {
+            let resultPage = await amr.loadPage(`${this.home}/mangas/`, {
                 nocache: true,
                 preventimages: true
             })
-            $("div.manga_card__title", resultPage).each(function () {
-                res.push([$("p.line-break", this).text(), $("a", this).attr("href")])
+            $("a.title", resultPage).each(function () {
+                if ($(this).text().toLowerCase().indexOf(search.toLowerCase())) {
+                    res.push([$(this).text(), $(this).attr("href")])
+                }
             })
             return res
         },
@@ -23,9 +25,11 @@ if (typeof registerMangaObject === "function") {
             let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
             let res = []
             let self = this
-            let title = $("h2", doc).text().trim()
-            $('div.manga-content a:not([href$="/comments"])', doc).each(function (index) {
-                res.push([$(this).text().trim(), $(this).attr("href")])
+            $('div.manga-chapter a:not([href$="/comments/"])', doc).each(function (index) {
+                let chapNumber = $(this).children().first().text()
+                let chapTitle = $(this).children().last().text()
+                let title = chapNumber + (chapNumber != chapTitle ? " : " + chapTitle : "")
+                res.push([title, $(this).attr("href")])
             })
             return res
         },
@@ -34,7 +38,7 @@ if (typeof registerMangaObject === "function") {
             let serieLink = $("a#mangalink", doc)
             return {
                 name: serieLink.text().trim(),
-                currentMangaURL: serieLink.attr("href").slice(0, -1),
+                currentMangaURL: serieLink.attr("href"),
                 currentChapterURL: curUrl
             }
         },
