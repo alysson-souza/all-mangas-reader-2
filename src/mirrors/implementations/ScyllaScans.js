@@ -49,23 +49,25 @@ if (typeof registerMangaObject === "function") {
         },
 
         getListChaps: async function (urlManga) {
-            const res = []
-            const doc = await amr.loadPage(urlManga, {
-                nocache: true,
-                preventimages: true
-            })
-
-            doc.querySelectorAll("a").forEach(elem => {
-                if (elem.href && elem.className.includes("Chapter__ChapterItem")) {
-                    const chapterNumber = elem.href.match(/[\d \.]*$/)[0].replace(".0", "")
-                    const chapter = "Chapter " + chapterNumber
-                    const url = this.home.replace(/\/$/, "") + elem.getAttribute("href")
-
-                    res.push([chapter, url])
+            const query = `
+                query chaptersByWork($workStub: String, $languages: [Int], $showHidden: Boolean) {
+                    chaptersByWork(workStub: $workStub, languages: $languages, showHidden: $showHidden) {
+                        chapter
+                        subchapter
+                        read_path
+                    }
                 }
+            `
+            const { chaptersByWork } = await this.fetchGraphQl(query, {
+                workStub: urlManga.match(/([^\/]*)$/)[0],
+                languages: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                showHidden: true
             })
 
-            return res
+            return chaptersByWork.map(({ chapter, subChapter, read_path }) => {
+                if (subChapter > 0) chapter = chapter + "." + subChapter
+                return [chapter, this.home + read_path]
+            })
         },
 
         getChapterInfo: function (curUrl) {
