@@ -98,7 +98,7 @@ if (typeof registerMangaObject === "function") {
             return {
                 name: elemWithTitle.title,
                 currentMangaURL: this.home + "work/" + language + "/" + workStub,
-                currentChapterURL: url.origin + url.pathname
+                currentChapterURL: url.origin.replace(/\/$/, "") + url.pathname
             }
         },
 
