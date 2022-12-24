@@ -3,13 +3,13 @@ if (typeof registerMangaObject === "function") {
         mirrorName: "GD Scans",
         mirrorIcon: "gd-scans.png",
         languages: "en",
-        domains: ["gdstmp.site"],
-        home: "https://gdstmp.site/",
+        domains: ["gdstmp.site", "gdscans.com"],
+        home: "https://gdscans.com/",
         canListFullMangas: true,
         chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
         abstract: "Madara",
         abstract_options: {
-            search_url: "https://gdstmp.site/",
+            search_url: "https://gdscans.com/",
             chapter_list_ajax: true
         }
     })

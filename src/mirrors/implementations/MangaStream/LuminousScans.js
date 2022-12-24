@@ -7,7 +7,8 @@ if (typeof registerMangaObject === "function") {
         home: "https://www.luminousscans.com/",
         chapter_url: /chapter-[0-9]+\/$/g,
         languages: "en",
-        abstract: "MangastreamAbs",
+        abstract: "MangaStream_1_1_4Abs"
+        /*abstract: "MangastreamAbs",
         abstract_options: {
             search_url: "https://www.luminousscans.com/",
             chapters_a_sel: "div.bixbox.bxcl ul li div.eph-num a",
@@ -33,6 +34,6 @@ if (typeof registerMangaObject === "function") {
                 parts[4] = parts2.join("-")
                 return parts.join("/")
             }
-        }
+        }*/
     })
 }

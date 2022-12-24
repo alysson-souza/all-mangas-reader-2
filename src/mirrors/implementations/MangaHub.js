@@ -30,7 +30,7 @@ if (typeof registerMangaObject === "function") {
         getListChaps: async function (urlManga) {
             let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
             let res = []
-            $("li._287KE a._2U6DJ", doc).each(function (index) {
+            $("li._287KE a._3pfyN", doc).each(function (index) {
                 res.push([$("span._3D1SJ", this).text() + " " + $("span._2IG5P", this).text(), $(this).attr("href")])
             })
             return res
