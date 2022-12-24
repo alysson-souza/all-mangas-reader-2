@@ -64,8 +64,8 @@ if (typeof registerMangaObject === "function") {
                 showHidden: true
             })
 
-            return chaptersByWork.map(({ chapter, subChapter, read_path }) => {
-                if (subChapter > 0) chapter = chapter + "." + subChapter
+            return chaptersByWork.map(({ chapter, subchapter, read_path }) => {
+                if (subchapter != 0) chapter = chapter + "." + subchapter
                 return [chapter, this.home + read_path]
             })
         },
