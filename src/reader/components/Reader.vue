@@ -624,7 +624,7 @@ export default {
                             }
                             prevent()
                         }
-                        if (e.which === 32) {
+                        if (e.which === 32 && this.options.magicScrollEnabled) {
                             let images = this.$refs.page
                             // Are we at the end of the last page
                             // can't use this.lastScan cause that is any point on last page, also wont work if the last scan is small

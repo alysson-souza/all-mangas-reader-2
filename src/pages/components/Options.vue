@@ -475,11 +475,16 @@
                                 </v-col>
                             </v-row>
                             <!-- Default to webtoon mode -->
-
                             <v-checkbox
                                 v-model="webtoonDefault"
                                 @change="setOption('webtoonDefault')"
                                 :label="i18n('options_webtoon_mode_default')"></v-checkbox>
+
+                            <!-- Magic Scroll enabled/disabled -->
+                            <v-checkbox
+                                v-model="magicScrollEnabled"
+                                @change="setOption('magicScrollEnabled')"
+                                :label="i18n('options_magic_scroll_enabled')"></v-checkbox>
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                     <v-expansion-panel>
@@ -800,7 +805,8 @@ const converters = {
             "webtoonDefault",
             "alternateColors",
             "invertKeys",
-            "smoothNavigation"
+            "smoothNavigation",
+            "magicScrollEnabled"
         ]
     }
 }
@@ -1028,11 +1034,11 @@ export default {
             // retrieve Sync options, must follow current naming convention : providerSyncEnabled
             if (optstr.toLowerCase().includes("syncenabled") || optstr.toLowerCase().includes("sync")) {
                 this.updateSync(optstr, val)
-                this.dispatch("updateSync", false)
+                this.$store.dispatch("updateSync", false)
             }
             if (optstr.toLowerCase().includes("syncenabled") || optstr.toLowerCase().includes("sync")) {
                 this.updateSync(optstr, val)
-                this.dispatch("updateSync", false)
+                this.$store.dispatch("updateSync", false)
             }
         },
 

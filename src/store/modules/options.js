@@ -20,6 +20,7 @@ const default_options = {
     invertKeys: 0 /* If we should sync the previous/next page logic with the reading direction */,
     displayFullChapter: 1 /* Display full chapter long strip or current scan (doucle scan) */,
     resizeMode: 0 /* How to resize scans width (0), height (1) (only if displayFullChapter = 0), container (2) or none (3) */,
+    magicScrollEnabled: 1 /* Option to enable/disable magic scroll */,
 
     addauto: 1, // automatically mark chapters as read while reading
     markwhendownload: 0, // mark mangas as read when all images downloaded

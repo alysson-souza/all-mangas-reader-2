@@ -10,7 +10,8 @@ if (typeof registerMangaObject === "function") {
             "readmanganato.com",
             "m.manganelo.com",
             "chap.manganelo.com",
-            "chapmanganato.com"
+            "chapmanganato.com",
+            "chapmanganelo.com"
         ],
         home: "https://manganato.com/",
         chapter_url: /^\/manga-.*\/chapter-\d+.*$/g,

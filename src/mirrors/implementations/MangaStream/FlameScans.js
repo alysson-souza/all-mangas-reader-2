@@ -13,11 +13,17 @@ if (typeof registerMangaObject === "function") {
             chapters_a_sel: "div.bixbox.bxcl ul li a",
             chapters_text_sel: "span.chapternum",
             search_json: false,
-            img_sel: `#readerarea img[width!="1px"][class*="size-full"]`,
+            img_sel: `#readerarea img[width!="1px"][class*="size-"]`,
             img_src: "src",
             // flame_scans_fuckery: true
             fixChapterUrl: origUrl => {
                 let parts = origUrl.split("/")
+
+                if (parts.length > 5) {
+                    parts.splice(3, 1)
+                }
+
+                console.debug("Chapter Url:", parts)
 
                 let parts2 = parts[3].split("-")
 
@@ -28,6 +34,10 @@ if (typeof registerMangaObject === "function") {
             },
             fixSeriesUrl: origUrl => {
                 let parts = origUrl.split("/")
+                if (parts[3] !== "series") {
+                    parts.splice(3, 1)
+                }
+                console.debug("Series Url:", parts)
 
                 let parts2 = parts[4].split("-")
 

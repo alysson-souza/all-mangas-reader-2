@@ -138,11 +138,11 @@ IconHelper.setBlueIcon()
         return { requestHeaders: out }
     }
 
-    browser.webRequest.onBeforeSendHeaders.addListener(customRequestHeaders, { urls: ["https://*/*", "http://*/*"] }, [
-        "blocking",
-        "requestHeaders",
-        "extraHeaders"
-    ])
+    browser.webRequest.onBeforeSendHeaders.addListener(
+        customRequestHeaders,
+        { urls: ["https://*/*", "http://*/*"] },
+        ["blocking", "requestHeaders", browser.webRequest.OnBeforeSendHeadersOptions.EXTRA_HEADERS].filter(Boolean)
+    )
 
     /**
      * The function below increments the reading of each manga in the list from a chapter each 2 seconds

@@ -1988,5 +1988,12 @@
     "reader_context_menu_download_image": {
         "message": "Download Image",
         "description": "Context Menu link for downloading a single image"
+    },
+    "__V2_5_2": {
+        "message": "Just a filler to separate new labels from old ones"
+    },
+    "options_magic_scroll_enabled": {
+        "message": "Enable Magic Scroll",
+        "description": "Option for enabling magic scroll"
     }
 }

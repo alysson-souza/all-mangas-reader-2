@@ -12,7 +12,8 @@ if (typeof registerMangaObject === "function") {
         abstract_options: {
             search_url: "https://void-scans.com",
             chapters_a_sel: "div.bixbox.bxcl ul li a",
-            chapters_text_sel: "span.chapternum"
+            chapters_text_sel: "span.chapternum",
+            img_src: "data-lazy-src"
         }
     })
 }
