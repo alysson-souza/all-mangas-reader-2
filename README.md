@@ -214,11 +214,12 @@ All Mangas Reader is a browser extension which is designed to help you read and 
                 <td><img src="src/mirrors/icons/scanfr-optimized.png" width="16" title="ScanFR"></td>
                 <td><img src="src/mirrors/icons/scantrad-optimized.png" width="16" title="Scan Trad"></td>
                 <td><img src="src/mirrors/icons/scantradunion-optimized.png" width="16" title="Scantrad Union"></td>
+                <td><img src="src/mirrors/icons/scyllascans-optimized.png" width="16" title="Scylla Scans"></td>
                 <td><img src="src/mirrors/icons/sensesscans-optimized.png" width="16" title="Senses Scans"></td>
                 <td><img src="src/mirrors/icons/serimanga-optimized.png" width="16" title="Seri Manga"></td>
-                <td><img src="src/mirrors/icons/setsuscans-optimized.png" width="16" title="Setsu Scans"></td>
             </tr>
             <tr>
+                <td><img src="src/mirrors/icons/setsuscans-optimized.png" width="16" title="Setsu Scans"></td>
                 <td><img src="src/mirrors/icons/shoujohearts-optimized.png" width="16" title="Shoujo Hearts"></td>
                 <td><img src="src/mirrors/icons/silentskyscans-optimized.png" width="16" title="Silent Sky Scans"></td>
                 <td><img src="src/mirrors/icons/skscans-optimized.png" width="16" title="SK Scans"></td>
@@ -228,9 +229,9 @@ All Mangas Reader is a browser extension which is designed to help you read and 
                 <td><img src="src/mirrors/icons/toonily-optimized.png" width="16" title="Toonily"></td>
                 <td><img src="src/mirrors/icons/topmanhua-optimized.png" width="16" title="Top Manhua"></td>
                 <td><img src="src/mirrors/icons/tritiniascans-optimized.png" width="16" title="Tritinia Scans"></td>
-                <td><img src="src/mirrors/icons/twilightscans-optimized.png" width="16" title="Twilight Scans"></td>
             </tr>
             <tr>
+                <td><img src="src/mirrors/icons/twilightscans-optimized.png" width="16" title="Twilight Scans"></td>
                 <td><img src="src/mirrors/icons/ultmanga-optimized.png" width="16" title="Ult Manga"></td>
                 <td><img src="src/mirrors/icons/unemployed-scans-optimized.png" width="16" title="Unemployed Scans"></td>
                 <td><img src="src/mirrors/icons/unionleitor-optimized.png" width="16" title="Union Leitor"></td>
@@ -240,9 +241,9 @@ All Mangas Reader is a browser extension which is designed to help you read and 
                 <td><img src="src/mirrors/icons/webtoon-xyz-optimized.png" width="16" title="Webtoon.xyz"></td>
                 <td><img src="src/mirrors/icons/westmanga-optimized.png" width="16" title="Westmanga"></td>
                 <td><img src="src/mirrors/icons/whitecloudpavilion-optimized.png" width="16" title="White Cloud Pavilion"></td>
-                <td><img src="src/mirrors/icons/zahardtop-optimized.png" width="16" title="ZA Hard Top"></td>
             </tr>
             <tr>
+                <td><img src="src/mirrors/icons/zahardtop-optimized.png" width="16" title="ZA Hard Top"></td>
                 <td><img src="src/mirrors/icons/zeroscans-optimized.png" width="16" title="Zero Scans"></td>
                 <td><img src="src/mirrors/icons/zin-manga-optimized.png" width="16" title="Zin Manga"></td>
             </tr>
