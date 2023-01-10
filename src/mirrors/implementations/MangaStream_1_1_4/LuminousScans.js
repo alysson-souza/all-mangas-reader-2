@@ -7,7 +7,11 @@ if (typeof registerMangaObject === "function") {
         home: "https://www.luminousscans.com/",
         chapter_url: /chapter-[0-9]+\/$/g,
         languages: "en",
-        abstract: "MangaStream_1_1_4Abs"
+        abstract: "MangaStream_1_1_4Abs",
+        abstract_options: {
+            chapter_list_selector: "#chapterlist .eph-num a"
+        }
+
         /*abstract: "MangastreamAbs",
         abstract_options: {
             search_url: "https://www.luminousscans.com/",
