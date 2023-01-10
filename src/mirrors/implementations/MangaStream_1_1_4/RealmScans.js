@@ -12,7 +12,19 @@ if (typeof registerMangaObject === "function") {
         abstract_options: {
             base_url: "https://realmscans.com/",
             series_list_selector: '.listupd a[href*="/series/"]',
-            chapter_list_selector: `.eph-num a[href*="realmscans.com"]`
+            chapter_list_selector: `.eph-num a[href*="realmscans.com"]`,
+            urlProcessorChapter: url => {
+                // return url
+                let parts = url.split("/")
+                if (parts.length == 6) parts.splice(3, 1)
+                return parts.join("/")
+            },
+            urlProcessorSeries: url => {
+                // return url
+                let parts = url.split("/")
+                if (parts[3] !== "series") parts.splice(3, 1)
+                return parts.join("/")
+            }
         }
 
         // // Mangastream 1.1.4 - Add abstract
