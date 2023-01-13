@@ -66,7 +66,7 @@ if (typeof registerMangaObject === "function") {
 
             return chaptersByWork.map(({ chapter, subchapter, read_path }) => {
                 if (subchapter != 0) chapter = chapter + "." + subchapter
-                return [chapter, this.home + read_path]
+                return [chapter, this.home.replace(/\/$/, "") + read_path]
             })
         },
 
@@ -89,7 +89,6 @@ if (typeof registerMangaObject === "function") {
         },
 
         getInformationsFromCurrentPage: async function (doc, curUrl) {
-            const url = new URL(curUrl)
             const { workStub, language } = this.getChapterInfo(curUrl)
             const elemWithTitle = new Array(...doc.querySelectorAll("a")).find(elem => {
                 return elem.title && elem.className.includes("ReaderControlsWork")
@@ -98,7 +97,7 @@ if (typeof registerMangaObject === "function") {
             return {
                 name: elemWithTitle.title,
                 currentMangaURL: this.home + "work/" + language + "/" + workStub,
-                currentChapterURL: url.origin.replace(/\/$/, "") + url.pathname
+                currentChapterURL: curUrl
             }
         },
 
