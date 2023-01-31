@@ -9,7 +9,17 @@ if (typeof registerMangaObject === "function") {
         languages: "en",
         abstract: "MangaStream_1_1_4Abs",
         abstract_options: {
-            chapter_list_selector: "#chapterlist .eph-num a"
+            chapter_list_selector: "#chapterlist .eph-num a",
+            urlProcessorSeries: url => {
+                let parts = url.split("/")
+                let parts2 = parts[4].split("-")
+                console.debug(url, parts, parts2)
+
+                if (!isNaN(parts2[0]) && !isNaN(parseFloat(parts2[0]))) parts2.shift()
+
+                parts[4] = parts2.join("-")
+                return parts.join("/")
+            }
         }
 
         /*abstract: "MangastreamAbs",

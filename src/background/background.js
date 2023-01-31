@@ -117,7 +117,7 @@ IconHelper.setBlueIcon()
 
         setTimeout(() => {
             timers = timers.filter(id => id != args.tabId)
-        }, 2000)
+        }, 1000)
 
         HandleManga.sendPushState(args.url, args.tabId)
     })

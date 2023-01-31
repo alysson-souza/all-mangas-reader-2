@@ -1994,5 +1994,12 @@
     "options_magic_scroll_enabled": {
         "message": "Activer le défilement magique",
         "description": "Option for enabling magic scroll"
+    },
+    "__V2_5_4": {
+        "message": "Just a filler to separate new labels from old ones"
+    },
+    "options_bottom_navigation_enabled": {
+        "message": "Activer la navigation par survol en bas",
+        "description": "Option for enabling bottom navigation"
     }
 }
