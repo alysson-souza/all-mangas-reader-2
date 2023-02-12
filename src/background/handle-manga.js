@@ -307,7 +307,15 @@ class HandleManga {
                             console.error(e)
                         }
                     }
-                    let title = htmlDocument.title || htmlDocument.querySelector("title").text
+                    let title
+                    try {
+                        if (typeof impl.getChapterTitle === "function")
+                            title = impl.getChapterTitle(htmlDocument, message.url)
+
+                        if (!title) title = htmlDocument.title || htmlDocument.querySelector("title").text
+                    } catch (e) {
+                        title = "Undefined Chapter"
+                    }
 
                     resolve({
                         isChapter: isChapter ? true : false,
