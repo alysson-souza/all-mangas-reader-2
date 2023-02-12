@@ -1995,5 +1995,12 @@
     "options_magic_scroll_enabled": {
         "message": "Enable Magic Scroll",
         "description": "Option for enabling magic scroll"
+    },
+    "__V2_5_4": {
+        "message": "Just a filler to separate new labels from old ones"
+    },
+    "options_bottom_navigation_enabled": {
+        "message": "Enable Bottom Hover Navigation",
+        "description": "Option for enabling bottom navigation"
     }
 }

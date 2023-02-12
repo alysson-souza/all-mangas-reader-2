@@ -485,6 +485,12 @@
                                 v-model="magicScrollEnabled"
                                 @change="setOption('magicScrollEnabled')"
                                 :label="i18n('options_magic_scroll_enabled')"></v-checkbox>
+
+                            <!-- Magic Scroll enabled/disabled -->
+                            <v-checkbox
+                                v-model="bottomNavigationEnabled"
+                                @change="setOption('bottomNavigationEnabled')"
+                                :label="i18n('options_bottom_navigation_enabled')"></v-checkbox>
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                     <v-expansion-panel>
@@ -806,7 +812,8 @@ const converters = {
             "alternateColors",
             "invertKeys",
             "smoothNavigation",
-            "magicScrollEnabled"
+            "magicScrollEnabled",
+            "bottomNavigationEnabled"
         ]
     }
 }

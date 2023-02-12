@@ -28,7 +28,7 @@
                 @become-current="becomeCurrent" />
         </table>
         <!-- Pages navigator -->
-        <v-hover>
+        <v-hover v-if="options.bottomNavigationEnabled">
             <div class="amr-pages-nav" :class="{ display: hover, 'shrink-draw': drawer }" slot-scope="{ hover }">
                 <!-- Current page state + previous next buttons -->
                 <PageNavigator

@@ -1,3 +1,21 @@
+### V2.5.4
+  Additions:
+    * New option in disable the bottom hover page navigation. It can be found in While Reading Mangas -> Chapter display mode -> Enable Bottom Hover Navigation
+  
+  Mirror Fixes:
+    * Scylla Scans - (Credit: @HenrikDK2)
+    * Read Manga / Mint Manga - Fix for image server selection (Credit: @nonedark2008)
+    * Manga Great - Fixed chapter list loading
+    * Leviatan Scans - Reverted change to image loading
+    * Toonily (.com) - Fixed image loading
+    * MangaHub - New cdn url format for images
+    * Luminous Scans - Removed the timestamp from series urls for accurate tracking
+    * Void Scans - Fixed image loading
+    * Mangadex - Fixed chapter loading issue
+  
+  New Mirror:
+    * Night Scans - https://nightscans.org
+
 ### V2.5.3
   New Mirrors:
     * Scylla Scans - https://scyllascans.org/ (Credit: @HenrikDK2)
