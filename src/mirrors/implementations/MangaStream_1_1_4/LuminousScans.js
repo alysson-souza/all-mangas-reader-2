@@ -12,12 +12,12 @@ if (typeof registerMangaObject === "function") {
             chapter_list_selector: "#chapterlist .eph-num a",
             urlProcessorSeries: url => {
                 let parts = url.split("/")
-                let parts2 = parts[4].split("-")
+                let parts2 = parts[5].split("-")
                 console.debug(url, parts, parts2)
 
                 if (!isNaN(parts2[0]) && !isNaN(parseFloat(parts2[0]))) parts2.shift()
 
-                parts[4] = parts2.join("-")
+                parts[5] = parts2.join("-")
                 return parts.join("/")
             }
         }
