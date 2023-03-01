@@ -65,7 +65,7 @@ window["ReadMangaAbs"] = function (options) {
 
         var res = []
         var source = $.map($("#__amr_text_dom__", doc), el => $(el).text()).join(";")
-        var matches = source.match(/rm_h\.initReader\(.*?(\[\[.*?\]\])/)
+        var matches = source.match(/rm_h\.(?:initReader|readerInit)\(.*?(\[\[.*?\]\])/)
         var hasOneWayImageServer = source.includes("https://one-way.work")
         if (matches) {
             matches = matches[1].replace(/'/g, '"')
