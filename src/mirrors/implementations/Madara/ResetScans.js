@@ -12,8 +12,8 @@ if (typeof registerMangaObject === "function") {
             search_url: "https://reset-scans.com/",
             chapters_a_sel: "li.wp-manga-chapter .li__text a",
             chapter_list_ajax: true,
-            isekai_chapter_url: true,
-            image_protection_plugin: true
+            isekai_chapter_url: true
+            // image_protection_plugin: true
         }
     })
 }
