@@ -1,5 +1,6 @@
 if (typeof registerMangaObject === "function") {
     registerMangaObject({
+        disabled: true,
         mirrorName: "Scan Trad",
         mirrorIcon: "scantrad.png",
         languages: "fr",
