@@ -16,7 +16,7 @@ if (typeof registerMangaObject === "function") {
             path_length: 2,
             sort_chapters: true,
             isekai_chapter_url: true,
-            title_selector: "#manga-title > h1",
+            title_selector: "div.post-title > h1",
             // image_protection_plugin: true,
             urlProcessor: url => {
                 let t = url.split("/")
