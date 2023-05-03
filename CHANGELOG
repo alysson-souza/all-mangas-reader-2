@@ -1,3 +1,32 @@
+### V2.5.5
+  Fixes:
+    * Zoom level not saved between sessions (Credit: @nonedark2008)
+
+  Mirror Fixes:
+    * Read Manga - Chapter list fix (Credit: @nonedark2008)
+    * Luminous Scans (Credit: @Kickunio)
+    * Batoto (Credit: @Kickunio)
+    * Reset Scans - Images loading
+    * Mint Manga - Chapter list fix (Credit: @nonedark2008)
+    * Leviatan Scans - Fix series name in reader
+    * MangaHub - Change cdn url
+    * Asura Scans - Chapter list and mangaurl change reverted (Credit: @nonedark2008)
+
+  New Mirrors:
+    * ManhwaHentai -  https://manhwahentai.me/ (Credit: @Kickunio)
+    * Animated Glitched Scans - https://anigliscans.com
+    * FM Team - https://fmteam.fr/
+    * Manga Clash - https://mangaclash.com/
+    * Nocturnal Scans - https://nocturnalscans.com
+    * Manhwa Freak - https://manhwafreak.com
+    * MangaHub - Change cdn url
+
+  Disabled Mirrors:
+    * Scan Trad disabled because the group disbanded
+
+  Note:
+    * For NHentai: This mirror does not support search, and each chapter is uploaded as its own series so this is not useful for tracking, 
+        just as a simple reader  replacemenet. Also chapters take a minute to load because a lot of background requests are needed to get all images
 ### V2.5.4
   Additions:
     * New option in disable the bottom hover page navigation. It can be found in While Reading Mangas -> Chapter display mode -> Enable Bottom Hover Navigation
