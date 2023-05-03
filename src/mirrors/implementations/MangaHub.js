@@ -83,7 +83,8 @@ if (typeof registerMangaObject === "function") {
             // let json = req.json()
 
             let res = []
-            let cdnUrl = "https://img.mghubcdn.com/file/imghub/"
+            // let cdnUrl = "https://img.mghubcdn.com/file/imghub/"
+            let cdnUrl = "https://imgx.mghubcdn.com/"
             let pages = Object.values(JSON.parse(json.data.chapter.pages))
 
             if (typeof pages[1] == "string") {

@@ -29,7 +29,7 @@ window["ReadMangaAbs"] = function (options) {
         let res = []
         let self = this
 
-        $("div.expandable td > a", doc).each(function (index) {
+        $("div.chapters-link a.chapter-link", doc).each(function (index) {
             var str = $(this).attr("href")
             str = str.split("/")[1]
             if (str === mangaIdFromUrl) {
@@ -65,7 +65,7 @@ window["ReadMangaAbs"] = function (options) {
 
         var res = []
         var source = $.map($("#__amr_text_dom__", doc), el => $(el).text()).join(";")
-        var matches = source.match(/rm_h\.initReader\(.*?(\[\[.*?\]\])/)
+        var matches = source.match(/rm_h\.(?:initReader|readerInit)\(.*?(\[\[.*?\]\])/)
         var hasOneWayImageServer = source.includes("https://one-way.work")
         if (matches) {
             matches = matches[1].replace(/'/g, '"')
