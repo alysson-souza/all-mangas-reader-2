@@ -3,10 +3,10 @@ if (typeof registerMangaObject === "function") {
         mirrorName: "Manhwa Freak",
         mirrorIcon: "manhwa-freak.png",
         languages: "en",
-        domains: ["manhwafreak.com"],
-        home: "https://manhwafreak.com",
+        domains: ["manhwa-freak.com", "manhwafreak.com"],
+        home: "https://manhwa-freak.com",
         canListFullMangas: true,
-        chapter_url: /\/.*?ch-[0-9]+\//g,
+        chapter_url: /\/.*?ch-[0-9]+.*\//g,
 
         getMangaList: async function (search) {
             let doc = await amr.loadPage(this.home + "/manga/", { nocache: true, preventimages: true })
