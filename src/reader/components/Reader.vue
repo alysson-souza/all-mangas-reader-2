@@ -67,6 +67,7 @@ import mirrorImpl from "../state/mirrorimpl"
 import { scansProvider } from "../helpers/ScansProvider"
 import util from "../helpers/util"
 import EventBus from "../helpers/EventBus"
+import { isFirefox } from "../../amr/utils"
 
 import Page from "./Page"
 import ThumbnailNavigator from "./ThumbnailNavigator"
@@ -572,29 +573,49 @@ export default {
                             window.scrollBy(0, this.scrollStepWithKeys)
                             prevent()
                         }
-                        if (e.which === 107 || e.which === 187) {
+                        if (e.which === 107 || e.which === 187 || e.which === 61) {
                             //+
                             // keep the scrolling ratio when zooming in
                             this.keepScrollPos(100)
                             // eslint-disable-next-line vue/no-mutating-props
                             this.resize = "none"
-                            if (!this.$refs.scantable.style.zoom || this.$refs.scantable.style.zoom === 0) {
-                                this.$refs.scantable.style.zoom = 1
+                            if (isFirefox()) {
+                                let zoom = this.$refs.scantable.style.transform.replace(/[^0-9.]+/g, "")
+                                if (zoom === "0" || zoom === "") {
+                                    this.$refs.scantable.style.transform = "scale(1)"
+                                } else {
+                                    this.$refs.scantable.style.transform = `scale(${zoom * 1.1})`
+                                }
+                                this.$refs.scantable.style.transformOrigin = "top center"
                             } else {
-                                this.$refs.scantable.style.zoom = this.$refs.scantable.style.zoom * 1.1
+                                if (!this.$refs.scantable.style.zoom || this.$refs.scantable.style.zoom === 0) {
+                                    this.$refs.scantable.style.zoom = 1
+                                } else {
+                                    this.$refs.scantable.style.zoom = this.$refs.scantable.style.zoom * 1.1
+                                }
                             }
                             prevent()
                         }
-                        if (e.which === 109 || e.which === 189) {
+                        if (e.which === 109 || e.which === 189 || e.which === 173) {
                             //-
                             // keep the scrolling ratio when zooming out
                             this.keepScrollPos(100)
                             // eslint-disable-next-line vue/no-mutating-props
                             this.resize = "none"
-                            if (!this.$refs.scantable.style.zoom || this.$refs.scantable.style.zoom === 0) {
-                                this.$refs.scantable.style.zoom = 1
+                            if (isFirefox()) {
+                                let zoom = this.$refs.scantable.style.transform.replace(/[^0-9.]+/g, "")
+                                if (zoom === "0" || zoom === "") {
+                                    this.$refs.scantable.style.transform = "scale(1)"
+                                } else {
+                                    this.$refs.scantable.style.transform = `scale(${zoom * 0.9})`
+                                }
+                                this.$refs.scantable.style.transformOrigin = "top center"
                             } else {
-                                this.$refs.scantable.style.zoom = this.$refs.scantable.style.zoom * 0.9
+                                if (!this.$refs.scantable.style.zoom || this.$refs.scantable.style.zoom === 0) {
+                                    this.$refs.scantable.style.zoom = 1
+                                } else {
+                                    this.$refs.scantable.style.zoom = this.$refs.scantable.style.zoom * 0.9
+                                }
                             }
                             prevent()
                         }
