@@ -158,12 +158,18 @@ export default {
             if (currentlyThumbsScrolling) return
             currentlyThumbsScrolling = true
             this.$nextTick(() => {
-                thumbsScroller(this.$refs["page-navigator"].$refs.thumbnail[nVal].$el, this.animationDuration, {
-                    container: this.$refs["page-navigator"],
-                    offset:
-                        (-(window.innerWidth - (this.drawer ? 300 : 0)) +
-                            this.$refs["page-navigator"].$refs.thumbnail[nVal].$el.clientWidth) /
-                        2,
+                // Rely on scansState.loaded
+                const pageNavigator = this.$refs["page-navigator"]
+                if (!pageNavigator) {
+                    return
+                }
+
+                const offset =
+                    -(window.innerWidth - (this.drawer ? 300 : 0)) + pageNavigator.$refs.thumbnail[nVal].$el.clientWidth
+
+                thumbsScroller(pageNavigator.$refs.thumbnail[nVal].$el, this.animationDuration, {
+                    container: pageNavigator,
+                    offset: offset / 2,
                     x: true,
                     y: false,
                     onDone: () => {

@@ -27,6 +27,8 @@ interface LoadOptions {
     headers?: { [k: string]: string }
 
     credentials?: RequestCredentials
+
+    redirect?: RequestRedirect
 }
 
 type StateOptions = Record<string, string | undefined | null | number>
@@ -104,7 +106,8 @@ export class MirrorHelper {
             method: options.post ? "POST" : options.method ?? "GET",
             mode: options.crossdomain ? "no-cors" : "same-origin",
             headers: this.getDefaultHeaders(options, defaultHeaders),
-            body: this.getData(options)
+            body: this.getData(options),
+            redirect: options.redirect
         }
     }
 

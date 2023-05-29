@@ -40,21 +40,24 @@ export class MangaFox extends BaseMirror implements MirrorImplementation {
     mirrorIcon = MangaFoxIcon
     domains = ["fanfox.net", "mangafox.me"]
     languages = "en"
-    home = "http://fanfox.net/"
+    home = "https://fanfox.net/"
     chapter_url = /\/manga\/.*\/.+\/.*/g
+    /** Use it to generate default schema with https **/
+    currentDomain = "https://fanfox.net"
 
     async getMangaList(search) {
-        const urlManga = "http://fanfox.net/search?name=" + search
+        const urlManga = this.currentDomain + "/search?name=" + search
         let doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
 
         if (doc.indexOf("No Manga Series") !== -1) {
             return []
         }
 
+        const domain = this.currentDomain
         const info: InfoResult[] = []
         const $ = this.parseHtml(doc)
         $(".manga-list-4-list li p.manga-list-4-item-title a").each(function (index, a) {
-            info.push([$(a).text(), "http://fanfox.net" + $(a).attr("href")])
+            info.push([$(a).text(), domain + $(a).attr("href")])
         })
         return info
     }
@@ -63,14 +66,14 @@ export class MangaFox extends BaseMirror implements MirrorImplementation {
         const mga = this.queryHtml(doc, ".reader-header-title-1 a")
         return {
             name: mga.text(),
-            currentMangaURL: "http://fanfox.net" + mga.attr("href"),
+            currentMangaURL: this.currentDomain + mga.attr("href"),
             currentChapterURL: curUrl.substr(0, curUrl.lastIndexOf("/") + 1)
         }
     }
 
     async getImageUrlFromPage(urlImage: string) {
         // loads the page containing the current scan
-        let doc = await this.mirrorHelper.loadPage(urlImage, { crossdomain: true })
+        let doc = await this.mirrorHelper.loadPage(urlImage, { crossdomain: true, redirect: "follow" })
         const $ = this.parseHtml(doc)
 
         const [first] = $("#dm5_key")
@@ -167,8 +170,9 @@ export class MangaFox extends BaseMirror implements MirrorImplementation {
         }
 
         let res = []
+        const domain = this.currentDomain
         $(".detail-main-list a").each(function () {
-            let url = "http://fanfox.net" + $(this).attr("href")
+            let url = domain + $(this).attr("href")
             url = url.substr(0, url.lastIndexOf("/") + 1)
             let title = $(".title3", $(this)).text()
             res.push([title, url])
