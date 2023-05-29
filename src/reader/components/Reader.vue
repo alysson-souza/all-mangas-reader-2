@@ -66,11 +66,11 @@ import pageData from "../state/pagedata"
 import { scansProvider } from "../helpers/ScansProvider"
 import { Util } from "../helpers/util"
 import EventBus from "../helpers/EventBus"
-import { isFirefox } from "../../amr/utils"
 
 import Page from "./Page"
 import ThumbnailNavigator from "./ThumbnailNavigator"
 import PageNavigator from "./PageNavigator"
+import { isFirefox } from "../../shared/utils"
 
 /** Create a custom scroller (alias of $scrollTo method) to enable multiple scrollings (thumbs scroll simultaneously page scroll) */
 const thumbsScroller = scroller()

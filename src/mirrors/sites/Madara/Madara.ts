@@ -223,7 +223,7 @@ export class Madara extends BaseMirror implements MirrorImplementation {
 
         const CryptoJSAesJson = {
             stringify: function (_0x8f41x2) {
-                const _0x8f41x3 = { ct: _0x8f41x2.ciphertext.toString(crypto.enc.Base64) }
+                const _0x8f41x3: Record<string, unknown> = { ct: _0x8f41x2.ciphertext.toString(crypto.enc.Base64) }
                 if (_0x8f41x2.iv) {
                     _0x8f41x3.iv = _0x8f41x2.iv.toString()
                 }
