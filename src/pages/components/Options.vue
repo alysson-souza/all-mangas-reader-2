@@ -342,7 +342,6 @@
                             <v-alert
                                 dense
                                 v-if="gistSyncEnabled"
-                                value="true"
                                 color="info"
                                 icon="mdi-information"
                                 text
@@ -406,7 +405,7 @@
                         >
                         <v-expansion-panel-content class="pt-6" color="slight-overlay">
                             <!-- Display options -->
-                            <v-alert dense value="true" color="info" icon="mdi-information" text elevation="1">
+                            <v-alert dense color="info" icon="mdi-information" text elevation="1">
                                 {{ i18n("options_web_chapter_desc") }}
                             </v-alert>
 
@@ -711,7 +710,7 @@
                             </div></v-expansion-panel-header
                         >
                         <v-expansion-panel-content class="pt-6" color="slight-overlay">
-                            <Mangadex :inStore="mangadexMangasInStore" />
+                            <Mangadex />
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                     <!-- Komga Options -->
