@@ -164,11 +164,11 @@ export default {
                     return
                 }
 
-                const offset =
-                    -(window.innerWidth - (this.drawer ? 300 : 0)) + pageNavigator.$refs.thumbnail[nVal].$el.clientWidth
+                const $el = pageNavigator.$refs.thumbnail[nVal].$el
+                const offset = -(window.innerWidth - (this.drawer ? 300 : 0)) + $el.clientWidth
 
-                thumbsScroller(pageNavigator.$refs.thumbnail[nVal].$el, this.animationDuration, {
-                    container: pageNavigator,
+                thumbsScroller($el, this.animationDuration, {
+                    container: pageNavigator.$el,
                     offset: offset / 2,
                     x: true,
                     y: false,
@@ -558,7 +558,7 @@ export default {
                     e.stopPropagation()
                     e.stopImmediatePropagation()
                 }
-                if (!((t.type && t.type === "text") || t.nodeName.toLowerCase() === "textarea")) {
+                if (!((t.type && t.type === "text") || (t.nodeName && t.nodeName.toLowerCase() === "textarea"))) {
                     if (!e.shiftKey && !e.altKey) {
                         // Handle double tap events
                         let doubletap = false

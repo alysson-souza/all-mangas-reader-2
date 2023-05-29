@@ -1359,7 +1359,7 @@ export default {
                     e.stopPropagation()
                     e.stopImmediatePropagation()
                 }
-                if (!((t.type && t.type === "text") || t.nodeName.toLowerCase() === "textarea")) {
+                if (!((t.type && t.type === "text") || (t.nodeName && t.nodeName.toLowerCase() === "textarea"))) {
                     if (!e.shiftKey && !e.altKey) {
                         if (e.which === 66) {
                             //b
