@@ -60,11 +60,8 @@ export default class GistStorage extends Storage {
         if (!this.gistSyncGitID || !this.gistSyncSecret) {
             throw new Error("Missing credentials. Skipping update")
         }
-        if (!this.gistSyncSecret.startsWith("ghp_")) {
-            throw new Error("Missing PAT. Skipping update")
-        }
         if (this.gistSyncSecret.length < 2) {
-            throw new Error("Missing ID. Skipping update")
+            throw new Error("Missing Secret. Skipping update")
         }
         const request = await this.ax("GET", `gists/${this.gistSyncGitID}?cache=${Date.now()}`)
 

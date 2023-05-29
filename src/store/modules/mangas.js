@@ -164,27 +164,16 @@ const actions = {
     /**
      * Update syncManager options
      * @param {*} param0
-     * @param {*} backgroundjs
+     * @param {key: string, value: boolean} payload not caring about values yet...
      */
-    async updateSync({ getters, rootState, dispatch }, backgroundjs = false) {
-        if (backgroundjs) {
-            // wait 1s, helps commit from popup.js propagate.
-            setTimeout(() => {
-                if (syncManager) {
-                    syncManager.stop()
-                    syncManager.init(getters.syncOptions, rootState, dispatch)
-                    syncManager.start()
-                } else {
-                    syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
-                    syncManager.start()
-                }
-            }, 1000)
+    async updateSync({ getters, rootState, dispatch }, payload) {
+        if (syncManager) {
+            syncManager.stop()
+            syncManager.init(getters.syncOptions, rootState, dispatch)
+            syncManager.start()
         } else {
-            if (syncManager) {
-                syncManager.init(getters.syncOptions, rootState, dispatch)
-            } else {
-                syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
-            }
+            syncManager = getSyncManager(getters.syncOptions, rootState, dispatch)
+            syncManager.start()
         }
     },
     /**

@@ -1029,13 +1029,8 @@ export default {
                 this.deactivateUnreadable()
             }
             // retrieve Sync options, must follow current naming convention : providerSyncEnabled
-            if (optstr.toLowerCase().includes("syncenabled") || optstr.toLowerCase().includes("sync")) {
+            if (optstr.toLowerCase().includes("sync")) {
                 this.updateSync(optstr, val)
-                this.dispatch("updateSync", false)
-            }
-            if (optstr.toLowerCase().includes("syncenabled") || optstr.toLowerCase().includes("sync")) {
-                this.updateSync(optstr, val)
-                this.dispatch("updateSync", false)
             }
         },
 
@@ -1065,7 +1060,10 @@ export default {
             })
         },
         async updateSync(key, value) {
-            await browser.runtime.sendMessage({ action: "sync_update" })
+            await browser.runtime.sendMessage({
+                action: "sync_update",
+                payload: { key, value }
+            })
         },
         /**
          * Determine if a mirror is displayed depending on the language filter

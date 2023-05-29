@@ -57,7 +57,7 @@ export class Handler {
                 }
                 return serializeVuexObject(mod_state_obj)
             case "sync_update":
-                return this.store.dispatch("updateSync", true)
+                return this.store.dispatch("updateSync", message.payload)
             case "logger":
                 this.logger.debug(message)
                 return true
