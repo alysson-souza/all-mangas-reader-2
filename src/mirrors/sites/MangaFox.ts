@@ -8,6 +8,33 @@ export class MangaFox extends BaseMirror implements MirrorImplementation {
         super(amrLoader)
     }
 
+    /**
+     * Cookies:
+     * SERVERID=node1; Path=/;
+     * dm5imgpage=1114131|5:0; Path=/; Domain=fanfox.net; Expires=Wed, 24 Aug 2022 00:32:37 GMT;
+     * image_time_cookie=1114131|637968403571317773|2; Path=/; Domain=fanfox.net; Expires=Tue, 23 Aug 2022 02:32:37 GMT;
+     * isAdult=1; Path=/; Expires=Wed, 23 Aug 2023 03:27:51 GMT;
+     *
+     * Example
+     *             var comicid = 29732;
+     *             var chapterid = 1086840;
+     *             var userid = 0;
+     *             var imagepage = 1;
+     *             var imagecount = 6;
+     *             var pagerrefresh = false;
+     *             var pagetype = 2;
+     *             var postpageindex = 1;
+     *             var postpagecount = 0;
+     *             var postcount = 0;
+     *             var postsort = 0;
+     *             var topicId = 0;
+     *             var prechapterurl = "/manga/internet_explorer/c079/1.html";
+     *             var nextchapterurl = "/manga/internet_explorer/c081/1.html";
+     **/
+
+    // chapterid + "|" + (imagepage + index) = '1127475|2,1088036|2,1097923|2,1108155|2,1115272
+    imageLoadCookie = "imageload"
+
     mirrorName = "Manga-Fox"
     canListFullMangas = false
     mirrorIcon = MangaFoxIcon
