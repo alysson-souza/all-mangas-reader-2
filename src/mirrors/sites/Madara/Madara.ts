@@ -16,9 +16,13 @@ const defaultOptions = {
     title_selector: "div.post-title > h1",
     img_src: "src",
     secondary_img_src: "data-src",
+    add_list_to_chapter_url: true,
     sort_chapters: false,
     isekai_chapter_url: false,
+    image_protection_plugin: false,
     urlProcessor: url => url,
+    chapterInformationsSeriesName: (doc, url) => undefined,
+    chapterInformationsSeriesUrl: (doc, url) => null,
     doBefore: () => {}
 }
 
@@ -120,7 +124,12 @@ export class Madara extends BaseMirror implements MirrorImplementation {
         var res = []
         $(this.options.chapters_a_sel).each(function () {
             let chapterName = $(this).text()
-            let stringsToStrip = [mangaName, $(".chapter-release-date", this).text()]
+            let stringsToStrip = [
+                mangaName,
+                $(".chapter-release-date", this).text(),
+                $(".view", this).text(),
+                $(".chapterdate", this).text()
+            ]
 
             stringsToStrip.forEach(x => (chapterName = chapterName.replace(x, "")))
 
@@ -157,15 +166,18 @@ export class Madara extends BaseMirror implements MirrorImplementation {
         let path = url.pathname
         let pathSplitted = path.split("/").filter(p => p != "")
         let mangaPath = pathSplitted.slice(0, this.options.path_length)
-        let mangaurl = url.origin + "/" + mangaPath.join("/") + "/"
-        let mgname
+        const initialMangaUrl = url.origin + "/" + mangaPath.join("/") + "/"
+        let mangaurl = this.options.chapterInformationsSeriesUrl(doc, curUrl) || initialMangaUrl
+        let mgname = this.options.chapterInformationsSeriesName(doc, curUrl)
 
         let $ = this.parseHtml(doc)
-
-        const query = $(`a[href="${mangaurl}"]:not(:contains("Manga Info")):not(:contains("Novel Info"))`, doc)
-        if (query.length > 0) {
-            mgname = query.first().text().trim()
+        if (mgname === undefined || mgname.trim() === "") {
+            const query = $(`a[href="${mangaurl}"]:not(:contains("Manga Info")):not(:contains("Novel Info"))`, doc)
+            if (query.length > 0) {
+                mgname = query.first().text().trim()
+            }
         }
+
         if (mgname === undefined || mgname.trim() === "") {
             const docmg = await this.mirrorHelper.loadPage(mangaurl)
             $ = this.parseHtml(docmg)
@@ -182,6 +194,9 @@ export class Madara extends BaseMirror implements MirrorImplementation {
     }
 
     async getListImages(doc, curUrl) {
+        if (this.options.image_protection_plugin) {
+            return this.protectedGetListImages(doc)
+        }
         const res = []
         let self = this
 
@@ -200,6 +215,51 @@ export class Madara extends BaseMirror implements MirrorImplementation {
         return res
     }
 
+    async protectedGetListImages(doc) {
+        let chapter_data = await this.getVariable({ variableName: "chapter_data", doc })
+        let wpmangaprotectornonce = await this.getVariable({ variableName: "wpmangaprotectornonce", doc })
+
+        const crypto = this.mirrorHelper.crypto
+
+        const CryptoJSAesJson = {
+            stringify: function (_0x8f41x2) {
+                const _0x8f41x3 = { ct: _0x8f41x2.ciphertext.toString(crypto.enc.Base64) }
+                if (_0x8f41x2.iv) {
+                    _0x8f41x3.iv = _0x8f41x2.iv.toString()
+                }
+                if (_0x8f41x2.salt) {
+                    _0x8f41x3.s = _0x8f41x2.salt.toString()
+                }
+                return JSON.stringify(_0x8f41x3)
+            },
+            parse: function (_0x8f41x4) {
+                const _0x8f41x5 = JSON.parse(_0x8f41x4)
+                const _0x8f41x2 = crypto.lib.CipherParams.create({
+                    ciphertext: crypto.enc.Base64.parse(_0x8f41x5.ct)
+                })
+                if (_0x8f41x5.iv) {
+                    _0x8f41x2.iv = crypto.enc.Hex.parse(_0x8f41x5.iv)
+                }
+                if (_0x8f41x5.s) {
+                    _0x8f41x2.salt = crypto.enc.Hex.parse(_0x8f41x5.s)
+                }
+                return _0x8f41x2
+            }
+        }
+
+        let chapter_data_2 = JSON.parse(
+            JSON.parse(
+                crypto.AES.decrypt(chapter_data, wpmangaprotectornonce, { format: CryptoJSAesJson }).toString(
+                    crypto.enc.Utf8
+                )
+            )
+        )
+
+        // console.debug('Chapter Data', chapter_data)
+        // console.debug('Chapter Data Parsed', chapter_data_2, typeof chapter_data_2)
+        return chapter_data_2
+    }
+
     async getImageUrlFromPage(urlImg) {
         return urlImg
     }
@@ -210,7 +270,7 @@ export class Madara extends BaseMirror implements MirrorImplementation {
 
     makeChapterUrl(url) {
         let t = new URL(url)
-        return this.stripLastSlash(t.origin + t.pathname) + "?style=list"
+        return this.stripLastSlash(t.origin + t.pathname) + (this.options.add_list_to_chapter_url ? "?style=list" : "")
     }
 
     stripLastSlash(url) {

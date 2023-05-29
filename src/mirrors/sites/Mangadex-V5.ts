@@ -210,8 +210,8 @@ export class MangadexV5 extends BaseMirror implements MirrorImplementation {
                 .reduce((acc, list) => {
                     list.sort(
                         (a, b) =>
-                            new Date(a.attributes.publishAt).getTime() - new Date(b.attributes.publishAt).getTime() &&
-                            parseInt(b.attributes.chapter) - parseInt(a.attributes.chapter)
+                            new Date(a.attributes.publishAt).getTime() - new Date(b.attributes.publishAt).getTime()
+                        // && parseInt(b.attributes.chapter) - parseInt(a.attributes.chapter)
                     )
                     acc.push(list[0])
                     return acc

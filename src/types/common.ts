@@ -134,4 +134,6 @@ export interface MirrorImplementation extends MirrorObject {
     getImageUrlFromPage(urlImage: string): Promise<string>
 
     isCurrentPageAChapterPage(doc: string, curUrl: string): boolean
+
+    getChapterTitle?: (doc: string, curUrl: string) => Promise<string>
 }
