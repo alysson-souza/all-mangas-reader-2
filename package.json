@@ -27,8 +27,8 @@
         "cheerio": "^1.0.0-rc.12",
         "crypto-browserify": "^3.12.0",
         "crypto-js": "^4.0.0",
-        "ejs": "^3.1.5",
-        "mime-db": "^1.49.0",
+        "ejs": "^3.1.9",
+        "mime-db": "^1.52.0",
         "stream-browserify": "^3.0.0",
         "streamsaver": "^2.0.5",
         "v-clipboard": "^2.2.3",
@@ -37,8 +37,8 @@
         "vue-scrollto": "^2.20.0",
         "vuetify": "^2.4.2",
         "vuex": "^3.6.0",
-        "web-streams-polyfill": "^3.1.1",
-        "webextension-polyfill": "^0.8.0"
+        "web-streams-polyfill": "^3.2.1",
+        "webextension-polyfill": "^0.10.0"
     },
     "devDependencies": {
         "@types/offscreencanvas": "^2019.7.0",
