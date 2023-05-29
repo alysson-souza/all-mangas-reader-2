@@ -59,6 +59,9 @@ export default class Manga {
         // Scale Up images
         this.scaleUp = obj.scaleUp || 0
 
+        // Zoom images
+        this.zoom = obj.zoom || 0
+
         // Display name (so mangas can be renamed)
         this.displayName = obj.displayName || ""
 

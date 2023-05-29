@@ -30,7 +30,7 @@ if (typeof registerMangaObject === "function") {
         getListChaps: async function (urlManga) {
             let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
             let res = []
-            $("li._287KE a._2U6DJ", doc).each(function (index) {
+            $("li._287KE a._3pfyN", doc).each(function (index) {
                 res.push([$("span._3D1SJ", this).text() + " " + $("span._2IG5P", this).text(), $(this).attr("href")])
             })
             return res
@@ -83,10 +83,18 @@ if (typeof registerMangaObject === "function") {
             // let json = req.json()
 
             let res = []
-            let cdnUrl = "https://img.mghubcdn.com/file/imghub/"
+            // let cdnUrl = "https://img.mghubcdn.com/file/imghub/"
+            let cdnUrl = "https://imgx.mghubcdn.com/"
             let pages = Object.values(JSON.parse(json.data.chapter.pages))
-            for (page of pages) {
-                res.push(cdnUrl + page)
+
+            if (typeof pages[1] == "string") {
+                for (page of pages) {
+                    res.push(cdnUrl + page)
+                }
+            } else {
+                for (page of pages[1]) {
+                    res.push(cdnUrl + pages[0] + page)
+                }
             }
             return res
         },

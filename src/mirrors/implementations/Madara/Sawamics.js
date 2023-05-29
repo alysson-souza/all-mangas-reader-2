@@ -10,7 +10,8 @@ if (typeof registerMangaObject === "function") {
         abstract: "Madara",
         abstract_options: {
             search_url: "https://sawamics.com/",
-            chapter_list_ajax: false
+            chapter_list_ajax: true,
+            isekai_chapter_url: true
         }
     })
 }

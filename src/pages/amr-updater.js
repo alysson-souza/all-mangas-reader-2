@@ -63,7 +63,7 @@ export class AmrUpdater {
      * Check latest version of stable and beta and keep it in localStorage
      */
     async checkLatestPublishedVersion() {
-        const baseUrl = "https://release.allmangasreader.com/update"
+        const baseUrl = "https://amr-releases.com/versions"
         const [stable, beta] = await Promise.all([
             this.getVersionFromChromeUpdateFile(`${baseUrl}/chrome.xml`),
             this.getVersionFromChromeUpdateFile(`${baseUrl}/chrome-beta.xml`)

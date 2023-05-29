@@ -1,3 +1,127 @@
+### V2.5.5
+  Fixes:
+    * Zoom level not saved between sessions (Credit: @nonedark2008)
+
+  Mirror Fixes:
+    * Read Manga - Chapter list fix (Credit: @nonedark2008)
+    * Luminous Scans (Credit: @Kickunio)
+    * Batoto (Credit: @Kickunio)
+    * Reset Scans - Images loading
+    * Mint Manga - Chapter list fix (Credit: @nonedark2008)
+    * Leviatan Scans - Fix series name in reader
+    * MangaHub - Change cdn url
+    * Asura Scans - Chapter list and mangaurl change reverted (Credit: @nonedark2008)
+
+  New Mirrors:
+    * ManhwaHentai -  https://manhwahentai.me/ (Credit: @Kickunio)
+    * Animated Glitched Scans - https://anigliscans.com
+    * FM Team - https://fmteam.fr/
+    * Manga Clash - https://mangaclash.com/
+    * Nocturnal Scans - https://nocturnalscans.com
+    * Manhwa Freak - https://manhwafreak.com
+    * MangaHub - Change cdn url
+
+  Disabled Mirrors:
+    * Scan Trad disabled because the group disbanded
+
+  Note:
+    * For NHentai: This mirror does not support search, and each chapter is uploaded as its own series so this is not useful for tracking, 
+        just as a simple reader  replacemenet. Also chapters take a minute to load because a lot of background requests are needed to get all images
+### V2.5.4
+  Additions:
+    * New option in disable the bottom hover page navigation. It can be found in While Reading Mangas -> Chapter display mode -> Enable Bottom Hover Navigation
+  
+  Mirror Fixes:
+    * Scylla Scans - (Credit: @HenrikDK2)
+    * Read Manga / Mint Manga - Fix for image server selection (Credit: @nonedark2008)
+    * Manga Great - Fixed chapter list loading
+    * Leviatan Scans - Reverted change to image loading
+    * Toonily (.com) - Fixed image loading
+    * MangaHub - New cdn url format for images
+    * Luminous Scans - Removed the timestamp from series urls for accurate tracking
+    * Void Scans - Fixed image loading
+    * Mangadex - Fixed chapter loading issue
+  
+  New Mirror:
+    * Night Scans - https://nightscans.org
+
+### V2.5.3
+  New Mirrors:
+    * Scylla Scans - https://scyllascans.org/ (Credit: @HenrikDK2)
+    * Manga Lab - https://themangalab.com/
+    * Manhwa Top - https://manhwatop.com/
+    * Manga Read - https://www.mangaread.org/
+
+  Mirror Fixes:
+    * Luminous Scans - Fixed chapter list picking up an extra chapter first
+    * Tritinia Scans - New Domain
+    * Realm Scans - Url changes to mess with scraping
+    * Leviatan Scans - Fixed image loading
+    
+### V2.5.2
+  Changes:
+    * Added option to disable Magic Scroll
+  
+  Fixes:
+    * Fix gist sync with firefox (Credit: @JiPai)
+
+  New Mirror:
+    * Cosmic Scans - https://cosmicscans.com
+    * Banana Scan - https://banana-scan.com/ (Credit: @mmorain)
+
+  Mirror Fixes:
+    * Reset Scans - Fixed Chapter list text
+    * Manga Katana - Fixed image loading
+    * Flame Scans - Url change and image loading
+    * GD Scans - Domain changed
+    * MangaHub - Chapter list changed
+    * Manganato - Added another possible domain for chapters
+    * Luminous Scans - Updated to newer version of MangaStream
+    * Void Scans - Changed image source
+    * Lugnica Scan (Credit: @mmorain)
+### V2.5.1
+  Changes:
+    * Added last updated timestamp to import/export option
+    * Last updated timestamp is no longer added to gist sync (Credit: @JiPai)
+
+  Mirror Fixes:
+    * Aqua Manga - made change to remove ?style=list from chapter urls
+    * Astral Library - Removed www. from domain
+    * Sawamics - Fixed chapter list
+    * Reset Scans - Fixed issue with getting random series in chapter list and title not showing, full chapter list still missing
+    * Imperfect Comics - Switched site software
+    * Manganato - New chapter read url
+    * Komikcast - New domain
+
+### V2.5.0
+  This release comes with a new server to host them. There are issues with the automation on the existing server and I do not have access to change it.
+  All future chrome releases and firefox beta releases will come from https://amr-releases.com
+
+  Note: Search is currently not implimented on Reaper Scans, they have a new system and I do not want to delay a release while I work it out
+
+  Mirror Fixes:
+    * Manga Komi - Changed domain
+    * MangaFreak - Changed domain
+    * Reaper Scans - New website design
+    * Asura Scans - Changed domain
+
+### V2.4.9
+  New Mirrors:
+    * Leviatan Scans Spanish (https://es.leviatanscans.com/)
+    * Void Scans - Re-added void scans under the new domain for the group that took over the name
+
+  Mirror Fixes:
+    * Mangahub - Added api key to call
+    * MangaKatana - Fixed image fetching
+    * Twilight Scans - Fixed chapter list loading
+    * Luminous Scans - Removed the promo images from being loaded in the reader
+    * Leviatan Scans - Changed domain for new multi language releases
+    * Mangadex - 
+
+  Notes:
+    * Mangahub is currently working however with a api limit rate you can only read a few chapters at a time. I would advise using a different mirror
+    * The mangadex change has not been tested large scale because of an issue release beta versions, but it should not cause any issues
+    
 ### V2.4.8
   Mirror Fixes:
     * Leviatan Scans - Fixed issue getting series name

@@ -28,7 +28,7 @@
                 @become-current="becomeCurrent" />
         </table>
         <!-- Pages navigator -->
-        <v-hover>
+        <v-hover v-if="options.bottomNavigationEnabled">
             <div class="amr-pages-nav" :class="{ display: hover, 'shrink-draw': drawer }" slot-scope="{ hover }">
                 <!-- Current page state + previous next buttons -->
                 <PageNavigator
@@ -66,6 +66,7 @@ import pageData from "../state/pagedata"
 import { scansProvider } from "../helpers/ScansProvider"
 import { Util } from "../helpers/util"
 import EventBus from "../helpers/EventBus"
+import { isFirefox } from "../../amr/utils"
 
 import Page from "./Page"
 import ThumbnailNavigator from "./ThumbnailNavigator"
@@ -574,29 +575,49 @@ export default {
                             window.scrollBy(0, this.scrollStepWithKeys)
                             prevent()
                         }
-                        if (e.which === 107 || e.which === 187) {
+                        if (e.which === 107 || e.which === 187 || e.which === 61) {
                             //+
                             // keep the scrolling ratio when zooming in
                             this.keepScrollPos(100)
                             // eslint-disable-next-line vue/no-mutating-props
                             this.resize = "none"
-                            if (!this.$refs.scantable.style.zoom || this.$refs.scantable.style.zoom === 0) {
-                                this.$refs.scantable.style.zoom = 1
+                            if (isFirefox()) {
+                                let zoom = this.$refs.scantable.style.transform.replace(/[^0-9.]+/g, "")
+                                if (zoom === "0" || zoom === "") {
+                                    this.$refs.scantable.style.transform = "scale(1)"
+                                } else {
+                                    this.$refs.scantable.style.transform = `scale(${zoom * 1.1})`
+                                }
+                                this.$refs.scantable.style.transformOrigin = "top center"
                             } else {
-                                this.$refs.scantable.style.zoom = this.$refs.scantable.style.zoom * 1.1
+                                if (!this.$refs.scantable.style.zoom || this.$refs.scantable.style.zoom === 0) {
+                                    this.$refs.scantable.style.zoom = 1
+                                } else {
+                                    this.$refs.scantable.style.zoom = this.$refs.scantable.style.zoom * 1.1
+                                }
                             }
                             prevent()
                         }
-                        if (e.which === 109 || e.which === 189) {
+                        if (e.which === 109 || e.which === 189 || e.which === 173) {
                             //-
                             // keep the scrolling ratio when zooming out
                             this.keepScrollPos(100)
                             // eslint-disable-next-line vue/no-mutating-props
                             this.resize = "none"
-                            if (!this.$refs.scantable.style.zoom || this.$refs.scantable.style.zoom === 0) {
-                                this.$refs.scantable.style.zoom = 1
+                            if (isFirefox()) {
+                                let zoom = this.$refs.scantable.style.transform.replace(/[^0-9.]+/g, "")
+                                if (zoom === "0" || zoom === "") {
+                                    this.$refs.scantable.style.transform = "scale(1)"
+                                } else {
+                                    this.$refs.scantable.style.transform = `scale(${zoom * 0.9})`
+                                }
+                                this.$refs.scantable.style.transformOrigin = "top center"
                             } else {
-                                this.$refs.scantable.style.zoom = this.$refs.scantable.style.zoom * 0.9
+                                if (!this.$refs.scantable.style.zoom || this.$refs.scantable.style.zoom === 0) {
+                                    this.$refs.scantable.style.zoom = 1
+                                } else {
+                                    this.$refs.scantable.style.zoom = this.$refs.scantable.style.zoom * 0.9
+                                }
                             }
                             prevent()
                         }
@@ -626,7 +647,7 @@ export default {
                             }
                             prevent()
                         }
-                        if (e.which === 32) {
+                        if (e.which === 32 && this.options.magicScrollEnabled) {
                             let images = this.$refs.page
                             // Are we at the end of the last page
                             // can't use this.lastScan cause that is any point on last page, also wont work if the last scan is small

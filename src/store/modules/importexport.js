@@ -289,6 +289,17 @@ const actions = {
             if (!mangadex) await dispatch("initMangadex")
             await mangadex.markAsRead(url)
         }
+        if (mirror === "Tachidesk") {
+            let tmpurl = new URL(url)
+            tmpurl.pathname = "/api/v1" + tmpurl.pathname
+            var formData = new FormData()
+            formData.set("lastPageRead", "1")
+            formData.set("read", "true")
+            await fetch(tmpurl, {
+                method: "PATCH",
+                body: formData
+            })
+        }
         return true
     },
     /**

@@ -748,7 +748,7 @@ export default {
         book: true /* Do we display side by side pages */,
         resize: "width" /* Mode of resize : width, height, container */,
         fullchapter: true /* Do we display whole chapter or just current page */,
-        scaleUp: Boolean(options.scaleUp) /* Does the image scale up larger than its native size */,
+        scaleUp: options.scaleUp === 1 /* Does the image scale up larger than its native size */,
         webtoonMode: options.webtoonDefault === 1 /* Removes whitespace between images for webtoons */,
 
         mangaExists: null /* Does manga exists in reading list */,

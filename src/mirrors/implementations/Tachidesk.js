@@ -89,12 +89,17 @@ if (typeof registerMangaObject === "function") {
         },
 
         isCurrentPageAChapterPage: function (doc, curUrl) {
-            return (
+            let isPage =
                 curUrl
                     .split("/")
                     .filter(ele => ele != "")
-                    .slice(-2)[0] == "chapter"
-            )
+                    .slice(-2)[0] == "chapter" ||
+                curUrl
+                    .split("/")
+                    .filter(ele => ele != "")
+                    .slice(-4)[0] == "chapter"
+
+            return isPage
         }
     })
 }

@@ -3,7 +3,9 @@ globalThis["MangaStream_1_1_4Abs"] = function (options) {
         base_url: "",
         series_list_selector: '.listupd a[href*="/manga/"]',
         chapter_list_selector: ".eph-num a",
-        manga_url_selector: ".allc a"
+        manga_url_selector: ".allc a",
+        urlProcessorSeries: url => url,
+        urlProcessorChapter: url => url
     }
     this.options = Object.assign(this.defaultOptions, options)
     this.mirrorName = "MangaStream_1_1_4Abs"
@@ -13,9 +15,10 @@ globalThis["MangaStream_1_1_4Abs"] = function (options) {
         let res = []
         let urlManga = this.options.base_url + "?s=" + search
         let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
+        let self = this
 
         $(this.options.series_list_selector, doc).each(function (index) {
-            res.push([$(this).find(".tt").text().trim(), $(this).attr("href")])
+            res.push([$(this).find(".tt").text().trim(), self.options.urlProcessorSeries($(this).attr("href"))])
         })
         return res
     }
@@ -23,8 +26,9 @@ globalThis["MangaStream_1_1_4Abs"] = function (options) {
     this.getListChaps = async function (urlManga) {
         let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
         let res = []
+        let self = this
         $(this.options.chapter_list_selector, doc).each(function (index) {
-            res.push([$(".chapternum", this).text().trim(), $(this).attr("href")])
+            res.push([$(".chapternum", this).text().trim(), self.options.urlProcessorChapter($(this).attr("href"))])
         })
         return res
     }
@@ -33,8 +37,8 @@ globalThis["MangaStream_1_1_4Abs"] = function (options) {
         var mgtitle = $(this.options.manga_url_selector, doc)
         return {
             name: mgtitle.text(),
-            currentMangaURL: mgtitle.attr("href"),
-            currentChapterURL: curUrl
+            currentMangaURL: this.options.urlProcessorSeries(mgtitle.attr("href")),
+            currentChapterURL: this.options.urlProcessorChapter(curUrl)
         }
     }
 

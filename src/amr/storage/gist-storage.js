@@ -86,7 +86,11 @@ export default class GistStorage extends Storage {
 
     async saveAll(content) {
         await this.wait()
-        return this.ax("PATCH", `gists/${this.gistSyncGitID}`, this.getFileStruct(JSON.stringify(content)))
+        // remove unused variables before uploading
+        const newArr = content.map(({ upts, ...rest }) => {
+            return rest
+        })
+        return this.ax("PATCH", `gists/${this.gistSyncGitID}`, this.getFileStruct(JSON.stringify(newArr)))
     }
 
     async delete(key, value) {

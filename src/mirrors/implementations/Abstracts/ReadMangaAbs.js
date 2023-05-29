@@ -29,7 +29,7 @@ globalThis["ReadMangaAbs"] = function (options) {
         let res = []
         let self = this
 
-        $("div.expandable td > a", doc).each(function (index) {
+        $("div.chapters-link a.chapter-link", doc).each(function (index) {
             var str = $(this).attr("href")
             str = str.split("/")[1]
             if (str === mangaIdFromUrl) {
@@ -64,13 +64,15 @@ globalThis["ReadMangaAbs"] = function (options) {
         doc = await this.passAdult(doc, curUrl)
 
         var res = []
-        var matches = $.map($("#__amr_text_dom__", doc), el => $(el).text()).join(";")
-        matches = matches.match(/rm_h\.initReader\(.*?(\[\[.*?\]\])/)
+        var source = $.map($("#__amr_text_dom__", doc), el => $(el).text()).join(";")
+        var matches = source.match(/rm_h\.(?:initReader|readerInit)\(.*?(\[\[.*?\]\])/)
+        var hasOneWayImageServer = source.includes("https://one-way.work")
         if (matches) {
             matches = matches[1].replace(/'/g, '"')
             var b = JSON.parse(matches)
             for (var i = 0; i < b.length; i++) {
-                res[i] = b[i][0] + b[i][2]
+                if (hasOneWayImageServer) res[i] = "https://one-way.work/" + b[i][2].replace(/\?.*$/, "")
+                else res[i] = b[i][0] + b[i][2]
             }
         }
         return res

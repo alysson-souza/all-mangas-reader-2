@@ -15,9 +15,13 @@ globalThis["Madara"] = function (options) {
         title_selector: "div.post-title > h1",
         img_src: "src",
         secondary_img_src: "data-src",
+        add_list_to_chapter_url: true,
         sort_chapters: false,
         isekai_chapter_url: false,
+        image_protection_plugin: false,
         urlProcessor: url => url,
+        chapterInformationsSeriesName: (doc, url) => undefined,
+        chapterInformationsSeriesUrl: (doc, url) => null,
         doBefore: () => {}
     }),
         (this.options = Object.assign(this.default_options, options))
@@ -88,7 +92,12 @@ globalThis["Madara"] = function (options) {
         var res = []
         $(this.options.chapters_a_sel, doc).each(function (index) {
             let chapterName = $(this).text()
-            let stringsToStrip = [mangaName, $(".chapter-release-date", this).text()]
+            let stringsToStrip = [
+                mangaName,
+                $(".chapter-release-date", this).text(),
+                $(".view", this).text(),
+                $(".chapterdate", this).text()
+            ]
 
             stringsToStrip.forEach(x => (chapterName = chapterName.replace(x, "")))
 
@@ -125,13 +134,21 @@ globalThis["Madara"] = function (options) {
         let path = url.pathname
         let pathSplitted = path.split("/").filter(p => p != "")
         let mangaPath = pathSplitted.slice(0, this.options.path_length)
-        let mangaurl = url.origin + "/" + mangaPath.join("/") + "/"
-        let mgname
-        if ($(`a[href="${mangaurl}"]:not(:contains("Manga Info")):not(:contains("Novel Info"))`, doc).length > 0) {
-            mgname = $(`a[href="${mangaurl}"]:not(:contains("Manga Info")):not(:contains("Novel Info"))`, doc)
-                .first()
-                .text()
-                .trim()
+        // console.debug(
+        //     this.options.chapterInformationsSeriesUrl(doc, curUrl) || url.origin + "/" + mangaPath.join("/") + "/",
+        //     this.options.chapterInformationsSeriesUrl(doc, curUrl),
+        //     url.origin + "/" + mangaPath.join("/") + "/"
+        // )
+        let mangaurl =
+            this.options.chapterInformationsSeriesUrl(doc, curUrl) || url.origin + "/" + mangaPath.join("/") + "/"
+        let mgname = this.options.chapterInformationsSeriesName(doc, curUrl)
+        if (mgname === undefined || mgname.trim() === "") {
+            if ($(`a[href="${mangaurl}"]:not(:contains("Manga Info")):not(:contains("Novel Info"))`, doc).length > 0) {
+                mgname = $(`a[href="${mangaurl}"]:not(:contains("Manga Info")):not(:contains("Novel Info"))`, doc)
+                    .first()
+                    .text()
+                    .trim()
+            }
         }
         if (mgname === undefined || mgname.trim() === "") {
             let docmg = await amr.loadPage(mangaurl)
@@ -148,6 +165,8 @@ globalThis["Madara"] = function (options) {
     }
 
     this.getListImages = async function (doc, curUrl) {
+        if (this.options.image_protection_plugin) return this.protectedGetListImages(doc)
+
         res = []
         let self = this
 
@@ -165,6 +184,49 @@ globalThis["Madara"] = function (options) {
         return res
     }
 
+    this.protectedGetListImages = async function (doc) {
+        let chapter_data = amr.getVariable("chapter_data", doc)
+        let wpmangaprotectornonce = amr.getVariable("wpmangaprotectornonce", doc)
+
+        const CryptoJSAesJson = {
+            stringify: function (_0x8f41x2) {
+                const _0x8f41x3 = { ct: _0x8f41x2.ciphertext.toString(amr.crypto.enc.Base64) }
+                if (_0x8f41x2.iv) {
+                    _0x8f41x3.iv = _0x8f41x2.iv.toString()
+                }
+                if (_0x8f41x2.salt) {
+                    _0x8f41x3.s = _0x8f41x2.salt.toString()
+                }
+                return JSON.stringify(_0x8f41x3)
+            },
+            parse: function (_0x8f41x4) {
+                const _0x8f41x5 = JSON.parse(_0x8f41x4)
+                const _0x8f41x2 = amr.crypto.lib.CipherParams.create({
+                    ciphertext: amr.crypto.enc.Base64.parse(_0x8f41x5.ct)
+                })
+                if (_0x8f41x5.iv) {
+                    _0x8f41x2.iv = amr.crypto.enc.Hex.parse(_0x8f41x5.iv)
+                }
+                if (_0x8f41x5.s) {
+                    _0x8f41x2.salt = amr.crypto.enc.Hex.parse(_0x8f41x5.s)
+                }
+                return _0x8f41x2
+            }
+        }
+
+        let chapter_data_2 = JSON.parse(
+            JSON.parse(
+                amr.crypto.AES.decrypt(chapter_data, wpmangaprotectornonce, { format: CryptoJSAesJson }).toString(
+                    amr.crypto.enc.Utf8
+                )
+            )
+        )
+
+        // console.debug('Chapter Data', chapter_data)
+        // console.debug('Chapter Data Parsed', chapter_data_2, typeof chapter_data_2)
+        return chapter_data_2
+    }
+
     this.getImageFromPageAndWrite = async function (urlImg, image) {
         $(image).attr("src", urlImg)
     }
@@ -175,7 +237,7 @@ globalThis["Madara"] = function (options) {
 
     this.makeChapterUrl = function (url) {
         let t = new URL(url)
-        return this.stripLastSlash(t.origin + t.pathname) + "?style=list"
+        return this.stripLastSlash(t.origin + t.pathname) + (this.options.add_list_to_chapter_url ? "?style=list" : "")
     }
 
     this.stripLastSlash = function (url) {
