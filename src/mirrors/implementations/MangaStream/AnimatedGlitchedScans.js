@@ -5,7 +5,7 @@ if (typeof registerMangaObject === "function") {
         mirrorIcon: "anigli-scans.png",
         domains: ["anigliscans.com"],
         home: "https://anigliscans.com",
-        chapter_url: /\/.*?chapter-[0-9]+.*\//g,
+        // chapter_url: /\/.*?chapter-[0-9]+.*\//g,
         languages: "en",
         abstract: "MangaStream_1_1_4Abs",
         abstract_options: {
