@@ -187,7 +187,7 @@ export class MangadexV5 extends BaseMirror implements MirrorImplementation {
         const id = urlManga.split("/")[4]
         const res: Record<string, InfoResult[]> = {}
         // Loop with 15 iterations at most
-        for (const [page, emptyVal] of Array(20).entries()) {
+        for (const [page, emptyVal] of Array(40).entries()) {
             // fetch data
             const jsonChapFeed = (await this.mirrorHelper.loadJson(
                 `${this.api}/manga/${id}/feed?limit=${this.pageLimit}&order[chapter]=desc&offset=${
