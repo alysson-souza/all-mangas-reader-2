@@ -32,7 +32,7 @@ if (typeof registerMangaObject === "function") {
 
             data.props.pageProps.chapters.forEach(elem =>
                 res.push([
-                    ("Chapter " + elem.chapterNumber + elem.ChapterName != "" ? " - " + elem.ChapterName : "").trim(),
+                    ("Chapter " + elem.chapterNumber + (elem.ChapterName != "" ? " - " + elem.ChapterName : "")).trim(),
                     urlManga + "/" + elem.chapterID + "-chapter-" + elem.chapterNumber
                 ])
             )
