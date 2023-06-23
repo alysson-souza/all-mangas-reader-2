@@ -52,9 +52,10 @@ if (typeof registerMangaObject === "function") {
             let pages = amr.getVariable("pages", doc),
                 oeuvre_slug = amr.getVariable("oeuvre_slug", doc),
                 chapter_slug = amr.getVariable("chapter_slug", doc),
-                applocale = amr.getVariable("applocale", doc)
+                applocale = amr.getVariable("applocale", doc),
+                chapter_server = amr.getVariable("chapter_server", doc)
 
-            let cdnUrl = new URL(doc.querySelector('img[src^="https://cdn."]').src).origin
+            let cdnUrl = `https://${chapter_server}.mangakawaii.io`
 
             for (page of pages) {
                 res.push(
