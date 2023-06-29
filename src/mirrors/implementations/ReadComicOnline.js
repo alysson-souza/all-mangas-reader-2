@@ -60,14 +60,45 @@ if (typeof registerMangaObject === "function") {
         },
 
         getListImages: async function (doc, curUrl) {
+            const unpack = (urlImg, origin = false) => {
+                let src = urlImg.replace(/_x236/g, "d").replace(/_x945/g, "g")
+                let alt = origin !== false
+                if (!alt) origin = "https://2.bp.blogspot.com/"
+
+                if (src.indexOf("https") !== 0) {
+                    // if encoded
+                    const cmark = src.substring(src.indexOf("?"))
+
+                    let sIndex = src.indexOf("=s0?")
+                    const isSizeZero = sIndex > 0
+                    if (!isSizeZero) sIndex = src.indexOf("=s1600?")
+
+                    src = src.substring(4, sIndex)
+                    src = src.substring(0, 18) + src.substring(21)
+                    src = src.substring(0, src.length - 6) + src[src.length - 2] + src[src.length - 1]
+
+                    src = atob(src)
+
+                    src = src.substring(0, 13) + src.substring(17)
+                    src = src.substring(0, src.length - 2) + (isSizeZero ? "=s0" : "=s1600")
+
+                    src = origin + src + cmark
+                } else if (alt) {
+                    // if not encoded, we still need to replace origin, when given
+                    src = src.replace("https://2.bp.blogspot.com/", origin)
+                }
+                return src
+            }
+
             doc = await amr.loadPage(curUrl + "&readType=1&quality=hq", { nocache: true })
-            let regex = /lstImages\.push\(\"(.*?)\"\);/g
-            let parts = doc.innerText.match(regex)
-            var res = []
-            parts.forEach(str => {
-                res.push(str.replace('lstImages.push("', "").replace('");', ""))
-            })
-            return res
+            let regex = /lstImages\.push\(['"](.*?)['"]\);/g
+            const matches = doc.innerText.matchAll(regex)
+
+            regex = /beau\(lstImages,\s*['"](?<origin>.*?)['"]\);/
+            let { origin = false } = doc.innerText.match(regex).groups ?? {}
+            if (origin.length === 0) origin = false
+
+            return Array.from(matches, match => unpack(match[1], origin))
         },
 
         getImageFromPageAndWrite: async function (urlImg, image) {
