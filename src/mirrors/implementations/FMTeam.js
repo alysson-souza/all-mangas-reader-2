@@ -4,58 +4,45 @@ if (typeof registerMangaObject === "function") {
         mirrorIcon: "_base-icon.png",
         languages: "fr",
         domains: ["fmteam.fr"],
-        home: "https://fmteam.fr/",
+        home: "https://fmteam.fr",
         canListFullMangas: true,
-        chapter_url: /^\/read\/+/g,
+        chapter_url: /\/read\/.*\/ch\/\w+#?\d*/g,
 
         getMangaList: async function (search) {
-            let doc = await amr.loadPage("https://fmteam.fr/directory/", {
-                nocache: true,
-                preventimages: true
-            })
-            let res = []
-            $(".series .title a", doc).each(function () {
-                res.push([$(this).text(), $(this).attr("href")])
+            let jsonSearch = await amr.loadJson(`${this.home}/api/search/${search}`)
+            let res = jsonSearch.comics.map(mangaJson => {
+                return [mangaJson.title, this.home + mangaJson.url]
             })
             return res
         },
 
         getListChaps: async function (urlManga) {
-            let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
-            let res = []
-            $(".list .title a", doc).each(function () {
-                res.push([$(this).text().trim(), $(this).attr("href")])
+            const id = urlManga.split("/")[4]
+            //TODO: handle multi language, not used yet by the mrirror
+            let jsonSearch = await amr.loadJson(`${this.home}/api/comics/${id}`)
+            let res = jsonSearch.comic.chapters.map(mangaJson => {
+                return [mangaJson.full_title, this.home + mangaJson.url]
             })
             return res
         },
 
         getInformationsFromCurrentPage: async function (doc, curUrl) {
-            let links = $("h1.tbtitle a", doc)
-            let seriesLink = $(links[0])
-            let chapterLink = $(links[1])
-
+            let apiUrl = curUrl.replace("/read/", "/api/read/")
+            let info = await amr.loadJson(apiUrl)
             return {
-                name: seriesLink.text().trim(),
-                currentMangaURL: seriesLink.attr("href"),
-                currentChapterURL: chapterLink.attr("href")
+                name: info.comic.title,
+                currentMangaURL: this.home + info.comic.url,
+                currentChapterURL: curUrl
             }
         },
 
         getListImages: async function (doc, curUrl) {
-            let res = []
-            let pages = amr.getVariable("pages", doc)
-            console.debug("Pages", pages)
-
-            pages.forEach(page => res.push(page.url))
-            // $(".main_img img", doc).each(function () {
-            //     let url = $(this).attr("data-src")
-            //     if (!url) {
-            //         return
-            //     }
-            //     if (url.indexOf("http") !== 0) url = "https://scan-trad.fr/" + url
-            //     res.push(url)
-            // })
-            return res
+            //https://fmteam.fr/read/one-punch-man/fr/ch/186
+            let idManga = curUrl.split("/")[4]
+            let idChap = curUrl.match(/ch\/(\w+)#?\d*$/)[1]
+            //TODO handle language if needed
+            let jsonRes = await amr.loadJson(`${this.home}/api/read/${idManga}/fr/ch/${idChap}`)
+            return jsonRes.chapter.pages
         },
 
         getImageFromPageAndWrite: async function (urlImg, image) {
@@ -63,8 +50,7 @@ if (typeof registerMangaObject === "function") {
         },
 
         isCurrentPageAChapterPage: function (doc, curUrl) {
-            let pages = amr.getVariable("pages", doc)
-            return pages != undefined
+            return curUrl.match(/ch\/(\w+)#?\d*$/) !== undefined
         }
     })
 }
