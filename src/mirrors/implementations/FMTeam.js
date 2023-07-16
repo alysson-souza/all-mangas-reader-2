@@ -5,7 +5,7 @@ if (typeof registerMangaObject === "function") {
         languages: "fr",
         domains: ["fmteam.fr"],
         home: "https://fmteam.fr",
-        canListFullMangas: true,
+        canListFullMangas: false,
         chapter_url: /\/read\/.*\/ch\/\w+#?\d*/g,
 
         getMangaList: async function (search) {
