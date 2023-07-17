@@ -9,6 +9,7 @@ import { getMadaraImplementations } from "./sites/Madara/MadaraImplementations"
 import { WebToon } from "./sites/WebToon"
 import { MangadexV5 } from "./sites/Mangadex-V5"
 import { getDisabledImplementations } from "./sites/disabled/DisabledImplementations"
+import { getMangaStreamImplementations } from "./sites/MangaStream/MangaStream"
 
 export class MirrorLoader {
     lookupMap: Map<string, MirrorImplementation>
@@ -52,6 +53,7 @@ export const getMirrorLoader = (mirrorHelper: MirrorHelper) => {
             new Manga4Life(mirrorHelper),
             new MangaHub(mirrorHelper),
             ...getMadaraImplementations(mirrorHelper),
+            ...getMangaStreamImplementations(mirrorHelper),
             ...getMangaKakalotImplementations(mirrorHelper),
             new MangadexV5(mirrorHelper),
             new WebToon(mirrorHelper),
