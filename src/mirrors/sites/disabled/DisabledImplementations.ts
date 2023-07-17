@@ -1,4 +1,5 @@
 import { DisabledMirror } from "./DisabledMirror"
+import NonStopScansIcon from "../../icons/nonstopscans-optimized.png"
 
 export const getDisabledImplementations = () => {
     return [
@@ -182,6 +183,19 @@ export const getDisabledImplementations = () => {
             disabled: true,
             abstract_options: {
                 search_url: "https://www.mangastream.cc/"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Non Stop Scans",
+            mirrorIcon: NonStopScansIcon,
+            languages: "en",
+            domains: ["www.nonstopscans.com"],
+            home: "https://www.nonstopscans.com/",
+            chapter_url: /^\/\d.+-.+?/g,
+            canListFullMangas: false,
+            abstract: "MangaStream_1_1_4",
+            abstract_options: {
+                base_url: "https://nonstopscans.com/"
             }
         })
     ]
