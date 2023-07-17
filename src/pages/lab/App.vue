@@ -71,8 +71,8 @@
                         v-for="(test, index) in finishedTests"
                         :key="index"
                         :class="
-                            'ma-4 pa-4 elevation-1 rounded-xl darken-1 ' +
-                            (testsResults[index] && testsResults[index].passed ? 'brown' : 'danger')
+                            'ma-4 pa-4 elevation-1 rounded-xl ' +
+                            (testsResults[index] && testsResults[index].passed ? 'green' : 'danger')
                         ">
                         <v-col cols="3">
                             <v-icon
@@ -100,8 +100,8 @@
                             <div
                                 v-if="testsResults[index].output.length > 0"
                                 :class="
-                                    (testsResults[index] && testsResults[index].passed ? 'brown' : 'danger') +
-                                    ' darken-4 ma-2 pa-2 elevation-1'
+                                    (testsResults[index] && testsResults[index].passed ? 'grey' : 'danger') +
+                                    ' ma-2 pa-2 elevation-1'
                                 ">
                                 <!-- display generated oututs during test -->
                                 <div v-for="(out, ind) in testsResults[index].output" :key="ind">
@@ -113,7 +113,7 @@
                                         v-model="out.currentValue"
                                         class="list-results"></v-select>
                                     <div v-if="out.display === 'select'">
-                                        Selected value : <i>{{ out.currentValue }}</i>
+                                        Selected value : <i class="text-break">{{ out.currentValue }}</i>
                                     </div>
                                     <span v-if="out.display === 'object'">{{
                                         JSON.stringify(out.value, null, 4)
