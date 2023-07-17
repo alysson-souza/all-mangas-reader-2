@@ -193,7 +193,7 @@ export class Madara extends BaseMirror implements MirrorImplementation {
         }
     }
 
-    async getListImages(doc, curUrl) {
+    async getListImages(doc, curUrl): Promise<string[]> {
         if (this.options.image_protection_plugin) {
             return this.protectedGetListImages(doc)
         }
@@ -215,9 +215,13 @@ export class Madara extends BaseMirror implements MirrorImplementation {
         return res
     }
 
-    async protectedGetListImages(doc) {
+    async protectedGetListImages(doc): Promise<string[]> {
         let chapter_data = await this.getVariable({ variableName: "chapter_data", doc })
         let wpmangaprotectornonce = await this.getVariable({ variableName: "wpmangaprotectornonce", doc })
+
+        if (!chapter_data || !wpmangaprotectornonce) {
+            return []
+        }
 
         const crypto = this.mirrorHelper.crypto
 
