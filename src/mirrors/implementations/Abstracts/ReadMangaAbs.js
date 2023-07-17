@@ -29,7 +29,7 @@ globalThis["ReadMangaAbs"] = function (options) {
         let res = []
         let self = this
 
-        $("div.chapters-link a.chapter-link", doc).each(function (index) {
+        $("div.chapters a.chapter-link", doc).each(function (index) {
             var str = $(this).attr("href")
             str = str.split("/")[1]
             if (str === mangaIdFromUrl) {
