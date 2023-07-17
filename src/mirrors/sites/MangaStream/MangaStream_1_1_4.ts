@@ -97,11 +97,12 @@ export class MangaStream_1_1_4 extends BaseMirror implements MirrorImplementatio
 
         const json = JSON.parse(parts[0].replace("ts_reader.run(", "").replace(");", ""))
 
-        json.sources.forEach(source => {
-            source.images.forEach(image => {
-                res.push(image)
-            })
-        })
+        for (const source of json.sources) {
+            // Only need one source, as others are duplicate
+            if (source.images) {
+                return source.images
+            }
+        }
         return res
     }
 
