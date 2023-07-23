@@ -197,6 +197,115 @@ export const getDisabledImplementations = () => {
             abstract_options: {
                 base_url: "https://nonstopscans.com/"
             }
+        }),
+        new DisabledMirror({
+            mirrorName: "The Cat Scans",
+            mirrorIcon: require("../../icons/catscans-optimized.png"),
+            languages: "en",
+            domains: ["reader2.thecatscans.com"],
+            home: "http://reader2.thecatscans.com/",
+            chapter_url: /^\/read\/.+$/g,
+            canListFullMangas: true,
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "http://reader2.thecatscans.com",
+                mglist_selector: ".title > a[href*='/series/']"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Hasta Reader",
+            mirrorIcon: require("../../icons/hastareader-optimized.png"),
+            languages: "it",
+            domains: ["hastareader.com"],
+            home: "https://hastareader.com/",
+            chapter_url: /^\/slide\/read\/.+$/g,
+            canListFullMangas: false /* to avoid loading 8 pages to load all mangas */,
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "https://hastareader.com/slide",
+                search_all: false /* use FoolSlide search function */,
+                mglist_selector: ".title > a[href*='/series/']"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Kangaryu Team",
+            mirrorIcon: require("../../icons/kangaryuteam-optimized.png"),
+            languages: "fr",
+            domains: ["kangaryu-team.fr"],
+            home: "http://kangaryu-team.fr/",
+            chapter_url: /^\/manga\/.+\/\d+/g,
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "http://kangaryu-team.fr/manga",
+                mglist_selector: ".title > a[href*='/series/']"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Kirei Cake",
+            mirrorIcon: require("../../icons/kireicake-optimized.png"),
+            languages: "en",
+            domains: ["reader.kireicake.com"],
+            home: "https://kireicake.com/",
+            chapter_url: /^\/read\/.+$/g,
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "https://reader.kireicake.com",
+                series_list_url: "/reader/list/",
+                mglist_selector: ".title > a[href*='/series/']",
+                info_chapter_var: "baseurl"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Koneko Scantrad",
+            mirrorIcon: require("../../icons/konekoscantrad-optimized.png"),
+            languages: "fr",
+            domains: ["lel.koneko-scantrad.fr"],
+            home: "https://koneko-scantrad.fr",
+            chapter_url: /^\/read\/.+$/g,
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "https://lel.koneko-scantrad.fr",
+                mglist_selector: ".title > a[href*='/series/']"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Le Cercle du Scan",
+            mirrorIcon: require("../../icons/lecercleduscan-optimized.png"),
+            languages: "fr",
+            domains: ["lel.lecercleduscan.com"],
+            home: "https://lel.lecercleduscan.com",
+            chapter_url: /^\/read\/.+$/g,
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "https://lel.lecercleduscan.com",
+                mglist_selector: ".title > a[href*='/series/']"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Let It Go Scans",
+            mirrorIcon: require("../../icons/letitgoscans-optimized.png"),
+            languages: "en",
+            domains: ["reader.letitgo.scans.today"],
+            home: "http://letitgo-scans.blogspot.com/",
+            chapter_url: /^\/read\/.+$/g,
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "https://https://reader.letitgo.scans.today",
+                mglist_selector: ".title > a[href*='/series/']"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Vortex Scans",
+            mirrorIcon: require("../../icons/vortexscans-optimized.png"),
+            languages: "en",
+            domains: ["reader.vortex-scans.com"],
+            home: "https://vortex-scans.com/",
+            chapter_url: /^\/read\/.+$/g,
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "https://reader.vortex-scans.com",
+                mglist_selector: ".title > a[href*='/series/']"
+            }
         })
     ]
 }

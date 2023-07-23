@@ -1,7 +1,7 @@
 import browser, { Cookies } from "webextension-polyfill"
 import CryptoJS from "crypto-js"
 
-interface LoadOptions {
+export interface LoadOptions {
     /** @deprecated Do not sent content type **/
     nocontenttype?: boolean
 
