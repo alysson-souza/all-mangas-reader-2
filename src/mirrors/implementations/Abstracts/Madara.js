@@ -166,8 +166,8 @@ window["Madara"] = function (options) {
 
     this.getListImages = async function (doc, curUrl) {
         if (this.options.image_protection_plugin) {
-            let images = this.protectedGetListImages(doc)
-            if (!images) return images
+            let images = await this.protectedGetListImages(doc)
+            if (images) return images
         }
 
         res = []
@@ -191,7 +191,7 @@ window["Madara"] = function (options) {
         let chapter_data = amr.getVariable("chapter_data", doc)
         let wpmangaprotectornonce = amr.getVariable("wpmangaprotectornonce", doc)
 
-        if (!chapter_data || !wpmangaprotectornonce) return false
+        if (!chapter_data || !wpmangaprotectornonce) return null
 
         const CryptoJSAesJson = {
             stringify: function (_0x8f41x2) {
