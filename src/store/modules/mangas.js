@@ -690,7 +690,7 @@ const actions = {
                 newPath: listChaps[listChaps.length - 1][1],
                 newName: listChaps[listChaps.length - 1][0],
                 dateTime: new Date().toLocaleString()
-            }).catch(e => this.logger(e))
+            }).catch(e => logger.error(e))
         }
 
         // test if lastChapterRead is consistent (exists)
