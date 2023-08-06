@@ -6,8 +6,9 @@
         "moduleResolution": "node",
         "sourceMap": true,
         "allowSyntheticDefaultImports": true,
-        "allowJs": true
+        "allowJs": true,
+        "outDir": "dist"
     },
     "include": ["src", "index.d.ts"],
-    "exclude": ["node_modules", "**/*.spec.ts", "**/*.test.ts"]
+    "exclude": ["node_modules", "**/*.spec.ts", "**/*.test.ts", "dist/**/*", "build/**/*"]
 }
