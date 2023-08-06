@@ -47,7 +47,12 @@ const main = () => {
     if (process.argv.includes("-patch")) {
         let inc = process.argv[process.argv.findIndex(el => el === "-patch") + 1]
         version = version + "." + inc
-        name = name + "-beta"
+
+        if (process.argv.includes("-alpha")) {
+            name = name + "-alpha"
+        } else {
+            name = name + "-beta"
+        }
     }
 
     const zipFilename = `${name}-${version}${extension}`

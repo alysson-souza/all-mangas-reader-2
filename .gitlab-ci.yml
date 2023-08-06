@@ -77,6 +77,23 @@ crx-beta:
     dependencies:
         - build
 
+crx-alpha:
+    stage: package
+    script:
+        - yarn run manifest:specify -chrome -checkver $VERSION -patch $PATCH -alpha
+        - yarn run build-zip -patch $PATCH -alpha
+    artifacts:
+        paths:
+            - dist-zip/*.zip
+        expire_in: 1 week
+    except:
+        variables:
+            - $CI_COMMIT_MESSAGE =~ /NO-CI/
+    only:
+        - feature/chrome-manifest-v3
+    dependencies:
+        - build
+
 crx:
     stage: package
     script:
