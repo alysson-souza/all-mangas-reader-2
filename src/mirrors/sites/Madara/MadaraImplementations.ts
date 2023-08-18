@@ -62,6 +62,13 @@ import UltMangaIcon from "../../icons/ultmanga-optimized.png";
 import UnemployedScansIcon from "../../icons/unemployed-scans-optimized.png";
 import WebtoonXyzIcon from "../../icons/webtoon-xyz-optimized.png"
 import ZinMangaIcon from "../../icons/zin-manga-optimized.png"
+import ThreeFourSevenMangaIcon from "../../icons/manga-347-optimized.png"
+import MangaClashIcon from "../../icons/manga-clash-optimized.png"
+import MangaCultivatorIcon from "../../icons/manga-cultivator-optimized.png"
+import MangaLabIcon from "../../icons/manga-lab-optimized.png"
+import MangaReadIcon from "../../icons/manga-read-optimized.png"
+import MangazukiMeIcon from "../../icons/mangazuki-optimized.png"
+import ManhuasIcon from "../../icons/manhuas-optimized.png"
 
 /**
  * All implementations based of Madara are placed here
@@ -286,26 +293,6 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
             isekai_chapter_url: true
         }),
         new Madara(mirrorHelper, {
-            mirrorName: "Imperfect Comics",
-            mirrorIcon: ImperfectComicsIcon,
-            languages: "en",
-            domains: ["imperfectcomic.org"],
-            home: "https://imperfectcomic.org/",
-            chapter_url: /\/.*?chapter-[0-9]+.*\//g,
-            canListFullMangas: false
-        }, {
-            search_url: "https://imperfectcomic.org/",
-            page_container_sel: "div#readerarea img",
-            img_sel: "div#readerarea img",
-            chapters_a_sel: "#chapterlist li a",
-            chapterInformationsSeriesUrl: (doc, curUrl) => {
-                return $(".headpost a", doc).first().attr("href");
-            },
-            chapterInformationsSeriesName: (doc, curUrl) => {
-                return $(".headpost a", doc).first().text().trim();
-            }
-        }),
-        new Madara(mirrorHelper, {
             mirrorName: "IsekaiScans",
             mirrorIcon: IsekaiScansIcon,
             languages: "en",
@@ -367,7 +354,7 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
         }),
         new Madara(mirrorHelper, {
             mirrorName: "Leviatan Scans Spanish",
-            mirrorIcon: LeviatanScansSpanishIcon,
+            mirrorIcon: LeviatanScansIcon,
             languages: "es",
             domains: ["leviatanscans.com", "es.leviatanscans.com"],
             home: "https://es.leviatanscans.com/",
@@ -427,7 +414,7 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
         }),
         new Madara(mirrorHelper, {
             mirrorName: "Manga 347",
-            mirrorIcon: Manga347Icon,
+            mirrorIcon: ThreeFourSevenMangaIcon,
             languages: "en",
             domains: ["manga347.com"],
             home: "https://manga347.com/",
