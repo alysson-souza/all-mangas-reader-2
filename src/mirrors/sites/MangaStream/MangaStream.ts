@@ -202,8 +202,8 @@ export const getMangaStreamImplementations = (mirrorHelper: MirrorHelper): Mirro
                 mirrorName: "Asura Scans",
                 canListFullMangas: false,
                 mirrorIcon: AsuraScansIcon,
-                domains: ["www.asurascans.com", "asura.gg"],
-                home: "https://www.asurascans.com",
+                domains: ["www.asurascans.com", "asura.gg", "asura.nacm.xyz"],
+                home: "https://asura.nacm.xyz",
                 chapter_url: /\/.*?(chapter|ch)-[0-9]+\//g,
                 languages: "en"
             },

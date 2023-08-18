@@ -195,7 +195,10 @@ export class Madara extends BaseMirror implements MirrorImplementation {
 
     async getListImages(doc, curUrl): Promise<string[]> {
         if (this.options.image_protection_plugin) {
-            return this.protectedGetListImages(doc)
+            const images = await this.protectedGetListImages(doc)
+            if (images.length > 0) {
+                return images
+            }
         }
         const res = []
         let self = this
