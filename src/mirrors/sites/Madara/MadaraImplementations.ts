@@ -795,7 +795,7 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
         }),
         new Madara(mirrorHelper, {
             mirrorName: "Sawamics",
-            mirrorIcon: sawamicsIcon,
+            mirrorIcon: SawamicsIcon,
             languages: "en",
             domains: ["sawamics.com"],
             home: "https://sawamics.com/",
@@ -823,7 +823,7 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
         }),
             new Madara(mirrorHelper, {
             mirrorName: "SK Scans",
-            mirrorIcon: skscansIcon,
+            mirrorIcon: SKScansIcon,
             languages: "en",
             domains: ["skscans.com"],
             home: "https://skscans.com/home",
@@ -835,7 +835,7 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
         }),
         new Madara(mirrorHelper, {
             mirrorName: "Top Manhua",
-            mirrorIcon: topmanhuaIcon,
+            mirrorIcon: TopManhuaIcon,
             languages: "en",
             domains: ["www.topmanhua.com"],
             home: "https://www.topmanhua.com/",
@@ -847,7 +847,7 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
         }),
         new Madara(mirrorHelper, {
             mirrorName: "Tritinia Scans",
-            mirrorIcon: tritiniascansIcon,
+            mirrorIcon: TritiniaScansIcon,
             languages: "en",
             domains: ["tritinia.com", "tritinia.org"],
             home: "https://tritinia.org/",
@@ -861,7 +861,7 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
         }),
         new Madara(mirrorHelper, {
             mirrorName: "Twilight Scans",
-            mirrorIcon: twilightscansIcon,
+            mirrorIcon: TwilightScansIcon,
             languages: "en",
             domains: ["twilightscans.com"],
             home: "https://twilightscans.com/",
@@ -877,7 +877,7 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
         }),
         new Madara(mirrorHelper, {
             mirrorName: "Ult Manga",
-            mirrorIcon: ultmangaIcon,
+            mirrorIcon: UltMangaIcon,
             languages: "en",
             domains: ["ultmanga.com"],
             home: "https://ultmanga.com/",
@@ -891,7 +891,7 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
         }),
         new Madara(mirrorHelper, {
             mirrorName: "Unemployed Scans",
-            mirrorIcon: unemployed-scansIcon,
+            mirrorIcon: UnemployedScansIcon,
             languages: "en",
             domains: ["unemployedscans.com"],
             home: "https://unemployedscans.com/",
@@ -904,7 +904,7 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
         }),
         new Madara(mirrorHelper, {
             mirrorName: "Zin Manga",
-            mirrorIcon: zin-mangaIcon,
+            mirrorIcon: ZinMangaIcon,
             languages: "en",
             domains: ["zinmanga.com"],
             home: "https://zinmanga.com/",
