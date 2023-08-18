@@ -69,7 +69,7 @@ import MangaLabIcon from "../../icons/manga-lab-optimized.png"
 import MangaReadIcon from "../../icons/manga-read-optimized.png"
 import MangazukiMeIcon from "../../icons/mangazuki-optimized.png"
 import ManhuasIcon from "../../icons/manhuas-optimized.png"
-import ManhuaUSIcon from "../../icons/manhuaus-optimized.png"
+import ManhuausIcon from "../../icons/manhuaus-optimized.png"
 
 /**
  * All implementations based of Madara are placed here
