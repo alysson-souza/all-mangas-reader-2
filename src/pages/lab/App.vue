@@ -5,11 +5,38 @@
             <v-toolbar-title v-text="title"></v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn icon @click.stop="options = true">
-                <v-icon>mdi-settings</v-icon>
+                <v-icon>mdi-cog</v-icon>
+            </v-btn>
+
+            <v-btn icon @click.stop="showMigrations = !showMigrations">
+                <v-icon v-if="showMigrations">mdi-eye-off</v-icon>
+                <v-icon v-if="!showMigrations">mdi-eye</v-icon>
             </v-btn>
         </v-toolbar>
         <v-main>
             <v-container fluid>
+                <div>
+                    <div>
+                        Migration progress {{ migrationProgress }}% ({{ getStats.newMirrorCount }}/{{
+                            getStats.oldMirrorCount
+                        }})
+
+                        <v-icon small>mdi-settings</v-icon>
+                        <v-progress-linear height="20" color="success" :value="migrationProgress"></v-progress-linear>
+                    </div>
+                    <v-row
+                        v-if="showMigrations"
+                        v-for="(mirrorToMigrate, index) in getStats.mirrorsToMigrate"
+                        :key="index"
+                        class="ma-1">
+                        <v-col>
+                            <img :src="mirrorToMigrate.mirrorIcon" :alt="mirrorToMigrate.mirrorName" />
+                            <a :href="mirrorToMigrate.home" target="_blank">{{ mirrorToMigrate.mirrorName }}</a>
+                            - ({{ mirrorToMigrate.abstract }})
+                        </v-col>
+                    </v-row>
+                </div>
+
                 <v-form ref="form" @submit.prevent="loadCourse" id="mirrorTests">
                     <div class="text-h5">Select the mirror to test :</div>
                     <v-row>
@@ -164,12 +191,19 @@ import Options from "../components/Options"
 import tests from "./tests"
 import browser from "webextension-polyfill"
 import Vue from "vue"
+import { getMirrorHelper } from "../../mirrors/MirrorHelper"
+import { getMirrorLoader } from "../../mirrors/MirrorLoader"
+import { MigrationService } from "../../shared/migration/MigrationService"
 
 export default {
     data() {
+        const mirrorHelper = getMirrorHelper(this.$store.state.options)
+        const mirrorLoader = getMirrorLoader(mirrorHelper)
         return {
             title: "All Mangas Reader Lab",
+            migrationService: new MigrationService(mirrorLoader),
             options: false,
+            showMigrations: false,
             loadingMirrors: false,
             loadingTests: false,
             current: "", // current selected mirror
@@ -204,6 +238,12 @@ export default {
                 (val, index) => this.currentTest >= 0 && index <= this.currentTest && this.testsResults.length >= index
             )
             return fin
+        },
+        getStats() {
+            return this.migrationService.stats()
+        },
+        migrationProgress() {
+            return Math.round((this.getStats.newMirrorCount / this.getStats.oldMirrorCount) * 100)
         }
     },
     name: "App",

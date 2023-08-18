@@ -31,6 +31,10 @@ export class MirrorLoader {
         return Array.from(this.lookupMap.values()).map(m => this.toMirror(m))
     }
 
+    hasMirror(mirrorName: string) {
+        return this.lookupMap.has(mirrorName)
+    }
+
     private toMirror(m: MirrorImplementation): MirrorObject {
         // Ensure we clone the object properties, so it will not mutate original object
         return {

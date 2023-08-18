@@ -132,6 +132,11 @@
                                 </v-btn>
                             </v-col>
                             <v-col cols="3">
+                                <v-btn text icon color="yellow" @click="opentab('/pages/lab/lab.html')">
+                                    <v-icon>mdi-antenna</v-icon>
+                                </v-btn>
+                            </v-col>
+                            <v-col cols="3">
                                 <v-btn
                                     text
                                     icon

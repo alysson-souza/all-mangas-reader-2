@@ -10,5 +10,8 @@
         "outDir": "dist"
     },
     "include": ["src", "index.d.ts"],
-    "exclude": ["node_modules", "**/*.spec.ts", "**/*.test.ts", "dist/**/*", "build/**/*"]
+    "exclude": ["node_modules", "**/*.spec.ts", "**/*.test.ts", "dist/**/*", "build/**/*"],
+    "vueCompilerOptions": {
+        "target": 2.7
+    }
 }
