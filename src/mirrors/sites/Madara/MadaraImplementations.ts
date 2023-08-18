@@ -272,5 +272,648 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
                 isekai_chapter_url: true
 				
 		}),
+        new Madara(mirrorHelper, {
+            mirrorName: "Immortal Updates",
+            mirrorIcon: ImmortalupdatesIcon,
+            languages: "en",
+            domains: ["immortalupdates.com"],
+            home: "https://immortalupdates.com/",
+            canListFullMangas: false,
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g
+        }, {
+            search_url: "https://immortalupdates.com/",
+            chapter_list_ajax: true,
+            isekai_chapter_url: true
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Imperfect Comics",
+            mirrorIcon: ImperfectComicsIcon,
+            languages: "en",
+            domains: ["imperfectcomic.org"],
+            home: "https://imperfectcomic.org/",
+            chapter_url: /\/.*?chapter-[0-9]+.*\//g,
+            canListFullMangas: false
+        }, {
+            search_url: "https://imperfectcomic.org/",
+            page_container_sel: "div#readerarea img",
+            img_sel: "div#readerarea img",
+            chapters_a_sel: "#chapterlist li a",
+            chapterInformationsSeriesUrl: (doc, curUrl) => {
+                return $(".headpost a", doc).first().attr("href");
+            },
+            chapterInformationsSeriesName: (doc, curUrl) => {
+                return $(".headpost a", doc).first().text().trim();
+            }
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "IsekaiScans",
+            mirrorIcon: IsekaiScansIcon,
+            languages: "en",
+            domains: ["isekaiscan.com"],
+            home: "https://isekaiscan.com/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: false
+        }, {
+            search_url: "https://isekaiscan.com/",
+            img_src: "data-src",
+            chapter_list_ajax: true,
+            isekai_chapter_url: true
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Kun Manga",
+            mirrorIcon: KunMangaIcon,
+            languages: "en",
+            domains: ["kunmanga.com"],
+            home: "https://kunmanga.com/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: false
+        }, {
+            search_url: "https://kunmanga.com/"
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Leveler Scans",
+            mirrorIcon: LevelerScansIcon,
+            languages: "en",
+            domains: ["levelerscans.xyz"],
+            home: "https://levelerscans.xyz/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: false
+        }, {
+            search_url: "https://levelerscans.xyz/",
+            chapter_list_ajax: true,
+            img_src: "data-src"
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Leviatan Scans",
+            mirrorIcon: LeviatanScansIcon,
+            languages: "en",
+            domains: ["leviatanscans.com", "en.leviatanscans.com"],
+            home: "https://en.leviatanscans.com/",
+            chapter_url: /\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: true
+        }, {
+            search_url: "https://en.leviatanscans.com/",
+            chapter_list_ajax: true,
+            path_length: 2,
+            sort_chapters: true,
+            isekai_chapter_url: true,
+            title_selector: "div.post-title > h1",
+            image_protection_plugin: true,
+            urlProcessor: url => {
+                let t = url.split("/");
+                if (t[3] != "manga") t.splice(3, 1);
+                return t.join("/");
+            }
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Leviatan Scans Spanish",
+            mirrorIcon: LeviatanScansSpanishIcon,
+            languages: "es",
+            domains: ["leviatanscans.com", "es.leviatanscans.com"],
+            home: "https://es.leviatanscans.com/",
+            chapter_url: /\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: true
+        }, {
+            search_url: "https://es.leviatanscans.com/",
+            chapter_list_ajax: true,
+            path_length: 2,
+            sort_chapters: true,
+            isekai_chapter_url: true,
+            title_selector: "#manga-title > h1",
+            urlProcessor: url => {
+                let t = url.split("/");
+                if (t[3] != "manga") t.splice(3, 1);
+                return t.join("/");
+            }
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "LHTranslations",
+            mirrorIcon: LHTranslationsIcon,
+            languages: "en",
+            domains: ["lhtranslation.net"],
+            home: "https://lhtranslation.net",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: true
+        }, {
+            search_url: "https://lhtranslation.net/",
+            chapter_list_ajax: true,
+            isekai_chapter_url: true,
+            chapters_a_sel: `li.wp-manga-chapter > a[href*="lhtranslation.net"]`
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Lily Manga",
+            mirrorIcon: LilyMangaIcon,
+            languages: "en",
+            domains: ["lilymanga.com"],
+            home: "https://lilymanga.com/",
+            chapter_url: /^\/ys\/.*\/.+$/g,
+            canListFullMangas: true
+        }, {
+            search_url: "https://lilymanga.com/",
+            chapter_list_ajax: true,
+            isekai_chapter_url: true
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Manga 1st",
+            mirrorIcon: Manga1stIcon,
+            languages: "en",
+            domains: ["manga1st.com"],
+            home: "https://manga1st.com/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: false
+        }, {
+            search_url: "https://manga1st.com/",
+            chapter_list_ajax: true
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Manga 347",
+            mirrorIcon: Manga347Icon,
+            languages: "en",
+            domains: ["manga347.com"],
+            home: "https://manga347.com/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: false
+        }, {
+            search_url: "https://manga347.com/",
+            chapter_list_ajax: true
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Manga Bob",
+            mirrorIcon: MangaBobIcon,
+            languages: "en",
+            domains: ["mangabob.com"],
+            home: "https://mangabob.com/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: true
+        }, {
+            search_url: "https://mangabob.com/",
+            chapter_list_ajax: true
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Manga Clash",
+            mirrorIcon: MangaClashIcon,
+            languages: "en",
+            domains: ["mangaclash.com"],
+            home: "https://mangaclash.com/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series|devmax)\/.*\/.+$/g,
+            canListFullMangas: false
+        }, {
+            search_url: "https://mangaclash.com/"
+            // chapters_a_sel: "li.wp-manga-chapter .li__text a",
+            // chapter_list_ajax: true,
+            // isekai_chapter_url: true,
+            // image_protection_plugin: true
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Manga Cultivator",
+            mirrorIcon: MangaCultivatorIcon,
+            languages: "en",
+            domains: ["mangacultivator.com"],
+            home: "https://mangacultivator.com/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: true
+        }, {
+            search_url: "https://mangacultivator.com/",
+            chapter_list_ajax: true,
+            isekai_chapter_url: true
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Manga Dods",
+            mirrorIcon: MangaDodsIcon,
+            languages: "en",
+            domains: ["www.mangadods.com"],
+            home: "https://www.mangadods.com/",
+            chapter_url: /\/manga\/.*\/(ch-)?\d/g,
+            canListFullMangas: false
+        }, {
+            search_url: "https://www.mangadods.com/",
+            img_src: "src",
+            chapter_list_ajax: false,
+            secondary_img_src: "data-src",
+            chapters_a_sel: "li.wp-manga-chapter a"
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Manga Great",
+            mirrorIcon: MangaGreatIcon,
+            languages: "en",
+            domains: ["mangagreat.com"],
+            home: "https://mangagreat.com/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: false
+        }, {
+            search_url: "https://mangagreat.com/",
+            chapter_list_ajax: true,
+            isekai_chapter_url: true
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Manga Komi",
+            mirrorIcon: MangaKomiIcon,
+            languages: "en",
+            domains: ["mangakomi.com", "mangakomi.io"],
+            home: "https://mangakomi.io/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: false
+        }, {
+            search_url: "https://mangakomi.io/",
+            img_src: "src",
+            secondary_img_src: "data-src",
+            chapter_list_ajax: true
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Manga Lab",
+            mirrorIcon: MangaLabIcon,
+            languages: "en",
+            domains: ["themangalab.com"],
+            home: "https://themangalab.com/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series|read)\/.*\/.+$/g,
+            canListFullMangas: false
+        }, {
+            search_url: "https://themangalab.com/",
+            chapter_list_ajax: true,
+            isekai_chapter_url: true
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Manga Read",
+            mirrorIcon: MangaReadIcon,
+            languages: "en",
+            domains: ["www.mangaread.org"],
+            home: "https://www.mangaread.org/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series|read)\/.*\/.+$/g,
+            canListFullMangas: false
+        }, {
+            search_url: "https://www.mangaread.org/"
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Manga Sushi",
+            mirrorIcon: MangaSushiIcon,
+            languages: "en",
+            domains: ["mangasushi.net", "mangasushi.org"],
+            home: "https://mangasushi.org/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: false
+        }, {
+            search_url: "https://mangasushi.org/",
+            secondary_img_src: "data-src",
+            chapter_list_ajax: true,
+            isekai_chapter_url: true
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Manga Sy",
+            mirrorIcon: MangaSyIcon,
+            languages: "en",
+            domains: ["www.mangasy.com"],
+            home: "https://www.mangasy.com/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: false
+        }, {
+            search_url: "https://www.mangasy.com/",
+            chapter_list_ajax: true
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Manga TX",
+            mirrorIcon: MangaTXIcon,
+            languages: "en",
+            domains: ["mangatx.com"],
+            home: "https://mangatx.com/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: false
+        }, {
+            search_url: "https://mangatx.com/",
+            img_src: "data-src",
+            chapter_list_ajax: true
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "MangazukiMe",
+            mirrorIcon: MangazukiMeIcon,
+            languages: "en",
+            domains: ["mangazuki.me"],
+            home: "https://mangazuki.me",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: false
+        }, {
+            search_url: "https://mangazuki.me/",
+            page_container_sel: "div.read-container",
+            img_sel: "div.read-container img"
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "ManhuaFast",
+            mirrorIcon: ManhuaFastIcon,
+            languages: "en",
+            domains: ["manhuafast.com"],
+            home: "https://manhuafast.com/",
+            chapter_url: /\/manga\/.+\/chapter-.+$/g,
+            canListFullMangas: false
+        }, {
+            search_url: "https://manhuafast.com/",
+            img_src: "src",
+            chapter_list_ajax: true,
+            isekai_chapter_url: true
+            // secondary_img_src: "data-full-url"
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "ManhuaPlus",
+            mirrorIcon: ManhuaPlusIcon,
+            languages: "en",
+            domains: ["manhuaplus.com"],
+            home: "https://manhuaplus.com/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: false
+        }, {
+            search_url: "https://manhuaplus.com/",
+            search_a_sel: "div.post-title > h3 > a",
+            chapter_list_ajax: true,
+            isekai_chapter_url: true
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Manhuas",
+            mirrorIcon: ManhuasIcon,
+            languages: "en",
+            domains: ["manhuas.net"],
+            home: "https://manhuas.net/",
+            chapter_url: /\/manhua\/.*\-chapter\-.+$/g,
+            canListFullMangas: false
+        }, {
+            search_url: "https://manhuas.net/",
+            img_src: "data-src",
+            // chapter_list_ajax: true,
+            secondary_img_src: "src"
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Manhuaus",
+            mirrorIcon: ManhuausIcon,
+            languages: "en",
+            domains: ["manhuaus.com"],
+            home: "https://manhuaus.com/",
+            chapter_url: /\/manga\/.+\/chapter\-.+$/g,
+            canListFullMangas: false
+        }, {
+            search_url: "https://manhuaus.com/",
+            img_src: "src",
+            chapter_list_ajax: true,
+            isekai_chapter_url: true,
+            secondary_img_src: "data-src"
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "ManhwaClub",
+            mirrorIcon: ManhwaClubIcon,
+            languages: "en",
+            domains: ["manhwa.club"],
+            home: "https://manhwa.club/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: false
+        }, {
+            search_url: "https://manhwa.club/",
+            secondary_img_src: "data-src"
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Manhwa Top",
+            mirrorIcon: ManhwaTopIcon,
+            languages: "en",
+            domains: ["manhwatop.com"],
+            home: "https://manhwatop.com/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series|read)\/.*\/.+$/g,
+            canListFullMangas: false
+        }, {
+            search_url: "https://manhwatop.com/",
+            chapter_list_ajax: true,
+            img_src: "data-src"
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Manytoon",
+            mirrorIcon: ManytoonIcon,
+            languages: "en",
+            domains: ["manytoon.com"],
+            home: "https://manytoon.com/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: false
+        }, {
+            search_url: "https://manytoon.com/",
+            img_src: "data-src",
+            chapter_list_ajax: true,
+            isekai_chapter_url: true
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Mixed Manga",
+            mirrorIcon: MixedMangaIcon,
+            languages: "en",
+            domains: ["mixedmanga.com"],
+            home: "https://mixedmanga.com/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: false
+        }, {
+            search_url: "https://mixedmanga.com/",
+            img_src: "data-lazy-src"
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "MM Scans",
+            mirrorIcon: MMScansIcon,
+            languages: "en",
+            domains: ["mm-scans.com", "mm-scans.org"],
+            home: "https://mm-scans.org/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: false
+        }, {
+            search_url: "https://mm-scans.org/",
+            chapter_list_ajax: true,
+            isekai_chapter_url: true,
+            chapters_a_sel: "li.chapter-li > a"
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Night Comic",
+            mirrorIcon: NightComicIcon,
+            languages: "en",
+            domains: ["www.nightcomic.com"],
+            home: "https://www.nightcomic.com/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: false
+        }, {
+            search_url: "https://www.nightcomic.com/",
+            img_src: "data-src",
+            chapter_list_ajax: true
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Random Translations",
+            mirrorIcon: RandomTranslationsIcon,
+            languages: "en",
+            domains: ["randomtranslations.com"],
+            home: "https://randomtranslations.com/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: false
+        }, {
+            search_url: "https://randomtranslations.com/",
+            img_src: "data-src",
+            chapter_list_ajax: true
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Read Manhua",
+            mirrorIcon: ReadManhuaIcon,
+            languages: "en",
+            domains: ["readmanhua.net"],
+            home: "https://readmanhua.net/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: true
+        }, {
+            search_url: "https://readmanhua.net/",
+            chapter_list_ajax: true
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Reset Scans",
+            mirrorIcon: ResetScansIcon,
+            languages: "en",
+            domains: ["reset-scans.com"],
+            home: "https://reset-scans.com/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series|devmax)\/.*\/.+$/g,
+            canListFullMangas: false
+        }, {
+            search_url: "https://reset-scans.com/",
+            chapters_a_sel: "li.wp-manga-chapter .li__text a",
+            chapter_list_ajax: true,
+            isekai_chapter_url: true
+            // image_protection_plugin: true
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Ruya Manga",
+            mirrorIcon: RuyaMangaIcon,
+            languages: "en",
+            domains: ["en.ruyamanga.com"],
+            home: "https://en.ruyamanga.com/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: false,
+        }, {
+            search_url: "https://en.ruyamanga.com/"
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "S2 Manga",
+            mirrorIcon: S2MangaIcon,
+            languages: "en",
+            domains: ["s2manga.com"],
+            home: "https://s2manga.com/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: false,
+        }, {
+            search_url: "https://s2manga.com/"
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Sawamics",
+            mirrorIcon: sawamicsIcon,
+            languages: "en",
+            domains: ["sawamics.com"],
+            home: "https://sawamics.com/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: false,
+        }, {
+            search_url: "https://sawamics.com/",
+            chapter_list_ajax: true,
+            isekai_chapter_url: true
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Setsu Scans",
+            mirrorIcon: SetsuScansIcon,
+            languages: "en",
+            domains: ["setsuscans.com"],
+            home: "https://setsuscans.com/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: false
+        }, {
+            search_url: "https://setsuscans.com/",
+            chapter_list_ajax: true,
+            isekai_chapter_url: true,
+            chapter_list_ajax_selctor_type: "html",
+            chapter_list_ajax_selctor: "#manga-chapters-holder"
+        }),
+            new Madara(mirrorHelper, {
+            mirrorName: "SK Scans",
+            mirrorIcon: skscansIcon,
+            languages: "en",
+            domains: ["skscans.com"],
+            home: "https://skscans.com/home",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+        },
+        {
+            search_url: "https://skscans.com/",
+            chapter_list_ajax: true
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Top Manhua",
+            mirrorIcon: topmanhuaIcon,
+            languages: "en",
+            domains: ["www.topmanhua.com"],
+            home: "https://www.topmanhua.com/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: false,
+        },
+        {
+            search_url: "https://www.topmanhua.com/"
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Tritinia Scans",
+            mirrorIcon: tritiniascansIcon,
+            languages: "en",
+            domains: ["tritinia.com", "tritinia.org"],
+            home: "https://tritinia.org/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: false,
+        },
+        {
+            search_url: "https://tritinia.org/",
+            chapter_list_ajax: true,
+            isekai_chapter_url: true
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Twilight Scans",
+            mirrorIcon: twilightscansIcon,
+            languages: "en",
+            domains: ["twilightscans.com"],
+            home: "https://twilightscans.com/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: false,
+        },
+        {
+            search_url: "https://twilightscans.com/",
+            chapter_list_ajax: true,
+            isekai_chapter_url: true,
+            secondary_img_src: "data-src"
+            
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Ult Manga",
+            mirrorIcon: ultmangaIcon,
+            languages: "en",
+            domains: ["ultmanga.com"],
+            home: "https://ultmanga.com/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: false,
+        },
+        {
+            search_url: "https://ultmanga.com/",
+            img_src: "data-src"
+            // chapter_list_ajax: true,
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Unemployed Scans",
+            mirrorIcon: unemployed-scansIcon,
+            languages: "en",
+            domains: ["unemployedscans.com"],
+            home: "https://unemployedscans.com/",
+            canListFullMangas: false,
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+        },
+        {
+            search_url: "https://unemployedscans.com/",
+            chapter_list_ajax: true
+        }),
+        new Madara(mirrorHelper, {
+            mirrorName: "Zin Manga",
+            mirrorIcon: zin-mangaIcon,
+            languages: "en",
+            domains: ["zinmanga.com"],
+            home: "https://zinmanga.com/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: false,
+        }, 
+        {
+            search_url: "https://zinmanga.com/"
+        }),
+
     ]
 }
