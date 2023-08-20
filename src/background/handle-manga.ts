@@ -249,7 +249,12 @@ export class HandleManga {
         // check if we need to load preload (it could be annoying to have preload on each pages of the website)
         // websites which provide a chapter_url regexp will have their chapters with a preload
         if (!chapterUrl.test("/" + afterHostURL(url))) {
-            this.logger.info({ result: "Chapter url is not matching, skipping...", chapterUrl, url })
+            this.logger.info({
+                result: "Chapter url is not matching, skipping...",
+                chapterUrl,
+                url,
+                afterUrl: "/" + afterHostURL(url)
+            })
             return
         }
 

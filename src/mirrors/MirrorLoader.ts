@@ -12,6 +12,7 @@ import { getDisabledImplementations } from "./sites/disabled/DisabledImplementat
 import { getMangaStreamImplementations } from "./sites/MangaStream/MangaStream"
 import { getMangaStream114Implementations } from "./sites/MangaStream/MangaStream_1_1_4"
 import { getFoolSlideImplementations } from "./sites/FoolSlide/FoolSlide"
+import { getFunMangaImplementations } from "./sites/abstract/FunManga"
 
 export class MirrorLoader {
     lookupMap: Map<string, MirrorImplementation>
@@ -55,6 +56,7 @@ export const getMirrorLoader = (mirrorHelper: MirrorHelper) => {
     if (!instance) {
         instance = new MirrorLoader([
             ...getFoolSlideImplementations(mirrorHelper),
+            ...getFunMangaImplementations(mirrorHelper),
             new MangaFox(mirrorHelper),
             new MangaHere(mirrorHelper),
             new Manga4Life(mirrorHelper),
