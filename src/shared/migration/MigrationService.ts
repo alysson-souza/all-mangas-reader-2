@@ -4,15 +4,15 @@ import { MirrorLoader } from "../../mirrors/MirrorLoader"
 export class MigrationService {
     private readonly oldMirrors = websitesDescription
 
-    constructor(private mirrorHelper: MirrorLoader) {}
+    constructor(private mirrorLoader: MirrorLoader) {}
 
     public getAllMirrors() {
-        return this.mirrorHelper.getAll()
+        return this.mirrorLoader.getAll()
     }
 
     public stats() {
         const mirrorsToMigrate = this.oldMirrors
-            .filter(m => this.mirrorHelper.hasMirror(m.mirrorName))
+            .filter(m => !this.mirrorLoader.hasMirror(m.mirrorName) && m.type !== "abstract")
             .map(m => {
                 return {
                     mirrorName: m.mirrorName,
@@ -24,7 +24,7 @@ export class MigrationService {
         return {
             mirrorsToMigrate: mirrorsToMigrate,
             oldMirrorCount: this.oldMirrors.length,
-            newMirrorCount: this.mirrorHelper.getAll().length
+            newMirrorCount: this.mirrorLoader.getAll().length
         }
     }
 }

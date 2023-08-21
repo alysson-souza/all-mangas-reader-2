@@ -306,6 +306,207 @@ export const getDisabledImplementations = () => {
                 base_url: "https://reader.vortex-scans.com",
                 mglist_selector: ".title > a[href*='/series/']"
             }
+        }),
+        new DisabledMirror({
+            mirrorName: "Neumanga",
+            canListFullMangas: false,
+            mirrorIcon: require("../../icons/neumanga-optimized.png"),
+            domains: ["neumanga.tv"],
+            home: "https://neumanga.tv/",
+            chapter_url: /^\/m[0-9]+\/$/g,
+            languages: "id",
+            abstract: "MangastreamAbs",
+            disabled: true,
+            abstract_options: {
+                search_url: "https://neumanga.tv/advanced_search",
+                search_option: "&name_search_mode=contain",
+                search_a_sel: "h2 > a[href*='/manga/']",
+                search_field: "name_search_query",
+                chapter_url_suffix: "/_/1",
+                chapters_a_sel: "#scans > div > div.item-content > a",
+                manga_title_attr: false,
+                manga_url_sel: "#main > div.readarea > article > div.head > center > span > a",
+                page_container_sel: "div[itemprop='mainContentOfPage']",
+                img_sel: "img.imagechap",
+                img_src: "data-src",
+                search_json: false
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Hero Manhua",
+            canListFullMangas: false,
+            mirrorIcon: require("../../icons/heromanhua-optimized.png"),
+            domains: ["heromanhua.com"],
+            home: "https://heromanhua.com",
+            chapter_url: /^\/manga\/.*\/.+$/g,
+            languages: "en",
+            abstract: "Madara",
+            disabled: true,
+            abstract_options: {
+                search_url: "https://heromanhua.com/",
+                img_src: "data-src",
+                secondary_img_src: "src",
+                chapter_list_ajax: true
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Imperfect Comics",
+            mirrorIcon: require("../../icons/imperfect-comics-optimized.png"),
+            languages: "en",
+            domains: ["imperfectcomic.org"],
+            home: "https://imperfectcomic.org/",
+
+            // chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            chapter_url: /\/.*?chapter-[0-9]+.*\//g,
+            canListFullMangas: false,
+            abstract: "Madara",
+            abstract_options: {
+                search_url: "https://imperfectcomic.org/",
+                page_container_sel: "div#readerarea img",
+                img_sel: "div#readerarea img",
+                // chapter_list_ajax: true,
+                chapters_a_sel: "#chapterlist li a"
+                // chapterInformationsSeriesUrl: (doc, curUrl) => {
+                //     return $(".headpost a", doc).first().attr("href")
+                // },
+                // chapterInformationsSeriesName: (doc, curUrl) => {
+                //     return $(".headpost a", doc).first().text().trim()
+                // }
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Komikgo",
+            canListFullMangas: false,
+            mirrorIcon: require("../../icons/komikgo-optimized.png"),
+            domains: ["komikgo.com"],
+            home: "https://komikgo.com/",
+            disabled: true,
+            chapter_url: /^\/manga\/.*\/.+$/g,
+            languages: "id",
+            abstract: "Madara",
+            abstract_options: {
+                search_url: "https://komikgo.com/",
+                img_src: "data-src"
+            }
+        }),
+        new DisabledMirror({
+            disabled: true,
+            mirrorName: "Manga Turf",
+            mirrorIcon: require("../../icons/mangaturf-optimized.png"),
+            languages: "en",
+            domains: ["mangaturf.com"],
+            home: "https://mangaturf.com/",
+            canListFullMangas: true,
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            abstract: "Madara",
+            abstract_options: {
+                search_url: "https://mangaturf.com/",
+                chapter_list_ajax: true
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "MangazukiInfo",
+            mirrorIcon: require("../../icons/mangazuki-optimized.png"),
+            languages: "en",
+            domains: ["mangazuki.info"],
+            home: "https://mangazuki.info/",
+            chapter_url: /^\/manga\/.*\/.+$/g,
+            canListFullMangas: false,
+            abstract: "Madara",
+            disabled: true,
+            abstract_options: {
+                search_url: "https://mangazuki.info/",
+                page_container_sel: "div.read-container",
+                img_sel: "div.read-container img"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "NinjaScans",
+            mirrorIcon: require("../../icons/ninjascans-optimized.png"),
+            languages: "en",
+            disabled: true,
+            domains: ["ninjascans.com"],
+            home: "https://ninjascans.com/",
+            chapter_url: /^\/(manga|manhua)\/.*\/.+$/g,
+            canListFullMangas: false,
+            abstract: "Madara",
+            abstract_options: {
+                search_url: "https://ninjascans.com/"
+            }
+        }),
+        new DisabledMirror({
+            disabled: true,
+            mirrorName: "Sam Manga",
+            mirrorIcon: require("../../icons/sam-manga-optimized.png"),
+            languages: "en",
+            domains: ["sammanga.com"],
+            home: "https://sammanga.com/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+            canListFullMangas: false,
+            abstract: "Madara",
+            abstract_options: {
+                search_url: "https://sammanga.com/"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Shoujo Hearts",
+            mirrorIcon: require("../../icons/shoujohearts-optimized.png"),
+            languages: "en",
+            domains: ["shoujohearts.com"],
+            home: "https://shoujohearts.com/reader",
+            chapter_url: /^\/reader\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+
+            abstract: "Madara",
+            abstract_options: {
+                search_url: "https://shoujohearts.com/reader/",
+                path_length: 3
+                // chapter_list_ajax: true
+            }
+        }),
+        new DisabledMirror({
+            disabled: true,
+            mirrorName: "Social Weebs",
+            mirrorIcon: require("../../icons/socialweebs-optimized.png"),
+            languages: "en",
+            domains: ["socialweebs.in"],
+            home: "https://socialweebs.in",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+
+            abstract: "Madara",
+            abstract_options: {
+                search_url: "https://socialweebs.in/",
+                chapter_list_ajax: true
+            }
+        }),
+        new DisabledMirror({
+            disabled: true,
+            mirrorName: "Vanguard Scans",
+            mirrorIcon: require("../../icons/vanguardscans-optimized.png"),
+            languages: "en",
+            domains: ["vanguardbun.com"],
+            home: "https://vanguardbun.com/",
+            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+
+            abstract: "Madara",
+            abstract_options: {
+                search_url: "https://vanguardbun.com/",
+                search_json: true,
+                chapter_list_ajax: true
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Yomanga",
+            mirrorIcon: require("../../icons/yomanga-optimized.png"),
+            languages: "en",
+            domains: ["yomanga.info"],
+            home: "https://yomanga.info/",
+            chapter_url: /^\/manga\/.*\/.+$/g,
+            canListFullMangas: false,
+            disabled: true,
+            abstract: "Madara",
+            abstract_options: {
+                search_url: "https://yomanga.info/"
+            }
         })
     ]
 }

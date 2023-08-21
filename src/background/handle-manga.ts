@@ -33,7 +33,7 @@ export class HandleManga {
                           layout: mg.layout /* Layout for the new reader */,
                           lastchapter: mg.lastChapterReadURL /* last read chapter (the most advanced one) */,
                           currentChapter: mg.currentChapter /* last read chapter, last chapter page opened */,
-                          // @TODO seems lieke typo, was "mg.currentScanUrlm"
+                          // @TODO seems like typo, was "mg.currentScanUrlm"
                           currentScanUrl: mg.currentScanUrl /* last viewed page in currentChapter */,
                           webtoon: mg.webtoon || false /* webtoon mode */,
                           displayName: mg.displayName,
