@@ -32,7 +32,8 @@
                         <v-col>
                             <img :src="mirrorToMigrate.mirrorIcon" :alt="mirrorToMigrate.mirrorName" />
                             <a :href="mirrorToMigrate.home" target="_blank">{{ mirrorToMigrate.mirrorName }}</a>
-                            - ({{ mirrorToMigrate.abstract }})
+                            - ({{ mirrorToMigrate.abstract || "Individual" }})
+                            <v-icon small v-if="mirrorToMigrate.disabled">mdi-stop</v-icon>
                         </v-col>
                     </v-row>
                 </div>

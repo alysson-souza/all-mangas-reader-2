@@ -905,7 +905,7 @@ export const getDisabledImplementations = () => {
             mirrorName: "Pecintakomik",
             canListFullMangas: false,
             disabled: true,
-            mirrorIcon: "pecintakomik.png",
+            mirrorIcon: require("../../icons/pecintakomik-optimized.png"),
             domains: ["www.pecintakomik.net", "pecintakomik.net"],
             home: "https://www.pecintakomik.net/",
             chapter_url: /^\/m[0-9]+\/$/g,
@@ -923,7 +923,7 @@ export const getDisabledImplementations = () => {
         new DisabledMirror({
             disabled: true,
             mirrorName: "PM Scans",
-            mirrorIcon: "pmscans.png",
+            mirrorIcon: require("../../icons/pmscans-optimized.png"),
             languages: "en",
             domains: ["reader.pmscans.com"],
             home: "https://reader.pmscans.com/",
@@ -936,6 +936,262 @@ export const getDisabledImplementations = () => {
                 chapters_a_sel: "div.bixbox.bxcl ul li div.eph-num a",
                 chapters_text_sel: "span.chapternum"
             }
+        }),
+        new DisabledMirror({
+            mirrorName: "Mangashiro",
+            canListFullMangas: false,
+            mirrorIcon: require("../../icons/mangashiro-optimized.png"),
+            domains: ["mangashiro.co"],
+            home: "https://mangashiro.co/",
+            chapter_url: /^\/m[0-9]+\/$/g,
+            languages: "id",
+            abstract: "MangastreamAbs",
+            disabled: true,
+            abstract_options: {
+                search_url: "https://mangashiro.co/",
+                chapters_a_sel: "div.bixbox.bxcl > ul > li > span.lchx a"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Mangachan",
+            canListFullMangas: false,
+            mirrorIcon: require("../../icons/Mangachan-optimized.png"),
+            languages: "ru",
+            domains: ["mangachan.me"],
+            home: "http://mangachan.me",
+            chapter_url: /^\/online\/.+$/g,
+            disabled: true
+        }),
+        new DisabledMirror({
+            mirrorName: "MangaLib",
+            canListFullMangas: false,
+            mirrorIcon: require("../../icons/mangalib-optimized.png"),
+            languages: "ru",
+            domains: ["mangalib.me"],
+            home: "https://mangalib.me/",
+            chapter_url: /\/.*\/v[0-9]+\/c[0-9]+/g,
+            disabled: true
+        }),
+        new DisabledMirror({
+            mirrorName: "Manga Panda",
+            canListFullMangas: false,
+            mirrorIcon: require("../../icons/mangapanda-optimized.png"),
+            disabled: true,
+            languages: "en",
+            domains: ["www.mangapanda.com"],
+            home: "http://www.mangapanda.com/",
+            chapter_url: /^\/.*\/[0-9]+.+$/g
+        }),
+        new DisabledMirror({
+            mirrorName: "Manga Turk",
+            canListFullMangas: true,
+            mirrorIcon: require("../../icons/mangaturk-optimized.png"),
+            languages: "tr",
+            domains: ["www.mangaoku.net"],
+            home: "http://www.mangaoku.net/",
+            chapter_url: /.*/g,
+            /*no chapter_url, all urls are /any/ will be loaded everywhere... */
+            disabled: true
+        }),
+        new DisabledMirror({
+            disabled: true,
+            mirrorName: "Martial Scans",
+            canListFullMangas: true,
+            mirrorIcon: require("../../icons/martialscans-optimized.png"),
+            languages: "en",
+            domains: ["martialscans.com"],
+            home: "https://martialscans.com/",
+            chapter_url: /\/chapter-[\d\.]+$/g
+        }),
+        new DisabledMirror({
+            disabled: true,
+            mirrorName: "Method Scans",
+            mirrorIcon: require("../../icons/methodscans-optimized.png"),
+            languages: "en",
+            domains: ["methodscans.com"],
+            home: "https://methodscans.com/home",
+            canListFullMangas: true,
+            chapter_url: /^\/comics\/.*\/.+$/g,
+            abstract: "GenkanAbs",
+            abstract_options: {
+                base_url: "https://methodscans.com/"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "MangaLib",
+            canListFullMangas: false,
+            mirrorIcon: require("../../icons/mangalib-optimized.png"),
+            languages: "ru",
+            domains: ["mangalib.me"],
+            home: "https://mangalib.me/",
+            chapter_url: /\/.*\/v[0-9]+\/c[0-9]+/g,
+            disabled: true
+        }),
+        new DisabledMirror({
+            mirrorName: "Nani Scans",
+            mirrorIcon: require("../../icons/naniscans-optimized.png"),
+            canListFullMangas: true,
+            languages: "en",
+            domains: ["naniscans.xyz"],
+            home: "https://naniscans.xyz",
+            chapter_url: /^\/chapters\/\/read\/.+$/g,
+            disabled: true
+        }),
+        new DisabledMirror({
+            mirrorName: "Project Time Scans",
+            mirrorIcon: require("../../icons/projecttimescans-optimized.png"),
+            languages: "en",
+            domains: ["read.ptscans.com"],
+            home: "https://ptscans.com/",
+            chapter_url: /^\/read\/.*\/.+$/g,
+            disabled: true,
+
+            abstract: "ComiCake",
+            abstract_options: {
+                reader_url: "https://read.ptscans.com"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "MangaLib",
+            canListFullMangas: false,
+            mirrorIcon: require("../../icons/mangalib-optimized.png"),
+            languages: "ru",
+            domains: ["mangalib.me"],
+            home: "https://mangalib.me/",
+            chapter_url: /\/.*\/v[0-9]+\/c[0-9]+/g,
+            disabled: true
+        }),
+        new DisabledMirror({
+            disabled: true,
+            mirrorName: "Scan Trad",
+            mirrorIcon: require("../../icons/scantrad-optimized.png"),
+            languages: "fr",
+            domains: ["scantrad.net"],
+            home: "https://scantrad.net/",
+            chapter_url: /^\/mangas\/.*\/[0-9]+.*$/g
+        }),
+        new DisabledMirror({
+            disabled: true,
+            mirrorName: "Secret Scans",
+            mirrorIcon: require("../../icons/secretscans-optimized.png"),
+            languages: "en",
+            domains: ["secretscans.co"],
+            home: "https://secretscans.co/",
+            canListFullMangas: true,
+            chapter_url: /^\/comics\/.*\/.+$/g,
+            abstract: "GenkanAbs",
+            abstract_options: {
+                base_url: "https://secretscans.co/"
+            }
+        }),
+
+        new DisabledMirror({
+            mirrorName: "Easy Going",
+            canListFullMangas: true,
+            mirrorIcon: require("../../icons/easygoing-optimized.png"),
+            languages: "en",
+            domains: ["*.egscans.org", "*.egscans.com"],
+            disabled: true,
+            home: "https://egscans.com/",
+            chapter_url: /.*/
+        }),
+        new DisabledMirror({
+            disabled: true,
+            mirrorName: "Edelgarde Scans",
+            mirrorIcon: require("../../icons/edelgardescans-optimized.png"),
+            languages: "en",
+            domains: ["edelgardescans.com"],
+            home: "https://edelgardescans.com/home",
+            canListFullMangas: true,
+            chapter_url: /^\/comics\/.*\/.+$/g,
+            abstract: "GenkanAbs",
+            abstract_options: {
+                base_url: "https://edelgardescans.com/"
+            }
+        }),
+        new DisabledMirror({
+            disabled: true,
+            mirrorName: "Glitchy Comics",
+            canListFullMangas: true,
+            mirrorIcon: require("../../icons/glitchycomics-optimized.png"),
+            languages: "en",
+            domains: ["glitchycomics.com"],
+            home: "https://glitchycomics.com/",
+            chapter_url: /\/chapter-.*?\/.*$/g
+        }),
+        new DisabledMirror({
+            disabled: true,
+            mirrorName: "Hatigarm Scans",
+            mirrorIcon: require("../../icons/hatigarmscans-optimized.png"),
+            languages: "en",
+            domains: ["hatigarmscanz.net", "www.hatigarmscans.net"],
+            home: "https://hatigarmscanz.net/",
+            canListFullMangas: true,
+            chapter_url: /.*/,
+
+            abstract: "GenkanAbs",
+            abstract_options: {
+                base_url: "https://hatigarmscanz.net/"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Komikgue",
+            mirrorIcon: require("../../icons/id-optimized.png"),
+            languages: "id",
+            domains: ["www.komikgue.com", "komikgue.com"],
+            home: "http://www.komikgue.com",
+            chapter_url: /^\/manga\/.*\/.+$/g,
+            disabled: true,
+
+            abstract: "MyMangaReaderCMS",
+            abstract_options: {
+                base_url: "http://www.komikgue.com",
+                chapters_element: "td.chapter > a",
+                img_src: "src"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "KKJ Scans",
+            mirrorIcon: require("../../icons/kkjscans-optimized.png"),
+            languages: "en",
+            domains: ["kkjscans.co"],
+            home: "https://kkjscans.co/",
+            disabled: true,
+            canListFullMangas: true,
+            chapter_url: /^\/comics\/.*\/.+$/g,
+            abstract: "GenkanAbs",
+            abstract_options: {
+                base_url: "https://kkjscans.co/"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Love Heaven",
+            canListFullMangas: true,
+            mirrorIcon: require("../../icons/loveheaven-optimized.png"),
+            languages: "en",
+            domains: ["loveheaven.net"],
+            home: "https://loveheaven.net/",
+            chapter_url: /\/read-.*chapter-/g,
+            disabled: true
+        }),
+        new DisabledMirror({
+            mirrorName: "MangaHost",
+            canListFullMangas: false,
+            mirrorIcon: require("../../icons/mangahost-optimized.png"),
+            languages: "br,pt",
+            domains: ["mangahosted.com", "mangahost-br.cc", "mangahost1.com", "mangahost2.com"],
+            home: "https://mangahost2.com/",
+            chapter_url: /\/manga\/.*\/.+/g,
+            disabled: true
+        }),
+        new DisabledMirror({
+            mirrorName: "ItaScan",
+            mirrorIcon: require("../../icons/itascan-optimized.png"),
+            languages: "it",
+            disabled: true,
+            domains: ["itascan.info"],
+            home: "https://itascan.info/",
+            chapter_url: /.*/
         })
     ]
 }

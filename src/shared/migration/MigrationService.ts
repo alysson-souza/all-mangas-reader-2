@@ -18,7 +18,8 @@ export class MigrationService {
                     mirrorName: m.mirrorName,
                     mirrorIcon: m.mirrorIcon,
                     home: m.home,
-                    abstract: m.abstract
+                    abstract: m.abstract,
+                    disabled: m.disabled
                 }
             })
         return {
