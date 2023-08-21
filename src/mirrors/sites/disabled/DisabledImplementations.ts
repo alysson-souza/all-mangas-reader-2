@@ -507,6 +507,435 @@ export const getDisabledImplementations = () => {
             abstract_options: {
                 search_url: "https://yomanga.info/"
             }
+        }),
+        new DisabledMirror({
+            mirrorName: "Bang Aqua",
+            mirrorIcon: require("../../icons/bangaqua-optimized.png"),
+            languages: "en",
+            disabled: true,
+            domains: ["reader.bangaqua.com"],
+            home: "http://bangaqua.com/",
+            chapter_url: /^\/read\/.+$/g,
+
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "http://reader.bangaqua.com",
+                mglist_selector: ".title > a[href*='/series/']"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "The Cat Scans",
+            mirrorIcon: require("../../icons/catscans-optimized.png"),
+            languages: "en",
+            domains: ["reader2.thecatscans.com"],
+            home: "http://reader2.thecatscans.com/",
+            chapter_url: /^\/read\/.+$/g,
+
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "http://reader2.thecatscans.com",
+                mglist_selector: ".title > a[href*='/series/']"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Doki Reader",
+            mirrorIcon: require("../../icons/doki-optimized.png"),
+            languages: "en",
+            disabled: true,
+            domains: ["kobato.hologfx.com"],
+            home: "https://kobato.hologfx.com/",
+            chapter_url: /^\/reader\/read\/.+$/g,
+            canListFullMangas: false /* to avoid loading 4 pages to load all mangas */,
+
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "https://kobato.hologfx.com/reader",
+                search_all: false /* use FoolSlide search function */,
+                mglist_selector: ".title > a[href*='/series/']"
+            }
+        }),
+        new DisabledMirror({
+            disabled: true,
+            mirrorName: "Dokusha",
+            mirrorIcon: require("../../icons/dokusha-optimized.png"),
+            languages: "en",
+            domains: ["dokusha.info"],
+            home: "http://dokusha.info",
+            chapter_url: /^\/read\/.+$/g,
+
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "http://dokusha.info",
+                mglist_selector: ".title > a[href*='/series/']"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Elpsykongroo",
+            mirrorIcon: require("../../icons/elpsykongroo-optimized.png"),
+            languages: "en",
+            domains: ["elpsykongroo.pw"],
+            home: "https://elpsykongroo.pw",
+            disabled: true,
+            chapter_url: /^\/r\/read\/.+$/g,
+
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "https://elpsykongroo.pw/r",
+                mglist_selector: ".title > a[href*='/series/']"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Forgotten Scans",
+            mirrorIcon: require("../../icons/fos-optimized.png"),
+            languages: "en",
+            domains: ["reader.fos-scans.com"],
+            home: "http://fos-scans.com/",
+            disabled: true,
+            chapter_url: /^\/read\/.+$/g,
+
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "http://reader.fos-scans.com",
+                mglist_selector: ".title > a[href*='/series/']"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Gekkou Scans",
+            mirrorIcon: require("../../icons/gekkouscans-optimized.png"),
+            languages: "pt",
+            domains: ["leitor.mangascenter.com.br"],
+            home: "http://leitor.mangascenter.com.br",
+            chapter_url: /^\/read\/.+$/g,
+            canListFullMangas: false /* to avoid loading 8 pages to load all mangas */,
+            disabled: true,
+
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "http://leitor.mangascenter.com.br",
+                search_all: false /* use FoolSlide search function */,
+                mglist_selector: ".title > a[href*='/series/']"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Hasta Reader",
+            mirrorIcon: require("../../icons/hastareader-optimized.png"),
+            languages: "it",
+            domains: ["hastareader.com"],
+            home: "https://hastareader.com/",
+            chapter_url: /^\/slide\/read\/.+$/g,
+            canListFullMangas: false /* to avoid loading 8 pages to load all mangas */,
+
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "https://hastareader.com/slide",
+                search_all: false /* use FoolSlide search function */,
+                mglist_selector: ".title > a[href*='/series/']"
+            }
+            // test_options: {
+            //     images_restricted_domain: true
+            // }
+        }),
+        new DisabledMirror({
+            mirrorName: "Helvetica Scans",
+            mirrorIcon: require("../../icons/helvetica-optimized.png"),
+            languages: "en",
+            domains: ["helveticascans.com"],
+            home: "https://helveticascans.com/",
+            disabled: true,
+            chapter_url: /^\/r\/read\/.+$/g,
+
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "https://helveticascans.com/r",
+                mglist_selector: ".title > a[href*='/series/']"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Jaimini's Box",
+            mirrorIcon: require("../../icons/jaiminisbox-optimized.png"),
+            languages: "en",
+            disabled: true,
+            domains: ["jaiminisbox.com"],
+            home: "https://jaiminisbox.com/",
+            chapter_url: /^\/reader\/read\/.+$/g,
+            canListFullMangas: false /* to avoid loading 3 pages to load all mangas */,
+
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "https://jaiminisbox.com/reader",
+                search_all: false /* use FoolSlide search function */,
+                mglist_selector: ".title > a[href*='/series/']"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Kirei Cake",
+            mirrorIcon: require("../../icons/kireicake-optimized.png"),
+            languages: "en",
+            domains: ["reader.kireicake.com"],
+            home: "https://kireicake.com/",
+            chapter_url: /^\/read\/.+$/g,
+
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "https://reader.kireicake.com",
+                series_list_url: "/reader/list/",
+                mglist_selector: ".title > a[href*='/series/']",
+                info_chapter_var: "baseurl"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Koneko Scantrad",
+            mirrorIcon: require("../../icons/konekoscantrad-optimized.png"),
+            languages: "fr",
+            domains: ["lel.koneko-scantrad.fr"],
+            home: "https://koneko-scantrad.fr",
+            chapter_url: /^\/read\/.+$/g,
+
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "https://lel.koneko-scantrad.fr",
+                mglist_selector: ".title > a[href*='/series/']"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Le Cercle du Scan",
+            mirrorIcon: require("../../icons/lecercleduscan-optimized.png"),
+            languages: "fr",
+            domains: ["lel.lecercleduscan.com"],
+            home: "https://lel.lecercleduscan.com",
+            chapter_url: /^\/read\/.+$/g,
+
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "https://lel.lecercleduscan.com",
+                mglist_selector: ".title > a[href*='/series/']"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Let It Go Scans",
+            mirrorIcon: require("../../icons/letitgoscans-optimized.png"),
+            languages: "en",
+            domains: ["reader.letitgo.scans.today"],
+            home: "http://letitgo-scans.blogspot.com/",
+            chapter_url: /^\/read\/.+$/g,
+
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "https://https://reader.letitgo.scans.today",
+                mglist_selector: ".title > a[href*='/series/']"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Mangaichi Scans",
+            mirrorIcon: require("../../icons/mangaichiscans-optimized.png"),
+            languages: "en",
+            domains: ["mangaichiscans.mokkori.fr"],
+            home: "http://mangaichiscans.mokkori.fr/",
+            chapter_url: /^\/fs\/read\/.+$/g,
+            disabled: true,
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "http://mangaichiscans.mokkori.fr/fs",
+                mglist_selector: ".title > a[href*='/series/']"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "One Time Scans",
+            mirrorIcon: require("../../icons/onetimescans-optimized.png"),
+            languages: "en",
+            domains: ["reader.otscans.com"],
+            home: "https://otscans.com/",
+            chapter_url: /^\/read\/.+$/g,
+            disabled: true,
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "https://reader.otscans.com",
+                mglist_selector: ".title > a[href*='/series/']"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Phoenix Serenade",
+            mirrorIcon: require("../../icons/serenade-optimized.png"),
+            languages: "en",
+            domains: ["reader.serenade.moe"],
+            home: "https://serenade.moe/",
+            chapter_url: /^\/read\/.+$/g,
+            disabled: true,
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "https://reader.serenade.moe",
+                mglist_selector: ".title > a[href*='/series/']"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Roselia Scans",
+            mirrorIcon: require("../../icons/roseliascans-optimized.png"),
+            languages: "en",
+            domains: ["reader.roseliascans.com"],
+            home: "http://roseliascans.com/",
+            chapter_url: /^\/read\/.+$/g,
+            disabled: true,
+
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "http://reader.roseliascans.com",
+                mglist_selector: ".title > a[href*='/series/']"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Senses Scans",
+            mirrorIcon: require("../../icons/sensesscans-optimized.png"),
+            languages: "en",
+            domains: ["sensescans.com"],
+            home: "http://sensescans.com/",
+            chapter_url: /^\/reader\/read\/.+$/g,
+
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "http://sensescans.com/reader",
+                mglist_selector: ".title > a[href*='/series/']"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Sorcerer Weekly",
+            mirrorIcon: require("../../icons/sorcererweekly-optimized.png"),
+            languages: "en",
+            domains: ["sorcererweekly.com"],
+            home: "https://sorcererweekly.com/",
+            chapter_url: /^\/read\/.+$/g,
+            disabled: true,
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "https://sorcererweekly.com/reader",
+                mglist_selector: ".title > a[href*='/series/']"
+            }
+        }),
+        new DisabledMirror({
+            disabled: true,
+            mirrorName: "Tappy tappy tap",
+            mirrorIcon: require("../../icons/taptaptaptaptap-optimized.png"),
+            languages: "en",
+            domains: ["taptaptaptaptap.net"],
+            home: "https://taptaptaptaptap.net/",
+            chapter_url: /^\/fs\/read\/.+$/g,
+
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "https://taptaptaptaptap.net/fs/",
+                mglist_selector: ".title > a[href*='/series/']"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Twisted Hel Scans",
+            mirrorIcon: require("../../icons/twistedhelscans-optimized.png"),
+            languages: "en",
+            domains: ["www.twistedhelscans.com"],
+            home: "http://www.twistedhelscans.com/",
+            chapter_url: /^\/read\/.+$/g,
+            disabled: true,
+
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "http://www.twistedhelscans.com",
+                // mglist_look_title_from_a: a => $(".card_title", $(a)).text(),
+                page_container: ".isreaderc"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Vortex Scans",
+            mirrorIcon: require("../../icons/vortexscans-optimized.png"),
+            languages: "en",
+            domains: ["reader.vortex-scans.com"],
+            home: "https://vortex-scans.com/",
+            chapter_url: /^\/read\/.+$/g,
+
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "https://reader.vortex-scans.com",
+                mglist_selector: ".title > a[href*='/series/']"
+            }
+        }),
+        new DisabledMirror({
+            disabled: true,
+            mirrorName: "World Three",
+            mirrorIcon: require("../../icons/worldthree-optimized.png"),
+            languages: "en",
+            domains: ["www.slide.world-three.org"],
+            home: "http://www.world-three.org/",
+            chapter_url: /^\/read\/.+$/g,
+
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "http://www.slide.world-three.org",
+                mglist_selector: ".title > a[href*='/series/']"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Mangashiro",
+            canListFullMangas: false,
+            mirrorIcon: require("../../icons/mangashiro-optimized.png"),
+            domains: ["mangashiro.co"],
+            home: "https://mangashiro.co/",
+            chapter_url: /^\/m[0-9]+\/$/g,
+            languages: "id",
+            abstract: "MangastreamAbs",
+            disabled: true,
+            abstract_options: {
+                search_url: "https://mangashiro.co/",
+                chapters_a_sel: "div.bixbox.bxcl > ul > li > span.lchx a"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Komikindo",
+            canListFullMangas: false,
+            mirrorIcon: require("../../icons/id-optimized.png"),
+            domains: ["www.komikindo.web.id", "komikindo.web.id"],
+            home: "https://www.komikindo.web.id",
+            chapter_url: /^\/m[0-9]+\/$/g,
+            languages: "id",
+            abstract: "MangastreamAbs",
+            disabled: true,
+            abstract_options: {
+                search_url: "https://www.komikindo.web.id/",
+                search_a_sel: "div.chlf > h2 > a",
+                manga_title_attr: true
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Pecintakomik",
+            canListFullMangas: false,
+            disabled: true,
+            mirrorIcon: "pecintakomik.png",
+            domains: ["www.pecintakomik.net", "pecintakomik.net"],
+            home: "https://www.pecintakomik.net/",
+            chapter_url: /^\/m[0-9]+\/$/g,
+            languages: "id",
+            abstract: "MangastreamAbs",
+            abstract_options: {
+                search_url: "https://www.pecintakomik.net/",
+                // chapters_a_sel: "div.bixbox.bxcl > ul > li > span.lchx a",
+                search_a_sel: "div.luf > a",
+                search_option: "&post_type=manga",
+                manga_title_attr: true,
+                chapters_a_sel: "div.bxcl > ul > li > span.lchx > a"
+            }
+        }),
+        new DisabledMirror({
+            disabled: true,
+            mirrorName: "PM Scans",
+            mirrorIcon: "pmscans.png",
+            languages: "en",
+            domains: ["reader.pmscans.com"],
+            home: "https://reader.pmscans.com/",
+            chapter_url: /^\/(.*?)chapter-(.*?)$/g,
+
+            abstract: "MangastreamAbs",
+            abstract_options: {
+                search_json: false,
+                search_url: "https://reader.pmscans.com/",
+                chapters_a_sel: "div.bixbox.bxcl ul li div.eph-num a",
+                chapters_text_sel: "span.chapternum"
+            }
         })
     ]
 }
