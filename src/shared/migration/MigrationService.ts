@@ -22,10 +22,12 @@ export class MigrationService {
                     disabled: m.disabled
                 }
             })
+        const all = this.mirrorLoader.getAll()
         return {
             mirrorsToMigrate: mirrorsToMigrate,
             oldMirrorCount: this.oldMirrors.length,
-            newMirrorCount: this.mirrorLoader.getAll().length
+            newMirrorCount: all.length,
+            disabledMirrorCount: all.filter(m => m.disabled).length
         }
     }
 }

@@ -19,7 +19,7 @@
                     <div>
                         Migration progress {{ migrationProgress }}% ({{ getStats.newMirrorCount }}/{{
                             getStats.oldMirrorCount
-                        }})
+                        }}). Disabled mirrors {{ getStats.disabledMirrorCount }}
 
                         <v-icon small>mdi-settings</v-icon>
                         <v-progress-linear height="20" color="success" :value="migrationProgress"></v-progress-linear>

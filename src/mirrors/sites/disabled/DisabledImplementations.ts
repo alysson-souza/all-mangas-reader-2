@@ -1192,6 +1192,15 @@ export const getDisabledImplementations = () => {
             domains: ["itascan.info"],
             home: "https://itascan.info/",
             chapter_url: /.*/
+        }),
+        new DisabledMirror({
+            mirrorName: "Asura Scans TR",
+            canListFullMangas: false,
+            mirrorIcon: "asurascans.png",
+            domains: ["tr.asurascans.com"],
+            home: "https://tr.asurascans.com/",
+            chapter_url: /\/.*?bolum-[0-9]+\//g,
+            languages: "tr"
         })
     ]
 }
