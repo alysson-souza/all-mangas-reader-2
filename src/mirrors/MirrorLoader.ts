@@ -13,6 +13,7 @@ import { getMangaStreamImplementations } from "./sites/MangaStream/MangaStream"
 import { getMangaStream114Implementations } from "./sites/MangaStream/MangaStream_1_1_4"
 import { getFoolSlideImplementations } from "./sites/FoolSlide/FoolSlide"
 import { getFunMangaImplementations } from "./sites/abstract/FunManga"
+import { getMyMangaReaderCMSMirrors } from "./sites/MyMangaReaderCMS/MyMangaReaderCMS"
 
 export class MirrorLoader {
     lookupMap: Map<string, MirrorImplementation>
@@ -66,6 +67,7 @@ export const getMirrorLoader = (mirrorHelper: MirrorHelper) => {
             ...getMangaStream114Implementations(mirrorHelper),
             ...getMangaKakalotImplementations(mirrorHelper),
             new MangadexV5(mirrorHelper),
+            ...getMyMangaReaderCMSMirrors(mirrorHelper),
             new WebToon(mirrorHelper),
             ...getDisabledImplementations()
         ])

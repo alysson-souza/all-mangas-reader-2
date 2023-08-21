@@ -1196,11 +1196,51 @@ export const getDisabledImplementations = () => {
         new DisabledMirror({
             mirrorName: "Asura Scans TR",
             canListFullMangas: false,
-            mirrorIcon: "asurascans.png",
+            mirrorIcon: require("../../icons/asurascans-optimized.png"),
             domains: ["tr.asurascans.com"],
             home: "https://tr.asurascans.com/",
             chapter_url: /\/.*?bolum-[0-9]+\//g,
             languages: "tr"
+        }),
+        new DisabledMirror({
+            mirrorName: "White Cloud Pavilion",
+            mirrorIcon: require("../../icons/whitecloudpavilion-optimized.png"),
+            languages: "en",
+            domains: ["whitecloudpavilion.com"],
+            home: "https://whitecloudpavilion.com/",
+            chapter_url: /^\/manga\/(?:patreon|free)\/manga\/.+?\/.*$/g,
+
+            abstract: "MyMangaReaderCMS",
+            abstract_options: {
+                base_url: "https://whitecloudpavilion.com/manga/patreon"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Mangazuki",
+            mirrorIcon: require("../../icons/mangazuki-optimized.png"),
+            languages: "en",
+            domains: ["mangazuki.co"],
+            home: "https://mangazuki.co/",
+            chapter_url: /^\/fs\/read\/.+$/g,
+            canListFullMangas: true,
+
+            abstract: "MyMangaReaderCMS",
+            abstract_options: {
+                base_url: "https://mangazuki.co"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Fallen Angels",
+            mirrorIcon: require("../../icons/fallenangels-optimized.png"),
+            languages: "en",
+            domains: ["manga.fascans.com"],
+            home: "https://manga.fascans.com/",
+            chapter_url: /^\/manga\/.*\/.+$/g,
+
+            abstract: "MyMangaReaderCMS",
+            abstract_options: {
+                base_url: "https://manga.fascans.com"
+            }
         })
     ]
 }
