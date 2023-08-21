@@ -381,6 +381,7 @@ export class HandleManga {
     async getChapterData(message, sender) {
         return fetch(message.url)
             .then(async resp => {
+                // We no longer have #__amr_text_dom__, as that was added to wrapper div in dom purifier
                 let htmlDocument = await resp.text()
                 // loads the implementation code
                 let impl = await this.mirrorLoader.getImpl(message.mirrorName)
@@ -389,16 +390,18 @@ export class HandleManga {
                 let infos,
                     imagesUrl: string[] = []
                 if (isChapter) {
-                    try {
-                        // Retrieve information relative to current chapter / manga read
-                        infos = await impl.getCurrentPageInfo(htmlDocument, message.url)
-
-                        // retrieve images to load
-                        imagesUrl = await impl.getListImages(htmlDocument, message.url, sender)
-                    } catch (e) {
-                        console.error("Error while loading infos and images from url " + message.url)
+                    // Retrieve information relative to current chapter / manga read
+                    infos = await impl.getCurrentPageInfo(htmlDocument, message.url).catch(e => {
+                        console.error("Error while loading getCurrentPageInfo from url " + message.url)
                         console.error(e)
-                    }
+                    })
+
+                    // retrieve images to load
+                    imagesUrl = await impl.getListImages(htmlDocument, message.url, sender).catch(e => {
+                        console.error("Error while loading getListImages from url " + message.url)
+                        console.error(e)
+                        return []
+                    })
                 }
                 const body = cheerio.load(htmlDocument)
                 let title = body("title" as string).text() || "Undefined Chapter"
