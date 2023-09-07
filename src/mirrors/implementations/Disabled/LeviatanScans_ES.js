@@ -7,6 +7,7 @@ if (typeof registerMangaObject === "function") {
         home: "https://es.leviatanscans.com/",
         canListFullMangas: true,
         chapter_url: /\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+        disabled: true,
 
         abstract: "Madara",
         abstract_options: {
