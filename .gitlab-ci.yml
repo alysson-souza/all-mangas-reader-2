@@ -3,6 +3,7 @@ image: node:18-buster
 stages:
     - build
     - package
+    - notify
 
 before_script:
     - export PREVIOUS_TAGS=$(git tag --list --format '%(objectname)' --merged origin/master --no-contains HEAD)
@@ -109,7 +110,7 @@ crx:
         - build
 
 beta_notify:
-    stage: .post
+    stage: notify
     script:
         - yarn run discord:beta --version "$VERSION" --patch "$PATCH" --id "$DISCORD_NOTIFY_BETA_ID" --token "$DISCORD_NOTIFY_BETA_TOKEN" --subject "$LAST_COMMIT_SUBJECT" --body "$LAST_COMMIT_BODY"
     except:
@@ -122,12 +123,12 @@ beta_notify:
         - xpi-beta
 
 alpha_notify:
-    stage: .post
+    stage: notify
     script:
-        - yarn run discord:alpha --version "$VERSION" --patch "$PATCH" --id "$DISCORD_NOTIFY_BETA_ID" --token "$DISCORD_NOTIFY_BETA_TOKEN" --subject "$LAST_COMMIT_SUBJECT" --body "$LAST_COMMIT_BODY"
+        - yarn run discord:alpha --version "$VERSION" --patch "$PATCH" --id "$DISCORD_NOTIFY_ALPHA_ID" --token "$DISCORD_NOTIFY_ALPHA_TOKEN" --subject "$LAST_COMMIT_SUBJECT" --body "$LAST_COMMIT_BODY"
     except:
         variables:
-            - $DISCORD_NOTIFY_BETA_ID == null
+            - $DISCORD_NOTIFY_ALPHA_ID == null
             - $CI_COMMIT_MESSAGE =~ /NO-CI/
     only:
         - feature/chrome-manifest-v3
