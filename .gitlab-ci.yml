@@ -120,3 +120,16 @@ beta_notify:
         - develop
     dependencies:
         - xpi-beta
+
+alpha_notify:
+    stage: .post
+    script:
+        - yarn run discord:alpha --version "$VERSION" --patch "$PATCH" --id "$DISCORD_NOTIFY_BETA_ID" --token "$DISCORD_NOTIFY_BETA_TOKEN" --subject "$LAST_COMMIT_SUBJECT" --body "$LAST_COMMIT_BODY"
+    except:
+        variables:
+            - $DISCORD_NOTIFY_BETA_ID == null
+            - $CI_COMMIT_MESSAGE =~ /NO-CI/
+    only:
+        - feature/chrome-manifest-v3
+    dependencies:
+        - crx-alpha
