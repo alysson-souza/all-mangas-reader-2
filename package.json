@@ -6,6 +6,9 @@
     "lint-staged": {
         "**/*": "prettier --write --ignore-unknown"
     },
+    "engines": {
+        "node": ">= 18.0.0 < 19.0.0"
+    },
     "scripts": {
         "build": "cross-env NODE_ENV=production webpack --config webpack.config.js --progress",
         "build:dev": "cross-env NODE_ENV=development webpack --config webpack.config.js --progress",
@@ -17,7 +20,8 @@
         "watch:dev:chrome": "TARGET_BROWSER=chrome AMR_BROWSER=chrome yarn run watch:dev",
         "watch:dev:firefox": "AMR_BROWSER=firefox yarn run watch:dev",
         "android:dev": "yarn run build:dev && yarn run manifest:specify -firefox && yarn run build-zip -xpi -push",
-        "discord:beta": "node scripts/discord-notify.js",
+        "discord:beta": "node scripts/discord-notify.js --channel \"Beta\"",
+        "discord:alpha": "node scripts/discord-notify.js --channel \"Alpha\"",
         "prepare": "husky install"
     },
     "dependencies": {
