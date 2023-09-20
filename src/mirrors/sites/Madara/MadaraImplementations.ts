@@ -62,6 +62,8 @@ import MangaReadIcon from "../../icons/manga-read-optimized.png"
 import MangazukiMeIcon from "../../icons/mangazuki-optimized.png"
 import ManhuasIcon from "../../icons/manhuas-optimized.png"
 import ManhuausIcon from "../../icons/manhuaus-optimized.png"
+import GourmetScansIcon from "../../icons/gourmet-scans-optimized.png"
+import MangalekIcon from "../../icons/manga-lek-optimized.png"
 
 /**
  * All implementations based of Madara are placed here
@@ -367,49 +369,24 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
                 mirrorName: "Leviatan Scans",
                 mirrorIcon: LeviatanScansIcon,
                 languages: "en",
-                domains: ["leviatanscans.com", "en.leviatanscans.com"],
-                home: "https://en.leviatanscans.com/",
+                domains: ["leviatanscans.com", "en.leviatanscans.com", "lscomic.com"],
+                home: "https://lscomic.com/",
                 chapter_url: /\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
                 canListFullMangas: true
             },
             {
-                search_url: "https://en.leviatanscans.com/",
+                search_url: "https://lscomic.com/",
                 chapter_list_ajax: true,
-                path_length: 2,
+                // path_length: 2,
                 sort_chapters: true,
                 isekai_chapter_url: true,
                 title_selector: "div.post-title > h1",
-                image_protection_plugin: true,
-                urlProcessor: url => {
-                    let t = url.split("/")
-                    if (t[3] != "manga") t.splice(3, 1)
-                    return t.join("/")
-                }
-            }
-        ),
-        new Madara(
-            mirrorHelper,
-            {
-                mirrorName: "Leviatan Scans Spanish",
-                mirrorIcon: LeviatanScansIcon,
-                languages: "es",
-                domains: ["leviatanscans.com", "es.leviatanscans.com"],
-                home: "https://es.leviatanscans.com/",
-                chapter_url: /\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
-                canListFullMangas: true
-            },
-            {
-                search_url: "https://es.leviatanscans.com/",
-                chapter_list_ajax: true,
-                path_length: 2,
-                sort_chapters: true,
-                isekai_chapter_url: true,
-                title_selector: "#manga-title > h1",
-                urlProcessor: url => {
-                    let t = url.split("/")
-                    if (t[3] != "manga") t.splice(3, 1)
-                    return t.join("/")
-                }
+                image_protection_plugin: true
+                // urlProcessor: url => {
+                //     let t = url.split("/")
+                //     if (t[3] != "manga") t.splice(3, 1)
+                //     return t.join("/")
+                // }
             }
         ),
         new Madara(
@@ -1120,6 +1097,37 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
             },
             {
                 search_url: "https://manga1st.online/"
+            }
+        ),
+        new Madara(
+            mirrorHelper,
+            {
+                mirrorName: "Gourmet Scans",
+                mirrorIcon: GourmetScansIcon,
+                languages: "en",
+                domains: ["gourmetscans.net"],
+                home: "https://gourmetscans.net/",
+                chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series|project)\/.*\/.+$/g,
+                canListFullMangas: false
+            },
+            {
+                search_url: "https://gourmetscans.net/",
+                image_protection_plugin: true
+            }
+        ),
+        new Madara(
+            mirrorHelper,
+            {
+                mirrorName: "Mangalek",
+                mirrorIcon: MangalekIcon,
+                languages: "ar",
+                domains: ["mangalek.com"],
+                home: "https://mangalek.com/",
+                chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+                canListFullMangas: false
+            },
+            {
+                search_url: "https://mangalek.com/"
             }
         )
     ]
