@@ -547,24 +547,6 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
         new Madara(
             mirrorHelper,
             {
-                mirrorName: "Manga Komi",
-                mirrorIcon: MangaKomiIcon,
-                languages: "en",
-                domains: ["mangakomi.com", "mangakomi.io"],
-                home: "https://mangakomi.io/",
-                chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
-                canListFullMangas: false
-            },
-            {
-                search_url: "https://mangakomi.io/",
-                img_src: "src",
-                secondary_img_src: "data-src",
-                chapter_list_ajax: true
-            }
-        ),
-        new Madara(
-            mirrorHelper,
-            {
                 mirrorName: "Manga Lab",
                 mirrorIcon: MangaLabIcon,
                 languages: "en",
