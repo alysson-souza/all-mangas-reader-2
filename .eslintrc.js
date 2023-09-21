@@ -1,5 +1,9 @@
 module.exports = {
     extends: ["plugin:vue/essential", "plugin:vuetify/recommended", "prettier"],
-    parser: "@typescript-eslint/parser",
+    parser: "vue-eslint-parser",
+    parserOptions: {
+        parser: "@typescript-eslint/parser",
+        ecmaVersion: "2022"
+    },
     plugins: ["@typescript-eslint"]
 }
