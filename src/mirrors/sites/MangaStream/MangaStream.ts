@@ -13,7 +13,6 @@ import KomikuIcon from "../../icons/komiku-optimized.png"
 import NgomikIcon from "../../icons/ngomik-optimized.png"
 import VoidScanIcon from "../../icons/voidscans-optimized.png"
 import WestMangaIcon from "../../icons/westmanga-optimized.png"
-import AnigliScansIcon from "../../icons/anigli-scans-optimized.png"
 
 const defaultOptions = {
     search_a_sel: "div.bsx > a",
@@ -179,21 +178,6 @@ export const getMangaStreamImplementations = (mirrorHelper: MirrorHelper): Mirro
                 search_url: "https://alpha-scans.org",
                 chapters_a_sel: "div.bixbox.bxcl ul li a",
                 chapters_text_sel: "span.chapternum"
-            }
-        ),
-        new MangaStream(
-            mirrorHelper,
-            {
-                mirrorName: "Animated Glitched Scans",
-                canListFullMangas: false,
-                mirrorIcon: AnigliScansIcon,
-                domains: ["anigliscans.com"],
-                home: "https://anigliscans.com",
-                chapter_url: /\/.*?chapter-[0-9]+.*\//g,
-                languages: "en"
-            },
-            {
-                search_url: "https://anigliscans.com"
             }
         ),
         new MangaStream(

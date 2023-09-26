@@ -7,6 +7,7 @@ import ManhwaxIcon from "../../icons/manhwax-optimized.png"
 import NightScansIcon from "../../icons/night-scans-optimized.png"
 import NocturalScansIcon from "../../icons/nocturnal-scans-optimized.png"
 import RealScansIcon from "../../icons/realm-scans-optimized.png"
+import AnigliScansIcon from "../../icons/anigli-scans-optimized.png"
 
 const defaultOptions = {
     base_url: "",
@@ -218,6 +219,21 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
                 // search_url: "https://realmscans.xyz/",
                 // series_list_selector: '.listupd a[href*="/series/"]',
                 chapter_list_selector: `.eph-num a[href*="realmscans.xyz"]`
+            }
+        ),
+        new MangaStream_1_1_4(
+            mirrorHelper,
+            {
+                mirrorName: "Animated Glitched Scans",
+                canListFullMangas: false,
+                mirrorIcon: AnigliScansIcon,
+                domains: ["anigliscans.com", "anigliscans.xyz"],
+                home: "https://anigliscans.xyz",
+                chapter_url: /\/.*?chapter-[0-9]+.*\//g,
+                languages: "en"
+            },
+            {
+                // search_url: "https://anigliscans.xyz"
             }
         )
     ]

@@ -21,17 +21,17 @@ export class AppLogger {
         return `${t.getHours()}:${t.getMinutes()}:${t.getSeconds()} ${t.getMilliseconds()}`
     }
 
-    debug(message: Message) {
+    public debug = (message: Message) => {
         if (this.config.debug === 1) {
             this.log("debug", message)
         }
     }
 
-    info(message: Message) {
+    public info = (message: Message) => {
         this.log("info", message)
     }
 
-    error(message: Message) {
+    public error = (message: Message) => {
         this.log("error", message)
     }
 }
