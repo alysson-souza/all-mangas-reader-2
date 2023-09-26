@@ -79,7 +79,7 @@
         "webpack": "^5.74.0",
         "webpack-cli": "^4.10.0",
         "webpack-compiler-plugin": "^1.1.5",
-        "webpack-ext-reloader": "^1.1.9",
+        "@reorx/webpack-ext-reloader": "^1.3.0",
         "webpack-shell-plugin-next": "^2.1.1",
         "zip-dir": "^1.0.2"
     }
