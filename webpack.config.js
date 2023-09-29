@@ -1,5 +1,5 @@
 const webpack = require("webpack")
-const ExtReloader = require("@reorx/webpack-ext-reloader")
+const ExtReloader = require("webpack-ext-reloader")
 const { CleanWebpackPlugin } = require("clean-webpack-plugin")
 const WebpackShellPluginNext = require("webpack-shell-plugin-next")
 const CopyWebpackPlugin = require("copy-webpack-plugin")

@@ -1,8 +1,7 @@
-import browser, { DeclarativeContent } from "webextension-polyfill"
+import browser, { Action } from "webextension-polyfill"
 import DefaultIcon from "../icons/icon_32.png"
 import BwIcon from "../icons/icon_32_bw.png"
 import { AppStore } from "../types/common"
-import ImageDataType = DeclarativeContent.ImageDataType
 import { isFirefox, isFirefoxAndroid } from "../shared/utils"
 
 /**
@@ -181,7 +180,12 @@ export class IconHelper {
         }
         this.canvasContext.restore()
         browser.action.setIcon({
-            imageData: this.canvasContext.getImageData(0, 0, this.canvas.width, this.canvas.height) as ImageDataType
+            imageData: this.canvasContext.getImageData(
+                0,
+                0,
+                this.canvas.width,
+                this.canvas.height
+            ) as Action.ImageDataType
         })
     }
 
