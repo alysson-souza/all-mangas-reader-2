@@ -21,6 +21,10 @@ import { MangadexV5 } from "./sites/Mangadex-V5"
 import { ZaHardTop } from "./sites/ZaHardTop"
 import { UnionLeitor } from "./sites/UnionLeitor"
 import { Tachidesk } from "./sites/Tachidesk"
+import { SeriManga } from "./sites/SeriManga"
+import { ScyllaScans } from "./sites/ScyllaScans"
+import { ScanTradUnion } from "./sites/ScanTradUnion"
+import { SadScans } from "./sites/SadScans"
 
 export class MirrorLoader {
     lookupMap: Map<string, MirrorImplementation>
@@ -81,7 +85,11 @@ export const getMirrorLoader = (mirrorHelper: MirrorHelper) => {
             new ZeroScans(mirrorHelper),
             new ZaHardTop(mirrorHelper),
             new UnionLeitor(mirrorHelper),
-            new Tachidesk(mirrorHelper)
+            new Tachidesk(mirrorHelper),
+            new SeriManga(mirrorHelper),
+            new ScyllaScans(mirrorHelper),
+            new ScanTradUnion(mirrorHelper),
+            new SadScans(mirrorHelper)
         ])
     }
     return instance
