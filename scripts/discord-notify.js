@@ -38,7 +38,7 @@ if (patchIndex > -1) {
     patch = process.argv[patchIndex + 1]
 }
 
-if (!id || !token || !subject || !version || !patch || channel !== "Alpha" || channel != "Beta") {
+if (!id || !token || !subject || !version || !patch || (channel !== "Alpha" && channel != "Beta")) {
     console.log("Invalid params")
     process.exit(255)
 }
