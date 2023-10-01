@@ -186,13 +186,20 @@ export const getMangaStreamImplementations = (mirrorHelper: MirrorHelper): Mirro
                 mirrorName: "Asura Scans",
                 canListFullMangas: false,
                 mirrorIcon: AsuraScansIcon,
-                domains: ["www.asurascans.com", "asura.gg", "asura.nacm.xyz", "asuracomics.com", "asuracomics.gg"],
-                home: "https://asuracomics.gg",
+                domains: [
+                    "www.asurascans.com",
+                    "asura.gg",
+                    "asura.nacm.xyz",
+                    "asuracomics.com",
+                    "asuracomics.gg",
+                    "asuratoon.com"
+                ],
+                home: "https://asuratoon.com",
                 chapter_url: /\/.*?(chapter|ch)-[0-9]+\//g,
                 languages: "en"
             },
             {
-                search_url: "https://asuracomics.gg",
+                search_url: "https://asuratoon.com",
                 chapters_a_sel: "div.bixbox.bxcl ul li div.eph-num a",
                 chapters_text_sel: "span.chapternum",
                 search_json: false,

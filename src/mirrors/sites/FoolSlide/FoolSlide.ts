@@ -199,21 +199,6 @@ export const getFoolSlideImplementations = (mirrorHelper: MirrorHelper): MirrorI
                 base_url: "http://kangaryu-team.fr/reader",
                 mglist_selector: ".title > a[href*='/series/']"
             }
-        ),
-        new FoolSlide(
-            mirrorHelper,
-            {
-                mirrorName: "Silent Sky Scans",
-                mirrorIcon: require("../../icons/silentskyscans-optimized.png"),
-                languages: "en",
-                domains: ["reader.silentsky-scans.net"],
-                home: "https://reader.silentsky-scans.net/",
-                chapter_url: /^\/read\/.+$/g
-            },
-            {
-                base_url: "https://reader.silentsky-scans.net",
-                mglist_selector: ".title > a[href*='/series/']"
-            }
         )
     ]
 }

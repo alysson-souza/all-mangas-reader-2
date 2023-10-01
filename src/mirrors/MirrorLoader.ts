@@ -7,6 +7,7 @@ import { MangaHere } from "./sites/MangaHere"
 import { getMangaKakalotImplementations } from "./sites/abstract/MangakakalotAbs"
 import { getMadaraImplementations } from "./sites/Madara/MadaraImplementations"
 import { WebToon } from "./sites/WebToon"
+import { ZeroScans } from "./sites/ZeroScans"
 import { MangadexV5 } from "./sites/Mangadex-V5"
 import { getDisabledImplementations } from "./sites/disabled/DisabledImplementations"
 import { getMangaStreamImplementations } from "./sites/MangaStream/MangaStream"
@@ -71,7 +72,8 @@ export const getMirrorLoader = (mirrorHelper: MirrorHelper) => {
             ...getMyMangaReaderCMSMirrors(mirrorHelper),
             ...getReadMangaMirrors(mirrorHelper),
             new WebToon(mirrorHelper),
-            ...getDisabledImplementations()
+            ...getDisabledImplementations(),
+            new ZeroScans(mirrorHelper)
         ])
     }
     return instance

@@ -213,24 +213,6 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
         new Madara(
             mirrorHelper,
             {
-                mirrorName: "Disaster Scans",
-                mirrorIcon: DisasterScansIcon,
-                languages: "en",
-                domains: ["www.disasterscans.com"],
-                home: "https://www.disasterscans.com/",
-                canListFullMangas: false,
-                chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g
-            },
-            {
-                search_url: "https://www.disasterscans.com/",
-                img_src: "data-src",
-                chapter_list_ajax: true,
-                isekai_chapter_url: true
-            }
-        ),
-        new Madara(
-            mirrorHelper,
-            {
                 mirrorName: "Dragon Tea",
                 mirrorIcon: DragonTeaIcon,
                 languages: "en",
@@ -697,25 +679,6 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
                 img_src: "data-src",
                 // chapter_list_ajax: true,
                 secondary_img_src: "src"
-            }
-        ),
-        new Madara(
-            mirrorHelper,
-            {
-                mirrorName: "Manhuaus",
-                mirrorIcon: ManhuausIcon,
-                languages: "en",
-                domains: ["manhuaus.com"],
-                home: "https://manhuaus.com/",
-                chapter_url: /\/manga\/.+\/chapter\-.+$/g,
-                canListFullMangas: false
-            },
-            {
-                search_url: "https://manhuaus.com/",
-                img_src: "src",
-                chapter_list_ajax: true,
-                isekai_chapter_url: true,
-                secondary_img_src: "data-src"
             }
         ),
         new Madara(
