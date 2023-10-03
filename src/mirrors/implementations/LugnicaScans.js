@@ -54,7 +54,7 @@ if (typeof registerMangaObject === "function") {
             let chapter = curUrl.split("/")[5]
             let mangaInfo = await amr.loadJson(`${this.home}api/get/chapter/${slug}/${chapter}`)
             return mangaInfo.chapter.files.map(
-                file => `${this.home}/upload/chapitre/${mangaInfo.manga.id}/${chapter}/${file}`
+                file => `${this.home}upload/chapters/${mangaInfo.manga.id}/${chapter}/${file}`
             )
         },
 
