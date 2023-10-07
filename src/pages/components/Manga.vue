@@ -36,19 +36,24 @@
                             <v-tooltip top content-class="icon-ttip">
                                 <template v-slot:activator="{ on }">
                                     <img
-                                        v-if="isMirrorEnabled"
+                                        v-if="isMirrorEnabled && !manga.updateError"
                                         class="m-icon"
                                         width="16"
                                         height="16"
                                         :src="mirror.mirrorIcon"
                                         v-on="on" />
+                                    <v-icon v-else-if="isMirrorEnabled && manga.updateError" small v-on="on"
+                                        >mdi-alert-outline</v-icon
+                                    >
                                     <v-icon v-else small v-on="on">mdi-cancel</v-icon>
                                 </template>
-                                <span>{{
-                                    isMirrorEnabled
-                                        ? mirror.mirrorName
-                                        : i18n("list_mirror_disabled_tooltip", manga.mirror)
-                                }}</span>
+                                <span>
+                                    <span v-if="isMirrorEnabled && !manga.updateError">{{ mirror.mirrorName }}</span>
+                                    <span v-else-if="isMirrorEnabled && manga.updateError">{{
+                                        i18n("list_manga_update_error", manga.mirror)
+                                    }}</span>
+                                    <span v-else>{{ i18n("list_mirror_disabled_tooltip", manga.mirror) }}</span>
+                                </span>
                             </v-tooltip>
                         </v-lazy>
                         <!-- Manga name -->
@@ -899,6 +904,7 @@ export default {
     -moz-appearance: none;
     -webkit-appearance: none;
     -ms-appearance: none;
+    appearance: none;
     display: inline-block;
     outline: none;
     border-style: none;

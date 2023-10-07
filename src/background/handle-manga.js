@@ -34,6 +34,7 @@ class HandleManga {
                         currentScanUrl: mg.currentScanUrlm /* last viewed page in currentChapter */,
                         webtoon: mg.webtoon || false /* webtoon mode */,
                         displayName: mg.displayName,
+                        updateError: mg.updateError,
                         zoom: mg.zoom || 100 /* zoom level */
                     })
                 } else {

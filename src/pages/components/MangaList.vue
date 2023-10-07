@@ -169,6 +169,17 @@
                             <v-row no-gutters> </v-row>
                         </v-card>
                     </v-menu>
+                    <v-tooltip top content-class="icon-ttip">
+                        <template v-slot:activator="{ on }">
+                            <v-icon
+                                v-on="on"
+                                @click="showErrorsOnly = !showErrorsOnly"
+                                :class="['amr-filter', { activated: showErrorsOnly }]"
+                                >mdi-alert-outline</v-icon
+                            >
+                        </template>
+                        <span>{{ i18n("list_select_action") }}</span>
+                    </v-tooltip>
                 </v-card>
                 <v-card v-if="visMangas.length" class="hover-card">
                     <v-tooltip v-if="visNewMangas.length" top content-class="icon-ttip">
@@ -391,7 +402,8 @@ export default {
             itemsPerPage: this.$store.state.options.perPageMangas,
             pageNavigationPosition: this.$store.state.options.pageNavigationPosition === "bottom" ? "footer" : "top",
             alpha_asc_desc: this.$store.state.options.alpha_asc_desc, // Toggle Manga List select behaviour
-            searchMenu: false
+            searchMenu: false,
+            showErrorsOnly: false
         }
     },
     watch: {
@@ -463,6 +475,9 @@ export default {
          * Return all visible mangas
          */
         visMangas: function () {
+            if (this.showErrorsOnly) {
+                return this.allMangas.filter(mg => mg.updateError == 1)
+            }
             if (this.mirrorSelection !== i18n("list_page_all")) {
                 return this.allMangas.filter(mg => mg.mirror == this.mirrorSelection)
             }

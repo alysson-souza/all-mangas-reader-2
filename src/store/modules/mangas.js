@@ -511,7 +511,13 @@ const actions = {
         }, 60000)
 
         debug("waiting for manga list of chapters for " + mg.name + " on " + mg.mirror)
-        let listChaps = await dispatch("getMangaListOfChapters", mg)
+        let listChaps
+        try {
+            listChaps = await dispatch("getMangaListOfChapters", mg)
+        } catch (e) {
+            clearTimeout(timeOutRefresh)
+            throw e
+        }
         clearTimeout(timeOutRefresh)
 
         // list chapters in the correct format
@@ -732,11 +738,13 @@ const actions = {
                     await dispatch("refreshLastChapters", mg)
                         .then(() => {
                             dispatch("findAndUpdateManga", mg) //save updated manga do not wait
+                            if (mg.updateError) dispatch("markNoUpdateError", mg) // Mark has no update error
                             amrUpdater.refreshBadgeAndIcon()
                         })
                         .catch(e => {
                             if (e !== ABSTRACT_MANGA_MSG) {
                                 console.error(e)
+                                if (!mg.updateError) dispatch("markHasUpdateError", mg) // Mark has an update error
                             }
                         })
                     resolve()
@@ -805,6 +813,23 @@ const actions = {
         }
         // refresh badge
         amrUpdater.refreshBadgeAndIcon()
+    },
+
+    /**
+     * Mark manga as having an update error
+     * @param {*} vuex object
+     * @param {*} message message contains info on a manga
+     */
+    markHasUpdateError({ dispatch, commit, getters, rootState }, message) {
+        commit("markHasUpdateError", message)
+    },
+    /**
+     * Mark manga as having an update error
+     * @param {*} vuex object
+     * @param {*} message message contains info on a manga
+     */
+    markNoUpdateError({ dispatch, commit, getters, rootState }, message) {
+        commit("markNoUpdateError", message)
     },
     /**
      * Change the update top on a manga
@@ -1051,6 +1076,29 @@ const mutations = {
             if (!fromSync) mg.tsOpts = Date.now()
         }
     },
+    /**
+     * Set that the manga has an error updating
+     * @param {*} state
+     * @param {*} param1 url of the manga and layout mode
+     */
+    markHasUpdateError(state, { key, updateError }) {
+        let mg = state.all.find(manga => manga.key === key)
+        if (mg !== undefined) {
+            mg.updateError = 1
+        }
+    },
+    /**
+     * Set that the manga has no error updating
+     * @param {*} state
+     * @param {*} param1 url of the manga and layout mode
+     */
+    markNoUpdateError(state, { key, updateError }) {
+        let mg = state.all.find(manga => manga.key === key)
+        if (mg !== undefined) {
+            mg.updateError = 0
+        }
+    },
+
     /**
      * Change manga read top
      * @param {*} state

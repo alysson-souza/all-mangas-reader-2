@@ -60,6 +60,8 @@ export default class {
         // Scale Up images
         this.scaleUp = obj.scaleUp || 0
 
+        this.updateError = obj.updateError || 0
+
         // Zoom images
         this.zoom = obj.zoom || 0
 
