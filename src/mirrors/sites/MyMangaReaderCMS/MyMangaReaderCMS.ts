@@ -121,7 +121,7 @@ export const getMyMangaReaderCMSMirrors = (mirrorHelper: MirrorHelper): MirrorIm
                 mirrorName: "Komikid",
                 mirrorIcon: require("../../icons/id-optimized.png"),
                 languages: "id",
-                domains: ["www.komikid.com", "komikid.com"],
+                domains: ["komikid.com"],
                 home: "http://www.komikid.com",
                 chapter_url: /^\/manga\/.*\/.+$/g
             },
@@ -136,7 +136,7 @@ export const getMyMangaReaderCMSMirrors = (mirrorHelper: MirrorHelper): MirrorIm
                 mirrorName: "ScanFR",
                 mirrorIcon: require("../../icons/scanfr-optimized.png"),
                 languages: "fr",
-                domains: ["scan-fr.cc", "www.scan-fr.cc", "scan-fr.org", "www.scan-fr.org"],
+                domains: ["scan-fr.cc", "scan-fr.org"],
                 home: "https://www.scan-fr.cc",
                 chapter_url: /^\/manga\/.*\/.+$/g
             },

@@ -258,7 +258,10 @@ const tests = [
                     let lstko = []
                     for (let res of list) {
                         let found = false
-                        const urlHostname = new URL(res.value).host
+                        let urlHostname = new URL(res.value).host
+                        if (urlHostname.startsWith("www.")) {
+                            urlHostname = urlHostname.substring(4, urlHostname.length)
+                        }
                         for (let domain of mirror.domains) {
                             if (matchDomainRule({ urlHostname, domain })) {
                                 found = true

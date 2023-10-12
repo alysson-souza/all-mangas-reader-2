@@ -134,7 +134,7 @@ export const getFunMangaImplementations = (mirrorHelper: MirrorHelper): MirrorIm
                 canListFullMangas: true,
                 mirrorIcon: require("../../icons/funmanga-optimized.png"),
                 languages: "en",
-                domains: ["www.funmanga.com"],
+                domains: ["funmanga.com"],
                 home: "http://www.funmanga.com",
                 chapter_url: /^\/.*\/[0-9]+\.?[0-9]*\/.+$/g
             },
@@ -160,7 +160,7 @@ export const getFunMangaImplementations = (mirrorHelper: MirrorHelper): MirrorIm
                 canListFullMangas: true,
                 mirrorIcon: require("../../icons/mangainn-optimized.png"),
                 languages: "en",
-                domains: ["www.mangainn.net"],
+                domains: ["mangainn.net"],
                 home: "http://www.mangainn.net",
                 chapter_url: /^\/.*\/[0-9]+\.?[0-9]*\/.+$/g
             },
@@ -188,7 +188,7 @@ export const getFunMangaImplementations = (mirrorHelper: MirrorHelper): MirrorIm
                 canListFullMangas: true,
                 mirrorIcon: require("../../icons/readmangatoday-optimized.png"),
                 languages: "en",
-                domains: ["www.readmng.com"],
+                domains: ["readmng.com"],
                 home: "https://www.readmng.com/",
                 chapter_url: /^\/.*\/[0-9]+\.?.+$/g
             },

@@ -25,6 +25,10 @@ import { SeriManga } from "./sites/SeriManga"
 import { ScyllaScans } from "./sites/ScyllaScans"
 import { ScanTradUnion } from "./sites/ScanTradUnion"
 import { SadScans } from "./sites/SadScans"
+import { ReadM } from "./sites/ReadM"
+import { ReadComicOnline } from "./sites/ReadComicOnline"
+import { Niceoppai } from "./sites/Niceoppai"
+import { NHentai } from "./sites/NHentai"
 
 export class MirrorLoader {
     lookupMap: Map<string, MirrorImplementation>
@@ -89,7 +93,11 @@ export const getMirrorLoader = (mirrorHelper: MirrorHelper) => {
             new SeriManga(mirrorHelper),
             new ScyllaScans(mirrorHelper),
             new ScanTradUnion(mirrorHelper),
-            new SadScans(mirrorHelper)
+            new SadScans(mirrorHelper),
+            new ReadM(mirrorHelper),
+            new ReadComicOnline(mirrorHelper),
+            new Niceoppai(mirrorHelper),
+            new NHentai(mirrorHelper)
         ])
     }
     return instance

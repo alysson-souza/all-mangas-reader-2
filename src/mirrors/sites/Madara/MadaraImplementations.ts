@@ -94,7 +94,7 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
             mirrorName: "Webtoon.xyz",
             mirrorIcon: WebtoonXyzIcon,
             languages: "en",
-            domains: ["www.webtoon.xyz"],
+            domains: ["webtoon.xyz"],
             home: "https://www.webtoon.xyz/",
             chapter_url: /^\/read\/.*\/.+$/g
         }),
@@ -167,7 +167,7 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
                 mirrorName: "Astral Library",
                 mirrorIcon: AstralLibraryIcon,
                 languages: "en",
-                domains: ["www.astrallibrary.net", "astrallibrary.net"],
+                domains: ["astrallibrary.net"],
                 home: "https://www.astrallibrary.net/",
                 chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
                 canListFullMangas: true
@@ -183,7 +183,7 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
                 mirrorName: "ChibiManga",
                 mirrorIcon: ChibiMangaIcon,
                 languages: "en",
-                domains: ["www.cmreader.info"],
+                domains: ["cmreader.info"],
                 home: "https://www.cmreader.info/",
                 chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g
             },
@@ -199,7 +199,7 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
                 mirrorName: "Comic Kiba",
                 mirrorIcon: ComickibaIcon,
                 languages: "en",
-                domains: ["www.comickiba.com"],
+                domains: ["comickiba.com"],
                 home: "https://www.comickiba.com/",
                 canListFullMangas: true,
                 chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g
@@ -249,7 +249,7 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
                 mirrorName: "Hiperdex",
                 mirrorIcon: HiperdexIcon,
                 languages: "en",
-                domains: ["www.hiperdex.com"],
+                domains: ["hiperdex.com"],
                 home: "https://www.hiperdex.com/",
                 chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g
             },
@@ -266,7 +266,7 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
                 mirrorName: "Hunlight Scans",
                 mirrorIcon: HunlightScansIcon,
                 languages: "en",
-                domains: ["www.disasterscans.com"],
+                domains: ["disasterscans.com"],
                 home: "https://www.disasterscans.com/",
                 canListFullMangas: false,
                 chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g
@@ -496,7 +496,7 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
                 mirrorName: "Manga Dods",
                 mirrorIcon: MangaDodsIcon,
                 languages: "en",
-                domains: ["www.mangadods.com"],
+                domains: ["mangadods.com"],
                 home: "https://www.mangadods.com/",
                 chapter_url: /\/manga\/.*\/(ch-)?\d/g,
                 canListFullMangas: false
@@ -549,7 +549,7 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
                 mirrorName: "Manga Read",
                 mirrorIcon: MangaReadIcon,
                 languages: "en",
-                domains: ["www.mangaread.org"],
+                domains: ["mangaread.org"],
                 home: "https://www.mangaread.org/",
                 chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series|read)\/.*\/.+$/g,
                 canListFullMangas: false
@@ -582,7 +582,7 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
                 mirrorName: "Manga Sy",
                 mirrorIcon: MangaSyIcon,
                 languages: "en",
-                domains: ["www.mangasy.com"],
+                domains: ["mangasy.com"],
                 home: "https://www.mangasy.com/",
                 chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
                 canListFullMangas: false
@@ -772,7 +772,7 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
                 mirrorName: "Night Comic",
                 mirrorIcon: NightComicIcon,
                 languages: "en",
-                domains: ["www.nightcomic.com"],
+                domains: ["nightcomic.com"],
                 home: "https://www.nightcomic.com/",
                 chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
                 canListFullMangas: false
@@ -922,7 +922,7 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
                 mirrorName: "Top Manhua",
                 mirrorIcon: TopManhuaIcon,
                 languages: "en",
-                domains: ["www.topmanhua.com"],
+                domains: ["topmanhua.com"],
                 home: "https://www.topmanhua.com/",
                 chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
                 canListFullMangas: false

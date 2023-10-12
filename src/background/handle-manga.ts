@@ -331,7 +331,10 @@ export class HandleManga {
     }
 
     getMir(url): Mirror | null {
-        const urlHostname = new URL(url).host
+        let urlHostname = new URL(url).host
+        if (urlHostname.startsWith("www.")) {
+            urlHostname = urlHostname.substring(4, urlHostname.length)
+        }
         for (let mir of this.store.state.mirrors.all) {
             if (mir.activated && mir.domains && !mir.disabled) {
                 for (let domain of mir.domains) {
