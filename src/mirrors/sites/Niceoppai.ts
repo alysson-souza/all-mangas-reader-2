@@ -76,7 +76,7 @@ export class Niceoppai extends BaseMirror implements MirrorImplementation {
     }
 
     isCurrentPageAChapterPage(doc, curUrl) {
-        return this.queryHtml("div.wpm_pag.mng_rdr > h1 > a", doc).length > 0
+        return this.queryHtml(doc, "div.wpm_pag.mng_rdr > h1 > a").length > 0
     }
 
     async getImageUrlFromPage(urlImage: string): Promise<string> {

@@ -70,7 +70,7 @@ export class ZaHardTop extends BaseMirror implements MirrorImplementation {
     }
 
     isCurrentPageAChapterPage(doc, curUrl) {
-        return this.queryHtml("#chapter_imgs img", doc).length > 0
+        return this.queryHtml(doc, "#chapter_imgs img").length > 0
     }
 
     async getImageUrlFromPage(urlImage: string): Promise<string> {

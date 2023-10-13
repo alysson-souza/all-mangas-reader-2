@@ -68,7 +68,7 @@ export class UnionLeitor extends BaseMirror implements MirrorImplementation {
     }
 
     isCurrentPageAChapterPage(doc, curUrl) {
-        return this.queryHtml("img.img-manga", doc).length > 0
+        return this.queryHtml(doc, "img.img-manga").length > 0
     }
 
     async getImageUrlFromPage(urlImage: string): Promise<string> {

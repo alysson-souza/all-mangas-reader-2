@@ -122,7 +122,7 @@ export class ReadComicOnline extends BaseMirror implements MirrorImplementation 
     }
 
     isCurrentPageAChapterPage(doc, curUrl) {
-        return this.queryHtml("#divImage img", doc).length > 0
+        return this.queryHtml(doc, "#divImage img").length > 0
     }
 
     async getImageUrlFromPage(urlImage: string): Promise<string> {

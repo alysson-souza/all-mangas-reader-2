@@ -104,6 +104,6 @@ export class WebToon extends BaseMirror implements MirrorImplementation {
     }
 
     isCurrentPageAChapterPage(doc, curUrl) {
-        return this.queryHtml("#_imageList img", doc).length > 0
+        return this.queryHtml(doc, "#_imageList img").length > 0
     }
 }

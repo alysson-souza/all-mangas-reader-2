@@ -98,7 +98,7 @@ export class NHentai extends BaseMirror implements MirrorImplementation {
     }
 
     isCurrentPageAChapterPage(doc, curUrl) {
-        return this.queryHtml("#image-container img", doc).length > 0
+        return this.queryHtml(doc, "#image-container img").length > 0
     }
 
     async getImageUrlFromPage(urlImage: string): Promise<string> {

@@ -130,6 +130,12 @@ const config = {
             allowAsyncCycles: false,
             // set the current working directory for displaying module paths
             cwd: process.cwd()
+        }),
+        new WebpackShellPluginNext({
+            onBuildStart: {
+                scripts: ["node ./scripts/optimize-mirrors-icons.js"],
+                blocking: true
+            }
         })
     ]
 }
@@ -140,10 +146,6 @@ if (process.env.NODE_ENV === "production") {
 
     config.plugins = (config.plugins || []).concat([
         new WebpackShellPluginNext({
-            onBuildStart: {
-                scripts: ["node ./scripts/optimize-mirrors-icons.js"],
-                blocking: true
-            },
             onBuildEnd: {
                 scripts: ["node scripts/remove-evals.js"]
             }

@@ -29,6 +29,15 @@ import { ReadM } from "./sites/ReadM"
 import { ReadComicOnline } from "./sites/ReadComicOnline"
 import { Niceoppai } from "./sites/Niceoppai"
 import { NHentai } from "./sites/NHentai"
+import { Manhwa18com } from "./sites/Manhwa18.com"
+import { ManhwaFreak } from "./sites/ManhwaFreak"
+import { MangaSee } from "./sites/MangaSee"
+import { MangaPill } from "./sites/MangaPill"
+import { MangaDemon } from "./sites/MangaDemon"
+import { MangaKawaii } from "./sites/MangaKawaii"
+import { MangaKatana } from "./sites/MangaKatana"
+import { MangaHasu } from "./sites/MangaHasu"
+import { MangaFreak } from "./sites/MangaFreak"
 
 export class MirrorLoader {
     lookupMap: Map<string, MirrorImplementation>
@@ -97,7 +106,16 @@ export const getMirrorLoader = (mirrorHelper: MirrorHelper) => {
             new ReadM(mirrorHelper),
             new ReadComicOnline(mirrorHelper),
             new Niceoppai(mirrorHelper),
-            new NHentai(mirrorHelper)
+            new NHentai(mirrorHelper),
+            new Manhwa18com(mirrorHelper),
+            new ManhwaFreak(mirrorHelper),
+            new MangaSee(mirrorHelper),
+            new MangaPill(mirrorHelper),
+            new MangaDemon(mirrorHelper),
+            new MangaKawaii(mirrorHelper),
+            new MangaKatana(mirrorHelper),
+            new MangaHasu(mirrorHelper),
+            new MangaFreak(mirrorHelper)
         ])
     }
     return instance

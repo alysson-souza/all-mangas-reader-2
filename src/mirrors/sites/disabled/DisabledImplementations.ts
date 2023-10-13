@@ -2,6 +2,8 @@ import { DisabledMirror } from "./DisabledMirror"
 import NonStopScansIcon from "../../icons/nonstopscans-optimized.png"
 import LeviatanScansIcon from "../../icons/leviatanscans-optimized.png"
 
+import { Manwha18net } from "./nonabstract/Manwha18.net"
+
 export const getDisabledImplementations = () => {
     return [
         new DisabledMirror({
@@ -1267,6 +1269,7 @@ export const getDisabledImplementations = () => {
                     return t.join("/")
                 }
             }
-        })
+        }),
+        new Manwha18net()
     ]
 }

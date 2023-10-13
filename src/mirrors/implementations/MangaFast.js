@@ -1,5 +1,6 @@
 if (typeof registerMangaObject === "function") {
     registerMangaObject({
+        // Disable this
         mirrorName: "Manga Fast",
         canListFullMangas: false,
         mirrorIcon: "mangafast.png",

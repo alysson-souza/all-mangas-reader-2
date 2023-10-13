@@ -67,7 +67,7 @@ export class SadScans extends BaseMirror implements MirrorImplementation {
     }
 
     isCurrentPageAChapterPage(doc, curUrl) {
-        return this.queryHtml(".swiper-wrapper .swiper-slide", doc).length > 0
+        return this.queryHtml(doc, ".swiper-wrapper .swiper-slide").length > 0
     }
 
     async getImageUrlFromPage(urlImage: string): Promise<string> {

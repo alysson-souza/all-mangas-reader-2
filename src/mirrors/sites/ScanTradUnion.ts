@@ -75,7 +75,7 @@ export class ScanTradUnion extends BaseMirror implements MirrorImplementation {
     }
 
     isCurrentPageAChapterPage(doc, curUrl) {
-        return this.queryHtml("#webtoon img", doc).length > 0
+        return this.queryHtml(doc, "#webtoon img").length > 0
     }
 
     async getImageUrlFromPage(urlImage: string): Promise<string> {
