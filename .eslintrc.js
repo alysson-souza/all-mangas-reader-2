@@ -5,5 +5,8 @@ module.exports = {
         parser: "@typescript-eslint/parser",
         ecmaVersion: "2022"
     },
-    plugins: ["@typescript-eslint"]
+    plugins: ["@typescript-eslint"],
+    rules: {
+        "prefer-const": "warn"
+    }
 }

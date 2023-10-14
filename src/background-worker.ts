@@ -34,7 +34,7 @@ const init = async () => {
     /**
      * Initialize extension versioning --> after options because versioning update can affect options
      */
-    let afterLoadingCall = await amrInit.init()
+    const afterLoadingCall = await amrInit.init()
 
     /**
      * Initialize mirrors list in store from DB or repo
