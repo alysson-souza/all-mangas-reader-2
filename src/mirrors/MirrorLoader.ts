@@ -38,6 +38,12 @@ import { MangaKawaii } from "./sites/MangaKawaii"
 import { MangaKatana } from "./sites/MangaKatana"
 import { MangaHasu } from "./sites/MangaHasu"
 import { MangaFreak } from "./sites/MangaFreak"
+import { MangaAlArab } from "./sites/MangaAlArab"
+import { LugnicaScan } from "./sites/LugnicaScan"
+import { Komga } from "./sites/Komga"
+import { FMTeam } from "./sites/FMTeam"
+import { EpsilonScan } from "./sites/EpsilonScan"
+import { BananaScan } from "./sites/BananaScan"
 
 export class MirrorLoader {
     lookupMap: Map<string, MirrorImplementation>
@@ -115,7 +121,13 @@ export const getMirrorLoader = (mirrorHelper: MirrorHelper) => {
             new MangaKawaii(mirrorHelper),
             new MangaKatana(mirrorHelper),
             new MangaHasu(mirrorHelper),
-            new MangaFreak(mirrorHelper)
+            new MangaFreak(mirrorHelper),
+            new MangaAlArab(mirrorHelper),
+            new LugnicaScan(mirrorHelper),
+            new Komga(mirrorHelper),
+            new FMTeam(mirrorHelper),
+            new EpsilonScan(mirrorHelper),
+            new BananaScan(mirrorHelper)
         ])
     }
     return instance

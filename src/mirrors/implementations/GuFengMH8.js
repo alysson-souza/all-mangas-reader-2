@@ -1,5 +1,6 @@
 if (typeof registerMangaObject === "function") {
     registerMangaObject({
+        // Disable this mirror
         mirrorName: "GuFengMH8",
         canListFullMangas: false,
         mirrorIcon: "gufengmh8.png",
