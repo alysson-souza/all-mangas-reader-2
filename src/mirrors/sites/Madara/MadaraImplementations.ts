@@ -11,7 +11,6 @@ import DisasterScansIcon from "../../icons/disasterscans-optimized.png"
 import DragonTeaIcon from "../../icons/dragon-tea-optimized.png"
 import GDScansIcon from "../../icons/gd-scans-optimized.png"
 import HiperdexIcon from "../../icons/hiperdex-optimized.png"
-import HunlightScansIcon from "../../icons/hunlightscans-optimized.png"
 import ImmortalupdatesIcon from "../../icons/immortalupdates-optimized.png"
 import IsekaiScansIcon from "../../icons/isekaiscans-optimized.png"
 import KunMangaIcon from "../../icons/kun-manga-optimized.png"
@@ -263,8 +262,8 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
         new Madara(
             mirrorHelper,
             {
-                mirrorName: "Hunlight Scans",
-                mirrorIcon: HunlightScansIcon,
+                mirrorName: "Disaster Scans",
+                mirrorIcon: DisasterScansIcon,
                 languages: "en",
                 domains: ["disasterscans.com"],
                 home: "https://www.disasterscans.com/",
@@ -1073,6 +1072,25 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
             },
             {
                 search_url: "https://mangalek.com/"
+            }
+        ),
+        new Madara(
+            mirrorHelper,
+            {
+                mirrorName: "Manhuaus",
+                mirrorIcon: ManhuausIcon,
+                languages: "en",
+                domains: ["manhuaus.com"],
+                home: "https://manhuaus.com/",
+                chapter_url: /\/manga\/.+\/chapter\-.+$/g,
+                canListFullMangas: false
+            },
+            {
+                search_url: "https://manhuaus.com/",
+                img_src: "src",
+                chapter_list_ajax: true,
+                isekai_chapter_url: true,
+                secondary_img_src: "data-src"
             }
         )
     ]

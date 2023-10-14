@@ -1270,6 +1270,19 @@ export const getDisabledImplementations = () => {
                 }
             }
         }),
-        new Manwha18net()
+        new Manwha18net(),
+        new DisabledMirror({
+            mirrorName: "Hunlight Scans",
+            mirrorIcon: require("../../icons/hunlightscans-optimized.png"),
+            languages: "en",
+            domains: ["hunlight-scans.info"],
+            home: "https://hunlight-scans.info/home",
+            canListFullMangas: true,
+            chapter_url: /^\/comics\/.*\/.+$/g,
+            abstract: "GenkanAbs",
+            abstract_options: {
+                base_url: "https://hunlight-scans.info/"
+            }
+        })
     ]
 }
