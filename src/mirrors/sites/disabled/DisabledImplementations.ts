@@ -1283,6 +1283,33 @@ export const getDisabledImplementations = () => {
             abstract_options: {
                 base_url: "https://hunlight-scans.info/"
             }
+        }),
+        new DisabledMirror({
+            mirrorName: "The No Names",
+            mirrorIcon: require("../../icons/thenonames-optimized.png"),
+            languages: "en",
+            domains: ["the-nonames.com"],
+            home: "https://the-nonames.com/",
+            canListFullMangas: true,
+            chapter_url: /^\/comics\/.*\/.+$/g,
+            abstract: "GenkanAbs",
+            abstract_options: {
+                base_url: "https://the-nonames.com/"
+            }
+        }),
+        new DisabledMirror({
+            mirrorName: "Senses Scans",
+            mirrorIcon: require("../../icons/sensesscans-optimized.png"),
+            languages: "en",
+            domains: ["sensescans.com"],
+            home: "http://sensescans.com/",
+            chapter_url: /^\/reader\/read\/.+$/g,
+
+            abstract: "FoolSlide",
+            abstract_options: {
+                base_url: "http://sensescans.com/reader",
+                mglist_selector: ".title > a[href*='/series/']"
+            }
         })
     ]
 }

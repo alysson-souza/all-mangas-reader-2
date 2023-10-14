@@ -235,6 +235,19 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
             {
                 // search_url: "https://anigliscans.xyz"
             }
+        ),
+        new MangaStream_1_1_4(
+            mirrorHelper,
+            {
+                mirrorName: "Lynx Scans",
+                mirrorIcon: require("../../icons/lynxscans-optimized.png"),
+                languages: "en",
+                domains: ["lynxscans.com"],
+                home: "https://lynxscans.com/home",
+                canListFullMangas: true,
+                chapter_url: /^\/*\/.+$/g
+            },
+            {}
         )
     ]
 }

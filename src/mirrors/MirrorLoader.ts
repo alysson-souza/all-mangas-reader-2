@@ -44,6 +44,7 @@ import { Komga } from "./sites/Komga"
 import { FMTeam } from "./sites/FMTeam"
 import { EpsilonScan } from "./sites/EpsilonScan"
 import { BananaScan } from "./sites/BananaScan"
+import { BatotoFake } from "./sites/Batoto-fake"
 
 export class MirrorLoader {
     lookupMap: Map<string, MirrorImplementation>
@@ -127,7 +128,8 @@ export const getMirrorLoader = (mirrorHelper: MirrorHelper) => {
             new Komga(mirrorHelper),
             new FMTeam(mirrorHelper),
             new EpsilonScan(mirrorHelper),
-            new BananaScan(mirrorHelper)
+            new BananaScan(mirrorHelper),
+            new BatotoFake(mirrorHelper)
         ])
     }
     return instance

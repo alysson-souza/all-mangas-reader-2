@@ -1,5 +1,3 @@
-import "./lab.css"
-
 import Vue from "vue"
 import Vuetify from "vuetify/lib"
 import App from "./App.vue"

@@ -1,8 +1,8 @@
 <template>
     <v-app>
-        <v-toolbar app max-height="64">
+        <v-app-bar app max-height="64">
             <img src="/icons/icon_32.png" alt="All Mangas Reader" />
-            <v-toolbar-title v-text="title"></v-toolbar-title>
+            <v-toolbar-title>{{ title }}</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn icon @click.stop="options = true">
                 <v-icon>mdi-cog</v-icon>
@@ -12,7 +12,7 @@
                 <v-icon v-if="showMigrations">mdi-eye-off</v-icon>
                 <v-icon v-if="!showMigrations">mdi-eye</v-icon>
             </v-btn>
-        </v-toolbar>
+        </v-app-bar>
         <v-main>
             <v-container fluid>
                 <div>
@@ -24,18 +24,16 @@
                         <v-icon small>mdi-settings</v-icon>
                         <v-progress-linear height="20" color="success" :value="migrationProgress"></v-progress-linear>
                     </div>
-                    <v-row
-                        v-if="showMigrations"
-                        v-for="(mirrorToMigrate, index) in getStats.mirrorsToMigrate"
-                        :key="index"
-                        class="ma-1">
-                        <v-col>
-                            <img :src="mirrorToMigrate.mirrorIcon" :alt="mirrorToMigrate.mirrorName" />
-                            <a :href="mirrorToMigrate.home" target="_blank">{{ mirrorToMigrate.mirrorName }}</a>
-                            - ({{ mirrorToMigrate.abstract || "Individual" }})
-                            <v-icon small v-if="mirrorToMigrate.disabled">mdi-stop</v-icon>
-                        </v-col>
-                    </v-row>
+                    <div v-if="showMigrations">
+                        <v-row v-for="(mirrorToMigrate, index) in getStats.mirrorsToMigrate" :key="index" class="ma-1">
+                            <v-col>
+                                <img :src="mirrorToMigrate.mirrorIcon" :alt="mirrorToMigrate.mirrorName" />
+                                <a :href="mirrorToMigrate.home" target="_blank">{{ mirrorToMigrate.mirrorName }}</a>
+                                - ({{ mirrorToMigrate.abstract || "Individual" }})
+                                <v-icon small v-if="mirrorToMigrate.disabled">mdi-stop</v-icon>
+                            </v-col>
+                        </v-row>
+                    </div>
                 </div>
 
                 <v-form ref="form" @submit.prevent="loadCourse" id="mirrorTests">
