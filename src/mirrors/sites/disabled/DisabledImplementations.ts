@@ -1264,7 +1264,7 @@ export const getDisabledImplementations = () => {
                 isekai_chapter_url: true,
                 title_selector: "#manga-title > h1",
                 urlProcessor: url => {
-                    let t = url.split("/")
+                    const t = url.split("/")
                     if (t[3] != "manga") t.splice(3, 1)
                     return t.join("/")
                 }
@@ -1310,6 +1310,50 @@ export const getDisabledImplementations = () => {
                 base_url: "http://sensescans.com/reader",
                 mglist_selector: ".title > a[href*='/series/']"
             }
+        }),
+        new DisabledMirror({
+            mirrorName: "Asura Scans TR",
+            mirrorIcon: require("../../icons/asurascans-optimized.png"),
+            languages: "tr",
+            domains: ["tr.asurascans.com"],
+            home: "http://tr.asurascans.com/",
+            chapter_url: /\/.*?bolum-[0-9]+\//g
+        }),
+        new DisabledMirror({
+            mirrorName: "GuFengMH8",
+            canListFullMangas: false,
+            mirrorIcon: require("../../icons/gufengmh8-optimized.png"),
+            languages: "cn",
+            domains: ["www.gufengmh8.com"],
+            home: "https://www.gufengmh8.com/",
+            chapter_url: /^\/manhua\/.*\/(\d+).html$/g
+        }),
+        new DisabledMirror({
+            mirrorName: "Manga Fast",
+            canListFullMangas: false,
+            mirrorIcon: require("../../icons/mangafast-optimized.png"),
+            languages: "en",
+            domains: ["mangafast.net"],
+            home: "https://mangafast.net",
+            chapter_url: /\/.*?chapter-[0-9]+.*\//g
+        }),
+        new DisabledMirror({
+            mirrorName: "MerakiScans",
+            canListFullMangas: true,
+            mirrorIcon: require("../../icons/merakiscans-optimized.png"),
+            languages: "en",
+            domains: ["merakiscans.com", "www.merakiscans.com"],
+            home: "https://www.merakiscans.com/",
+            chapter_url: /^\/(manga|manhua)\/.*\/.+$/g
+        }),
+        new DisabledMirror({
+            mirrorName: "SubManga",
+            canListFullMangas: false,
+            mirrorIcon: require("../../icons/submanga-optimized.png"),
+            languages: "es",
+            domains: ["submanga.online", "submanga.com", "submanga.io"],
+            home: "https://submanga.online/",
+            chapter_url: /^\/manga\/.*\/.+$/g
         })
     ]
 }

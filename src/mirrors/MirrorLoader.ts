@@ -48,6 +48,7 @@ import { BatotoFake } from "./sites/Batoto-fake"
 import { DynastyScans } from "./sites/DynastyScans"
 import { DisasterScans } from "./sites/DisasterScans"
 import { Dm5 } from "./sites/Dm5"
+import { ReaperScans } from "./sites/ReaperScans"
 
 export class MirrorLoader {
     lookupMap: Map<string, MirrorImplementation>
@@ -135,7 +136,8 @@ export const getMirrorLoader = (mirrorHelper: MirrorHelper) => {
             new BatotoFake(mirrorHelper),
             new DynastyScans(mirrorHelper),
             new DisasterScans(mirrorHelper),
-            new Dm5(mirrorHelper)
+            new Dm5(mirrorHelper),
+            new ReaperScans(mirrorHelper)
         ])
     }
     return instance
