@@ -30,8 +30,6 @@ if (process.argv.includes("-patch")) {
 }
 
 if (process.argv.includes("-alpha")) {
-    let inc = process.argv[process.argv.findIndex(el => el === "-patch") + 1]
-    ext.version = ext.version + "." + inc
     ext.name = ext.name + " Alpha"
     isAlpha = true
     isBeta = false
