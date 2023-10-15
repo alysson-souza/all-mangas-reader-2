@@ -262,24 +262,6 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
         new Madara(
             mirrorHelper,
             {
-                mirrorName: "Disaster Scans",
-                mirrorIcon: DisasterScansIcon,
-                languages: "en",
-                domains: ["disasterscans.com"],
-                home: "https://www.disasterscans.com/",
-                canListFullMangas: false,
-                chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g
-            },
-            {
-                search_url: "https://www.disasterscans.com/",
-                img_src: "data-src",
-                chapter_list_ajax: true,
-                isekai_chapter_url: true
-            }
-        ),
-        new Madara(
-            mirrorHelper,
-            {
                 mirrorName: "Immortal Updates",
                 mirrorIcon: ImmortalupdatesIcon,
                 languages: "en",

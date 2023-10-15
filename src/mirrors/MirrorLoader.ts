@@ -45,6 +45,9 @@ import { FMTeam } from "./sites/FMTeam"
 import { EpsilonScan } from "./sites/EpsilonScan"
 import { BananaScan } from "./sites/BananaScan"
 import { BatotoFake } from "./sites/Batoto-fake"
+import { DynastyScans } from "./sites/DynastyScans"
+import { DisasterScans } from "./sites/DisasterScans"
+import { Dm5 } from "./sites/Dm5"
 
 export class MirrorLoader {
     lookupMap: Map<string, MirrorImplementation>
@@ -129,7 +132,10 @@ export const getMirrorLoader = (mirrorHelper: MirrorHelper) => {
             new FMTeam(mirrorHelper),
             new EpsilonScan(mirrorHelper),
             new BananaScan(mirrorHelper),
-            new BatotoFake(mirrorHelper)
+            new BatotoFake(mirrorHelper),
+            new DynastyScans(mirrorHelper),
+            new DisasterScans(mirrorHelper),
+            new Dm5(mirrorHelper)
         ])
     }
     return instance

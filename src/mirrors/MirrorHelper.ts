@@ -22,6 +22,8 @@ export interface LoadOptions {
     /** data: object to send in accordance with its dataType **/
     data?: Record<string, unknown> | string | URLSearchParams | FormData
 
+    referrer?: string
+
     crossdomain?: boolean
 
     headers?: { [k: string]: string }
