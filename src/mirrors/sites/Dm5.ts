@@ -104,7 +104,7 @@ export class Dm5 extends BaseMirror implements MirrorImplementation {
 
     isCurrentPageAChapterPage(doc, curUrl) {
         //return this.queryHtml(doc, "#cp_img").length > 0
-        return curUrl.match(this.chapter_url) !== undefined
+        return this.chapter_url.test(new URL(curUrl).pathname)
     }
 
     async getImageUrlFromPage(urlImage: string): Promise<string> {

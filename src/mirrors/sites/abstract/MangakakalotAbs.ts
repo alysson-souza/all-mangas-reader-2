@@ -119,7 +119,7 @@ export class MangakakalotAbs extends BaseMirror implements MirrorImplementation 
     isCurrentPageAChapterPage(doc: string, curUrl: string): boolean {
         // this used to return promise in the original implementation
         // without await, therefore was always tread as truthful
-        return this.chapter_url.test(curUrl)
+        return this.chapter_url.test(new URL(curUrl).pathname)
     }
 }
 

@@ -138,7 +138,7 @@ export class ScyllaScans extends BaseMirror implements MirrorImplementation {
     }
 
     isCurrentPageAChapterPage(doc, curUrl) {
-        return this.chapter_url.test(curUrl)
+        return this.chapter_url.test(new URL(curUrl).pathname)
     }
 
     async getImageUrlFromPage(urlImage: string): Promise<string> {

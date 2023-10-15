@@ -70,10 +70,7 @@ export class LugnicaScan extends BaseMirror implements MirrorImplementation {
     }
 
     isCurrentPageAChapterPage(doc, curUrl) {
-        let test = this.chapter_url.test(curUrl)
-        console.debug("this.chapter_url.test(curUrl)=", this.chapter_url.test(curUrl), test)
-
-        return test
+        return this.chapter_url.test(new URL(curUrl).pathname)
     }
 
     async getImageUrlFromPage(urlImage: string): Promise<string> {

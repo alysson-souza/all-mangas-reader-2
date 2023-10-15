@@ -409,7 +409,12 @@ export const getMangaStreamImplementations = (mirrorHelper: MirrorHelper): Mirro
                 chapters_a_sel: "div.bixbox.bxcl ul li a",
                 chapters_text_sel: "span.chapternum",
                 // img_src: "data-lazy-src",
-                img_src: "src"
+                img_src: "src",
+                fixChapterUrl: url => {
+                    const parts = url.split("/")
+                    if (parts[3] == "1") parts.splice(3, 1)
+                    return parts.join("/")
+                }
             }
         ),
         new MangaStream(
