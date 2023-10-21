@@ -48,8 +48,8 @@ export class MangakakalotAbs extends BaseMirror implements MirrorImplementation 
 
     async getMangaList(search) {
         search = search.replace(/ /g, "_")
-        let res = []
-        let url = this.options.base_url + this.options.search_url + search
+        const res = []
+        const url = this.options.base_url + this.options.search_url + search
         let doc = await this.mirrorHelper.loadPage(url, { nocache: true, preventimages: true })
 
         const $ = this.parseHtml(doc)
@@ -117,9 +117,10 @@ export class MangakakalotAbs extends BaseMirror implements MirrorImplementation 
     }
 
     isCurrentPageAChapterPage(doc: string, curUrl: string): boolean {
+        const test = this.chapter_url.test(new URL(curUrl).pathname)
         // this used to return promise in the original implementation
         // without await, therefore was always tread as truthful
-        return this.chapter_url.test(new URL(curUrl).pathname)
+        return test
     }
 }
 

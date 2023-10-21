@@ -122,7 +122,7 @@ const init = async () => {
 
         if (timers.includes(args.tabId)) return // History spam
 
-        timers.push(args.tabId)
+        if (!args.url.includes("mangadex.org")) timers.push(args.tabId)
 
         setTimeout(() => {
             timers = timers.filter(id => id != args.tabId)

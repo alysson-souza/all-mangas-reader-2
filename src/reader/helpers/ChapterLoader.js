@@ -31,7 +31,7 @@ export default class ChapterLoader {
             url = window.location.href
         }
 
-        let data = await browser.runtime.sendMessage({
+        const data = await browser.runtime.sendMessage({
             action: "getChapterData",
             url: url,
             mirrorName: this.mirror.mirrorName, // assuming we read on the same mirror (no other possibilities for now...)

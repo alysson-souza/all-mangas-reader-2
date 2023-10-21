@@ -335,8 +335,9 @@ const actions = {
             language: message.language,
             rootState: { state: rootState }
         })
-        commit("resetManga", message)
+
         let mg = state.all.find(manga => manga.key === key)
+        commit("resetManga", mg)
         dispatch("findAndUpdateManga", mg)
         await syncManager.setToRemote(mg, "ts")
     },

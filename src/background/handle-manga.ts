@@ -78,7 +78,7 @@ export class HandleManga {
                 return this.store.dispatch("setMangaDisplayName", message)
             case "setMangaChapter":
                 return this.store
-                    .dispatch("resetManga", message) // reset reading to first chapter
+                    .dispatch("resetManga", { key: this.getMangaKey(message) }) // reset reading to first chapter
                     .then(() => this.store.dispatch("readManga", message)) // set reading to current chapter
             case "resetManga":
                 return this.store.dispatch("resetManga", { key: this.getMangaKey(message) })
@@ -97,7 +97,7 @@ export class HandleManga {
                 return this.searchList(message)
             case "getListChaps": {
                 const key = this.getMangaKey(message)
-                let mgch = this.store.state.mangas.all.find(mg => mg.key === key)
+                const mgch = this.store.state.mangas.all.find(mg => mg.key === key)
                 if (mgch !== undefined) {
                     return Promise.resolve(mgch.listChaps)
                 } else {
@@ -150,7 +150,7 @@ export class HandleManga {
                     resolve(this.resultSearchFromArray(this.filterSearchList(list, message.search), message.mirror))
                 } else {
                     // retrieve from website
-                    let mgs = await this.searchListRemote(message.search, impl)
+                    const mgs = await this.searchListRemote(message.search, impl)
                     // store result
                     storedb.storeListOfMangaForMirror(message.mirror, mgs)
                     // return filtered results
@@ -267,7 +267,7 @@ export class HandleManga {
         }
 
         // Load amr preload
-        let loading = []
+        const loading = []
         loading.push(
             browser.scripting.insertCSS({
                 target: { tabId },
@@ -279,10 +279,10 @@ export class HandleManga {
         const iconUrl = browser.runtime.getURL("/icons/icon_128.png")
 
         function initAmr(imgSrc, bgColor) {
-            let cover = document.createElement("div")
+            const cover = document.createElement("div")
             cover.id = "amr-loading-cover"
             cover.style.backgroundColor = bgColor
-            let img = document.createElement("img")
+            const img = document.createElement("img")
             img.src = imgSrc
             cover.appendChild(img)
 
@@ -335,9 +335,9 @@ export class HandleManga {
         if (urlHostname.startsWith("www.")) {
             urlHostname = urlHostname.substring(4, urlHostname.length)
         }
-        for (let mir of this.store.state.mirrors.all) {
+        for (const mir of this.store.state.mirrors.all) {
             if (mir.activated && mir.domains && !mir.disabled) {
-                for (let domain of mir.domains) {
+                for (const domain of mir.domains) {
                     if (matchDomain(urlHostname, domain, this.store)) {
                         return mir
                     }
@@ -385,11 +385,11 @@ export class HandleManga {
         return fetch(message.url)
             .then(async resp => {
                 // We no longer have #__amr_text_dom__, as that was added to wrapper div in dom purifier
-                let htmlDocument = await resp.text()
+                const htmlDocument = await resp.text()
                 // loads the implementation code
-                let impl = await this.mirrorLoader.getImpl(message.mirrorName)
+                const impl = await this.mirrorLoader.getImpl(message.mirrorName)
                 // Check if this is a chapter page
-                let isChapter = impl.isCurrentPageAChapterPage(htmlDocument, message.url)
+                const isChapter = impl.isCurrentPageAChapterPage(htmlDocument, message.url)
                 let infos,
                     imagesUrl: string[] = []
                 if (isChapter) {
@@ -445,10 +445,10 @@ export class HandleManga {
      * @param {*} message
      */
     async importMangas(message) {
-        let importcat = message.importcat
-        let imps = message.imports
-        let cats = this.store.state.options.categoriesStates
-        let catsToAdd = []
+        const importcat = message.importcat
+        const imps = message.imports
+        const cats = this.store.state.options.categoriesStates
+        const catsToAdd = []
         if (imps.mangas && imps.mangas.length > 0) {
             // add default category if it does not existent
             if (importcat !== "") {
@@ -457,11 +457,11 @@ export class HandleManga {
                 }
             }
 
-            let readall = []
+            const readall = []
             let firstChapToImport = true
-            for (let mg of imps.mangas) {
+            for (const mg of imps.mangas) {
                 // convert manga to something matching readManga requirements
-                let readmg: Partial<AppManga> & { action?: string } = {
+                const readmg: Partial<AppManga> & { action?: string } = {
                     mirror: mg.m,
                     name: mg.n,
                     url: mg.u
@@ -491,7 +491,7 @@ export class HandleManga {
                 }
                 readmg.action = "readManga"
 
-                let mgimport = Promise.resolve(this.store.dispatch("readManga", readmg).catch(e => e))
+                const mgimport = Promise.resolve(this.store.dispatch("readManga", readmg).catch(e => e))
                 if (this.store.state.options.waitbetweenupdates === 0) {
                     if (this.store.state.options.savebandwidth === 1) {
                         await mgimport

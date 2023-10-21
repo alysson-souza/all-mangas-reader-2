@@ -1354,6 +1354,15 @@ export const getDisabledImplementations = () => {
             domains: ["submanga.online", "submanga.com", "submanga.io"],
             home: "https://submanga.online/",
             chapter_url: /^\/manga\/.*\/.+$/g
+        }),
+        new DisabledMirror({
+            mirrorName: "Manga Llama",
+            canListFullMangas: false,
+            mirrorIcon: require("../../icons/mangallama-optimized.png"),
+            languages: "en",
+            domains: ["mangallama.com"],
+            home: "https://mangallama.com",
+            chapter_url: /\/reader\/.*\/.*/g
         })
     ]
 }
