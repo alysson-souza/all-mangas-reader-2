@@ -17,7 +17,7 @@ export class Niceoppai extends BaseMirror implements MirrorImplementation {
     chapter_url = /\/.+\/\d+/g
 
     async getMangaList(search: string) {
-        let doc = await this.mirrorHelper.loadPage("http://www.niceoppai.net/manga_list/search/", {
+        const doc = await this.mirrorHelper.loadPage("http://www.niceoppai.net/manga_list/search/", {
             nocache: true,
             preventimages: true,
             post: true,
@@ -28,7 +28,7 @@ export class Niceoppai extends BaseMirror implements MirrorImplementation {
             }
         })
 
-        let res = []
+        const res = []
         const $ = this.parseHtml(doc)
 
         $("div > div > div > div.det > a").each(function (index) {
@@ -38,17 +38,17 @@ export class Niceoppai extends BaseMirror implements MirrorImplementation {
     }
 
     async getListChaps(urlManga) {
-        let doc = await this.mirrorHelper.loadPage(urlManga, {
+        const doc = await this.mirrorHelper.loadPage(urlManga, {
             nocache: true,
             preventimages: true
         })
 
-        let res = []
+        const res = []
         const $ = this.parseHtml(doc)
 
         $("div > div.wpm_pag.mng_det > ul > li > a").each(function () {
-            let url = $(this).attr("href")
-            let chap = url.split("/")[4]
+            const url = $(this).attr("href")
+            const chap = url.split("/")[4]
             res.push([chap, url])
         })
         return res
@@ -56,7 +56,7 @@ export class Niceoppai extends BaseMirror implements MirrorImplementation {
 
     async getCurrentPageInfo(doc, curUrl) {
         const $ = this.parseHtml(doc)
-        let mga = $("div.wpm_pag.mng_rdr > h1 > a")
+        const mga = $("div.wpm_pag.mng_rdr > h1 > a")
         return {
             name: mga.text().trim(),
             currentMangaURL: mga.attr("href"),
@@ -65,7 +65,7 @@ export class Niceoppai extends BaseMirror implements MirrorImplementation {
     }
 
     async getListImages(doc, curUrl, sender) {
-        let res = []
+        const res = []
         const $ = this.parseHtml(doc)
 
         $("#image-container > center > img").each(function () {

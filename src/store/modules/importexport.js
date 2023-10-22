@@ -290,7 +290,7 @@ const actions = {
             await mangadex.markAsRead(url)
         }
         if (mirror === "Tachidesk") {
-            let tmpurl = new URL(url)
+            const tmpurl = new URL(url)
             tmpurl.pathname = "/api/v1" + tmpurl.pathname
             var formData = new FormData()
             formData.set("lastPageRead", "1")

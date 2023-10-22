@@ -17,14 +17,14 @@ export class MangaSee extends BaseMirror implements MirrorImplementation {
     chapter_url = /^\/read-online\/.+$/g
 
     async getMangaList(search: string) {
-        let doc = await this.mirrorHelper.loadPage(this.home + "/directory/", { nocache: true, preventimages: true })
+        const doc = await this.mirrorHelper.loadPage(this.home + "/directory/", { nocache: true, preventimages: true })
 
-        let res = []
-        let _self = this
+        const res = []
+        const _self = this
 
-        let regex = /vm\.FullDirectory = (.*?)};/g
-        let matches = regex.exec(doc)
-        let directory = JSON.parse(matches[1] + "}")
+        const regex = /vm\.FullDirectory = (.*?)};/g
+        const matches = regex.exec(doc)
+        const directory = JSON.parse(matches[1] + "}")
 
         directory.Directory.forEach(manga => {
             res.push([manga.s, _self.home + "/manga/" + manga.i])
@@ -33,22 +33,22 @@ export class MangaSee extends BaseMirror implements MirrorImplementation {
     }
 
     async getListChaps(urlManga) {
-        let doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
+        const doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
 
-        let res = []
-        let _self = this
+        const res = []
+        const _self = this
 
         let regex = /vm\.Chapters = (.*?);/g
         let matches = regex.exec(doc)
-        let chapters = JSON.parse(matches[1])
+        const chapters = JSON.parse(matches[1])
 
         regex = /vm\.IndexName = "(.*?)";/g
         matches = regex.exec(doc)
-        let titlePath = matches[1]
+        const titlePath = matches[1]
 
         chapters.forEach(chapter => {
-            let linkPart = _self.ChapterListLink(chapter.Chapter)
-            let name = _self.ChapterListName(chapter.Type, chapter.Chapter)
+            const linkPart = _self.ChapterListLink(chapter.Chapter)
+            const name = _self.ChapterListName(chapter.Type, chapter.Chapter)
 
             res.push([name, _self.home + "/read-online/" + titlePath + linkPart])
         })
@@ -57,7 +57,7 @@ export class MangaSee extends BaseMirror implements MirrorImplementation {
 
     async getCurrentPageInfo(doc, curUrl) {
         const $ = this.parseHtml(doc)
-        let mgtitle = $($('.MainContainer a[href*="manga"]')[0])
+        const mgtitle = $($('.MainContainer a[href*="manga"]')[0])
         return {
             name: mgtitle.text().trim().split("\n")[0].trim(),
             currentMangaURL: this.home + mgtitle.attr("href"),
@@ -66,30 +66,30 @@ export class MangaSee extends BaseMirror implements MirrorImplementation {
     }
 
     async getListImages(doc, curUrl, sender) {
-        let fullUrl = curUrl.replace("-page-1.html", ".html")
+        const fullUrl = curUrl.replace("-page-1.html", ".html")
         doc = await this.mirrorHelper.loadPage(fullUrl, { nocache: true })
         let regex, matches
 
         regex = /vm\.CurChapter =(.*?);/g
         matches = regex.exec(doc)
-        let vars = JSON.parse(matches[1])
+        const vars = JSON.parse(matches[1])
 
         // regex = /vm\.CurChapter\s*=\s*\{.*?\};\s*vm\.\w+\s*=\s*"(.*?)";/g
         regex = /vm\.(\w+?)\s*=\s*\w+\.data\.val\.PathName/g
         matches = regex.exec(doc)
         regex = new RegExp("vm\\." + matches[1] + '\\s*=\\s*\\"(.*?)\\"', "g")
         matches = regex.exec(doc)
-        let cdnPath = matches[1]
+        const cdnPath = matches[1]
 
         regex = /vm\.IndexName = "(.*?)";/g
         matches = regex.exec(doc)
-        let titlePath = matches[1]
+        const titlePath = matches[1]
 
-        let res = []
-        let chapImage = this.ChapterImage(vars.Chapter)
-        let extraDir = vars.Directory == "" ? "" : vars.Directory + "/"
+        const res = []
+        const chapImage = this.ChapterImage(vars.Chapter)
+        const extraDir = vars.Directory == "" ? "" : vars.Directory + "/"
         for (let i = 1; i <= vars.Page; i++) {
-            let pageImage = this.PageImage(i)
+            const pageImage = this.PageImage(i)
             res.push(`https://${cdnPath}/manga/${titlePath}/${extraDir}${chapImage}-${pageImage}.png`)
         }
         console.log(res)
@@ -105,19 +105,19 @@ export class MangaSee extends BaseMirror implements MirrorImplementation {
     }
 
     ChapterListLink(id: string) {
-        let stupidvar1 = id.substring(0, 1)
-        let chapterNumber = parseInt(id.slice(1, -1))
-        let chapterPart = id.slice(-1)
-        let index = stupidvar1 != "1" ? "-index-" + stupidvar1 : ""
-        let chapterPartDisplay = chapterPart != "0" ? "." + chapterPart : ""
+        const stupidvar1 = id.substring(0, 1)
+        const chapterNumber = parseInt(id.slice(1, -1))
+        const chapterPart = id.slice(-1)
+        const index = stupidvar1 != "1" ? "-index-" + stupidvar1 : ""
+        const chapterPartDisplay = chapterPart != "0" ? "." + chapterPart : ""
 
         return "-chapter-" + chapterNumber + chapterPartDisplay + index + ".html"
     }
 
     ChapterListName(type, id) {
-        let blah = (type != "" ? type : "Chapter") + " "
-        let chapterNumber = parseInt(id.slice(1, -1))
-        let chapterPart = id[id.length - 1]
+        const blah = (type != "" ? type : "Chapter") + " "
+        const chapterNumber = parseInt(id.slice(1, -1))
+        const chapterPart = id[id.length - 1]
         return (blah + (chapterPart == 0 ? chapterNumber : chapterNumber + "." + chapterPart)).trim()
     }
 

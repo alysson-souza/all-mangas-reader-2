@@ -106,12 +106,12 @@ export default {
         importstr: function (str) {
             try {
                 let res = ""
-                let imps = JSON.parse(str)
+                const imps = JSON.parse(str)
                 this.hasmgs = false
                 if (imps.mangas) {
                     if (typeof imps.mangas === "string") {
                         // AMRV1 export
-                        let mgs = JSON.parse(imps.mangas)
+                        const mgs = JSON.parse(imps.mangas)
                         res += i18n("ie_has_mangas_v1", mgs.length) + "<br/>"
                         this.hasmgs = true
                     } else if (imps.mangas.length > 0) {
@@ -123,7 +123,7 @@ export default {
                 if (imps.bookmarks) {
                     if (typeof imps.bookmarks === "string") {
                         // AMRV1 export
-                        let bms = JSON.parse(imps.bookmarks)
+                        const bms = JSON.parse(imps.bookmarks)
                         res += i18n("ie_has_bookmarks_v1", bms.length) + "<br/>"
                         this.hasbms = true
                     } else if (imps.bookmarks.length > 0) {
@@ -151,8 +151,8 @@ export default {
          * File is selected
          */
         async handleFileChange(e) {
-            let reader = new FileReader()
-            let self = this
+            const reader = new FileReader()
+            const self = this
             reader.readAsText(e.target.files[0])
             reader.onload = function (event) {
                 self.importstr = event.target.result
@@ -162,7 +162,7 @@ export default {
          * Export data to file
          */
         exportFile: function () {
-            let self = this
+            const self = this
             let mgs = this.$store.state.mangas.all
             if (this.viewable) {
                 mgs = mgs.filter(mg =>
@@ -171,7 +171,7 @@ export default {
             }
             mgs = mgs.map(mg => {
                 if (self.exportMode === 1) {
-                    let res = {
+                    const res = {
                         m: mg.mirror,
                         n: mg.name,
                         u: mg.url,
@@ -193,7 +193,7 @@ export default {
                     if (mg.zoom !== 0) res.z = mg.zoom
                     return res
                 } else {
-                    let res = {
+                    const res = {
                         m: mg.mirror,
                         n: mg.name,
                         u: mg.url
@@ -202,7 +202,7 @@ export default {
                     return res
                 }
             })
-            let exp = { mangas: mgs }
+            const exp = { mangas: mgs }
 
             //add bookmarks
             if (this.bookmarks) {
@@ -210,7 +210,7 @@ export default {
                 if (this.viewable) {
                     bms = bms.filter(bm => {
                         const key = mangaKey({ url: bm.url, rootState: this.$store })
-                        let mgbm = this.$store.state.mangas.all.find(mg => mg.key.indexOf(key) >= 0) // find manga associated with bookmark
+                        const mgbm = this.$store.state.mangas.all.find(mg => mg.key.indexOf(key) >= 0) // find manga associated with bookmark
                         if (mgbm !== undefined) {
                             return displayFilterCats(
                                 // check if manga is viewable
@@ -225,7 +225,7 @@ export default {
                     })
                 }
                 bms = bms.map(bm => {
-                    let res = {
+                    const res = {
                         m: bm.mirror,
                         n: bm.name,
                         u: bm.url,
@@ -261,7 +261,7 @@ export default {
          */
         importMangas: async function () {
             this.importingmangas = true
-            let imps = JSON.parse(this.importstr)
+            const imps = JSON.parse(this.importstr)
             // AMR V1 export --> convert it to AMR V2
             if (typeof imps.mangas === "string") {
                 imps.mangas = JSON.parse(imps.mangas).map(mg => {
@@ -282,7 +282,7 @@ export default {
                     }
                 })
             }
-            let obj = {
+            const obj = {
                 importcat: this.importcat,
                 imports: imps,
                 action: "importMangas"
@@ -297,7 +297,7 @@ export default {
          */
         importBookmarks: async function () {
             this.importingbookmarks = true
-            let imps = JSON.parse(this.importstr)
+            const imps = JSON.parse(this.importstr)
             // AMR V1 export --> convert it to AMR V2
             if (typeof imps.bookmarks === "string") {
                 imps.bookmarks = JSON.parse(imps.bookmarks).map(bm => {
@@ -315,10 +315,10 @@ export default {
                 })
             }
             if (imps.bookmarks && imps.bookmarks.length > 0) {
-                let addall = []
+                const addall = []
                 imps.bookmarks.forEach(bm => {
                     // convert bookmark to something matching internal bookmarks
-                    let nbm = {
+                    const nbm = {
                         mirror: bm.m,
                         name: bm.n,
                         url: bm.u,

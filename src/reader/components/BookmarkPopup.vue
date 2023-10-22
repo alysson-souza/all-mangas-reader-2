@@ -80,7 +80,7 @@ export default {
             this.dialog = true
             this.scanUrl = scanUrl
             if (scanUrl) {
-                let sc = bookmarks.getScan(scanUrl)
+                const sc = bookmarks.getScan(scanUrl)
                 this.note = sc.note
                 this.scanName = sc.name
                 this.alreadyBookmarked = sc.booked

@@ -17,12 +17,12 @@ export class SubManga extends BaseMirror implements MirrorImplementation {
     chapter_url = /^\/manga\/.*\/.+$/g
 
     async getMangaList(search: string) {
-        let doc = await this.mirrorHelper.loadPage("https://submanga.online/mangas/buscar", {
+        const doc = await this.mirrorHelper.loadPage("https://submanga.online/mangas/buscar", {
             preventimages: true,
             data: { q: search },
             post: true
         })
-        let res = []
+        const res = []
         const $ = this.parseHtml(doc)
         $(".panel-body .caption h3 a").each(function (ind) {
             res.push([$(this).text(), "https://submanga.online" + $(this).attr("href")])
@@ -31,9 +31,9 @@ export class SubManga extends BaseMirror implements MirrorImplementation {
     }
 
     async getListChaps(urlManga) {
-        let doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
+        const doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
         const $ = this.parseHtml(doc)
-        let res = []
+        const res = []
         $(".capitulos-list a").each(function (index) {
             res[res.length] = [$(this).text(), "https://submanga.online" + $(this).attr("href")]
         })
@@ -48,17 +48,17 @@ export class SubManga extends BaseMirror implements MirrorImplementation {
             let chapurl = $("meta[property='og:url']").attr("content")
             if (chapurl.indexOf("http:")) chapurl = chapurl.substring(4)
             if (chapurl.indexOf("https:")) chapurl = chapurl.substring(5) //reload reader from first page
-            let docinit = await this.mirrorHelper.loadPage(chapurl)
+            const docinit = await this.mirrorHelper.loadPage(chapurl)
             const $$ = this.parseHtml(docinit)
-            let urlref = $$("#boton.anterior").attr("href") // button link is from main site
-            let paths = urlref.split("/")
+            const urlref = $$("#boton.anterior").attr("href") // button link is from main site
+            const paths = urlref.split("/")
             return {
                 name: $$("a[href='" + urlref + "']").text(),
                 currentMangaURL: paths.splice(0, paths.length - 1).join("/"),
                 currentChapterURL: urlref
             }
         } else {
-            let paths = curUrl.split("/")
+            const paths = curUrl.split("/")
             let name = $($(".panel-heading h3")[0]).text().trim()
             if (name.endsWith("manga")) name = name.substring(0, name.length - 5).trim()
             return {
@@ -72,18 +72,18 @@ export class SubManga extends BaseMirror implements MirrorImplementation {
     async getListImages(doc, curUrl, sender) {
         const $ = this.parseHtml(doc)
         const self = this
-        let getimgs = function (doc, url) {
-            let res = []
+        const getimgs = function (doc, url) {
+            const res = []
             self.queryHtml(doc, "#select_paginas option").each(function () {
                 res.push(url + "/" + $(this).val())
             })
             return res
         }
-        let aredirect = $("a[href^='/mangas/leermanga/']")
+        const aredirect = $("a[href^='/mangas/leermanga/']")
         if (aredirect.length === 1) {
             // reading from main site
-            let url = "https://submanga.online" + aredirect.attr("href")
-            let docred = await this.mirrorHelper.loadPage(url, { nocache: true, preventimages: true })
+            const url = "https://submanga.online" + aredirect.attr("href")
+            const docred = await this.mirrorHelper.loadPage(url, { nocache: true, preventimages: true })
             return getimgs(docred, url)
         } else {
             // reading from reader
@@ -99,7 +99,7 @@ export class SubManga extends BaseMirror implements MirrorImplementation {
     }
 
     async getImageUrlFromPage(urlImage: string): Promise<string> {
-        let doc = await this.mirrorHelper.loadPage(urlImage)
+        const doc = await this.mirrorHelper.loadPage(urlImage)
         const $ = this.parseHtml(doc)
         var src = $("#page_img").attr("src")
         return "https://submanga.online" + src

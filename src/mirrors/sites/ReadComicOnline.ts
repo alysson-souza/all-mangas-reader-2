@@ -17,7 +17,7 @@ export class ReadComicOnline extends BaseMirror implements MirrorImplementation 
     chapter_url = /Comic\/.*\/.*\?id=/g
 
     async getMangaList(search: string) {
-        let doc = await this.mirrorHelper.loadPage(this.home + "/Search/Comic", {
+        const doc = await this.mirrorHelper.loadPage(this.home + "/Search/Comic", {
             nocache: true,
             preventimages: true,
             post: true,
@@ -26,7 +26,7 @@ export class ReadComicOnline extends BaseMirror implements MirrorImplementation 
             }
         })
 
-        let res = []
+        const res = []
         const $ = this.parseHtml(doc)
         $("table.listing a").each(function (index) {
             if ($(this).attr("href").includes("/Comic/")) {
@@ -38,14 +38,14 @@ export class ReadComicOnline extends BaseMirror implements MirrorImplementation 
     }
 
     async getListChaps(urlManga) {
-        let doc = await this.mirrorHelper.loadPage(urlManga, {
+        const doc = await this.mirrorHelper.loadPage(urlManga, {
             nocache: true,
             preventimages: true
         })
 
-        let res = []
+        const res = []
         const $ = this.parseHtml(doc)
-        let comicName = $("a.bigChar").text().trim()
+        const comicName = $("a.bigChar").text().trim()
 
         $("table.listing a").each(function (index) {
             if ($(this).attr("href").includes("/Comic/")) {
@@ -61,8 +61,8 @@ export class ReadComicOnline extends BaseMirror implements MirrorImplementation 
 
     async getCurrentPageInfo(doc, curUrl) {
         const $ = this.parseHtml(doc)
-        let comicUrl = $("#navsubbar a")
-        let nameParts = comicUrl.text().split("\n")
+        const comicUrl = $("#navsubbar a")
+        const nameParts = comicUrl.text().split("\n")
         let name = ""
         nameParts.forEach(part => {
             if (!(part.trim() == "" || part.trim() == "Comic" || part.trim() == "information")) {
@@ -70,8 +70,8 @@ export class ReadComicOnline extends BaseMirror implements MirrorImplementation 
             }
         })
 
-        let url = new URL(curUrl)
-        let newUrl = url.origin + url.pathname + "?id=" + url.searchParams.get("id")
+        const url = new URL(curUrl)
+        const newUrl = url.origin + url.pathname + "?id=" + url.searchParams.get("id")
         return {
             name: name.trim(),
             currentMangaURL: this.home + comicUrl.attr("href"),
@@ -82,7 +82,7 @@ export class ReadComicOnline extends BaseMirror implements MirrorImplementation 
     async getListImages(doc, curUrl, sender) {
         const unpack = (urlImg, origin: any = false) => {
             let src = urlImg.replace(/_x236/g, "d").replace(/_x945/g, "g")
-            let alt = origin !== false
+            const alt = origin !== false
             if (!alt) origin = "https://2.bp.blogspot.com/"
 
             if (src.indexOf("https") !== 0) {

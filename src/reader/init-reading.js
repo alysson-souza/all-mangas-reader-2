@@ -18,7 +18,7 @@ import ChapterLoader from "./helpers/ChapterLoader"
 // Forves embedded svg font for reader, we use the cdn based one for the popup still
 vuetifyOptions.icons.iconfont = "mdiSvg"
 
-let ourCss = ["https://fonts.googleapis.com/css?family=Roboto:300,400,500,700"]
+const ourCss = ["https://fonts.googleapis.com/css?family=Roboto:300,400,500,700"]
 
 if (globalThis["__armreader__"] === undefined) {
     // avoid loading script twice
@@ -51,9 +51,9 @@ if (globalThis["__armreader__"] === undefined) {
         console.log("Mirror implementation " + mirror.mirrorName + " loaded in page.")
 
         // initialize current chapter from data collected from current page
-        let chap = new ChapterLoader(globalThis.location.href, mirror)
+        const chap = new ChapterLoader(globalThis.location.href, mirror)
         await chap.checkAndLoadInfos() // get is a chapter ?, infos (current manga, chapter) and scans urls
-        let done = chap.loadInReader(options, true) // load chapter data in states
+        const done = chap.loadInReader(options, true) // load chapter data in states
         if (!done) {
             restorePage()
         } else {
@@ -71,11 +71,11 @@ if (globalThis["__armreader__"] === undefined) {
 function initReader(mirror) {
     if (!document.body) {
         // create body element if non existing (thanks mangarock)
-        let bd = document.createElement("body")
+        const bd = document.createElement("body")
         document.children[0].appendChild(bd)
     }
     document.body.innerHTML = "" //empty the dom page
-    let amrdiv = document.createElement("div")
+    const amrdiv = document.createElement("div")
     amrdiv.id = "app"
     document.body.appendChild(amrdiv)
 
@@ -96,7 +96,7 @@ function initReader(mirror) {
     // if (options.darkreader === 1) document.body.style.backgroundColor = "#303030"
     // else document.body.style.backgroundColor = "white"
 
-    for (let css of ourCss) loadCss(css)
+    for (const css of ourCss) loadCss(css)
 
     // Load vue
     Vue.config.productionTip = false
@@ -122,7 +122,7 @@ function removeJsAddedStuff(times = 10) {
     document.body.style.setProperty("min-width", "auto", "important")
     document.body.style.setProperty("width", "auto", "important")
 
-    for (let child of document.body.children) {
+    for (const child of document.body.children) {
         if (child.getAttribute("id") !== "amrapp") child.remove()
     }
 
@@ -133,9 +133,8 @@ function removeJsAddedStuff(times = 10) {
 
 /** Remove styles from original page to avoid interference with AMR reader */
 function removeStyles(withInline = false, times = 10) {
-    let stylesheets = document.getElementsByTagName("link"),
-        i,
-        sheet
+    const stylesheets = document.getElementsByTagName("link")
+    let i, sheet
     for (i in stylesheets) {
         if (stylesheets.hasOwnProperty(i)) {
             sheet = stylesheets[i]
@@ -150,7 +149,7 @@ function removeStyles(withInline = false, times = 10) {
     }
 
     if (withInline) {
-        let inline = document.getElementsByTagName("style")
+        const inline = document.getElementsByTagName("style")
         for (i in inline) {
             if (inline.hasOwnProperty(i)) {
                 sheet = inline[i]
@@ -192,15 +191,15 @@ function loadCss(file) {
 function restorePage() {
     console.log("Restore page")
     globalThis["__AMR_RESTORED_PAGE__"] = true
-    let cover = document.getElementById("amr-loading-cover")
+    const cover = document.getElementById("amr-loading-cover")
     if (cover) cover.parentNode.removeChild(cover)
 
     // For some reason the first run does not actually remove them all, a couple of runs are needed
     for (let a = 0; a < 10; a++) {
         // remove included style
-        let styles = document.getElementsByTagName("style"),
-            st
-        for (let i in styles) {
+        const styles = document.getElementsByTagName("style")
+        let st
+        for (const i in styles) {
             if (styles.hasOwnProperty(i)) {
                 st = styles[i]
                 // remove our own styles...

@@ -17,9 +17,9 @@ export class ManhwaFreak extends BaseMirror implements MirrorImplementation {
     chapter_url = /\/.*?ch-[0-9]+.*\//g
 
     async getMangaList(search: string) {
-        let doc = await this.mirrorHelper.loadPage(this.home + "/manga/", { nocache: true, preventimages: true })
+        const doc = await this.mirrorHelper.loadPage(this.home + "/manga/", { nocache: true, preventimages: true })
 
-        let res = []
+        const res = []
         const $ = this.parseHtml(doc)
 
         $("div.listupd div.lastest-title a").each(function (index) {
@@ -29,9 +29,9 @@ export class ManhwaFreak extends BaseMirror implements MirrorImplementation {
     }
 
     async getListChaps(urlManga) {
-        let doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
+        const doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
 
-        let res = []
+        const res = []
         const $ = this.parseHtml(doc)
 
         $("div.chapter-li a").each(function (index) {
@@ -42,7 +42,7 @@ export class ManhwaFreak extends BaseMirror implements MirrorImplementation {
 
     async getCurrentPageInfo(doc, curUrl) {
         const $ = this.parseHtml(doc)
-        let bc = $("div.breadcrumb a")
+        const bc = $("div.breadcrumb a")
 
         return {
             name: $(bc[1]).text().trim(),
@@ -52,11 +52,11 @@ export class ManhwaFreak extends BaseMirror implements MirrorImplementation {
     }
 
     async getListImages(doc, curUrl, sender) {
-        let res = []
-        let regex = /ts_reader\.run\((.*?)\);/g
-        let parts = doc.match(regex)
+        const res = []
+        const regex = /ts_reader\.run\((.*?)\);/g
+        const parts = doc.match(regex)
 
-        let json = JSON.parse(parts[0].replace("ts_reader.run(", "").replace(");", ""))
+        const json = JSON.parse(parts[0].replace("ts_reader.run(", "").replace(");", ""))
 
         json.sources.forEach(source => {
             source.images.forEach(image => {

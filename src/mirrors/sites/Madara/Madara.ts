@@ -89,11 +89,11 @@ export class Madara extends BaseMirror implements MirrorImplementation {
 
     async getListChaps(urlManga) {
         let doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
-        let self = this
+        const _self = this
 
         let $ = this.parseHtml(doc)
 
-        let mangaName = $(this.options.search_a_sel, doc).text().trim()
+        const mangaName = $(this.options.search_a_sel, doc).text().trim()
 
         if (this.options.chapter_list_ajax) {
             let searchApiUrl = this.options.search_url + "wp-admin/admin-ajax.php"
@@ -124,7 +124,7 @@ export class Madara extends BaseMirror implements MirrorImplementation {
         var res = []
         $(this.options.chapters_a_sel).each(function () {
             let chapterName = $(this).text()
-            let stringsToStrip = [
+            const stringsToStrip = [
                 mangaName,
                 $(".chapter-release-date", this).text(),
                 $(".view", this).text(),
@@ -135,18 +135,18 @@ export class Madara extends BaseMirror implements MirrorImplementation {
 
             res.push([
                 chapterName.trim(),
-                self.options.urlProcessor(self.makeChapterUrl($(this).attr("href"))) // add ?style=list to load chapter in long strip mode, remove it if it already there and add it again,
+                _self.options.urlProcessor(_self.makeChapterUrl($(this).attr("href"))) // add ?style=list to load chapter in long strip mode, remove it if it already there and add it again,
             ])
         })
 
         if (this.options.sort_chapters) {
             res.sort((a, b) => {
-                let aM = a[0]
+                const aM = a[0]
                     .replace(/chapter/gi, "")
                     .replace(/volume/gi, "")
                     .replace(/chap/gi, "")
                     .replace(/volume/gi, "")
-                let bM = b[0]
+                const bM = b[0]
                     .replace(/chapter/gi, "")
                     .replace(/volume/gi, "")
                     .replace(/chap/gi, "")
@@ -162,12 +162,12 @@ export class Madara extends BaseMirror implements MirrorImplementation {
     }
 
     async getCurrentPageInfo(doc, curUrl) {
-        let url = new URL(this.options.urlProcessor(curUrl))
-        let path = url.pathname
-        let pathSplitted = path.split("/").filter(p => p != "")
-        let mangaPath = pathSplitted.slice(0, this.options.path_length)
+        const url = new URL(this.options.urlProcessor(curUrl))
+        const path = url.pathname
+        const pathSplitted = path.split("/").filter(p => p != "")
+        const mangaPath = pathSplitted.slice(0, this.options.path_length)
         const initialMangaUrl = url.origin + "/" + mangaPath.join("/") + "/"
-        let mangaurl = this.options.chapterInformationsSeriesUrl(doc, curUrl) || initialMangaUrl
+        const mangaurl = this.options.chapterInformationsSeriesUrl(doc, curUrl) || initialMangaUrl
         let mgname = this.options.chapterInformationsSeriesName(doc, curUrl)
 
         let $ = this.parseHtml(doc)
@@ -201,17 +201,17 @@ export class Madara extends BaseMirror implements MirrorImplementation {
             }
         }
         const res = []
-        let self = this
+        const _self = this
 
-        let preloadImages = await this.getVariable({ variableName: "chapter_preloaded_images", doc })
+        const preloadImages = await this.getVariable({ variableName: "chapter_preloaded_images", doc })
         if (preloadImages !== undefined) {
             return preloadImages
         }
         const $ = this.parseHtml(doc)
         $(this.options.img_sel).each(function () {
-            let img = $(this).attr(self.options.img_src)
-            if (self.options.hasOwnProperty("secondary_img_src") && img === undefined) {
-                img = $(this).attr(self.options.secondary_img_src)
+            let img = $(this).attr(_self.options.img_src)
+            if (_self.options.hasOwnProperty("secondary_img_src") && img === undefined) {
+                img = $(this).attr(_self.options.secondary_img_src)
             }
             res.push(img)
         })
@@ -219,8 +219,8 @@ export class Madara extends BaseMirror implements MirrorImplementation {
     }
 
     async protectedGetListImages(doc): Promise<string[]> {
-        let chapter_data = await this.getVariable({ variableName: "chapter_data", doc })
-        let wpmangaprotectornonce = await this.getVariable({ variableName: "wpmangaprotectornonce", doc })
+        const chapter_data = await this.getVariable({ variableName: "chapter_data", doc })
+        const wpmangaprotectornonce = await this.getVariable({ variableName: "wpmangaprotectornonce", doc })
 
         if (!chapter_data || !wpmangaprotectornonce) {
             return []
@@ -254,7 +254,7 @@ export class Madara extends BaseMirror implements MirrorImplementation {
             }
         }
 
-        let chapter_data_2 = JSON.parse(
+        const chapter_data_2 = JSON.parse(
             JSON.parse(
                 crypto.AES.decrypt(chapter_data, wpmangaprotectornonce, { format: CryptoJSAesJson }).toString(
                     crypto.enc.Utf8
@@ -276,7 +276,7 @@ export class Madara extends BaseMirror implements MirrorImplementation {
     }
 
     makeChapterUrl(url) {
-        let t = new URL(url)
+        const t = new URL(url)
         return this.stripLastSlash(t.origin + t.pathname) + (this.options.add_list_to_chapter_url ? "?style=list" : "")
     }
 

@@ -40,10 +40,10 @@ export function convertIcons(input) {
 export function computeColorLight(color: string, light: number) {
     let colorname = color
     if (color.indexOf("#") > 0) {
-        let sp = color.split("#")
+        const sp = color.split("#")
         colorname = sp[0]
-        let isDark = sp[1].charAt(0) === "d"
-        let nb = parseInt(sp[1].charAt(1))
+        const isDark = sp[1].charAt(0) === "d"
+        const nb = parseInt(sp[1].charAt(1))
         if (isDark) light -= nb
         else light += nb
     }
@@ -121,7 +121,7 @@ export function getUnifiedLang(lang) {
     if (amrLanguages.includes(lang)) {
         return lang
     }
-    for (let l of amrLanguages) {
+    for (const l of amrLanguages) {
         if (Array.isArray(l) && l.includes(lang)) {
             return l[0]
         }
@@ -236,10 +236,10 @@ export function displayFilterCats(manga: AppManga, categories: Category[], mirro
         exclude = false
     let needInclude = false,
         needExclude = false
-    let incexc = (cat, include, exclude) => {
+    const incexc = (cat, include, exclude) => {
         return [cat.state === "include" || include, cat.state === "exclude" || exclude]
     }
-    for (let cat of categories) {
+    for (const cat of categories) {
         if (cat.type === "native") {
             const mirror = mirrors.find(mir => mir.mirrorName === manga.mirror)
             if (cat.name === "category_new" && hasNew(manga)) [include, exclude] = incexc(cat, include, exclude)
@@ -301,8 +301,8 @@ export function findProbableChapter(lastReadURL, list) {
     const urlParts = getUrlParts(lastReadURL)
     let max = 0
     let lstMax = []
-    for (let arr of list) {
-        let prob = matchurl(arr[1], urlParts)
+    for (const arr of list) {
+        const prob = matchurl(arr[1], urlParts)
         if (prob > max) {
             max = prob
             lstMax = [arr]
@@ -355,7 +355,7 @@ export function mangaKey({ url, mirror, language, rootState }: MangaKeyParams) {
     } else {
         const host = new URL(url).host
         // look for mirror implementation matching this root domain
-        let mirror = mirrors.find(mir => mir.domains.some(domain => matchDomain(host, domain, rootState)))
+        const mirror = mirrors.find(mir => mir.domains.some(domain => matchDomain(host, domain, rootState)))
         if (mirror) {
             mstr = safename(mirror.mirrorName)
         }

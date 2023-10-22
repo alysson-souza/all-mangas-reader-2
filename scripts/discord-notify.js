@@ -43,10 +43,10 @@ if (!id || !token || !subject || !version || !patch || (channel !== "Alpha" && c
     process.exit(255)
 }
 
-let url = `https://discordapp.com/api/webhooks/${id}/${token}`
+const url = `https://discordapp.com/api/webhooks/${id}/${token}`
 
 try {
-    let message = {
+    const message = {
         content: `<@&744261082067239093> ${channel} version ${version}.${patch} is now available`,
         username: `${channel} Build Bot`,
         embeds: [

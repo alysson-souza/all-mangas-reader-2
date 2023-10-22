@@ -77,15 +77,15 @@ const actions = {
         const mirrorLoader = getMirrorLoader(getMirrorHelper(rootState.options))
         const websites = mirrorLoader.getAll()
 
-        let updts = []
-        for (let w of websites) {
+        const updts = []
+        for (const w of websites) {
             // get activated property in db, do not overright it
             let act = true
             // languages is undefined for abstract implementations --> always activated
             if (w.languages !== undefined && rootState.options["deactivateunreadable"]) {
-                let langs = w.languages.split(",")
+                const langs = w.languages.split(",")
                 let hasReadable = false
-                for (let l of langs) {
+                for (const l of langs) {
                     if (rootState.options["readlanguages"].includes(l)) {
                         hasReadable = true
                         break
@@ -93,7 +93,7 @@ const actions = {
                 }
                 if (!hasReadable) act = false // default activation to false for a new implementation that does not match a readable language if option is checked
             }
-            let wdb = websitesdb.find(m => m.mirrorName === w.mirrorName)
+            const wdb = websitesdb.find(m => m.mirrorName === w.mirrorName)
             if (wdb != undefined) act = wdb.activated
 
             // Komga shit
@@ -181,7 +181,7 @@ const mutations = {
      * @param {*} mirror
      */
     changeMirrorActivation(state, mirror) {
-        let mir = state.all.find(m => m.mirrorName === mirror.mirrorName)
+        const mir = state.all.find(m => m.mirrorName === mirror.mirrorName)
         if (mir !== undefined) {
             mir.activated = mirror.activated
         }

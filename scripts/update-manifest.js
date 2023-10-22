@@ -8,11 +8,11 @@
  */
 const fs = require("fs")
 const path = require("path")
-let fileName = path.join(__dirname, "../dist/manifest.json")
-let ext = require(fileName)
+const fileName = path.join(__dirname, "../dist/manifest.json")
+const ext = require(fileName)
 
 if (process.argv.includes("-checkver")) {
-    let ver = process.argv[process.argv.findIndex(el => el === "-checkver") + 1]
+    const ver = process.argv[process.argv.findIndex(el => el === "-checkver") + 1]
     if (ver != ext.version) {
         console.log("Checking version failed: expected '" + ver + "', got '" + ext.version + "'.")
         process.exit(255)
@@ -23,7 +23,7 @@ if (process.argv.includes("-checkver")) {
 let isBeta = false
 let isAlpha = false
 if (process.argv.includes("-patch")) {
-    let inc = process.argv[process.argv.findIndex(el => el === "-patch") + 1]
+    const inc = process.argv[process.argv.findIndex(el => el === "-patch") + 1]
     ext.version = ext.version + "." + inc
     ext.name = ext.name + " Beta"
     isBeta = true

@@ -64,7 +64,7 @@ const getters = {
      * Return true is there is unread chapters in manga list
      */
     hasNewMangas: state => {
-        for (let mg of state.all) {
+        for (const mg of state.all) {
             if (mg.listChaps.length > 0) {
                 if (chapPath(mg.listChaps[0][1]) != chapPath(mg.lastChapterReadURL) && mg.read == 0) {
                     return true
@@ -78,7 +78,7 @@ const getters = {
      */
     nbNewMangas: state => {
         let nb = 0
-        for (let mg of state.all) {
+        for (const mg of state.all) {
             if (mg.listChaps.length > 0) {
                 if (chapPath(mg.listChaps[0][1]) != chapPath(mg.lastChapterReadURL) && mg.read == 0) {
                     nb++
@@ -336,7 +336,7 @@ const actions = {
             rootState: { state: rootState }
         })
 
-        let mg = state.all.find(manga => manga.key === key)
+        const mg = state.all.find(manga => manga.key === key)
         commit("resetManga", mg)
         dispatch("findAndUpdateManga", mg)
         await syncManager.setToRemote(mg, "ts")
@@ -355,7 +355,7 @@ const actions = {
             rootState: { state: rootState }
         })
         commit("saveCurrentState", { key, ...message })
-        let mg = state.all.find(manga => manga.key === key)
+        const mg = state.all.find(manga => manga.key === key)
         dispatch("findAndUpdateManga", mg)
         return true
     },
@@ -519,7 +519,7 @@ const actions = {
             }
             if (listChaps[mg.language] && listChaps[mg.language].length > 0) {
                 // update list of existing languages
-                let listLangs = Object.keys(listChaps).join(",")
+                const listLangs = Object.keys(listChaps).join(",")
                 commit("updateMangaListLangs", { key: mg.key, langs: listLangs })
                 // set current list chaps to the right one
                 listChaps = listChaps[mg.language]
@@ -538,7 +538,7 @@ const actions = {
         }
         if (listChaps.length > 0) {
             commit("updateMangaListChaps", { key: mg.key, listChaps: listChaps })
-            let mgchap = chapPath(mg.lastChapterReadURL),
+            const mgchap = chapPath(mg.lastChapterReadURL),
                 messchap = chapPath(message.lastChapterReadURL)
             for (let i = 0; i < listChaps.length; i++) {
                 if (chapPath(listChaps[i][1]) === mgchap) posOld = i
@@ -565,7 +565,7 @@ const actions = {
         }, 60000)
 
         logger.debug("waiting for manga list of chapters for " + mg.name + " on " + mg.mirror)
-        let listChaps = await dispatch("getMangaListOfChapters", mg)
+        const listChaps = await dispatch("getMangaListOfChapters", mg)
         clearTimeout(timeOutRefresh)
 
         // list chapters in the correct format
@@ -590,7 +590,7 @@ const actions = {
                 languagesToAdd.push(availableChapterLanguages[0])
             }
             // add a manga entry for all readable languages
-            for (let language of languagesToAdd) {
+            for (const language of languagesToAdd) {
                 dispatch("readManga", {
                     url: mg.url,
                     mirror: mg.mirror,
@@ -770,9 +770,9 @@ const actions = {
         }
         dispatch("setOption", { key: "isUpdatingChapterLists", value: 1 }) // Set watcher
         logger.debug("Starting chapter lists update")
-        let tsstopspin, tsresetupdating
+        let tsstopspin
 
-        tsresetupdating = setTimeout(
+        const tsresetupdating = setTimeout(
             () => dispatch("setOption", { key: "isUpdatingChapterLists", value: 0 }),
             1000 * 60 * 10
         ) // Reset this after 10 minutes
@@ -788,8 +788,8 @@ const actions = {
         dispatch("setOption", { key: "lastChaptersUpdate", value: Date.now() })
 
         // refresh all mangas chapters lists
-        let mirrorTasks = {}
-        let delay = Math.max(rootState.options.waitbetweenupdates, 1) // Force at least 1 second interval
+        const mirrorTasks = {}
+        const delay = Math.max(rootState.options.waitbetweenupdates, 1) // Force at least 1 second interval
 
         async function mgupdate(mg, delay) {
             return new Promise(resolve => {
@@ -809,7 +809,7 @@ const actions = {
             })
         }
 
-        for (let mg of state.all) {
+        for (const mg of state.all) {
             // Don't refresh deleted manga
             if (mg.deleted === syncUtils.DELETED) {
                 continue
@@ -825,10 +825,10 @@ const actions = {
             }
         }
 
-        let mirrorTasks2 = Object.values(mirrorTasks).map(list => {
+        const mirrorTasks2 = Object.values(mirrorTasks).map(list => {
             return () =>
                 new Promise(async resolve => {
-                    for (let seriesUpdate of list) {
+                    for (const seriesUpdate of list) {
                         await seriesUpdate().catch(logger.debug)
                     }
                     resolve()
@@ -923,7 +923,7 @@ const actions = {
      * @param {*} message
      */
     async deleteManga({ dispatch, commit, getters, rootState }, message, fromSync = false) {
-        let mg = state.all.find(manga => manga.key === message.key)
+        const mg = state.all.find(manga => manga.key === message.key)
         if (mg !== undefined) {
             commit("deleteManga", message.key)
             storedb.deleteManga(message.key)
@@ -944,7 +944,7 @@ const actions = {
      */
     importSamples({ dispatch }) {
         logger.debug("Importing samples manga in AMR (" + samples.length + " mangas to import)")
-        for (let sample of samples) {
+        for (const sample of samples) {
             sample.auto = true
             dispatch("readManga", sample)
         }
@@ -955,7 +955,7 @@ const actions = {
      * @param {*} obj containing key of the manga and name of the category
      */
     addCategoryToManga({ commit, dispatch }, obj) {
-        let mg = state.all.find(manga => manga.key === obj.key)
+        const mg = state.all.find(manga => manga.key === obj.key)
         commit("addCategoryToManga", obj)
         dispatch("findAndUpdateManga", mg)
     },
@@ -965,7 +965,7 @@ const actions = {
      * @param {*} param0
      */
     removeCategoryFromManga({ commit, dispatch }, obj) {
-        let mg = state.all.find(manga => manga.key === obj.key)
+        const mg = state.all.find(manga => manga.key === obj.key)
         commit("removeCategoryFromManga", obj)
         dispatch("findAndUpdateManga", mg)
     },
@@ -976,27 +976,27 @@ const actions = {
      * @param {*} param0
      */
     updateLanguageCategories({ commit, dispatch, rootState }) {
-        let catsLang = rootState.options.categoriesStates.filter(cat => cat.type === "language")
-        let langs = []
-        for (let mg of state.all) {
-            let l = readLanguage(mg, rootState.mirrors.all)
+        const catsLang = rootState.options.categoriesStates.filter(cat => cat.type === "language")
+        const langs = []
+        for (const mg of state.all) {
+            const l = readLanguage(mg, rootState.mirrors.all)
             if (l !== "aa" && !langs.includes(l)) langs.push(l) // do not create a category for aa which corresponds to multiple languages possible
         }
         if (catsLang.length > 0 && langs.length <= 1) {
             // remove language categories, only one language
-            for (let cat of catsLang) {
+            for (const cat of catsLang) {
                 dispatch("removeLanguageCategory", cat.name)
             }
         } else if (langs.length > 1) {
             // add new ones
-            for (let l of langs) {
+            for (const l of langs) {
                 if (catsLang.findIndex(cat => cat.name === l) === -1) {
                     // add language category l
                     dispatch("addLanguageCategory", l)
                 }
             }
             // remove deleted ones
-            for (let cat of catsLang) {
+            for (const cat of catsLang) {
                 if (!langs.includes(cat.name)) {
                     dispatch("removeLanguageCategory", cat.name)
                 }
@@ -1028,7 +1028,7 @@ const mutations = {
         state.all = mangas
     },
     setMangaTsOpts(state, key, date) {
-        let mg = state.all.find(manga => manga.key === key)
+        const mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.tsOpts = date || Date.now()
         }
@@ -1039,7 +1039,7 @@ const mutations = {
      * @param {*} param1 url of the manga and display mode
      */
     setMangaDisplayMode(state, { key, url, mirror, language, display }, fromSync) {
-        let mg = state.all.find(manga => manga.key === key)
+        const mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.display = display
             if (!fromSync) mg.tsOpts = Date.now()
@@ -1051,7 +1051,7 @@ const mutations = {
      * @param {*} param1 url of the manga and layout mode
      */
     setMangaLayoutMode(state, { key, url, mirror, language, layout }, fromSync) {
-        let mg = state.all.find(manga => manga.key === key)
+        const mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.layout = layout
             if (!fromSync) mg.tsOpts = Date.now()
@@ -1063,7 +1063,7 @@ const mutations = {
      * @param {*} param1 url of the manga and layout mode
      */
     setMangaWebtoonMode(state, { key, url, mirror, language, webtoon }, fromSync) {
-        let mg = state.all.find(manga => manga.key === key)
+        const mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.webtoon = webtoon
             if (!fromSync) mg.tsOpts = Date.now()
@@ -1075,7 +1075,7 @@ const mutations = {
      * @param {*} param1 url of the manga and layout mode
      */
     setMangaZoomMode(state, { key, url, mirror, language, zoom }, fromSync) {
-        let mg = state.all.find(manga => manga.key === key)
+        const mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.zoom = zoom
             if (!fromSync) mg.tsOpts = Date.now()
@@ -1087,7 +1087,7 @@ const mutations = {
      * @param {*} param1 url of the manga and layout mode
      */
     setMangaDisplayName(state, { key, displayName }, fromSync) {
-        let mg = state.all.find(manga => manga.key === key)
+        const mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.displayName = displayName
             if (!fromSync) mg.tsOpts = Date.now()
@@ -1099,7 +1099,7 @@ const mutations = {
      * @param {*} param1 url of the manga and read top
      */
     setMangaReadTop(state, { key, url, read, mirror, language }, fromSync) {
-        let mg = state.all.find(manga => manga.key === key)
+        const mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.read = read
             if (!fromSync) mg.tsOpts = Date.now()
@@ -1111,7 +1111,7 @@ const mutations = {
      * @param {*} param1 url of the manga and update top
      */
     setMangaUpdateTop(state, { key, url, update, mirror, language }, fromSync) {
-        let mg = state.all.find(manga => manga.key === key)
+        const mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.update = update
             if (!fromSync) mg.tsOpts = Date.now()
@@ -1123,7 +1123,7 @@ const mutations = {
      * @param {*} param1
      */
     updateMangaLastChapTime(state, { key }) {
-        let mg = state.all.find(manga => manga.key === key)
+        const mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) mg.upts = Date.now()
     },
     /**
@@ -1132,7 +1132,7 @@ const mutations = {
      * @param {*} param1
      */
     updateMangaListChaps(state, { key, listChaps }) {
-        let mg = state.all.find(manga => manga.key === key)
+        const mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.listChaps = listChaps
         }
@@ -1143,7 +1143,7 @@ const mutations = {
      * @param {*} param1
      */
     updateMangaListLangs(state, { key, langs }) {
-        let mg = state.all.find(manga => manga.key === key)
+        const mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.languages = langs
         }
@@ -1154,7 +1154,7 @@ const mutations = {
      * @param {*} param1
      */
     updateMangaLastChapter(state, { key, obj }) {
-        let mg = state.all.find(manga => manga.key === key)
+        const mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.lastChapterReadURL = obj.lastChapterReadURL
             mg.lastChapterReadName = obj.lastChapterReadName
@@ -1170,7 +1170,7 @@ const mutations = {
      * @param {*} param1 key of the manga and informations
      */
     updateMangaEntryWithInfos(state, { key, obj }) {
-        let mg = state.all.find(manga => manga.key === key)
+        const mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             //if the current manga doesnt have a name, and the request does, then we fix the current name
             if (mg.name === "" && obj.name !== mg.name) {
@@ -1209,7 +1209,7 @@ const mutations = {
      * @param {*} param1 url of the manga
      */
     resetManga(state, { key }) {
-        let mg = state.all.find(manga => manga.key === key)
+        const mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             if (mg.listChaps.length > 0) {
                 mg.lastChapterReadURL = mg.listChaps[mg.listChaps.length - 1][1]
@@ -1224,7 +1224,7 @@ const mutations = {
      * @param {*} param1 url of the manga
      */
     saveCurrentState(state, { key, currentChapter, currentScanUrl }) {
-        let mg = state.all.find(manga => manga.key === key)
+        const mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.currentChapter = currentChapter
             mg.currentScanUrl = currentScanUrl
@@ -1239,7 +1239,7 @@ const mutations = {
         const mg = new Manga(mgdef, mgdef.key)
         const titMg = formatMangaName(mg.name)
         const smgs = state.all.filter(manga => formatMangaName(manga.name) === titMg)
-        for (let sim of smgs) {
+        for (const sim of smgs) {
             mg.cats.push(...sim.cats)
             mg.layout = sim.layout
             // if (sim.read === 1) mg.read = 1
@@ -1254,7 +1254,7 @@ const mutations = {
      * @param {*} mgdef object containing manga info
      */
     deleteManga(state, key) {
-        let mgindex = state.all.findIndex(manga => manga.key === key)
+        const mgindex = state.all.findIndex(manga => manga.key === key)
         if (mgindex >= 0) {
             state.all.splice(mgindex, 1)
         }
@@ -1265,7 +1265,7 @@ const mutations = {
      * @param {*} param1 containing key of the manga and name of the category to add
      */
     addCategoryToManga(state, { key, name }) {
-        let mg = state.all.find(manga => manga.key === key)
+        const mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             if (!mg.cats.includes(name)) {
                 mg.cats.push(name)
@@ -1278,7 +1278,7 @@ const mutations = {
      * @param {*} param1 containing key of the manga and name of the category to remove
      */
     removeCategoryFromManga(state, { key, name }) {
-        let mg = state.all.find(manga => manga.key === key)
+        const mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             if (mg.cats.includes(name)) {
                 mg.cats.splice(mg.cats.indexOf(name), 1)

@@ -15,14 +15,14 @@ const tests = [
             },
             function mirrorLanguages(mirror) {
                 if (mirror.languages && mirror.languages.length > 0) {
-                    let spl = mirror.languages.split(",")
+                    const spl = mirror.languages.split(",")
                     if (spl.length > 0) {
-                        let notfound = [],
+                        const notfound = [],
                             alllangs = amrLanguages.reduce((arr, el) => {
                                 Array.isArray(el) ? arr.push(...el) : arr.push(el)
                                 return arr
                             }, [])
-                        for (let lang of spl) {
+                        for (const lang of spl) {
                             if (!alllangs.includes(lang)) {
                                 notfound.push(lang)
                             }
@@ -73,7 +73,7 @@ const tests = [
                 display: ["select"],
                 buttons: [["gotourl", "reloadtestforvalue"]],
                 test: async function searchMangas(mirror) {
-                    let result = await browser.runtime.sendMessage({
+                    const result = await browser.runtime.sendMessage({
                         action: "lab",
                         torun: "search",
                         search: this.search,
@@ -81,15 +81,15 @@ const tests = [
                     })
                     if (result) {
                         if (!Array.isArray(result)) {
-                            let nb = 0,
-                                listlangs = [],
+                            let nb = 0
+                            const listlangs = [],
                                 pickable = []
-                            for (let lang in result) {
+                            for (const lang in result) {
                                 if (result[lang].length > 0) pickable.push(lang)
                                 nb += result[lang].length
                                 listlangs.push(lang)
                             }
-                            let picked = pickable[Math.floor(Math.random() * pickable.length)]
+                            const picked = pickable[Math.floor(Math.random() * pickable.length)]
                             if (nb > 0) {
                                 return [
                                     true,
@@ -166,7 +166,7 @@ const tests = [
                 display: ["select", "text"],
                 buttons: [["gotourl", "reloadtestforvalue"]],
                 test: async function loadChapters(mirror, manga_url) {
-                    let result = await browser.runtime.sendMessage({
+                    const result = await browser.runtime.sendMessage({
                         action: "lab",
                         torun: "chapters",
                         url: manga_url,
@@ -189,15 +189,15 @@ const tests = [
                                 })
                             ]
                         } else {
-                            let nb = 0,
-                                listlangs = [],
+                            let nb = 0
+                            const listlangs = [],
                                 pickable = []
-                            for (let lang in result) {
+                            for (const lang in result) {
                                 if (result[lang].length > 0) pickable.push(lang)
                                 nb += result[lang].length
                                 listlangs.push(lang)
                             }
-                            let picked = pickable[Math.floor(Math.random() * pickable.length)]
+                            const picked = pickable[Math.floor(Math.random() * pickable.length)]
                             if (nb > 0) {
                                 return [
                                     true,
@@ -255,14 +255,14 @@ const tests = [
                         return [false, "Can't run test because the domains attribute is missing on implementation"]
                     }
                     let nbok = 0
-                    let lstko = []
-                    for (let res of list) {
+                    const lstko = []
+                    for (const res of list) {
                         let found = false
                         let urlHostname = new URL(res.value).host
                         if (urlHostname.startsWith("www.")) {
                             urlHostname = urlHostname.substring(4, urlHostname.length)
                         }
-                        for (let domain of mirror.domains) {
+                        for (const domain of mirror.domains) {
                             if (matchDomainRule({ urlHostname, domain })) {
                                 found = true
                                 nbok++
@@ -292,7 +292,7 @@ const tests = [
             {
                 input: ["valueof chaptersList"],
                 test: async function containScans(mirror, chapter_url) {
-                    let result = await browser.runtime.sendMessage({
+                    const result = await browser.runtime.sendMessage({
                         action: "lab",
                         torun: "loadChapterAndDo",
                         task: "containScans",
@@ -334,7 +334,7 @@ const tests = [
                     manga_name,
                     pickedLanguage
                 ) {
-                    let infos = await browser.runtime.sendMessage({
+                    const infos = await browser.runtime.sendMessage({
                         action: "lab",
                         torun: "loadChapterAndDo",
                         task: "informations",
@@ -342,7 +342,7 @@ const tests = [
                         mirror: mirror.mirrorName
                     })
                     if (infos) {
-                        let listresults = []
+                        const listresults = []
                         listresults.push([true, "Informations retrieved from chapter page", infos])
                         if (manga_name === infos.name) {
                             listresults.push([true, "Manga name retrieved match selected manga"])
@@ -420,7 +420,7 @@ const tests = [
                 display: ["select"],
                 buttons: [["gotourl", "reloadtestforvalue"]],
                 test: async function getListScans(mirror, chapter_url) {
-                    let result = await browser.runtime.sendMessage({
+                    const result = await browser.runtime.sendMessage({
                         action: "lab",
                         torun: "loadChapterAndDo",
                         task: "listScans",
@@ -459,7 +459,7 @@ const tests = [
                 output: ["scanUrl"],
                 display: ["image"],
                 test: async function loadImage(mirror, scan_url) {
-                    let url = await browser.runtime.sendMessage({
+                    const url = await browser.runtime.sendMessage({
                         action: "lab",
                         torun: "getScanUrl",
                         url: scan_url,

@@ -44,7 +44,7 @@ const actions = {
     removeCategory({ commit, dispatch, state, rootState }, name) {
         commit("removeCategory", name)
         optionStorage.setKey("categoriesStates", state.categoriesStates)
-        for (let mg of rootState.mangas.all) {
+        for (const mg of rootState.mangas.all) {
             if (mg.cats.includes(name)) {
                 dispatch("removeCategoryFromManga", { key: mg.key, name: name })
             }
@@ -61,7 +61,7 @@ const actions = {
         const { oldname, newname } = nameChange
 
         // Not very efficient way, but re-using existing methods
-        for (let mg of rootState.mangas.all) {
+        for (const mg of rootState.mangas.all) {
             if (mg.cats.includes(oldname)) {
                 dispatch("removeCategoryFromManga", { key: mg.key, name: oldname })
                 dispatch("addCategoryToManga", { key: mg.key, name: newname })
@@ -164,7 +164,7 @@ const mutations = {
      * @param {*} name
      */
     addCategory(state, name) {
-        let toadd = {
+        const toadd = {
             name: name,
             state: "include"
         }
@@ -176,7 +176,7 @@ const mutations = {
      * @param {*} name
      */
     removeCategory(state, name) {
-        let index = state.categoriesStates.findIndex(
+        const index = state.categoriesStates.findIndex(
             cat => cat.type !== "native" && cat.type !== "language" && cat.name === name
         )
         if (index >= 0) state.categoriesStates.splice(index, 1)
@@ -187,7 +187,7 @@ const mutations = {
      * @param {*} name
      */
     addNativeCategory(state, name) {
-        let toadd = {
+        const toadd = {
             name: name,
             type: "native",
             state: "include"
@@ -200,7 +200,7 @@ const mutations = {
      * @param {*} name
      */
     addLanguageCategory(state, name) {
-        let toadd = {
+        const toadd = {
             name: name,
             type: "language",
             state: "include"
@@ -213,7 +213,7 @@ const mutations = {
      * @param {*} name
      */
     removeLanguageCategory(state, name) {
-        let index = state.categoriesStates.findIndex(cat => cat.type === "language" && cat.name === name)
+        const index = state.categoriesStates.findIndex(cat => cat.type === "language" && cat.name === name)
         if (index >= 0) state.categoriesStates.splice(index, 1)
     },
     /**
@@ -222,7 +222,7 @@ const mutations = {
      * @param {*} param1
      */
     updateCategory(state, { name, catstate }) {
-        let cat = state.categoriesStates.find(cat => cat.name === name)
+        const cat = state.categoriesStates.find(cat => cat.name === name)
         cat.state = catstate
     },
     /**
@@ -231,7 +231,7 @@ const mutations = {
      * @param {*} param1
      */
     updateCategoryName(state, { oldname, newname }) {
-        let cat = state.categoriesStates.find(cat => cat.name === oldname)
+        const cat = state.categoriesStates.find(cat => cat.name === oldname)
         if (cat !== undefined) cat.name = newname
     },
     /**
@@ -248,7 +248,7 @@ const mutations = {
      * @param {*} lang
      */
     removeReadLanguage(state, lang) {
-        let index = state.readlanguages.indexOf(lang)
+        const index = state.readlanguages.indexOf(lang)
         if (index >= 0) state.readlanguages.splice(index, 1)
     }
 }

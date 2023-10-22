@@ -17,12 +17,12 @@ export class Manhwa18com extends BaseMirror implements MirrorImplementation {
     chapter_url = /\/manga\/.*\/.*/g
 
     async getMangaList(search: string) {
-        let doc = await this.mirrorHelper.loadPage(this.home + "tim-kiem?q=" + search, {
+        const doc = await this.mirrorHelper.loadPage(this.home + "tim-kiem?q=" + search, {
             nocache: true,
             preventimages: true
         })
 
-        let res = []
+        const res = []
         const $ = this.parseHtml(doc)
 
         $(`.series-title a`).each(function (ind) {
@@ -32,9 +32,9 @@ export class Manhwa18com extends BaseMirror implements MirrorImplementation {
     }
 
     async getListChaps(urlManga) {
-        let doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
+        const doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
 
-        let res = []
+        const res = []
         const $ = this.parseHtml(doc)
 
         $(`ul.list-chapters a`).each(function (index) {
@@ -51,8 +51,8 @@ export class Manhwa18com extends BaseMirror implements MirrorImplementation {
 
     async getCurrentPageInfo(doc, curUrl) {
         const $ = this.parseHtml(doc)
-        let link = $($("ul.breadcrumb li a")[2])
-        let titlePage = await this.mirrorHelper.loadPage(link.attr("href"))
+        const link = $($("ul.breadcrumb li a")[2])
+        const titlePage = await this.mirrorHelper.loadPage(link.attr("href"))
         const $$ = this.parseHtml(titlePage)
 
         return {
@@ -63,7 +63,7 @@ export class Manhwa18com extends BaseMirror implements MirrorImplementation {
     }
 
     async getListImages(doc, curUrl, sender) {
-        let res = []
+        const res = []
         const $ = this.parseHtml(doc)
 
         $(`div#chapter-content img`).each(function () {

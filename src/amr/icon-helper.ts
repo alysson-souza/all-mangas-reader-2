@@ -214,7 +214,7 @@ export class IconHelper {
      * Refresh badge and icon
      */
     refreshBadgeAndIcon() {
-        let nbnew = this.store.getters.nbNewMangas
+        const nbnew = this.store.getters.nbNewMangas
         if (this.store.state.options.nocount == 1) {
             this.resetBadge() // remove badge
             // display a grey badge if no new mangas

@@ -34,7 +34,7 @@ export default {
                 }
             })
         )
-        for (let scUrl of scansUrl) {
+        for (const scUrl of scansUrl) {
             this.loadBookmark({ scanUrl: scUrl })
         }
     },
@@ -46,7 +46,7 @@ export default {
 
     /** Save a bookmark */
     async saveBookmark({ note, scanUrl, scanName } = {}) {
-        let obj = {
+        const obj = {
             action: "addUpdateBookmark",
             mirror: this.mirror.mirrorName,
             url: pageData.state.currentMangaURL,
@@ -68,7 +68,7 @@ export default {
             this.state.note = note
             this.state.booked = true
         } else {
-            let sc = this.getScan(scanUrl)
+            const sc = this.getScan(scanUrl)
             if (sc) {
                 sc.note = note
                 sc.booked = true
@@ -77,7 +77,7 @@ export default {
     },
     /** Delete a bookmark */
     async deleteBookmark({ scanUrl } = {}) {
-        let obj = {
+        const obj = {
             action: "deleteBookmark",
             mirror: this.mirror.mirrorName,
             url: pageData.state.currentMangaURL,
@@ -95,7 +95,7 @@ export default {
             this.state.note = undefined
             this.state.booked = false
         } else {
-            let sc = this.getScan(scanUrl)
+            const sc = this.getScan(scanUrl)
             if (sc) {
                 sc.note = undefined
                 sc.booked = false
@@ -105,7 +105,7 @@ export default {
 
     /** Check data for a bookmark from server */
     async loadBookmark({ scanUrl } = {}) {
-        let obj = {
+        const obj = {
             action: "getBookmarkNote",
             mirror: this.mirror.mirrorName,
             url: pageData.state.currentMangaURL,
@@ -117,13 +117,13 @@ export default {
             obj.type = "scan"
             obj.scanUrl = scanUrl
         }
-        let result = await browser.runtime.sendMessage(obj)
+        const result = await browser.runtime.sendMessage(obj)
 
         if (!scanUrl) {
             this.state.note = result.note
             this.state.booked = result.isBooked
         } else {
-            let sc = this.getScan(scanUrl)
+            const sc = this.getScan(scanUrl)
             if (sc) {
                 sc.note = result.note
                 sc.booked = result.isBooked

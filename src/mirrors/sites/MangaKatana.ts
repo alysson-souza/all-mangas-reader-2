@@ -17,18 +17,18 @@ export class MangaKatana extends BaseMirror implements MirrorImplementation {
     chapter_url = /\/manga\/.*\/(c|v)/g
 
     async getMangaList(search: string) {
-        let url = this.home + "/?search=" + search + "&search_by=book_name"
+        const url = this.home + "/?search=" + search + "&search_by=book_name"
 
-        let res = await this.getMangaListPage(url)
+        const res = await this.getMangaListPage(url)
 
         return res
     }
 
     async getMangaListPage(url: string) {
-        let doc = await this.mirrorHelper.loadPage(url, { nocache: true, preventimages: true })
+        const doc = await this.mirrorHelper.loadPage(url, { nocache: true, preventimages: true })
 
-        let res = []
-        let _self = this
+        const res = []
+        const _self = this
         const $ = this.parseHtml(doc)
 
         $("#book_list h3 a").each(function (index) {
@@ -36,7 +36,7 @@ export class MangaKatana extends BaseMirror implements MirrorImplementation {
         })
 
         if ($("ul.uk-pagination").length && $("ul.uk-pagination a.next").length) {
-            let nextPage = $($("ul.uk-pagination a.next")[0]).attr("href")
+            const nextPage = $($("ul.uk-pagination a.next")[0]).attr("href")
             res.push(...(await _self.getMangaListPage(nextPage)))
         }
 
@@ -44,10 +44,10 @@ export class MangaKatana extends BaseMirror implements MirrorImplementation {
     }
 
     async getListChaps(urlManga) {
-        let doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
+        const doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
 
-        let res = []
-        let _self = this
+        const res = []
+        const _self = this
         const $ = this.parseHtml(doc)
 
         $("td .chapter a").each(function (index) {
@@ -58,7 +58,7 @@ export class MangaKatana extends BaseMirror implements MirrorImplementation {
 
     async getCurrentPageInfo(doc, curUrl) {
         const $ = this.parseHtml(doc)
-        let mg = $("#breadcrumb_wrap a:last")
+        const mg = $("#breadcrumb_wrap a:last")
         return {
             name: mg.text(),
             currentMangaURL: mg.attr("href"),
@@ -67,9 +67,9 @@ export class MangaKatana extends BaseMirror implements MirrorImplementation {
     }
 
     async getListImages(doc) {
-        let a = doc.match(/thzq=\[.+?\];/g)[0]
-        let b = a.replace("thzq=[", "[").replace(",];", "]").replace(/'/g, '"')
-        let res = JSON.parse(b)
+        const a = doc.match(/thzq=\[.+?\];/g)[0]
+        const b = a.replace("thzq=[", "[").replace(",];", "]").replace(/'/g, '"')
+        const res = JSON.parse(b)
         return res
     }
 

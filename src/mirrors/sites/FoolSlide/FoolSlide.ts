@@ -90,9 +90,9 @@ class FoolSlide extends BaseMirror implements MirrorImplementation {
         doc = await this.passAdult(doc, urlManga)
         const $ = this.parseHtml(doc)
         let res = []
-        let self = this
+        const _self = this
         $("a[href*='/read/']").each(function () {
-            res.push([self.options.listchaps_look_title_from_a(this, $).trim(), $(this).attr("href")])
+            res.push([_self.options.listchaps_look_title_from_a(this, $).trim(), $(this).attr("href")])
         })
         if (this.options.listchaps_reverse) {
             res = res.reverse()
@@ -103,8 +103,8 @@ class FoolSlide extends BaseMirror implements MirrorImplementation {
     public async getCurrentPageInfo(doc, curUrl) {
         doc = await this.passAdult(doc, curUrl)
         const $ = this.parseHtml(doc)
-        let mga = $(this.options.info_manga_a)
-        let base_url = this.getVariable({ variableName: this.options.info_chapter_var, doc })
+        const mga = $(this.options.info_manga_a)
+        const base_url = this.getVariable({ variableName: this.options.info_chapter_var, doc })
         return {
             name: this.options.info_look_title_from_a(mga, $).trim(),
             currentMangaURL: mga.attr("href"),

@@ -17,13 +17,13 @@ export class MangaKawaii extends BaseMirror implements MirrorImplementation {
     chapter_url = /\/manga\/.*\/.*\/?.*$/g
 
     async getMangaList(search: string) {
-        let doc = await this.mirrorHelper.loadPage(`${this.home}/search?query=${search}&search_type=manga`, {
+        const doc = await this.mirrorHelper.loadPage(`${this.home}/search?query=${search}&search_type=manga`, {
             nocache: true,
             preventimages: true
         })
 
-        let res = []
-        let _self = this
+        const res = []
+        const _self = this
         const $ = this.parseHtml(doc)
 
         $("li h4 a").each(function () {
@@ -33,10 +33,10 @@ export class MangaKawaii extends BaseMirror implements MirrorImplementation {
     }
 
     async getListChaps(urlManga) {
-        let doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
+        const doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
 
-        let res = []
-        let _self = this
+        const res = []
+        const _self = this
         const $ = this.parseHtml(doc)
 
         $(".table__chapter a").each((idx, link) => {
@@ -48,9 +48,9 @@ export class MangaKawaii extends BaseMirror implements MirrorImplementation {
 
     async getCurrentPageInfo(doc, curUrl) {
         // we don't use this link because the title can be truncated
-        let serieLink = this.queryHtml(doc, "h1 a").attr("href")
-        let mangaPage = await this.mirrorHelper.loadPage(this.home + serieLink, { preventimages: true })
-        let mangaTitle = this.queryHtml(mangaPage, "h1").text()
+        const serieLink = this.queryHtml(doc, "h1 a").attr("href")
+        const mangaPage = await this.mirrorHelper.loadPage(this.home + serieLink, { preventimages: true })
+        const mangaTitle = this.queryHtml(mangaPage, "h1").text()
         return {
             name: mangaTitle,
             currentMangaURL: this.home + serieLink,
@@ -59,16 +59,16 @@ export class MangaKawaii extends BaseMirror implements MirrorImplementation {
     }
 
     async getListImages(doc) {
-        let res = []
+        const res = []
 
-        let pages = this.mirrorHelper.getVariableFromScript("pages", doc),
+        const pages = this.mirrorHelper.getVariableFromScript("pages", doc),
             oeuvre_slug = this.mirrorHelper.getVariableFromScript("oeuvre_slug", doc),
             chapter_slug = this.mirrorHelper.getVariableFromScript("chapter_slug", doc),
             applocale = this.mirrorHelper.getVariableFromScript("applocale", doc),
             chapter_server = this.mirrorHelper.getVariableFromScript("chapter_server", doc)
-        let cdnUrl = `https://${chapter_server}.mangakawaii.io`
+        const cdnUrl = `https://${chapter_server}.mangakawaii.io`
 
-        for (let page of pages) {
+        for (const page of pages) {
             res.push(
                 `${cdnUrl}/uploads/manga/${oeuvre_slug}/chapters_${applocale}/${chapter_slug}/${page.page_image}?${page.page_version}`
             )

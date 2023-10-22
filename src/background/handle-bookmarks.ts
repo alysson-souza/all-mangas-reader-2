@@ -27,10 +27,10 @@ export class HandleBookmarks {
                 this.addBookmark(message)
                 return Promise.resolve({})
             case "createContextMenu":
-                let url = message.lstUrls[0]
+                const url = message.lstUrls[0]
                 if (this.context_ids.indexOf(url) < 0) {
                     this.context_ids.push(url)
-                    let id = browser.contextMenus.create({
+                    const id = browser.contextMenus.create({
                         title: i18n("background_bookmark_menu"),
                         contexts: ["image", "link"],
                         onclick: function (info, tab) {
@@ -84,7 +84,7 @@ export class HandleBookmarks {
     }
 
     getBookmark(obj) {
-        let bm = this.findBookmark(obj)
+        const bm = this.findBookmark(obj)
         if (bm === undefined) {
             return {
                 booked: false,
@@ -109,8 +109,8 @@ export class HandleBookmarks {
      * @param {*} obj
      */
     addBookmark(obj) {
-        let bm = this.findBookmark(obj)
-        let tosave = {
+        const bm = this.findBookmark(obj)
+        const tosave = {
             mirror: obj.mirror,
             url: obj.url,
             chapUrl: obj.chapUrl,

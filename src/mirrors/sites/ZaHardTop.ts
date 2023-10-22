@@ -17,8 +17,8 @@ export class ZaHardTop extends BaseMirror implements MirrorImplementation {
     chapter_url = /^\/read\/.+\d/g
 
     async getMangaList(search: string) {
-        let res = []
-        let doc = await this.mirrorHelper.loadPage(this.home + "/library?search=" + search, {
+        const res = []
+        const doc = await this.mirrorHelper.loadPage(this.home + "/library?search=" + search, {
             nocache: true,
             preventimages: true
         })
@@ -31,10 +31,10 @@ export class ZaHardTop extends BaseMirror implements MirrorImplementation {
     }
 
     async getListChaps(urlManga) {
-        let doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
+        const doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
         const $ = this.parseHtml(doc)
-        let res = []
-        let title = $("h1").text().trim()
+        const res = []
+        const title = $("h1").text().trim()
 
         $("#chapterlist a").each(function (index) {
             res.push([$(this).text().replace(title, "").trim(), $(this).attr("href")])
@@ -45,9 +45,9 @@ export class ZaHardTop extends BaseMirror implements MirrorImplementation {
     async getCurrentPageInfo(doc, curUrl) {
         const $ = this.parseHtml(doc)
 
-        let seriesUrl = $('.listupd a[href*="/manga/"]').attr("href")
+        const seriesUrl = $('.listupd a[href*="/manga/"]').attr("href")
 
-        let doc2 = await this.mirrorHelper.loadPage(seriesUrl)
+        const doc2 = await this.mirrorHelper.loadPage(seriesUrl)
         const $$ = this.parseHtml(doc2)
 
         console.debug("ZA Hard Top", seriesUrl, $$("h1").text())
@@ -60,10 +60,10 @@ export class ZaHardTop extends BaseMirror implements MirrorImplementation {
     }
 
     async getListImages(doc, curUrl, sender) {
-        let res = []
+        const res = []
         const $ = this.parseHtml(doc)
         $("#chapter_imgs img").each(function (index) {
-            let src = $(this).attr("src")
+            const src = $(this).attr("src")
             if (src) res.push(src.trim())
         })
         return res

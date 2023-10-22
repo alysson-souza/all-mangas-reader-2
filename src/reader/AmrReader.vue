@@ -905,7 +905,7 @@ export default {
          */
         layoutValue(nVal, oVal) {
             // check if nVal <> options val ; if not reset layout to undefined
-            let optVal =
+            const optVal =
                 this.options.scaleUp * 10000 +
                 this.options.displayBook * 1000 +
                 this.options.readingDirection * 100 +
@@ -956,7 +956,7 @@ export default {
         nextChapter() {
             if (this.selchap === null) return
             if (this.lastChapter) return
-            let cur = this.chapters.findIndex(el => el.url === this.selchap)
+            const cur = this.chapters.findIndex(el => el.url === this.selchap)
             return this.chapters[cur - 1].url
         },
         /** True if first published chapter */
@@ -966,7 +966,7 @@ export default {
         },
         /** The layout value for this manga, a value containing all specific reading options */
         layoutValue() {
-            let cbook = this.book ? 1 : 0,
+            const cbook = this.book ? 1 : 0,
                 cdirection = this.direction === "ltr" ? 0 : 1,
                 cfullchapter = this.fullchapter ? 1 : 0,
                 cresize = resize_values.findIndex(r => r === this.resize),
@@ -1054,7 +1054,7 @@ export default {
         },
         /** Load the state of the side bar (hidden / shown) */
         async loadBarState() {
-            let barState = await browser.runtime.sendMessage({ action: "barState" })
+            const barState = await browser.runtime.sendMessage({ action: "barState" })
             if (barState) {
                 this.drawer = parseInt(barState.barVis) === 1
             }
@@ -1067,7 +1067,7 @@ export default {
                 cfullchapter = -1,
                 cresize = -1,
                 cscaleup = -1
-            let specific = await browser.runtime.sendMessage({
+            const specific = await browser.runtime.sendMessage({
                 action: "mangaInfos",
                 url: this.pageData.currentMangaURL,
                 mirror: this.mirror.mirrorName,
@@ -1119,7 +1119,7 @@ export default {
         /** Load chapters list for current manga */
         async loadChapters() {
             // try to get list chap from background (already loaded in local db)
-            let alreadyLoadedListChaps = await browser.runtime.sendMessage({
+            const alreadyLoadedListChaps = await browser.runtime.sendMessage({
                 action: "getListChaps",
                 url: this.pageData.currentMangaURL,
                 language: this.pageData.language
@@ -1225,7 +1225,7 @@ export default {
             // add a covering loader
             this.loading = true
             console.log("Change Reader chapter : load chapter " + url)
-            let chap = new ChapterLoader(url, this.mirror)
+            const chap = new ChapterLoader(url, this.mirror)
             await chap.checkAndLoadInfos() // get is a chapter ?, infos (current manga, chapter) and scans urls
             this.loadChapterInReaderUsingChapterLoader(chap)
         },
@@ -1260,7 +1260,7 @@ export default {
                 }
             })
 
-            let done = chapterloader.loadInReader(options)
+            const done = chapterloader.loadInReader(options)
             if (!done) {
                 // loading chapter failed
                 // reload chapter so it will be the first time and the restorePage will work properly
@@ -1278,7 +1278,7 @@ export default {
                 this.loadMangaInformations()
 
                 // Reader
-                let reader = this.$refs.reader
+                const reader = this.$refs.reader
                 reader.originalTitle = chapterloader.title
                 document.title = chapterloader.title
                 reader.goScan(0)
@@ -1297,7 +1297,7 @@ export default {
         /** Go read a specific chapter */
         goToChapter() {
             if (this.selchap === null) return
-            let cur = this.chapters.findIndex(el => el.url === this.selchap)
+            const cur = this.chapters.findIndex(el => el.url === this.selchap)
             this.loadChapterInReader(this.chapters[cur].url)
         },
         /** Go to next chapter */
@@ -1323,7 +1323,7 @@ export default {
                 this.$refs.wizdialog.temporary(this.i18n("reader_alert_firstchapter"), 1000, { important: true })
                 return
             }
-            let cur = this.chapters.findIndex(el => el.url === this.selchap)
+            const cur = this.chapters.findIndex(el => el.url === this.selchap)
             if (!this.options.smoothNavigation) {
                 window.location.href = this.chapters[cur + 1].url
             } else {
@@ -1341,20 +1341,20 @@ export default {
                 this.nextChapterLoader = null // next is not recognized as a chapter
             } else {
                 // preload the scans
-                let scansProvider = this.nextChapterLoader.loadScans()
+                const scansProvider = this.nextChapterLoader.loadScans()
                 /** Compute scans loading progress when a scan is loaded */
                 scansProvider.onloadscan = () => {
-                    let nbloaded = scansProvider.scans.reduce((acc, sc) => acc + (sc.loading ? 0 : 1), 0)
+                    const nbloaded = scansProvider.scans.reduce((acc, sc) => acc + (sc.loading ? 0 : 1), 0)
                     this.nextchapProgress = Math.floor((nbloaded / scansProvider.scans.length) * 100)
                 }
             }
         },
         /** Handle key shortcuts */
         handlekeys() {
-            let registerKeys = e => {
+            const registerKeys = e => {
                 e = e || window.event
-                let t = e.target || e.srcElement
-                let prevent = () => {
+                const t = e.target || e.srcElement
+                const prevent = () => {
                     e.preventDefault()
                     e.stopPropagation()
                     e.stopImmediatePropagation()
@@ -1481,7 +1481,7 @@ export default {
                             let chapName = "",
                                 chapPos = 0
                             if (this.selchap !== null && this.chapters.length !== 0) {
-                                let chap = this.chapters.findIndex(el => el.url === this.selchap)
+                                const chap = this.chapters.findIndex(el => el.url === this.selchap)
                                 if (chap >= 0) {
                                     chapName = this.chapters[chap].title
                                     chapPos = this.chapters.length - chap
@@ -1531,7 +1531,7 @@ export default {
             window.addEventListener("keydown", registerKeys, true)
 
             //disable default websites shortcuts
-            let stopProp = e => e.stopImmediatePropagation()
+            const stopProp = e => e.stopImmediatePropagation()
             window.addEventListener("keyup", stopProp, true)
             window.addEventListener("keypress", stopProp, true)
         },
@@ -1611,7 +1611,7 @@ export default {
                 }
             } else {
                 /** Request full screen mode */
-                let elem = document.documentElement
+                const elem = document.documentElement
                 if (elem.requestFullscreen) {
                     elem.requestFullscreen()
                 } else if (elem.mozRequestFullScreen) {
@@ -1626,10 +1626,10 @@ export default {
         },
         /** Called on reader's creation, display a welcome message first time reader is opened */
         async handleFirstTime() {
-            let isfirst = await this.util.getStorage("reader_firsttime")
+            const isfirst = await this.util.getStorage("reader_firsttime")
             if (!isfirst) {
                 // Button to set default layout with preferde choice : long strip
-                let butlongstrip = {
+                const butlongstrip = {
                     title: this.i18n("reader_firsttime_but_longstrip"),
                     color: "primary",
                     click: ({ agree }) => {
@@ -1641,7 +1641,7 @@ export default {
                     }
                 }
                 // Button to set default layout with preferde choice : single page
-                let butsingle = {
+                const butsingle = {
                     title: this.i18n("reader_firsttime_but_single"),
                     color: "primary",
                     click: ({ agree }) => {

@@ -17,25 +17,25 @@ export class MangaHasu extends BaseMirror implements MirrorImplementation {
     chapter_url = /^\/.+\/chapter.+\.html/g
 
     async getMangaList(search: string) {
-        let url = this.home + "advanced-search.html?keyword=" + search
+        const url = this.home + "advanced-search.html?keyword=" + search
 
-        let res = await this.getMangaListPage(url)
+        const res = await this.getMangaListPage(url)
 
         return res
     }
 
     async getMangaListPage(url: string) {
-        let doc = await this.mirrorHelper.loadPage(url, { nocache: true, preventimages: true })
+        const doc = await this.mirrorHelper.loadPage(url, { nocache: true, preventimages: true })
 
         let res = []
-        let _self = this
+        const _self = this
         const $ = this.parseHtml(doc)
 
         $(".list_manga a.name-manga").each(function () {
             res.push([$(this).text().trim(), $(this).attr("href")])
         })
 
-        let nextPage = $(".pagination-ct a:contains('Next →')")
+        const nextPage = $(".pagination-ct a:contains('Next →')")
         if (nextPage.length > 0) {
             // Has pages
             res = [...res, ...(await _self.getMangaListPage(_self.home + nextPage.attr("href")))]
@@ -45,10 +45,10 @@ export class MangaHasu extends BaseMirror implements MirrorImplementation {
     }
 
     async getListChaps(urlManga) {
-        let doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
+        const doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
 
-        let res = []
-        let _self = this
+        const res = []
+        const _self = this
         const $ = this.parseHtml(doc)
 
         $(".list-chapter td.name a").each(function (index) {
@@ -70,7 +70,7 @@ export class MangaHasu extends BaseMirror implements MirrorImplementation {
 
     async getListImages(doc) {
         const $ = this.parseHtml(doc)
-        let res = []
+        const res = []
 
         $(".img-chapter img").each(function (index) {
             res.push($(this).attr("src"))

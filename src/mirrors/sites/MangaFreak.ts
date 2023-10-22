@@ -23,13 +23,13 @@ export class MangaFreak extends BaseMirror implements MirrorImplementation {
     chapter_url = /\/Read.*/g
 
     async getMangaList(search: string) {
-        let doc = await this.mirrorHelper.loadPage(this.home + "/Find/" + search, {
+        const doc = await this.mirrorHelper.loadPage(this.home + "/Find/" + search, {
             nocache: true,
             preventimages: true
         })
 
-        let res = []
-        let _self = this
+        const res = []
+        const _self = this
         const $ = this.parseHtml(doc)
 
         $(".manga_search_item h3 a").each(function (index) {
@@ -39,14 +39,14 @@ export class MangaFreak extends BaseMirror implements MirrorImplementation {
     }
 
     async getListChaps(urlManga) {
-        let doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
+        const doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
 
-        let res = []
-        let _self = this
+        const res = []
+        const _self = this
         const $ = this.parseHtml(doc)
 
         $(".manga_series_list tbody tr").each(function () {
-            let elem = $(this).find("td:first a")
+            const elem = $(this).find("td:first a")
             res.push([elem.text(), _self.home + elem.attr("href")])
         })
         res.reverse()
@@ -55,7 +55,7 @@ export class MangaFreak extends BaseMirror implements MirrorImplementation {
 
     async getCurrentPageInfo(doc, curUrl) {
         const $ = this.parseHtml(doc)
-        let mga = $("h1.title a")
+        const mga = $("h1.title a")
         return {
             name: mga
                 .text()
@@ -68,7 +68,7 @@ export class MangaFreak extends BaseMirror implements MirrorImplementation {
 
     async getListImages(doc) {
         const $ = this.parseHtml(doc)
-        let res = []
+        const res = []
 
         $(".slideshow-container img").each(function (index) {
             res.push($(this).attr("src"))

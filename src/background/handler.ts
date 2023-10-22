@@ -89,7 +89,7 @@ export class Handler {
          */
         browser.runtime.onMessage.addListener(async (message, sender) => {
             this.logger.debug(message)
-            for (let handler of this.handlers) {
+            for (const handler of this.handlers) {
                 try {
                     const result = await handler.handle(message, sender)
                     if (result !== NOT_HANDLED_MESSAGE) {

@@ -47,7 +47,7 @@ export class MangaFox extends BaseMirror implements MirrorImplementation {
 
     async getMangaList(search) {
         const urlManga = this.currentDomain + "/search?name=" + search
-        let doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
+        const doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
 
         if (doc.indexOf("No Manga Series") !== -1) {
             return []
@@ -73,13 +73,13 @@ export class MangaFox extends BaseMirror implements MirrorImplementation {
 
     async getImageUrlFromPage(urlImage: string) {
         // loads the page containing the current scan
-        let doc = await this.mirrorHelper.loadPage(urlImage, { crossdomain: true, redirect: "follow" })
+        const doc = await this.mirrorHelper.loadPage(urlImage, { crossdomain: true, redirect: "follow" })
         const $ = this.parseHtml(doc)
 
         const [first] = $("#dm5_key")
         const mkey = first ? ($(first).val() as string) : ""
 
-        let curl = urlImage.substr(0, urlImage.lastIndexOf("/") + 1),
+        const curl = urlImage.substr(0, urlImage.lastIndexOf("/") + 1),
             cid = this.getVariable({ doc, variableName: "chapterid" }),
             chapfunurl = curl + "chapterfun.ashx", // url to retrieve scan url
             curpage = this.getVariable({ doc, variableName: "imagepage" })
@@ -109,7 +109,7 @@ export class MangaFox extends BaseMirror implements MirrorImplementation {
         // the retrieved data is packed through an obfuscator
         // dm5 is unpacking the images url through an eval, we can't do that in AMR due to CSP
         // we do it manually (below is the unpack function shipped with the data to decode)
-        let unpack = function (p, a, c, k, e, d) {
+        const unpack = function (p, a, c, k, e, d) {
             e = function (c) {
                 return (
                     // @ts-ignore
@@ -134,8 +134,8 @@ export class MangaFox extends BaseMirror implements MirrorImplementation {
         }
 
         // regexp to parse the arguments to pass to the unpack function, just parse the 4 first arguments
-        let regexpargs = /'(([^\\']|\\')*)',([0-9]+),([0-9]+),'(([^\\']|\\')*)'/g
-        let match = regexpargs.exec(data)
+        const regexpargs = /'(([^\\']|\\')*)',([0-9]+),([0-9]+),'(([^\\']|\\')*)'/g
+        const match = regexpargs.exec(data)
         if (match) {
             const args = [match[1], match[3], match[4], match[5].split("|"), 0, {}]
             // @ts-ignore
@@ -143,10 +143,10 @@ export class MangaFox extends BaseMirror implements MirrorImplementation {
             sc = sc.replace(/\\'/g, "'") // unquote the result
             // the result is another js function containing the data, we mimic here what it does
             // retrieve the variables
-            let cid = this.mirrorHelper.getVariableFromScript("cid", sc),
+            const cid = this.mirrorHelper.getVariableFromScript("cid", sc),
                 key = this.mirrorHelper.getVariableFromScript("key", sc),
-                pix = this.mirrorHelper.getVariableFromScript("pix", sc),
-                pvalue = this.mirrorHelper.getVariableFromScript("pvalue", sc) // array of scan urls (contains current one and next one)
+                pix = this.mirrorHelper.getVariableFromScript("pix", sc)
+            let pvalue = this.mirrorHelper.getVariableFromScript("pvalue", sc) // array of scan urls (contains current one and next one)
             pvalue = pvalue.map(img => pix + img + "?cid=" + cid + "&key=" + key) // mimic the returned function which rebuilds the url depending on its parts
             return pvalue[0]
         }
@@ -169,18 +169,18 @@ export class MangaFox extends BaseMirror implements MirrorImplementation {
             $ = this.parseHtml(resp)
         }
 
-        let res = []
+        const res = []
         const domain = this.currentDomain
         $(".detail-main-list a").each(function () {
             let url = domain + $(this).attr("href")
             url = url.substr(0, url.lastIndexOf("/") + 1)
-            let title = $(".title3", $(this)).text()
+            const title = $(".title3", $(this)).text()
             res.push([title, url])
         })
 
         res.sort((a, b) => {
-            let aM = a[0].match(/Ch\.([0-9]+\.?[0-9]+?)/)
-            let bM = b[0].match(/Ch\.([0-9]+\.?[0-9]+?)/)
+            const aM = a[0].match(/Ch\.([0-9]+\.?[0-9]+?)/)
+            const bM = b[0].match(/Ch\.([0-9]+\.?[0-9]+?)/)
             if (aM && bM) {
                 return parseFloat(aM[1]) > parseFloat(bM[1]) ? -1 : 1
             }

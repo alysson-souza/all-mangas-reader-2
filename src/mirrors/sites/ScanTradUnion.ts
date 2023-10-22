@@ -17,7 +17,7 @@ export class ScanTradUnion extends BaseMirror implements MirrorImplementation {
     chapter_url = /^\/read\/.+\/chapter-.+/g
 
     async getMangaList(search: string) {
-        let doc = await this.mirrorHelper.loadPage(this.home + "wp-admin/admin-ajax.php", {
+        const doc = await this.mirrorHelper.loadPage(this.home + "wp-admin/admin-ajax.php", {
             nocache: true,
             preventimages: true,
             post: true,
@@ -29,7 +29,7 @@ export class ScanTradUnion extends BaseMirror implements MirrorImplementation {
                 options: "current_page_id=7944&qtranslate_lang=0&asp_gen%5B%5D=title&customset%5B%5D=manga"
             }
         })
-        let res = []
+        const res = []
         const $ = this.parseHtml(doc)
         $("a.asp_res_url").each(function () {
             res.push([$(this).text().trim(), $(this).attr("href")])
@@ -38,9 +38,9 @@ export class ScanTradUnion extends BaseMirror implements MirrorImplementation {
     }
 
     async getListChaps(urlManga) {
-        let doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
+        const doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
         const $ = this.parseHtml(doc)
-        let res = []
+        const res = []
         $(".accordionItemContent li, .accordionItem li").each(function (index) {
             res.push([
                 $(".chapter-number", this).text().replace("#", "").trim(),
@@ -61,7 +61,7 @@ export class ScanTradUnion extends BaseMirror implements MirrorImplementation {
     }
 
     async getListImages(doc, curUrl, sender) {
-        let res = []
+        const res = []
         const $ = this.parseHtml(doc)
         $("#webtoon img").each(function (index) {
             let imageURL = $(this).attr("data-src")

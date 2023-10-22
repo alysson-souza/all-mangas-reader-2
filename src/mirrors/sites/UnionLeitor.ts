@@ -18,7 +18,7 @@ export class UnionLeitor extends BaseMirror implements MirrorImplementation {
 
     async getMangaList(search: string) {
         var urlManga = this.home + "busca"
-        let doc = await this.mirrorHelper.loadPage(urlManga, {
+        const doc = await this.mirrorHelper.loadPage(urlManga, {
             nocache: true,
             preventimages: true,
             post: true,
@@ -29,7 +29,7 @@ export class UnionLeitor extends BaseMirror implements MirrorImplementation {
         const $ = this.parseHtml(doc)
         var res = []
         $(".bloco-manga").each(function (index, bloc) {
-            let link = $(bloc).find("a:last")
+            const link = $(bloc).find("a:last")
             if (link) {
                 res.push([link.text().trim(), link.attr("href")])
             }
@@ -38,9 +38,9 @@ export class UnionLeitor extends BaseMirror implements MirrorImplementation {
     }
 
     async getListChaps(urlManga) {
-        let doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
+        const doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
         const $ = this.parseHtml(doc)
-        let res = []
+        const res = []
         $('.col-md-8 .capitulos a[href*="/leitor/"]').each(function () {
             res.push([$(this).text().trim(), $(this).attr("href")])
         })
@@ -50,7 +50,7 @@ export class UnionLeitor extends BaseMirror implements MirrorImplementation {
     async getCurrentPageInfo(doc, curUrl) {
         const $ = this.parseHtml(doc)
 
-        let mga = $(".breadcrumbs div div a:last")
+        const mga = $(".breadcrumbs div div a:last")
         return {
             name: mga.text().trim(),
             currentMangaURL: mga.attr("href"),
@@ -59,7 +59,7 @@ export class UnionLeitor extends BaseMirror implements MirrorImplementation {
     }
 
     async getListImages(doc, curUrl, sender) {
-        let res = []
+        const res = []
         const $ = this.parseHtml(doc)
         $("img.img-manga").each(function (index, element) {
             res.push($(this).attr("src"))

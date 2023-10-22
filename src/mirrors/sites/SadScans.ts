@@ -17,27 +17,27 @@ export class SadScans extends BaseMirror implements MirrorImplementation {
     chapter_url = /^\/reader\/.+$/g
 
     async getMangaList(search: string) {
-        let self = this
-        let doc = await this.mirrorHelper.loadPage(this.home + "series?search=" + search, {
+        const _self = this
+        const doc = await this.mirrorHelper.loadPage(this.home + "series?search=" + search, {
             nocache: true,
             preventimages: true
         })
-        let res = []
+        const res = []
         const $ = this.parseHtml(doc)
         $(".hover-image").each(function () {
-            res.push([$("h2", this).text(), self.home + $("a", this).attr("href")])
+            res.push([$("h2", this).text(), _self.home + $("a", this).attr("href")])
         })
         return res
     }
 
     async getListChaps(urlManga) {
-        let doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
-        let res = []
-        let self = this
+        const doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
+        const res = []
+        const _self = this
         const $ = this.parseHtml(doc)
 
         $(".chap-section a").each(function (index) {
-            res.push([$(this).attr("title").replace("Bölüm", "").trim(), self.home + $(this).attr("href")])
+            res.push([$(this).attr("title").replace("Bölüm", "").trim(), _self.home + $(this).attr("href")])
         })
         return res
     }
@@ -54,12 +54,12 @@ export class SadScans extends BaseMirror implements MirrorImplementation {
     }
 
     async getListImages(doc, curUrl, sender) {
-        let res = []
+        const res = []
         const $ = this.parseHtml(doc)
-        let id = curUrl.split("/")[4]
-        let self = this
+        const id = curUrl.split("/")[4]
+        const _self = this
         $(".swiper-wrapper .swiper-slide").each(function (index) {
-            let hash = $(this).attr("data-hash")
+            const hash = $(this).attr("data-hash")
             // let url = self.home + 'config.json?_cid=' + id + '&' + hash
             res.push(id + "|" + hash)
         })
@@ -71,8 +71,8 @@ export class SadScans extends BaseMirror implements MirrorImplementation {
     }
 
     async getImageUrlFromPage(urlImage: string): Promise<string> {
-        let parts = urlImage.split("|")
-        let url = this.home + "config.json?_cid=" + parts[0] + "&" + parts[1]
+        const parts = urlImage.split("|")
+        const url = this.home + "config.json?_cid=" + parts[0] + "&" + parts[1]
         let img
         await fetch(url).then(blob => blob.json().then(dat => (img = "data:image/;base64," + dat[0])))
 

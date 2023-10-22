@@ -118,8 +118,8 @@ export default {
         sortBookmarkList: function () {
             // eslint-disable-next-line vue/no-side-effects-in-computed-properties, vue/no-mutating-props
             return this.bookmarkList.sort((a, b) => {
-                let cmp = a.name.localeCompare(b.name)
-                let cmpc = a.chapName.localeCompare(b.chapName)
+                const cmp = a.name.localeCompare(b.name)
+                const cmpc = a.chapName.localeCompare(b.chapName)
                 let cmps = 0
                 if (a.scanName && b.scanName) {
                     if (typeof a.scanName === "string") {
@@ -174,7 +174,7 @@ export default {
         },
         /** Called when BookmarkScan updates the url to display */
         changeUrl({ url, key }) {
-            let nbm = this.bookmarkList.find(bm => bm.key === key)
+            const nbm = this.bookmarkList.find(bm => bm.key === key)
             Vue.set(nbm, "displayedUrl", url)
         }
     },

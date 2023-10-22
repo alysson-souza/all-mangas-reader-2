@@ -26,7 +26,7 @@ const actions = {
      * @param {*} param0
      */
     async initBookmarksFromDB({ commit, dispatch }) {
-        let bookmarks = await storedb.getBookmarks() // Get bookmarks from local database
+        const bookmarks = await storedb.getBookmarks() // Get bookmarks from local database
         // set bookmarks list in store
         commit("setBookmarks", bookmarks)
     },
@@ -109,7 +109,7 @@ const mutations = {
      * @param {*} key key of the bookmark to delete
      */
     deleteBookmark(state, key) {
-        let bmindex = state.all.findIndex(bookmark => bookmark.key === key)
+        const bmindex = state.all.findIndex(bookmark => bookmark.key === key)
         if (bmindex >= 0) {
             state.all.splice(bmindex, 1)
         }

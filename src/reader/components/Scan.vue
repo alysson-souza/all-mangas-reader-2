@@ -154,13 +154,13 @@ export default {
         },
         /* is the scan bookmarked ? */
         scanbooked() {
-            let sc = this.bookstate.scans.find(sc => sc.url === this.src)
+            const sc = this.bookstate.scans.find(sc => sc.url === this.src)
             if (sc) return sc.booked
             return false
         },
         /* the bookmark note */
         note() {
-            let sc = this.bookstate.scans.find(sc => sc.url === this.src)
+            const sc = this.bookstate.scans.find(sc => sc.url === this.src)
             if (sc) return sc.note
             return undefined
         }
@@ -239,13 +239,13 @@ export default {
             /** Do not load image in DOM if image is still loading, is in error or if we already loaded the same. This method is called **too much times** on purpose, here is the gatekeeper */
             if (this.loading) return
             // remove existing image
-            let alreadyImg = this.$refs.scanDiv.getElementsByTagName("img")
+            const alreadyImg = this.$refs.scanDiv.getElementsByTagName("img")
             if (alreadyImg && alreadyImg.length > 0) {
                 this.$refs.scanDiv.removeChild(alreadyImg[0])
             }
             if (this.error) return // remove image if error
             // clone the HTMLImage element
-            let img = this.scan.scan.cloneNode(true)
+            const img = this.scan.scan.cloneNode(true)
             this.$refs.scanDiv.appendChild(img)
         },
         /** Open bookmarks dialog */

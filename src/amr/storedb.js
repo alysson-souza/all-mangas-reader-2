@@ -22,7 +22,7 @@ class StoreDB {
         this.status = 3
         this.dbversion = 2
         this.db = undefined
-        let store = this
+        const store = this
         return new Promise((resolve, reject) => {
             if (!globalThis.indexedDB) {
                 globalThis.indexedDB =
@@ -37,14 +37,14 @@ class StoreDB {
                 reject()
             }
 
-            let request = globalThis.indexedDB.open("AllMangasReader", this.dbversion)
+            const request = globalThis.indexedDB.open("AllMangasReader", this.dbversion)
             request.onerror = function (event) {
                 console.error("Impossible to open database All Mangas Reader. Error code : " + event.target.errorCode)
                 store.status = 2
                 reject()
             }
             request.onupgradeneeded = function (event) {
-                let db = event.target.result
+                const db = event.target.result
 
                 /**
                  * Create stores for AMR objects
@@ -74,7 +74,7 @@ class StoreDB {
      * Wait for status to stop being 3 (initializing)
      */
     initDone() {
-        let store = this
+        const store = this
         return new Promise(function (resolve, reject) {
             ;(function waitForInit() {
                 if (store.status != 3) return resolve()
@@ -102,10 +102,10 @@ class StoreDB {
      * @param {} mirrorObj
      */
     storeWebsite(mirrorObj) {
-        let store = this
+        const store = this
         return this.checkInit().then(() => {
             return new Promise((resolve, result) => {
-                let transaction = store.db.transaction(["mirrors"], "readwrite")
+                const transaction = store.db.transaction(["mirrors"], "readwrite")
 
                 transaction.onerror = function (event) {
                     reject(
@@ -116,8 +116,8 @@ class StoreDB {
                     )
                 }
 
-                let objectStore = transaction.objectStore("mirrors")
-                let request = objectStore.put(mirrorObj)
+                const objectStore = transaction.objectStore("mirrors")
+                const request = objectStore.put(mirrorObj)
                 request.onsuccess = function (event) {
                     resolve(event.target.result)
                 }
@@ -128,14 +128,14 @@ class StoreDB {
      * Get mirrors list from store
      */
     getWebsites() {
-        let store = this
+        const store = this
         return this.checkInit().then(() => {
             return new Promise((resolve, result) => {
-                let transaction = store.db.transaction(["mirrors"])
-                let objectStore = transaction.objectStore("mirrors")
-                let mirrors = []
+                const transaction = store.db.transaction(["mirrors"])
+                const objectStore = transaction.objectStore("mirrors")
+                const mirrors = []
                 objectStore.openCursor().onsuccess = function (event) {
-                    let cursor = event.target.result
+                    const cursor = event.target.result
                     if (cursor) {
                         mirrors.push(cursor.value)
                         cursor.continue()
@@ -154,16 +154,16 @@ class StoreDB {
      * @param {*} list
      */
     storeListOfMangaForMirror(mirror, list) {
-        let store = this
+        const store = this
         return this.checkInit().then(() => {
             return new Promise((resolve, result) => {
-                let transaction = store.db.transaction(["mangalists"], "readwrite")
+                const transaction = store.db.transaction(["mangalists"], "readwrite")
 
                 transaction.onerror = function (event) {
                     reject("Impossible to store mangalists " + mirror + ". Error code : " + event.target.errorCode)
                 }
-                let objectStore = transaction.objectStore("mangalists")
-                let request = objectStore.put({
+                const objectStore = transaction.objectStore("mangalists")
+                const request = objectStore.put({
                     mirrorName: mirror,
                     list: list
                 })
@@ -178,16 +178,16 @@ class StoreDB {
      * @param {*} mirror
      */
     getListOfMangaForMirror(mirror) {
-        let store = this
+        const store = this
         return this.checkInit().then(() => {
             return new Promise((resolve, result) => {
-                let transaction = store.db.transaction(["mangalists"])
-                let objectStore = transaction.objectStore("mangalists")
+                const transaction = store.db.transaction(["mangalists"])
+                const objectStore = transaction.objectStore("mangalists")
 
-                let objectStoreRequest = objectStore.get(mirror)
+                const objectStoreRequest = objectStore.get(mirror)
 
                 objectStoreRequest.onsuccess = function (event) {
-                    let obj = objectStoreRequest.result
+                    const obj = objectStoreRequest.result
                     resolve(obj ? obj.list : obj)
                 }
                 objectStoreRequest.onerror = function (event) {
@@ -200,14 +200,14 @@ class StoreDB {
      * Get how many lists and manga names are stored
      */
     getListsOfMangaStats() {
-        let store = this
+        const store = this
         return this.checkInit().then(() => {
             return new Promise((resolve, result) => {
-                let transaction = store.db.transaction(["mangalists"])
-                let objectStore = transaction.objectStore("mangalists")
-                let stat = { nb: 0, nbmangas: 0 }
+                const transaction = store.db.transaction(["mangalists"])
+                const objectStore = transaction.objectStore("mangalists")
+                const stat = { nb: 0, nbmangas: 0 }
                 objectStore.openCursor().onsuccess = function (event) {
-                    let cursor = event.target.result
+                    const cursor = event.target.result
                     if (cursor) {
                         stat.nb++
                         stat.nbmangas += cursor.value.list.length
@@ -223,17 +223,17 @@ class StoreDB {
      * Clear all stored lists of mangas for mirror implementations
      */
     deleteAllListOfManga() {
-        let store = this
+        const store = this
         return this.checkInit().then(() => {
             return new Promise((resolve, result) => {
-                let transaction = store.db.transaction(["mangalists"], "readwrite")
+                const transaction = store.db.transaction(["mangalists"], "readwrite")
 
                 transaction.onerror = function (event) {
                     reject("Impossible to clear mangalists. Error code : " + event.target.errorCode)
                 }
 
-                let objectStore = transaction.objectStore("mangalists")
-                let objectStoreRequest = objectStore.clear()
+                const objectStore = transaction.objectStore("mangalists")
+                const objectStoreRequest = objectStore.clear()
                 objectStoreRequest.onsuccess = function (event) {
                     resolve()
                 }
@@ -242,17 +242,17 @@ class StoreDB {
     }
     // add an entry
     storeManga(manga) {
-        let store = this
+        const store = this
         return this.checkInit().then(() => {
             return new Promise((resolve, result) => {
-                let transaction = store.db.transaction(["mangas"], "readwrite")
+                const transaction = store.db.transaction(["mangas"], "readwrite")
 
                 transaction.onerror = function (event) {
                     reject("Impossible to store manga " + manga.key + ". Error code : " + event.target.errorCode)
                 }
 
-                let objectStore = transaction.objectStore("mangas")
-                let request = objectStore.put(manga)
+                const objectStore = transaction.objectStore("mangas")
+                const request = objectStore.put(manga)
                 request.onsuccess = function (event) {
                     resolve(event.target.result)
                 }
@@ -261,17 +261,17 @@ class StoreDB {
     }
     // deletes an entry
     deleteManga(key) {
-        let store = this
+        const store = this
         return this.checkInit().then(() => {
             return new Promise((resolve, result) => {
-                let transaction = store.db.transaction(["mangas"], "readwrite")
+                const transaction = store.db.transaction(["mangas"], "readwrite")
 
                 transaction.onerror = function (event) {
                     reject("Impossible to delete manga " + key + ". Error code : " + event.target.errorCode)
                 }
 
-                let objectStore = transaction.objectStore("mangas")
-                let request = objectStore.delete(key)
+                const objectStore = transaction.objectStore("mangas")
+                const request = objectStore.delete(key)
                 request.onsuccess = function (event) {
                     resolve(event.target.result)
                 }
@@ -280,17 +280,17 @@ class StoreDB {
     }
     // update an existing entry
     findAndUpdate(manga) {
-        let store = this
+        const store = this
         return this.checkInit().then(() => {
             return new Promise((resolve, reject) => {
-                let transaction = store.db.transaction(["mangas"], "readwrite")
+                const transaction = store.db.transaction(["mangas"], "readwrite")
 
                 transaction.onerror = function (event) {
                     reject("Impossible to store manga " + manga.key + ". Error code : " + event.target.errorCode)
                 }
 
-                let objectStore = transaction.objectStore("mangas")
-                let request = objectStore.get(manga.key)
+                const objectStore = transaction.objectStore("mangas")
+                const request = objectStore.get(manga.key)
                 request.onsuccess = function (event) {
                     if (event.target.result) {
                         store.storeManga(manga)
@@ -311,14 +311,14 @@ class StoreDB {
      * Return the stored list of manga (reading list)
      */
     getMangaList() {
-        let store = this
+        const store = this
         return this.checkInit().then(() => {
             return new Promise((resolve, result) => {
-                let transaction = store.db.transaction(["mangas"])
-                let objectStore = transaction.objectStore("mangas")
-                let mangas = []
+                const transaction = store.db.transaction(["mangas"])
+                const objectStore = transaction.objectStore("mangas")
+                const mangas = []
                 objectStore.openCursor().onsuccess = function (event) {
-                    let cursor = event.target.result
+                    const cursor = event.target.result
                     if (cursor) {
                         mangas.push(cursor.value)
                         cursor.continue()
@@ -335,20 +335,20 @@ class StoreDB {
      * @param rootState
      */
     storeBookmark(bm, rootState) {
-        let store = this
+        const store = this
         return this.checkInit().then(() => {
             return new Promise((resolve, result) => {
-                let transaction = store.db.transaction(["bookmarks"], "readwrite")
+                const transaction = store.db.transaction(["bookmarks"], "readwrite")
 
                 transaction.onerror = function (event) {
                     reject("Impossible to store bookmarks " + bm.url + ". Error code : " + event.target.errorCode)
                 }
 
-                let objectStore = transaction.objectStore("bookmarks")
+                const objectStore = transaction.objectStore("bookmarks")
                 if (!bm.key) {
                     bm.key = bookmarkKey({ bookmark: bm, rootState })
                 }
-                let request = objectStore.put(bm)
+                const request = objectStore.put(bm)
                 request.onsuccess = function (event) {
                     resolve(event.target.result)
                 }
@@ -360,14 +360,14 @@ class StoreDB {
      * @param {*} bm
      */
     getBookmarks() {
-        let store = this
+        const store = this
         return this.checkInit().then(() => {
             return new Promise((resolve, result) => {
-                let transaction = store.db.transaction(["bookmarks"])
-                let objectStore = transaction.objectStore("bookmarks")
-                let bms = []
+                const transaction = store.db.transaction(["bookmarks"])
+                const objectStore = transaction.objectStore("bookmarks")
+                const bms = []
                 objectStore.openCursor().onsuccess = function (event) {
-                    let cursor = event.target.result
+                    const cursor = event.target.result
                     if (cursor) {
                         bms.push(cursor.value)
                         cursor.continue()
@@ -383,17 +383,17 @@ class StoreDB {
      * @param {*} bm
      */
     deleteBookmark(key) {
-        let store = this
+        const store = this
         return this.checkInit().then(() => {
             return new Promise((resolve, result) => {
-                let transaction = store.db.transaction(["bookmarks"], "readwrite")
+                const transaction = store.db.transaction(["bookmarks"], "readwrite")
 
                 transaction.onerror = function (event) {
                     reject("Impossible to delete bookmarks " + key + ". Error code : " + event.target.errorCode)
                 }
 
-                let objectStore = transaction.objectStore("bookmarks")
-                let request = objectStore.delete(key)
+                const objectStore = transaction.objectStore("bookmarks")
+                const request = objectStore.delete(key)
                 request.onsuccess = function (event) {
                     resolve(event.target.result)
                 }

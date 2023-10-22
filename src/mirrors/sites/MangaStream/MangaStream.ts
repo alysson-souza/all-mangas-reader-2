@@ -89,7 +89,7 @@ class MangaStream extends BaseMirror implements MirrorImplementation {
 
             const res = []
             const mangas = json.manga[0].all
-            for (let i in mangas) {
+            for (const i in mangas) {
                 const item = mangas[i]
                 res.push([item["post_title"], self.options.fixSeriesUrl(item["post_link"])])
             }
@@ -112,19 +112,19 @@ class MangaStream extends BaseMirror implements MirrorImplementation {
     }
 
     async getListChaps(urlManga) {
-        let doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
-        let self = this
+        const doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
+        const _self = this
 
-        let $ = this.parseHtml(doc)
+        const $ = this.parseHtml(doc)
 
         var res = []
         $(this.options.chapters_a_sel, doc).each(function (index) {
             let chapter_text = $(this).text().trim()
-            if (self.options.chapters_text_sel !== "") {
-                chapter_text = $(self.options.chapters_text_sel, this).text().trim()
+            if (_self.options.chapters_text_sel !== "") {
+                chapter_text = $(_self.options.chapters_text_sel, this).text().trim()
             }
 
-            let chapter_url = self.options.fixChapterUrl($(this).attr("href") + self.options.chapter_url_suffix)
+            const chapter_url = _self.options.fixChapterUrl($(this).attr("href") + _self.options.chapter_url_suffix)
             res.push([chapter_text, chapter_url])
         })
         return res
@@ -132,8 +132,8 @@ class MangaStream extends BaseMirror implements MirrorImplementation {
 
     async getCurrentPageInfo(doc, curUrl): Promise<CurrentPageInfo> {
         const $ = this.parseHtml(doc)
-        let manga_url = $(this.options.manga_url_sel, doc).attr("href")
-        let manga_name = $(this.options.manga_url_sel, doc).text()
+        const manga_url = $(this.options.manga_url_sel, doc).attr("href")
+        const manga_name = $(this.options.manga_url_sel, doc).text()
 
         return {
             name: manga_name.replace(this.options.manga_name_replace, "").trim(),
@@ -244,7 +244,7 @@ export const getMangaStreamImplementations = (mirrorHelper: MirrorHelper): Mirro
                 img_sel: `#readerarea img[width!="1px"][class*="size-"]`,
                 img_src: "src",
                 fixChapterUrl: origUrl => {
-                    let parts = origUrl.split("/")
+                    const parts = origUrl.split("/")
 
                     if (parts.length > 5) {
                         parts.splice(3, 1)
@@ -252,7 +252,7 @@ export const getMangaStreamImplementations = (mirrorHelper: MirrorHelper): Mirro
 
                     console.debug("Chapter Url:", parts)
 
-                    let parts2 = parts[3].split("-")
+                    const parts2 = parts[3].split("-")
 
                     if (!isNaN(parts2[0]) && !isNaN(parseFloat(parts2[0]))) parts2.shift()
 
@@ -260,13 +260,13 @@ export const getMangaStreamImplementations = (mirrorHelper: MirrorHelper): Mirro
                     return parts.join("/")
                 },
                 fixSeriesUrl: origUrl => {
-                    let parts = origUrl.split("/")
+                    const parts = origUrl.split("/")
                     if (parts[3] !== "series") {
                         parts.splice(3, 1)
                     }
                     console.debug("Series Url:", parts)
 
-                    let parts2 = parts[4].split("-")
+                    const parts2 = parts[4].split("-")
 
                     if (!isNaN(parts2[0]) && !isNaN(parseFloat(parts2[0]))) parts2.shift()
 

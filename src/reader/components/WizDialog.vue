@@ -73,30 +73,30 @@ export default {
         messageHtml() {
             if (!this.message) return ""
 
-            let formatText = txt => {
-                let boldify = text => {
-                    let bold = /\*\*(\S(.*?\S)?)\*\*/gm
-                    let html = text.replace(bold, "<strong>$1</strong>")
+            const formatText = txt => {
+                const boldify = text => {
+                    const bold = /\*\*(\S(.*?\S)?)\*\*/gm
+                    const html = text.replace(bold, "<strong>$1</strong>")
                     return html
                 }
-                let italicify = text => {
-                    let italic = /_(\S(.*?\S)?)_/gm
-                    let html = text.replace(italic, "<i>$1</i>")
+                const italicify = text => {
+                    const italic = /_(\S(.*?\S)?)_/gm
+                    const html = text.replace(italic, "<i>$1</i>")
                     return html
                 }
-                let linkify = text => {
-                    let link = /\[([^\[\]]+)\]\(([^)]+)\)/gm
-                    let html = text.replace(link, '<a href="$2" target="_blank">$1</a>')
+                const linkify = text => {
+                    const link = /\[([^\[\]]+)\]\(([^)]+)\)/gm
+                    const html = text.replace(link, '<a href="$2" target="_blank">$1</a>')
                     return html
                 }
                 return boldify(italicify(linkify(txt)))
             }
 
-            let lines = this.message.split("\n")
+            const lines = this.message.split("\n")
             let res = "",
                 ulopened = false
             for (let i = 0; i < lines.length; i++) {
-                let line = lines[i]
+                const line = lines[i]
                 if (line.trim().indexOf("* ") === 0) {
                     // list item
                     if (!ulopened) {

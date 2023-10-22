@@ -17,32 +17,32 @@ export class MangaAlArab extends BaseMirror implements MirrorImplementation {
     chapter_url = /^\/.*\/[0-9]+.*$/g
 
     async getMangaList(search: string) {
-        let doc = await this.mirrorHelper.loadPage("https://www.manga.ae/manga/search%3A" + search, {
+        const doc = await this.mirrorHelper.loadPage("https://www.manga.ae/manga/search%3A" + search, {
             nocache: true,
             preventimages: true,
             headers: { "user-agent": "Mozilla/5.0" } // if no user agent, manga al arab server failed
         })
 
-        let res = []
-        let _self = this
+        const res = []
+        const _self = this
         const $ = this.parseHtml(doc)
 
         $("#mangadirectory .mangacontainer").each(function (index) {
-            let a = $("a.manga:first", $(this))
+            const a = $("a.manga:first", $(this))
             res.push([a.text(), a.attr("href")])
         })
         return res
     }
 
     async getListChaps(urlManga) {
-        let doc = await this.mirrorHelper.loadPage(urlManga, {
+        const doc = await this.mirrorHelper.loadPage(urlManga, {
             nocache: true,
             preventimages: true,
             headers: { "user-agent": "Mozilla/5.0" } // if no user agent, manga al arab server failed
         })
 
-        let res = []
-        let _self = this
+        const res = []
+        const _self = this
         const $ = this.parseHtml(doc)
 
         $("ul.new-manga-chapters a.chapter").each(function (index) {
@@ -53,7 +53,7 @@ export class MangaAlArab extends BaseMirror implements MirrorImplementation {
 
     async getCurrentPageInfo(doc, curUrl) {
         const $ = this.parseHtml(doc)
-        let mg = $(".showchapterdirectory .manga")
+        const mg = $(".showchapterdirectory .manga")
         return {
             name: mg.text(),
             currentMangaURL: this.addTrailingSlash(mg.attr("href")),
@@ -63,7 +63,7 @@ export class MangaAlArab extends BaseMirror implements MirrorImplementation {
 
     async getListImages(doc) {
         const $ = this.parseHtml(doc)
-        let res = []
+        const res = []
 
         $("#morepages a").each(function (index) {
             res.push($(this).attr("href"))
@@ -76,7 +76,7 @@ export class MangaAlArab extends BaseMirror implements MirrorImplementation {
     }
 
     async getImageUrlFromPage(urlImage: string): Promise<string> {
-        let doc = await this.mirrorHelper.loadPage(urlImage, {
+        const doc = await this.mirrorHelper.loadPage(urlImage, {
             headers: { "user-agent": "Mozilla/5.0" } // if no user agent, manga al arab server failed
         })
         const $ = this.parseHtml(doc)

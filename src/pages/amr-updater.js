@@ -50,8 +50,8 @@ export class AmrUpdater {
      * Check if we need to refresh mirrors lists according to frequency every minutes
      */
     checkMirrorsUpdates() {
-        let lastUpdt = this.store.state.options.lastMirrorsUpdate
-        let frequency = this.store.state.options.updatemg
+        const lastUpdt = this.store.state.options.lastMirrorsUpdate
+        const frequency = this.store.state.options.updatemg
         if (navigator.onLine && lastUpdt + frequency < Date.now()) {
             // time to refresh !
             this.store.dispatch("updateMirrorsLists")
@@ -91,7 +91,7 @@ export class AmrUpdater {
 
         if (res && res.data) {
             const regex = /codebase\=\'(.[^\']*)\'(\s+)version\=\'(.[^\']*)\'/gm
-            let m = regex.exec(res.data)
+            const m = regex.exec(res.data)
             if (m) {
                 return { version: m[3], url: m[1] }
             }

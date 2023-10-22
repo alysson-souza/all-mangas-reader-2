@@ -39,7 +39,7 @@ export class Util {
         if (!force && options.addauto !== 1) {
             // check if option "Automatically add manga to list" is unchecked
             // check if manga is already in list
-            let exists = await this.mangaExists()
+            const exists = await this.mangaExists()
             // if not, we do not add the manga to the list (else, we continue, so reading progress is updated)
             if (!exists) return
         }

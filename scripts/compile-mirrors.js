@@ -8,8 +8,8 @@ const mirrorDir = path.join(baseDir, "implementations")
 const iconDir = path.join(baseDir, "icons") + path.sep
 const implementationFilePath = baseDir + path.sep + "register_implementations.js"
 
-let websites = []
-let deprecated = [
+const websites = []
+const deprecated = [
     "isMe",
     "removeBanners",
     "whereDoIWriteNavigation",
@@ -23,8 +23,8 @@ let deprecated = [
 ]
 global.window = {}
 let index = 0
-let allMirrors = []
-let allAbstracts = []
+const allMirrors = []
+const allAbstracts = []
 
 global.registerAbstractImplementation = function (mirrorName) {
     websites.push({
@@ -33,8 +33,8 @@ global.registerAbstractImplementation = function (mirrorName) {
     })
 }
 global.registerMangaObject = function (object) {
-    let mirrorName = object.mirrorName
-    let website = {}
+    const mirrorName = object.mirrorName
+    const website = {}
     if (!object.mirrorName) {
         console.error(mirrorName + " : mirrorName is required !")
     }
@@ -72,8 +72,8 @@ global.registerMangaObject = function (object) {
     website.disabled = object.disabled
 
     websites.push(website)
-    let deps = []
-    for (let dep of deprecated) {
+    const deps = []
+    for (const dep of deprecated) {
         if (object[dep]) deps.push(dep)
     }
     if (deps.length > 0) {
@@ -86,7 +86,7 @@ global.registerMangaObject = function (object) {
  */
 function writeWebsites(allAbstracts, allMirrors) {
     var json = JSON.stringify(websites, null, 2)
-    let conditionalExec = ({ def, impl, impls }) => {
+    const conditionalExec = ({ def, impl, impls }) => {
         return `if ("${def.mirrorName}" === current ${
             def.type === "abstract"
                 ? " || " + "[" + impls.map(n => '"' + n + '"').join(",") + "].includes(current)"
@@ -95,7 +95,7 @@ function writeWebsites(allAbstracts, allMirrors) {
             ${impl}
         }`
     }
-    let content = `
+    const content = `
     const utils = require('../amr/utils')
     const loadMirrors = function(current) {
         ${allAbstracts.map(conditionalExec).join("\n;")}
@@ -134,7 +134,7 @@ async function getFiles(dir) {
 async function main() {
     console.info("Starting mirror build")
     /** Get list of all files */
-    let files = await getFiles(mirrorDir)
+    const files = await getFiles(mirrorDir)
 
     /** Sort files alphabetically without the path */
     files.sort((a, b) => path.basename(a.toLowerCase()).localeCompare(path.basename(b.toLowerCase())))
@@ -149,9 +149,9 @@ async function main() {
                     websites[websites.length - 1].jsFile = file.replace(mirrorDir, "")
                     websites[websites.length - 1].id = index
 
-                    let wsl = websites[websites.length - 1]
+                    const wsl = websites[websites.length - 1]
                     if (wsl.type === "abstract") {
-                        let absInList = allAbstracts.find(({ def }) => def.mirrorName === wsl.mirrorName)
+                        const absInList = allAbstracts.find(({ def }) => def.mirrorName === wsl.mirrorName)
                         if (absInList) {
                             absInList.def = wsl
                             absInList.impl = fs.readFileSync(file)
@@ -161,7 +161,7 @@ async function main() {
                     } else {
                         allMirrors.push({ def: wsl, impl: fs.readFileSync(file) })
                         if (wsl.abstract) {
-                            let absInList = allAbstracts.find(({ def }) => def.mirrorName === wsl.abstract)
+                            const absInList = allAbstracts.find(({ def }) => def.mirrorName === wsl.abstract)
                             if (absInList) {
                                 if (!absInList.impls) absInList.impls = []
                                 absInList.impls.push(wsl.mirrorName)

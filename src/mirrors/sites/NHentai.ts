@@ -45,19 +45,19 @@ export class NHentai extends BaseMirror implements MirrorImplementation {
         // })
         // return res
 
-        let res = []
+        const res = []
         res.push(["Chapter 1", urlManga + "/1/"])
         return res
     }
 
     async getCurrentPageInfo(doc, curUrl) {
-        let seriesUrl = curUrl.split("/").slice(0, 5).join("/")
-        let doc2 = await this.mirrorHelper.loadPage(seriesUrl, { nocache: true, preventimages: true })
+        const seriesUrl = curUrl.split("/").slice(0, 5).join("/")
+        const doc2 = await this.mirrorHelper.loadPage(seriesUrl, { nocache: true, preventimages: true })
 
         const $ = this.parseHtml(doc2)
         var mgtitle = $($("h1.title .pretty")[0])
 
-        let firstChapter = curUrl.split("/")
+        const firstChapter = curUrl.split("/")
         firstChapter[5] = 1
 
         return {
@@ -68,16 +68,16 @@ export class NHentai extends BaseMirror implements MirrorImplementation {
     }
 
     async getListImages(doc, curUrl, sender) {
-        let res = []
+        const res = []
         const $ = this.parseHtml(doc)
 
-        let lastPage = parseInt($($(".reader-bar a.last")[0]).attr("href").split("/")[3])
+        const lastPage = parseInt($($(".reader-bar a.last")[0]).attr("href").split("/")[3])
 
-        let baseUrl = curUrl.split("/").slice(0, 5).join("/")
+        const baseUrl = curUrl.split("/").slice(0, 5).join("/")
 
         for (const page of Array(lastPage).keys()) {
-            let url = baseUrl + "/" + (page + 1) + "/"
-            let doc2 = await await this.mirrorHelper.loadPage(url)
+            const url = baseUrl + "/" + (page + 1) + "/"
+            const doc2 = await await this.mirrorHelper.loadPage(url)
             const $$ = this.parseHtml(doc2)
             res.push($$("#image-container img").attr("src"))
             await new Promise(r => setTimeout(r, 250))

@@ -17,36 +17,36 @@ export class SeriManga extends BaseMirror implements MirrorImplementation {
     chapter_url = /^\/manga(s)?\/.*\/[0-9]+.+$/g
 
     async getMangaList(search: string) {
-        let url = this.home + "mangalar"
-        let res = this.getMangaListPage(url)
+        const url = this.home + "mangalar"
+        const res = this.getMangaListPage(url)
         return res
     }
 
     async getMangaListPage(url) {
-        let doc = await this.mirrorHelper.loadPage(url, { nocache: true, preventimages: true })
+        const doc = await this.mirrorHelper.loadPage(url, { nocache: true, preventimages: true })
         const $ = this.parseHtml(doc)
-        let res = []
-        let self = this
+        const res = []
+        const _self = this
 
         $("li.mangas-item a").each(function (index) {
             res.push([$(".mlb-name", $(this)).text().trim(), $(this).attr("href")])
         })
 
         if ($("ul.pagination").length && $('ul.pagination a[rel="next"]').length) {
-            let nextPage = $($('ul.pagination a[rel="next"]')[0]).attr("href")
-            res.push(...(await self.getMangaListPage(nextPage)))
+            const nextPage = $($('ul.pagination a[rel="next"]')[0]).attr("href")
+            res.push(...(await _self.getMangaListPage(nextPage)))
         }
 
         return res
     }
 
     async getListChaps(urlManga) {
-        let doc = await this.mirrorHelper.loadPage(urlManga, {
+        const doc = await this.mirrorHelper.loadPage(urlManga, {
             nocache: true,
             preventimages: true
         })
-        let res = []
-        let self = this
+        const res = []
+        const _self = this
         const $ = this.parseHtml(doc)
 
         $("li.spl-list-item a").each(function (index) {
@@ -54,8 +54,8 @@ export class SeriManga extends BaseMirror implements MirrorImplementation {
         })
 
         if ($("ul.pagination").length && $('ul.pagination a[rel="next"]').length) {
-            let nextPage = $($('ul.pagination a[rel="next"]')[0]).attr("href")
-            res.push(...(await self.getListChaps(nextPage)))
+            const nextPage = $($('ul.pagination a[rel="next"]')[0]).attr("href")
+            res.push(...(await _self.getListChaps(nextPage)))
         }
 
         return res
@@ -63,8 +63,8 @@ export class SeriManga extends BaseMirror implements MirrorImplementation {
 
     async getCurrentPageInfo(doc, curUrl) {
         const $ = this.parseHtml(doc)
-        let mg = $($("div.rtm-logo a:last")[0])
-        let url = new URL(curUrl)
+        const mg = $($("div.rtm-logo a:last")[0])
+        const url = new URL(curUrl)
         return {
             name: mg.text().trim(),
             currentMangaURL: mg.attr("href"),
@@ -73,8 +73,8 @@ export class SeriManga extends BaseMirror implements MirrorImplementation {
     }
 
     async getListImages(doc, curUrl, sender) {
-        let res = []
-        let self = this
+        const res = []
+        const _self = this
         const $ = this.parseHtml(doc)
         $("div.reader-manga.chapter-pages img").each(function (index) {
             res.push($(this).attr("src") || $(this).attr("data-src"))

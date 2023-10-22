@@ -49,7 +49,7 @@ export class MangaHere extends BaseMirror implements MirrorImplementation {
             doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
             $ = this.parseHtml(doc)
         }
-        let res = []
+        const res = []
         $(".detail-main-list a").each(function () {
             let url = "https://www.mangahere.cc" + $(this).attr("href")
             url = url.substr(0, url.lastIndexOf("/") + 1)
@@ -68,7 +68,7 @@ export class MangaHere extends BaseMirror implements MirrorImplementation {
     }
 
     async getListImages(doc, curUrl) {
-        let lastpage = this.getVariable({ variableName: "imagecount", doc }),
+        const lastpage = this.getVariable({ variableName: "imagecount", doc }),
             curl = curUrl.substr(0, curUrl.lastIndexOf("/") + 1),
             res = []
         for (let i = 1; i <= lastpage; i++) {
@@ -79,13 +79,13 @@ export class MangaHere extends BaseMirror implements MirrorImplementation {
 
     async getImageUrlFromPage(urlImg) {
         // loads the page containing the current scan
-        let doc = await this.mirrorHelper.loadPage(urlImg, { crossdomain: true })
+        const doc = await this.mirrorHelper.loadPage(urlImg, { crossdomain: true })
         const $ = this.parseHtml(doc)
 
         const [first] = $("#dm5_key")
         const mkey = first ? ($(first).val() as string) : ""
 
-        let curl = urlImg.substr(0, urlImg.lastIndexOf("/") + 1),
+        const curl = urlImg.substr(0, urlImg.lastIndexOf("/") + 1),
             cid = this.getVariable({ doc, variableName: "chapterid" }),
             chapfunurl = curl + "chapterfun.ashx", // url to retrieve scan url
             curpage = this.getVariable({ doc, variableName: "imagepage" })
@@ -137,15 +137,15 @@ export class MangaHere extends BaseMirror implements MirrorImplementation {
         }
 
         // regexp to parse the arguments to pass to the unpack function, just parse the 4 first arguments
-        let regexpargs = /'(([^\\']|\\')*)',([0-9]+),([0-9]+),'(([^\\']|\\')*)'/g
-        let match = regexpargs.exec(data)
+        const regexpargs = /'(([^\\']|\\')*)',([0-9]+),([0-9]+),'(([^\\']|\\')*)'/g
+        const match = regexpargs.exec(data)
         if (match) {
             let sc = unpack(match[1], match[3], match[4], match[5].split("|"), 0, {}) // call the unpack function
             sc = sc.replace(/\\'/g, "'") // unquote the result
             // the result is another js function containing the data, we mimic here what it does
             // retrieve the variables
-            let pix = this.mirrorHelper.getVariableFromScript("pix", sc),
-                pvalue = this.mirrorHelper.getVariableFromScript("pvalue", sc) // array of scan urls (contains current one and next one)
+            const pix = this.mirrorHelper.getVariableFromScript("pix", sc)
+            let pvalue = this.mirrorHelper.getVariableFromScript("pvalue", sc) // array of scan urls (contains current one and next one)
             pvalue = pvalue.map(img => pix + img) // mimic the returned function which rebuilds the url depending on its parts
             return pvalue[0]
         }

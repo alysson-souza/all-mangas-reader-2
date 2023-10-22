@@ -327,7 +327,7 @@ import browser from "webextension-polyfill"
 import { convertIcons, displayFilterCats, formatMangaName, hasNew } from "../../shared/utils"
 
 const default_sort = (a, b) => {
-    let af = formatMangaName(a.displayName && a.displayName !== "" ? a.displayName : a.name),
+    const af = formatMangaName(a.displayName && a.displayName !== "" ? a.displayName : a.name),
         bf = formatMangaName(b.displayName && b.displayName !== "" ? b.displayName : b.name)
     let res = af === undefined ? -1 : af.localeCompare(bf)
     if (res === 0) {
@@ -339,7 +339,7 @@ const default_sort = (a, b) => {
     return res
 }
 const num_chapters_to_read_sort = (a, b) => {
-    let af = a.listChaps.findIndex(ele => ele[1] == a.lastChapterReadURL),
+    const af = a.listChaps.findIndex(ele => ele[1] == a.lastChapterReadURL),
         bf = b.listChaps.findIndex(ele => ele[1] == b.lastChapterReadURL)
     if (bf - af == 0) {
         return default_sort(a, b)
@@ -348,7 +348,7 @@ const num_chapters_to_read_sort = (a, b) => {
     }
 }
 const sort_chapters_upts = (a, b) => {
-    let af = a.upts,
+    const af = a.upts,
         bf = b.upts
     if (bf - af == 0) {
         //this should never happen
@@ -473,7 +473,7 @@ export default {
         usedMirrors: function () {
             return this.allMangas.reduce(
                 (mirrors, manga) => {
-                    let name = manga.mirror
+                    const name = manga.mirror
                     if (name && !mirrors.includes(name)) {
                         mirrors.push(name)
                     }
@@ -547,7 +547,7 @@ export default {
         markAllAsRead() {
             this.dialogTitle = i18n("list_global_read_title")
             this.dialogText = i18n("list_global_read_text", this.visNewMangas.length)
-            let self = this
+            const self = this
             this.dialogAction = () => {
                 self.showDialog = false
                 self.visNewMangas.forEach(async mg => {
@@ -565,7 +565,7 @@ export default {
         deleteAll() {
             this.dialogTitle = i18n("list_global_delete_title")
             this.dialogText = i18n("list_global_delete_text", this.visMangas.length)
-            let self = this
+            const self = this
             this.dialogAction = () => {
                 self.showDialog = false
                 self.visMangas.forEach(async mg => {
@@ -594,7 +594,7 @@ export default {
                 cmp = default_sort
             } else if (this.sort === "updates-mostunread") {
                 cmp = function (a, b) {
-                    let ha = hasNew(a),
+                    const ha = hasNew(a),
                         hb = hasNew(b)
                     // primary sort on manga amount of new chapters, secondary on alphabetical
                     return ha && hb
@@ -607,16 +607,16 @@ export default {
                 }
             } else if (this.sort === "updates") {
                 cmp = function (a, b) {
-                    let ha = hasNew(a),
+                    const ha = hasNew(a),
                         hb = hasNew(b)
                     // primary sort on manga has new chapter, secondary on alphabetical
                     return ha === hb ? default_sort(a, b) : ha && !hb ? -1 : 1
                 }
             } else {
                 cmp = function (a, b) {
-                    let na = a.upts != 0,
+                    const na = a.upts != 0,
                         nb = b.upts != 0
-                    let ha = hasNew(a),
+                    const ha = hasNew(a),
                         hb = hasNew(b)
                     // primary sort on manga when last chapter, secondary on number unread, tertiary on alphabetical
                     return na || nb

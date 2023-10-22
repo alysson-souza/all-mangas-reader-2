@@ -17,12 +17,12 @@ export class ReadM extends BaseMirror implements MirrorImplementation {
     chapter_url = /^\/manga\/.*\/.*/g
 
     async getMangaList(search: string) {
-        let doc = await this.mirrorHelper.loadPage("https://readm.org/searchController/index?search=" + search, {
+        const doc = await this.mirrorHelper.loadPage("https://readm.org/searchController/index?search=" + search, {
             nocache: true,
             preventimages: true
         })
 
-        let res = []
+        const res = []
         const $ = this.parseHtml(doc)
 
         $("ul.manga-list a").each(function () {
@@ -33,16 +33,16 @@ export class ReadM extends BaseMirror implements MirrorImplementation {
     }
 
     async getListChaps(urlManga) {
-        let doc = await this.mirrorHelper.loadPage(urlManga, {
+        const doc = await this.mirrorHelper.loadPage(urlManga, {
             nocache: true,
             preventimages: true
         })
 
-        let res = []
+        const res = []
         const $ = this.parseHtml(doc)
         $("#table-episodes-title > h6 > a").each(function () {
-            let url = "https://readm.org" + $(this).attr("href")
-            let chap = $(this).text().trim()
+            const url = "https://readm.org" + $(this).attr("href")
+            const chap = $(this).text().trim()
             res.push([chap, url])
         })
         return res
@@ -50,7 +50,7 @@ export class ReadM extends BaseMirror implements MirrorImplementation {
 
     async getCurrentPageInfo(doc, curUrl) {
         const $ = this.parseHtml(doc)
-        let mga = $("#router-view > div > div.ui.grid.mt-0 > div > h1 a")
+        const mga = $("#router-view > div > div.ui.grid.mt-0 > div > h1 a")
         return {
             name: mga.text().trim(),
             currentMangaURL: "https://readm.org" + mga.attr("href"),
@@ -59,7 +59,7 @@ export class ReadM extends BaseMirror implements MirrorImplementation {
     }
 
     async getListImages(doc, curUrl, sender) {
-        let res = []
+        const res = []
         const $ = this.parseHtml(doc)
 
         $("#router-view > div > div.ui.grid.chapter > div.ch-images.ch-image-container > center > img").each(

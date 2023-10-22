@@ -18,7 +18,7 @@ export class BananaScan extends BaseMirror implements MirrorImplementation {
 
     async getMangaList(search: string) {
         let res = []
-        let jsonResult = await this.mirrorHelper.loadJson(`${this.home}/wp-admin/admin-ajax.php`, {
+        const jsonResult = await this.mirrorHelper.loadJson(`${this.home}/wp-admin/admin-ajax.php`, {
             nocache: true,
             post: true,
             headers: { "X-Requested-With": "XMLHttpRequest", "Content-type": "application/x-www-form-urlencoded" },
@@ -32,15 +32,15 @@ export class BananaScan extends BaseMirror implements MirrorImplementation {
     }
 
     async getListChaps(urlManga) {
-        let doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
+        const doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
 
-        let res = []
-        let _self = this
+        const res = []
+        const _self = this
         const $ = this.parseHtml(doc)
 
         $("div#chapterlist li a").each(function (index) {
-            let chapUrl = $(this).attr("href")
-            let chapTitle = $("span.chapternum", this).text()
+            const chapUrl = $(this).attr("href")
+            const chapTitle = $("span.chapternum", this).text()
             res.push([chapTitle, chapUrl])
         })
         return res
@@ -48,7 +48,7 @@ export class BananaScan extends BaseMirror implements MirrorImplementation {
 
     async getCurrentPageInfo(doc, curUrl) {
         const $ = this.parseHtml(doc)
-        let serieLink = $("div.allc a")
+        const serieLink = $("div.allc a")
         return {
             name: serieLink.text().trim().replace("’", "'"),
             currentMangaURL: serieLink.attr("href"),
@@ -57,10 +57,10 @@ export class BananaScan extends BaseMirror implements MirrorImplementation {
     }
 
     async getListImages(doc) {
-        let res = []
-        let regex = /ts_reader\.run\((.*?)\);/g
-        let parts = doc.match(regex)
-        let json = JSON.parse(parts[0].replace("ts_reader.run(", "").replace(");", ""))
+        const res = []
+        const regex = /ts_reader\.run\((.*?)\);/g
+        const parts = doc.match(regex)
+        const json = JSON.parse(parts[0].replace("ts_reader.run(", "").replace(");", ""))
 
         json.sources.forEach(source => {
             source.images.forEach(image => {

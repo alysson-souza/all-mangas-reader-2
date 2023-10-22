@@ -66,7 +66,7 @@ class ReadManga extends BaseMirror implements MirrorImplementation {
             let str = elements.attr("href")
             str = str.split("/")[1]
             if (str === mangaIdFromUrl) {
-                let nameParts = elements
+                const nameParts = elements
                     .text()
                     .match(/^\s*\S.*$/gm)
                     .map(name => name.trim())
@@ -110,8 +110,8 @@ class ReadManga extends BaseMirror implements MirrorImplementation {
                 query: search
             }
         })
-        let res = []
-        for (let sug of json.suggestions) {
+        const res = []
+        for (const sug of json.suggestions) {
             if (!sug.link.includes("/", 1)) {
                 res[res.length] = [sug.value, this.options.base_url + sug.link]
             }

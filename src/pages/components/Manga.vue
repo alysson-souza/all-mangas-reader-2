@@ -532,14 +532,14 @@ export default {
         },
         // number of days since last chapter has been published
         timeUpdated() {
-            let nbdays = Math.floor((Date.now() - this.manga.upts) / (1000 * 60 * 60 * 24))
+            const nbdays = Math.floor((Date.now() - this.manga.upts) / (1000 * 60 * 60 * 24))
             return nbdays
         },
         // list of languages
         languages() {
-            let alllangs = this.manga.languages === undefined ? [] : this.manga.languages.split(",")
+            const alllangs = this.manga.languages === undefined ? [] : this.manga.languages.split(",")
             return alllangs.filter(lang => {
-                let keylang = mangaKey({
+                const keylang = mangaKey({
                     url: this.manga.url,
                     mirror: this.manga.mirror,
                     language: lang,
@@ -617,7 +617,7 @@ export default {
          */
         color: function (light, invertable = false) {
             if (this.options.alternateColors && invertable) {
-                let odd = (this.groupIndex + 1) % 2 == 1
+                const odd = (this.groupIndex + 1) % 2 == 1
                 light += odd ? -2 : 1
             }
             return getColor(this.manga, this.manga.hasNew, this.options, light)

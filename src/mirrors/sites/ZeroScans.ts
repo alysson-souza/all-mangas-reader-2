@@ -18,11 +18,11 @@ export class ZeroScans extends BaseMirror implements MirrorImplementation {
     chapter_url = /^\/comics\/.+\/\d/g
 
     async getMangaList(search: string) {
-        let doc = await this.mirrorHelper.loadJson(this.apiUrl + "comics", {
+        const doc = await this.mirrorHelper.loadJson(this.apiUrl + "comics", {
             nocache: true
         })
 
-        let res = doc.data.comics.map(comic => {
+        const res = doc.data.comics.map(comic => {
             return [comic.name, this.home + "comics/" + comic.slug]
         })
 
@@ -30,20 +30,20 @@ export class ZeroScans extends BaseMirror implements MirrorImplementation {
     }
 
     async getListChaps(urlManga) {
-        let slug = urlManga.split("/")[4]
-        let info = await this.mirrorHelper.loadJson(this.apiUrl + "comic/" + slug)
+        const slug = urlManga.split("/")[4]
+        const info = await this.mirrorHelper.loadJson(this.apiUrl + "comic/" + slug)
 
-        let res = []
+        const res = []
 
         for (let page = 1, run = true; run; page++) {
-            let chapters = await this.getChaptersFromPage(info.data.id, page, slug)
+            const chapters = await this.getChaptersFromPage(info.data.id, page, slug)
             chapters.length > 0 ? res.push(...chapters) : (run = false)
         }
         return res
     }
 
     async getChaptersFromPage(id, page, slug) {
-        let chapters = await this.mirrorHelper.loadJson(
+        const chapters = await this.mirrorHelper.loadJson(
             this.apiUrl + "comic/" + id + "/chapters?sort=desc&page=" + page
         )
         return chapters.data.data.map(chapter => {
@@ -52,8 +52,8 @@ export class ZeroScans extends BaseMirror implements MirrorImplementation {
     }
 
     async getCurrentPageInfo(doc, curUrl) {
-        let slug = curUrl.split("/")[4]
-        let info = await this.mirrorHelper.loadJson(this.apiUrl + "comic/" + slug)
+        const slug = curUrl.split("/")[4]
+        const info = await this.mirrorHelper.loadJson(this.apiUrl + "comic/" + slug)
         return {
             name: info.data.name,
             currentMangaURL: curUrl.split("/").slice(0, 5).join("/"),
@@ -62,11 +62,11 @@ export class ZeroScans extends BaseMirror implements MirrorImplementation {
     }
 
     async getListImages(doc, curUrl, sender) {
-        let parts = curUrl.split("/")
-        let slug = parts[4]
-        let chapterId = parts[5]
+        const parts = curUrl.split("/")
+        const slug = parts[4]
+        const chapterId = parts[5]
 
-        let info = await this.mirrorHelper.loadJson(this.apiUrl + "comic/" + slug + "/chapters/" + chapterId)
+        const info = await this.mirrorHelper.loadJson(this.apiUrl + "comic/" + slug + "/chapters/" + chapterId)
 
         return info.data.chapter.high_quality
     }

@@ -130,10 +130,10 @@ export default {
             if (languages.split(",").length === 1) curmirlang = getUnifiedLang(languages) // use unified lang so if a manga lang is 'gb' and another 'en', both will be under 'en'
 
             // add new mangas to grouped list
-            let addMgs = (mgs, lang) => {
-                for (let mg of mgs) {
+            const addMgs = (mgs, lang) => {
+                for (const mg of mgs) {
                     mg.adding = false // is currently be added to list (display progress)
-                    let mgst = formatMangaName(mg.name)
+                    const mgst = formatMangaName(mg.name)
                     if (!this.results[lang]) this.results[lang] = {}
                     if (this.results[lang][mgst] !== undefined) {
                         this.results[lang][mgst].push(mg)
@@ -148,15 +148,15 @@ export default {
                 addMgs(mgs, curmirlang)
             } else {
                 // implementation returns object which keys are languages : {"en" : [[]], "fr": [[]]}
-                for (let l in mgs) {
+                for (const l in mgs) {
                     addMgs(mgs[l], getUnifiedLang(l))
                 }
             }
 
-            let lsts = {}
-            for (let l in this.results) {
+            const lsts = {}
+            for (const l in this.results) {
                 // build sorted list of keys
-                let tmplst = []
+                const tmplst = []
                 Object.keys(this.results[l]).forEach(key => tmplst.push(this.results[l][key]))
                 // sort list of lists by length and alphabetically inside
                 tmplst.sort((a, b) => {

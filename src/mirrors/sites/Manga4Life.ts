@@ -65,13 +65,13 @@ export class Manga4Life extends BaseMirror implements MirrorImplementation {
     }
 
     async getListImages(doc: string, curUrl: string) {
-        let fullUrl = curUrl.replace("-page-1.html", ".html")
+        const fullUrl = curUrl.replace("-page-1.html", ".html")
         const text = await this.mirrorHelper.loadPage(fullUrl, { nocache: true })
         let regex, matches
 
         regex = /vm\.CurChapter =(.*?);/g
         matches = regex.exec(text)
-        let vars = JSON.parse(matches[1])
+        const vars = JSON.parse(matches[1])
 
         // regex = /vm\.CurChapter\s*=\s*\{.*?\};\s*vm\.\w+\s*=\s*"(.*?)";/g
         regex = /vm\.(\w+?)\s*=\s*\w+\.data\.val\.PathName/g
@@ -79,35 +79,35 @@ export class Manga4Life extends BaseMirror implements MirrorImplementation {
         regex = new RegExp("vm\\." + matches[1] + '\\s*=\\s*\\"(.*?)\\"', "g")
 
         matches = regex.exec(text)
-        let cdnPath = matches[1]
+        const cdnPath = matches[1]
 
         regex = /vm\.IndexName = "(.*?)";/g
         matches = regex.exec(text)
-        let titlePath = matches[1]
+        const titlePath = matches[1]
 
-        let res = []
-        let chapImage = this.ChapterImage(vars.Chapter)
-        let extraDir = vars.Directory == "" ? "" : vars.Directory + "/"
+        const res = []
+        const chapImage = this.ChapterImage(vars.Chapter)
+        const extraDir = vars.Directory == "" ? "" : vars.Directory + "/"
         for (let i = 1; i <= vars.Page; i++) {
-            let pageImage = this.PageImage(i)
+            const pageImage = this.PageImage(i)
             res.push(`https://${cdnPath}/manga/${titlePath}/${extraDir}/${chapImage}-${pageImage}.png`)
         }
         return res
     }
 
     private ChapterListLink(id: string) {
-        let stupidvar1 = id.substr(0, 1)
-        let chapterNumber = parseInt(id.slice(1, -1))
-        let chapterPart = id.slice(-1)
-        let index = Number(stupidvar1) !== 1 ? "-index-" + stupidvar1 : ""
-        let chapterPartDisplay = Number(chapterPart) !== 0 ? "." + chapterPart : ""
+        const stupidvar1 = id.substr(0, 1)
+        const chapterNumber = parseInt(id.slice(1, -1))
+        const chapterPart = id.slice(-1)
+        const index = Number(stupidvar1) !== 1 ? "-index-" + stupidvar1 : ""
+        const chapterPartDisplay = Number(chapterPart) !== 0 ? "." + chapterPart : ""
         return "-chapter-" + chapterNumber + chapterPartDisplay + index + ".html"
     }
 
     private ChapterListName(type: string, id: string) {
-        let blah = (type != "" ? type : "Chapter") + " "
-        let chapterNumber = parseInt(id.slice(1, -1))
-        let chapterPart = id[id.length - 1]
+        const blah = (type != "" ? type : "Chapter") + " "
+        const chapterNumber = parseInt(id.slice(1, -1))
+        const chapterPart = id[id.length - 1]
         return (blah + (Number(chapterPart) === 0 ? chapterNumber : chapterNumber + "." + chapterPart)).trim()
     }
 

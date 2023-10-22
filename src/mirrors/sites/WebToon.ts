@@ -40,14 +40,14 @@ export class WebToon extends BaseMirror implements MirrorImplementation {
             nocache: true,
             preventimages: true
         })
-        let self = this
-        let resOrig = []
+        const _self = this
+        const resOrig = []
         const $ = this.parseHtml(doc)
         $(".challenge_lst li a, .card_lst li a").each(function () {
-            resOrig.push([$(".subj", $(this)).text().trim(), self.fixUrl($(this).attr("href"))])
+            resOrig.push([$(".subj", $(this)).text().trim(), _self.fixUrl($(this).attr("href"))])
         })
 
-        let res = []
+        const res = []
         for (const [name, mangaUrl] of resOrig) {
             const doc2 = await this.mirrorHelper.loadPage(mangaUrl, { preventimages: true })
             const url = doc2.match(/<meta property="og:url" content="([^"]+)" \/>/)
@@ -59,7 +59,7 @@ export class WebToon extends BaseMirror implements MirrorImplementation {
     async getListChaps(urlManga: string) {
         await this.setCookie()
         let doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
-        let res = []
+        const res = []
         let $ = this.parseHtml(doc)
         $(".detail_lst li > a", doc).each(function (index) {
             res.push([

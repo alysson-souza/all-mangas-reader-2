@@ -226,14 +226,14 @@ export default {
         },
         nbfailed() {
             let nb = 0
-            for (let res of this.testsResults) {
+            for (const res of this.testsResults) {
                 if (!res.passed) nb++
             }
             return nb
         },
         finishedTests() {
             //<v-row  v-if="currentTest >= 0 && index <= currentTest && testsResults.length >= index" v-for="(test, index) in tests"
-            let fin = this.tests.filter(
+            const fin = this.tests.filter(
                 (val, index) => this.currentTest >= 0 && index <= this.currentTest && this.testsResults.length >= index
             )
             return fin
@@ -286,28 +286,28 @@ export default {
          */
         async loadTests(step = 0, substep = 0) {
             console.log("Load the test course " + this.curtest)
-            let testid = this.curtest
+            const testid = this.curtest
             if (step === substep && step === 0) {
                 this.testsResults = []
                 this.currentTest = 0
                 this.forcedValues = {}
                 this.outputs = {}
             }
-            let mirror = this.mirrors.find(mir => mir.mirrorName === this.current)
+            const mirror = this.mirrors.find(mir => mir.mirrorName === this.current)
             let i = 0
-            for (let test of this.tests) {
+            for (const test of this.tests) {
                 i++
                 if (step !== 0 && i <= step) continue
                 this.currentTest = i - 1
                 let breakingFail = false
                 try {
                     let passed = true // result of current test
-                    let results = [] // text results of sub tests of the test
-                    let testouts = []
+                    const results = [] // text results of sub tests of the test
+                    const testouts = []
                     if (test.set) {
                         // values to set before testing
-                        for (let toset of test.set) {
-                            let spl = toset.split(" ")
+                        for (const toset of test.set) {
+                            const spl = toset.split(" ")
                             if (spl.length > 1) {
                                 if (!this.outputs[spl[1]])
                                     throw { message: "the required input " + spl[1] + " is missing." }
@@ -318,10 +318,10 @@ export default {
                             }
                         }
                     }
-                    for (let unit of test.tests) {
+                    for (const unit of test.tests) {
                         let isok, text // return from the test function
                         let tocall // test function to call
-                        let inputs = [] // inputs of the test function (first parameter is mirror)
+                        const inputs = [] // inputs of the test function (first parameter is mirror)
                         let output // output of the test function
                         if (typeof unit === "function") {
                             tocall = unit
@@ -330,7 +330,7 @@ export default {
                             // bind inputs
                             if (unit.input) {
                                 for (let inp of unit.input) {
-                                    let spl = inp.split(" ")
+                                    const spl = inp.split(" ")
                                     if (spl.length > 1) {
                                         let outname = spl[1]
                                         let optional = false
@@ -370,12 +370,12 @@ export default {
                             }
                         }
                         try {
-                            let ress = await tocall.bind(this)(mirror, ...inputs)
+                            const ress = await tocall.bind(this)(mirror, ...inputs)
                             if (testid !== this.curtest) {
                                 console.log("Interrupt the " + testid + " test course, has been deprecated")
                                 return // the current test course is deprecated, a new one has been launched
                             }
-                            let allres = []
+                            const allres = []
                             // if there is only one result, add it to the result array
                             if (ress.length > 0 && (ress[0] === true || ress[0] === false)) {
                                 allres.push(ress)
@@ -387,8 +387,8 @@ export default {
                                 // for all results of unit test
                                 if (unit.output !== undefined && unit.output.length > 0 && cur_outputs.length > 0) {
                                     for (let o = 0; o < cur_outputs.length; o++) {
-                                        let output = cur_outputs[o]
-                                        let name = unit.output[o]
+                                        const output = cur_outputs[o]
+                                        const name = unit.output[o]
                                         this.outputs[name] = output // save the output
                                         testouts.push({
                                             name: name,
@@ -445,10 +445,10 @@ export default {
         selectEntryRandomly(outputName) {
             if (this.forcedValues[outputName]) return this.forcedValues[outputName]
             for (let i = 0; i < this.currentTest; i++) {
-                for (let out of this.testsResults[i].output) {
+                for (const out of this.testsResults[i].output) {
                     if (out.name === outputName) {
                         //select a random value
-                        let val = out.value[Math.floor(Math.random() * out.value.length)].value
+                        const val = out.value[Math.floor(Math.random() * out.value.length)].value
                         //set it as model
                         out.currentValue = val
                         //return it
@@ -463,7 +463,7 @@ export default {
          */
         getEntryValue(outputName) {
             for (let i = 0; i < this.currentTest; i++) {
-                for (let out of this.testsResults[i].output) {
+                for (const out of this.testsResults[i].output) {
                     if (out.name === outputName) {
                         //return it
                         return out.currentValue
@@ -477,7 +477,7 @@ export default {
          */
         getEntryText(outputName) {
             for (let i = 0; i < this.currentTest; i++) {
-                for (let out of this.testsResults[i].output) {
+                for (const out of this.testsResults[i].output) {
                     if (out.name === outputName) {
                         //return the text
                         return out.value.find(el => el.value === out.currentValue).text
@@ -502,8 +502,8 @@ export default {
             // slice the results after the generated output
             let i = 0,
                 found = false
-            for (let res of this.testsResults) {
-                for (let out of res.output) {
+            for (const res of this.testsResults) {
+                for (const out of res.output) {
                     if (found === true) {
                         //delete outputs found after from previous outputs
                         delete this.outputs[out.name]

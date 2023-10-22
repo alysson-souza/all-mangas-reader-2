@@ -23,7 +23,7 @@ export class AmrInit {
         const ancVersion = await this.optionStorage.getKey("version")
         const curVersion = manifest.version
 
-        let beta = manifest.name.indexOf("Beta") > 0
+        const beta = manifest.name.indexOf("Beta") > 0
 
         let afterLoading = () => {}
         await this.optionStorage.setKey("beta", beta ? 1 : 0)
@@ -49,7 +49,7 @@ export class AmrInit {
     }
 
     private async updateApp(ancVersion, curVersion) {
-        let afterCalls = []
+        const afterCalls = []
         if (!this.versionAfter(ancVersion, "2.0.2.140")) {
             // if previous version is before 2.0.2.140
             // from this version, mirrors are hosted to mirrors.allmangasreader.com/v4
@@ -80,16 +80,16 @@ export class AmrInit {
         if (!this.versionAfter(ancVersion, "2.0.4")) {
             // if previous version is before 2.0.3
             afterCalls.push(async () => {
-                let todel = []
-                let mgs = await this.storedb.getMangaList()
-                for (let mg of mgs) {
-                    let sl = mg.key.indexOf("/")
-                    let mirrorpart = mg.key.substring(0, sl)
+                const todel = []
+                const mgs = await this.storedb.getMangaList()
+                for (const mg of mgs) {
+                    const sl = mg.key.indexOf("/")
+                    const mirrorpart = mg.key.substring(0, sl)
                     if (!mirrorpart.match(/^[0-9a-z]+$/)) {
                         todel.push(mg.key)
                     }
                 }
-                for (let td of todel) {
+                for (const td of todel) {
                     this.logger.info("deleting manga key " + td + " from db due to 2.0.3 issue")
                     this.storedb.deleteManga(td)
                 }
@@ -111,7 +111,7 @@ export class AmrInit {
          * Return a function wrapping all functions to call once all db is initialized
          */
         return async () => {
-            for (let func of afterCalls) {
+            for (const func of afterCalls) {
                 await func()
             }
         }
@@ -182,7 +182,7 @@ export class AmrInit {
     }
 
     checkLangSet() {
-        let curlang = navigator.language.slice(0, 2)
+        const curlang = navigator.language.slice(0, 2)
         // is language supported ? --> pb, sometimes, language code does not match amr code... let it be
 
         const languages: string[] = []
@@ -191,7 +191,7 @@ export class AmrInit {
         })
 
         if (languages.includes(curlang)) {
-            let readLangs = this.store.state.options.readlanguages
+            const readLangs = this.store.state.options.readlanguages
             if (!readLangs.includes(curlang)) {
                 this.logger.info("Add language " + curlang + " to readable list of languages")
                 this.store.dispatch("addReadLanguage", curlang) // add the language

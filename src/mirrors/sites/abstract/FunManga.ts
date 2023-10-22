@@ -65,9 +65,9 @@ class FunManga extends BaseMirror implements MirrorImplementation {
             opts.headers["X-Requested-With"] = "XMLHttpRequest"
         }
 
-        let doc = await this.mirrorHelper.loadPage(this.options.search_url, opts)
+        const doc = await this.mirrorHelper.loadPage(this.options.search_url, opts)
         const $ = this.parseHtml(doc)
-        let res: InfoResult[] = []
+        const res: InfoResult[] = []
         $(this.options.search_a_sel).each(function (index) {
             res[index] = [$(this).attr("title").trim(), $(this).attr("href")]
         })
@@ -76,7 +76,7 @@ class FunManga extends BaseMirror implements MirrorImplementation {
 
     public async getListChaps(urlManga: string) {
         const doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
-        let res = []
+        const res = []
         const $ = this.parseHtml(doc)
         $(this.options.chapters_a_sel).each(function () {
             res[res.length] = [$(".val", $(this)).text().trim(), $(this).attr("href")]
@@ -92,7 +92,7 @@ class FunManga extends BaseMirror implements MirrorImplementation {
             mgname = $("a[href='" + mangaurl + "']").text()
         }
         if (mgname === undefined || mgname.trim() === "") {
-            let docmg = await this.mirrorHelper.loadPage(mangaurl)
+            const docmg = await this.mirrorHelper.loadPage(mangaurl)
             mgname = this.queryHtml(docmg, ".panel-heading h1").text()
         }
         return {
@@ -108,7 +108,7 @@ class FunManga extends BaseMirror implements MirrorImplementation {
         console.error({ doc, regex, parts })
         console.error("HELLLLLLLLLLL")
         if (parts) {
-            let json = JSON.parse(parts[0].replace("ts_reader.run(", "").replace(");", ""))
+            const json = JSON.parse(parts[0].replace("ts_reader.run(", "").replace(");", ""))
             return json.map(obj => obj.url)
         }
 

@@ -17,7 +17,7 @@ export class Komga extends BaseMirror implements MirrorImplementation {
     chapter_url = /\/book\/.*?\/read.*/g
 
     async getMangaList(search: string) {
-        let list = await this.apiCall(`./series?search=${search}`)
+        const list = await this.apiCall(`./series?search=${search}`)
 
         return list.content.map(res => {
             return [res.name, this.komgaUrl(`./series/${res.id}`)]
@@ -25,12 +25,14 @@ export class Komga extends BaseMirror implements MirrorImplementation {
     }
 
     async getListChaps(urlManga) {
-        let id = urlManga.split("/").pop()
-        let res = []
+        const id = urlManga.split("/").pop()
+        const res = []
 
         for (let page = 0, run = true; run; page++) {
-            let list = await this.apiCall(`./series/${id}/books?page=${page}&size=500&sort=metadata.numberSort%2Cdesc`)
-            let mangas = list.content.map(chap => {
+            const list = await this.apiCall(
+                `./series/${id}/books?page=${page}&size=500&sort=metadata.numberSort%2Cdesc`
+            )
+            const mangas = list.content.map(chap => {
                 return [chap.name, this.komgaUrl(`./book/${chap.id}/read`)]
             })
             res.push(...mangas)
@@ -43,10 +45,10 @@ export class Komga extends BaseMirror implements MirrorImplementation {
     }
 
     async getCurrentPageInfo(doc, curUrl) {
-        let parts = new URL(curUrl).pathname.split("/")
-        let id = parts[parts.length - 2]
-        let manga = await this.apiCall(`./books/${id}`)
-        let series = await this.apiCall(`./series/${manga.seriesId}`)
+        const parts = new URL(curUrl).pathname.split("/")
+        const id = parts[parts.length - 2]
+        const manga = await this.apiCall(`./books/${id}`)
+        const series = await this.apiCall(`./series/${manga.seriesId}`)
 
         return {
             name: series.name,
@@ -56,9 +58,9 @@ export class Komga extends BaseMirror implements MirrorImplementation {
     }
 
     async getListImages(doc, curUrl) {
-        let parts = new URL(curUrl).pathname.split("/")
-        let id = parts[parts.length - 2]
-        let pages = await this.apiCall(`./books/${id}/pages`)
+        const parts = new URL(curUrl).pathname.split("/")
+        const id = parts[parts.length - 2]
+        const pages = await this.apiCall(`./books/${id}/pages`)
 
         return pages.map(page => this.apiUrl(`./books/${id}/pages/${page.number}`))
     }

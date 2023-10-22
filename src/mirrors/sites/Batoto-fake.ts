@@ -67,7 +67,7 @@ export class BatotoFake extends BaseMirror implements MirrorImplementation {
         let regex = /const batoPass = (.*?);/g
         let matches = regex.exec(doc)
         // Seems like we stuck here, not allowed and we cannot convert to variable
-        let batoPass = eval(matches[1])
+        const batoPass = eval(matches[1])
 
         regex = /const batoWord = (.*?);/g
         matches = regex.exec(doc)

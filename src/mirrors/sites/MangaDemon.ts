@@ -17,13 +17,13 @@ export class MangaDemon extends BaseMirror implements MirrorImplementation {
     chapter_url = /^\/manga\/.+\/chapter\/.+/g
 
     async getMangaList(search: string) {
-        let doc = await this.mirrorHelper.loadPage(this.home + "/search.php?manga=" + search, {
+        const doc = await this.mirrorHelper.loadPage(this.home + "/search.php?manga=" + search, {
             nocache: true,
             preventimages: true
         })
 
-        let res = []
-        let _self = this
+        const res = []
+        const _self = this
         const $ = this.parseHtml(doc)
 
         $(`a[href*="/manga/"]`).each(function (ind) {
@@ -33,10 +33,10 @@ export class MangaDemon extends BaseMirror implements MirrorImplementation {
     }
 
     async getListChaps(urlManga) {
-        let doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
+        const doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
 
-        let res = []
-        let _self = this
+        const res = []
+        const _self = this
         const $ = this.parseHtml(doc)
 
         $(`ul.chapter-list a`).each(function (index) {
@@ -47,8 +47,8 @@ export class MangaDemon extends BaseMirror implements MirrorImplementation {
 
     async getCurrentPageInfo(doc, curUrl) {
         const $ = this.parseHtml(doc)
-        let link = $("h1 a:first")
-        let name = link.text()
+        const link = $("h1 a:first")
+        const name = link.text()
         return {
             name: name,
             currentMangaURL: this.home + link.attr("href"),
@@ -57,11 +57,11 @@ export class MangaDemon extends BaseMirror implements MirrorImplementation {
     }
 
     async getListImages(doc) {
-        let res = []
+        const res = []
         const $ = this.parseHtml(doc)
 
         $(`article center div img`).each(function () {
-            let src = $(this).attr("src")
+            const src = $(this).attr("src")
             if (!res.includes(src)) {
                 res.push(src)
             }

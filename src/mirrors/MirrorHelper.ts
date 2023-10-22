@@ -162,15 +162,15 @@ export class MirrorHelper {
      */
     public getVariableFromScript = function (varname: string, sc: string) {
         let res = undefined
-        let rx = new RegExp(
+        const rx = new RegExp(
             "(var|let|const)\\s+" + varname + "\\s*=\\s*([0-9]+|\\\"|\\'|\\{|\\[|JSON\\s*\\.\\s*parse\\()",
             "gmi"
         )
-        let match = rx.exec(sc)
+        const match = rx.exec(sc)
         if (match) {
-            let ind = match.index
-            let varchar = match[2]
-            let start = sc.indexOf(varchar, ind) + 1
+            const ind = match.index
+            const varchar = match[2]
+            const start = sc.indexOf(varchar, ind) + 1
             if (varchar.match(/[0-9]+/)) {
                 res = Number(varchar)
             } else {
@@ -180,7 +180,7 @@ export class MirrorHelper {
                         curpos = start,
                         prevbs = false
                     while (!found) {
-                        let c = sc.charAt(curpos++)
+                        const c = sc.charAt(curpos++)
                         if (c === varchar && !prevbs) {
                             found = true
                             break
@@ -191,18 +191,18 @@ export class MirrorHelper {
                 } else {
                     // if (varchar === '[' || varchar === "{" || varchar === 'JSON.parse(') { // var is object or array or parsable
                     let curpos = start + varchar.length - 1,
-                        openings = 1,
-                        opening = varchar === "JSON.parse(" ? "(" : varchar,
+                        openings = 1
+                    const opening = varchar === "JSON.parse(" ? "(" : varchar,
                         opposite = varchar === "[" ? "]" : varchar === "{" ? "}" : ")"
                     while (openings > 0 && curpos < sc.length) {
-                        let c = sc.charAt(curpos++)
+                        const c = sc.charAt(curpos++)
                         if (c === opening) openings++
                         if (c === opposite) openings--
                     }
                     let toparse = sc.substring(start - 1 + varchar.length - 1, curpos)
                     if (toparse.match(/atob\s*\(/g)) {
                         // if data to parse is encoded using btoa
-                        let m = /(?:'|").*(?:'|")/g.exec(toparse)
+                        const m = /(?:'|").*(?:'|")/g.exec(toparse)
                         toparse = atob(m[0].substring(1, m[0].length - 1))
                     }
                     res = JSON.parse(toparse)

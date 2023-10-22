@@ -166,7 +166,7 @@ class SyncManager {
         const local = await this.localStorage.loadMangaList()
         for (const storage of this.remoteStorages) {
             const remote = await storage.getAll()
-            let d = Date.now()
+            const d = Date.now()
             for (const localManga of local) {
                 if (typeof localManga.tsOpts === "undefined") await this.dispatch("setMangaTsOpts", localManga, d)
             }

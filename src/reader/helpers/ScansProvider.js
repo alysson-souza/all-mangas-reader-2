@@ -26,7 +26,7 @@ export const scansProvider = {
         scp.onloadchapter = () => EventBus.$emit("chapter-loaded")
         scp.onloadscan = () => {
             // change progress when scan loads
-            let nbloaded = this.state.scans.reduce((acc, sc) => acc + (sc.loading ? 0 : 1), 0)
+            const nbloaded = this.state.scans.reduce((acc, sc) => acc + (sc.loading ? 0 : 1), 0)
             this.state.progress = Math.floor((nbloaded / this.state.scans.length) * 100)
             this.state.loaded = nbloaded === this.state.scans.length
             EventBus.$emit("loaded-scan")
@@ -50,7 +50,7 @@ export const scansProvider = {
     init(scansUrl, mirror, inorder = false) {
         if (!scansUrl || scansUrl.length === 0) return
 
-        let scp = new ScansLoader(scansUrl, mirror)
+        const scp = new ScansLoader(scansUrl, mirror)
         this.initWithProvider(scp)
 
         // initialize scans
@@ -75,7 +75,7 @@ export const ScansLoader = class {
     /** Load all scans */
     async load(inorder = false) {
         // we create a new Promise to encapsulate the scan's load function because we need to call onloadscan after each load unitarily. We can't use then() to chain the load because that will trigger the load promise and we want to be able to call it in order OR all at the same time)
-        let pload = this.scans.map(
+        const pload = this.scans.map(
             sc =>
                 new Promise(async (resolve, reject) => {
                     await sc.load() // loads the scan
@@ -147,7 +147,7 @@ class ScanLoader {
 
         return new Promise(async (resolve, reject) => {
             this.scan.addEventListener("load", () => {
-                let img = this.scan
+                const img = this.scan
                 if (!img) return
                 /** Check if scan is double page */
                 if (img.width > img.height) {
@@ -161,7 +161,7 @@ class ScanLoader {
                 this.error = false
                 resolve()
             })
-            let manageError = e => {
+            const manageError = e => {
                 console.error("An error occurred while loading an image")
                 console.error(e)
                 this.loading = false

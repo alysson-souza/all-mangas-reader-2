@@ -21,13 +21,13 @@ export class Tachidesk extends BaseMirror implements MirrorImplementation {
     }
 
     async getMangaList(search: string) {
-        let categories = await this.mirrorHelper.loadJson(this.apiUrl() + "category")
+        const categories = await this.mirrorHelper.loadJson(this.apiUrl() + "category")
 
         return Object.assign(
             {},
             ...(await Promise.all(
                 categories.map(async ele => {
-                    let data = await this.mirrorHelper.loadJson(this.apiUrl() + "category/" + ele.id)
+                    const data = await this.mirrorHelper.loadJson(this.apiUrl() + "category/" + ele.id)
                     return data.map(elem => {
                         return [
                             elem.title,
@@ -40,7 +40,7 @@ export class Tachidesk extends BaseMirror implements MirrorImplementation {
     }
 
     async getListChaps(urlManga) {
-        let id = urlManga
+        const id = urlManga
             .split("/")
             .filter(ele => ele != "")
             .slice(-1)[0]
@@ -61,16 +61,16 @@ export class Tachidesk extends BaseMirror implements MirrorImplementation {
     }
 
     async getCurrentPageInfo(doc, curUrl) {
-        let id = curUrl
+        const id = curUrl
             .split("/")
             .filter(ele => ele != "")
             .slice(-3)[0]
-        let chapid = curUrl
+        const chapid = curUrl
             .split("/")
             .filter(ele => ele != "")
             .slice(-1)[0]
 
-        let manga = await this.mirrorHelper.loadJson(this.apiUrl() + "manga/" + id)
+        const manga = await this.mirrorHelper.loadJson(this.apiUrl() + "manga/" + id)
         return {
             name: manga.title,
             currentMangaURL: new URL("manga/" + id, String(this.mirrorHelper.getOption("tachideskUrl"))).href,
@@ -82,16 +82,16 @@ export class Tachidesk extends BaseMirror implements MirrorImplementation {
     }
 
     async getListImages(doc, curUrl, sender) {
-        let id = curUrl
+        const id = curUrl
             .split("/")
             .filter(ele => ele != "")
             .slice(-3)[0]
-        let chapid = curUrl
+        const chapid = curUrl
             .split("/")
             .filter(ele => ele != "")
             .slice(-1)[0]
 
-        let chapdat = await this.mirrorHelper.loadJson(this.apiUrl() + "manga/" + id + "/chapter/" + chapid)
+        const chapdat = await this.mirrorHelper.loadJson(this.apiUrl() + "manga/" + id + "/chapter/" + chapid)
 
         return Array(chapdat.pageCount)
             .fill(0)
@@ -101,7 +101,7 @@ export class Tachidesk extends BaseMirror implements MirrorImplementation {
     }
 
     isCurrentPageAChapterPage(doc, curUrl) {
-        let isPage =
+        const isPage =
             curUrl
                 .split("/")
                 .filter(ele => ele != "")

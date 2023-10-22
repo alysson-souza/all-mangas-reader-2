@@ -37,8 +37,8 @@ export default {
         async search() {
             if (this.disabled || this.mirror.disabled) return
             this.searching = true
-            let searchinit = this.searchPhrase
-            let mgs = await browser.runtime.sendMessage({
+            const searchinit = this.searchPhrase
+            const mgs = await browser.runtime.sendMessage({
                 action: "searchList",
                 mirror: this.mirror.mirrorName,
                 search: searchinit
