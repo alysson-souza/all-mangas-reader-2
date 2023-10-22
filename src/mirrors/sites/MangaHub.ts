@@ -38,10 +38,9 @@ export class MangaHub extends BaseMirror implements MirrorImplementation {
         const doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
         const res = []
         const $ = this.parseHtml(doc)
-        $("li._287KE a._2U6DJ").each(function () {
+        $("li._287KE a._3pfyN").each(function () {
             res.push([$("span._3D1SJ", this).text() + " " + $("span._2IG5P", this).text(), $(this).attr("href")])
         })
-        console.debug("Mangahub Chapters", res)
         return res
     }
 
