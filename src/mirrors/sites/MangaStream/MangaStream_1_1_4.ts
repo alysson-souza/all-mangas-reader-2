@@ -245,7 +245,7 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
             {
                 // search_url: "https://realmscans.xyz/",
                 // series_list_selector: '.listupd a[href*="/series/"]',
-                // chapter_list_selector: `.eph-num a[href*="realmscans.to"]`
+                chapter_list_selector: `.eph-num a[href*="rizzcomic.com"]`
             }
         )
     ]

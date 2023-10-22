@@ -41,6 +41,7 @@ export class MangaHub extends BaseMirror implements MirrorImplementation {
         $("li._287KE a._2U6DJ").each(function () {
             res.push([$("span._3D1SJ", this).text() + " " + $("span._2IG5P", this).text(), $(this).attr("href")])
         })
+        console.debug("Mangahub Chapters", res)
         return res
     }
 
@@ -49,14 +50,18 @@ export class MangaHub extends BaseMirror implements MirrorImplementation {
         return {
             name: seriesLink.text(),
             currentMangaURL: seriesLink.attr("href"),
-            currentChapterURL: curUrl
+            currentChapterURL: curUrl.includes("?") ? curUrl.split("?")[0] : curUrl
         }
     }
 
     async getListImages(doc, curUrl, sender) {
         const parts = curUrl.split("/")
         const slug = parts[4]
-        const chapter = parts[5].replace("chapter-", "")
+        let chapter = parts[5].replace("chapter-", "")
+
+        if (chapter.includes("?")) {
+            chapter = chapter.split("?")[0]
+        }
 
         const query = `{"query":"{chapter(x:m01,slug:\\"${slug}\\",number:${chapter}){id,title,mangaID,number,slug,date,pages,noAd,manga{id,title,slug,mainSlug,author,isWebtoon,isYaoi,isPorn,isSoftPorn,unauthFile,isLicensed}}}\"}`
 
@@ -78,8 +83,8 @@ export class MangaHub extends BaseMirror implements MirrorImplementation {
         const res = []
         const cdnUrl = "https://img.mghubcdn.com/file/imghub/"
         const pages = Object.values(JSON.parse(json.data.chapter.pages))
-        for (const page of pages) {
-            res.push(cdnUrl + page)
+        for (const page of pages[1] as any[]) {
+            res.push(cdnUrl + pages[0] + page)
         }
         return res
     }
