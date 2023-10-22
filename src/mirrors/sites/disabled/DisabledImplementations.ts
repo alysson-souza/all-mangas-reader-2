@@ -1363,6 +1363,20 @@ export const getDisabledImplementations = () => {
             domains: ["mangallama.com"],
             home: "https://mangallama.com",
             chapter_url: /\/reader\/.*\/.*/g
+        }),
+        new DisabledMirror({
+            mirrorName: "Realm Scans",
+            canListFullMangas: false,
+            mirrorIcon: require("../../icons/realm-scans-optimized.png"),
+            domains: ["realmscans.xyz", "realmscans.to"],
+            home: "https://realmscans.to/",
+            chapter_url: /chapter-[0-9]/g,
+            languages: "en",
+            abstract_options: {
+                // search_url: "https://realmscans.xyz/",
+                // series_list_selector: '.listupd a[href*="/series/"]',
+                chapter_list_selector: `.eph-num a[href*="realmscans.to"]`
+            }
         })
     ]
 }

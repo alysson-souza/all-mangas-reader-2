@@ -6,7 +6,6 @@ import LiminousScanIcon from "../../icons/luminousscans-optimized.png"
 import ManhwaxIcon from "../../icons/manhwax-optimized.png"
 import NightScansIcon from "../../icons/night-scans-optimized.png"
 import NocturalScansIcon from "../../icons/nocturnal-scans-optimized.png"
-import RealScansIcon from "../../icons/realm-scans-optimized.png"
 import AnigliScansIcon from "../../icons/anigli-scans-optimized.png"
 
 const defaultOptions = {
@@ -207,23 +206,6 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
         new MangaStream_1_1_4(
             mirrorHelper,
             {
-                mirrorName: "Realm Scans",
-                canListFullMangas: false,
-                mirrorIcon: RealScansIcon,
-                domains: ["realmscans.xyz", "realmscans.to"],
-                home: "https://realmscans.to/",
-                chapter_url: /chapter-[0-9]/g,
-                languages: "en"
-            },
-            {
-                // search_url: "https://realmscans.xyz/",
-                // series_list_selector: '.listupd a[href*="/series/"]',
-                chapter_list_selector: `.eph-num a[href*="realmscans.to"]`
-            }
-        ),
-        new MangaStream_1_1_4(
-            mirrorHelper,
-            {
                 mirrorName: "Animated Glitched Scans",
                 canListFullMangas: false,
                 mirrorIcon: AnigliScansIcon,
@@ -248,6 +230,23 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
                 chapter_url: /^\/*\/.+$/g
             },
             {}
+        ),
+        new MangaStream_1_1_4(
+            mirrorHelper,
+            {
+                mirrorName: "Rizz Comic",
+                canListFullMangas: false,
+                mirrorIcon: require("../../icons/rizz-comic-optimized.png"),
+                domains: ["rizzcomic.com"],
+                home: "https://rizzcomic.com",
+                chapter_url: /chapter-[0-9]/g,
+                languages: "en"
+            },
+            {
+                // search_url: "https://realmscans.xyz/",
+                // series_list_selector: '.listupd a[href*="/series/"]',
+                // chapter_list_selector: `.eph-num a[href*="realmscans.to"]`
+            }
         )
     ]
 }
