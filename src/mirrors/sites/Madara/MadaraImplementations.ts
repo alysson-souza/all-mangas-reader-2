@@ -151,13 +151,13 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
                 mirrorName: "Aqua Manga",
                 mirrorIcon: AquaMangaIcon,
                 languages: "en",
-                domains: ["aquamanga.com"],
-                home: "https://aquamanga.com/",
+                domains: ["aquamanga.com", "aquascans.com"],
+                home: "https://aquascans.com/",
                 chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series|read)\/.*\/.+$/g,
                 canListFullMangas: false
             },
             {
-                search_url: "https://247manga.com/"
+                search_url: "https://aquascans.com/"
             }
         ),
         new Madara(

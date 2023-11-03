@@ -195,7 +195,7 @@ export const getMangaStreamImplementations = (mirrorHelper: MirrorHelper): Mirro
                     "asuratoon.com"
                 ],
                 home: "https://asuratoon.com",
-                chapter_url: /\/.*?(chapter|ch)-[0-9]+\//g,
+                chapter_url: /\/.*?(chapter|ch)-[0-9]+.*\//g,
                 languages: "en"
             },
             {
@@ -231,13 +231,13 @@ export const getMangaStreamImplementations = (mirrorHelper: MirrorHelper): Mirro
                 mirrorName: "Flame Scans",
                 canListFullMangas: false,
                 mirrorIcon: FlameScanIcon,
-                domains: ["flamescans.org"],
-                home: "https://flamescans.org",
+                domains: ["flamescans.org", "flamecomics.com"],
+                home: "https://flamecomics.com",
                 chapter_url: /\/.*?chapter-[0-9]+.*\//g,
                 languages: "en"
             },
             {
-                search_url: "https://flamescans.org",
+                search_url: "https://flamecomics.com",
                 chapters_a_sel: "div.bixbox.bxcl ul li a",
                 chapters_text_sel: "span.chapternum",
                 search_json: false,
@@ -249,8 +249,6 @@ export const getMangaStreamImplementations = (mirrorHelper: MirrorHelper): Mirro
                     if (parts.length > 5) {
                         parts.splice(3, 1)
                     }
-
-                    console.debug("Chapter Url:", parts)
 
                     const parts2 = parts[3].split("-")
 
@@ -264,7 +262,6 @@ export const getMangaStreamImplementations = (mirrorHelper: MirrorHelper): Mirro
                     if (parts[3] !== "series") {
                         parts.splice(3, 1)
                     }
-                    console.debug("Series Url:", parts)
 
                     const parts2 = parts[4].split("-")
 

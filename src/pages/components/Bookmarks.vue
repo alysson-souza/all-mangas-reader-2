@@ -55,8 +55,8 @@
                 }}</v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="red darken-1" flat @click.native="reallyDeleteBm()">{{ i18n("button_yes") }}</v-btn>
-                    <v-btn color="grey darken-1" flat @click.native="deleteBookmarkDialog = false">{{
+                    <v-btn color="red darken-1" text @click.native="reallyDeleteBm()">{{ i18n("button_yes") }}</v-btn>
+                    <v-btn color="grey darken-1" text @click.native="deleteBookmarkDialog = false">{{
                         i18n("button_no")
                     }}</v-btn>
                 </v-card-actions>
@@ -85,10 +85,10 @@
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="primary darken-1" flat @click.native="editBookmarkDialog = false">{{
+                    <v-btn color="primary darken-1" text @click.native="editBookmarkDialog = false">{{
                         i18n("button_cancel")
                     }}</v-btn>
-                    <v-btn color="primary darken-1" flat @click.native="reallyEditBm">{{ i18n("button_save") }}</v-btn>
+                    <v-btn color="primary darken-1" text @click.native="reallyEditBm">{{ i18n("button_save") }}</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>

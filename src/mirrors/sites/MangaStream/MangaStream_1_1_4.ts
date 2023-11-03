@@ -138,8 +138,8 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
                 mirrorName: "Luminous Scans",
                 canListFullMangas: false,
                 mirrorIcon: LiminousScanIcon,
-                domains: ["luminousscans.com"],
-                home: "https://www.luminousscans.com/",
+                domains: ["luminousscans.gg"],
+                home: "https://luminousscans.gg/",
                 chapter_url: /chapter-[0-9]+.*\/$/g,
                 languages: "en"
             },
@@ -148,7 +148,6 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
                 urlProcessorSeries: url => {
                     const parts = url.split("/")
                     const parts2 = parts[5].split("-")
-                    console.debug(url, parts, parts2)
 
                     if (!isNaN(parts2[0]) && !isNaN(parseFloat(parts2[0]))) parts2.shift()
 

@@ -15,7 +15,7 @@
                     <v-row dense>
                         <v-col cols="12">
                             <v-textarea
-                                box
+                                filled
                                 hide-details
                                 name="input-7-4"
                                 :label="i18n('bookmark_popup_note')"
