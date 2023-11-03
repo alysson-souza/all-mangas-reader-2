@@ -4,7 +4,7 @@ if (typeof registerMangaObject === "function") {
         canListFullMangas: false,
         mirrorIcon: "webtoons.png",
         languages: "en",
-        domains: ["www.webtoons.com"],
+        domains: ["webtoons.com"],
         home: "https://www.webtoons.com",
         chapter_url: /^.*\/viewer.+$/g,
 

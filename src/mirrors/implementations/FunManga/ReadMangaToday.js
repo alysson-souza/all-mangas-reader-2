@@ -4,7 +4,7 @@ if (typeof registerMangaObject === "function") {
         canListFullMangas: true,
         mirrorIcon: "readmangatoday.png",
         languages: "en",
-        domains: ["www.readmng.com"],
+        domains: ["readmng.com"],
         home: "https://www.readmng.com/",
         // chapter_url: /^\/.*\/[0-9]+\.?[0-9]*\/.+$/g,
 

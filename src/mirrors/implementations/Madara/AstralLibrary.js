@@ -3,7 +3,7 @@ if (typeof registerMangaObject === "function") {
         mirrorName: "Astral Library",
         mirrorIcon: "astrallibrary.png",
         languages: "en",
-        domains: ["www.astrallibrary.net", "astrallibrary.net"],
+        domains: ["astrallibrary.net"],
         home: "https://astrallibrary.net/",
         chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
         canListFullMangas: true,

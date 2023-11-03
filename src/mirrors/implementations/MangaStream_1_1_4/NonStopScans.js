@@ -3,7 +3,7 @@ if (typeof registerMangaObject === "function") {
         mirrorName: "Non Stop Scans",
         mirrorIcon: "nonstopscans.png",
         languages: "en",
-        domains: ["www.nonstopscans.com"],
+        domains: ["nonstopscans.com"],
         home: "https://www.nonstopscans.com/",
         chapter_url: /^\/\d.+-.+?/g,
 

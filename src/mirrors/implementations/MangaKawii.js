@@ -3,7 +3,7 @@ if (typeof registerMangaObject === "function") {
         mirrorName: "MangaKawaii",
         mirrorIcon: "mangakawaii.png",
         languages: "fr",
-        domains: ["www.mangakawaii.io"],
+        domains: ["mangakawaii.io"],
         home: "https://www.mangakawaii.io",
         chapter_url: /\/manga\/.*\/.*\/?.*$/g,
 

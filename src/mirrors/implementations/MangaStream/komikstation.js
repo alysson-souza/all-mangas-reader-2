@@ -3,7 +3,7 @@ if (typeof registerMangaObject === "function") {
         mirrorName: "Komikstation",
         canListFullMangas: false,
         mirrorIcon: "komikstation.png",
-        domains: ["www.komikstation.com", "komikstation.com"],
+        domains: ["komikstation.com"],
         home: "https://www.komikstation.com/",
         chapter_url: /chapter-[0-9]+\/$/g,
         languages: "id",

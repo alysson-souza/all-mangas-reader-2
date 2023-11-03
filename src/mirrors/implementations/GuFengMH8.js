@@ -4,7 +4,7 @@ if (typeof registerMangaObject === "function") {
         canListFullMangas: false,
         mirrorIcon: "gufengmh8.png",
         languages: "cn",
-        domains: ["www.gufengmh8.com"],
+        domains: ["gufengmh8.com"],
         home: "https://www.gufengmh8.com/",
         chapter_url: /^\/manhua\/.*\/(\d+).html$/g,
 

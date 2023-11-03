@@ -3,7 +3,7 @@ if (typeof registerMangaObject === "function") {
         mirrorName: "Webtoon.xyz",
         mirrorIcon: "webtoon-xyz.png",
         languages: "en",
-        domains: ["www.webtoon.xyz"],
+        domains: ["webtoon.xyz"],
         home: "https://www.webtoon.xyz/",
         chapter_url: /^\/read\/.*\/.+$/g,
         canListFullMangas: false,

@@ -3,7 +3,7 @@ if (typeof registerMangaObject === "function") {
         mirrorName: "Manga Read",
         mirrorIcon: "manga-read.png",
         languages: "en",
-        domains: ["www.mangaread.org"],
+        domains: ["mangaread.org"],
         home: "https://www.mangaread.org/",
         chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series|read)\/.*\/.+$/g,
         canListFullMangas: false,
