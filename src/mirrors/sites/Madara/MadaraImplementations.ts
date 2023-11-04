@@ -86,7 +86,7 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
                 search_url: "https://mangakomi.io/",
                 img_src: "src",
                 secondary_img_src: "data-src",
-                chapter_list_ajax: true
+                // chapter_list_ajax: true
             }
         ),
         new Madara(mirrorHelper, {
