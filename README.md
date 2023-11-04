@@ -200,13 +200,14 @@ All Mangas Reader is a browser extension which is designed to help you read and 
                 <td><img src="src/mirrors/icons/readmanhua-optimized.png" width="16" title="Read Manhua"></td>
                 <td><img src="src/mirrors/icons/reaperscans-optimized.png" width="16" title="Reaper Scans"></td>
                 <td><img src="src/mirrors/icons/reset-scans-optimized.png" width="16" title="Reset Scans"></td>
+                <td><img src="src/mirrors/icons/rizz-comic-optimized.png" width="16" title="Rizz Comic"></td>
                 <td><img src="src/mirrors/icons/ruya-manga-optimized.png" width="16" title="Ruya Manga"></td>
                 <td><img src="src/mirrors/icons/s2-manga-optimized.png" width="16" title="S2 Manga"></td>
                 <td><img src="src/mirrors/icons/sadscans-optimized.png" width="16" title="Sad Scans"></td>
                 <td><img src="src/mirrors/icons/sawamics-optimized.png" width="16" title="Sawamics"></td>
-                <td><img src="src/mirrors/icons/scanfr-optimized.png" width="16" title="ScanFR"></td>
             </tr>
             <tr>
+                <td><img src="src/mirrors/icons/scanfr-optimized.png" width="16" title="ScanFR"></td>
                 <td><img src="src/mirrors/icons/scantradunion-optimized.png" width="16" title="Scantrad Union"></td>
                 <td><img src="src/mirrors/icons/scyllascans-optimized.png" width="16" title="Scylla Scans"></td>
                 <td><img src="src/mirrors/icons/serimanga-optimized.png" width="16" title="Seri Manga"></td>
@@ -216,9 +217,9 @@ All Mangas Reader is a browser extension which is designed to help you read and 
                 <td><img src="src/mirrors/icons/tachidesk-optimized.png" width="16" title="Tachidesk"></td>
                 <td><img src="src/mirrors/icons/toonily_net-optimized.png" width="16" title="Toonily.Net"></td>
                 <td><img src="src/mirrors/icons/toonily-optimized.png" width="16" title="Toonily"></td>
-                <td><img src="src/mirrors/icons/topmanhua-optimized.png" width="16" title="Top Manhua"></td>
             </tr>
             <tr>
+                <td><img src="src/mirrors/icons/topmanhua-optimized.png" width="16" title="Top Manhua"></td>
                 <td><img src="src/mirrors/icons/tritiniascans-optimized.png" width="16" title="Tritinia Scans"></td>
                 <td><img src="src/mirrors/icons/twilightscans-optimized.png" width="16" title="Twilight Scans"></td>
                 <td><img src="src/mirrors/icons/ultmanga-optimized.png" width="16" title="Ult Manga"></td>
@@ -228,9 +229,9 @@ All Mangas Reader is a browser extension which is designed to help you read and 
                 <td><img src="src/mirrors/icons/webtoons-optimized.png" width="16" title="WebToons"></td>
                 <td><img src="src/mirrors/icons/webtoon-xyz-optimized.png" width="16" title="Webtoon.xyz"></td>
                 <td><img src="src/mirrors/icons/westmanga-optimized.png" width="16" title="Westmanga"></td>
-                <td><img src="src/mirrors/icons/zahardtop-optimized.png" width="16" title="ZA Hard Top"></td>
             </tr>
             <tr>
+                <td><img src="src/mirrors/icons/zahardtop-optimized.png" width="16" title="ZA Hard Top"></td>
                 <td><img src="src/mirrors/icons/zeroscans-optimized.png" width="16" title="Zero Scans"></td>
                 <td><img src="src/mirrors/icons/zin-manga-optimized.png" width="16" title="Zin Manga"></td>
             </tr>
