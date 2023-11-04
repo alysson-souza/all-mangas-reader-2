@@ -3,13 +3,13 @@ if (typeof registerMangaObject === "function") {
         mirrorName: "Flame Scans",
         canListFullMangas: false,
         mirrorIcon: "flamescans.png",
-        domains: ["flamescans.org"],
-        home: "https://flamescans.org",
+        domains: ["flamescans.org", "flamecomics.com"],
+        home: "https://flamecomics.com",
         //chapter_url: /\/.*?chapter-[0-9]+.*\//g,
         languages: "en",
         abstract: "MangastreamAbs",
         abstract_options: {
-            search_url: "https://flamescans.org",
+            search_url: "https://flamecomics.com",
             chapters_a_sel: "div.bixbox.bxcl ul li a",
             chapters_text_sel: "span.chapternum",
             search_json: false,
@@ -23,8 +23,6 @@ if (typeof registerMangaObject === "function") {
                     parts.splice(3, 1)
                 }
 
-                console.debug("Chapter Url:", parts)
-
                 let parts2 = parts[3].split("-")
 
                 if (!isNaN(parts2[0]) && !isNaN(parseFloat(parts2[0]))) parts2.shift()
@@ -37,7 +35,6 @@ if (typeof registerMangaObject === "function") {
                 if (parts[3] !== "series") {
                     parts.splice(3, 1)
                 }
-                console.debug("Series Url:", parts)
 
                 let parts2 = parts[4].split("-")
 
