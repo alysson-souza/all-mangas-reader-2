@@ -41,7 +41,7 @@ if (typeof registerMangaObject === "function") {
             return {
                 name: seriesLink.text(),
                 currentMangaURL: seriesLink.attr("href"),
-                currentChapterURL: curUrl
+                currentChapterURL: curUrl.includes("?") ? curUrl.split("?")[0] : curUrl
             }
         },
 
@@ -55,12 +55,16 @@ if (typeof registerMangaObject === "function") {
                 name: "mhub_access"
             })
 
+            if (chapter.includes("?")) {
+                chapter = chapter.split("?")[0]
+            }
+
             let json = await amr.loadJson("https://api.mghubcdn.com/graphql", {
                 post: true,
                 data: `{"query":"{chapter(x:m01,slug:\\"${slug}\\",number:${chapter}){id,title,mangaID,number,slug,date,pages,noAd,manga{id,title,slug,mainSlug,author,isWebtoon,isYaoi,isPorn,isSoftPorn,unauthFile,isLicensed}}}\"}`,
                 headers: {
                     "x-amr-change-Referer": this.home,
-                    "x-amr-change-Origin": this.home,
+                    "x-amr-change-Origin": "https://mangahub.io",
                     accept: "application/json",
                     "x-amr-change-sec-fetch-site": "cross-site",
                     "x-mhub-access": cookie.value
@@ -82,9 +86,11 @@ if (typeof registerMangaObject === "function") {
 
             // let json = req.json()
 
+            console.debug("Mangahub", chapter, json)
+
             let res = []
-            // let cdnUrl = "https://img.mghubcdn.com/file/imghub/"
-            let cdnUrl = "https://imgx.mghubcdn.com/"
+            let cdnUrl = "https://img.mghubcdn.com/file/imghub/"
+            // let cdnUrl = "https://imgx.mghubcdn.com/"
             let pages = Object.values(JSON.parse(json.data.chapter.pages))
 
             if (typeof pages[1] == "string") {

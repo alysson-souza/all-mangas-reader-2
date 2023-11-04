@@ -7,6 +7,7 @@ if (typeof registerMangaObject === "function") {
         domains: ["submanga.online", "submanga.com", "submanga.io"],
         home: "https://submanga.online/",
         chapter_url: /^\/manga\/.*\/.+$/g,
+        disabled: true,
 
         getMangaList: async function (search) {
             let doc = await amr.loadPage("https://submanga.online/mangas/buscar", {

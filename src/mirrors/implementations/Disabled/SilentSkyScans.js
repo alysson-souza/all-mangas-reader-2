@@ -1,15 +1,16 @@
 if (typeof registerMangaObject === "function") {
     registerMangaObject({
-        mirrorName: "Let It Go Scans",
-        mirrorIcon: "letitgoscans.png",
+        mirrorName: "Silent Sky Scans",
+        mirrorIcon: "silentskyscans.png",
         languages: "en",
-        domains: ["reader.letitgo.scans.today"],
-        home: "http://letitgo-scans.blogspot.com/",
+        domains: ["reader.silentsky-scans.net"],
+        home: "https://reader.silentsky-scans.net/",
         chapter_url: /^\/read\/.+$/g,
+        disabled: true,
 
         abstract: "FoolSlide",
         abstract_options: {
-            base_url: "https://https://reader.letitgo.scans.today",
+            base_url: "https://reader.silentsky-scans.net",
             mglist_selector: ".title > a[href*='/series/']"
         }
     })

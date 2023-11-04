@@ -1,15 +1,16 @@
 if (typeof registerMangaObject === "function") {
     registerMangaObject({
-        mirrorName: "Hunlight Scans",
-        mirrorIcon: "hunlightscans.png",
+        mirrorName: "The No Names",
+        mirrorIcon: "nonames.png",
         languages: "en",
-        domains: ["hunlight-scans.info"],
-        home: "https://hunlight-scans.info/home",
+        domains: ["the-nonames.com"],
+        home: "https://the-nonames.com/",
         canListFullMangas: true,
         chapter_url: /^\/comics\/.*\/.+$/g,
         abstract: "GenkanAbs",
+        disabled: true,
         abstract_options: {
-            base_url: "https://hunlight-scans.info/"
+            base_url: "https://the-nonames.com/"
         }
     })
 }

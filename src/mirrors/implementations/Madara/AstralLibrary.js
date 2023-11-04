@@ -7,6 +7,7 @@ if (typeof registerMangaObject === "function") {
         home: "https://astrallibrary.net/",
         chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
         canListFullMangas: true,
+        disabled: true,
         abstract: "Madara",
         abstract_options: {
             search_url: "https://astrallibrary.net/",

@@ -7,6 +7,7 @@ if (typeof registerMangaObject === "function") {
         domains: ["manhwa18.net"],
         home: "https://manhwa18.net/",
         chapter_url: /read-.*-chapter-.*/g,
+        disabled: true,
 
         getMangaList: async function (search) {
             let doc = await amr.loadPage(this.home + "app/manga/controllers/cont.search.php?keyword=" + search, {

@@ -6,6 +6,7 @@ if (typeof registerMangaObject === "function") {
         domains: ["reader.kireicake.com"],
         home: "https://kireicake.com/",
         chapter_url: /^\/read\/.+$/g,
+        disabled: true,
 
         abstract: "FoolSlide",
         abstract_options: {

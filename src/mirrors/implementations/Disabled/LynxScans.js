@@ -8,6 +8,7 @@ if (typeof registerMangaObject === "function") {
         canListFullMangas: true,
         chapter_url: /^\/comics\/.*\/.+$/g,
         abstract: "GenkanAbs",
+        disabled: true,
         abstract_options: {
             base_url: "https://lynxscans.com/web/",
             chapter_information_title_url_parts: 5,

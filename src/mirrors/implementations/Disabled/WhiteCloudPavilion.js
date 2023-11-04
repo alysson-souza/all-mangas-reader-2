@@ -6,6 +6,7 @@ if (typeof registerMangaObject === "function") {
         domains: ["whitecloudpavilion.com"],
         home: "https://whitecloudpavilion.com/",
         chapter_url: /^\/manga\/(?:patreon|free)\/manga\/.+?\/.*$/g,
+        disabled: true,
 
         abstract: "MyMangaReaderCMS",
         abstract_options: {

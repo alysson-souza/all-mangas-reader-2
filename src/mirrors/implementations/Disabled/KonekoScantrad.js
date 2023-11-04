@@ -1,15 +1,16 @@
 if (typeof registerMangaObject === "function") {
     registerMangaObject({
-        mirrorName: "Le Cercle du Scan",
-        mirrorIcon: "lecercleduscan.png",
+        mirrorName: "Koneko Scantrad",
+        mirrorIcon: "konekoscantrad.png",
         languages: "fr",
-        domains: ["lel.lecercleduscan.com"],
-        home: "https://lel.lecercleduscan.com",
+        domains: ["lel.koneko-scantrad.fr"],
+        home: "https://koneko-scantrad.fr",
         chapter_url: /^\/read\/.+$/g,
+        disabled: true,
 
         abstract: "FoolSlide",
         abstract_options: {
-            base_url: "https://lel.lecercleduscan.com",
+            base_url: "https://lel.koneko-scantrad.fr",
             mglist_selector: ".title > a[href*='/series/']"
         }
     })

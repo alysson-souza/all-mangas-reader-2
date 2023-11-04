@@ -6,6 +6,7 @@ if (typeof registerMangaObject === "function") {
         domains: ["sensescans.com"],
         home: "http://sensescans.com/",
         chapter_url: /^\/reader\/read\/.+$/g,
+        disabled: true,
 
         abstract: "FoolSlide",
         abstract_options: {

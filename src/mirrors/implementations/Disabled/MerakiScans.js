@@ -7,6 +7,7 @@ if (typeof registerMangaObject === "function") {
         domains: ["merakiscans.com", "www.merakiscans.com"],
         home: "https://www.merakiscans.com/",
         chapter_url: /^\/(manga|manhua)\/.*\/.+$/g,
+        disabled: true,
 
         getMangaList: async function (search) {
             let doc = await amr.loadPage("https://merakiscans.com/manga/", { nocache: true, preventimages: true })

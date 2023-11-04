@@ -79,17 +79,14 @@ All Mangas Reader is a browser extension which is designed to help you read and 
                 <td><img src="src/mirrors/icons/alpha-scans-optimized.png" width="16" title="Alpha Scans"></td>
                 <td><img src="src/mirrors/icons/anigli-scans-optimized.png" width="16" title="Animated Glitched Scans"></td>
                 <td><img src="src/mirrors/icons/aqua-manga-optimized.png" width="16" title="Aqua Manga"></td>
-                <td><img src="src/mirrors/icons/astrallibrary-optimized.png" width="16" title="Astral Library"></td>
                 <td><img src="src/mirrors/icons/asurascans-optimized.png" width="16" title="Asura Scans"></td>
-                <td><img src="src/mirrors/icons/asurascans-optimized.png" width="16" title="Asura Scans TR"></td>
                 <td><img src="src/mirrors/icons/azuremanga-optimized.png" width="16" title="Azure Manga"></td>
                 <td><img src="src/mirrors/icons/banana-scan-optimized.png" width="16" title="Banana Scan"></td>
                 <td><img src="src/mirrors/icons/batoto-optimized.png" width="16" title="Batoto (fake)"></td>
-            </tr>
-            <tr>
-                <td><img src="src/mirrors/icons/catscans-optimized.png" width="16" title="The Cat Scans"></td>
                 <td><img src="src/mirrors/icons/chibimanga-optimized.png" width="16" title="ChibiManga"></td>
                 <td><img src="src/mirrors/icons/comic-dom-optimized.png" width="16" title="Comic Dom"></td>
+            </tr>
+            <tr>
                 <td><img src="src/mirrors/icons/comickiba-optimized.png" width="16" title="Comic Kiba"></td>
                 <td><img src="src/mirrors/icons/cosmic-scans-optimized.png" width="16" title="Cosmic Scans"></td>
                 <td><img src="src/mirrors/icons/deathtollscans-optimized.png" width="16" title="Death Toll Scans"></td>
@@ -97,71 +94,59 @@ All Mangas Reader is a browser extension which is designed to help you read and 
                 <td><img src="src/mirrors/icons/dm5-optimized.png" width="16" title="DM5"></td>
                 <td><img src="src/mirrors/icons/dragon-tea-optimized.png" width="16" title="Dragon Tea"></td>
                 <td><img src="src/mirrors/icons/dynastyscans-optimized.png" width="16" title="Dynasty Scans"></td>
-            </tr>
-            <tr>
                 <td><img src="src/mirrors/icons/earlymanga-optimized.png" width="16" title="EarlyManga"></td>
                 <td><img src="src/mirrors/icons/epsilonscan-optimized.png" width="16" title="Epsilon Scan"></td>
                 <td><img src="src/mirrors/icons/evilflowers-optimized.png" width="16" title="Evil Flowers"></td>
-                <td><img src="src/mirrors/icons/fallenangels-optimized.png" width="16" title="Fallen Angels"></td>
+            </tr>
+            <tr>
                 <td><img src="src/mirrors/icons/flamescans-optimized.png" width="16" title="Flame Scans"></td>
                 <td><img src="src/mirrors/icons/_base-icon-optimized.png" width="16" title="FM Team"></td>
                 <td><img src="src/mirrors/icons/funmanga-optimized.png" width="16" title="FunManga"></td>
                 <td><img src="src/mirrors/icons/gd-scans-optimized.png" width="16" title="GD Scans"></td>
                 <td><img src="src/mirrors/icons/gourmet-scans-optimized.png" width="16" title="Gourmet Scans"></td>
-                <td><img src="src/mirrors/icons/gufengmh8-optimized.png" width="16" title="GuFengMH8"></td>
-            </tr>
-            <tr>
-                <td><img src="src/mirrors/icons/hastareader-optimized.png" width="16" title="Hasta Reader"></td>
                 <td><img src="src/mirrors/icons/hiperdex-optimized.png" width="16" title="Hiperdex"></td>
-                <td><img src="src/mirrors/icons/hunlightscans-optimized.png" width="16" title="Hunlight Scans"></td>
                 <td><img src="src/mirrors/icons/immortalupdates-optimized.png" width="16" title="Immortal Updates"></td>
                 <td><img src="src/mirrors/icons/imperfect-comics-optimized.png" width="16" title="Imperfect Comics"></td>
                 <td><img src="src/mirrors/icons/isekaiscans-optimized.png" width="16" title="IsekaiScans"></td>
                 <td><img src="src/mirrors/icons/kangaryuteam-optimized.png" width="16" title="Kangaryu Team"></td>
-                <td><img src="src/mirrors/icons/kireicake-optimized.png" width="16" title="Kirei Cake"></td>
-                <td><img src="src/mirrors/icons/kiryuu-optimized.png" width="16" title="Kiryuu"></td>
-                <td><img src="src/mirrors/icons/komga-optimized.png" width="16" title="Komga"></td>
             </tr>
             <tr>
+                <td><img src="src/mirrors/icons/kiryuu-optimized.png" width="16" title="Kiryuu"></td>
+                <td><img src="src/mirrors/icons/komga-optimized.png" width="16" title="Komga"></td>
                 <td><img src="src/mirrors/icons/komikav-optimized.png" width="16" title="Komikav"></td>
                 <td><img src="src/mirrors/icons/komikcast-optimized.png" width="16" title="Komicast"></td>
                 <td><img src="src/mirrors/icons/id-optimized.png" width="16" title="Komikid"></td>
                 <td><img src="src/mirrors/icons/komikstation-optimized.png" width="16" title="Komikstation"></td>
                 <td><img src="src/mirrors/icons/komiku-optimized.png" width="16" title="Komiku"></td>
-                <td><img src="src/mirrors/icons/konekoscantrad-optimized.png" width="16" title="Koneko Scantrad"></td>
                 <td><img src="src/mirrors/icons/kun-manga-optimized.png" width="16" title="Kun Manga"></td>
-                <td><img src="src/mirrors/icons/lecercleduscan-optimized.png" width="16" title="Le Cercle du Scan"></td>
-                <td><img src="src/mirrors/icons/letitgoscans-optimized.png" width="16" title="Let It Go Scans"></td>
                 <td><img src="src/mirrors/icons/leveler-scans-optimized.png" width="16" title="Leveler Scans"></td>
+                <td><img src="src/mirrors/icons/leviatanscans-optimized.png" width="16" title="Leviatan Scans"></td>
             </tr>
             <tr>
-                <td><img src="src/mirrors/icons/leviatanscans-optimized.png" width="16" title="Leviatan Scans"></td>
                 <td><img src="src/mirrors/icons/lhtranslations-optimized.png" width="16" title="LHTranslations"></td>
                 <td><img src="src/mirrors/icons/lilymanga-optimized.png" width="16" title="Lily Manga"></td>
                 <td><img src="src/mirrors/icons/lugnicascan-optimized.png" width="16" title="Lugnica Scan"></td>
                 <td><img src="src/mirrors/icons/luminousscans-optimized.png" width="16" title="Luminous Scans"></td>
-                <td><img src="src/mirrors/icons/lynxscans-optimized.png" width="16" title="Lynx Scans"></td>
                 <td><img src="src/mirrors/icons/manga1st-optimized.png" width="16" title="Manga 1st"></td>
                 <td><img src="src/mirrors/icons/manga1st-online-optimized.png" width="16" title="Manga 1st Online"></td>
                 <td><img src="src/mirrors/icons/manga-347-optimized.png" width="16" title="Manga 347"></td>
                 <td><img src="src/mirrors/icons/manga4life-optimized.png" width="16" title="Manga4Life"></td>
-            </tr>
-            <tr>
                 <td><img src="src/mirrors/icons/mangaae-optimized.png" width="16" title="Manga Al-arab"></td>
                 <td><img src="src/mirrors/icons/mangabob-optimized.png" width="16" title="Manga Bob"></td>
+            </tr>
+            <tr>
                 <td><img src="src/mirrors/icons/manga-clash-optimized.png" width="16" title="Manga Clash"></td>
                 <td><img src="src/mirrors/icons/manga-cultivator-optimized.png" width="16" title="Manga Cultivator"></td>
                 <td><img src="src/mirrors/icons/mangadex-optimized.png" width="16" title="MangaDex V5"></td>
                 <td><img src="src/mirrors/icons/mangadods-optimized.png" width="16" title="Manga Dods"></td>
-                <td><img src="src/mirrors/icons/mangafast-optimized.png" width="16" title="Manga Fast"></td>
                 <td><img src="src/mirrors/icons/mangafox-optimized.png" width="16" title="Manga-Fox"></td>
                 <td><img src="src/mirrors/icons/mangafreak-optimized.png" width="16" title="Manga-Freak"></td>
                 <td><img src="src/mirrors/icons/mangagreat-optimized.png" width="16" title="Manga Great"></td>
-            </tr>
-            <tr>
                 <td><img src="src/mirrors/icons/mangahasu-optimized.png" width="16" title="Manga Hasu"></td>
                 <td><img src="src/mirrors/icons/mangahere-optimized.png" width="16" title="Manga Here"></td>
                 <td><img src="src/mirrors/icons/mangahub-optimized.png" width="16" title="Manga Hub"></td>
+            </tr>
+            <tr>
                 <td><img src="src/mirrors/icons/mangainn-optimized.png" width="16" title="MangaInn"></td>
                 <td><img src="src/mirrors/icons/mangakakalot-optimized.png" width="16" title="Mangakakalot"></td>
                 <td><img src="src/mirrors/icons/mangakatana-optimized.png" width="16" title="Manga Katana"></td>
@@ -169,57 +154,50 @@ All Mangas Reader is a browser extension which is designed to help you read and 
                 <td><img src="src/mirrors/icons/mangakomi-optimized.png" width="16" title="Manga Komi"></td>
                 <td><img src="src/mirrors/icons/manga-lab-optimized.png" width="16" title="Manga Lab"></td>
                 <td><img src="src/mirrors/icons/manga-lek-optimized.png" width="16" title="Mangalek"></td>
-            </tr>
-            <tr>
-                <td><img src="src/mirrors/icons/mangallama-optimized.png" width="16" title="Manga Llama"></td>
                 <td><img src="src/mirrors/icons/manganelo-optimized.png" width="16" title="Manganelo"></td>
                 <td><img src="src/mirrors/icons/mangapill-optimized.png" width="16" title="Manga Pill"></td>
                 <td><img src="src/mirrors/icons/manga-read-optimized.png" width="16" title="Manga Read"></td>
+            </tr>
+            <tr>
                 <td><img src="src/mirrors/icons/mangasee-optimized.png" width="16" title="MangaSee"></td>
                 <td><img src="src/mirrors/icons/mangasushi-optimized.png" width="16" title="Manga Sushi"></td>
                 <td><img src="src/mirrors/icons/mangasy-optimized.png" width="16" title="Manga Sy"></td>
                 <td><img src="src/mirrors/icons/mangatx-optimized.png" width="16" title="Manga TX"></td>
                 <td><img src="src/mirrors/icons/mangazuki-optimized.png" width="16" title="MangazukiMe"></td>
                 <td><img src="src/mirrors/icons/mangazuki-optimized.png" width="16" title="Mangazuki"></td>
-            </tr>
-            <tr>
                 <td><img src="src/mirrors/icons/manhuafast-optimized.png" width="16" title="ManhuaFast"></td>
                 <td><img src="src/mirrors/icons/manhuaplus-optimized.png" width="16" title="ManhuaPlus"></td>
                 <td><img src="src/mirrors/icons/manhuas-optimized.png" width="16" title="Manhuas"></td>
                 <td><img src="src/mirrors/icons/manhuaus-optimized.png" width="16" title="Manhuaus"></td>
+            </tr>
+            <tr>
                 <td><img src="src/mirrors/icons/manhwaclub-optimized.png" width="16" title="ManhwaClub"></td>
                 <td><img src="src/mirrors/icons/manhwa-freak-optimized.png" width="16" title="Manhwa Freak"></td>
                 <td><img src="src/mirrors/icons/manhwahentai-optimized.png" width="16" title="ManhwaHentai"></td>
                 <td><img src="src/mirrors/icons/manhwa-top-optimized.png" width="16" title="Manhwa Top"></td>
                 <td><img src="src/mirrors/icons/manhwax-optimized.png" width="16" title="Manhwax"></td>
                 <td><img src="src/mirrors/icons/manwha18-optimized.png" width="16" title="Manwha18.com"></td>
-            </tr>
-            <tr>
-                <td><img src="src/mirrors/icons/manwha18-optimized.png" width="16" title="Manwha18.net"></td>
                 <td><img src="src/mirrors/icons/manytoon-optimized.png" width="16" title="Manytoon"></td>
-                <td><img src="src/mirrors/icons/merakiscans-optimized.png" width="16" title="MerakiScans"></td>
                 <td><img src="src/mirrors/icons/mintmanga-optimized.png" width="16" title="MintManga"></td>
                 <td><img src="src/mirrors/icons/mixed-manga-optimized.png" width="16" title="Mixed Manga"></td>
                 <td><img src="src/mirrors/icons/mmscans-optimized.png" width="16" title="MM Scans"></td>
+            </tr>
+            <tr>
                 <td><img src="src/mirrors/icons/ngomik-optimized.png" width="16" title="Ngomik"></td>
                 <td><img src="src/mirrors/icons/n-hentai-optimized.png" width="16" title="NHentai"></td>
                 <td><img src="src/mirrors/icons/niceoppai-optimized.png" width="16" title="Niceoppai"></td>
                 <td><img src="src/mirrors/icons/nightcomic-optimized.png" width="16" title="Night Comic"></td>
-            </tr>
-            <tr>
                 <td><img src="src/mirrors/icons/night-scans-optimized.png" width="16" title="Night Scans"></td>
                 <td><img src="src/mirrors/icons/nocturnal-scans-optimized.png" width="16" title="Nocturnal Scans"></td>
-                <td><img src="src/mirrors/icons/nonames-optimized.png" width="16" title="The No Names"></td>
                 <td><img src="src/mirrors/icons/nonstopscans-optimized.png" width="16" title="Non Stop Scans"></td>
                 <td><img src="src/mirrors/icons/randomtranslations-optimized.png" width="16" title="Random Translations"></td>
                 <td><img src="src/mirrors/icons/readcomiconline-optimized.png" width="16" title="Read Comic Online"></td>
                 <td><img src="src/mirrors/icons/readm-optimized.png" width="16" title="Readm.org"></td>
+            </tr>
+            <tr>
                 <td><img src="src/mirrors/icons/readmanga-optimized.png" width="16" title="ReadManga"></td>
                 <td><img src="src/mirrors/icons/readmangatoday-optimized.png" width="16" title="ReadMangaToday"></td>
                 <td><img src="src/mirrors/icons/readmanhua-optimized.png" width="16" title="Read Manhua"></td>
-            </tr>
-            <tr>
-                <td><img src="src/mirrors/icons/realm-scans-optimized.png" width="16" title="Realm Scans"></td>
                 <td><img src="src/mirrors/icons/reaperscans-optimized.png" width="16" title="Reaper Scans"></td>
                 <td><img src="src/mirrors/icons/reset-scans-optimized.png" width="16" title="Reset Scans"></td>
                 <td><img src="src/mirrors/icons/ruya-manga-optimized.png" width="16" title="Ruya Manga"></td>
@@ -227,37 +205,32 @@ All Mangas Reader is a browser extension which is designed to help you read and 
                 <td><img src="src/mirrors/icons/sadscans-optimized.png" width="16" title="Sad Scans"></td>
                 <td><img src="src/mirrors/icons/sawamics-optimized.png" width="16" title="Sawamics"></td>
                 <td><img src="src/mirrors/icons/scanfr-optimized.png" width="16" title="ScanFR"></td>
-                <td><img src="src/mirrors/icons/scantradunion-optimized.png" width="16" title="Scantrad Union"></td>
-                <td><img src="src/mirrors/icons/scyllascans-optimized.png" width="16" title="Scylla Scans"></td>
             </tr>
             <tr>
-                <td><img src="src/mirrors/icons/sensesscans-optimized.png" width="16" title="Senses Scans"></td>
+                <td><img src="src/mirrors/icons/scantradunion-optimized.png" width="16" title="Scantrad Union"></td>
+                <td><img src="src/mirrors/icons/scyllascans-optimized.png" width="16" title="Scylla Scans"></td>
                 <td><img src="src/mirrors/icons/serimanga-optimized.png" width="16" title="Seri Manga"></td>
                 <td><img src="src/mirrors/icons/setsuscans-optimized.png" width="16" title="Setsu Scans"></td>
                 <td><img src="src/mirrors/icons/shoujohearts-optimized.png" width="16" title="Shoujo Hearts"></td>
-                <td><img src="src/mirrors/icons/silentskyscans-optimized.png" width="16" title="Silent Sky Scans"></td>
                 <td><img src="src/mirrors/icons/skscans-optimized.png" width="16" title="SK Scans"></td>
-                <td><img src="src/mirrors/icons/submanga-optimized.png" width="16" title="SubManga"></td>
                 <td><img src="src/mirrors/icons/tachidesk-optimized.png" width="16" title="Tachidesk"></td>
                 <td><img src="src/mirrors/icons/toonily_net-optimized.png" width="16" title="Toonily.Net"></td>
                 <td><img src="src/mirrors/icons/toonily-optimized.png" width="16" title="Toonily"></td>
+                <td><img src="src/mirrors/icons/topmanhua-optimized.png" width="16" title="Top Manhua"></td>
             </tr>
             <tr>
-                <td><img src="src/mirrors/icons/topmanhua-optimized.png" width="16" title="Top Manhua"></td>
                 <td><img src="src/mirrors/icons/tritiniascans-optimized.png" width="16" title="Tritinia Scans"></td>
                 <td><img src="src/mirrors/icons/twilightscans-optimized.png" width="16" title="Twilight Scans"></td>
                 <td><img src="src/mirrors/icons/ultmanga-optimized.png" width="16" title="Ult Manga"></td>
                 <td><img src="src/mirrors/icons/unemployed-scans-optimized.png" width="16" title="Unemployed Scans"></td>
                 <td><img src="src/mirrors/icons/unionleitor-optimized.png" width="16" title="Union Leitor"></td>
                 <td><img src="src/mirrors/icons/voidscans-optimized.png" width="16" title="Void Scans"></td>
-                <td><img src="src/mirrors/icons/vortexscans-optimized.png" width="16" title="Vortex Scans"></td>
                 <td><img src="src/mirrors/icons/webtoons-optimized.png" width="16" title="WebToons"></td>
                 <td><img src="src/mirrors/icons/webtoon-xyz-optimized.png" width="16" title="Webtoon.xyz"></td>
+                <td><img src="src/mirrors/icons/westmanga-optimized.png" width="16" title="Westmanga"></td>
+                <td><img src="src/mirrors/icons/zahardtop-optimized.png" width="16" title="ZA Hard Top"></td>
             </tr>
             <tr>
-                <td><img src="src/mirrors/icons/westmanga-optimized.png" width="16" title="Westmanga"></td>
-                <td><img src="src/mirrors/icons/whitecloudpavilion-optimized.png" width="16" title="White Cloud Pavilion"></td>
-                <td><img src="src/mirrors/icons/zahardtop-optimized.png" width="16" title="ZA Hard Top"></td>
                 <td><img src="src/mirrors/icons/zeroscans-optimized.png" width="16" title="Zero Scans"></td>
                 <td><img src="src/mirrors/icons/zin-manga-optimized.png" width="16" title="Zin Manga"></td>
             </tr>

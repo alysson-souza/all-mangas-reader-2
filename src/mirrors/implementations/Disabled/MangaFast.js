@@ -7,6 +7,7 @@ if (typeof registerMangaObject === "function") {
         domains: ["mangafast.net"],
         home: "https://mangafast.net",
         chapter_url: /\/.*?chapter-[0-9]+.*\//g,
+        disabled: true,
 
         getMangaList: async function (search) {
             let doc = await amr.loadPage(this.home + "/?s=" + search, { nocache: true, preventimages: true })

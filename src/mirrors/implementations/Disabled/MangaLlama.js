@@ -7,6 +7,7 @@ if (typeof registerMangaObject === "function") {
         domains: ["mangallama.com"],
         home: "https://mangallama.com",
         chapter_url: /\/reader\/.*\/.*/g,
+        disabled: true,
 
         getMangaList: async function (search) {
             let doc = await amr.loadPage(this.home + "/search.php?manga=" + search, {

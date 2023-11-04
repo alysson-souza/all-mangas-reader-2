@@ -8,6 +8,7 @@ if (typeof registerMangaObject === "function") {
         chapter_url: /chapter-[0-9]/g,
         languages: "en",
         abstract: "MangastreamAbs",
+        disabled: true,
         abstract_options: {
             search_url: "https://realmscans.xyz/",
             // series_list_selector: '.listupd a[href*="/series/"]',

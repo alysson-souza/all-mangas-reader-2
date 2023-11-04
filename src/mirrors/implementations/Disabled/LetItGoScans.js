@@ -1,15 +1,16 @@
 if (typeof registerMangaObject === "function") {
     registerMangaObject({
-        mirrorName: "Vortex Scans",
-        mirrorIcon: "vortexscans.png",
+        mirrorName: "Let It Go Scans",
+        mirrorIcon: "letitgoscans.png",
         languages: "en",
-        domains: ["reader.vortex-scans.com"],
-        home: "https://vortex-scans.com/",
+        domains: ["reader.letitgo.scans.today"],
+        home: "http://letitgo-scans.blogspot.com/",
         chapter_url: /^\/read\/.+$/g,
+        disabled: true,
 
         abstract: "FoolSlide",
         abstract_options: {
-            base_url: "https://reader.vortex-scans.com",
+            base_url: "https://https://reader.letitgo.scans.today",
             mglist_selector: ".title > a[href*='/series/']"
         }
     })

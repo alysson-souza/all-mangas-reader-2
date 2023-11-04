@@ -1,15 +1,16 @@
 if (typeof registerMangaObject === "function") {
     registerMangaObject({
-        mirrorName: "The Cat Scans",
-        mirrorIcon: "catscans.png",
+        mirrorName: "Vortex Scans",
+        mirrorIcon: "vortexscans.png",
         languages: "en",
-        domains: ["reader2.thecatscans.com"],
-        home: "http://reader2.thecatscans.com/",
+        domains: ["reader.vortex-scans.com"],
+        home: "https://vortex-scans.com/",
         chapter_url: /^\/read\/.+$/g,
+        disabled: true,
 
         abstract: "FoolSlide",
         abstract_options: {
-            base_url: "http://reader2.thecatscans.com",
+            base_url: "https://reader.vortex-scans.com",
             mglist_selector: ".title > a[href*='/series/']"
         }
     })

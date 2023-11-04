@@ -7,6 +7,7 @@ if (typeof registerMangaObject === "function") {
         home: "https://tr.asurascans.com/",
         chapter_url: /\/.*?bolum-[0-9]+\//g,
         languages: "tr",
+        disabled: true,
 
         getMangaList: async function (search) {
             let res = []

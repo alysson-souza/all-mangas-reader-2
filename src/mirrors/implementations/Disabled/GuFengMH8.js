@@ -7,6 +7,7 @@ if (typeof registerMangaObject === "function") {
         domains: ["gufengmh8.com"],
         home: "https://www.gufengmh8.com/",
         chapter_url: /^\/manhua\/.*\/(\d+).html$/g,
+        disabled: true,
 
         getMangaList: async function (search) {
             let doc = await amr.loadPage("https://www.gufengmh8.com/search/", {
