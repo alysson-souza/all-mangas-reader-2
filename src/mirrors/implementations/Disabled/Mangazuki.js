@@ -7,6 +7,7 @@ if (typeof registerMangaObject === "function") {
         home: "https://mangazuki.co/",
         chapter_url: /^\/fs\/read\/.+$/g,
         canListFullMangas: true,
+        disabled: true,
 
         abstract: "MyMangaReaderCMS",
         abstract_options: {

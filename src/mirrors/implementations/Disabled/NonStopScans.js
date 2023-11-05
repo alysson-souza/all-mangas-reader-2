@@ -6,6 +6,7 @@ if (typeof registerMangaObject === "function") {
         domains: ["nonstopscans.com"],
         home: "https://www.nonstopscans.com/",
         chapter_url: /^\/\d.+-.+?/g,
+        disabled: true,
 
         abstract: "MangaStream_1_1_4Abs",
         abstract_options: {

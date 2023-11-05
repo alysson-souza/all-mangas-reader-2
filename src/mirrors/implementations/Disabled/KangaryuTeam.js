@@ -6,6 +6,7 @@ if (typeof registerMangaObject === "function") {
         domains: ["kangaryu-team.fr"],
         home: "http://kangaryu-team.fr/",
         chapter_url: /^\/reader\/read\/.+$/g,
+        disabled: true,
 
         abstract: "FoolSlide",
         abstract_options: {

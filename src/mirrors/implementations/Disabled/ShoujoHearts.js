@@ -6,6 +6,7 @@ if (typeof registerMangaObject === "function") {
         domains: ["shoujohearts.com"],
         home: "https://shoujohearts.com/reader",
         chapter_url: /^\/reader\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+        disabled: true,
 
         abstract: "Madara",
         abstract_options: {

@@ -10,6 +10,7 @@ if (typeof registerMangaObject === "function") {
         chapter_url: /\/.*?chapter-[0-9]+.*\//g,
         canListFullMangas: false,
         abstract: "Madara",
+        disabled: true,
         abstract_options: {
             search_url: "https://imperfectcomic.org/",
             page_container_sel: "div#readerarea img",
