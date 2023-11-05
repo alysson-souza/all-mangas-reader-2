@@ -1377,6 +1377,18 @@ export const getDisabledImplementations = () => {
                 // series_list_selector: '.listupd a[href*="/series/"]',
                 chapter_list_selector: `.eph-num a[href*="realmscans.to"]`
             }
+        }),
+        new DisabledMirror({
+            mirrorName: "Silent Sky Scans",
+            mirrorIcon: require("../../icons/silentskyscans-optimized.png"),
+            languages: "en",
+            domains: ["reader.silentsky-scans.net"],
+            home: "https://reader.silentsky-scans.net/",
+            chapter_url: /^\/read\/.+$/g,
+            abstract_options: {
+                base_url: "https://reader.silentsky-scans.net",
+                mglist_selector: ".title > a[href*='/series/']"
+            }
         })
     ]
 }
