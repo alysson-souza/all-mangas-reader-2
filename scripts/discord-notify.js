@@ -59,7 +59,13 @@ try {
         ]
     }
 
-    axios.post(url, message)
+    await fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(message)
+    })
 } catch (error) {
     console.log(error)
 }
