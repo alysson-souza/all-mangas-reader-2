@@ -1,5 +1,3 @@
-const axios = require("axios")
-
 let id, token, subject, body, version, patch, channel
 
 /* Build variables from arguments */
