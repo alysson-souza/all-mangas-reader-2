@@ -85,7 +85,7 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
             {
                 search_url: "https://mangakomi.io/",
                 img_src: "src",
-                secondary_img_src: "data-src",
+                secondary_img_src: "data-src"
                 // chapter_list_ajax: true
             }
         ),
@@ -1073,6 +1073,39 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
                 chapter_list_ajax: true,
                 isekai_chapter_url: true,
                 secondary_img_src: "data-src"
+            }
+        ),
+        new Madara(
+            mirrorHelper,
+            {
+                mirrorName: "Shadow Trad",
+                mirrorIcon: require("../../icons/shadow-trad-optimized.png"),
+                languages: "fr",
+                domains: ["shadowtrad.net"],
+                home: "https://shadowtrad.net/",
+                chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+                canListFullMangas: false
+            },
+            {
+                search_url: "https://shadowtrad.net/",
+                chapter_list_ajax: true,
+                isekai_chapter_url: true
+            }
+        ),
+        new Madara(
+            mirrorHelper,
+            {
+                mirrorName: "Platinum Crown",
+                mirrorIcon: require("../../icons/platinum-crown-optimized.png"),
+                languages: "en",
+                domains: ["platinumscans.com"],
+                home: "https://platinumscans.com/",
+                chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+                canListFullMangas: false
+            },
+            {
+                search_url: "https://platinumscans.com/",
+                chapter_list_ajax: true
             }
         )
     ]

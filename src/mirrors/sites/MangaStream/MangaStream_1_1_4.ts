@@ -246,6 +246,26 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
                 // series_list_selector: '.listupd a[href*="/series/"]',
                 chapter_list_selector: `.eph-num a[href*="rizzcomic.com"]`
             }
+        ),
+        new MangaStream_1_1_4(
+            mirrorHelper,
+            {
+                mirrorName: "Astra Scans",
+                canListFullMangas: false,
+                mirrorIcon: require("../../icons/astra-scans-optimized.png"),
+                domains: ["astrascans.com"],
+                home: "https://astrascans.com/",
+                chapter_url: /\-chapter\-\d.+\//g,
+                languages: "en"
+            },
+            {
+                base_url: "https://astrascans.com/",
+                urlProcessorChapter: url => {
+                    const parts = url.split("/")
+                    if (parts[3] == "10000") parts.splice(3, 1)
+                    return parts.join("/")
+                }
+            }
         )
     ]
 }
