@@ -1,7 +1,7 @@
 if (typeof registerMangaObject === "function") {
     registerMangaObject({
         mirrorName: "FM Team",
-        mirrorIcon: "_base-icon.png",
+        mirrorIcon: "fm-team.png",
         languages: "fr",
         domains: ["fmteam.fr"],
         home: "https://fmteam.fr",
