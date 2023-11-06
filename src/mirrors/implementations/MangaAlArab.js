@@ -4,7 +4,7 @@ if (typeof registerMangaObject === "function") {
         canListFullMangas: false,
         mirrorIcon: "mangaae.png",
         languages: "ar",
-        domains: ["manga.ae", "www.manga.ae"],
+        domains: ["manga.ae"],
         home: "https://www.manga.ae/",
         chapter_url: /^\/.*\/[0-9]+.*$/g,
 

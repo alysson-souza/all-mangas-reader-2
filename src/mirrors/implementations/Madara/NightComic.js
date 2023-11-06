@@ -3,7 +3,7 @@ if (typeof registerMangaObject === "function") {
         mirrorName: "Night Comic",
         mirrorIcon: "nightcomic.png",
         languages: "en",
-        domains: ["www.nightcomic.com"],
+        domains: ["nightcomic.com"],
         home: "https://www.nightcomic.com/",
         chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
         canListFullMangas: false,

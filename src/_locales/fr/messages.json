@@ -2001,5 +2001,16 @@
     "options_bottom_navigation_enabled": {
         "message": "Activer la navigation par survol en bas",
         "description": "Option for enabling bottom navigation"
+    },
+    "__V2_5_6": {
+        "message": "Just a filler to separate new labels from old ones"
+    },
+    "list_manga_update_error": {
+        "message": "Erreur lors de la mise à jour de la liste des mangas depuis Mirror $1",
+        "description": "Message about mangas with errors updating"
+    },
+    "filter_manga_update_error": {
+        "message": "Afficher uniquement les séries avec des erreurs de mise à jour",
+        "description": "Message about mangas with errors updating filter toggle"
     }
 }

@@ -4,7 +4,7 @@ if (typeof registerMangaObject === "function") {
         canListFullMangas: true,
         mirrorIcon: "funmanga.png",
         languages: "en",
-        domains: ["www.funmanga.com"],
+        domains: ["funmanga.com"],
         home: "http://www.funmanga.com",
         chapter_url: /^\/.*\/[0-9]+\.?[0-9]*\/.+$/g,
 

@@ -3,9 +3,9 @@ if (typeof registerMangaObject === "function") {
         mirrorName: "Luminous Scans",
         canListFullMangas: false,
         mirrorIcon: "luminousscans.png",
-        domains: ["www.luminousscans.com", "luminousscans.com"],
-        home: "https://www.luminousscans.com/",
-        chapter_url: /chapter-[0-9]+\/$/g,
+        domains: ["luminousscans.com", "luminousscans.gg"],
+        home: "https://luminousscans.gg/",
+        chapter_url: /chapter-[0-9]+.*\/$/g,
         languages: "en",
         abstract: "MangaStream_1_1_4Abs",
         abstract_options: {

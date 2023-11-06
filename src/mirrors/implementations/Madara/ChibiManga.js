@@ -3,7 +3,7 @@ if (typeof registerMangaObject === "function") {
         mirrorName: "ChibiManga",
         mirrorIcon: "chibimanga.png",
         languages: "en",
-        domains: ["www.cmreader.info"],
+        domains: ["cmreader.info"],
         home: "https://www.cmreader.info/",
         chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
 

@@ -4,7 +4,7 @@ if (typeof registerMangaObject === "function") {
         canListFullMangas: false,
         mirrorIcon: "mangahere.png",
         languages: "en",
-        domains: ["www.mangahere.cc", "m.mangahere.cc", "www.mangahere.co"],
+        domains: ["mangahere.cc", "m.mangahere.cc", "mangahere.co"],
         home: "https://www.mangahere.cc/",
         chapter_url: /\/manga\/.*\/.+\/.*/g,
 

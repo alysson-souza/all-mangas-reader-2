@@ -11,8 +11,8 @@ if (typeof registerMangaObject === "function") {
         abstract_options: {
             search_url: "https://mangakomi.io/",
             img_src: "src",
-            secondary_img_src: "data-src",
-            chapter_list_ajax: true
+            secondary_img_src: "data-src"
+            // chapter_list_ajax: true
         }
     })
 }

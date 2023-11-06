@@ -3,7 +3,7 @@ if (typeof registerMangaObject === "function") {
         mirrorName: "MangaKawaii",
         mirrorIcon: "mangakawaii.png",
         languages: "fr",
-        domains: ["www.mangakawaii.io"],
+        domains: ["mangakawaii.io"],
         home: "https://www.mangakawaii.io",
         chapter_url: /\/manga\/.*\/.*\/?.*$/g,
 
@@ -52,11 +52,14 @@ if (typeof registerMangaObject === "function") {
             let pages = amr.getVariable("pages", doc),
                 oeuvre_slug = amr.getVariable("oeuvre_slug", doc),
                 chapter_slug = amr.getVariable("chapter_slug", doc),
-                applocale = amr.getVariable("applocale", doc)
+                applocale = amr.getVariable("applocale", doc),
+                chapter_server = amr.getVariable("chapter_server", doc)
+
+            let cdnUrl = `https://${chapter_server}.mangakawaii.io`
 
             for (page of pages) {
                 res.push(
-                    `https://cdn.mangakawaii.pics/uploads/manga/${oeuvre_slug}/chapters_${applocale}/${chapter_slug}/${page.page_image}?${page.page_version}`
+                    `${cdnUrl}/uploads/manga/${oeuvre_slug}/chapters_${applocale}/${chapter_slug}/${page.page_image}?${page.page_version}`
                 )
             }
             return res

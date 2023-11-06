@@ -2002,5 +2002,16 @@
     "options_bottom_navigation_enabled": {
         "message": "Enable Bottom Hover Navigation",
         "description": "Option for enabling bottom navigation"
+    },
+    "__V2_5_6": {
+        "message": "Just a filler to separate new labels from old ones"
+    },
+    "list_manga_update_error": {
+        "message": "Error updating Manga list from Mirror $1",
+        "description": "Message about mangas with errors updating"
+    },
+    "filter_manga_update_error": {
+        "message": "Show only series with update errors",
+        "description": "Message about mangas with errors updating filter toggle"
     }
 }

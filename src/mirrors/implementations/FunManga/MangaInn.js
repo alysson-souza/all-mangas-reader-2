@@ -4,7 +4,7 @@ if (typeof registerMangaObject === "function") {
         canListFullMangas: true,
         mirrorIcon: "mangainn.png",
         languages: "en",
-        domains: ["www.mangainn.net"],
+        domains: ["mangainn.net"],
         home: "http://www.mangainn.net",
         chapter_url: /^\/.*\/[0-9]+\.?[0-9]*\/.+$/g,
 

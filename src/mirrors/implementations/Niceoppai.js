@@ -4,7 +4,7 @@ if (typeof registerMangaObject === "function") {
         canListFullMangas: true,
         mirrorIcon: "niceoppai.png",
         languages: "th",
-        domains: ["www.niceoppai.net"],
+        domains: ["niceoppai.net"],
         home: "http://www.niceoppai.net/",
 
         getMangaList: async function (search) {

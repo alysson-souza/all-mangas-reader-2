@@ -3,7 +3,7 @@ if (typeof registerMangaObject === "function") {
         mirrorName: "Manga Dods",
         mirrorIcon: "mangadods.png",
         languages: "en",
-        domains: ["www.mangadods.com"],
+        domains: ["mangadods.com"],
         home: "https://www.mangadods.com/",
         chapter_url: /\/manga\/.*\/(ch-)?\d/g,
         canListFullMangas: false,

@@ -8,6 +8,7 @@ if (typeof registerMangaObject === "function") {
         chapter_url: /\/.*?chapter-[0-9]+.*\//g,
         languages: "en",
         abstract: "MangastreamAbs",
+        disabled: true,
         abstract_options: {
             search_url: "https://alpha-scans.org",
             chapters_a_sel: "div.bixbox.bxcl ul li a",

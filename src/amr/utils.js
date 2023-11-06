@@ -121,8 +121,11 @@ export function serializeVuexObject(obj) {
  * @param {*} url
  */
 export function extractHostname(url) {
-    let uid = new URL(url)
-    return uid.host
+    let urlHostname = new URL(url).host
+    if (urlHostname.startsWith("www.")) {
+        urlHostname = urlHostname.substring(4, urlHostname.length)
+    }
+    return urlHostname
 }
 /**
  * Extract the root domain of a url without subdomain

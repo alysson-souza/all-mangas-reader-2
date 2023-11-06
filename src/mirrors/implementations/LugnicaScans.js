@@ -5,50 +5,57 @@ if (typeof registerMangaObject === "function") {
         languages: "fr",
         domains: ["lugnica-scans.com"],
         home: "https://lugnica-scans.com/",
-        chapter_url: /\/manga\/.*\/.*\/$/g,
+        chapter_url: /\/manga\/.*\/.*\/?$/,
 
         getMangaList: async function (search) {
             let res = []
-            let resultPage = await amr.loadPage(`${this.home}/mangas/`, {
-                nocache: true,
-                preventimages: true
-            })
-            $("a.title", resultPage).each(function () {
-                if ($(this).text().toLowerCase().indexOf(search.toLowerCase())) {
-                    res.push([$(this).text(), $(this).attr("href")])
-                }
-            })
+            let catalog = await amr.loadJson(`${this.home}api/get/catalog?page=0&filter=all`)
+            searchRegExp = new RegExp(`${search}`, "i")
+            let self = this
+            catalog
+                .filter(entry => {
+                    return searchRegExp.test(entry.title)
+                })
+                .forEach(function (e) {
+                    res.push([e.title, `${self.home}manga/${e.slug}`])
+                })
             return res
         },
 
         getListChaps: async function (urlManga) {
-            let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
+            let slug = urlManga.split("/")[4]
+            let mangaObject = await amr.loadJson(`${this.home}api/get/card/${slug}`)
+            let chapters = mangaObject.chapters
             let res = []
+            for (volume in chapters) {
+                res = res.concat(chapters[volume])
+            }
+            // sort by id chapter, this better than chapter
+            res.sort((elem1, elem2) => elem2.id - elem1.id)
             let self = this
-            $('div.manga-chapter a:not([href$="/comments/"])', doc).each(function (index) {
-                let chapNumber = $(this).children().first().text()
-                let chapTitle = $(this).children().last().text()
-                let title = chapNumber + (chapNumber != chapTitle ? " : " + chapTitle : "")
-                res.push([title, $(this).attr("href")])
-            })
-            return res
+            return res.map(elem => [
+                `Chapitre ${elem.chapter}`,
+                `${self.home}manga/${mangaObject.manga.slug}/${elem.chapter}`
+            ])
         },
 
         getInformationsFromCurrentPage: async function (doc, curUrl) {
-            let serieLink = $("a#mangalink", doc)
+            let slug = curUrl.split("/")[4]
+            let mangaInfo = await amr.loadJson(`${this.home}api/get/card/${slug}`)
             return {
-                name: serieLink.text().trim(),
-                currentMangaURL: serieLink.attr("href"),
+                name: mangaInfo.manga.title,
+                currentMangaURL: `${this.home}manga/${mangaInfo.manga.slug}`,
                 currentChapterURL: curUrl
             }
         },
 
         getListImages: async function (doc, curUrl) {
-            let res = []
-            $("div.forgen_reader_image img", doc).each(function () {
-                res.push($(this).data("src"))
-            })
-            return res
+            let slug = curUrl.split("/")[4]
+            let chapter = curUrl.split("/")[5]
+            let mangaInfo = await amr.loadJson(`${this.home}api/get/chapter/${slug}/${chapter}`)
+            return mangaInfo.chapter.files.map(
+                file => `${this.home}upload/chapters/${mangaInfo.manga.id}/${chapter}/${file}`
+            )
         },
 
         getImageFromPageAndWrite: async function (urlImg, image) {
@@ -56,7 +63,8 @@ if (typeof registerMangaObject === "function") {
         },
 
         isCurrentPageAChapterPage: function (doc, curUrl) {
-            return $("div.forgen_reader_image", doc).length > 0
+            console.log("this.chapter_url.test(curUrl)=", this.chapter_url.test(curUrl))
+            return this.chapter_url.test(curUrl)
         }
     })
 }

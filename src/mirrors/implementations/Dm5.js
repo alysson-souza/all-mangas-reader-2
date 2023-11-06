@@ -4,7 +4,7 @@ if (typeof registerMangaObject === "function") {
         canListFullMangas: true,
         mirrorIcon: "dm5.png",
         languages: "cn",
-        domains: ["www.dm5.com"],
+        domains: ["dm5.com"],
         home: "https://www.dm5.com/",
         chapter_url: /^\/m[0-9]+\/$/g,
 

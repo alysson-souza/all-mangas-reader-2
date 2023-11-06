@@ -3,7 +3,7 @@ if (typeof registerMangaObject === "function") {
         mirrorName: "Komikid",
         mirrorIcon: "id.png",
         languages: "id",
-        domains: ["www.komikid.com", "komikid.com"],
+        domains: ["komikid.com"],
         home: "http://www.komikid.com",
         chapter_url: /^\/manga\/.*\/.+$/g,
 

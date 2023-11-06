@@ -3,7 +3,7 @@ if (typeof registerMangaObject === "function") {
         mirrorName: "Manga Sy",
         mirrorIcon: "mangasy.png",
         languages: "en",
-        domains: ["www.mangasy.com"],
+        domains: ["mangasy.com"],
         home: "https://www.mangasy.com/",
         chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
         canListFullMangas: false,
