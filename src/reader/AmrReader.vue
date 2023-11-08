@@ -1704,7 +1704,7 @@ export default {
             const seriesName =
                 this.mangaInfos && this.mangaInfos.displayName ? this.mangaInfos.displayName : this.manga.name
             const chapterName = this.pageData.currentChapter
-            const urls = this.$refs.reader.scansState.scans.map(ele => ele.scan.currentSrc).reverse()
+            const urls = this.$refs.reader.scansState.scans.map(ele => ele.scan.currentSrc)
 
             const blobWriter = new BlobWriter("application/zip")
             const zipWriter = new ZipWriter(blobWriter)
