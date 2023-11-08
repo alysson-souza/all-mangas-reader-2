@@ -1702,7 +1702,7 @@ export default {
             await browser.runtime
                 .sendMessage({
                     action: "DownloadChapter",
-                    urls: this.$refs.reader.scansState.scans.map(ele => ele.scan.currentSrc).reverse(),
+                    urls: this.$refs.reader.scansState.scans.map(ele => ele.scan.currentSrc),
                     chapterName: this.pageData.currentChapter,
                     seriesName:
                         this.mangaInfos && this.mangaInfos.displayName ? this.mangaInfos.displayName : this.manga.name
