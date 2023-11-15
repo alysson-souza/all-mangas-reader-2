@@ -172,7 +172,10 @@ export class Madara extends BaseMirror implements MirrorImplementation {
 
         let $ = this.parseHtml(doc)
         if (mgname === undefined || mgname.trim() === "") {
-            const query = $(`a[href="${mangaurl}"]:not(:contains("Manga Info")):not(:contains("Novel Info"))`, doc)
+            const query = $(
+                `a[href="${mangaurl}"]:not(:contains("Manga Info")):not(:contains("Novel Info")):not(:contains("Series Info"))`,
+                doc
+            )
             if (query.length > 0) {
                 mgname = query.first().text().trim()
             }
