@@ -143,8 +143,16 @@ window["Madara"] = function (options) {
             this.options.chapterInformationsSeriesUrl(doc, curUrl) || url.origin + "/" + mangaPath.join("/") + "/"
         let mgname = this.options.chapterInformationsSeriesName(doc, curUrl)
         if (mgname === undefined || mgname.trim() === "") {
-            if ($(`a[href="${mangaurl}"]:not(:contains("Manga Info")):not(:contains("Novel Info"))`, doc).length > 0) {
-                mgname = $(`a[href="${mangaurl}"]:not(:contains("Manga Info")):not(:contains("Novel Info"))`, doc)
+            if (
+                $(
+                    `a[href="${mangaurl}"]:not(:contains("Manga Info")):not(:contains("Novel Info")):not(:contains("Series Info"))`,
+                    doc
+                ).length > 0
+            ) {
+                mgname = $(
+                    `a[href="${mangaurl}"]:not(:contains("Manga Info")):not(:contains("Novel Info")):not(:contains("Series Info"))`,
+                    doc
+                )
                     .first()
                     .text()
                     .trim()
