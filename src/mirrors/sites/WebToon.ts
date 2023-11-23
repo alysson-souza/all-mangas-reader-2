@@ -68,6 +68,7 @@ export class WebToon extends BaseMirror implements MirrorImplementation {
             ])
         })
         while ($(".paginate > a[href='#']").next().length > 0) {
+            await new Promise(r => setTimeout(r, 500))
             const nextpage = "https://www.webtoons.com" + $(".paginate > a[href='#']").next().attr("href")
             doc = await this.mirrorHelper.loadPage(nextpage, { nocache: true, preventimages: true })
             $ = this.parseHtml(doc)

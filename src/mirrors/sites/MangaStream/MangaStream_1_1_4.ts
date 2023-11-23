@@ -210,7 +210,7 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
                 mirrorIcon: AnigliScansIcon,
                 domains: ["anigliscans.com", "anigliscans.xyz"],
                 home: "https://anigliscans.xyz",
-                chapter_url: /\/.*?chapter-[0-9]+.*\//g,
+                chapter_url: /.*/g,
                 languages: "en"
             },
             {
