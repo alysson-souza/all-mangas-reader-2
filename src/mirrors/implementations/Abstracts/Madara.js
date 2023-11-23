@@ -113,10 +113,12 @@ window["Madara"] = function (options) {
 
             stringsToStrip.forEach(x => (chapterName = chapterName.replace(x, "")))
 
-            res.push([
-                chapterName.trim(),
-                self.options.urlProcessor(self.makeChapterUrl($(this).attr("href"))) // add ?style=list to load chapter in long strip mode, remove it if it already there and add it again,
-            ])
+            if (chapterName !== "") {
+                res.push([
+                    chapterName.trim(),
+                    self.options.urlProcessor(self.makeChapterUrl($(this).attr("href"))) // add ?style=list to load chapter in long strip mode, remove it if it already there and add it again,
+                ])
+            }
         })
 
         if (this.options.sort_chapters) {
@@ -137,6 +139,8 @@ window["Madara"] = function (options) {
                 return 0
             })
         }
+
+        console.debug("Chpater List", res)
 
         return res
     }
