@@ -22,7 +22,8 @@ window["Madara"] = function (options) {
         urlProcessor: url => url,
         chapterInformationsSeriesName: (doc, url) => undefined,
         chapterInformationsSeriesUrl: (doc, url) => null,
-        doBefore: () => {}
+        doBefore: () => {},
+        chapter_list_request_options: (orig, url, requestUrl) => orig
     }),
         (this.options = Object.assign(this.default_options, options))
     this.mirrorName = "Madara"
@@ -63,7 +64,11 @@ window["Madara"] = function (options) {
     }
 
     this.getListChaps = async function (urlManga) {
-        let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
+        const defaultHeaders = { nocache: true, preventimages: true }
+        let doc = await amr.loadPage(
+            urlManga,
+            this.options.chapter_list_request_options(defaultHeaders, urlManga, urlManga)
+        )
         let self = this
         let mangaName = $(this.options.search_a_sel, doc).text().trim()
 
@@ -78,15 +83,22 @@ window["Madara"] = function (options) {
                 mangaVar = amr.getVariable(this.options.chapter_list_ajax_selctor, doc).manga_id
             else mangaVar = $(this.options.chapter_list_ajax_selctor, doc).attr("data-id")
 
-            doc = await amr.loadPage(searchApiUrl, {
-                nocache: true,
-                preventimages: true,
-                post: true,
-                data: {
-                    action: "manga_get_chapters",
-                    manga: mangaVar
-                }
-            })
+            doc = await amr.loadPage(
+                searchApiUrl,
+                this.options.chapter_list_request_options(
+                    {
+                        nocache: true,
+                        preventimages: true,
+                        post: true,
+                        data: {
+                            action: "manga_get_chapters",
+                            manga: mangaVar
+                        }
+                    },
+                    searchApiUrl,
+                    urlManga
+                )
+            )
         }
 
         var res = []
