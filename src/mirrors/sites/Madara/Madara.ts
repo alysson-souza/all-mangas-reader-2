@@ -133,10 +133,12 @@ export class Madara extends BaseMirror implements MirrorImplementation {
 
             stringsToStrip.forEach(x => (chapterName = chapterName.replace(x, "")))
 
-            res.push([
-                chapterName.trim(),
-                _self.options.urlProcessor(_self.makeChapterUrl($(this).attr("href"))) // add ?style=list to load chapter in long strip mode, remove it if it already there and add it again,
-            ])
+            if (chapterName !== "") {
+                res.push([
+                    chapterName.trim(),
+                    _self.options.urlProcessor(_self.makeChapterUrl($(this).attr("href"))) // add ?style=list to load chapter in long strip mode, remove it if it already there and add it again,
+                ])
+            }
         })
 
         if (this.options.sort_chapters) {
