@@ -460,15 +460,16 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
                 mirrorName: "Manga Cultivator",
                 mirrorIcon: MangaCultivatorIcon,
                 languages: "en",
-                domains: ["mangacultivator.com"],
-                home: "https://mangacultivator.com/",
+                domains: ["mangacultivator.com", "mangacult.org"],
+                home: "https://mangacult.org/home-hi/",
                 chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
                 canListFullMangas: true
             },
             {
-                search_url: "https://mangacultivator.com/",
-                chapter_list_ajax: true,
-                isekai_chapter_url: true
+                search_url: "https://mangacult.org/",
+                // chapter_list_ajax: true,
+                // isekai_chapter_url: true,
+                image_protection_plugin: true
             }
         ),
         new Madara(
