@@ -8,7 +8,7 @@ export class WebToon extends BaseMirror implements MirrorImplementation {
     canListFullMangas = false
     mirrorIcon = WebToonIcon
     languages = "en"
-    domains = ["www.webtoons.com"]
+    domains = ["webtoons.com"]
     home = "https://www.webtoons.com"
     chapter_url = /^.*\/viewer.+$/g
 
