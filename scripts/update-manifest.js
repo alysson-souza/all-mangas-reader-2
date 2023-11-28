@@ -53,13 +53,17 @@ if (process.argv.includes("-chrome")) {
         ext.update_url = "https://amr-releases.com/versions/chrome.xml"
     }
 } else if (process.argv.includes("-firefox")) {
-    ext.applications = ext.applications || {}
+    ext.background = {
+        scripts: ["background-worker.js"],
+        type: "module"
+    }
+    ext.browser_specific_settings = ext.browser_specific_settings || {}
     if (!isBeta) {
-        ext.applications.gecko = {
+        ext.browser_specific_settings.gecko = {
             id: "stable@allmangasreader.com" //no update url, distributed on AMO
         }
     } else {
-        ext.applications.gecko = {
+        ext.browser_specific_settings.gecko = {
             id: "beta@allmangasreader.com",
             update_url: "https://amr-releases.com/versions/firefox-beta.json"
         }

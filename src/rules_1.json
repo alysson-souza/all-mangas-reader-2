@@ -44,5 +44,28 @@
             "urlFilter": "sfp.js.",
             "resourceTypes": ["script"]
         }
+    },
+    {
+        "id": 4,
+        "priority": 1,
+        "action": {
+            "type": "modifyHeaders",
+            "responseHeaders": [
+                {
+                    "header": "Referer",
+                    "operation": "set",
+                    "value": "https://manhwatop.com/"
+                },
+                {
+                    "header": "Origin",
+                    "operation": "set",
+                    "value": "https://manhwatop.com/"
+                }
+            ]
+        },
+        "condition": {
+            "urlFilter": "https://manhwatop.com/*",
+            "resourceTypes": ["main_frame"]
+        }
     }
 ]
