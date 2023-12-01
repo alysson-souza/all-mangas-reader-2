@@ -149,6 +149,7 @@ const config = {
 if (process.env.NODE_ENV === "production") {
     config.devtool = "source-map"
     config.mode = "production"
+    config.stats = { warnings: false }
 
     config.plugins = (config.plugins || []).concat([
         new WebpackShellPluginNext({
@@ -172,6 +173,7 @@ if (process.env.NODE_ENV === "production") {
         minimizer: [new TerserPlugin()]
     }
 } else {
+    // config.stats = { warnings: false }
     if (process.argv.includes("--watch")) {
         config.plugins = (config.plugins || []).concat([
             new ExtReloader({
