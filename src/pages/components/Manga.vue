@@ -906,6 +906,7 @@ export default {
     -moz-appearance: none;
     -webkit-appearance: none;
     -ms-appearance: none;
+    appearance: none;
     display: inline-block;
     outline: none;
     border-style: none;

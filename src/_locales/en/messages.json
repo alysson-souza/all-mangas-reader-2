@@ -2002,5 +2002,24 @@
     "options_bottom_navigation_enabled": {
         "message": "Enable Bottom Hover Navigation",
         "description": "Option for enabling bottom navigation"
+    },
+    "__V3_0_0": {
+        "message": "Just a filler to separate new labels from old ones"
+    },
+    "page_permissions_title": {
+        "message": "Permissions - All Mangas Reader",
+        "description": "Title for permissions page"
+    },
+    "permissions_host_message_enabled": {
+        "message": "AMR Requires host permissions to work properly. You have these enabled",
+        "description": "Message if user has the host permissions enabled"
+    },
+    "permissions_host_message_disabled": {
+        "message": "AMR Requires host permissions to work properly, please click the button to add those permissions.",
+        "description": "Message if user has not enabled the host permissions, or disabled them"
+    },
+    "permissions_host_message_button": {
+        "message": "Add Host permissions",
+        "description": "Button to enable host permissions"
     }
 }

@@ -13,7 +13,7 @@
         </v-container>
         <v-dialog v-model="copyImageToClipboardWarning">
             <v-card>
-                <v-card-text class="pt-6" v-html="i18n('reader_context_menu_copy_img_warning_dialog')" />
+                <v-card-text class="pt-6"> {{ i18n("reader_context_menu_copy_img_warning_dialog") }} </v-card-text>
                 <v-divider></v-divider>
                 <v-card-actions>
                     <v-spacer></v-spacer>

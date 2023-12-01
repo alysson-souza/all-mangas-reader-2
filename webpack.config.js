@@ -23,7 +23,8 @@ const config = {
         "pages/popup/popup": "./pages/popup/popup.js",
         "pages/lab/lab": "./pages/lab/lab.js",
         "pages/options/options": "./pages/options/options.js",
-        "pages/bookmarks/bookmarks": "./pages/bookmarks/bookmarks.js"
+        "pages/bookmarks/bookmarks": "./pages/bookmarks/bookmarks.js",
+        "pages/permissions/permissions": "./pages/permissions/permissions.js"
     },
     output: {
         path: __dirname + "/dist",
@@ -91,6 +92,11 @@ const config = {
                 {
                     from: "pages/bookmarks/bookmarks.html",
                     to: "pages/bookmarks/bookmarks.html",
+                    transform: transformHtml
+                },
+                {
+                    from: "pages/permissions/permissions.html",
+                    to: "pages/permissions/permissions.html",
                     transform: transformHtml
                 },
                 {

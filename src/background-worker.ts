@@ -11,8 +11,8 @@ import { getMirrorHelper } from "./mirrors/MirrorHelper"
 import { getMirrorLoader } from "./mirrors/MirrorLoader"
 import { AmrUpdater } from "./pages/amr-updater"
 import { getIconHelper } from "./amr/icon-helper"
+import { host_permissions } from "./constants/required_permissions"
 
-// Initialize store
 const init = async () => {
     const optionsStorage = new OptionStorage()
     const options = await optionsStorage.getVueOptions()
@@ -47,6 +47,16 @@ const init = async () => {
      */
     logger.debug("Initialize mangas")
     await store.dispatch("initMangasFromDB")
+
+    /**
+     * Check to see if extension has required origin permissions
+     */
+    logger.debug("Checking for permissions")
+    const hasPermission = await browser.permissions.contains(host_permissions)
+    if (!hasPermission) {
+        logger.debug("Missing required permissions. Opening request page")
+        browser.tabs.create({ active: true, url: "/pages/permissions/permissions.html" })
+    }
 
     /**
      * Reset watchers for components that can collide.
