@@ -1,3 +1,16 @@
+### V2.5.6
+  Fixes:
+    * Fixed some issues with downloading chapters
+  
+  Mirror Fixes:
+    * Gourmet Scans - New domain
+    * Webtoons - Added 0.5 second delay when fetching chapter list pages
+    * Anigliscans - New Domain
+    * Cosmic Scans - New Domain
+    * Manhwa Top - Added anti cors headers to fetching chapter list
+    * Reset Scans - Fixed an annoyance which caused the count on unread chapters to be off by 1
+    * Manga Cultivator - New Domain
+
 ### V2.5.5
   Fixes:
     * Zoom level not saved between sessions (Credit: @nonedark2008)
