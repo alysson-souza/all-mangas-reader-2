@@ -40,6 +40,7 @@ class HandleMisc {
     async DownloadChapter(message) {
         return new Promise(async (resolve, reject) => {
             const { urls, chapterName, seriesName } = message
+
             // setup zip
             const blobWriter = new zip.BlobWriter("application/zip")
             const writer = new zip.ZipWriter(blobWriter)
@@ -62,8 +63,9 @@ class HandleMisc {
                 }
                 await writer.add(String(i + 1).padStart(3, "0") + "." + ext, new zip.BlobReader(content))
             }
-            const blob = await blobWriter.getData()
-            saveAs(blob, `${seriesName} - ${chapterName}.cbz`)
+            // const blob = await blobWriter.getData()
+            // saveAs(blob, `${seriesName} - ${chapterName}.cbz`)
+            saveAs(await writer.close(), `${seriesName} - ${chapterName}.cbz`)
             resolve()
         })
     }

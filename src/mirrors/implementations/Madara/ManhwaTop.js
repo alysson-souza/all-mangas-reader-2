@@ -11,7 +11,20 @@ if (typeof registerMangaObject === "function") {
         abstract_options: {
             search_url: "https://manhwatop.com/",
             chapter_list_ajax: true,
-            img_src: "data-src"
+            img_src: "data-src",
+            chapter_list_request_options: (orig, url, requestUrl) => {
+                console.debug("Options", orig)
+                let updated = {
+                    ...orig,
+                    headers: {
+                        ...orig.headers,
+                        "x-amr-change-Referer": url,
+                        "x-amr-change-Origin": this.home
+                    }
+                }
+                console.debug("Options", updated)
+                return updated
+            }
         }
     })
 }

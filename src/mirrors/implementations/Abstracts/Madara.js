@@ -22,7 +22,8 @@ window["Madara"] = function (options) {
         urlProcessor: url => url,
         chapterInformationsSeriesName: (doc, url) => undefined,
         chapterInformationsSeriesUrl: (doc, url) => null,
-        doBefore: () => {}
+        doBefore: () => {},
+        chapter_list_request_options: (orig, url, requestUrl) => orig
     }),
         (this.options = Object.assign(this.default_options, options))
     this.mirrorName = "Madara"
@@ -63,7 +64,11 @@ window["Madara"] = function (options) {
     }
 
     this.getListChaps = async function (urlManga) {
-        let doc = await amr.loadPage(urlManga, { nocache: true, preventimages: true })
+        const defaultHeaders = { nocache: true, preventimages: true }
+        let doc = await amr.loadPage(
+            urlManga,
+            this.options.chapter_list_request_options(defaultHeaders, urlManga, urlManga)
+        )
         let self = this
         let mangaName = $(this.options.search_a_sel, doc).text().trim()
 
@@ -78,15 +83,22 @@ window["Madara"] = function (options) {
                 mangaVar = amr.getVariable(this.options.chapter_list_ajax_selctor, doc).manga_id
             else mangaVar = $(this.options.chapter_list_ajax_selctor, doc).attr("data-id")
 
-            doc = await amr.loadPage(searchApiUrl, {
-                nocache: true,
-                preventimages: true,
-                post: true,
-                data: {
-                    action: "manga_get_chapters",
-                    manga: mangaVar
-                }
-            })
+            doc = await amr.loadPage(
+                searchApiUrl,
+                this.options.chapter_list_request_options(
+                    {
+                        nocache: true,
+                        preventimages: true,
+                        post: true,
+                        data: {
+                            action: "manga_get_chapters",
+                            manga: mangaVar
+                        }
+                    },
+                    searchApiUrl,
+                    urlManga
+                )
+            )
         }
 
         var res = []
@@ -101,10 +113,12 @@ window["Madara"] = function (options) {
 
             stringsToStrip.forEach(x => (chapterName = chapterName.replace(x, "")))
 
-            res.push([
-                chapterName.trim(),
-                self.options.urlProcessor(self.makeChapterUrl($(this).attr("href"))) // add ?style=list to load chapter in long strip mode, remove it if it already there and add it again,
-            ])
+            if (chapterName !== "") {
+                res.push([
+                    chapterName.trim(),
+                    self.options.urlProcessor(self.makeChapterUrl($(this).attr("href"))) // add ?style=list to load chapter in long strip mode, remove it if it already there and add it again,
+                ])
+            }
         })
 
         if (this.options.sort_chapters) {
@@ -126,6 +140,8 @@ window["Madara"] = function (options) {
             })
         }
 
+        console.debug("Chpater List", res)
+
         return res
     }
 
@@ -143,8 +159,16 @@ window["Madara"] = function (options) {
             this.options.chapterInformationsSeriesUrl(doc, curUrl) || url.origin + "/" + mangaPath.join("/") + "/"
         let mgname = this.options.chapterInformationsSeriesName(doc, curUrl)
         if (mgname === undefined || mgname.trim() === "") {
-            if ($(`a[href="${mangaurl}"]:not(:contains("Manga Info")):not(:contains("Novel Info"))`, doc).length > 0) {
-                mgname = $(`a[href="${mangaurl}"]:not(:contains("Manga Info")):not(:contains("Novel Info"))`, doc)
+            if (
+                $(
+                    `a[href="${mangaurl}"]:not(:contains("Manga Info")):not(:contains("Novel Info")):not(:contains("Series Info"))`,
+                    doc
+                ).length > 0
+            ) {
+                mgname = $(
+                    `a[href="${mangaurl}"]:not(:contains("Manga Info")):not(:contains("Novel Info")):not(:contains("Series Info"))`,
+                    doc
+                )
                     .first()
                     .text()
                     .trim()

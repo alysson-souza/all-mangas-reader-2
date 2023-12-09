@@ -46,6 +46,7 @@ if (typeof registerMangaObject === "function") {
                 ])
             })
             while ($(".paginate > a[href='#']", doc).next().length > 0) {
+                await new Promise(r => setTimeout(r, 500))
                 let nextpage = "https://www.webtoons.com" + $(".paginate > a[href='#']", doc).next().attr("href")
                 doc = await amr.loadPage(nextpage, { nocache: true, preventimages: true })
                 $(".detail_lst li > a", doc).each(function (index) {
