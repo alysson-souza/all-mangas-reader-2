@@ -2012,5 +2012,24 @@
     "filter_manga_update_error": {
         "message": "Afficher uniquement les séries avec des erreurs de mise à jour",
         "description": "Message about mangas with errors updating filter toggle"
+    },
+    "__V3_0_0": {
+        "message": "Just a filler to separate new labels from old ones"
+    },
+    "page_permissions_title": {
+        "message": "Autorisations - All Mangas Reader",
+        "description": "Title for permissions page"
+    },
+    "permissions_host_message_enabled": {
+        "message": "AMR nécessite les autorisations de l'hôte pour fonctionner correctement. Vous les avez activés",
+        "description": "Message if user has the host permissions enabled"
+    },
+    "permissions_host_message_disabled": {
+        "message": "AMR nécessite des autorisations d'hôte pour fonctionner correctement, veuillez cliquer sur le bouton pour ajouter ces autorisations.",
+        "description": "Message if user has not enabled the host permissions, or disabled them"
+    },
+    "permissions_host_message_button": {
+        "message": "Ajouter des autorisations d'hôte",
+        "description": "Button to enable host permissions"
     }
 }

@@ -7,7 +7,7 @@
         <!-- Global component to show confirmation dialogs, alert dialogs / other -->
         <WizDialog ref="wizdialog"></WizDialog>
         <!-- Global component to show bookmarks dialog -->
-        <BookmarkPopup ref="book"></BookmarkPopup>
+        <BookmarkPopup :mirror="mirror" ref="book"></BookmarkPopup>
         <!-- Popup displaying shortcuts -->
         <ShortcutsPopup ref="shortcuts"></ShortcutsPopup>
         <!-- Global always visible buttons -->
@@ -654,6 +654,7 @@
         <v-main>
             <Reader
                 ref="reader"
+                :mirror="mirror"
                 :book="book"
                 :direction="direction"
                 :invertKeys="invertKeys"
@@ -672,23 +673,21 @@
 import browser from "webextension-polyfill"
 import { i18nmixin } from "../mixins/i18n-mixin"
 
-import mirrorImpl from "./state/mirrorimpl"
 import pageData from "./state/pagedata"
 import options from "./state/options"
 import bookmarks from "./state/bookmarks"
 
-import util from "./helpers/util"
+import { saveAs, Util } from "./helpers/util"
 import * as dialogs from "./helpers/dialogs"
 import ChapterLoader from "./helpers/ChapterLoader"
 import EventBus from "./helpers/EventBus"
-
+import mimedb from "mime-db"
 import Reader from "./components/Reader"
 import Scan from "./components/Scan"
 import WizDialog from "./components/WizDialog"
 import BookmarkPopup from "./components/BookmarkPopup"
 import ShortcutsPopup from "./components/ShortcutsPopup"
 import SocialBar from "./components/SocialBar"
-import { THINSCAN } from "../amr/options"
 import {
     mdiMenu,
     mdiChevronRight,
@@ -722,12 +721,19 @@ import {
     mdiLightbulbOn,
     mdiMagnify
 } from "@mdi/js"
+import { THINSCAN } from "../shared/Options"
+import { BlobReader, BlobWriter, ZipWriter } from "@zip.js/zip.js"
 
 /** Possible values for resize (readable), the stored value is the corresponding index */
 const resize_values = ["width", "height", "container", "none"]
 
 export default {
     mixins: [i18nmixin],
+
+    props: {
+        mirror: Object
+    },
+
     data: () => ({
         zip: false,
         drawer: false /* Display the side drawer or not */,
@@ -789,7 +795,6 @@ export default {
             mdiArrowExpandVertical,
             mdiArrowExpandAll,
             mdiBorderNoneVariant,
-            mdiPlus,
             mdiPlusCircle,
             mdiMinus,
             mdiMinusCircle,
@@ -804,6 +809,7 @@ export default {
         }
     }),
     created() {
+        this.util = new Util(this.mirror)
         /** Register keys */
         this.handlekeys()
         /** Check if manga exists */
@@ -813,7 +819,7 @@ export default {
             /* retrieve current page if current chapter was the last opened */
             if (
                 this.mangaInfos &&
-                util.matchChapUrl(this.pageData.currentChapterURL, this.mangaInfos.currentChapter) &&
+                this.util.matchChapUrl(this.pageData.currentChapterURL, this.mangaInfos.currentChapter) &&
                 this.mangaInfos.currentScanUrl
             ) {
                 // set current page to last currentScanUrl
@@ -869,9 +875,9 @@ export default {
         /** Handle first time reader is opened */
         this.handleFirstTime()
         /** Handle tips */
-        dialogs.handleTips(this.$refs.wizdialog)
+        dialogs.handleTips(this.$refs.wizdialog, false, this.util)
         /** Handle help us dialogs once in a while */
-        dialogs.handleHelps(this.$refs.wizdialog)
+        dialogs.handleHelps(this.$refs.wizdialog, this.util)
 
         // mark manga as read
         if (options.markwhendownload === 0) {
@@ -899,7 +905,7 @@ export default {
          */
         layoutValue(nVal, oVal) {
             // check if nVal <> options val ; if not reset layout to undefined
-            let optVal =
+            const optVal =
                 this.options.scaleUp * 10000 +
                 this.options.displayBook * 1000 +
                 this.options.readingDirection * 100 +
@@ -941,10 +947,6 @@ export default {
         manga() {
             return this.pageData
         },
-        // Current mirror implementation
-        mirror() {
-            return mirrorImpl.get()
-        },
         /** True if latest published chapter */
         lastChapter() {
             if (this.selchap === null || this.chapters.length === 0) return true
@@ -954,7 +956,7 @@ export default {
         nextChapter() {
             if (this.selchap === null) return
             if (this.lastChapter) return
-            let cur = this.chapters.findIndex(el => el.url === this.selchap)
+            const cur = this.chapters.findIndex(el => el.url === this.selchap)
             return this.chapters[cur - 1].url
         },
         /** True if first published chapter */
@@ -964,7 +966,7 @@ export default {
         },
         /** The layout value for this manga, a value containing all specific reading options */
         layoutValue() {
-            let cbook = this.book ? 1 : 0,
+            const cbook = this.book ? 1 : 0,
                 cdirection = this.direction === "ltr" ? 0 : 1,
                 cfullchapter = this.fullchapter ? 1 : 0,
                 cresize = resize_values.findIndex(r => r === this.resize),
@@ -977,7 +979,7 @@ export default {
             return (
                 this.mangaExists &&
                 this.mangaInfos &&
-                !util.matchChapUrl(this.mangaInfos.lastchapter, this.pageData.currentChapterURL)
+                !this.util.matchChapUrl(this.mangaInfos.lastchapter, this.pageData.currentChapterURL)
             )
         },
         /** list of bookmarked scans urls */
@@ -1035,7 +1037,7 @@ export default {
         },
         /** Inform background that current chapter has been read (will update reading state and eventually add manga to list) */
         async consultManga(force) {
-            await util.consultManga(force)
+            await this.util.consultManga(force)
             await this.loadMangaInformations() // reload last chapter read
         },
         /** Decrement Zoom value */
@@ -1048,11 +1050,11 @@ export default {
         },
         /** Check if current manga is in reading list */
         async checkExists() {
-            this.mangaExists = await util.mangaExists()
+            this.mangaExists = await this.util.mangaExists()
         },
         /** Load the state of the side bar (hidden / shown) */
         async loadBarState() {
-            let barState = await browser.runtime.sendMessage({ action: "barState" })
+            const barState = await browser.runtime.sendMessage({ action: "barState" })
             if (barState) {
                 this.drawer = parseInt(barState.barVis) === 1
             }
@@ -1065,10 +1067,10 @@ export default {
                 cfullchapter = -1,
                 cresize = -1,
                 cscaleup = -1
-            let specific = await browser.runtime.sendMessage({
+            const specific = await browser.runtime.sendMessage({
                 action: "mangaInfos",
                 url: this.pageData.currentMangaURL,
-                mirror: mirrorImpl.get().mirrorName,
+                mirror: this.mirror.mirrorName,
                 language: this.pageData.language
             })
             // Save returned manga informations in state
@@ -1117,7 +1119,7 @@ export default {
         /** Load chapters list for current manga */
         async loadChapters() {
             // try to get list chap from background (already loaded in local db)
-            let alreadyLoadedListChaps = await browser.runtime.sendMessage({
+            const alreadyLoadedListChaps = await browser.runtime.sendMessage({
                 action: "getListChaps",
                 url: this.pageData.currentMangaURL,
                 language: this.pageData.language
@@ -1156,7 +1158,7 @@ export default {
                 }
             }
             this.chapters.forEach(chap => {
-                if (util.matchChapUrl(this.pageData.currentChapterURL, chap.url)) {
+                if (this.util.matchChapUrl(this.pageData.currentChapterURL, chap.url)) {
                     this.selchap = chap.url
                     pageData.add("currentChapter", chap.title)
                     return false
@@ -1172,7 +1174,7 @@ export default {
         },
         /** Change updating mode for this manga (1 : stop updating, 0 : check updates) */
         async markMangaReadTop(nTop) {
-            await util.markMangaReadTop(nTop)
+            await this.util.markMangaReadTop(nTop)
             this.loadMangaInformations()
         },
         /** Mark current chapter as latest read in reading list */
@@ -1183,7 +1185,7 @@ export default {
                     this.i18n("content_nav_mark_read_confirm")
                 )
             ) {
-                await util.markAsLatest()
+                await this.util.markAsLatest()
                 this.loadMangaInformations()
             }
         },
@@ -1197,7 +1199,7 @@ export default {
             if (
                 await this.$refs.wizdialog.confirm(
                     this.i18n("list_mg_act_delete"),
-                    this.i18n("list_mg_delete_question", this.manga.name, mirrorImpl.get().mirrorName)
+                    this.i18n("list_mg_delete_question", this.manga.name, this.mirror.mirrorName)
                 )
             ) {
                 browser.runtime.sendMessage({
@@ -1223,7 +1225,7 @@ export default {
             // add a covering loader
             this.loading = true
             console.log("Change Reader chapter : load chapter " + url)
-            let chap = new ChapterLoader(url)
+            const chap = new ChapterLoader(url, this.mirror)
             await chap.checkAndLoadInfos() // get is a chapter ?, infos (current manga, chapter) and scans urls
             this.loadChapterInReaderUsingChapterLoader(chap)
         },
@@ -1252,13 +1254,13 @@ export default {
             // change current chapter --> do it now, if not, loadInReader will trigger nextChapterLoad and it will be the current one...
             this.selchap = chapterloader.url
             this.chapters.forEach(chap => {
-                if (util.matchChapUrl(this.selchap, chap.url)) {
+                if (this.util.matchChapUrl(this.selchap, chap.url)) {
                     pageData.add("currentChapter", chap.title) // actualize chapter name in pageData from chapters list
                     return false
                 }
             })
 
-            let done = chapterloader.loadInReader(options)
+            const done = chapterloader.loadInReader(options)
             if (!done) {
                 // loading chapter failed
                 // reload chapter so it will be the first time and the restorePage will work properly
@@ -1276,14 +1278,14 @@ export default {
                 this.loadMangaInformations()
 
                 // Reader
-                let reader = this.$refs.reader
+                const reader = this.$refs.reader
                 reader.originalTitle = chapterloader.title
                 document.title = chapterloader.title
                 reader.goScan(0)
                 window.scroll(0, 0)
 
                 /** Handle help us dialogs once in a while */
-                dialogs.handleHelps(this.$refs.wizdialog)
+                dialogs.handleHelps(this.$refs.wizdialog, this.util)
 
                 // mark manga as read
                 if (options.markwhendownload === 0) {
@@ -1295,7 +1297,7 @@ export default {
         /** Go read a specific chapter */
         goToChapter() {
             if (this.selchap === null) return
-            let cur = this.chapters.findIndex(el => el.url === this.selchap)
+            const cur = this.chapters.findIndex(el => el.url === this.selchap)
             this.loadChapterInReader(this.chapters[cur].url)
         },
         /** Go to next chapter */
@@ -1321,7 +1323,7 @@ export default {
                 this.$refs.wizdialog.temporary(this.i18n("reader_alert_firstchapter"), 1000, { important: true })
                 return
             }
-            let cur = this.chapters.findIndex(el => el.url === this.selchap)
+            const cur = this.chapters.findIndex(el => el.url === this.selchap)
             if (!this.options.smoothNavigation) {
                 window.location.href = this.chapters[cur + 1].url
             } else {
@@ -1331,33 +1333,33 @@ export default {
         /** Preloads the next chapter scans */
         async preloadNextChapter() {
             if (!this.nextChapter) return
-            util.debug("Loading next chapter...")
+            this.util.debug("Loading next chapter...")
             // instanciate a chapter loader for the next chapter
-            this.nextChapterLoader = new ChapterLoader(this.nextChapter)
+            this.nextChapterLoader = new ChapterLoader(this.nextChapter, this.mirror)
             await this.nextChapterLoader.checkAndLoadInfos() // get is a chapter ?, infos (current manga, chapter) and scans urls
             if (!this.nextChapterLoader.isAChapter) {
                 this.nextChapterLoader = null // next is not recognized as a chapter
             } else {
                 // preload the scans
-                let scansProvider = this.nextChapterLoader.loadScans()
+                const scansProvider = this.nextChapterLoader.loadScans()
                 /** Compute scans loading progress when a scan is loaded */
                 scansProvider.onloadscan = () => {
-                    let nbloaded = scansProvider.scans.reduce((acc, sc) => acc + (sc.loading ? 0 : 1), 0)
+                    const nbloaded = scansProvider.scans.reduce((acc, sc) => acc + (sc.loading ? 0 : 1), 0)
                     this.nextchapProgress = Math.floor((nbloaded / scansProvider.scans.length) * 100)
                 }
             }
         },
         /** Handle key shortcuts */
         handlekeys() {
-            let registerKeys = e => {
+            const registerKeys = e => {
                 e = e || window.event
-                let t = e.target || e.srcElement
-                let prevent = () => {
+                const t = e.target || e.srcElement
+                const prevent = () => {
                     e.preventDefault()
                     e.stopPropagation()
                     e.stopImmediatePropagation()
                 }
-                if (!((t.type && t.type === "text") || t.nodeName.toLowerCase() === "textarea")) {
+                if (!((t.type && t.type === "text") || (t.nodeName && t.nodeName.toLowerCase() === "textarea"))) {
                     if (!e.shiftKey && !e.altKey) {
                         if (e.which === 66) {
                             //b
@@ -1479,7 +1481,7 @@ export default {
                             let chapName = "",
                                 chapPos = 0
                             if (this.selchap !== null && this.chapters.length !== 0) {
-                                let chap = this.chapters.findIndex(el => el.url === this.selchap)
+                                const chap = this.chapters.findIndex(el => el.url === this.selchap)
                                 if (chap >= 0) {
                                     chapName = this.chapters[chap].title
                                     chapPos = this.chapters.length - chap
@@ -1529,7 +1531,7 @@ export default {
             window.addEventListener("keydown", registerKeys, true)
 
             //disable default websites shortcuts
-            let stopProp = e => e.stopImmediatePropagation()
+            const stopProp = e => e.stopImmediatePropagation()
             window.addEventListener("keyup", stopProp, true)
             window.addEventListener("keypress", stopProp, true)
         },
@@ -1565,11 +1567,11 @@ export default {
             this.options.displayFullChapter = this.fullchapter ? 1 : 0
             this.options.resizeMode = resize_values.findIndex(val => val === this.resize)
             this.options.scaleUp = this.scaleUp ? 1 : 0
-            util.saveOption("displayBook", this.options.displayBook)
-            util.saveOption("readingDirection", this.options.readingDirection)
-            util.saveOption("displayFullChapter", this.options.displayFullChapter)
-            util.saveOption("resizeMode", this.options.resizeMode)
-            util.saveOption("scaleUp", this.options.scaleUp)
+            this.util.saveOption("displayBook", this.options.displayBook)
+            this.util.saveOption("readingDirection", this.options.readingDirection)
+            this.util.saveOption("displayFullChapter", this.options.displayFullChapter)
+            this.util.saveOption("resizeMode", this.options.resizeMode)
+            this.util.saveOption("scaleUp", this.options.scaleUp)
             if (!force) this.$refs.wizdialog.temporary(this.i18n("action_done"))
         },
         /** Reset current layout options to the default ones */
@@ -1588,7 +1590,7 @@ export default {
         toggleDark() {
             this.darkreader = !this.darkreader
             this.$vuetify.theme.dark = this.darkreader
-            util.saveOption("darkreader", this.darkreader ? 1 : 0)
+            this.util.saveOption("darkreader", this.darkreader ? 1 : 0)
         },
         /** Display tips popup */
         displayTips() {
@@ -1609,7 +1611,7 @@ export default {
                 }
             } else {
                 /** Request full screen mode */
-                let elem = document.documentElement
+                const elem = document.documentElement
                 if (elem.requestFullscreen) {
                     elem.requestFullscreen()
                 } else if (elem.mozRequestFullScreen) {
@@ -1624,10 +1626,10 @@ export default {
         },
         /** Called on reader's creation, display a welcome message first time reader is opened */
         async handleFirstTime() {
-            let isfirst = await util.getStorage("reader_firsttime")
+            const isfirst = await this.util.getStorage("reader_firsttime")
             if (!isfirst) {
                 // Button to set default layout with preferde choice : long strip
-                let butlongstrip = {
+                const butlongstrip = {
                     title: this.i18n("reader_firsttime_but_longstrip"),
                     color: "primary",
                     click: ({ agree }) => {
@@ -1639,7 +1641,7 @@ export default {
                     }
                 }
                 // Button to set default layout with preferde choice : single page
-                let butsingle = {
+                const butsingle = {
                     title: this.i18n("reader_firsttime_but_single"),
                     color: "primary",
                     click: ({ agree }) => {
@@ -1659,7 +1661,7 @@ export default {
                         important: true
                     }
                 )
-                await util.setStorage("reader_firsttime", "true")
+                await this.util.setStorage("reader_firsttime", "true")
             }
         },
         /** Called when a thin scan (height >= 3 * width) is detected */
@@ -1699,15 +1701,35 @@ export default {
         },
         async DownloadChapter() {
             this.zip = true
-            await browser.runtime
-                .sendMessage({
-                    action: "DownloadChapter",
-                    urls: this.$refs.reader.scansState.scans.map(ele => ele.scan.currentSrc),
-                    chapterName: this.pageData.currentChapter,
-                    seriesName:
-                        this.mangaInfos && this.mangaInfos.displayName ? this.mangaInfos.displayName : this.manga.name
-                })
-                .catch(() => (this.zip = false))
+            const seriesName =
+                this.mangaInfos && this.mangaInfos.displayName ? this.mangaInfos.displayName : this.manga.name
+            const chapterName = this.pageData.currentChapter
+            const urls = this.$refs.reader.scansState.scans.map(ele => ele.scan.currentSrc)
+
+            const blobWriter = new BlobWriter("application/zip")
+            const zipWriter = new ZipWriter(blobWriter)
+            for (const [i, url] of urls.entries()) {
+                let ext = "jpg"
+                const resp = await fetch(url)
+
+                const content = await resp.blob()
+                const mime = content.type
+                if (mime.indexOf("image") > -1) {
+                    if (mimedb[mime].extensions) {
+                        ext = mimedb[mime].extensions[0]
+                    } else {
+                        const match = url.match(/(\.\w{2,4})(?![^?])/)
+                        if (match) {
+                            ext = match[1].replace(".", "")
+                        }
+                    }
+                }
+                const name = `${String(i + 1).padStart(3, "0")}.${ext}`
+                await zipWriter.add(name, new BlobReader(content))
+            }
+            const blob = await zipWriter.close()
+
+            saveAs(blob, `${seriesName} - ${chapterName}.cbz`)
             this.zip = false
         }
     }

@@ -3,10 +3,8 @@ import GistStorage from "../storage/gist-storage"
 import BrowserStorage from "../storage/browser-storage"
 import { createLocalStorage } from "../storage/local-storage"
 import * as syncUtils from "./utils"
-import * as utils from "../../amr/utils"
-import { debug } from "../utils"
 import Storage from "../storage/model-storage"
-import Manga from "../manga"
+import { getAppLogger } from "../../shared/AppLogger"
 
 const remoteStorages = {
     GistStorage,
@@ -20,7 +18,8 @@ const defaultConfig = {
 }
 
 class SyncManager {
-    constructor() {
+    constructor(logger) {
+        this.logger = logger
         /**
          * remoteStorages
          * @type {(Storage)[]}
@@ -107,7 +106,7 @@ class SyncManager {
 
             // skip if one of these is running (sync-manager will retry by itself)
             if (isUpdating || isConverting || isSyncing) {
-                debug(
+                this.logger.debug(
                     `[SYNC-${storage.constructor.name.replace(
                         "Storage",
                         ""
@@ -116,27 +115,27 @@ class SyncManager {
                 return
             }
             if (storage.retryDate && storage.retryDate.getTime() > Date.now()) {
-                debug(
+                this.logger.debug(
                     `[SYNC-${storage.constructor.name.replace(
                         "Storage",
                         ""
                     )}] Skipping sync due to present retry date until ${storage.retryDate.toISOString()}`
                 )
             } else {
-                debug(`[SYNC-${storage.constructor.name.replace("Storage", "")}] Starting sync`)
+                this.logger.debug(`[SYNC-${storage.constructor.name.replace("Storage", "")}] Starting sync`)
                 await this.dispatch("setOption", { key: "isSyncing", value: 1 }) // Set watcher
                 this.checkData(storage)
                     .then(res => {
                         this.dispatch("setOption", { key: "isSyncing", value: 0 }) // Unset watcher when done
-                        debug(`[SYNC-${storage.constructor.name.replace("Storage", "")}] Done`)
-                        debug(res)
+                        this.logger.debug(`[SYNC-${storage.constructor.name.replace("Storage", "")}] Done`)
+                        this.logger.debug(res)
                     })
                     .catch(e => {
                         this.dispatch("setOption", { key: "isSyncing", value: 0 }) // Unset watcher on errors
                         if (e instanceof ThrottleError) {
                             storage.retryDate = e.getRetryAfterDate()
                         } else if (e instanceof Error) {
-                            debug(`[SYNC-${storage.constructor.name.replace("Storage", "")}] ${e.message}`)
+                            this.logger.debug(`[SYNC-${storage.constructor.name.replace("Storage", "")}] ${e.message}`)
                         }
                     })
             }
@@ -149,13 +148,13 @@ class SyncManager {
      */
     async checkData(storage) {
         const storageName = storage.constructor.name.replace("Storage", "")
-        debug(`[SYNC-${storageName}] Checking sync data`)
+        this.logger.debug(`[SYNC-${storageName}] Checking sync data`)
         const localList = await this.localStorage.loadMangaList()
         const remoteList = await storage.getAll()
-        debug(`[SYNC-${storageName}] Comparing local and remote list`)
+        this.logger.debug(`[SYNC-${storageName}] Comparing local and remote list`)
         const incoming = await this.processUpdatesToLocal(localList, remoteList)
         const outgoing = await this.processUpdatesToRemote(localList, remoteList, storage)
-        debug(`[SYNC-${storageName}] Completed sync data check`)
+        this.logger.debug(`[SYNC-${storageName}] Completed sync data check`)
         return { incoming, outgoing }
     }
     /**
@@ -167,7 +166,7 @@ class SyncManager {
         const local = await this.localStorage.loadMangaList()
         for (const storage of this.remoteStorages) {
             const remote = await storage.getAll()
-            let d = Date.now()
+            const d = Date.now()
             for (const localManga of local) {
                 if (typeof localManga.tsOpts === "undefined") await this.dispatch("setMangaTsOpts", localManga, d)
             }
@@ -179,7 +178,8 @@ class SyncManager {
                 }
                 return r
             })
-            if (!upgrade) return debug(`[SYNC-${storage.constructor.name.replace("Storage", "")}] Nothing to update.`)
+            if (!upgrade)
+                return this.logger.debug(`[SYNC-${storage.constructor.name.replace("Storage", "")}] Nothing to update.`)
             if (storage.isdb) {
                 storage.set(upgradedRemote)
             } else {
@@ -191,7 +191,7 @@ class SyncManager {
                             this.tsOpts()
                         }, later)
                     } else if (e instanceof Error) {
-                        debug(`[SYNC-${storage.constructor.name.replace("Storage", "")}] ${e.message}`)
+                        this.logger.debug(`[SYNC-${storage.constructor.name.replace("Storage", "")}] ${e.message}`)
                     }
                 })
             }
@@ -303,7 +303,7 @@ class SyncManager {
                     await remoteStorage.saveAll([...updates, ...Array.from(updatesMap.values())])
                 }
             } catch (e) {
-                debug(
+                this.logger.debug(
                     `[SYNC-${remoteStorage.constructor.name.replace("Storage", "")}] Failed to sync keys to storage: ${
                         e.message
                     }`,
@@ -312,7 +312,7 @@ class SyncManager {
                 throw e
             }
         } else {
-            debug(`[SYNC-${remoteStorage.constructor.name.replace("Storage", "")}] Nothing to update.`)
+            this.logger.debug(`[SYNC-${remoteStorage.constructor.name.replace("Storage", "")}] Nothing to update.`)
         }
         return remoteUpdates
     }
@@ -358,7 +358,7 @@ class SyncManager {
                             this.deleteManga(key)
                         }, later)
                     } else if (e instanceof Error) {
-                        debug(`[SYNC-${storage.constructor.name.replace("Storage", "")}] ${e.message}`)
+                        this.logger.debug(`[SYNC-${storage.constructor.name.replace("Storage", "")}] ${e.message}`)
                     }
                 })
         }
@@ -433,7 +433,7 @@ class SyncManager {
                         this.setToRemote(localManga, mutatedKey)
                     }, later)
                 } else if (e instanceof Error) {
-                    debug(`[SYNC-${storage.constructor.name.replace("Storage", "")}] ${e.message}`)
+                    this.logger.debug(`[SYNC-${storage.constructor.name.replace("Storage", "")}] ${e.message}`)
                 }
             })
         }
@@ -467,7 +467,7 @@ class SyncManager {
                         this.fixLang(payload)
                     }, later)
                 } else if (e instanceof Error) {
-                    debug(`[SYNC-${storage.constructor.name.replace("Storage", "")}] ${e.message}`)
+                    this.logger.debug(`[SYNC-${storage.constructor.name.replace("Storage", "")}] ${e.message}`)
                 }
             })
         }
@@ -483,7 +483,7 @@ let instance
  */
 export const getSyncManager = (config, vuexStore, dispatch) => {
     if (!instance) {
-        instance = new SyncManager()
+        instance = new SyncManager(getAppLogger(vuexStore.options))
     }
     if (config && vuexStore) {
         return instance.init(config, vuexStore, dispatch)

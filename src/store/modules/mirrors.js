@@ -1,9 +1,6 @@
 import storedb from "../../amr/storedb"
-// import * as utils from '../../amr/utils'
-import iconHelper from "../../amr/icon-helper"
-import mirrorsImpl from "../../amr/mirrors-impl"
-import amrUpdater from "../../amr/amr-updater"
-import { websitesDescription } from "../../mirrors/register_implementations"
+import { getMirrorLoader } from "../../mirrors/MirrorLoader"
+import { getMirrorHelper } from "../../mirrors/MirrorHelper"
 
 /**
  *  initial state of the mirrors module
@@ -66,35 +63,29 @@ const actions = {
      * @param {*} manga
      */
     async updateMirror({ commit }, mirror) {
-        // utils.debug("update description of " + mirror.mirrorName + " in db");
         await storedb.storeWebsite(mirror)
     },
 
     // update mirrors from repository
     async updateMirrorsLists({ commit, dispatch, rootState }) {
-        // set the blue badge
-        iconHelper.setBlueIcon()
-
-        // reset implementations
-        commit("resetImplementations")
-
         // update last update ts
         dispatch("setOption", { key: "lastMirrorsUpdate", value: Date.now() })
 
         let websitesdb = await storedb.getWebsites()
         if (websitesdb === undefined) websitesdb = []
 
-        let websites = websitesDescription
+        const mirrorLoader = getMirrorLoader(getMirrorHelper(rootState.options))
+        const websites = mirrorLoader.getAll()
 
-        let updts = []
-        for (let w of websites) {
+        const updts = []
+        for (const w of websites) {
             // get activated property in db, do not overright it
             let act = true
             // languages is undefined for abstract implementations --> always activated
             if (w.languages !== undefined && rootState.options["deactivateunreadable"]) {
-                let langs = w.languages.split(",")
+                const langs = w.languages.split(",")
                 let hasReadable = false
-                for (let l of langs) {
+                for (const l of langs) {
                     if (rootState.options["readlanguages"].includes(l)) {
                         hasReadable = true
                         break
@@ -102,7 +93,7 @@ const actions = {
                 }
                 if (!hasReadable) act = false // default activation to false for a new implementation that does not match a readable language if option is checked
             }
-            let wdb = websitesdb.find(m => m.mirrorName === w.mirrorName)
+            const wdb = websitesdb.find(m => m.mirrorName === w.mirrorName)
             if (wdb != undefined) act = wdb.activated
 
             // Komga shit
@@ -134,9 +125,6 @@ const actions = {
 
         // remove deleted mirrors
         // TODO --> what do we do if there are mangas in list from these mirrors ?
-
-        // update badges and icon state
-        amrUpdater.refreshBadgeAndIcon()
 
         return websites
     },
@@ -188,21 +176,12 @@ const mutations = {
     },
 
     /**
-     * Reset implementations is called in a mutation to affect all js instances (background, lab)
-     * @param {*} state
-     * @param {*} mirrors
-     */
-    resetImplementations(state, mirrors) {
-        mirrorsImpl.resetImplementations()
-    },
-
-    /**
      * Set the activated / deactivated flag on a mirror
      * @param {*} state
      * @param {*} mirror
      */
     changeMirrorActivation(state, mirror) {
-        let mir = state.all.find(m => m.mirrorName === mirror.mirrorName)
+        const mir = state.all.find(m => m.mirrorName === mirror.mirrorName)
         if (mir !== undefined) {
             mir.activated = mirror.activated
         }

@@ -1,34 +1,30 @@
 const webpack = require("webpack")
+const ExtReloader = require("webpack-ext-reloader")
 const { CleanWebpackPlugin } = require("clean-webpack-plugin")
 const WebpackShellPluginNext = require("webpack-shell-plugin-next")
 const CopyWebpackPlugin = require("copy-webpack-plugin")
 const TerserPlugin = require("terser-webpack-plugin")
-const ExtensionReloader = require("webpack-extension-reloader")
 const VueLoaderPlugin = require("vue-loader/lib/plugin")
 const CircularDependencyPlugin = require("circular-dependency-plugin")
 const VuetifyLoaderPlugin = require("vuetify-loader/lib/plugin")
 const ejs = require("ejs")
 
 const AMR_BROWSER = process.env.AMR_BROWSER
-const isFirefox = AMR_BROWSER === "firefox"
-const isChrome = AMR_BROWSER === "chrome"
 
 const config = {
-    devtool:
-        "cheap-module-source-map" /* In Webpack 4, defaults devtool outputs an eval() for speeding compil but this obvioulsy fail in chrome extension due to CSP */,
+    /* In Webpack 4, defaults devtool outputs an eval() for speeding compile
+  but this obviously fail in chrome extension due to CSP */
+    devtool: "cheap-module-source-map",
     context: __dirname + "/src",
     mode: "development",
     entry: {
-        "background/background": "./background/background.js",
+        "background-worker": "./background-worker.ts",
         "reader/init-reading": "./reader/init-reading.js",
         "pages/popup/popup": "./pages/popup/popup.js",
         "pages/lab/lab": "./pages/lab/lab.js",
         "pages/options/options": "./pages/options/options.js",
         "pages/bookmarks/bookmarks": "./pages/bookmarks/bookmarks.js",
-        "pages/importexport/importexport": "./pages/importexport/importexport.js",
-        "backup/index": "./backup/amr-backup.js",
-        // 'stats/piwik': './stats/piwik.js',
-        "mirrors/register_implementations": "./mirrors/register_implementations.js"
+        "pages/permissions/permissions": "./pages/permissions/permissions.js"
     },
     output: {
         path: __dirname + "/dist",
@@ -38,7 +34,7 @@ const config = {
         alias: {
             vue$: "vue/dist/vue.runtime.esm.js"
         },
-        extensions: ["*", ".js", ".vue", ".json"],
+        extensions: ["*", ".ts", ".js", ".vue", ".json"],
         fallback: {
             crypto: require.resolve("crypto-browserify"),
             stream: require.resolve("stream-browserify"),
@@ -48,8 +44,24 @@ const config = {
     module: {
         rules: [
             {
+                test: /\.ts$/,
+                exclude: /node_modules|vue\/src/,
+                loader: "ts-loader",
+                options: {
+                    appendTsSuffixTo: [/\.vue$/]
+                }
+            },
+            {
                 test: /\.vue$/,
-                loader: "vue-loader"
+                loader: "vue-loader",
+                options: {
+                    esModule: true
+                }
+            },
+            // Allow to load images directly
+            {
+                test: /optimized.png$/i,
+                type: "asset/inline"
             },
             {
                 test: /\.css$/,
@@ -74,7 +86,6 @@ const config = {
         new CopyWebpackPlugin({
             patterns: [
                 { from: "icons", to: "icons", globOptions: { ignore: ["icon.xcf"] } },
-                { from: "background/background.html", to: "background/background.html" },
                 { from: "pages/popup/popup.html", to: "pages/popup/popup.html", transform: transformHtml },
                 { from: "pages/lab/lab.html", to: "pages/lab/lab.html", transform: transformHtml },
                 { from: "pages/options/options.html", to: "pages/options/options.html", transform: transformHtml },
@@ -84,8 +95,8 @@ const config = {
                     transform: transformHtml
                 },
                 {
-                    from: "pages/importexport/importexport.html",
-                    to: "pages/importexport/importexport.html",
+                    from: "pages/permissions/permissions.html",
+                    to: "pages/permissions/permissions.html",
                     transform: transformHtml
                 },
                 {
@@ -98,30 +109,20 @@ const config = {
                         if (config.mode !== "development") {
                             return content
                         }
-                        const ext = JSON.parse(content)
-                        // Add dev env tools
-                        const extra = " 'unsafe-eval' http://localhost:8098 'unsafe-inline'"
-                        const [scriptSource, ...rest] = ext.content_security_policy.split(";")
-                        ext.content_security_policy = `${scriptSource} ${extra}; ${rest.join(";")}`
-
-                        return JSON.stringify(ext, null, 2)
+                        return content
+                        // const ext = JSON.parse(content)
+                        // // Add dev env tools
+                        // const extra = " 'unsafe-eval' http://localhost:8098 'unsafe-inline'"
+                        // const [scriptSource, ...rest] = ext.content_security_policy.extension_pages.split(";")
+                        // ext.content_security_policy.extension_pages = `${scriptSource} ${extra}; ${rest.join(";")}`
+                        //
+                        // return JSON.stringify(ext, null, 2)
                     }
                 },
                 { from: "reader/*.css", to: "." },
                 { from: "_locales/**/*", to: "." },
-                { from: "backup/amr-backup.html", to: "backup/index.html" },
-                { from: "../node_modules/jquery/dist/jquery.min.js", to: "lib/jquery.min.js" }
+                { from: "rules_1.json", to: "rules_1.json" }
             ]
-        }),
-        new WebpackShellPluginNext({
-            onBuildStart: {
-                //scripts: ['node ./src/mirrors/update-ws.js && echo "Mirrors Rebuilt"'],
-                scripts: ["node ./scripts/optimize-mirrors-icons.js", "node ./scripts/compile-mirrors.js"],
-                blocking: true
-            },
-            onBuildEnd: {
-                scripts: ["node scripts/remove-evals.js"]
-            }
         }),
         new CircularDependencyPlugin({
             // exclude detection of files based on a RegExp
@@ -135,6 +136,12 @@ const config = {
             allowAsyncCycles: false,
             // set the current working directory for displaying module paths
             cwd: process.cwd()
+        }),
+        new WebpackShellPluginNext({
+            onBuildStart: {
+                scripts: ["node ./scripts/optimize-mirrors-icons.js"],
+                blocking: true
+            }
         })
     ]
 }
@@ -142,8 +149,14 @@ const config = {
 if (process.env.NODE_ENV === "production") {
     config.devtool = "source-map"
     config.mode = "production"
+    config.stats = { warnings: false }
 
     config.plugins = (config.plugins || []).concat([
+        new WebpackShellPluginNext({
+            onBuildEnd: {
+                scripts: ["node scripts/remove-evals.js"]
+            }
+        }),
         new CleanWebpackPlugin(),
         new webpack.DefinePlugin({
             "process.env": {
@@ -160,13 +173,15 @@ if (process.env.NODE_ENV === "production") {
         minimizer: [new TerserPlugin()]
     }
 } else {
-    if (process.env["--watch"]) {
+    // config.stats = { warnings: false }
+    if (process.argv.includes("--watch")) {
         config.plugins = (config.plugins || []).concat([
-            new webpack.HotModuleReplacementPlugin(),
-            new ExtensionReloader({
+            new ExtReloader({
+                reloadPage: true, // Force the reload of the page also
                 entries: {
-                    background: "background/background",
-                    extensionPage: ["pages/options/options", "pages/popup/popup"]
+                    // The entries used for the content/background scripts or extension pages
+                    background: "background-worker",
+                    extensionPage: "popup"
                 }
             })
         ])

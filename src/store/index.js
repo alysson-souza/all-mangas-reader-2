@@ -1,12 +1,12 @@
 import browser from "webextension-polyfill"
 import Vue from "vue"
 import Vuex from "vuex"
-import createMutationsSharer from "vuex-shared-mutations"
 import mangas from "./modules/mangas"
 import mirrors from "./modules/mirrors"
 import options from "./modules/options"
 import bookmarks from "./modules/bookmarks"
 import importexport from "./modules/importexport"
+import VuexMutationSharer from "./sharer/VuexMutationSharer"
 Vue.use(Vuex)
 
 /**
@@ -26,7 +26,10 @@ export default new Vuex.Store({
         bookmarks,
         importexport
     },
-    plugins: [createMutationsSharer({ predicate: () => true })], // share the state for every mutation
+    plugins: [
+        // share the state for every mutation
+        VuexMutationSharer({ predicate: () => true })
+    ],
     actions: {
         /**
          * Retrieve current state from reference store (background store)
@@ -41,6 +44,10 @@ export default new Vuex.Store({
                     .then(async object => {
                         await commit(mutation, object)
                         resolve()
+                    })
+                    .catch(e => {
+                        console.error(e, "getStateFromReference")
+                        reject(e)
                     })
             })
         }

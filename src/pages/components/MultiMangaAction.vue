@@ -82,7 +82,8 @@
 
 <script>
 import i18n from "../../amr/i18n"
-import * as utils from "../utils"
+import { convertIcons } from "../../shared/utils"
+
 export default {
     name: "MultiMangaAction",
     data() {
@@ -108,9 +109,9 @@ export default {
     },
     methods: {
         i18n: (message, ...args) => i18n(message, ...args),
-        convertIcons: str => utils.convertIcons(str),
+        convertIcons: str => convertIcons(str),
         addCategory: function () {
-            for (let manga of this.selected) {
+            for (const manga of this.selected) {
                 this.$store.dispatch("addCategoryToManga", {
                     key: manga.key,
                     name: this.selectedCategory
@@ -122,7 +123,7 @@ export default {
          * Delete a category on this group of manga
          */
         deleteCategory: function () {
-            for (let manga of this.selected) {
+            for (const manga of this.selected) {
                 this.$store.dispatch("removeCategoryFromManga", {
                     key: manga.key,
                     name: this.selectedCategory
@@ -140,12 +141,12 @@ export default {
             this.$eventBus.$emit("multi-manga:select-unread")
         },
         openLatest: function () {
-            for (let manga of this.selected) {
+            for (const manga of this.selected) {
                 this.$eventBus.$emit("multi-manga:open-latest:" + manga.key)
             }
         },
         openNew: function () {
-            for (let manga of this.selected) {
+            for (const manga of this.selected) {
                 this.$eventBus.$emit("multi-manga:open-first-new:" + manga.key)
             }
         },

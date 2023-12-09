@@ -79,7 +79,7 @@
 import i18n from "../../amr/i18n"
 import browser from "webextension-polyfill"
 import SearchMirror from "./SearchMirror"
-import * as utils from "../../amr/utils"
+import { formatMangaName, getUnifiedLang, mangaKey } from "../../shared/utils"
 import Flag from "./Flag"
 
 export default {
@@ -127,13 +127,13 @@ export default {
             if (searchphrase !== this.search) return
             // Set current lang of the implementation, multi if multiple is supported
             let curmirlang = "aa" // contains manga in multiple languages (aa to be first in list)
-            if (languages.split(",").length === 1) curmirlang = utils.getUnifiedLang(languages) // use unified lang so if a manga lang is 'gb' and another 'en', both will be under 'en'
+            if (languages.split(",").length === 1) curmirlang = getUnifiedLang(languages) // use unified lang so if a manga lang is 'gb' and another 'en', both will be under 'en'
 
             // add new mangas to grouped list
-            let addMgs = (mgs, lang) => {
-                for (let mg of mgs) {
+            const addMgs = (mgs, lang) => {
+                for (const mg of mgs) {
                     mg.adding = false // is currently be added to list (display progress)
-                    let mgst = utils.formatMgName(mg.name)
+                    const mgst = formatMangaName(mg.name)
                     if (!this.results[lang]) this.results[lang] = {}
                     if (this.results[lang][mgst] !== undefined) {
                         this.results[lang][mgst].push(mg)
@@ -148,15 +148,15 @@ export default {
                 addMgs(mgs, curmirlang)
             } else {
                 // implementation returns object which keys are languages : {"en" : [[]], "fr": [[]]}
-                for (let l in mgs) {
-                    addMgs(mgs[l], utils.getUnifiedLang(l))
+                for (const l in mgs) {
+                    addMgs(mgs[l], getUnifiedLang(l))
                 }
             }
 
-            let lsts = {}
-            for (let l in this.results) {
+            const lsts = {}
+            for (const l in this.results) {
                 // build sorted list of keys
-                let tmplst = []
+                const tmplst = []
                 Object.keys(this.results[l]).forEach(key => tmplst.push(this.results[l][key]))
                 // sort list of lists by length and alphabetically inside
                 tmplst.sort((a, b) => {
@@ -164,7 +164,7 @@ export default {
                     return a.length === b.length ? a[0].name.localeCompare(b[0].name) : b.length - a.length
                 })
                 //add a property to sort entries in object
-                this.results[l]["__SORTEDKEYS__"] = tmplst.map(lst => utils.formatMgName(lst[0].name))
+                this.results[l]["__SORTEDKEYS__"] = tmplst.map(lst => formatMangaName(lst[0].name))
             }
 
             this.langs = Object.keys(this.results).sort()
@@ -192,11 +192,10 @@ export default {
          * True if manga is in reading list
          */
         isInList(mg) {
-            return (
-                this.$store.state.mangas.all.findIndex(
-                    m => m.key.indexOf(utils.mangaKey(mg.url, mg.mirror, mg.language)) === 0
-                ) !== -1
-            )
+            return this.$store.state.mangas.all.some(m => {
+                const key = mangaKey({ url: mg.url, mirror: mg.mirror, language: mg.language, rootState: this.$store })
+                return m.key.indexOf(key) === 0
+            })
         },
 
         handleIconClick(mg) {

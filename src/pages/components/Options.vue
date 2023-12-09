@@ -342,7 +342,6 @@
                             <v-alert
                                 dense
                                 v-if="gistSyncEnabled"
-                                value="true"
                                 color="info"
                                 icon="mdi-information"
                                 text
@@ -406,7 +405,7 @@
                         >
                         <v-expansion-panel-content class="pt-6" color="slight-overlay">
                             <!-- Display options -->
-                            <v-alert dense value="true" color="info" icon="mdi-information" text elevation="1">
+                            <v-alert dense color="info" icon="mdi-information" text elevation="1">
                                 {{ i18n("options_web_chapter_desc") }}
                             </v-alert>
 
@@ -711,7 +710,7 @@
                             </div></v-expansion-panel-header
                         >
                         <v-expansion-panel-content class="pt-6" color="slight-overlay">
-                            <Mangadex :inStore="mangadexMangasInStore" />
+                            <Mangadex />
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                     <!-- Komga Options -->
@@ -764,12 +763,12 @@
 <script>
 import i18n from "../../amr/i18n"
 import browser from "webextension-polyfill"
-import amrUpdater from "../../amr/amr-updater"
 import Flag from "./Flag"
 import Mangadex from "./Options.Mangadex.vue"
-import * as amrutils from "../../amr/utils"
-import * as utils from "../utils"
-import { THINSCAN } from "../../amr/options"
+import { computeColorLight } from "../../shared/utils"
+import { THINSCAN } from "../../shared/Options"
+import { amrLanguages } from "../../constants/language"
+import { IconHelper } from "../../amr/icon-helper"
 
 /**
  * Converters to format options in db and in page (ex : booleans are store as 0:1 in db)
@@ -825,6 +824,9 @@ export default {
                 return { tab: "general", panel: undefined }
             }
         }
+    },
+    beforeCreate() {
+        this.iconHelper = new IconHelper(this.$store)
     },
     data() {
         // default options
@@ -949,7 +951,7 @@ export default {
 
         // convert values
         Object.keys(converters).forEach(key => {
-            for (let prop of converters[key].properties) {
+            for (const prop of converters[key].properties) {
                 this[prop] = converters[key].fromDb(this[prop])
             }
         })
@@ -961,9 +963,9 @@ export default {
             return this.$store.state.mirrors.all.filter(m => !m.disabled)
         },
         distinctLangs() {
-            let dis = []
+            const dis = []
             dis.push({ value: "", text: i18n("options_gen_mirrors_filter_all") })
-            let dislangs = this.$store.state.mirrors.all.reduce((dm, mir) => {
+            const dislangs = this.$store.state.mirrors.all.reduce((dm, mir) => {
                 mir.languages.split(",").forEach(lang => (!dm.includes(lang) ? dm.push(lang) : dm))
                 return dm
             }, [])
@@ -976,7 +978,7 @@ export default {
         },
         /** Return list of all languages supported in AMR */
         alllangs() {
-            return amrutils.languages.map(el => {
+            return amrLanguages.map(el => {
                 return {
                     flag: Array.isArray(el) ? el[0] : el,
                     languages: el
@@ -999,10 +1001,10 @@ export default {
             this.setOption("waitbetweenupdates")
         },
         displayzero: function () {
-            amrUpdater.refreshBadgeAndIcon()
+            this.iconHelper.refreshBadgeAndIcon()
         },
         nocount: function () {
-            amrUpdater.refreshBadgeAndIcon()
+            this.iconHelper.refreshBadgeAndIcon()
         },
         /** If switch from single page to fullchapter and resize mode is height or container, set it to width */
         displayFullChapter(nVal, oVal) {
@@ -1028,7 +1030,7 @@ export default {
             }
             //convert it for base if necessary
             Object.keys(converters).forEach(key => {
-                for (let prop of converters[key].properties) {
+                for (const prop of converters[key].properties) {
                     if (prop === optstr) val = converters[key].toDb(val)
                 }
             })
@@ -1039,18 +1041,13 @@ export default {
                 this.deactivateUnreadable()
             }
             // retrieve Sync options, must follow current naming convention : providerSyncEnabled
-            if (optstr.toLowerCase().includes("syncenabled") || optstr.toLowerCase().includes("sync")) {
+            if (optstr.toLowerCase().includes("sync")) {
                 this.updateSync(optstr, val)
-                this.$store.dispatch("updateSync", false)
-            }
-            if (optstr.toLowerCase().includes("syncenabled") || optstr.toLowerCase().includes("sync")) {
-                this.updateSync(optstr, val)
-                this.$store.dispatch("updateSync", false)
             }
         },
 
         addArrayEntry(optstr) {
-            let val = this.arrays[optstr].value
+            const val = this.arrays[optstr].value
             this.arrays[optstr].array.push(val)
             this[optstr] = this.arrays[optstr].array.join(",")
             this.arrays[optstr].value = ""
@@ -1066,7 +1063,7 @@ export default {
          * Deactivate all unreadable mirrors when option is checked
          */
         async deactivateUnreadable() {
-            let _self = this
+            const _self = this
             this.$store.state.mirrors.all.forEach(mir => {
                 if (!_self.filterReadableLanguage(mir) && _self.nbMangas(mir.mirrorName) === 0) {
                     mir.activated = false
@@ -1075,14 +1072,17 @@ export default {
             })
         },
         async updateSync(key, value) {
-            await browser.runtime.sendMessage({ action: "sync_update" })
+            await browser.runtime.sendMessage({
+                action: "sync_update",
+                payload: { key, value }
+            })
         },
         /**
          * Determine if a mirror is displayed depending on the language filter
          */
         filterReadableLanguage(mirror) {
             let res = false
-            for (let lang of this.readlanguages) {
+            for (const lang of this.readlanguages) {
                 res = res || mirror.languages.split(",").includes(lang)
             }
             return res
@@ -1155,7 +1155,7 @@ export default {
          * Deactivate all visible mirrors (which can be deactivated)
          */
         deactivateAll() {
-            let _self = this
+            const _self = this
             this.$store.state.mirrors.all.forEach(mir => {
                 if (_self.filterLanguage(mir) && _self.nbMangas(mir.mirrorName) === 0) {
                     mir.activated = false
@@ -1167,7 +1167,7 @@ export default {
          * Activate all visible mirrors (which can be activated)
          */
         activateAll() {
-            let _self = this
+            const _self = this
             this.$store.state.mirrors.all.forEach(mir => {
                 if (_self.filterLanguage(mir) && _self.nbMangas(mir.mirrorName) === 0) {
                     mir.activated = true
@@ -1186,7 +1186,7 @@ export default {
          */
         clickReadLanguage(language) {
             if (Array.isArray(language)) {
-                for (let lang of language) {
+                for (const lang of language) {
                     this.clickReadLanguage(lang)
                 }
             } else {
@@ -1207,14 +1207,14 @@ export default {
          * Compute special color (like colorname#d|lx d for darken, l for lighten and x vuetify lighten scale)
          */
         getColor(c) {
-            return utils.computeColorLight(c, 0)
+            return computeColorLight(c, 0)
         },
         /**
          * Compute special color for text (like colorname#d|lx d for darken, l for lighten and x vuetify lighten scale)
          */
         getTextColor(c) {
-            let col = utils.computeColorLight(c, 0)
-            let sp = col.split(" ")
+            const col = computeColorLight(c, 0)
+            const sp = col.split(" ")
             return sp[0] + "--text" + (sp.length > 1 ? " text--" + sp[1] : "")
         },
         isFirefox() {

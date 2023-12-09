@@ -1,8 +1,9 @@
-image: node:16-buster
+image: node:18-buster
 
 stages:
     - build
     - package
+    - notify
 
 before_script:
     - export PREVIOUS_TAGS=$(git tag --list --format '%(objectname)' --merged origin/master --no-contains HEAD)
@@ -77,6 +78,23 @@ crx-beta:
     dependencies:
         - build
 
+crx-alpha:
+    stage: package
+    script:
+        - yarn run manifest:specify -chrome -checkver $VERSION -patch $PATCH -alpha
+        - yarn run build-zip -patch $PATCH -alpha
+    artifacts:
+        paths:
+            - dist-zip/*.zip
+        expire_in: 1 week
+    except:
+        variables:
+            - $CI_COMMIT_MESSAGE =~ /NO-CI/
+    only:
+        - feature/chrome-manifest-v3
+    dependencies:
+        - build
+
 crx:
     stage: package
     script:
@@ -92,7 +110,7 @@ crx:
         - build
 
 beta_notify:
-    stage: .post
+    stage: notify
     script:
         - yarn run discord:beta --version "$VERSION" --patch "$PATCH" --id "$DISCORD_NOTIFY_BETA_ID" --token "$DISCORD_NOTIFY_BETA_TOKEN" --subject "$LAST_COMMIT_SUBJECT" --body "$LAST_COMMIT_BODY"
     except:
@@ -103,3 +121,16 @@ beta_notify:
         - develop
     dependencies:
         - xpi-beta
+
+alpha_notify:
+    stage: notify
+    script:
+        - yarn run discord:alpha --version "$VERSION" --patch "$PATCH" --id "$DISCORD_NOTIFY_ALPHA_ID" --token "$DISCORD_NOTIFY_ALPHA_TOKEN" --subject "$LAST_COMMIT_SUBJECT" --body "$LAST_COMMIT_BODY"
+    except:
+        variables:
+            - $DISCORD_NOTIFY_ALPHA_ID == null
+            - $CI_COMMIT_MESSAGE =~ /NO-CI/
+    only:
+        - feature/chrome-manifest-v3
+    dependencies:
+        - crx-alpha

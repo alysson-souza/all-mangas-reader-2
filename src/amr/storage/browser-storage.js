@@ -1,5 +1,5 @@
 import browser from "webextension-polyfill"
-import { arrayToObject, batchProps, objectMapToArray } from "../utils"
+import { arrayToObject, batchProps, objectMapToArray } from "../../shared/utils"
 import { ThrottleError } from "./error/ToManyRequests"
 import Storage from "./model-storage"
 

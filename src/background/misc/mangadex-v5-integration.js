@@ -34,10 +34,14 @@ export class Mangadex extends EventEmitter {
             refresh: [mangadexRefresh, mangadexRefreshExpire]
         }
         this.dispatch = dispatch
+        this.checkForRefresh()
+    }
+
+    checkForRefresh() {
         if (Date.now() > this.token.refresh[1]) {
-            ;async () => await this.dispatch("setOption", { key: "mangadexValidCredentials", value: 0 }, { root: true })
+            this.dispatch("setOption", { key: "mangadexValidCredentials", value: 0 }, { root: true })
         } else if (Date.now() > this.token.session[1]) {
-            ;async () => await this.refreshToken()
+            this.refreshToken()
         }
     }
 

@@ -4,7 +4,6 @@
  */
 import browser from "webextension-polyfill"
 
-import mirrorImpl from "./mirrorimpl"
 import pageData from "./pagedata"
 
 export default {
@@ -14,8 +13,13 @@ export default {
         scans: [] // list of scans [{url, name, note, booked}]
     },
 
+    mirror: {
+        mirrorName: ""
+    },
+
     /** Initialize state with a whole list of scans urls */
-    init(scansUrl) {
+    init(scansUrl, mirror) {
+        this.mirror = mirror
         // initialize chapter
         this.loadBookmark()
         // initialize scans
@@ -30,7 +34,7 @@ export default {
                 }
             })
         )
-        for (let scUrl of scansUrl) {
+        for (const scUrl of scansUrl) {
             this.loadBookmark({ scanUrl: scUrl })
         }
     },
@@ -42,9 +46,9 @@ export default {
 
     /** Save a bookmark */
     async saveBookmark({ note, scanUrl, scanName } = {}) {
-        let obj = {
+        const obj = {
             action: "addUpdateBookmark",
-            mirror: mirrorImpl.get().mirrorName,
+            mirror: this.mirror.mirrorName,
             url: pageData.state.currentMangaURL,
             chapUrl: pageData.state.currentChapterURL,
             name: pageData.state.name,
@@ -64,7 +68,7 @@ export default {
             this.state.note = note
             this.state.booked = true
         } else {
-            let sc = this.getScan(scanUrl)
+            const sc = this.getScan(scanUrl)
             if (sc) {
                 sc.note = note
                 sc.booked = true
@@ -73,9 +77,9 @@ export default {
     },
     /** Delete a bookmark */
     async deleteBookmark({ scanUrl } = {}) {
-        let obj = {
+        const obj = {
             action: "deleteBookmark",
-            mirror: mirrorImpl.get().mirrorName,
+            mirror: this.mirror.mirrorName,
             url: pageData.state.currentMangaURL,
             chapUrl: pageData.state.currentChapterURL
         }
@@ -91,7 +95,7 @@ export default {
             this.state.note = undefined
             this.state.booked = false
         } else {
-            let sc = this.getScan(scanUrl)
+            const sc = this.getScan(scanUrl)
             if (sc) {
                 sc.note = undefined
                 sc.booked = false
@@ -101,9 +105,9 @@ export default {
 
     /** Check data for a bookmark from server */
     async loadBookmark({ scanUrl } = {}) {
-        let obj = {
+        const obj = {
             action: "getBookmarkNote",
-            mirror: mirrorImpl.get().mirrorName,
+            mirror: this.mirror.mirrorName,
             url: pageData.state.currentMangaURL,
             chapUrl: pageData.state.currentChapterURL
         }
@@ -113,13 +117,13 @@ export default {
             obj.type = "scan"
             obj.scanUrl = scanUrl
         }
-        let result = await browser.runtime.sendMessage(obj)
+        const result = await browser.runtime.sendMessage(obj)
 
         if (!scanUrl) {
             this.state.note = result.note
             this.state.booked = result.isBooked
         } else {
-            let sc = this.getScan(scanUrl)
+            const sc = this.getScan(scanUrl)
             if (sc) {
                 sc.note = result.note
                 sc.booked = result.isBooked

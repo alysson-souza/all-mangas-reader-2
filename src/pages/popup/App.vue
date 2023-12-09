@@ -4,7 +4,7 @@
         <v-card>
             <v-toolbar>
                 <img src="/icons/icon_32.png" alt="All Mangas Reader" style="margin-right: 5px" />
-                <v-toolbar-title v-text="title"></v-toolbar-title>
+                <v-toolbar-title>{{ title }}</v-toolbar-title>
                 <v-spacer></v-spacer>
                 <v-btn icon @click.stop="toggleDarkMode()">
                     <v-icon>mdi-brightness-6</v-icon>
@@ -51,7 +51,7 @@
                         icon="mdi-alert-decagram"
                         slot="activator">
                         {{ alertmessage }}
-                        <v-btn light class="ml-2" x-small @v-if="!utils.isFirefox()" @click="DownloadAMR()">
+                        <v-btn light class="ml-2" x-small @v-if="!isFirefox()" @click="DownloadAMR()">
                             <v-icon>mdi-cloud-download</v-icon>
                         </v-btn>
                     </v-alert>
@@ -132,6 +132,11 @@
                                 </v-btn>
                             </v-col>
                             <v-col cols="3">
+                                <v-btn text icon color="yellow" @click="opentab('/pages/lab/lab.html')">
+                                    <v-icon>mdi-antenna</v-icon>
+                                </v-btn>
+                            </v-col>
+                            <v-col cols="3">
                                 <v-btn
                                     text
                                     icon
@@ -189,12 +194,12 @@ import PopupResizer from "./resizePopup"
 import Timers from "../components/Timers"
 import ImportExport from "../components/ImportExport"
 import browser from "webextension-polyfill"
-import * as utils from "../../amr/utils"
 
 import streamSaver from "streamsaver"
 import "streamsaver/examples/zip-stream"
-import mimedb from "mime-db"
 import * as ponyfill from "web-streams-polyfill/ponyfill"
+import { OptionStorage } from "../../shared/OptionStorage"
+import { isFirefox } from "../../shared/utils"
 streamSaver.WritableStream = ponyfill.WritableStream
 
 export default {
@@ -218,6 +223,8 @@ export default {
     created() {
         this.trackingDone = true //this.$store.state.options.allowtrackingdone == 1; // Forced to true to disable this
         this.cookiesDone = this.$store.state.options.allowcookiesdone == 1
+
+        this.optionStorage = new OptionStorage()
         document.title = i18n("page_popup_title")
         // initialize state for store in popup from background
         this.$store.dispatch("getStateFromReference", {
@@ -225,14 +232,20 @@ export default {
             key: "all",
             mutation: "setMirrors"
         })
-        if (
-            this.$store.state.options.notifynewversion == 1 &&
-            ((localStorage.beta == 1 && localStorage.version != localStorage.latestBetaVersion) ||
-                (localStorage.beta == 0 && localStorage.version != localStorage.latestStableVersion))
-        ) {
-            this.alertmessage = this.i18n("amr_newversion")
-            this.tooltipalert = this.i18n("amr_newversion_long")
-        }
+
+        this.optionStorage
+            .getKeys(["beta", "version", "notifynewversion", "latestBetaVersion"])
+            .then(({ beta, version, notifynewversion, latestBetaVersion }) => {
+                this.beta = beta
+
+                if (
+                    notifynewversion === 1 &&
+                    ((beta === 1 && version !== latestBetaVersion) || (beta === 0 && version !== latestStableVersion))
+                ) {
+                    this.alertmessage = this.i18n("amr_newversion")
+                    this.tooltipalert = this.i18n("amr_newversion_long")
+                }
+            })
     },
     computed: {
         // initialize mangadex integration options
@@ -322,14 +335,11 @@ export default {
          * Opens a url
          */
         opentab(url) {
-            browser.runtime.sendMessage({
-                action: "opentab",
-                url: url
-            })
+            browser.tabs.create({ url })
         },
         /** Opens import export tab. If Firefox, opens it in a new tab because file input closes the extension : https://bugzilla.mozilla.org/show_bug.cgi?id=1292701 */
         openImportExport() {
-            if (utils.isFirefox()) {
+            if (isFirefox()) {
                 setTimeout(() => (this.tabs = "refresh"), 150)
                 this.opentab("/pages/importexport/importexport.html")
                 // window.close();
@@ -338,7 +348,7 @@ export default {
         async DownloadAMR() {
             let url = "https://amr-releases.com/chrome/release/all-mangas-reader-latest.zip"
             let filename = "all-mangas-reader-latest.zip"
-            if (localStorage.beta) {
+            if (this.beta) {
                 url = "https://amr-releases.com/chrome/beta/all-mangas-reader-beta-latest.zip"
                 filename = "all-mangas-reader-beta-latest.zip"
             }

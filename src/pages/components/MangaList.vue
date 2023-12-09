@@ -4,7 +4,7 @@
         <v-row no-gutters>
             <v-col cols="12" class="d-flex align-center filter-container">
                 <v-card class="hover-card">
-                    <Categories v-on="on" :categories="categories" :static-cats="false" :delegate-delete="false" />
+                    <Categories :categories="categories" :static-cats="false" :delegate-delete="false" />
                 </v-card>
                 <!-- Filters -->
                 <v-card class="hover-card d-flex">
@@ -335,12 +335,11 @@ import MangaGroup from "./MangaGroup"
 import Categories from "./Categories"
 import MultiMangaAction from "./MultiMangaAction"
 import browser from "webextension-polyfill"
-import * as utilsamr from "../../amr/utils"
-import * as utils from "../utils"
+import { convertIcons, displayFilterCats, formatMangaName, hasNew } from "../../shared/utils"
 
 const default_sort = (a, b) => {
-    let af = utilsamr.formatMgName(a.displayName && a.displayName !== "" ? a.displayName : a.name),
-        bf = utilsamr.formatMgName(b.displayName && b.displayName !== "" ? b.displayName : b.name)
+    const af = formatMangaName(a.displayName && a.displayName !== "" ? a.displayName : a.name),
+        bf = formatMangaName(b.displayName && b.displayName !== "" ? b.displayName : b.name)
     let res = af === undefined ? -1 : af.localeCompare(bf)
     if (res === 0) {
         res = a.mirror === undefined ? -1 : a.mirror.localeCompare(b.mirror)
@@ -351,7 +350,7 @@ const default_sort = (a, b) => {
     return res
 }
 const num_chapters_to_read_sort = (a, b) => {
-    let af = a.listChaps.findIndex(ele => ele[1] == a.lastChapterReadURL),
+    const af = a.listChaps.findIndex(ele => ele[1] == a.lastChapterReadURL),
         bf = b.listChaps.findIndex(ele => ele[1] == b.lastChapterReadURL)
     if (bf - af == 0) {
         return default_sort(a, b)
@@ -360,7 +359,7 @@ const num_chapters_to_read_sort = (a, b) => {
     }
 }
 const sort_chapters_upts = (a, b) => {
-    let af = a.upts,
+    const af = a.upts,
         bf = b.upts
     if (bf - af == 0) {
         //this should never happen
@@ -481,13 +480,7 @@ export default {
             if (this.mirrorSelection !== i18n("list_page_all")) {
                 return this.allMangas.filter(mg => mg.mirror == this.mirrorSelection)
             }
-            return this.allMangas.filter(mg =>
-                utils.displayFilterCats(
-                    mg,
-                    this.options.categoriesStates,
-                    this.mirrors.find(mir => mir.mirrorName === mg.mirror)
-                )
-            )
+            return this.allMangas.filter(mg => displayFilterCats(mg, this.options.categoriesStates, this.mirrors))
         },
         /**
          * Returns a list of all mirrors that have series
@@ -495,7 +488,7 @@ export default {
         usedMirrors: function () {
             return this.allMangas.reduce(
                 (mirrors, manga) => {
-                    let name = manga.mirror
+                    const name = manga.mirror
                     if (name && !mirrors.includes(name)) {
                         mirrors.push(name)
                     }
@@ -508,7 +501,7 @@ export default {
          * Return all visible mangas having new chapters to read
          */
         visNewMangas: function () {
-            return this.visMangas.filter(mg => utils.hasNew(mg))
+            return this.visMangas.filter(mg => hasNew(mg))
         },
         /**
          * Build mangas groups (by name)
@@ -518,7 +511,7 @@ export default {
                 // make a copy of manga add a "hasNew" key and remove chapters
                 const mangaCopy = Object.assign({}, manga)
                 delete mangaCopy.listChaps
-                mangaCopy.hasNew = utils.hasNew(manga)
+                mangaCopy.hasNew = hasNew(manga)
 
                 // free memory early
                 manga = null
@@ -526,7 +519,7 @@ export default {
                 // get manga name, key or group key and group index
                 const name =
                     mangaCopy.displayName && mangaCopy.displayName !== "" ? mangaCopy.displayName : mangaCopy.name
-                const key = this.options.groupmgs === 0 ? mangaCopy.key : "group:" + utilsamr.formatMgName(name)
+                const key = this.options.groupmgs === 0 ? mangaCopy.key : "group:" + formatMangaName(name)
                 let index = groups.findIndex(group => group.key == key)
 
                 // if group doesn't exist, create it
@@ -561,7 +554,7 @@ export default {
     components: { Categories, MangaGroup, MultiMangaAction },
     methods: {
         i18n: (message, ...args) => i18n(message, ...args),
-        convertIcons: str => utils.convertIcons(str),
+        convertIcons: str => convertIcons(str),
         importSamples() {
             // we don't do this.$store.dispatch("importSamples"); because to load list of chapters, implementations rely on jQuery, which is not loaded in pages, rely on background page to do so
             browser.runtime.sendMessage({ action: "importSamples" })
@@ -569,7 +562,7 @@ export default {
         markAllAsRead() {
             this.dialogTitle = i18n("list_global_read_title")
             this.dialogText = i18n("list_global_read_text", this.visNewMangas.length)
-            let self = this
+            const self = this
             this.dialogAction = () => {
                 self.showDialog = false
                 self.visNewMangas.forEach(async mg => {
@@ -587,7 +580,7 @@ export default {
         deleteAll() {
             this.dialogTitle = i18n("list_global_delete_title")
             this.dialogText = i18n("list_global_delete_text", this.visMangas.length)
-            let self = this
+            const self = this
             this.dialogAction = () => {
                 self.showDialog = false
                 self.visMangas.forEach(async mg => {
@@ -616,8 +609,8 @@ export default {
                 cmp = default_sort
             } else if (this.sort === "updates-mostunread") {
                 cmp = function (a, b) {
-                    let ha = utils.hasNew(a),
-                        hb = utils.hasNew(b)
+                    const ha = hasNew(a),
+                        hb = hasNew(b)
                     // primary sort on manga amount of new chapters, secondary on alphabetical
                     return ha && hb
                         ? num_chapters_to_read_sort(a, b)
@@ -629,17 +622,17 @@ export default {
                 }
             } else if (this.sort === "updates") {
                 cmp = function (a, b) {
-                    let ha = utils.hasNew(a),
-                        hb = utils.hasNew(b)
+                    const ha = hasNew(a),
+                        hb = hasNew(b)
                     // primary sort on manga has new chapter, secondary on alphabetical
                     return ha === hb ? default_sort(a, b) : ha && !hb ? -1 : 1
                 }
             } else {
                 cmp = function (a, b) {
-                    let na = a.upts != 0,
+                    const na = a.upts != 0,
                         nb = b.upts != 0
-                    let ha = utils.hasNew(a),
-                        hb = utils.hasNew(b)
+                    const ha = hasNew(a),
+                        hb = hasNew(b)
                     // primary sort on manga when last chapter, secondary on number unread, tertiary on alphabetical
                     return na || nb
                         ? sort_chapters_upts(a, b)
@@ -652,9 +645,8 @@ export default {
                         : 1
                 }
             }
-            return items.sort(function (a, b) {
-                return AMR_STORE.getters.options.alpha_asc_desc ? cmp(b, a) : cmp(a, b)
-            })
+            const sortOption = this.$store.getters.options.alpha_asc_desc
+            return items.sort((a, b) => (sortOption ? cmp(b, a) : cmp(a, b)))
         },
         moveNavigation: function () {
             let newDir = ""

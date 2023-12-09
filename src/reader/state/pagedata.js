@@ -6,7 +6,7 @@ import Vue from "vue"
 export default {
     state: {},
     load(object) {
-        for (let key in object) {
+        for (const key in object) {
             if (object.hasOwnProperty(key)) {
                 Vue.set(this.state, key, object[key])
             }

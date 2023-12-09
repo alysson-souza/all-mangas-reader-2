@@ -1,4 +1,3 @@
-import util from "./util"
 import { i18n } from "../../mixins/i18n-mixin"
 import browser from "webextension-polyfill"
 
@@ -10,11 +9,11 @@ import browser from "webextension-polyfill"
  *  - force : force to display the popup (called on tips action button)
  * All the tips are retrieved from i18n starting by reader_tips_ followed with numbers starting from 1. Numbers must be consecutive
  */
-export const handleTips = async function ($ref, force = false) {
+export const handleTips = async function ($ref, force = false, util) {
     let display = true
     if (!force) {
-        let lasttime = await util.getStorage("reader_tips_ts")
-        let stopped = await util.getStorage("reader_tips_stop")
+        const lasttime = await util.getStorage("reader_tips_ts")
+        const stopped = await util.getStorage("reader_tips_stop")
         if (stopped) display = false
         if (lasttime && Date.now() - parseInt(lasttime) < 24 * 60 * 60 * 1000) {
             display = false
@@ -25,21 +24,21 @@ export const handleTips = async function ($ref, force = false) {
         let lasttip = await util.getStorage("reader_tips_last")
         if (lasttip) lasttip = parseInt(lasttip)
         // load tips in i18n
-        let tips = [],
-            tip
+        const tips = []
+        let tip
         while ((tip = i18n("reader_tips_" + (tips.length + 1)))) {
             tips.push(tip)
         }
         // get the next tip
-        let nextTip = async () => {
+        const nextTip = async () => {
             if (!lasttip || lasttip + 1 > tips.length) lasttip = 0
-            let nxttip = lasttip + 1
+            const nxttip = lasttip + 1
             await util.setStorage("reader_tips_last", "" + nxttip)
             lasttip = nxttip
             return tips[nxttip - 1] // lasttip is 1-based, tips array is 0-based
         }
         // Button to stop displaying tips
-        let butstop = {
+        const butstop = {
             title: i18n("reader_tips_stop"),
             color: "grey",
             click: async ({ agree }) => {
@@ -47,28 +46,28 @@ export const handleTips = async function ($ref, force = false) {
                 agree()
             }
         }
-        let butnexttip = {
+        const butnexttip = {
             title: i18n("reader_tips_next"),
             color: "primary",
             click: async ({ changeMessage }) => {
                 changeMessage(await nextTip())
             }
         }
-        let butnexttomorrow = {
+        const butnexttomorrow = {
             title: i18n("reader_tips_next_tomorrow"),
             color: "primary",
             click: ({ agree }) => {
                 agree()
             }
         }
-        let butclose = {
+        const butclose = {
             title: i18n("button_close"),
             color: "grey",
             click: ({ agree }) => {
                 agree()
             }
         }
-        let ntip = await nextTip()
+        const ntip = await nextTip()
         await $ref.open(i18n("reader_tips_title"), ntip, {
             cancel: false,
             buttons: force ? [butclose, butnexttip] : [butstop, butnexttip, butnexttomorrow]
@@ -91,7 +90,7 @@ function isFirefox() {
  *  - link to leave a comment on Firefox
  * @param {} $ref
  */
-export const handleHelps = async function ($ref) {
+export const handleHelps = async function ($ref, util) {
     // number of read chapters with the extension since v2.1
     let nbread = await util.getStorage("nb_read")
     if (!nbread) return
@@ -106,7 +105,7 @@ export const handleHelps = async function ($ref) {
      * condition: a condition to respect to show that popup
      * importance: if multiple are eligible, the greater wins the battle, if multiple same, randomly chosen
      */
-    let popups = [
+    const popups = [
         {
             // rate us on Firefox Addons
             title: i18n("reader_help_rate_title"),
@@ -151,7 +150,7 @@ export const handleHelps = async function ($ref) {
 
     let displayable_popups = [],
         topimp = 0
-    for (let pop of popups) {
+    for (const pop of popups) {
         if (await util.getStorage("dialog_" + pop.id + "_stop")) continue
         if (pop.condition()) {
             displayable_popups.push(pop)
@@ -161,10 +160,10 @@ export const handleHelps = async function ($ref) {
     if (displayable_popups.length === 0) return // no popup matching display conditions
     displayable_popups = displayable_popups.filter(pop => pop.importance === topimp) // keep top level popups
     // choose randomly among winners
-    let to_display = displayable_popups[Math.floor(Math.random() * displayable_popups.length)]
+    const to_display = displayable_popups[Math.floor(Math.random() * displayable_popups.length)]
 
     // Button to stop displaying this message
-    let butstop = {
+    const butstop = {
         title: i18n("reader_help_stop"),
         color: "grey",
         click: async ({ agree }) => {
@@ -173,17 +172,17 @@ export const handleHelps = async function ($ref) {
         }
     }
     // button to close message
-    let butclose = {
+    const butclose = {
         title: i18n("button_close"),
         color: "grey",
         click: ({ agree }) => {
             agree()
         }
     }
-    let dispbuts = [butstop, butclose]
+    const dispbuts = [butstop, butclose]
     if (to_display.action_name) {
         // custom dialog button
-        let butcustom = {
+        const butcustom = {
             title: to_display.action_name,
             color: "primary",
             click: ({ agree }) => {

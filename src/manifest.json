@@ -1,16 +1,16 @@
 {
-    "name": "All Mangas Reader",
+    "name": "All Mangas Reader V3",
     "description": "__MSG_description__",
     "author": "",
     "version": "2.5.7",
-    "manifest_version": 2,
+    "manifest_version": 3,
     "default_locale": "en",
     "icons": {
         "48": "icons/icon_48.png",
         "96": "icons/icon_96.png",
         "128": "icons/icon_128.png"
     },
-    "browser_action": {
+    "action": {
         "default_title": "All Mangas Reader",
         "default_popup": "pages/popup/popup.html"
     },
@@ -18,46 +18,68 @@
         "page": "pages/options/options.html"
     },
     "background": {
-        "page": "background/background.html"
+        "service_worker": "background-worker.js"
+    },
+    "declarative_net_request": {
+        "rule_resources": [
+            {
+                "id": "ruleset_1",
+                "enabled": true,
+                "path": "rules_1.json"
+            }
+        ]
     },
     "permissions": [
         "tabs",
-        "https://*/*",
-        "http://*/*",
+        "declarativeNetRequest",
+        "declarativeNetRequestWithHostAccess",
+        "declarativeNetRequestFeedback",
         "unlimitedStorage",
         "storage",
+        "alarms",
         "contextMenus",
         "notifications",
+        "scripting",
         "downloads",
         "cookies",
         "webNavigation",
-        "webRequest",
-        "webRequestBlocking"
+        "webRequest"
     ],
-    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+    "host_permissions": ["https://*/*", "http://*/*"],
+    "content_security_policy": {
+        "extension_pages": "script-src 'self'; object-src 'self'"
+    },
     "web_accessible_resources": [
-        "icons/icon_32.png",
-        "icons/icon_128.png",
-        "icons/down.png",
-        "icons/bookmark.png",
-        "icons/read_stop.png",
-        "icons/lefttoright.png",
-        "icons/stop.gif",
-        "icons/loading.gif",
-        "icons/cancel.png",
-        "icons/ontop.png",
-        "icons/righttoleft.png",
-        "icons/load16.gif",
-        "icons/add.png",
-        "icons/bookmarkred.png",
-        "icons/warn.png",
-        "icons/read_play.png",
-        "icons/amrlittle.png",
-        "icons/dev.png",
-        "icons/ltload.gif",
-        "icons/imgerror.png",
-        "icons/load10.gif",
-        "icons/find.png"
+        {
+            "resources": [
+                "icons/icon_32.png",
+                "icons/icon_128.png",
+                "icons/down.png",
+                "icons/bookmark.png",
+                "icons/read_stop.png",
+                "icons/lefttoright.png",
+                "icons/stop.gif",
+                "icons/loading.gif",
+                "icons/cancel.png",
+                "icons/ontop.png",
+                "icons/righttoleft.png",
+                "icons/load16.gif",
+                "icons/add.png",
+                "icons/bookmarkred.png",
+                "icons/warn.png",
+                "icons/read_play.png",
+                "icons/amrlittle.png",
+                "icons/dev.png",
+                "icons/ltload.gif",
+                "icons/imgerror.png",
+                "icons/load10.gif",
+                "icons/find.png",
+                "reader/pre-loader.css",
+                "reader/init-reading.js"
+            ],
+            "matches": ["<all_urls>"],
+            "extension_ids": []
+        }
     ],
     "homepage_url": "https://www.allmangasreader.com/"
 }

@@ -15,7 +15,7 @@
                     <v-row dense>
                         <v-col cols="12">
                             <v-textarea
-                                box
+                                filled
                                 hide-details
                                 name="input-7-4"
                                 :label="i18n('bookmark_popup_note')"
@@ -38,14 +38,14 @@
 
 <script>
 import { i18nmixin } from "../../mixins/i18n-mixin"
-import browser from "webextension-polyfill"
-
-import mirrorImpl from "../state/mirrorimpl"
 import pageData from "../state/pagedata"
 import bookmarks from "../state/bookmarks"
 
 export default {
     mixins: [i18nmixin],
+    props: {
+        mirror: Object
+    },
     data() {
         return {
             resolve: null,
@@ -63,7 +63,7 @@ export default {
     computed: {
         /** Return the current mirror name */
         mirrorName() {
-            return mirrorImpl.get().mirrorName
+            return this.mirror.mirrorName
         },
         /** Return the current chapter name */
         chapterName() {
@@ -80,7 +80,7 @@ export default {
             this.dialog = true
             this.scanUrl = scanUrl
             if (scanUrl) {
-                let sc = bookmarks.getScan(scanUrl)
+                const sc = bookmarks.getScan(scanUrl)
                 this.note = sc.note
                 this.scanName = sc.name
                 this.alreadyBookmarked = sc.booked

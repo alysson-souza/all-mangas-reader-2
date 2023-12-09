@@ -13,7 +13,7 @@
         </v-container>
         <v-dialog v-model="copyImageToClipboardWarning">
             <v-card>
-                <v-card-text class="pt-6" v-html="i18n('reader_context_menu_copy_img_warning_dialog')" />
+                <v-card-text class="pt-6"> {{ i18n("reader_context_menu_copy_img_warning_dialog") }} </v-card-text>
                 <v-divider></v-divider>
                 <v-card-actions>
                     <v-spacer></v-spacer>
@@ -86,14 +86,14 @@
 </template>
 
 <script>
-import browser from "webextension-polyfill"
 import bookmarks from "../state/bookmarks"
 import { scansProvider } from "../helpers/ScansProvider"
 import EventBus from "../helpers/EventBus"
 import i18n from "../../amr/i18n"
 import { i18nmixin } from "../../mixins/i18n-mixin"
 import { mdiImageBroken } from "@mdi/js"
-import { isFirefox } from "../../amr/utils"
+import { isFirefox } from "../../shared/utils"
+import { saveAs } from "../helpers/util"
 
 export default {
     mixins: [i18nmixin],
@@ -108,7 +108,7 @@ export default {
             snackbarShow: false,
             snackbarText: "",
             snackbarColor: "",
-            snackbarTimeout: 1500,
+            snackbarTimeout: 3500,
             icons: { mdiImageBroken }
         }
     },
@@ -154,13 +154,13 @@ export default {
         },
         /* is the scan bookmarked ? */
         scanbooked() {
-            let sc = this.bookstate.scans.find(sc => sc.url === this.src)
+            const sc = this.bookstate.scans.find(sc => sc.url === this.src)
             if (sc) return sc.booked
             return false
         },
         /* the bookmark note */
         note() {
-            let sc = this.bookstate.scans.find(sc => sc.url === this.src)
+            const sc = this.bookstate.scans.find(sc => sc.url === this.src)
             if (sc) return sc.note
             return undefined
         }
@@ -183,55 +183,44 @@ export default {
         EventBus.$off("reload-all-errors", this.reloadScan)
     },
     methods: {
+        setImgError: function (e) {
+            this.snackbarText = i18n("reader_snackbar_img_error", e)
+            this.snackbarColor = "error"
+            this.snackbarShow = true
+        },
         async copyIMG() {
             if (typeof ClipboardItem === "undefined" && isFirefox()) {
                 this.copyImageToClipboardWarning = true
                 return
             }
-            const img = await this.imageToBlob(this.scan.scan.currentSrc, window.location.href)
+
+            if (!navigator.clipboard) {
+                this.setImgError("navigator.clipboard is not supported")
+                return
+            }
+
             try {
-                await navigator.clipboard.write([
-                    new ClipboardItem({
-                        [img.type]: img
-                    })
-                ])
+                const url = this.scan.scan.currentSrc
+                const response = await fetch(url)
+                const blob = await response.blob()
+                await navigator.clipboard.write([new ClipboardItem({ [blob.type]: blob })])
                 this.snackbarText = i18n("reader_snackbar_img_success")
                 this.snackbarColor = "success"
                 this.snackbarShow = true
             } catch (e) {
-                this.snackbarText = i18n("reader_snackbar_img_error", e)
-                this.snackbarColor = "error"
-                this.snackbarShow = true
+                this.setImgError(e)
             }
         },
 
         async downloadImage() {
-            const image = await this.imageToBlob(this.scan.scan.currentSrc, window.location.href)
-            const url = window.URL.createObjectURL(image)
-
-            let a = document.createElement("a")
-            document.body.appendChild(a)
-            a.style = "display: none"
-            a.href = url
-            a.download = this.src.split("/").pop().split("#")[0].split("?")[0]
-            a.click()
-            window.URL.revokeObjectURL(url)
-        },
-
-        async imageToBlob(imageURL, referer) {
-            const bs64 = await browser.runtime.sendMessage({ action: "fetchImage", imageURL, referer })
-            const img = new Image()
-            const c = document.createElement("canvas")
-            const ctx = c.getContext("2d")
-            return new Promise(resolve => {
-                img.onload = function () {
-                    c.width = this.naturalWidth
-                    c.height = this.naturalHeight
-                    ctx.drawImage(this, 0, 0)
-                    c.toBlob(resolve)
-                }
-                img.src = bs64
-            })
+            const url = this.scan.scan.currentSrc
+            fetch(url)
+                .then(async response => {
+                    const blob = await response.blob()
+                    const name = url.split("/").pop().split("#")[0].split("?")[0]
+                    saveAs(blob, name)
+                })
+                .catch(e => console.error(e))
         },
         /* check if we need to fit width */
         resizeW() {
@@ -250,13 +239,13 @@ export default {
             /** Do not load image in DOM if image is still loading, is in error or if we already loaded the same. This method is called **too much times** on purpose, here is the gatekeeper */
             if (this.loading) return
             // remove existing image
-            let alreadyImg = this.$refs.scanDiv.getElementsByTagName("img")
+            const alreadyImg = this.$refs.scanDiv.getElementsByTagName("img")
             if (alreadyImg && alreadyImg.length > 0) {
                 this.$refs.scanDiv.removeChild(alreadyImg[0])
             }
             if (this.error) return // remove image if error
             // clone the HTMLImage element
-            let img = this.scan.scan.cloneNode(true)
+            const img = this.scan.scan.cloneNode(true)
             this.$refs.scanDiv.appendChild(img)
         },
         /** Open bookmarks dialog */
