@@ -12,8 +12,8 @@ export class ReaperScans extends BaseMirror implements MirrorImplementation {
     canListFullMangas = false
     mirrorIcon = ReaperScansIcon
     languages = "en"
-    domains = ["reaperscans.com"]
-    home = "https://reaperscans.com"
+    domains = ["reaperscans.com", "reapercomics.com"]
+    home = "https://reapercomics.com"
     chapter_url = /^\/comics\/.+\/chapters\/.+chapter/g
 
     async getMangaList(search: string) {
