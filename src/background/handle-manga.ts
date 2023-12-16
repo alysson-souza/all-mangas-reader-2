@@ -78,10 +78,10 @@ export class HandleManga {
                 return this.store.dispatch("setMangaDisplayName", message)
             case "setMangaChapter":
                 return this.store
-                    .dispatch("resetManga", { key: this.getMangaKey(message) }) // reset reading to first chapter
+                    .dispatch("resetManga", message /*{ key: this.getMangaKey(message) }*/) // reset reading to first chapter
                     .then(() => this.store.dispatch("readManga", message)) // set reading to current chapter
             case "resetManga":
-                return this.store.dispatch("resetManga", { key: this.getMangaKey(message) })
+                return this.store.dispatch("resetManga", message /*{ key: this.getMangaKey(message) } */)
             case "removeCategoryFromManga":
                 return this.store.dispatch("removeCategoryFromManga", message)
             case "addCategoryToManga":

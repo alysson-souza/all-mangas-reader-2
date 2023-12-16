@@ -24,7 +24,8 @@ const config = {
         "pages/lab/lab": "./pages/lab/lab.js",
         "pages/options/options": "./pages/options/options.js",
         "pages/bookmarks/bookmarks": "./pages/bookmarks/bookmarks.js",
-        "pages/permissions/permissions": "./pages/permissions/permissions.js"
+        "pages/permissions/permissions": "./pages/permissions/permissions.js",
+        "pages/importexport/importexport": "./pages/importexport/importexport.js"
     },
     output: {
         path: __dirname + "/dist",
@@ -97,6 +98,11 @@ const config = {
                 {
                     from: "pages/permissions/permissions.html",
                     to: "pages/permissions/permissions.html",
+                    transform: transformHtml
+                },
+                {
+                    from: "pages/importexport/importexport.html",
+                    to: "pages/importexport/importexport.html",
                     transform: transformHtml
                 },
                 {
