@@ -71,7 +71,7 @@ export class MangaHere extends BaseMirror implements MirrorImplementation {
 
     async getListImages(doc: string, curUrl: string) {
         // Check if we have embedded list of images
-        if (doc.includes("eval(function")) {
+        if (doc.includes("eval(function") && doc.includes("zjcdn")) {
             return this.extractListOfImages(doc)
         }
 
