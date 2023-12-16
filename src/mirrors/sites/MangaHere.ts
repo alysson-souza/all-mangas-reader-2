@@ -222,11 +222,6 @@ export class MangaHere extends BaseMirror implements MirrorImplementation {
         const [_initialMatch, variables, x, y, imageList] = variableMatch
         const list = imageList.split("|")
         const data = this.generateStringVariables(variables, x, y, list, 0, {})
-        console.log({
-            v0: data,
-            v1: data.replaceAll(/\\'/g, "'"),
-            v2: Array.from(data.replaceAll(/\\'/g, "'").matchAll(/'(.+?)\/\/'/g))
-        })
 
         const imgExtract = [...data.matchAll(/'(.+?)\\'/g)]
         if (!imgExtract || imgExtract.length < 2) {
