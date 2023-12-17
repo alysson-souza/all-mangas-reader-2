@@ -86,7 +86,7 @@ export class MangaHere extends BaseMirror implements MirrorImplementation {
 
     async getImageUrlFromPage(urlImg: string) {
         // Relative schema url, pass it back.
-        if (urlImg.startsWith("//")) {
+        if (urlImg.startsWith("//") || urlImg.startsWith("https://zjcdn")) {
             // "//zjcdn.mangahere.org/store/manga/39145/001.0/compressed/m000.jpg",
             return urlImg
         }

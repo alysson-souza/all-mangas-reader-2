@@ -219,7 +219,9 @@ export default {
     },
     computed: {
         mirrors() {
-            return this.$store.state.mirrors.all.filter(m => m.disabled == undefined || !m.disabled)
+            return this.$store.state.mirrors.all
+                .filter(m => !m.disabled)
+                .sort((a, b) => a.mirrorName.localeCompare(b.mirrorName))
         },
         nbtests() {
             return this.tests.length
