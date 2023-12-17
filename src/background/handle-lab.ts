@@ -12,7 +12,8 @@ export class HandleLab {
     async handle(message, sender: Sender) {
         if ("lab" === message.action) {
             if (message.url && message.url.indexOf("//") === 0) {
-                message.url = "http:" + message.url
+                const schema = message.httpSchema || "http"
+                message.url = `${schema}:${message.url}`
             }
             return this.runFunction(message, sender)
         }

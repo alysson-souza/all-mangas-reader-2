@@ -463,7 +463,8 @@ const tests = [
                         action: "lab",
                         torun: "getScanUrl",
                         url: scan_url,
-                        mirror: mirror.mirrorName
+                        mirror: mirror.mirrorName,
+                        httpSchema: mirror.home?.includes("https://") ? "https" : "http"
                     })
                     return [true, "Scan loaded with url <i>" + url + "</i>.", url]
                 }
