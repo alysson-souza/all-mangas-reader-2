@@ -182,6 +182,11 @@ export class OptionStorage {
 
             if (jsonOptions.includes(key) && typeof value === "string") {
                 let storedVal = JSON.parse(value)
+                if (key === "readlanguages") {
+                    if (!Array.isArray(storedVal)) {
+                        storedVal = Object.values(storedVal)
+                    }
+                }
                 if (key === "categoriesStates") {
                     storedVal = storedVal.filter(cat => cat.name !== undefined)
                 }
@@ -207,7 +212,7 @@ export class OptionStorage {
     }
 
     setKey(key: string, value: string | number | string[]) {
-        return browser.storage.local.set({ [key]: value })
+        return browser.storage.local.set({ [key]: Array.isArray(value) ? JSON.stringify(value) : value })
     }
 
     updateCategories(categories: string[]) {
