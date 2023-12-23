@@ -154,13 +154,13 @@ export const getReadMangaMirrors = (mirrorHelper: MirrorHelper): MirrorImplement
                 mirrorName: "MintManga",
                 mirrorIcon: require("../../icons/mintmanga-optimized.png"),
                 languages: "ru",
-                domains: ["mintmanga.live"],
-                home: "https://mintmanga.live",
+                domains: ["mintmanga.live", "*.mintmanga.one"],
+                home: "https://24.mintmanga.one",
                 canListFullMangas: false,
                 chapter_url: /^\/.*\/vol.*\/[0-9]+.*$/g
             },
             {
-                base_url: "https://mintmanga.live"
+                base_url: "https://24.mintmanga.one"
             }
         )
     ]
