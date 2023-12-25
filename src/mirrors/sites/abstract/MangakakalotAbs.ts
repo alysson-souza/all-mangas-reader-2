@@ -152,7 +152,8 @@ export const getMangaKakalotImplementations = (mirrorHelper: MirrorHelper): Mirr
                     "m.manganelo.com",
                     "chap.manganelo.com",
                     "chapmanganato.com",
-                    "chapmanganelo.com"
+                    "chapmanganelo.com",
+                    "chapmanganato.to"
                 ],
                 home: "https://manganato.com/",
                 chapter_url: /^\/manga-.*\/chapter-\d+.*$/g
