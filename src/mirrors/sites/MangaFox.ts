@@ -2,6 +2,7 @@ import { BaseMirror } from "./abstract/BaseMirror"
 import { InfoResult, MirrorImplementation } from "../../types/common"
 import MangaFoxIcon from "../icons/mangafox-optimized.png"
 import { MirrorHelper } from "../MirrorHelper"
+import { extractListOfImages } from "../zjcdn"
 
 export class MangaFox extends BaseMirror implements MirrorImplementation {
     constructor(amrLoader: MirrorHelper) {
@@ -72,6 +73,12 @@ export class MangaFox extends BaseMirror implements MirrorImplementation {
     }
 
     async getImageUrlFromPage(urlImage: string) {
+        // Relative schema url, pass it back.
+        if (urlImage.startsWith("//") || urlImage.startsWith("https://zjcdn")) {
+            // "//zjcdn.{somedomain.com}/store/manga/39145/001.0/compressed/m000.jpg",
+            return urlImage
+        }
+
         // loads the page containing the current scan
         const doc = await this.mirrorHelper.loadPage(urlImage, { crossdomain: true, redirect: "follow" })
         const $ = this.parseHtml(doc)
@@ -190,6 +197,11 @@ export class MangaFox extends BaseMirror implements MirrorImplementation {
     }
 
     async getListImages(doc: string, curUrl: string) {
+        // Check if we have embedded list of images
+        if (doc.includes("eval(function") && doc.includes("zjcdn")) {
+            return extractListOfImages(doc)
+        }
+
         const lastPage = this.getVariable({ doc, variableName: "imagecount" })
         const curl = curUrl.substr(0, curUrl.lastIndexOf("/") + 1)
         const res = []
