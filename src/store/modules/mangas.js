@@ -660,6 +660,7 @@ const actions = {
 
         logger.debug(listChaps.length + " chapters found for " + mg.name + " on " + mg.mirror)
         commit("updateMangaListChaps", { key: mg.key, listChaps: listChaps })
+        dispatch("markNoUpdateError", mg)
 
         const newLastChap = mg.listChaps[0][1]
 
