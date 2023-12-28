@@ -34,6 +34,10 @@ export class AppLogger {
     public error = (message: Message) => {
         this.log("error", message)
     }
+
+    public setConfig(config: LoggerConfig) {
+        this.config = config
+    }
 }
 
 let instance: AppLogger
