@@ -66,12 +66,19 @@ export class BatotoFake extends BaseMirror implements MirrorImplementation {
     public async getListImages(doc: string, _currentUrl: string, _sender: unknown) {
         let regex = /const batoPass = (.*?);/g
         let matches = regex.exec(doc)
-        // Seems like we stuck here, not allowed and we cannot convert to variable
-        const batoPass = eval(matches[1])
+        // Deobfuscation logic that converts the mess that looks like [+!+[]]+[!+[]+!+[]]] into a string of a decimal number
+        const batoPass = matches[1]
+            .replace(/\(.+\)\[.+?\]\+/, ".+")
+            .replace(/!\+\[\]/g, "1")
+            .replace(/\[\+\[\]\]/g, "[0]")
+            .replace(/1(?:\+1)*/g, match => String((match.length + 1) / 2))
+            .replace(/(?<=[[(])\+1/g, "1")
+            .replace(/\[(\d)\]/g, "$1")
+            .replace(/\+/g, "")
 
-        regex = /const batoWord = (.*?);/g
+        regex = /const batoWord = "(.*?)";/g
         matches = regex.exec(doc)
-        const batoWord = eval(matches[1])
+        const batoWord = matches[1]
 
         const crypto = this.mirrorHelper.crypto
         const decrypted = JSON.parse(crypto.AES.decrypt(batoWord, batoPass).toString(this.mirrorHelper.crypto.enc.Utf8))
@@ -79,19 +86,6 @@ export class BatotoFake extends BaseMirror implements MirrorImplementation {
 
         const images = this.getVariable({ doc, variableName: "imgHttpLis" })
         return images.map((image, index) => image + "?" + decrypted[index])
-        // return images
-
-        /*
-        This new thing seems temp since its a full url so I am leaving the old code commented out for easier access later
-        let images = amr.getVariable("images", doc)
-        let server = amr.getVariable("server", doc)
-        regex = /const batojs = (.*?);/g
-        matches = regex.exec(doc.innerText)
-        let key = eval(matches[1])
-
-        let cdnPath = JSON.parse(amr.crypto.AES.decrypt(server, key).toString(amr.crypto.enc.Utf8))
-        return images.map(image => cdnPath + image)
-        */
     }
 
     public async getImageUrlFromPage(urlImg: string) {
