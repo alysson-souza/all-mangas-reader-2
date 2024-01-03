@@ -19,7 +19,6 @@ const getters = {
     allBookmarks: state => state.all
 }
 
-// actions
 const actions = {
     /**
      * Get bookmarks from local database
@@ -36,8 +35,11 @@ const actions = {
      * @param {*} bm
      */
     async createBookmark({ commit, rootState }, bm) {
+        if (!bm.key) {
+            bm.key = bookmarkKey({ bookmark: bm, rootState: { state: rootState } })
+        }
         commit("createBookmark", bm)
-        await storedb.storeBookmark(bm, { state: rootState })
+        await storedb.storeBookmark(bm)
     },
     /**
      * Updates the note on a bookmark
@@ -45,18 +47,20 @@ const actions = {
      * @param {*} bm bookmark with new note
      */
     async updateBookmarkNote({ commit, rootState }, bm) {
+        if (!bm.key) {
+            bm.key = bookmarkKey({ bookmark: bm, rootState: { state: rootState } })
+        }
         commit("updateBookmarkNote", bm)
-        await storedb.storeBookmark(bm, { state: rootState })
+        await storedb.storeBookmark(bm)
     },
     /**
      * Delete a bookmark in the store
      * @param {*} param0
-     * @param {*} key
+     * @param {*} bm existing bookmark
      */
-    async deleteBookmark({ commit, rootState }, { chapUrl, scanUrl, mirror }) {
-        const bm = state.all.find(bookmark => bookmark.key === key)
-        const key = bookmarkKey({ bookmark: bm, rootState })
-        if (bm !== undefined) {
+    async deleteBookmark({ commit, rootState }, bm) {
+        const key = bookmarkKey({ bookmark: bm, rootState: { state: rootState } })
+        if (state.all.some(bookmark => bookmark.key === key)) {
             commit("deleteBookmark", key)
             await storedb.deleteBookmark(key)
         }
@@ -97,8 +101,7 @@ const mutations = {
      * @param {*} bm bookmark with new note
      */
     async updateBookmarkNote(state, bm) {
-        const key = bookmarkKey({ bookmark: bm, rootState: this.$store })
-        const bmn = state.all.find(bookmark => bookmark.key === key)
+        const bmn = state.all.find(bookmark => bookmark.key === bm.key)
         if (bmn !== undefined) {
             bmn.note = bm.note
         }
