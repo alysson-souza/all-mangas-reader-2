@@ -19,6 +19,8 @@ const ThrottleErrorMessages = Object.keys(LIMITS).filter(k => k.includes("OPERAT
  * @link https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/sync
  */
 export default class BrowserStorage extends Storage {
+    name = "Browser"
+
     /**
      * @param {number} interval
      */

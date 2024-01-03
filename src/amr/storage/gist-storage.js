@@ -3,6 +3,8 @@ import { ThrottleError } from "./error/ToManyRequests"
 import { SyncError } from "./error/SyncError"
 
 export default class GistStorage extends Storage {
+    name = "Gist"
+
     constructor(config) {
         super(false)
         this.gistSyncGitID = config.gistSyncGitID
