@@ -94,9 +94,6 @@ const init = async () => {
         store.dispatch("updateChaptersLists", { force: false }) // force to false to avoid updating if not necessary
     }
 
-    // Starts message handling
-    logger.debug("Initialize message handler")
-
     // Check the latest published version of AMR
     await amrUpdater.checkLatestPublishedVersion()
 
@@ -105,11 +102,15 @@ const init = async () => {
     if (store.state.options.mangadexIntegrationEnable) {
         new Mangadex(store.getters.md_allOptions, store.dispatch)
     }
+
+    return true
 }
-init().then(() => console.debug("completed background init"))
+
+const initPromise = init()
+initPromise.then(() => console.debug("completed background init"))
 
 /**
- * Initialise all listeners at the top level so they can be persistend in firefox
+ * Initialise all listeners at the top level, so they can be persisted in firefox
  */
 
 // Alarms - Initialize refresh checkers
@@ -150,9 +151,13 @@ browser.webNavigation.onHistoryStateUpdated.addListener(args => {
         return
     } // do not reload amr on embedded iframes
 
-    if (timers.includes(args.tabId)) return // History spam
+    if (timers.includes(args.tabId)) {
+        return // History spam
+    }
 
-    if (!args.url.includes("mangadex.org")) timers.push(args.tabId)
+    if (!args.url.includes("mangadex.org")) {
+        timers.push(args.tabId)
+    }
 
     setTimeout(() => {
         timers = timers.filter(id => id != args.tabId)
@@ -170,4 +175,9 @@ if (browser.notifications) {
     browser.notifications.onClosed.addListener(notifications.notificationCloseCallback)
 }
 
-browser.runtime.onMessage.addListener(handler.handle)
+logger.info("Initialize message handler")
+browser.runtime.onMessage.addListener(async (msg, sender) => {
+    // Make sure init is complete
+    await initPromise
+    return handler.handle(msg, sender)
+})
