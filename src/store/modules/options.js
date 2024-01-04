@@ -1,4 +1,4 @@
-import { defaultOptions, OptionStorage } from "../../shared/OptionStorage"
+import { getDefaultOptions, OptionStorage } from "../../shared/OptionStorage"
 
 const optionStorage = new OptionStorage()
 
@@ -254,7 +254,7 @@ const mutations = {
 }
 
 export default {
-    state: defaultOptions,
+    state: getDefaultOptions(),
     getters,
     actions,
     mutations
