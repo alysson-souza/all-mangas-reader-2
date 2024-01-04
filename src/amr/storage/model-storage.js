@@ -1,4 +1,6 @@
 export default class Storage {
+    name = "BaseStorage"
+
     constructor(isdb, interval = 30 * 1000) {
         this.retryDate = new Date()
         this.interval = interval

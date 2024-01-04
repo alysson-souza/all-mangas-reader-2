@@ -3,7 +3,6 @@ import GistStorage from "../storage/gist-storage"
 import BrowserStorage from "../storage/browser-storage"
 import { createLocalStorage } from "../storage/local-storage"
 import * as syncUtils from "./utils"
-import Storage from "../storage/model-storage"
 import { getAppLogger } from "../../shared/AppLogger"
 
 const remoteStorages = {
@@ -98,48 +97,43 @@ class SyncManager {
      */
     async triggerSync(storageName) {
         const storage = this.remoteStorages.find(store => store.constructor.name === storageName)
-        if (storage) {
-            // Get update chapter and convert watchers
-            const isUpdating = this.vuexStore.options.isUpdatingChapterLists
-            const isConverting = this.vuexStore.options.isConverting
-            const isSyncing = this.vuexStore.options.isSyncing // in case user triggers a sync-out
-
-            // skip if one of these is running (sync-manager will retry by itself)
-            if (isUpdating || isConverting || isSyncing) {
-                this.logger.debug(
-                    `[SYNC-${storage.constructor.name.replace(
-                        "Storage",
-                        ""
-                    )}] Skipping sync due to chapter lists being updated`
-                )
-                return
-            }
-            if (storage.retryDate && storage.retryDate.getTime() > Date.now()) {
-                this.logger.debug(
-                    `[SYNC-${storage.constructor.name.replace(
-                        "Storage",
-                        ""
-                    )}] Skipping sync due to present retry date until ${storage.retryDate.toISOString()}`
-                )
-            } else {
-                this.logger.debug(`[SYNC-${storage.constructor.name.replace("Storage", "")}] Starting sync`)
-                await this.dispatch("setOption", { key: "isSyncing", value: 1 }) // Set watcher
-                this.checkData(storage)
-                    .then(res => {
-                        this.dispatch("setOption", { key: "isSyncing", value: 0 }) // Unset watcher when done
-                        this.logger.debug(`[SYNC-${storage.constructor.name.replace("Storage", "")}] Done`)
-                        this.logger.debug(res)
-                    })
-                    .catch(e => {
-                        this.dispatch("setOption", { key: "isSyncing", value: 0 }) // Unset watcher on errors
-                        if (e instanceof ThrottleError) {
-                            storage.retryDate = e.getRetryAfterDate()
-                        } else if (e instanceof Error) {
-                            this.logger.debug(`[SYNC-${storage.constructor.name.replace("Storage", "")}] ${e.message}`)
-                        }
-                    })
-            }
+        if (!storage) {
+            return
         }
+
+        const name = storage.name
+        const isUpdating = this.vuexStore.options.isUpdatingChapterLists
+        const isConverting = this.vuexStore.options.isConverting
+        const isSyncing = this.vuexStore.options.isSyncing
+        if (isUpdating || isConverting || isSyncing) {
+            this.logger.debug(`[SYNC-${name}] Skipping sync due to chapter lists being updated`)
+            return
+        }
+
+        if (storage.retryDate && storage.retryDate.getTime() > Date.now()) {
+            const isoString = storage.retryDate.toISOString()
+            this.logger.debug(`[SYNC-${name}] Skipping sync due to present retry date until ${isoString}`)
+            return
+        }
+
+        this.logger.debug(`[SYNC-${name}] Starting sync`)
+        await this.dispatch("setOption", { key: "isSyncing", value: 1 }) // Set watcher
+
+        this.checkData(storage)
+            .then(res => {
+                this.logger.debug(`[SYNC-${name}] Done`)
+                this.logger.debug(res)
+            })
+            .catch(e => {
+                if (e instanceof ThrottleError) {
+                    storage.retryDate = e.getRetryAfterDate()
+                } else if (e instanceof Error) {
+                    this.logger.debug(`[SYNC-${name}] ${e.message}`)
+                }
+            })
+            .finally(() => {
+                this.dispatch("setOption", { key: "isSyncing", value: 0 })
+            })
     }
 
     /**
@@ -147,20 +141,17 @@ class SyncManager {
      * @returns {Promise<{local: Manga[], remote: Manga[]}>}
      */
     async checkData(storage) {
-        const storageName = storage.constructor.name.replace("Storage", "")
-        this.logger.debug(`[SYNC-${storageName}] Checking sync data`)
+        this.logger.debug(`[SYNC-${storage.name}] Checking sync data`)
         const localList = await this.localStorage.loadMangaList()
         const remoteList = await storage.getAll()
-        this.logger.debug(`[SYNC-${storageName}] Comparing local and remote list`)
+        this.logger.debug(`[SYNC-${storage.name}] Comparing local and remote list`)
         const incoming = await this.processUpdatesToLocal(localList, remoteList)
         const outgoing = await this.processUpdatesToRemote(localList, remoteList, storage)
-        this.logger.debug(`[SYNC-${storageName}] Completed sync data check`)
+        this.logger.debug(`[SYNC-${storage.name}] Completed sync data check`)
         return { incoming, outgoing }
     }
     /**
-     *
-     * @param {Manga[]} local
-     * @param {Manga[]} remote
+     * @TODO too complex, refactor...
      */
     async tsOpts() {
         const local = await this.localStorage.loadMangaList()
