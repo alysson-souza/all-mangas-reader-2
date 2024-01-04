@@ -12,30 +12,26 @@ class Notification {
         this.notifications = {}
         // last id of notification
         this.currentId = 0
+    }
 
-        // Callback function to notification click.
-        const _self = this
-        const notificationClickCallback = function (id) {
-                if (_self.notifications[id] !== undefined) {
-                    browser.tabs.create({
-                        url: _self.notifications[id]
-                    })
-                    // It deletes the used URL to avoid unbounded object growing.
-                    // Well, if the notification isn't clicked the said growing is not avoided.
-                    // If this proves to be a issue a close callback should be added too.
-                    delete _self.notifications[id]
-                }
-            },
-            notificationCloseCallback = function (id) {
-                if (_self.notifications[id] !== undefined) delete _self.notifications[id]
-            }
-        if (browser.notifications) {
-            // Add the callback to ALL notifications opened by AMR.
-            browser.notifications.onClicked.addListener(notificationClickCallback)
-            // To prevent the notification array from growing
-            browser.notifications.onClosed.addListener(notificationCloseCallback)
+    notificationClickCallback = id => {
+        if (this.notifications[id] !== undefined) {
+            browser.tabs.create({
+                url: this.notifications[id]
+            })
+            // It deletes the used URL to avoid unbounded object growing.
+            // Well, if the notification isn't clicked the said growing is not avoided.
+            // If this proves to be a issue a close callback should be added too.
+            delete this.notifications[id]
         }
     }
+
+    notificationCloseCallback = id => {
+        if (this.notifications[id] !== undefined) {
+            delete this.notifications[id]
+        }
+    }
+
     /**
      * Create a notification when a new chapter is released on a manga
      * @param {} mg manga to notify for

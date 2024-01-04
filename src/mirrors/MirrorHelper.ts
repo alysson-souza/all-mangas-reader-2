@@ -41,7 +41,7 @@ export type JsonOptions = Omit<LoadOptions, "preventimages">
  * Abstract common functionality that needs to handed by the reader
  */
 export class MirrorHelper {
-    constructor(private readonly options: StateOptions) {}
+    constructor(private options: StateOptions) {}
 
     crypto = CryptoJS
 
@@ -229,6 +229,10 @@ export class MirrorHelper {
 
     getOption(option) {
         return this.options[option] || ""
+    }
+
+    setOptions(options) {
+        this.options = options
     }
 }
 

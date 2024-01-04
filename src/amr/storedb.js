@@ -1,5 +1,3 @@
-import { bookmarkKey } from "../shared/utils"
-
 /**
  * Class helping to store data in IndexedDb
  * In AMR V1, objects were stored in WebDB. WebDB is deprecated and Mozilla never implemented WebDB in FireFox
@@ -332,9 +330,8 @@ class StoreDB {
     /**
      * Store a bookmark entry
      * @param {*} bm {url, type (0: chapter, 1: scan), mgkey, title}
-     * @param rootState
      */
-    storeBookmark(bm, rootState) {
+    storeBookmark(bm) {
         const store = this
         return this.checkInit().then(() => {
             return new Promise((resolve, result) => {
@@ -345,9 +342,6 @@ class StoreDB {
                 }
 
                 const objectStore = transaction.objectStore("bookmarks")
-                if (!bm.key) {
-                    bm.key = bookmarkKey({ bookmark: bm, rootState })
-                }
                 const request = objectStore.put(bm)
                 request.onsuccess = function (event) {
                     resolve(event.target.result)

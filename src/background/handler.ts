@@ -83,25 +83,23 @@ export class Handler {
         }
     }
 
-    handle() {
-        /**
-         * Message from popup and content script handler
-         */
-        browser.runtime.onMessage.addListener(async (message, sender) => {
-            this.logger.debug(message)
-            for (const handler of this.handlers) {
-                try {
-                    const result = await handler.handle(message, sender)
-                    if (result !== NOT_HANDLED_MESSAGE) {
-                        return result
-                    }
-                } catch (e) {
-                    this.logger.error(e)
-                    return undefined
+    /**
+     * Message from popup and content script handler
+     */
+    handle = async (message, sender) => {
+        this.logger.debug(message)
+        for (const handler of this.handlers) {
+            try {
+                const result = await handler.handle(message, sender)
+                if (result !== NOT_HANDLED_MESSAGE) {
+                    return result
                 }
+            } catch (e) {
+                this.logger.error(e)
+                return undefined
             }
+        }
 
-            this.logger.error("No handler for message action " + message.action)
-        })
+        this.logger.error("No handler for message action " + message.action)
     }
 }

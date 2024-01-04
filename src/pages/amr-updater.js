@@ -1,5 +1,3 @@
-import browser from "webextension-polyfill"
-
 /**
  * This class is used to update periodically manga chapters lists and mirrors list
  */
@@ -8,30 +6,10 @@ export class AmrUpdater {
      *
      * @param store {AppStore}
      * @param optionStorage {OptionStorage}
-     * @param iconHelper {IconHelper}
      */
-    constructor(store, optionStorage, iconHelper) {
+    constructor(store, optionStorage) {
         this.optionStorage = optionStorage
         this.store = store
-        this.iconHelper = iconHelper
-    }
-
-    /**
-     * Initialize refresh checkers
-     */
-    load() {
-        browser.alarms.onAlarm.addListener(alarm => {
-            switch (alarm.name) {
-                case "checkChaptersUpdates":
-                    return this.checkChaptersUpdates()
-                case "checkMirrorsUpdates":
-                    return this.checkMirrorsUpdates()
-                default:
-                    console.error(`Received unknown alarm "${alarm.name}"`)
-            }
-        })
-        browser.alarms.create("checkChaptersUpdates", { delayInMinutes: 0.1, periodInMinutes: 1 })
-        browser.alarms.create("checkMirrorsUpdates", { delayInMinutes: 0.1, periodInMinutes: 1 })
     }
 
     /**
@@ -96,12 +74,5 @@ export class AmrUpdater {
                 return { version: m[3], url: m[1] }
             }
         }
-    }
-
-    /**
-     * Refresh badge and icon
-     */
-    refreshBadgeAndIcon() {
-        this.iconHelper.refreshBadgeAndIcon()
     }
 }

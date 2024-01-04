@@ -12,24 +12,26 @@ import { getMirrorLoader } from "./mirrors/MirrorLoader"
 import { AmrUpdater } from "./pages/amr-updater"
 import { getIconHelper } from "./amr/icon-helper"
 import { host_permissions } from "./constants/required_permissions"
+import { getNotifications } from "./amr/notifications"
+
+const optionsStorage = new OptionStorage()
+const iconHelper = getIconHelper(store)
+const logger = getAppLogger({ debug: 0 })
+const amrInit = new AmrInit(store, storedb, optionsStorage, logger)
+const amrUpdater = new AmrUpdater(store, optionsStorage)
+const mirrorHelper = getMirrorHelper(store.state.options)
+const mirrorLoader = getMirrorLoader(mirrorHelper)
+const handler = new Handler(store, logger, optionsStorage, mirrorLoader, iconHelper)
+const handleManga = handler.getHandleManga()
+const notifications = getNotifications(store)
 
 const init = async () => {
-    const optionsStorage = new OptionStorage()
     const options = await optionsStorage.getVueOptions()
 
     await store.dispatch("initOptions", options)
-    const logger = getAppLogger(options)
 
-    const iconHelper = getIconHelper(store)
-
-    const amrInit = new AmrInit(store, storedb, optionsStorage, logger)
-    const amrUpdater = new AmrUpdater(store, optionsStorage, iconHelper)
-
-    const mirrorHelper = getMirrorHelper(store.state.options)
-    const mirrorLoader = getMirrorLoader(mirrorHelper)
-
-    const handler = new Handler(store, logger, optionsStorage, mirrorLoader, iconHelper)
-    const handleManga = handler.getHandleManga()
+    logger.setConfig(options)
+    mirrorHelper.setOptions(options)
 
     /**
      * Initialize extension versioning --> after options because versioning update can affect options
@@ -83,7 +85,7 @@ const init = async () => {
     }
 
     // set icon and badge
-    amrUpdater.refreshBadgeAndIcon()
+    iconHelper.refreshBadgeAndIcon()
 
     /**
      * If option update chapters lists on startup --> do it
@@ -92,12 +94,6 @@ const init = async () => {
         store.dispatch("updateChaptersLists", { force: false }) // force to false to avoid updating if not necessary
     }
 
-    // Starts message handling
-    logger.debug("Initialize message handler")
-    handler.handle()
-
-    // Check if we need to refresh chapters lists, mirrors lists and launch automatic checker
-    amrUpdater.load()
     // Check the latest published version of AMR
     await amrUpdater.checkLatestPublishedVersion()
 
@@ -107,40 +103,81 @@ const init = async () => {
         new Mangadex(store.getters.md_allOptions, store.dispatch)
     }
 
-    let timers = [] // This is used to keep websites from spamming with calls. It fucks up the reader
-
-    browser.webNavigation.onCommitted.addListener(args => {
-        if ("auto_subframe" === args["transitionType"]) {
-            return // do not reload amr on embedded iframes
-        }
-
-        timers.push(args.tabId)
-
-        setTimeout(() => {
-            timers = timers.filter(id => id != args.tabId)
-        }, 500)
-
-        // This where all frontend AMR Reader actually begins
-        handleManga.matchUrlAndLoadScripts(args.url, args.tabId)
-    })
-
-    // push state events are listened from content script (if from background, we reload the page on amr navigation)
-    browser.webNavigation.onHistoryStateUpdated.addListener(args => {
-        if ("auto_subframe" === args["transitionType"]) {
-            return
-        } // do not reload amr on embedded iframes
-
-        if (timers.includes(args.tabId)) return // History spam
-
-        if (!args.url.includes("mangadex.org")) timers.push(args.tabId)
-
-        setTimeout(() => {
-            timers = timers.filter(id => id != args.tabId)
-        }, 500)
-
-        handleManga.sendPushState(args.url, args.tabId).catch(err => {
-            logger.error(err)
-        })
-    })
+    return true
 }
-init().then(() => console.debug("completed background init"))
+
+const initPromise = init()
+initPromise.then(() => console.debug("completed background init"))
+
+/**
+ * Initialise all listeners at the top level, so they can be persisted in firefox
+ */
+
+// Alarms - Initialize refresh checkers
+browser.alarms.onAlarm.addListener(alarm => {
+    switch (alarm.name) {
+        case "checkChaptersUpdates":
+            return amrUpdater.checkChaptersUpdates()
+        case "checkMirrorsUpdates":
+            return amrUpdater.checkMirrorsUpdates()
+        default:
+            console.error(`Received unknown alarm "${alarm.name}"`)
+    }
+})
+
+browser.alarms.create("checkChaptersUpdates", { delayInMinutes: 0.1, periodInMinutes: 1 })
+browser.alarms.create("checkMirrorsUpdates", { delayInMinutes: 0.1, periodInMinutes: 1 })
+
+let timers = [] // This is used to keep websites from spamming with calls. It fucks up the reader
+
+browser.webNavigation.onCommitted.addListener(args => {
+    if ("auto_subframe" === args["transitionType"]) {
+        return // do not reload amr on embedded iframes
+    }
+
+    timers.push(args.tabId)
+
+    setTimeout(() => {
+        timers = timers.filter(id => id != args.tabId)
+    }, 500)
+
+    // This where all frontend AMR Reader actually begins
+    handleManga.matchUrlAndLoadScripts(args.url, args.tabId)
+})
+
+// push state events are listened from content script (if from background, we reload the page on amr navigation)
+browser.webNavigation.onHistoryStateUpdated.addListener(args => {
+    if ("auto_subframe" === args["transitionType"]) {
+        return
+    } // do not reload amr on embedded iframes
+
+    if (timers.includes(args.tabId)) {
+        return // History spam
+    }
+
+    if (!args.url.includes("mangadex.org")) {
+        timers.push(args.tabId)
+    }
+
+    setTimeout(() => {
+        timers = timers.filter(id => id != args.tabId)
+    }, 500)
+
+    handleManga.sendPushState(args.url, args.tabId).catch(err => {
+        logger.error(err)
+    })
+})
+
+if (browser.notifications) {
+    // Add the callback to ALL notifications opened by AMR.
+    browser.notifications.onClicked.addListener(notifications.notificationClickCallback)
+    // To prevent the notification array from growing
+    browser.notifications.onClosed.addListener(notifications.notificationCloseCallback)
+}
+
+logger.info("Initialize message handler")
+browser.runtime.onMessage.addListener(async (msg, sender) => {
+    // Make sure init is complete
+    await initPromise
+    return handler.handle(msg, sender)
+})
