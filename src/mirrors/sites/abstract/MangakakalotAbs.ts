@@ -116,11 +116,8 @@ export class MangakakalotAbs extends BaseMirror implements MirrorImplementation 
         return urlImage
     }
 
-    isCurrentPageAChapterPage(doc: string, curUrl: string): boolean {
-        const test = this.chapter_url.test(new URL(curUrl).pathname)
-        // this used to return promise in the original implementation
-        // without await, therefore was always tread as truthful
-        return test
+    isCurrentPageAChapterPage(_doc: string, curUrl: string): boolean {
+        return this.chapter_url.test(new URL(curUrl).pathname)
     }
 }
 
@@ -136,7 +133,7 @@ export const getMangaKakalotImplementations = (mirrorHelper: MirrorHelper): Mirr
             languages: "en",
             domains: ["mangakakalot.com"],
             home: "https://mangakakalot.com/",
-            chapter_url: /^\/chapter\/.*\/.+$/g
+            chapter_url: /^\/chapter\/.*\/.+$/
         }),
         new MangakakalotAbs(
             mirrorHelper,
@@ -156,7 +153,7 @@ export const getMangaKakalotImplementations = (mirrorHelper: MirrorHelper): Mirr
                     "chapmanganato.to"
                 ],
                 home: "https://manganato.com/",
-                chapter_url: /^\/manga-.*\/chapter-\d+.*$/g
+                chapter_url: /^\/manga-.*\/chapter-\d+.*$/
             },
             {
                 series_list_selector: ".search-story-item a.item-title",
