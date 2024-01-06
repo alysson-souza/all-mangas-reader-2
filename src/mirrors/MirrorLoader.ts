@@ -91,7 +91,6 @@ let instance: MirrorLoader
 export const getMirrorLoader = (mirrorHelper: MirrorHelper) => {
     if (!instance) {
         instance = new MirrorLoader([
-            ...getDisabledImplementations(),
             ...getFoolSlideImplementations(mirrorHelper),
             ...getFunMangaImplementations(mirrorHelper),
             ...getMadaraImplementations(mirrorHelper),
@@ -137,7 +136,11 @@ export const getMirrorLoader = (mirrorHelper: MirrorHelper) => {
             new DynastyScans(mirrorHelper),
             new DisasterScans(mirrorHelper),
             new Dm5(mirrorHelper),
-            new ReaperScans(mirrorHelper)
+            new ReaperScans(mirrorHelper),
+
+            // Must be last, as we sometimes select based on same matching
+            // domains (MangaDex), therefore we should prefer active ones first
+            ...getDisabledImplementations()
         ])
     }
     return instance
