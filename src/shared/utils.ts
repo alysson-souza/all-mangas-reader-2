@@ -496,3 +496,7 @@ export function lastTime(timestamp: number) {
     diff = Math.floor(diff / 7)
     return i18n("options_weeks", diff) //TODO months , years ?  --> not needed in AMR yet
 }
+
+export const stripTrailingSlash = (str: string) => {
+    return str.endsWith("/") ? str.slice(0, -1) : str
+}

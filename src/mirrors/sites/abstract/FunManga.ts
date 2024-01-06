@@ -1,6 +1,8 @@
 import { BaseMirror } from "./BaseMirror"
 import { CurrentPageInfo, InfoResult, MirrorImplementation, MirrorObject } from "../../../types/common"
 import { LoadOptions, MirrorHelper } from "../../MirrorHelper"
+import { extractImages } from "../../tsReader"
+import { stripTrailingSlash } from "../../../shared/utils"
 
 const defaultOptions = {
     search_url: "http://funmanga/",
@@ -24,6 +26,8 @@ class FunManga extends BaseMirror implements MirrorImplementation {
     mirrorName: string
     disabled: boolean | undefined
 
+    baseUrl: string
+
     private readonly options: typeof defaultOptions
 
     constructor(mirrorHelper: MirrorHelper, mirror: MirrorObject, options: Partial<typeof defaultOptions> = {}) {
@@ -36,6 +40,8 @@ class FunManga extends BaseMirror implements MirrorImplementation {
         this.chapter_url = mirror.chapter_url
         this.languages = mirror.languages
         this.disabled = mirror.disabled
+
+        this.baseUrl = stripTrailingSlash(mirror.home)
 
         this.options = {
             ...defaultOptions,
@@ -78,14 +84,35 @@ class FunManga extends BaseMirror implements MirrorImplementation {
         const doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
         const res = []
         const $ = this.parseHtml(doc)
+        const baseUrl = this.baseUrl
         $(this.options.chapters_a_sel).each(function () {
-            res[res.length] = [$(".val", $(this)).text().trim(), $(this).attr("href")]
+            const linkElem = $(this)
+            const link = linkElem.attr("href")
+            const fullLink = link.startsWith("/") ? baseUrl + link : link
+
+            const $val = $(".val", linkElem)
+            const title = $val.length ? $val : linkElem
+
+            res.push([title.text().trim(), fullLink])
         })
         return res
     }
 
     public async getCurrentPageInfo(doc: string, curUrl: string): Promise<CurrentPageInfo> {
         const mangaurl = this.mirrorHelper.getVariableFromScript("manga_url", doc)
+
+        if (!mangaurl) {
+            // Doing a fallback for ReadMangaToday,
+            // but maybe this is wrong and these mirror should be something else.
+            const $ = this.parseHtml(doc)
+            const titleLink = $(".entry-title a")
+            return {
+                name: titleLink.text(),
+                currentMangaURL: this.home + titleLink.attr("href"),
+                currentChapterURL: curUrl
+            }
+        }
+
         let mgname
         const $ = this.parseHtml(doc)
         if ($(`a[href='${mangaurl}']`).length > 0) {
@@ -105,15 +132,22 @@ class FunManga extends BaseMirror implements MirrorImplementation {
     public async getListImages(doc: string): Promise<string[]> {
         const regex = /ts_reader\.run\((.*?)\);/g
         const parts = doc.match(regex)
-        console.error({ doc, regex, parts })
-        console.error("HELLLLLLLLLLL")
+
+        if (!parts) {
+            const images = extractImages(doc)
+            if (images.length) {
+                return images
+            }
+        }
+
+        // This may not need to be here anymore?
         if (parts) {
             const json = JSON.parse(parts[0].replace("ts_reader.run(", "").replace(");", ""))
             return json.map(obj => obj.url)
         }
 
-        const images: { url: string }[] = this.mirrorHelper.getVariableFromScript("images", doc)
-        return images.map(obj => obj.url)
+        const images: { url: string }[] | undefined = this.mirrorHelper.getVariableFromScript("images", doc)
+        return images ? images.map(obj => obj.url) : []
     }
 
     public async getImageUrlFromPage(urlImage: string): Promise<string> {
@@ -180,7 +214,6 @@ export const getFunMangaImplementations = (mirrorHelper: MirrorHelper): MirrorIm
             }
         ),
 
-        // Not working as expected...
         new FunManga(
             mirrorHelper,
             {
@@ -196,7 +229,7 @@ export const getFunMangaImplementations = (mirrorHelper: MirrorHelper): MirrorIm
                 search_url: "https://www.readmng.com/search",
                 search_data_field: "query",
                 search_a_sel: ".content-list .title a",
-                chapters_a_sel: "ul.chp_lst li > a",
+                chapters_a_sel: "#chapters-tabContent a.chnumber",
                 img_sel: ".readercontent"
             }
         )
