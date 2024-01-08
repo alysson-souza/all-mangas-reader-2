@@ -1,4 +1,4 @@
-import { AppManga, AppState, Bookmark, Category, Mirror } from "../types/common"
+import { AppManga, AppState, Bookmark, Category, ListChapter, Mirror } from "../types/common"
 import { AppLogger } from "./AppLogger"
 import { AppOptions } from "./OptionStorage"
 import { amrLanguages } from "../constants/language"
@@ -297,7 +297,10 @@ export function matchurl(url, paths) {
 /**
  * Find the probable chapter from its url and list of chapters
  */
-export function findProbableChapter(lastReadURL, list) {
+export function findProbableChapter(
+    lastReadURL: AppManga["lastChapterReadURL"],
+    list: AppManga["listChaps"]
+): ListChapter | undefined {
     const urlParts = getUrlParts(lastReadURL)
     let max = 0
     let lstMax = []
@@ -499,4 +502,33 @@ export function lastTime(timestamp: number) {
 
 export const stripTrailingSlash = (str: string) => {
     return str.endsWith("/") ? str.slice(0, -1) : str
+}
+
+const findNextChapterToRead = (mg: Pick<AppManga, "lastChapterReadURL" | "listChaps">) => {
+    const lastUrlIndex = mg.listChaps.findIndex(chapter => chapter[1] === mg.lastChapterReadURL)
+
+    if (lastUrlIndex !== -1) {
+        // We found it, ensure it's not 0 index (first chapter)
+        const [name, url] = lastUrlIndex === 0 ? mg.listChaps[0] : mg.listChaps[lastUrlIndex - 1]
+        return { name, url }
+    }
+    return undefined
+}
+
+/**
+ * Find next available chapter
+ */
+export function findNextChapter(mg: Pick<AppManga, "lastChapterReadURL" | "listChaps">) {
+    const match = findNextChapterToRead(mg)
+    if (match) {
+        return match
+    }
+
+    // We did not find it, but should try to see if it's caused by domain change and miss-match between domains
+    const probableChapter = findProbableChapter(mg.lastChapterReadURL, mg.listChaps)
+    if (!probableChapter) {
+        return undefined
+    }
+
+    return findNextChapterToRead({ listChaps: mg.listChaps, lastChapterReadURL: probableChapter[1] })
 }

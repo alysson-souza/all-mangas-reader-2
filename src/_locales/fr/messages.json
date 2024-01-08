@@ -577,6 +577,10 @@
         "message": "... a de nouveaux chapitre(s) sur $1! Cliquez pour ouvrir le prochain chapitre non lu.",
         "description": "Text from notification. The notification title is the manga name, $1 is the website on which the manga to notify is read"
     },
+    "notif_message_chapter": {
+        "message": "chapitre suivant $1",
+        "description": "Next chapter info"
+    },
     "content_nav_hidebar": {
         "message": "Cacher la barre de navigation",
         "description": "Tooltip to hide AMR bar in navigation bar"
