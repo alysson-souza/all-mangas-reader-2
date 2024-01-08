@@ -578,6 +578,10 @@
         "message": "... has new chapter(s) on $1! Click anywhere to open the next unread chapter.",
         "description": "Text from notification. The notification title is the manga name, $1 is the website on which the manga to notify is read"
     },
+    "notif_message_chapter": {
+        "message": "next chapter $1",
+        "description": "Next chapter info"
+    },
     "content_nav_hidebar": {
         "message": "Hide AMR Toolbar",
         "description": "Tooltip to hide AMR bar in navigation bar"

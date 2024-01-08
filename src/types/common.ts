@@ -30,6 +30,8 @@ export interface Category {
     type: "native" | "language"
 }
 
+export type ListChapter = [name: string, url: string]
+
 export interface AppManga {
     key: string | undefined
 
@@ -41,7 +43,15 @@ export interface AppManga {
 
     lastChapterReadURL: string
     lastChapterReadName: string
-    listChaps: string[]
+
+    /**
+     * DESC sorted list of chapter name and full url
+     * ['Chapter 59', 'https://mangasite.com/manga/1333/chapter-59'],
+     * ['Chapter 58', 'https://mangasite.com/manga/1333/chapter-58'],
+     * ....
+     */
+    listChaps: ListChapter[]
+
     // start(0) / stop(1) following updates (unread chapters in manga list)
     read: 0 | 1
 
