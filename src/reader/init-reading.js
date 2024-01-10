@@ -57,7 +57,7 @@ if (globalThis["__armreader__"] === undefined) {
         if (!done) {
             restorePage()
         } else {
-            initReader(mirror) // create the reader if this is the first chapter loaded in this environment, else, the state mutation will be enough to load new chapter
+            initReader(mirror, chap.title) // create the reader if this is the first chapter loaded in this environment, else, the state mutation will be enough to load new chapter
         }
         globalThis["__current_chapterloader__"] = chap // keep a reference to delete it later
     }
@@ -68,12 +68,16 @@ if (globalThis["__armreader__"] === undefined) {
  *  - No more glitches depending on the online reader css
  *  - more options, resize fit height, width
  */
-function initReader(mirror) {
+function initReader(mirror, title) {
     if (!document.body) {
         // create body element if non existing (thanks mangarock)
         const bd = document.createElement("body")
         document.children[0].appendChild(bd)
     }
+    if (title) {
+        document.title = title
+    }
+
     document.body.innerHTML = "" //empty the dom page
     const amrdiv = document.createElement("div")
     amrdiv.id = "app"
