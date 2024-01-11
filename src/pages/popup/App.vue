@@ -118,25 +118,19 @@
         <v-navigation-drawer temporary v-model="rpanel" right absolute width="500">
             <!-- Links in right panel -->
             <v-container fluid class="pa-0 text-center" v-if="rpanel">
-                <v-row>
+                <v-row align="center">
                     <v-col cols="6">
                         <v-row>
-                            <v-col cols="3">
+                            <v-col cols="12">
                                 <v-btn text icon color="red darken-2" @click="opentab('https://allmangasreader.com')">
                                     <img src="/icons/icon_32.png" width="24" alt="All Mangas Reader" />
                                 </v-btn>
-                            </v-col>
-                            <v-col cols="3">
                                 <v-btn text icon color="yellow" @click="opentab('/pages/bookmarks/bookmarks.html')">
                                     <v-icon>mdi-star</v-icon>
                                 </v-btn>
-                            </v-col>
-                            <v-col cols="3">
                                 <v-btn text icon color="yellow" @click="opentab('/pages/lab/lab.html')">
                                     <v-icon>mdi-antenna</v-icon>
                                 </v-btn>
-                            </v-col>
-                            <v-col cols="3">
                                 <v-btn
                                     text
                                     icon
@@ -146,8 +140,6 @@
                                     ">
                                     <v-icon>mdi-help</v-icon>
                                 </v-btn>
-                            </v-col>
-                            <v-col cols="3">
                                 <v-btn
                                     text
                                     icon
