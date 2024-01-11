@@ -18,7 +18,11 @@ export class AmrUpdater {
     async checkChaptersUpdates() {
         const { lastChaptersUpdate, updatechap } = this.store.state.options
         const nextUpdateTs = lastChaptersUpdate + updatechap
-        if (navigator.onLine && nextUpdateTs < Date.now()) {
+
+        // Check within the second, to avoid waiting for the next alert check (1 min)
+        const shouldUpdate = Math.round(nextUpdateTs / 1000) < Math.round(Date.now() / 1000)
+
+        if (navigator.onLine && shouldUpdate) {
             // time to refresh !
             this.store.dispatch("updateChaptersLists", { force: false }) // force to false to avoid updating if not necessary
         }

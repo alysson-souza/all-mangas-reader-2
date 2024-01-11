@@ -434,7 +434,7 @@ const actions = {
         const mirrorLoader = getMirrorLoader(getMirrorHelper(rootState.options))
         const impl = await mirrorLoader.getImpl(manga.mirror)
         if (!impl || impl.disabled) {
-            // await dispatch("disabledManga", manga) // @TODO Re-enable @FIXME
+            await dispatch("disabledManga", manga)
             throw new Error(`Failed to get implementation for mirror ${manga.mirror}`)
         }
         return impl.getListChaps(manga.url)
@@ -770,7 +770,7 @@ const actions = {
             return
         }
         dispatch("setOption", { key: "isUpdatingChapterLists", value: 1 }) // Set watcher
-        logger.debug("Starting chapter lists update")
+        logger.debug(`Starting chapter lists update: force=${force}`)
         let tsstopspin
 
         const tsresetupdating = setTimeout(
