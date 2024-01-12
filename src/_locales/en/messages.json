@@ -724,7 +724,7 @@
         "description": "Label to tell last time something was refreshed. $1 is an i18n string telling last time it was refreshed"
     },
     "refresh_next": {
-        "message": "Next update in  $1",
+        "message": "Next update in $1",
         "description": "When next chapter update should happen"
     },
     "refresh_lists_desc": {
