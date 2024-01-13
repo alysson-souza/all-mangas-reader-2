@@ -13,12 +13,13 @@ import { AmrUpdater } from "./pages/amr-updater"
 import { getIconHelper } from "./amr/icon-helper"
 import { host_permissions } from "./constants/required_permissions"
 import { getNotifications } from "./amr/notifications"
+import { Alarm } from "./shared/AlarmService"
 
 const optionsStorage = new OptionStorage()
 const iconHelper = getIconHelper(store)
 const logger = getAppLogger({ debug: 0 })
 const amrInit = new AmrInit(store, storedb, optionsStorage, logger)
-const amrUpdater = new AmrUpdater(store, optionsStorage)
+const amrUpdater = new AmrUpdater(store, optionsStorage, logger)
 const mirrorHelper = getMirrorHelper(store.state.options)
 const mirrorLoader = getMirrorLoader(mirrorHelper)
 const handler = new Handler(store, logger, optionsStorage, mirrorLoader, iconHelper)
@@ -114,19 +115,31 @@ initPromise.then(() => console.debug("completed background init"))
  */
 
 // Alarms - Initialize refresh checkers
-browser.alarms.onAlarm.addListener(alarm => {
+browser.alarms.onAlarm.addListener(async alarm => {
+    logger.debug(`Running Alarm ${alarm.name} callback`)
+    // Make sure init is complete
+    await initPromise
     switch (alarm.name) {
-        case "checkChaptersUpdates":
-            return amrUpdater.checkChaptersUpdates()
-        case "checkMirrorsUpdates":
-            return amrUpdater.checkMirrorsUpdates()
+        case Alarm.CheckChaptersUpdates:
+            amrUpdater.checkChaptersUpdates().catch(logger.error)
+            break
+        case Alarm.CheckMirrorsUpdates:
+            amrUpdater.checkMirrorsUpdates()
+            break
+        case Alarm.StopSpinning:
+            iconHelper.stopSpinning()
+            break
+        case Alarm.UpdatingChapterListsChange:
+            iconHelper.stopSpinning()
+            store.dispatch("setOption", { key: "isUpdatingChapterLists", value: 0 }).catch(logger.error)
+            break
         default:
             console.error(`Received unknown alarm "${alarm.name}"`)
     }
 })
 
-browser.alarms.create("checkChaptersUpdates", { delayInMinutes: 0.1, periodInMinutes: 1 })
-browser.alarms.create("checkMirrorsUpdates", { delayInMinutes: 0.1, periodInMinutes: 1 })
+browser.alarms.create(Alarm.CheckChaptersUpdates, { delayInMinutes: 0.1, periodInMinutes: 1 })
+browser.alarms.create(Alarm.CheckMirrorsUpdates, { delayInMinutes: 0.1, periodInMinutes: 1 })
 
 let timers = [] // This is used to keep websites from spamming with calls. It fucks up the reader
 

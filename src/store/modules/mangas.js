@@ -20,6 +20,8 @@ import { getMirrorLoader } from "../../mirrors/MirrorLoader"
 import { getMirrorHelper } from "../../mirrors/MirrorHelper"
 import { getIconHelper } from "../../amr/icon-helper"
 import { mdFixLang, mdFixLangKey, mdFixLangsListPrefix } from "../../shared/mangaDexUtil"
+import { Alarm, clearAlarm, createAlarm } from "../../shared/AlarmService"
+import { shouldDelayUpdate } from "../../shared/chapterUpdaterUtil"
 
 let syncManager
 // @TODO replace with actual error
@@ -560,13 +562,18 @@ const actions = {
      * Should always return chapters in the same format
      */
     async getMangaChapters({ dispatch, commit, getters, rootState }, mg) {
-        const timeOutRefresh = setTimeout(function () {
-            throw new Error("Refreshing " + mg.key + " has been timeout... seems unreachable...")
-        }, 60000)
-
         logger.debug("waiting for manga list of chapters for " + mg.name + " on " + mg.mirror)
-        const listChaps = await dispatch("getMangaListOfChapters", mg)
-        clearTimeout(timeOutRefresh)
+        const listChaps = new Promise(async (resolve, reject) => {
+            const timeout = 60000
+            const timeOutRefresh = setTimeout(() => {
+                reject(new Error(`Refreshing ${mg.key} has been timeout (${timeout / 1000}s)... seems unreachable...`))
+            }, timeout)
+
+            dispatch("getMangaListOfChapters", mg)
+                .then(resolve)
+                .catch(reject)
+                .finally(() => clearTimeout(timeOutRefresh))
+        })
 
         // list chapters in the correct format
         if (!isMultiLanguageList(listChaps)) {
@@ -744,111 +751,95 @@ const actions = {
      * @param {*} param0
      * @param {*} force force update if true. If false, check last time manga has been updated and take parameter pause for a week into account
      */
-    async updateChaptersLists({ dispatch, commit, getters, state, rootState }, { force } = { force: true }) {
-        // avoid overlapping updates
-        if (rootState.options.isUpdatingChapterLists) return
-        // get sync and convert watchers
-        const isConverting = rootState.options.isConverting
-        const isSyncEnabled = rootState.options.syncEnabled || rootState.options.gistSyncEnabled
-        const isSyncing = rootState.options.isSyncing === 1
-
-        const iconHelper = getIconHelper({ state: rootState, getters })
-        // retry later if sync or convert is running
-        let timeout = 0
-        if (isSyncEnabled) {
-            if (isSyncing) timeout = 10 * 1000
-        }
-        if (isConverting) timeout = 60 * 1000
-        if (timeout > 0) {
-            logger.debug("Skipped chapter lists update")
-            setTimeout(() => {
-                actions.updateChaptersLists(
-                    { dispatch, commit, getters, state, rootState },
-                    ({ force } = { force: true })
-                )
-            }, timeout)
+    async updateChaptersLists({ dispatch, getters, state, rootState }, { force } = { force: true }) {
+        const delayUpdate = shouldDelayUpdate(rootState)
+        if (delayUpdate.shouldSkip) {
+            logger.debug(delayUpdate.message)
+            if (delayUpdate.nextRunTimestamp) {
+                createAlarm({ name: Alarm.CheckChaptersUpdates, when: delayUpdate.nextRunTimestamp })
+            }
             return
         }
+
         dispatch("setOption", { key: "isUpdatingChapterLists", value: 1 }) // Set watcher
-        logger.debug("Starting chapter lists update")
-        let tsstopspin
+        const nowInMs = Date.now()
+        dispatch("setOption", { key: "lastChaptersUpdate", value: nowInMs })
+        logger.info(
+            `Started chapter lists update. lastChaptersUpdate is now ${new Date(nowInMs).toISOString()} (${nowInMs})`
+        )
 
-        const tsresetupdating = setTimeout(
-            () => dispatch("setOption", { key: "isUpdatingChapterLists", value: 0 }),
-            1000 * 60 * 10
-        ) // Reset this after 10 minutes
+        const iconHelper = getIconHelper({ state: rootState, getters })
+        createAlarm({ name: Alarm.UpdatingChapterListsChange, delayInMinutes: 10 })
         if (rootState.options.refreshspin === 1) {
-            // spin the badge
             iconHelper.spinIcon()
-            tsstopspin = setTimeout(() => {
-                iconHelper.stopSpinning()
-            }, 1000 * 60 * 2) // stop spinning after two minutes if any error occured
+            // stop spinning after two minutes if any error occurred
+            createAlarm({ name: Alarm.StopSpinning, delayInMinutes: 2 })
         }
 
-        // update last update ts
-        dispatch("setOption", { key: "lastChaptersUpdate", value: Date.now() })
-
-        // refresh all mangas chapters lists
+        // Group mangas that we need to update for each mirror
+        /** @type {Record<string, AppManga[]>} */
         const mirrorTasks = {}
-        const delay = Math.max(rootState.options.waitbetweenupdates, 1) // Force at least 1 second interval
-
-        async function mgupdate(mg, delay) {
-            return new Promise(resolve => {
-                setTimeout(async () => {
-                    await dispatch("refreshLastChapters", mg)
-                        .then(() => {
-                            dispatch("findAndUpdateManga", mg) //save updated manga do not wait
-                            iconHelper.refreshBadgeAndIcon()
-                        })
-                        .catch(e => {
-                            if (e !== ABSTRACT_MANGA_MSG) {
-                                console.error(e)
-                                if (!mg.updateError) dispatch("markHasUpdateError", mg) // Mark has an update error
-                            }
-                        })
-                    resolve()
-                }, 1000 * delay)
-            })
-        }
-
         for (const mg of state.all) {
-            // Don't refresh deleted manga
             if (mg.deleted === syncUtils.DELETED) {
-                continue
+                continue // Don't refresh deleted manga
             }
 
             // we update if it has been forced by the user (through option or timers page) or if we need to update
             if (force || shouldCheckForUpdate(mg, rootState.options, logger)) {
-                if (!(mg.mirror in mirrorTasks)) {
+                if (!mirrorTasks[mg.mirror]) {
                     mirrorTasks[mg.mirror] = []
                 }
-
-                mirrorTasks[mg.mirror].push(() => mgupdate(mg, delay))
+                mirrorTasks[mg.mirror].push(mg)
             }
         }
+        logger.debug(`Completed grouping with ${Object.keys(mirrorTasks).length} mirrors`)
+        logger.info(
+            Object.entries(mirrorTasks).reduce((acc, [name, list]) => {
+                acc[name] = list.length
+                return acc
+            }, {})
+        )
 
-        const mirrorTasks2 = Object.values(mirrorTasks).map(list => {
-            return () =>
-                new Promise(async resolve => {
-                    for (const seriesUpdate of list) {
-                        await seriesUpdate().catch(logger.debug)
-                    }
-                    resolve()
+        async function refreshManga(mg) {
+            return dispatch("refreshLastChapters", mg)
+                .then(() => {
+                    dispatch("findAndUpdateManga", mg) //save updated manga, do not wait
+                    iconHelper.refreshBadgeAndIcon()
                 })
-        })
+                .catch(e => {
+                    if (e !== ABSTRACT_MANGA_MSG) {
+                        console.error(e)
+                        if (!mg.updateError) {
+                            dispatch("markHasUpdateError", mg)
+                        }
+                    }
+                })
+        }
 
-        await Promise.all(mirrorTasks2.map(t => t())).catch(logger.debug)
+        const sleep = delay => new Promise(resolve => setTimeout(() => resolve(), delay))
+        const waitDelay = Math.max(rootState.options.waitbetweenupdates, 1) // Force at least 1 second interval
+
+        await Promise.all(
+            Object.entries(mirrorTasks).map(async ([name, mirrorMangas]) => {
+                const now = Date.now()
+                for (const mg of mirrorMangas) {
+                    await refreshManga(mg).catch(logger.error)
+                    await sleep(waitDelay)
+                }
+                logger.info(`[${name}] completed processing in ${Date.now() - now}ms`)
+            })
+        ).catch(logger.error)
+
+        logger.info("Done updating chapter lists")
+
+        if (!rootState.options.isUpdatingChapterLists) {
+            clearAlarm(Alarm.UpdatingChapterListsChange).then(r => logger.debug(`Cleared=${r} ${Alarm.StopSpinning}`))
+        }
         dispatch("setOption", { key: "isUpdatingChapterLists", value: 0 }) // Unset watcher when done
 
-        if (tsresetupdating) {
-            clearTimeout(tsresetupdating)
-        }
-        logger.debug("Done updating chapter lists")
         if (rootState.options.refreshspin === 1) {
             iconHelper.stopSpinning()
-            if (tsstopspin) {
-                clearTimeout(tsstopspin)
-            }
+            clearAlarm(Alarm.StopSpinning).then(r => logger.debug(`Cleared=${r} ${Alarm.StopSpinning}`))
         }
     },
 
