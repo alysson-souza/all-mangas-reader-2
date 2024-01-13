@@ -70,7 +70,7 @@ export class AmrUpdater {
     }
 
     async getVersionFromChromeUpdateFile(url) {
-        const res = await fetch(url, {
+        const text = await fetch(url, {
             headers: {
                 "Cache-Control": "no-cache"
             }
@@ -81,12 +81,10 @@ export class AmrUpdater {
                 console.error(e)
             })
 
-        if (res && res.data) {
-            const regex = /codebase\=\'(.[^\']*)\'(\s+)version\=\'(.[^\']*)\'/gm
-            const m = regex.exec(res.data)
-            if (m) {
-                return { version: m[3], url: m[1] }
-            }
+        const regex = /codebase\=\'(.[^\']*)\'(\s+)version\=\'(.[^\']*)\'/gm
+        const m = regex.exec(text)
+        if (m) {
+            return { version: m[3], url: m[1] }
         }
     }
 }

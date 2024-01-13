@@ -654,6 +654,7 @@ const actions = {
 
         const listChaps = await dispatch("getMangaChapters", mg)
         if (listChaps.length <= 0) {
+            logger.error(`Not chapters found for ${key}, skipping refreshLastChapters...`)
             return
         }
 
