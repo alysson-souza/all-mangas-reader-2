@@ -6,26 +6,36 @@ export class AmrUpdater {
      *
      * @param store {AppStore}
      * @param optionStorage {OptionStorage}
+     * @param logger {AppLogger}
      */
-    constructor(store, optionStorage) {
+    constructor(store, optionStorage, logger) {
         this.optionStorage = optionStorage
         this.store = store
+        this.logger = logger
     }
 
     /**
      * Check if we need to refresh chapters lists according to frequency every minutes
      */
     async checkChaptersUpdates() {
+        if (!navigator.onLine) {
+            return // offline, skip
+        }
+
         const { lastChaptersUpdate, updatechap } = this.store.state.options
         const nextUpdateTs = lastChaptersUpdate + updatechap
+        const now = Date.now()
 
         // Check within the second, to avoid waiting for the next alert check (1 min)
         const shouldUpdate = Math.round(nextUpdateTs / 1000) < Math.round(Date.now() / 1000)
-
-        if (navigator.onLine && shouldUpdate) {
-            // time to refresh !
-            this.store.dispatch("updateChaptersLists", { force: false }) // force to false to avoid updating if not necessary
+        if (!shouldUpdate) {
+            const next = Math.floor((nextUpdateTs - now) / 1000)
+            this.logger.debug(`Skipping checkChaptersUpdates, next update can start in ${next}s`)
+            return
         }
+
+        // time to refresh ! force=false to avoid updating if not necessary
+        return this.store.dispatch("updateChaptersLists", { force: false })
     }
 
     /**
