@@ -226,8 +226,8 @@ export default {
         })
 
         this.optionStorage
-            .getKeys(["beta", "version", "notifynewversion", "latestBetaVersion"])
-            .then(({ beta, version, notifynewversion, latestBetaVersion }) => {
+            .getKeys(["beta", "version", "notifynewversion", "latestBetaVersion", "latestStableVersion"])
+            .then(({ beta, version, notifynewversion, latestBetaVersion, latestStableVersion }) => {
                 this.beta = beta
 
                 if (
