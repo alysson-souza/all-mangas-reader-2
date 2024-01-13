@@ -27,7 +27,7 @@ export class AmrUpdater {
         const now = Date.now()
 
         // Check within the second, to avoid waiting for the next alert check (1 min)
-        const shouldUpdate = Math.round(nextUpdateTs / 1000) < Math.round(Date.now() / 1000)
+        const shouldUpdate = Math.round(nextUpdateTs / 1000) <= Math.round(now / 1000)
         if (!shouldUpdate) {
             const next = Math.floor((nextUpdateTs - now) / 1000)
             this.logger.debug(`Skipping checkChaptersUpdates, next update can start in ${next}s`)
