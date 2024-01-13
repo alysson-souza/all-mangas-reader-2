@@ -563,7 +563,7 @@ const actions = {
      */
     async getMangaChapters({ dispatch, commit, getters, rootState }, mg) {
         logger.debug("waiting for manga list of chapters for " + mg.name + " on " + mg.mirror)
-        const listChaps = new Promise(async (resolve, reject) => {
+        const listChapsPromise = new Promise(async (resolve, reject) => {
             const timeout = 60000
             const timeOutRefresh = setTimeout(() => {
                 reject(new Error(`Refreshing ${mg.key} has been timeout (${timeout / 1000}s)... seems unreachable...`))
@@ -574,6 +574,8 @@ const actions = {
                 .catch(reject)
                 .finally(() => clearTimeout(timeOutRefresh))
         })
+
+        const listChaps = await listChapsPromise
 
         // list chapters in the correct format
         if (!isMultiLanguageList(listChaps)) {

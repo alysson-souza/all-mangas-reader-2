@@ -36,7 +36,7 @@ export default class GistStorage extends Storage {
             throw new SyncError(await response.text(), response)
         }
         const errorData = await response.json()
-        throw new SyncError(errorData.message, response)
+        throw new SyncError(errorData?.message ?? "Failed to get error data", response)
     }
 
     /**
