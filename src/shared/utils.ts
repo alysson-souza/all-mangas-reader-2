@@ -164,6 +164,8 @@ export function formatMangaName(name: string | null | undefined) {
         .toLocaleLowerCase()
 }
 
+export type MultiLanguageList = Record<string, Array<[string, string]> | undefined>
+
 /**
  * MangaDex structure
  * {
@@ -174,8 +176,17 @@ export function formatMangaName(name: string | null | undefined) {
  * @param listChaps {[]|{}|undefined}
  * @return {boolean}
  */
-export function isMultiLanguageList(listChaps) {
-    return listChaps !== undefined && !Array.isArray(listChaps)
+export function isMultiLanguageList(listChaps: unknown): listChaps is MultiLanguageList {
+    if (listChaps === null || typeof listChaps !== "object") {
+        return false
+    }
+
+    if (Array.isArray(listChaps)) {
+        return false
+    }
+
+    // Expect every property to be array (as per manga dex)
+    return Object.values(listChaps).every(prop => Array.isArray(prop))
 }
 
 /**

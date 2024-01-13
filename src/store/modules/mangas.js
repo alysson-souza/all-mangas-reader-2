@@ -563,19 +563,7 @@ const actions = {
      */
     async getMangaChapters({ dispatch, commit, getters, rootState }, mg) {
         logger.debug("waiting for manga list of chapters for " + mg.name + " on " + mg.mirror)
-        const listChapsPromise = new Promise(async (resolve, reject) => {
-            const timeout = 60000
-            const timeOutRefresh = setTimeout(() => {
-                reject(new Error(`Refreshing ${mg.key} has been timeout (${timeout / 1000}s)... seems unreachable...`))
-            }, timeout)
-
-            dispatch("getMangaListOfChapters", mg)
-                .then(resolve)
-                .catch(reject)
-                .finally(() => clearTimeout(timeOutRefresh))
-        })
-
-        const listChaps = await listChapsPromise
+        const listChaps = await dispatch("getMangaListOfChapters", mg)
 
         // list chapters in the correct format
         if (!isMultiLanguageList(listChaps)) {
@@ -589,6 +577,10 @@ const actions = {
             // this can be the case if manga is added from search list on a website
             // supporting multiple languages like MangaDex (require login for search) etc.
             const availableChapterLanguages = Object.keys(listChaps)
+            if (availableChapterLanguages.length === 0) {
+                // Now we are expecting to be dealing with multi languages otherwise, we start deleting stuff...
+                throw new Error(`Failed to get valid language for ${mg.key}`)
+            }
             const readable = rootState.options.readlanguages
 
             // Pick languages to read, select from readable languages
@@ -835,13 +827,15 @@ const actions = {
         logger.info("Done updating chapter lists")
 
         if (!rootState.options.isUpdatingChapterLists) {
-            clearAlarm(Alarm.UpdatingChapterListsChange).then(r => logger.debug(`Cleared=${r} ${Alarm.StopSpinning}`))
+            clearAlarm(Alarm.UpdatingChapterListsChange).then(r =>
+                logger.debug(`${Alarm.UpdatingChapterListsChange} Cleared=${r} `)
+            )
         }
         dispatch("setOption", { key: "isUpdatingChapterLists", value: 0 }) // Unset watcher when done
 
         if (rootState.options.refreshspin === 1) {
             iconHelper.stopSpinning()
-            clearAlarm(Alarm.StopSpinning).then(r => logger.debug(`Cleared=${r} ${Alarm.StopSpinning}`))
+            clearAlarm(Alarm.StopSpinning).then(r => logger.debug(`${Alarm.StopSpinning} Cleared=${r}`))
         }
     },
 
