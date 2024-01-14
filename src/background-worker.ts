@@ -131,7 +131,6 @@ browser.alarms.onAlarm.addListener(async alarm => {
             iconHelper.stopSpinning()
             break
         case Alarm.UpdatingChapterListsChange:
-            iconHelper.stopSpinning()
             store.dispatch("setOption", { key: "isUpdatingChapterLists", value: 0 }).catch(logger.error)
             break
         default:
