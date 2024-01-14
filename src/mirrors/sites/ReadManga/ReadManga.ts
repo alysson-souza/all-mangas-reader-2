@@ -84,7 +84,7 @@ class ReadManga extends BaseMirror implements MirrorImplementation {
         doc = await this.passAdult(doc, curUrl)
 
         const res = []
-        const matches = doc.match(/rm_h\.(?:initReader|readerInit)\(.*?(\[\[.*?\]\])/)
+        const matches = doc.match(/rm_h\.readerDoInit\(.*?(\[\[.*?\]\])/)
 
         if (matches) {
             const hasOneWayImageServer = doc.includes("https://one-way.work")
