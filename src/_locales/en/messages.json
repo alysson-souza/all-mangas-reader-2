@@ -723,6 +723,10 @@
         "message": "Refreshed $1 ago",
         "description": "Label to tell last time something was refreshed. $1 is an i18n string telling last time it was refreshed"
     },
+    "refresh_next": {
+        "message": "Next update in $1",
+        "description": "When next chapter update should happen"
+    },
     "refresh_lists_desc": {
         "message": "Delete lists of manga stored in local database. These lists are retrieved from websites on which we can get the whole manga list that can be read on the website. Deleting it does not affect your current reading list, these lists will be reloaded on next search for the enabled websites which support this functionality",
         "description": "Tooltip of the reset stored manga lists button in right panel"

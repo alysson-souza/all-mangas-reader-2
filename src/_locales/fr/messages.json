@@ -722,6 +722,10 @@
         "message": "Actualisé il y a $1",
         "description": "Label to tell last time something was refreshed. $1 is an i18n string telling last time it was refreshed"
     },
+    "refresh_next": {
+        "message": "Prochaine mise à jour dans $1",
+        "description": "When next chapter update should happen"
+    },
     "refresh_lists_desc": {
         "message": "Supprimer les listes de manga de votre base locale. Ces listes sont récupérées depuis les sites proposant la liste complète des manga qu'ils hébergent. Les supprimer n'affecte pas votre liste de lecture, ces listes seront rechargées à la prochaine recherche pour les sites activés qui supportent cette fonctionnalité",
         "description": "Tooltip of the reset stored manga lists button in right panel"

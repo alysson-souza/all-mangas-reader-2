@@ -11,7 +11,8 @@
                     <v-icon>mdi-book-open-variant</v-icon>
                     {{ i18n("refresh_chapters") }}
                 </v-btn>
-                {{ i18n("refresh_last", lastchaps) }}
+                {{ i18n("refresh_last", lastchaps) }} <br />
+                {{ i18n("refresh_next", nextUpdateIn) }}
             </v-col>
         </v-row>
         <v-row>
@@ -70,6 +71,11 @@ export default {
          */
         lastchaps: function () {
             return lastTime(this.ticker - this.$store.state.options.lastChaptersUpdate)
+        },
+        nextUpdateIn: function () {
+            const options = this.$store.state.options
+            const nextUpdateTs = options.lastChaptersUpdate + options.updatechap
+            return lastTime(nextUpdateTs - this.ticker)
         },
         lastmirs: function () {
             return lastTime(this.ticker - this.$store.state.options.lastMirrorsUpdate)
