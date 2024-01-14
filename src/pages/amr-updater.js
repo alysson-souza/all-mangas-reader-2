@@ -6,22 +6,36 @@ export class AmrUpdater {
      *
      * @param store {AppStore}
      * @param optionStorage {OptionStorage}
+     * @param logger {AppLogger}
      */
-    constructor(store, optionStorage) {
+    constructor(store, optionStorage, logger) {
         this.optionStorage = optionStorage
         this.store = store
+        this.logger = logger
     }
 
     /**
      * Check if we need to refresh chapters lists according to frequency every minutes
      */
     async checkChaptersUpdates() {
+        if (!navigator.onLine) {
+            return // offline, skip
+        }
+
         const { lastChaptersUpdate, updatechap } = this.store.state.options
         const nextUpdateTs = lastChaptersUpdate + updatechap
-        if (navigator.onLine && nextUpdateTs < Date.now()) {
-            // time to refresh !
-            this.store.dispatch("updateChaptersLists", { force: false }) // force to false to avoid updating if not necessary
+        const now = Date.now()
+
+        // Check within the second, to avoid waiting for the next alert check (1 min)
+        const shouldUpdate = Math.round(nextUpdateTs / 1000) <= Math.round(now / 1000)
+        if (!shouldUpdate) {
+            const next = Math.floor((nextUpdateTs - now) / 1000)
+            this.logger.debug(`Skipping checkChaptersUpdates, next update can start in ${next}s`)
+            return
         }
+
+        // time to refresh ! force=false to avoid updating if not necessary
+        return this.store.dispatch("updateChaptersLists", { force: false })
     }
 
     /**
@@ -56,7 +70,7 @@ export class AmrUpdater {
     }
 
     async getVersionFromChromeUpdateFile(url) {
-        const res = await fetch(url, {
+        const text = await fetch(url, {
             headers: {
                 "Cache-Control": "no-cache"
             }
@@ -67,12 +81,10 @@ export class AmrUpdater {
                 console.error(e)
             })
 
-        if (res && res.data) {
-            const regex = /codebase\=\'(.[^\']*)\'(\s+)version\=\'(.[^\']*)\'/gm
-            const m = regex.exec(res.data)
-            if (m) {
-                return { version: m[3], url: m[1] }
-            }
+        const regex = /codebase\=\'(.[^\']*)\'(\s+)version\=\'(.[^\']*)\'/gm
+        const m = regex.exec(text)
+        if (m) {
+            return { version: m[3], url: m[1] }
         }
     }
 }

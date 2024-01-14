@@ -31,6 +31,8 @@ export interface LoadOptions {
     credentials?: RequestCredentials
 
     redirect?: RequestRedirect
+
+    timeoutInMs?: number
 }
 
 type StateOptions = Record<string, string | undefined | null | number>
@@ -109,7 +111,8 @@ export class MirrorHelper {
             mode: options.crossdomain ? "no-cors" : "same-origin",
             headers: this.getDefaultHeaders(options, defaultHeaders),
             body: this.getData(options),
-            redirect: options.redirect
+            redirect: options.redirect,
+            signal: AbortSignal.timeout(options.timeoutInMs ?? 60000)
         }
     }
 

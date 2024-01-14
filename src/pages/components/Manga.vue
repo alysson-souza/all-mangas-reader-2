@@ -409,6 +409,14 @@
                                 {{ i18n("list_details_reset_name") }}
                             </v-list-item-title>
                         </v-list-item>
+
+                        <!-- Copy manga JSON -->
+                        <v-list-item link @click="copyMangaDebug()">
+                            <v-list-item-title>
+                                <v-icon x-small left :class="loader">mdi-clipboard-outline </v-icon>
+                                Debug
+                            </v-list-item-title>
+                        </v-list-item>
                     </v-list>
                 </v-menu>
             </v-col>
@@ -780,6 +788,14 @@ export default {
                 key: this.manga.key,
                 displayName: ""
             })
+        },
+        copyMangaDebug() {
+            const manga = JSON.stringify(this.manga, null, 2)
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(manga)
+            } else {
+                console.info(manga)
+            }
         },
         setOpenTrue() {
             this.canOpenTab = true

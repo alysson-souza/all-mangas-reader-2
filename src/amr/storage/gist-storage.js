@@ -27,8 +27,9 @@ export default class GistStorage extends Storage {
         }
         if (response.headers.get("x-ratelimit-remaining") === "0") {
             // Set delay according to API response
+            const data = await response.json()
             const timestamp = parseInt(response.headers["x-ratelimit-reset"]) * 1000
-            throw new ThrottleError(response.data.message, new Date(timestamp))
+            throw new ThrottleError(data.message, new Date(timestamp))
         }
 
         const type = response.headers.get("content-type")
@@ -36,7 +37,7 @@ export default class GistStorage extends Storage {
             throw new SyncError(await response.text(), response)
         }
         const errorData = await response.json()
-        throw new SyncError(errorData.message, response)
+        throw new SyncError(errorData?.message ?? "Failed to get error data", response)
     }
 
     /**
