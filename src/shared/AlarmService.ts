@@ -1,12 +1,15 @@
 import browser, { Alarms } from "webextension-polyfill"
 
-export enum Alarm {
+/** These are not expected to be ever cleared. **/
+export enum PeriodAlarms {
     /** Alert for periodic check on chapter updates */
     CheckChaptersUpdates = "checkChaptersUpdates",
 
     /** Alert for periodic check on mirror updates and new AMR updates */
-    CheckMirrorsUpdates = "checkMirrorsUpdates",
+    CheckMirrorsUpdates = "checkMirrorsUpdates"
+}
 
+export enum Alarm {
     /** Stop spinning icon if enabled **/
     StopSpinning = "stopSpinning",
 
@@ -15,7 +18,10 @@ export enum Alarm {
      * This is used in case the chapter update crashed in got stuck in the running
      * mode preventing any further updates from happening
      */
-    UpdatingChapterListsChange = "stopChapterUpdate"
+    UpdatingChapterListsChange = "stopChapterUpdate",
+
+    /** Same as CheckChaptersUpdates, however we can create/override multiple as well as be cleared **/
+    DelayedChaptersUpdates = "delayedChaptersUpdates"
 }
 
 type AlarmCreate = { name: Alarm } & Required<
@@ -38,7 +44,9 @@ export function createAlarm(setup: AlarmCreate) {
 }
 
 /**
- * Time when the alarm is scheduled to first fire, in milliseconds past the epoch. Optional.
+ * Clear Alarm with given name.
+ *
+ * Note that name should be unique to avoid collision with default period based alarms.
  */
 export function clearAlarm(name: Alarm) {
     return browser.alarms.clear(name)

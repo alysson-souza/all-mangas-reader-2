@@ -751,7 +751,7 @@ const actions = {
         if (delayUpdate.shouldSkip) {
             logger.debug(delayUpdate.message)
             if (delayUpdate.nextRunTimestamp) {
-                createAlarm({ name: Alarm.CheckChaptersUpdates, when: delayUpdate.nextRunTimestamp })
+                createAlarm({ name: Alarm.DelayedChaptersUpdates, when: delayUpdate.nextRunTimestamp })
             }
             return
         }
@@ -803,7 +803,7 @@ const actions = {
                 })
                 .catch(e => {
                     if (e !== ABSTRACT_MANGA_MSG) {
-                        console.error(e)
+                        logger.error(e)
                         if (!mg.updateError) {
                             dispatch("markHasUpdateError", mg)
                         }
@@ -829,7 +829,7 @@ const actions = {
 
         if (!rootState.options.isUpdatingChapterLists) {
             clearAlarm(Alarm.UpdatingChapterListsChange).then(r =>
-                logger.debug(`${Alarm.UpdatingChapterListsChange} Cleared=${r} `)
+                logger.debug(`${Alarm.UpdatingChapterListsChange} Cleared=${r}`)
             )
         }
         dispatch("setOption", { key: "isUpdatingChapterLists", value: 0 }) // Unset watcher when done

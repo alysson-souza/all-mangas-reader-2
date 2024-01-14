@@ -34,7 +34,7 @@ export function shouldDelayUpdate(rootState: RootState): UpdateCheck {
     if (rootState.options.isConverting) {
         return {
             shouldSkip: true,
-            message: "Skipping due to sync process running",
+            message: "Skipping due to MangaDex v5 migration (conversion) process running",
             nextRunTimestamp: Date.now() + 60 * 1000
         }
     }

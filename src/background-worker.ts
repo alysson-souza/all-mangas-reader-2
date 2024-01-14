@@ -13,7 +13,7 @@ import { AmrUpdater } from "./pages/amr-updater"
 import { getIconHelper } from "./amr/icon-helper"
 import { host_permissions } from "./constants/required_permissions"
 import { getNotifications } from "./amr/notifications"
-import { Alarm } from "./shared/AlarmService"
+import { Alarm, PeriodAlarms } from "./shared/AlarmService"
 
 const optionsStorage = new OptionStorage()
 const iconHelper = getIconHelper(store)
@@ -120,10 +120,11 @@ browser.alarms.onAlarm.addListener(async alarm => {
     // Make sure init is complete
     await initPromise
     switch (alarm.name) {
-        case Alarm.CheckChaptersUpdates:
+        case PeriodAlarms.CheckChaptersUpdates:
+        case Alarm.DelayedChaptersUpdates:
             amrUpdater.checkChaptersUpdates().catch(logger.error)
             break
-        case Alarm.CheckMirrorsUpdates:
+        case PeriodAlarms.CheckMirrorsUpdates:
             amrUpdater.checkMirrorsUpdates()
             break
         case Alarm.StopSpinning:
@@ -138,8 +139,8 @@ browser.alarms.onAlarm.addListener(async alarm => {
     }
 })
 
-browser.alarms.create(Alarm.CheckChaptersUpdates, { delayInMinutes: 0.1, periodInMinutes: 1 })
-browser.alarms.create(Alarm.CheckMirrorsUpdates, { delayInMinutes: 0.1, periodInMinutes: 1 })
+browser.alarms.create(PeriodAlarms.CheckChaptersUpdates, { delayInMinutes: 0.1, periodInMinutes: 1 })
+browser.alarms.create(PeriodAlarms.CheckMirrorsUpdates, { delayInMinutes: 0.1, periodInMinutes: 1 })
 
 let timers = [] // This is used to keep websites from spamming with calls. It fucks up the reader
 
