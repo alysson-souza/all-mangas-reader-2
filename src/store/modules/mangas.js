@@ -812,14 +812,15 @@ const actions = {
         }
 
         const sleep = delay => new Promise(resolve => setTimeout(() => resolve(), delay))
-        const waitDelay = Math.max(rootState.options.waitbetweenupdates, 1) // Force at least 1 second interval
+        // Force at least 1 second interval
+        const waitDelayInMs = Math.max(rootState.options.waitbetweenupdates, 1) * 1000
 
         await Promise.all(
             Object.entries(mirrorTasks).map(async ([name, mirrorMangas]) => {
                 const now = Date.now()
                 for (const mg of mirrorMangas) {
                     await refreshManga(mg).catch(logger.error)
-                    await sleep(waitDelay)
+                    await sleep(waitDelayInMs)
                 }
                 logger.info(`[${name}] completed processing in ${Date.now() - now}ms`)
             })
