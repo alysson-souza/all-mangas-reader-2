@@ -34,7 +34,7 @@ const manhwaTopRule: RuleInfo = {
         // applies only to requests from this extension
         initiatorDomains: [thisExtensionId],
         // for URLs that match the following filter
-        urlFilter: "https://manhwatop.com/*",
+        urlFilter: "|https://manhwatop.com/*",
         // and only for our fetch requests
         resourceTypes: ["xmlhttprequest" as const]
     }
@@ -42,7 +42,7 @@ const manhwaTopRule: RuleInfo = {
 
 const mangaHubRule: RuleInfo = {
     action: {
-        // Replaces Referer and Origin request headers to bypass site's protection
+        // Replaces Referer and removes Origin request headers to bypass site's protection
         type: "modifyHeaders" as const,
         requestHeaders: [
             {
@@ -52,21 +52,15 @@ const mangaHubRule: RuleInfo = {
             },
             {
                 header: "Origin",
-                operation: "set" as const,
-                value: "https://mangahub.io/"
-            },
-            {
-                header: "sec-fetch-site",
-                operation: "set" as const,
-                value: "cross-site"
+                operation: "remove" as const
             }
         ]
     },
     condition: {
         // applies only to requests from this extension
         initiatorDomains: [thisExtensionId],
-        // for URLs that match the following regex
-        regexFilter: "^https://(mangahub.io|imgx.mghcdn.com)/",
+        // for URLs that match the following filter
+        urlFilter: "|https://mangahub.io/*",
         // and only for our fetch requests
         resourceTypes: ["xmlhttprequest" as const]
     }

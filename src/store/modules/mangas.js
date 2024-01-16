@@ -413,7 +413,7 @@ const actions = {
         const iconHelper = getIconHelper({ state: rootState, getters })
         const mg = state.all.find(manga => manga.key === key)
         if (mg === undefined) {
-            console.error("readManga of an unlisted manga --> create it")
+            console.warn("readManga of an unlisted manga --> create it")
             await dispatch("createUnlistedManga", message)
             iconHelper.refreshBadgeAndIcon()
             return
