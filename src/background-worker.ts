@@ -9,6 +9,7 @@ import { convertToMangaDexV5 } from "./background/misc/mangedex-v5-converter"
 import { Mangadex } from "./background/misc/mangadex-v5-integration"
 import { getMirrorHelper } from "./mirrors/MirrorHelper"
 import { getMirrorLoader } from "./mirrors/MirrorLoader"
+import { getNetRulesForMirrors } from "./mirrors/MirrorNetRequestRules"
 import { AmrUpdater } from "./pages/amr-updater"
 import { getIconHelper } from "./amr/icon-helper"
 import { host_permissions } from "./constants/required_permissions"
@@ -193,4 +194,14 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
     // Make sure init is complete
     await initPromise
     return handler.handle(msg, sender)
+})
+
+const rules = getNetRulesForMirrors()
+
+console.log("!!!")
+console.log(rules)
+
+await browser.declarativeNetRequest.updateSessionRules({
+    removeRuleIds: rules.map(r => r.id),
+    addRules: rules
 })
