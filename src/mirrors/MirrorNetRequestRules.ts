@@ -1,5 +1,7 @@
 import browser from "webextension-polyfill"
 
+const thisExtensionId: string = browser.i18n.getMessage("@@extension_id")
+
 type RuleInfo = {
     action: browser.DeclarativeNetRequest.RuleActionType
     condition: browser.DeclarativeNetRequest.RuleConditionType
@@ -30,8 +32,8 @@ const manhwaTopRule: RuleInfo = {
     },
     condition: {
         // applies only to requests from this extension
-        //initiatorDomains: [browser.runtime.id],
-        // for URLs that match the followinf expression
+        initiatorDomains: [thisExtensionId],
+        // for URLs that match the following filter
         urlFilter: "https://manhwatop.com/*",
         // and only for our fetch requests
         resourceTypes: ["xmlhttprequest" as const]
