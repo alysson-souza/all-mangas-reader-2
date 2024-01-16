@@ -21,7 +21,7 @@ const manhwaTopRule: RuleInfo = {
             {
                 header: "Origin",
                 operation: "set" as const,
-                value: "https://manhwatop.com/"
+                value: "https://manhwatop.com"
             },
             {
                 header: "sec-fetch-site",
@@ -42,7 +42,7 @@ const manhwaTopRule: RuleInfo = {
 
 const mangaHubRule: RuleInfo = {
     action: {
-        // Replaces Referer and removes Origin request headers to bypass site's protection
+        // Replaces Referer and Origin request headers to bypass site's protection
         type: "modifyHeaders" as const,
         requestHeaders: [
             {
@@ -52,7 +52,8 @@ const mangaHubRule: RuleInfo = {
             },
             {
                 header: "Origin",
-                operation: "remove" as const
+                operation: "set" as const,
+                value: "https://mangahub.io"
             }
         ]
     },
