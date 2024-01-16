@@ -118,7 +118,7 @@ initPromise.then(() => console.debug("completed background init"))
 // Initialize special net request rules that are needed to bypass protection on some sites.
 // These rules are persistent through browser restarts and extension updates.
 browser.runtime.onInstalled.addListener(async details => {
-    logger.info("Initialize net request rules")
+    logger.debug("Initialize net request rules")
     const rules = getNetRulesForMirrors()
     await browser.declarativeNetRequest.updateDynamicRules({
         removeRuleIds: rules.map(r => r.id),
