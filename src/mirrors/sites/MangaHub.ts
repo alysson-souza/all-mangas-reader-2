@@ -70,7 +70,7 @@ export class MangaHub extends BaseMirror implements MirrorImplementation {
         })
 
         const json = await this.scriptJson({
-            url: "https://api.mghubcdn.com/graphql",
+            url: "https://mangahub.io/api/graphql",
             target: { tabId: sender.tab.id },
             config: {
                 method: "post",
@@ -80,7 +80,7 @@ export class MangaHub extends BaseMirror implements MirrorImplementation {
         })
 
         const res = []
-        const cdnUrl = "https://img.mghubcdn.com/file/imghub/"
+        const cdnUrl = "https://imgx.mghcdn.com/"
         const pages = Object.values(JSON.parse(json.data.chapter.pages))
         for (const page of pages[1] as any[]) {
             res.push(cdnUrl + pages[0] + page)

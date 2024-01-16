@@ -40,7 +40,42 @@ const manhwaTopRule: RuleInfo = {
     }
 }
 
-const amrNetRules: browser.DeclarativeNetRequest.Rule[] = [{ id: 1, ...manhwaTopRule }]
+const mangaHubRule: RuleInfo = {
+    action: {
+        // Replaces Referer and Origin request headers to bypass site's protection
+        type: "modifyHeaders" as const,
+        requestHeaders: [
+            {
+                header: "Referer",
+                operation: "set" as const,
+                value: "https://mangahub.io"
+            },
+            {
+                header: "Origin",
+                operation: "set" as const,
+                value: "https://mangahub.io/"
+            },
+            {
+                header: "sec-fetch-site",
+                operation: "set" as const,
+                value: "cross-site"
+            }
+        ]
+    },
+    condition: {
+        // applies only to requests from this extension
+        initiatorDomains: [thisExtensionId],
+        // for URLs that match the following regex
+        regexFilter: "^https://(mangahub.io|imgx.mghcdn.com)/",
+        // and only for our fetch requests
+        resourceTypes: ["xmlhttprequest" as const]
+    }
+}
+
+const amrNetRules: browser.DeclarativeNetRequest.Rule[] = [
+    { id: 1, ...manhwaTopRule },
+    { id: 2, ...mangaHubRule }
+]
 
 export function getNetRulesForMirrors(): browser.DeclarativeNetRequest.Rule[] {
     return amrNetRules
