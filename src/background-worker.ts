@@ -115,6 +115,17 @@ initPromise.then(() => console.debug("completed background init"))
  * Initialise all listeners at the top level, so they can be persisted in firefox
  */
 
+// Initialize special net request rules that are needed to bypass protection on some sites.
+// These rules are persistent through browser restarts and extension updates.
+browser.runtime.onInstalled.addListener(async details => {
+    logger.debug("Initializing net request rules")
+    const rules = getNetRulesForMirrors()
+    await browser.declarativeNetRequest.updateDynamicRules({
+        removeRuleIds: rules.map(r => r.id),
+        addRules: rules
+    })
+})
+
 // Alarms - Initialize refresh checkers
 browser.alarms.onAlarm.addListener(async alarm => {
     logger.debug(`Running Alarm ${alarm.name} callback`)
@@ -194,14 +205,4 @@ browser.runtime.onMessage.addListener(async (msg, sender) => {
     // Make sure init is complete
     await initPromise
     return handler.handle(msg, sender)
-})
-
-const rules = getNetRulesForMirrors()
-
-console.log("!!!")
-console.log(rules)
-
-await browser.declarativeNetRequest.updateSessionRules({
-    removeRuleIds: rules.map(r => r.id),
-    addRules: rules
 })

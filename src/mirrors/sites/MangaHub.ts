@@ -69,6 +69,8 @@ export class MangaHub extends BaseMirror implements MirrorImplementation {
             name: "mhub_access"
         })
 
+        // There are additional net request rules for mangahub.io and imgx.mghcdn.com.
+        // If you are updating this mirror, don't forget to also update MirrorNetRequestRules.ts file.
         const json = await this.scriptJson({
             url: "https://mangahub.io/api/graphql",
             target: { tabId: sender.tab.id },
