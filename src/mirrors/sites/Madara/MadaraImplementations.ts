@@ -679,6 +679,8 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
                 secondary_img_src: "data-src"
             }
         ),
+        // There are additional net request rules for manhwatop.com.
+        // If you are updating this mirror, don't forget to also update MirrorNetRequestRules.ts file.
         new Madara(
             mirrorHelper,
             {

@@ -126,8 +126,7 @@ const config = {
                     }
                 },
                 { from: "reader/*.css", to: "." },
-                { from: "_locales/**/*", to: "." },
-                { from: "rules_1.json", to: "rules_1.json" }
+                { from: "_locales/**/*", to: "." }
             ]
         }),
         new CircularDependencyPlugin({

@@ -1,6 +1,6 @@
 import { BaseMirror } from "./abstract/BaseMirror"
 import { MirrorImplementation } from "../../types/common"
-import { MirrorHelper } from "../MirrorHelper"
+import { JsonOptions, MirrorHelper } from "../MirrorHelper"
 import MangaHubIcon from "../icons/mangahub-optimized.png"
 
 export class MangaHub extends BaseMirror implements MirrorImplementation {
@@ -69,18 +69,17 @@ export class MangaHub extends BaseMirror implements MirrorImplementation {
             name: "mhub_access"
         })
 
-        const json = await this.scriptJson({
-            url: "https://api.mghubcdn.com/graphql",
-            target: { tabId: sender.tab.id },
-            config: {
-                method: "post",
-                body: query,
-                headers: { "x-mhub-access": mhubCookie?.value }
-            }
-        })
+        // There is additional net request rule for mangahub.io.
+        // If you are updating this mirror, don't forget to also update MirrorNetRequestRules.ts file.
+        const json = await this.mirrorHelper.loadJson("https://mangahub.io/api/graphql", {
+            nocache: true,
+            method: "POST",
+            data: query,
+            headers: { "X-Mhub-Access": mhubCookie?.value }
+        } as JsonOptions)
 
         const res = []
-        const cdnUrl = "https://img.mghubcdn.com/file/imghub/"
+        const cdnUrl = "https://imgx.mghcdn.com/"
         const pages = Object.values(JSON.parse(json.data.chapter.pages))
         for (const page of pages[1] as any[]) {
             res.push(cdnUrl + pages[0] + page)
