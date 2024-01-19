@@ -217,6 +217,20 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
                 // search_url: "https://anigliscans.xyz"
             }
         ),
+        // From the same team as "Animated Glitched Scans". That's why it shares the same icon (for now probably)
+        new MangaStream_1_1_4(
+            mirrorHelper,
+            {
+                mirrorName: "Animated Glitched Comics",
+                canListFullMangas: false,
+                mirrorIcon: AnigliScansIcon,
+                domains: ["agscomics.com"],
+                home: "https://agscomics.com",
+                chapter_url: /.*/g,
+                languages: "en"
+            },
+            {}
+        ),
         new MangaStream_1_1_4(
             mirrorHelper,
             {
