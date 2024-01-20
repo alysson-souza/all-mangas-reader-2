@@ -119,10 +119,13 @@ initPromise.then(() => console.debug("completed background init"))
 // These rules are persistent through browser restarts and extension updates.
 browser.runtime.onInstalled.addListener(async details => {
     logger.debug("Initialize net request rules")
-    const rules = getNetRulesForMirrors()
+
+    const oldRules = await browser.declarativeNetRequest.getDynamicRules()
+    const oldRuleIds = oldRules.map(rule => rule.id)
+    const newRules = getNetRulesForMirrors()
     await browser.declarativeNetRequest.updateDynamicRules({
-        removeRuleIds: rules.map(r => r.id),
-        addRules: rules
+        removeRuleIds: oldRuleIds,
+        addRules: newRules
     })
 })
 
