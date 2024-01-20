@@ -74,7 +74,7 @@ export class MangaFox extends BaseMirror implements MirrorImplementation {
 
     extractRequestKeyFromPage(doc: string): string {
         // Extract guidkey variable from sources.
-        // We need to find and parse long string similar to the following: \'\'+\'c\'+\'a\'+\'6\'+ ...\'d\'
+        // We need to find and parse long string similar to the following: \'\'+\'c\'+\'a\'+\'6\'+...+\'d\'
         const keyRegex = /(?:\\'\w{0,1}\\'\+{0,1}){10,}/
         const keyMatch = doc.match(keyRegex)
         if (keyMatch) {
