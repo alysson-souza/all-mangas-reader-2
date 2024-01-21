@@ -36,15 +36,12 @@
                             <v-tooltip top content-class="icon-ttip">
                                 <template v-slot:activator="{ on }">
                                     <img
-                                        v-if="isMirrorEnabled && !manga.updateError === 75 /* TODO: Re-enable this once the underlying issue is solved */"
+                                        v-if="isMirrorEnabled /*&& !manga.updateError TODO: Re-enable this once the underlying issue is solved */"
                                         class="m-icon"
                                         width="16"
                                         height="16"
                                         :src="mirror.mirrorIcon"
                                         v-on="on" />
-                                    <v-icon v-else-if="isMirrorEnabled && manga.updateError == 75" small v-on="on"
-                                        >mdi-alert-outline</v-icon
-                                    >
                                     <v-icon v-else small v-on="on">mdi-cancel</v-icon>
                                 </template>
                                 <span>
