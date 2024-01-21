@@ -72,6 +72,19 @@ export class MangaFox extends BaseMirror implements MirrorImplementation {
         }
     }
 
+    extractRequestKeyFromPage(doc: string): string {
+        // Extract guidkey variable from sources.
+        // We need to find and parse long string similar to the following: \'\'+\'c\'+\'a\'+\'6\'+...+\'d\'
+        const keyRegex = /(?:\\'\w{0,1}\\'\+{0,1}){10,}/
+        const keyMatch = doc.match(keyRegex)
+        if (keyMatch) {
+            const unparsedKey = keyMatch[0]
+            return unparsedKey.replace(/[\\'\+]/g, "")
+        }
+
+        return ""
+    }
+
     async getImageUrlFromPage(urlImage: string) {
         // Relative schema url, pass it back.
         if (urlImage.startsWith("//") || urlImage.startsWith("https://zjcdn")) {
@@ -81,10 +94,7 @@ export class MangaFox extends BaseMirror implements MirrorImplementation {
 
         // loads the page containing the current scan
         const doc = await this.mirrorHelper.loadPage(urlImage, { crossdomain: true, redirect: "follow" })
-        const $ = this.parseHtml(doc)
-
-        const [first] = $("#dm5_key")
-        const mkey = first ? ($(first).val() as string) : ""
+        const mkey = this.extractRequestKeyFromPage(doc)
 
         const curl = urlImage.substr(0, urlImage.lastIndexOf("/") + 1),
             cid = this.getVariable({ doc, variableName: "chapterid" }),
@@ -104,8 +114,7 @@ export class MangaFox extends BaseMirror implements MirrorImplementation {
             headers: {
                 "X-Cookie": "isAdult=1",
                 "X-Referer": urlImage,
-                "X-Requested-With": "XMLHttpRequest",
-                Referer: urlImage
+                "X-Requested-With": "XMLHttpRequest"
             }
         })
 

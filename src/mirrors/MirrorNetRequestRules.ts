@@ -67,9 +67,37 @@ const mangaHubRule: RuleInfo = {
     }
 }
 
+const mangaFoxRule: RuleInfo = {
+    action: {
+        // Replaces Referer and Origin request headers to bypass site's protection
+        type: "modifyHeaders" as const,
+        requestHeaders: [
+            {
+                header: "Referer",
+                operation: "set" as const,
+                value: "https://fanfox.net"
+            },
+            {
+                header: "Origin",
+                operation: "set" as const,
+                value: "https://fanfox.net"
+            }
+        ]
+    },
+    condition: {
+        // applies only to requests from this extension
+        initiatorDomains: [thisExtensionId],
+        // for URLs that match the following filter
+        urlFilter: "|https://fanfox.net/*",
+        // and only for our fetch requests
+        resourceTypes: ["xmlhttprequest" as const]
+    }
+}
+
 const amrNetRules: browser.DeclarativeNetRequest.Rule[] = [
     { id: 1, ...manhwaTopRule },
-    { id: 2, ...mangaHubRule }
+    { id: 2, ...mangaHubRule },
+    { id: 3, ...mangaFoxRule }
 ]
 
 export function getNetRulesForMirrors(): browser.DeclarativeNetRequest.Rule[] {
