@@ -805,7 +805,7 @@ const actions = {
                     if (e !== ABSTRACT_MANGA_MSG) {
                         logger.error(e)
                         if (!mg.updateError) {
-                            dispatch("markHasUpdateError", mg)
+                            // dispatch("markHasUpdateError", mg) TODO: This seems stuck, disabling for now
                         }
                     }
                 })
@@ -1107,7 +1107,7 @@ const mutations = {
      * @param {*} param1 url of the manga and layout mode
      */
     markHasUpdateError(state, { key, updateError }) {
-        let mg = state.all.find(manga => manga.key === key)
+        const mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.updateError = 1
         }
@@ -1118,7 +1118,7 @@ const mutations = {
      * @param {*} param1 url of the manga and layout mode
      */
     markNoUpdateError(state, { key, updateError }) {
-        let mg = state.all.find(manga => manga.key === key)
+        const mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.updateError = 0
         }

@@ -52,7 +52,7 @@ export class DisasterScans extends BaseMirror implements MirrorImplementation {
     async getCurrentPageInfo(doc, curUrl) {
         const $ = this.parseHtml(doc)
         return {
-            name: $('h1[class*="chapter_comicName"]').text().trim(),
+            name: $('h1[class="md:text-3xl"]').text().trim(),
             currentMangaURL: curUrl.split("/").slice(0, 5).join("/"),
             currentChapterURL: curUrl
         }
@@ -61,7 +61,7 @@ export class DisasterScans extends BaseMirror implements MirrorImplementation {
     async getListImages(doc) {
         const $ = this.parseHtml(doc)
         const res = []
-        $("img[alt='00']").each(function () {
+        $("img[loading='lazy']").each(function () {
             res.push($(this).attr("src"))
         })
 
@@ -69,7 +69,7 @@ export class DisasterScans extends BaseMirror implements MirrorImplementation {
     }
 
     isCurrentPageAChapterPage(doc) {
-        return this.queryHtml(doc, "img[alt='00']").length > 0
+        return this.queryHtml(doc, "img[loading='lazy']").length > 0
     }
 
     async getImageUrlFromPage(urlImage: string): Promise<string> {

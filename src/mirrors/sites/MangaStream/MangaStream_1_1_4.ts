@@ -176,8 +176,8 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
                 mirrorName: "Night Scans",
                 canListFullMangas: false,
                 mirrorIcon: NightScansIcon,
-                domains: ["nightscans.org", "nightscans.net"],
-                home: "https://nightscans.net",
+                domains: ["nightscans.org", "nightscans.net", "night-scans.com"],
+                home: "https://night-scans.com",
                 chapter_url: /\/.*?-[0-9]+.*\//g,
                 languages: "en"
             },
