@@ -229,7 +229,9 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
                 chapter_url: /.*/g,
                 languages: "en"
             },
-            {}
+            {
+                chapter_list_selector: "#chapterlist .eph-num a"
+            }
         ),
         new MangaStream_1_1_4(
             mirrorHelper,
