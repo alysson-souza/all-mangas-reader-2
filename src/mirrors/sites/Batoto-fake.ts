@@ -82,9 +82,8 @@ export class BatotoFake extends BaseMirror implements MirrorImplementation {
 
         const crypto = this.mirrorHelper.crypto
         const decrypted = JSON.parse(crypto.AES.decrypt(batoWord, batoPass).toString(this.mirrorHelper.crypto.enc.Utf8))
-        console.debug("Batoto shit", batoPass, batoWord, decrypted)
 
-        const images = this.getVariable({ doc, variableName: "imgHttpLis" })
+        const images = this.getVariable({ doc, variableName: "imgHttps" })
         return images.map((image, index) => image + "?" + decrypted[index])
     }
 

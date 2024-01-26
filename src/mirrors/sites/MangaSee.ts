@@ -14,7 +14,7 @@ export class MangaSee extends BaseMirror implements MirrorImplementation {
     languages = "en"
     domains = ["mangaseeonline.us", "mangasee123.com"]
     home = "https://mangasee123.com"
-    chapter_url = /^\/read-online\/.+$/g
+    chapter_url = /^\/read-online\/.+$/
 
     async getMangaList(search: string) {
         const doc = await this.mirrorHelper.loadPage(this.home + "/directory/", { nocache: true, preventimages: true })
@@ -97,7 +97,7 @@ export class MangaSee extends BaseMirror implements MirrorImplementation {
     }
 
     isCurrentPageAChapterPage(doc, curUrl) {
-        return this.queryHtml(doc, "div#readerarea").length > 0
+        return this.queryHtml(doc, "div.ImageGallery").length > 0
     }
 
     async getImageUrlFromPage(urlImage: string): Promise<string> {
