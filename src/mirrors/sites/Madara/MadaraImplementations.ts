@@ -1036,11 +1036,13 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
                 languages: "en",
                 domains: ["gourmetscans.net", "gourmetsupremacy.com"],
                 home: "https://gourmetsupremacy.com/",
-                chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series|project)\/.*\/.+$/g,
+                chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series|project)\/.*\/.+$/,
                 canListFullMangas: false
             },
             {
                 search_url: "https://gourmetsupremacy.com/",
+                // Adding any query parameters cause page to redirect to manga page, disable it
+                add_list_to_chapter_url: false,
                 image_protection_plugin: true
             }
         ),

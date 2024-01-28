@@ -1332,9 +1332,11 @@ export default {
         },
         /** Preloads the next chapter scans */
         async preloadNextChapter() {
-            if (!this.nextChapter) return
-            this.util.debug("Loading next chapter...")
-            // instanciate a chapter loader for the next chapter
+            if (!this.nextChapter) {
+                return
+            }
+            this.util.debug("Loading next chapter " + this.nextChapter)
+            // instance a chapter loader for the next chapter
             this.nextChapterLoader = new ChapterLoader(this.nextChapter, this.mirror)
             await this.nextChapterLoader.checkAndLoadInfos() // get is a chapter ?, infos (current manga, chapter) and scans urls
             if (!this.nextChapterLoader.isAChapter) {
