@@ -268,6 +268,10 @@ export class MangadexV5 extends BaseMirror implements MirrorImplementation {
         }
     }
 
+    async getChapterTitle(doc: string, curUrl: string): Promise<string> {
+        return this.queryHtml(doc, "meta[property='og:title']").attr("content")
+    }
+
     async getListImages(doc, curUrl) {
         const mangadexDataSaver = this.mirrorHelper.getOption("mangadexDataSaver")
         const chapterId = curUrl.split("/")[4]

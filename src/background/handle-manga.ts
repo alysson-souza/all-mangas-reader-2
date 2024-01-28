@@ -407,14 +407,16 @@ export class HandleManga {
                     })
                 }
                 const body = cheerio.load(htmlDocument)
-                let title = body("title" as string).text() || "Undefined Chapter"
-
+                let title = body("title" as string).text()
                 try {
                     if (typeof impl.getChapterTitle === "function") {
                         title = await impl.getChapterTitle(htmlDocument, message.url)
                     }
                 } catch (e) {
                     console.error(e)
+                }
+                if (!title) {
+                    title = (infos?.name ? infos.name + " - " : "") + "Undefined Chapter"
                 }
 
                 return <ChapterData>{
