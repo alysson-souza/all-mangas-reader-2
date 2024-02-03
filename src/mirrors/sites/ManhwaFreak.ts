@@ -41,11 +41,9 @@ export class ManhwaFreak extends BaseMirror implements MirrorImplementation {
         const res = []
         const $ = this.parseHtml(doc)
 
-        const tidyUrl = url => this.tidyChapterUrl(url)
-
-        $("div.chapter-li a").each(function (index) {
-            const url = tidyUrl($(this).attr("href"))
-            res.push([$("div.chapter-info p:first", this).text().trim(), url])
+        $("div.chapter-li a").each((index, el) => {
+            const url = this.tidyChapterUrl($(el).attr("href"))
+            res.push([$("div.chapter-info p:first", el).text().trim(), url])
         })
         return res
     }
