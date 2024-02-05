@@ -15,6 +15,8 @@ export class ManhwaFreak extends BaseMirror implements MirrorImplementation {
     domains = ["manhwa-freak.com", "manhwafreak.com"]
     home = "https://manhwa-freak.com"
     chapter_url = /\/.*?ch-[0-9]+.*\//g
+    // regex for removing changing part from chapter URLs
+    tidyChapterUrlRegex = /(.*ch-[0-9]+(?:-[0-9]+)*?)(\-\w{5,}){0,1}(\/.*)/
 
     async getMangaList(search: string) {
         const doc = await this.mirrorHelper.loadPage(this.home + "/manga/", { nocache: true, preventimages: true })
@@ -28,14 +30,20 @@ export class ManhwaFreak extends BaseMirror implements MirrorImplementation {
         return res
     }
 
+    tidyChapterUrl(chapUrl: string): string {
+        const urlMatch = chapUrl.match(this.tidyChapterUrlRegex)
+        return urlMatch[1] + urlMatch[3]
+    }
+
     async getListChaps(urlManga) {
         const doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
 
         const res = []
         const $ = this.parseHtml(doc)
 
-        $("div.chapter-li a").each(function (index) {
-            res.push([$("div.chapter-info p:first", this).text().trim(), $(this).attr("href")])
+        $("div.chapter-li a").each((index, el) => {
+            const url = this.tidyChapterUrl($(el).attr("href"))
+            res.push([$("div.chapter-info p:first", el).text().trim(), url])
         })
         return res
     }
@@ -47,7 +55,7 @@ export class ManhwaFreak extends BaseMirror implements MirrorImplementation {
         return {
             name: $(bc[1]).text().trim(),
             currentMangaURL: $(bc[1]).attr("href"),
-            currentChapterURL: curUrl
+            currentChapterURL: this.tidyChapterUrl(curUrl)
         }
     }
 
