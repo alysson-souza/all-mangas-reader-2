@@ -138,8 +138,8 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
                 mirrorName: "Luminous Scans",
                 canListFullMangas: false,
                 mirrorIcon: LiminousScanIcon,
-                domains: ["luminousscans.gg", "luminousscans.net"],
-                home: "https://luminousscans.net/",
+                domains: ["luminousscans.gg", "luminousscans.net", "lumitoon.com"],
+                home: "https://lumitoon.com/",
                 chapter_url: /chapter-[0-9]+.*\/$/g,
                 languages: "en"
             },
