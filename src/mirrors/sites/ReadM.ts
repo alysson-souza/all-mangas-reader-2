@@ -12,12 +12,12 @@ export class ReadM extends BaseMirror implements MirrorImplementation {
     canListFullMangas = false
     mirrorIcon = ReadMIcon
     languages = "en"
-    domains = ["readm.org"]
-    home = "https://readm.org/"
+    domains = ["readm.org", "readm.today"]
+    home = "https://readm.today"
     chapter_url = /^\/manga\/.*\/.*/g
 
     async getMangaList(search: string) {
-        const doc = await this.mirrorHelper.loadPage("https://readm.org/searchController/index?search=" + search, {
+        const doc = await this.mirrorHelper.loadPage(this.home + "/searchController/index?search=" + search, {
             nocache: true,
             preventimages: true
         })
@@ -25,8 +25,8 @@ export class ReadM extends BaseMirror implements MirrorImplementation {
         const res = []
         const $ = this.parseHtml(doc)
 
-        $("ul.manga-list a").each(function () {
-            res.push([$(this).text().trim(), "https://readm.org" + $(this).attr("href")])
+        $("ul.manga-list a").each((_, elem) => {
+            res.push([$(elem).text().trim(), this.home + $(elem).attr("href")])
         })
 
         return res
@@ -40,9 +40,9 @@ export class ReadM extends BaseMirror implements MirrorImplementation {
 
         const res = []
         const $ = this.parseHtml(doc)
-        $("#table-episodes-title > h6 > a").each(function () {
-            const url = "https://readm.org" + $(this).attr("href")
-            const chap = $(this).text().trim()
+        $("#table-episodes-title > h6 > a").each((_, elem) => {
+            const url = this.home + $(elem).attr("href")
+            const chap = $(elem).text().trim()
             res.push([chap, url])
         })
         return res
@@ -53,7 +53,7 @@ export class ReadM extends BaseMirror implements MirrorImplementation {
         const mga = $("#router-view > div > div.ui.grid.mt-0 > div > h1 a")
         return {
             name: mga.text().trim(),
-            currentMangaURL: "https://readm.org" + mga.attr("href"),
+            currentMangaURL: this.home + mga.attr("href"),
             currentChapterURL: curUrl
         }
     }
@@ -63,14 +63,14 @@ export class ReadM extends BaseMirror implements MirrorImplementation {
         const $ = this.parseHtml(doc)
 
         $("#router-view > div > div.ui.grid.chapter > div.ch-images.ch-image-container > center > img").each(
-            function () {
-                res.push("https://readm.org" + $(this).attr("src"))
+            (_, elem) => {
+                res.push(this.home + $(elem).attr("src"))
             }
         )
 
         $("#router-view > div > div.ui.grid.chapter > div.ch-images.ch-image-container > center > a > img").each(
-            function () {
-                res.push("https://readm.org" + $(this).attr("src"))
+            (_, elem) => {
+                res.push(this.home + $(elem).attr("src"))
             }
         )
 
