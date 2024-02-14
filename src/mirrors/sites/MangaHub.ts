@@ -79,7 +79,7 @@ export class MangaHub extends BaseMirror implements MirrorImplementation {
         } as JsonOptions)
 
         const res = []
-        const cdnUrl = "https://imgx.mangahub.io/"
+        const cdnUrl = "https://imgx.mghcdn.com/"
         const pages = Object.values(JSON.parse(json.data.chapter.pages))
         for (const page of pages[1] as any[]) {
             res.push(cdnUrl + pages[0] + page)
