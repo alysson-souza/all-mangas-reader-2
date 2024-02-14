@@ -41,7 +41,7 @@ class ReadManga extends BaseMirror implements MirrorImplementation {
         const content = $("#mangaBox h1 a:first-child").contents()[0]
         const name = $(content).text()
         const nameurl = this.options.base_url + $("#mangaBox h1 a:first-child", doc).attr("href")
-        const chapurl = curUrl.split("?")[0] + "?mtr=1"
+        const chapurl = curUrl.split("?")[0] + "?mtr=true"
         return {
             name: name,
             currentMangaURL: nameurl,
@@ -54,7 +54,7 @@ class ReadManga extends BaseMirror implements MirrorImplementation {
     }
 
     public async getListChaps(urlManga: string): Promise<InfoResult[] | Record<string, InfoResult[]>> {
-        const doc = await this.mirrorHelper.loadPage(`${urlManga}?mtr=1`, { nocache: true, preventimages: true })
+        const doc = await this.mirrorHelper.loadPage(`${urlManga}?mtr=true`, { nocache: true, preventimages: true })
         const mangaIdFromUrl = urlManga.split("/").pop()
         const res = []
         const self = this
@@ -124,8 +124,8 @@ class ReadManga extends BaseMirror implements MirrorImplementation {
     }
 
     private async passAdult(doc: string, curUrl: string) {
-        if (this.queryHtml(doc, "a[href$='?mtr=1']").length > 0) {
-            doc = await this.mirrorHelper.loadPage(curUrl + "?mtr=1")
+        if (this.queryHtml(doc, "a[href$='?mtr=true']").length > 0) {
+            doc = await this.mirrorHelper.loadPage(curUrl + "?mtr=true")
         }
         return doc
     }
@@ -155,12 +155,12 @@ export const getReadMangaMirrors = (mirrorHelper: MirrorHelper): MirrorImplement
                 mirrorIcon: require("../../icons/mintmanga-optimized.png"),
                 languages: "ru",
                 domains: ["mintmanga.live", "*.mintmanga.one"],
-                home: "https://24.mintmanga.one",
+                home: "https://1.mintmanga.one",
                 canListFullMangas: false,
                 chapter_url: /^\/.*\/vol.*\/[0-9]+.*$/g
             },
             {
-                base_url: "https://24.mintmanga.one"
+                base_url: "https://1.mintmanga.one"
             }
         )
     ]
