@@ -54,36 +54,13 @@ export class MangaHub extends BaseMirror implements MirrorImplementation {
     }
 
     async getListImages(doc, curUrl, sender) {
-        const parts = curUrl.split("/")
-        const slug = parts[4]
-        let chapter = parts[5].replace("chapter-", "")
+        const res = []
 
-        if (chapter.includes("?")) {
-            chapter = chapter.split("?")[0]
-        }
-
-        const query = `{"query":"{chapter(x:m01,slug:\\"${slug}\\",number:${chapter}){id,title,mangaID,number,slug,date,pages,noAd,manga{id,title,slug,mainSlug,author,isWebtoon,isYaoi,isPorn,isSoftPorn,unauthFile,isLicensed}}}\"}`
-
-        const mhubCookie = await this.mirrorHelper.getCookie({
-            url: curUrl,
-            name: "mhub_access"
+        const $ = this.parseHtml(doc)
+        $("#mangareader img").each(function (index) {
+            res.push($(this).attr("src"))
         })
 
-        // There is additional net request rule for mangahub.io.
-        // If you are updating this mirror, don't forget to also update MirrorNetRequestRules.ts file.
-        const json = await this.mirrorHelper.loadJson("https://mangahub.io/api/graphql", {
-            nocache: true,
-            method: "POST",
-            data: query,
-            headers: { "X-Mhub-Access": mhubCookie?.value }
-        } as JsonOptions)
-
-        const res = []
-        const cdnUrl = "https://imgx.mghcdn.com/"
-        const pages = Object.values(JSON.parse(json.data.chapter.pages))
-        for (const page of pages[1] as any[]) {
-            res.push(cdnUrl + pages[0] + page)
-        }
         return res
     }
 
