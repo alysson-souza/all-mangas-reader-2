@@ -1271,18 +1271,14 @@ export default {
                 // prevent pushState from triggering AMR reload
                 window["__AMR_IS_LOADING_CHAPTER__"] = true
                 // update window history so navigation bar has the right url
-                try {
-                    const relativeUrlWithoutSchema = chapterloader.url.replace(/^https?:\/\//, "//")
-                    window.history.pushState(
-                        { title: chapterloader.title },
-                        chapterloader.title,
-                        relativeUrlWithoutSchema
-                    )
-                } catch (e) {
-                    console.error("Failed to change tab URL to " + relativeUrlWithoutSchema)
-                    console.error(e)
-                }
+                {
+                    var chapUrl = new URL(chapterloader.url)
+                    // pushState throws if we don't preserve host and protocol
+                    chapUrl.host = window.location.host
+                    chapUrl.protocol = window.location.protocol
 
+                    window.history.pushState({ title: chapterloader.title }, chapterloader.title, chapUrl.toString())
+                }
                 // reinitialize all $data props so everything goes well
                 this.loadMangaInformations()
 
