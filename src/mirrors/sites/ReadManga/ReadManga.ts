@@ -36,7 +36,7 @@ class ReadManga extends BaseMirror implements MirrorImplementation {
         }
     }
 
-    public getCurrentOrigin(url?: string): string {
+    private getCurrentOrigin(url?: string): string {
         if (!url) {
             return this.options.base_url
         }
