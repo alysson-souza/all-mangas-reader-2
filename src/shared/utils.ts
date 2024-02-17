@@ -356,7 +356,9 @@ export function matchDomain(urlHostname: string, domain: string, store: AppState
 export function mangaKey({ url, mirror, language, rootState }: MangaKeyParams) {
     if (!url) {
         console.info(
-            "A manga key has been requested for undefined url, it will be melted in your database with other mangas with same issue, check the implementation of the mirror where your read this manga."
+            "A manga key has been requested for undefined url, " +
+                "it will be melted in your database with other mangas with same issue, " +
+                `check the implementation of the mirror ${mirror} and language ${language} where your read this manga.`
         )
         return "_no_key_" // should not happen !
     }

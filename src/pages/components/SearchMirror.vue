@@ -1,17 +1,21 @@
 <template>
     <v-tooltip top>
-        <div class="mirror-search" slot="activator">
-            <v-progress-circular
-                v-if="searching"
-                indeterminate
-                :width="3"
-                color="primary"
-                class="mirror-progress"></v-progress-circular>
-            <img
-                :src="mirror.mirrorIcon"
-                :class="'mirror-search-icon ' + (disabled ? 'disabled' : '')"
-                @click.stop="disabled = !disabled" />
-        </div>
+        <template v-slot:activator="{ on, attrs }">
+            <div class="mirror-search" slot="activator">
+                <v-progress-circular
+                    v-if="searching"
+                    indeterminate
+                    :width="3"
+                    color="primary"
+                    class="mirror-progress"></v-progress-circular>
+                <img
+                    v-bind="attrs"
+                    v-on="on"
+                    :src="mirror.mirrorIcon"
+                    :class="'mirror-search-icon ' + (disabled ? 'disabled' : '')"
+                    @click.stop="disabled = !disabled" />
+            </div>
+        </template>
         <span v-if="disabled">{{ i18n("search_mirror_enable", mirror.mirrorName) }}</span>
         <span v-else>{{ i18n("search_mirror_disable", mirror.mirrorName) }}</span>
     </v-tooltip>
@@ -35,7 +39,9 @@ export default {
     methods: {
         i18n: (message, ...args) => i18n(message, ...args),
         async search() {
-            if (this.disabled || this.mirror.disabled) return
+            if (this.disabled || this.mirror.disabled) {
+                return
+            }
             this.searching = true
             const searchinit = this.searchPhrase
             const mgs = await browser.runtime.sendMessage({
@@ -80,6 +86,8 @@ export default {
     top: 8px;
     left: 8px;
     cursor: pointer;
+    border: 1px solid #aaaaaa;
+    border-radius: 4px;
 }
 .mirror-search-icon.disabled {
     opacity: 0.3;
