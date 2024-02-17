@@ -103,7 +103,7 @@
         <!-- Search dialog -->
         <v-dialog v-model="search" fullscreen transition="dialog-bottom-transition" hide-overlay scrollable>
             <v-card tile>
-                <v-toolbar app max-height="64">
+                <v-toolbar max-height="64">
                     <v-btn icon @click.native="closeSearch()">
                         <v-icon>mdi-close</v-icon>
                     </v-btn>

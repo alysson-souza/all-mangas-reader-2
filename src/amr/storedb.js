@@ -174,6 +174,7 @@ class StoreDB {
     /**
      * Get a list of manga stored from a mirror implementation
      * @param {*} mirror
+     * @return Promise<InfoResult[]>
      */
     getListOfMangaForMirror(mirror) {
         const store = this

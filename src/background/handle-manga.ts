@@ -7,6 +7,7 @@ import { AppLogger } from "../shared/AppLogger"
 import { MirrorLoader } from "../mirrors/MirrorLoader"
 import { OptionStorage } from "../shared/OptionStorage"
 import { NOT_HANDLED_MESSAGE } from "./background-util"
+import { AllActions, SearchListAction } from "../types/action"
 
 export class HandleManga {
     constructor(
@@ -16,7 +17,7 @@ export class HandleManga {
         private optionStorage: OptionStorage
     ) {}
 
-    async handle(message: { key: string; action: string; url: string; mirror?: string }, sender): Promise<unknown> {
+    async handle(message: AllActions, sender): Promise<unknown> {
         switch (message.action) {
             case "mangaExists": {
                 const key = this.getMangaKey(message)
@@ -94,7 +95,7 @@ export class HandleManga {
                 // updates all mangas lists (do it in background if called from popup because it requires jQuery)
                 return this.store.dispatch("updateChaptersLists") // update is forced by default (mangas are updated even if chapters has been found recently (less than a week ago) and the pause for a week option is checked) but is done manually by the user (this case is called from options page or for timers page)
             case "searchList":
-                return this.searchList(message)
+                return this.searchList(message as SearchListAction)
             case "getListChaps": {
                 const key = this.getMangaKey(message)
                 const mgch = this.store.state.mangas.all.find(mg => mg.key === key)
@@ -136,36 +137,33 @@ export class HandleManga {
 
     /**
      * Search mangas on a mirror from search phrase
-     * @param {*} message
      */
-    async searchList(message) {
-        return new Promise(async resolve => {
-            const impl = await this.mirrorLoader.getImpl(message.mirror)
-            // check if mirror can list all mangas
-            if (impl && impl.canListFullMangas) {
-                // check if mirror list is in local db and filter
-                const list = (await storedb.getListOfMangaForMirror(message.mirror)) as InfoResult[]
-                if (list && list.length > 0) {
-                    // filter entries on search phrase
-                    resolve(this.resultSearchFromArray(this.filterSearchList(list, message.search), message.mirror))
-                } else {
-                    // retrieve from website
-                    const mgs = await this.searchListRemote(message.search, impl)
-                    // store result
-                    storedb.storeListOfMangaForMirror(message.mirror, mgs)
-                    // return filtered results
-                    resolve(this.resultSearchFromArray(this.filterSearchList(mgs, message.search), message.mirror))
-                }
-            } else {
-                // let website search
-                resolve(this.resultSearchFromArray(await this.searchListRemote(message.search, impl), message.mirror))
-            }
-        })
+    async searchList(message: SearchListAction) {
+        const impl = await this.mirrorLoader.getImpl(message.mirror)
+        // check if mirror can list all mangas
+        if (!impl.canListFullMangas) {
+            // let website search
+            const list = await impl.getMangaList(message.search)
+            return this.resultSearchFromArray(list, message.mirror)
+        }
+
+        // check if mirror list is in local db and filter
+        const list = (await storedb.getListOfMangaForMirror(message.mirror)) as InfoResult[]
+        if (list && list.length > 0) {
+            // filter entries on search phrase
+            return this.resultSearchFromArray(this.filterSearchList(list, message.search), message.mirror)
+        }
+
+        // retrieve from website
+        const mangaList = await impl.getMangaList(message.search)
+
+        storedb.storeListOfMangaForMirror(message.mirror, mangaList).catch(e => this.logger.error(e))
+        return this.resultSearchFromArray(this.filterSearchList(mangaList, message.search), message.mirror)
     }
     /**
      * Convert array of array (standard result from implementation) in proper result
      */
-    resultSearchFromArray(list: InfoResult[], mirror: Mirror) {
+    resultSearchFromArray(list: InfoResult[], mirror: string) {
         return list.map(arr => ({ url: arr[1], name: arr[0], mirror: mirror }))
     }
     /**
@@ -173,12 +171,6 @@ export class HandleManga {
      */
     filterSearchList(list: InfoResult[], search: string) {
         return list.filter(arr => formatMangaName(arr[0]).indexOf(formatMangaName(search)) !== -1)
-    }
-    /**
-     * Call search function from remote website
-     */
-    async searchListRemote(search: string, impl: MirrorImplementation) {
-        return impl.getMangaList(search)
     }
     /**
      * wait for Cloudflare browser integrity check to be done

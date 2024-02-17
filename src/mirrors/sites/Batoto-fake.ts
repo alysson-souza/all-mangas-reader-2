@@ -1,6 +1,7 @@
 import { BaseMirror } from "./abstract/BaseMirror"
 import { MirrorImplementation } from "../../types/common"
 import { MirrorHelper } from "../MirrorHelper"
+import Icon from "../icons/batoto-optimized.png"
 
 export class BatotoFake extends BaseMirror implements MirrorImplementation {
     constructor(mirrorHelper: MirrorHelper) {
@@ -8,7 +9,7 @@ export class BatotoFake extends BaseMirror implements MirrorImplementation {
     }
 
     mirrorName = "Batoto (fake)"
-    mirrorIcon = "batoto.png"
+    mirrorIcon = Icon
     languages = "en"
     domains = ["bato.to", "batotoo.com", "comiko.net", "mto.to", "mangatoto.com", "dto.to"]
     home = "https://bato.to"
