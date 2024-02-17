@@ -61,7 +61,7 @@ const mangaHubRule: RuleInfo = {
         // applies only to requests from this extension
         initiatorDomains: [thisExtensionId],
         // for URLs that match the following filter
-        urlFilter: "|https://mangahub.io/*",
+        regexFilter: "https://mangahub.io/*|https://api.mghcdn.com/*",
         // and only for our fetch requests
         resourceTypes: ["xmlhttprequest" as const]
     }
