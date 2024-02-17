@@ -36,12 +36,19 @@ class ReadManga extends BaseMirror implements MirrorImplementation {
         }
     }
 
+    private getCurrentOrigin(url?: string): string {
+        if (!url) {
+            return this.options.base_url
+        }
+        return new URL(url).origin
+    }
+
     public async getCurrentPageInfo(doc: string, curUrl: string): Promise<CurrentPageInfo> {
         const $ = this.parseHtml(doc)
         const content = $("#mangaBox h1 a:first-child").contents()[0]
         const name = $(content).text()
-        const nameurl = this.options.base_url + $("#mangaBox h1 a:first-child", doc).attr("href")
-        const chapurl = curUrl.split("?")[0] + "?mtr=1"
+        const nameurl = this.getCurrentOrigin(curUrl) + $("#mangaBox h1 a:first-child", doc).attr("href")
+        const chapurl = curUrl.split("?")[0] + "?mtr=true"
         return {
             name: name,
             currentMangaURL: nameurl,
@@ -54,7 +61,7 @@ class ReadManga extends BaseMirror implements MirrorImplementation {
     }
 
     public async getListChaps(urlManga: string): Promise<InfoResult[] | Record<string, InfoResult[]>> {
-        const doc = await this.mirrorHelper.loadPage(`${urlManga}?mtr=1`, { nocache: true, preventimages: true })
+        const doc = await this.mirrorHelper.loadPage(`${urlManga}?mtr=true`, { nocache: true, preventimages: true })
         const mangaIdFromUrl = urlManga.split("/").pop()
         const res = []
         const self = this
@@ -74,7 +81,7 @@ class ReadManga extends BaseMirror implements MirrorImplementation {
                     nameParts.pop()
                 }
                 const chapterName = nameParts[nameParts.length - 1]
-                res[res.length] = [chapterName, self.options.base_url + elements.attr("href")]
+                res[res.length] = [chapterName, self.getCurrentOrigin(urlManga) + elements.attr("href")]
             }
         })
         return res
@@ -102,7 +109,7 @@ class ReadManga extends BaseMirror implements MirrorImplementation {
     }
 
     public async getMangaList(search?: string): Promise<InfoResult[]> {
-        const json = await this.mirrorHelper.loadJson(`${this.options.base_url}search/suggestion`, {
+        const json = await this.mirrorHelper.loadJson(`${this.getCurrentOrigin()}/search/suggestion`, {
             nocache: true,
             method: "GET",
             // dataType: "text",
@@ -113,7 +120,7 @@ class ReadManga extends BaseMirror implements MirrorImplementation {
         const res = []
         for (const sug of json.suggestions) {
             if (!sug.link.includes("/", 1)) {
-                res[res.length] = [sug.value, this.options.base_url + sug.link]
+                res[res.length] = [sug.value, this.getCurrentOrigin() + sug.link]
             }
         }
         return res
@@ -124,8 +131,8 @@ class ReadManga extends BaseMirror implements MirrorImplementation {
     }
 
     private async passAdult(doc: string, curUrl: string) {
-        if (this.queryHtml(doc, "a[href$='?mtr=1']").length > 0) {
-            doc = await this.mirrorHelper.loadPage(curUrl + "?mtr=1")
+        if (this.queryHtml(doc, "a[href$='?mtr=true']").length > 0) {
+            doc = await this.mirrorHelper.loadPage(curUrl + "?mtr=true")
         }
         return doc
     }
@@ -144,9 +151,7 @@ export const getReadMangaMirrors = (mirrorHelper: MirrorHelper): MirrorImplement
                 canListFullMangas: false,
                 chapter_url: /^\/.*\/vol.*\/[0-9]+.*$/g
             },
-            {
-                base_url: "https://readmanga.live"
-            }
+            {}
         ),
         new ReadManga(
             mirrorHelper,
@@ -159,9 +164,7 @@ export const getReadMangaMirrors = (mirrorHelper: MirrorHelper): MirrorImplement
                 canListFullMangas: false,
                 chapter_url: /^\/.*\/vol.*\/[0-9]+.*$/g
             },
-            {
-                base_url: "https://24.mintmanga.one"
-            }
+            {}
         )
     ]
 }
