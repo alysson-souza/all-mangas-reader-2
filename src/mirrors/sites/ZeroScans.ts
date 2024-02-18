@@ -12,9 +12,9 @@ export class ZeroScans extends BaseMirror implements MirrorImplementation {
     canListFullMangas = true
     mirrorIcon = ZeroScansIcon
     languages = "en"
-    domains = ["zeroscans.com"]
-    home = "https://zeroscans.com/"
-    apiUrl = "https://zeroscans.com/swordflake/"
+    domains = ["zscans.com", "zeroscans.com"]
+    home = "https://zscans.com/"
+    apiUrl = "https://zscans.com/swordflake/"
     chapter_url = /^\/comics\/.+\/\d/g
 
     async getMangaList(search: string) {
