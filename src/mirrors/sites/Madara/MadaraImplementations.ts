@@ -806,8 +806,8 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
                 mirrorName: "Reset Scans",
                 mirrorIcon: ResetScansIcon,
                 languages: "en",
-                domains: ["reset-scans.com", "reset-scans.us"],
-                home: "https://reset-scans.us/",
+                domains: ["reset-scans.com", "reset-scans.us", "reset-scans.xyz"],
+                home: "https://reset-scans.xyz/",
                 chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series|devmax)\/.*\/.+$/g,
                 canListFullMangas: false
             },
