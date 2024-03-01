@@ -396,13 +396,13 @@ export const getMangaStreamImplementations = (mirrorHelper: MirrorHelper): Mirro
                 mirrorName: "Void Scans",
                 mirrorIcon: VoidScanIcon,
                 languages: "en",
-                domains: ["void-scans.com"],
-                home: "https://void-scans.com/",
+                domains: ["void-scans.com", "hivescans.com"],
+                home: "https://hivescans.com/",
                 chapter_url: /^\/.+chapter-\d+/g,
                 canListFullMangas: false
             },
             {
-                search_url: "https://void-scans.com",
+                search_url: "https://hivescans.com/",
                 chapters_a_sel: "div.bixbox.bxcl ul li a",
                 chapters_text_sel: "span.chapternum",
                 // img_src: "data-lazy-src",
