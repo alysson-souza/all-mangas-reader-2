@@ -13,6 +13,7 @@ import KomikuIcon from "../../icons/komiku-optimized.png"
 import NgomikIcon from "../../icons/ngomik-optimized.png"
 import VoidScanIcon from "../../icons/voidscans-optimized.png"
 import WestMangaIcon from "../../icons/westmanga-optimized.png"
+import ReaperScansFake from "../../icons/reaperscans-optimized.png"
 
 const defaultOptions = {
     search_a_sel: "div.bsx > a",
@@ -431,6 +432,24 @@ export const getMangaStreamImplementations = (mirrorHelper: MirrorHelper): Mirro
                 search_option: "&post_type=manga",
                 manga_title_attr: false,
                 chapters_a_sel: "div.cl > ul > li > span.leftoff > a",
+                search_json: false
+            }
+        ),
+        new MangaStream(
+            mirrorHelper,
+            {
+                mirrorName: "Reaper Scans (Fake)",
+                canListFullMangas: false,
+                mirrorIcon: ReaperScansFake,
+                domains: ["reaper-scans.com"],
+                home: "https://reaper-scans.com",
+                chapter_url: /\/.*?chapter-[0-9]+.*\//g,
+                languages: "en"
+            },
+            {
+                search_url: "reaper-scans.com",
+                chapters_a_sel: "div.bixbox.bxcl ul li a",
+                chapters_text_sel: "span.chapternum",
                 search_json: false
             }
         )
