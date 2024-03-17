@@ -1,8 +1,8 @@
 import browser from "webextension-polyfill"
 import { isFirefox, THINSCAN } from "./Options"
-import type { Category } from "../types/common"
+import type { Category, LastSync } from "../types/common"
 
-const jsonOptions = ["categoriesStates", "readlanguages"]
+const jsonOptions = ["categoriesStates", "readlanguages", "lastSync"]
 const stringOptions = [
     "colornew",
     "colorread",
@@ -22,6 +22,7 @@ const stringOptions = [
 type NumberOption = 0 | 1
 
 // Need to return new option, otherwise vuex will modify this into observers
+// Note: This is the default options for the extension, cannot use undefined as it will be ignored when fetching from store
 export const getDefaultOptions = () => {
     return {
         debug: 1, // display debug traces in content script, background, popup, ...
@@ -90,6 +91,9 @@ export const getDefaultOptions = () => {
         gistSyncEnabled: 0 as NumberOption,
         gistSyncSecret: "" as string,
         gistSyncGitID: "" as string,
+
+        lastSync: null as LastSync | null,
+        lastSyncErrorNotificationTs: 0 as number,
 
         /** Debug options */
         gistDebugEnabled: 0 as NumberOption,

@@ -13,8 +13,10 @@ import { getNetRulesForMirrors } from "./mirrors/MirrorNetRequestRules"
 import { AmrUpdater } from "./pages/amr-updater"
 import { getIconHelper } from "./amr/icon-helper"
 import { host_permissions } from "./constants/required_permissions"
-import { getNotifications } from "./amr/notifications"
+import { getNotificationManager } from "./amr/notifications"
 import { Alarm, PeriodAlarms } from "./shared/AlarmService"
+import { getSyncManager } from "./amr/sync/sync-manager"
+import { getSyncOptions } from "./shared/Options"
 
 const optionsStorage = new OptionStorage()
 const iconHelper = getIconHelper(store)
@@ -23,9 +25,9 @@ const amrInit = new AmrInit(store, storedb, optionsStorage, logger)
 const amrUpdater = new AmrUpdater(store, optionsStorage, logger)
 const mirrorHelper = getMirrorHelper(store.state.options)
 const mirrorLoader = getMirrorLoader(mirrorHelper)
+const notifications = getNotificationManager(store)
 const handler = new Handler(store, logger, optionsStorage, mirrorLoader, iconHelper)
 const handleManga = handler.getHandleManga()
-const notifications = getNotifications(store)
 
 const init = async () => {
     const options = await optionsStorage.getVueOptions()
@@ -34,6 +36,8 @@ const init = async () => {
 
     logger.setConfig(options)
     mirrorHelper.setOptions(options)
+
+    const syncManager = getSyncManager(getSyncOptions(options), store.state, store.dispatch, notifications)
 
     /**
      * Initialize extension versioning --> after options because versioning update can affect options
@@ -72,7 +76,7 @@ const init = async () => {
      * Start sync process between local and remote storage
      */
     await store.dispatch("setMangaTsOpts")
-    await store.dispatch("initSync")
+    await syncManager.start()
     /**
      * Initialize bookmarks list in store from DB
      */

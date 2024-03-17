@@ -363,6 +363,44 @@
                                 v-model="gistSyncGitID"
                                 @change="setOption('gistSyncGitID')"
                                 :label="i18n('option_sync_gist_gitID')"></v-text-field>
+                            <v-alert
+                                dense
+                                v-if="lastSync"
+                                :color="lastSync.status === 'error' ? 'red' : 'green'"
+                                icon="mdi-information"
+                                text
+                                elevation="1">
+                                <div>
+                                    <h2>Last Sync</h2>
+                                    <div>
+                                        <div class="mb-2">
+                                            Provider <strong>"{{ lastSync.provider }}"</strong>
+                                        </div>
+                                        <div v-if="lastSync.errorDetails">
+                                            <div class="mb-2">
+                                                <h3>Error Details</h3>
+                                                <span>{{ lastSync.errorDetails.type }}</span>
+                                                <br />
+                                                <span>Reason: {{ lastSync.errorDetails.message }}</span>
+                                                <br />
+                                                <v-tooltip bottom>
+                                                    <template v-slot:activator="{ on }">
+                                                        <span v-on="on">{{ lastTimeISO(lastSync.date) }} ago</span>
+                                                    </template>
+                                                    {{ lastSync.date }}
+                                                </v-tooltip>
+                                            </div>
+                                            <div
+                                                v-if="
+                                                    lastSync.errorDetails.context &&
+                                                    lastSync.errorDetails.context.retryAfter
+                                                ">
+                                                Can retry in {{ inTimeISO(lastSync.errorDetails.context.retryAfter) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </v-alert>
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                     <v-expansion-panel>
@@ -765,7 +803,7 @@ import i18n from "../../amr/i18n"
 import browser from "webextension-polyfill"
 import Flag from "./Flag"
 import Mangadex from "./Options.Mangadex.vue"
-import { computeColorLight } from "../../shared/utils"
+import { computeColorLight, lastTime } from "../../shared/utils"
 import { THINSCAN } from "../../shared/Options"
 import { amrLanguages } from "../../constants/language"
 import { IconHelper } from "../../amr/icon-helper"
@@ -1017,6 +1055,12 @@ export default {
         }
     },
     methods: {
+        lastTimeISO: isoDate => {
+            return lastTime(Date.now() - new Date(isoDate).getTime())
+        },
+        inTimeISO: isoDate => {
+            return lastTime(new Date(isoDate).getTime() - Date.now())
+        },
         i18n: (message, ...args) => i18n(message, ...args),
         /**
          * Set an option value

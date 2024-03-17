@@ -130,6 +130,14 @@ const actions = {
     removeReadLanguage({ commit, state }, lang) {
         commit("removeReadLanguage", lang)
         optionStorage.setKey("readlanguages", state.readlanguages)
+    },
+    /**
+     * @param commit
+     * @param {LastSync} lastSYnc
+     */
+    lastSync({ commit }, lastSYnc) {
+        commit("lastSync", lastSYnc)
+        optionStorage.setKey("lastSync", JSON.stringify(lastSYnc))
     }
 }
 
@@ -250,6 +258,14 @@ const mutations = {
     removeReadLanguage(state, lang) {
         const index = state.readlanguages.indexOf(lang)
         if (index >= 0) state.readlanguages.splice(index, 1)
+    },
+    /**
+     * Set last sync date
+     * @param {*} state
+     * @param {*} lastSync
+     */
+    lastSync(state, lastSync) {
+        state.lastSync = lastSync
     }
 }
 
