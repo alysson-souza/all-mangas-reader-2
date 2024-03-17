@@ -4,6 +4,7 @@ import BrowserStorage from "../storage/browser-storage"
 import { createLocalStorage } from "../storage/local-storage"
 import * as syncUtils from "./utils"
 import { getAppLogger } from "../../shared/AppLogger"
+import { SyncTracker } from "./SyncTracker"
 
 const remoteStorages = {
     GistStorage,
@@ -17,13 +18,18 @@ const defaultConfig = {
 }
 
 class SyncManager {
-    constructor(logger) {
+    /**
+     * @param logger
+     * @param {SyncTracker} syncTracker
+     */
+    constructor(logger, syncTracker) {
         this.logger = logger
         /**
          * remoteStorages
          * @type {(Storage)[]}
          */
         this.remoteStorages = []
+        this.syncTracker = syncTracker
     }
 
     init(config, vuexStore, dispatch) {
@@ -125,10 +131,11 @@ class SyncManager {
                 this.logger.debug(res)
             })
             .catch(e => {
+                this.syncTracker.triggerLastSyncError(e)
                 if (e instanceof ThrottleError) {
                     storage.retryDate = e.getRetryAfterDate()
                 } else if (e instanceof Error) {
-                    this.logger.debug(`[SYNC-${name}] ${e.message}`)
+                    this.logger.error(`[SYNC-${name}] ${e.message}`)
                 }
             })
             .finally(() => {
@@ -175,6 +182,7 @@ class SyncManager {
                 storage.set(upgradedRemote)
             } else {
                 await storage.saveAll(upgradedRemote).catch(e => {
+                    this.syncTracker.triggerLastSyncError(e)
                     if (e instanceof ThrottleError) {
                         storage.retryDate = e.getRetryAfterDate()
                         const later = storage.retryDate.getTime() - Date.now() + 2000
@@ -182,7 +190,7 @@ class SyncManager {
                             this.tsOpts()
                         }, later)
                     } else if (e instanceof Error) {
-                        this.logger.debug(`[SYNC-${storage.constructor.name.replace("Storage", "")}] ${e.message}`)
+                        this.logger.error(`[SYNC-${storage.constructor.name.replace("Storage", "")}] ${e.message}`)
                     }
                 })
             }
@@ -342,6 +350,7 @@ class SyncManager {
                     deleted: syncUtils.DELETED
                 })
                 .catch(e => {
+                    this.syncTracker.triggerLastSyncError(e)
                     if (e instanceof ThrottleError) {
                         storage.retryDate = e.getRetryAfterDate()
                         const later = storage.retryDate.getTime() - Date.now() + 2000
@@ -417,6 +426,7 @@ class SyncManager {
             storage.set(remoteManga)
         } else {
             await storage.saveAll(remoteList).catch(e => {
+                this.syncTracker.triggerLastSyncError(e)
                 if (e instanceof ThrottleError) {
                     storage.retryDate = e.getRetryAfterDate()
                     const later = storage.retryDate.getTime() - Date.now() + 2000
@@ -451,6 +461,7 @@ class SyncManager {
                 .concat(payload.map(p => p.newManga))
 
             storage.saveAll(updated).catch(e => {
+                this.syncTracker.triggerLastSyncError(e)
                 if (e instanceof ThrottleError) {
                     storage.retryDate = e.getRetryAfterDate()
                     const later = storage.retryDate.getTime() - Date.now() + 2000
@@ -467,14 +478,20 @@ class SyncManager {
 
 let instance
 /**
- *
+ * @TODO this should be only handled in background alone and interacted through
+ * sending background messages, not part of any vuex store methods.
+ * VUE App -> browser.runtime.sendMessage -> Background -> Handler -> SyncManager
  * @param {*} config
  * @param {*} vuexStore
+ * @param {*} dispatch
+ * @param {*} notificationManager only injected in background, until refactoring is done
  * @returns {SyncManager}
  */
-export const getSyncManager = (config, vuexStore, dispatch) => {
+export const getSyncManager = (config, vuexStore, dispatch, notificationManager = undefined) => {
     if (!instance) {
-        instance = new SyncManager(getAppLogger(vuexStore.options))
+        const appLogger = getAppLogger(vuexStore.options)
+        const syncTracker = new SyncTracker(appLogger, vuexStore.options, dispatch, notificationManager)
+        instance = new SyncManager(appLogger, syncTracker)
     }
     if (config && vuexStore) {
         return instance.init(config, vuexStore, dispatch)

@@ -1,12 +1,12 @@
 import browser from "webextension-polyfill"
 import i18n from "./i18n"
-import { AppManga, AppStore } from "../types/common"
+import { AppManga, AppStore, NotificationCreate } from "../types/common"
 import { findNextChapter } from "../shared/utils"
 
 /**
  * Manage browser notifications
  */
-class Notification {
+export class NotificationManager {
     // store current opened notifications
     private notifications = {}
     // last id of notification
@@ -28,6 +28,22 @@ class Notification {
         if (this.notifications[id] !== undefined) {
             delete this.notifications[id]
         }
+    }
+
+    public async triggerNotification(notification: NotificationCreate): Promise<string | undefined> {
+        return browser.notifications
+            .create({
+                type: "basic",
+                title: notification.title,
+                message: notification.message,
+                contextMessage: notification.contextMessage,
+                iconUrl: browser.runtime.getURL("/icons/icon_32.png"),
+                isClickable: notification.isClickable
+            })
+            .catch(e => {
+                console.error(new Error(`Failed to create notification`, { cause: e }))
+                return undefined
+            })
     }
 
     /**
@@ -80,10 +96,10 @@ class Notification {
     }
 }
 
-let instance: Notification
-export const getNotifications = (store: AppStore) => {
+let instance: NotificationManager
+export const getNotificationManager = (store: AppStore) => {
     if (!instance) {
-        instance = new Notification(store)
+        instance = new NotificationManager(store)
     }
     return instance
 }

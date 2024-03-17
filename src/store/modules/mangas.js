@@ -1,7 +1,7 @@
 import Vue from "vue"
 import storedb from "../../amr/storedb"
 import Manga, { MANGA_READ_STOP, MANGA_UPDATE_STOP } from "../../amr/manga"
-import { getNotifications } from "../../amr/notifications"
+import { getNotificationManager } from "../../amr/notifications"
 import samples from "../../amr/samples"
 import * as syncUtils from "../../amr/sync/utils"
 import { getSyncManager } from "../../amr/sync/sync-manager"
@@ -22,6 +22,7 @@ import { getIconHelper } from "../../amr/icon-helper"
 import { mdFixLang, mdFixLangKey, mdFixLangsListPrefix } from "../../shared/mangaDexUtil"
 import { Alarm, clearAlarm, createAlarm } from "../../shared/AlarmService"
 import { shouldDelayUpdate } from "../../shared/chapterUpdaterUtil"
+import { getSyncOptions } from "../../shared/Options"
 
 let syncManager
 // @TODO replace with actual error
@@ -91,12 +92,7 @@ const getters = {
     },
 
     syncOptions: (state, getters, rootState) => {
-        return Object.keys(rootState.options)
-            .filter(x => x.toLowerCase().indexOf("sync") > -1)
-            .reduce((obj, key) => {
-                obj[key] = rootState.options[key]
-                return obj
-            }, {})
+        return getSyncOptions(rootState.options)
     },
 
     allOptions: rootState => {
@@ -668,7 +664,7 @@ const actions = {
 
         if (newLastChap !== oldLastChap && oldLastChap !== undefined) {
             if (!fromSync && !message.isSync) {
-                getNotifications({ state: rootState }).notifyNewChapter(mg)
+                getNotificationManager({ state: rootState }).notifyNewChapter(mg)
             }
             commit("updateMangaLastChapTime", { key: mg.key })
         }

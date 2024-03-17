@@ -1,5 +1,6 @@
 import { Store } from "vuex"
 import type { AppOptions } from "../shared/OptionStorage"
+import { Notifications } from "webextension-polyfill"
 
 export interface RootState {
     options: AppOptions
@@ -147,3 +148,31 @@ export interface MirrorImplementation extends MirrorObject {
 
     getChapterTitle?: (doc: string, curUrl: string) => Promise<string>
 }
+
+/// SYNC related types
+interface BaseLastSync {
+    provider: "gist"
+    /** ISO 8601 date string **/
+    date: string
+    status: "success" | "error"
+}
+
+export interface LastSyncSuccess extends BaseLastSync {
+    status: "success"
+}
+
+export interface LastSyncError extends BaseLastSync {
+    status: "error"
+    errorDetails: {
+        type: "rate-limit" | "api" | "unknown"
+        message: string
+        context?: Record<string, unknown>
+    }
+}
+
+export type LastSync = LastSyncSuccess | LastSyncError
+
+export type NotificationCreate = Pick<
+    Notifications.CreateNotificationOptions,
+    "title" | "message" | "contextMessage" | "isClickable"
+>
