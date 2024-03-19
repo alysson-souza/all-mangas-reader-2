@@ -165,6 +165,19 @@ export const getReadMangaMirrors = (mirrorHelper: MirrorHelper): MirrorImplement
                 chapter_url: /^\/.*\/vol.*\/[0-9]+.*$/g
             },
             {}
+        ),
+        new ReadManga(
+            mirrorHelper,
+            {
+                mirrorName: "SeiManga",
+                mirrorIcon: require("../../icons/seimanga-optimized.png"),
+                languages: "ru",
+                domains: ["seimanga.me"],
+                home: "https://seimanga.me",
+                canListFullMangas: false,
+                chapter_url: /^\/.*\/vol.*\/[0-9]+.*$/g
+            },
+            {}
         )
     ]
 }
