@@ -76,7 +76,8 @@ const init = async () => {
      * Start sync process between local and remote storage
      */
     await store.dispatch("setMangaTsOpts")
-    await syncManager.start()
+    await syncManager.start().catch(e => logger.error(new Error(`Failed to start sync manager`, { cause: e })))
+
     /**
      * Initialize bookmarks list in store from DB
      */
