@@ -30,7 +30,7 @@ export function extractImages(doc: string): string[] {
         const runArg = multiLinePart[1]
 
         // "sources": (anything-here) ],
-        const imageSources = /"sources": \[([\s\S]*?)],/g.exec(runArg)
+        const imageSources = /"sources": ?\[([\s\S]*?)],/g.exec(runArg)
 
         const firstSource = JSON.parse(imageSources[1])
 
