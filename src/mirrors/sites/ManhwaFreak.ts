@@ -2,6 +2,7 @@ import { BaseMirror } from "./abstract/BaseMirror"
 import { MirrorImplementation } from "../../types/common"
 import { MirrorHelper } from "../MirrorHelper"
 import ManhwaFreakIcon from "../icons/manhwa-freak-optimized.png"
+import { extractImages } from "../tsReader"
 
 export class ManhwaFreak extends BaseMirror implements MirrorImplementation {
     constructor(amrLoader: MirrorHelper) {
@@ -12,8 +13,8 @@ export class ManhwaFreak extends BaseMirror implements MirrorImplementation {
     canListFullMangas = true
     mirrorIcon = ManhwaFreakIcon
     languages = "en"
-    domains = ["manhwa-freak.com", "manhwafreak.com"]
-    home = "https://manhwa-freak.com"
+    domains = ["manhwa-freak.com", "manhwafreak.com", "manhwa-freak.org"]
+    home = "https://manhwa-freak.org/"
     chapter_url = /\/.*?ch-[0-9]+.*\//g
     // regex for removing changing part from chapter URLs
     tidyChapterUrlRegex = /(.*ch-[0-9]+(?:-[0-9]+)*?)(\-\w{5,}){0,1}(\/.*)/
@@ -60,19 +61,8 @@ export class ManhwaFreak extends BaseMirror implements MirrorImplementation {
     }
 
     async getListImages(doc, curUrl, sender) {
-        const res = []
-        const regex = /ts_reader\.run\((.*?)\);/g
-        const parts = doc.match(regex)
-
-        const json = JSON.parse(parts[0].replace("ts_reader.run(", "").replace(");", ""))
-
-        json.sources.forEach(source => {
-            source.images.forEach(image => {
-                res.push(image)
-            })
-        })
-
-        return res
+        const images = extractImages(doc)
+        return Array.isArray(images) && images.length ? images : []
     }
 
     isCurrentPageAChapterPage(doc, curUrl) {

@@ -138,8 +138,8 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
                 mirrorName: "Luminous Scans",
                 canListFullMangas: false,
                 mirrorIcon: LiminousScanIcon,
-                domains: ["luminousscans.gg", "luminousscans.net", "lumitoon.com"],
-                home: "https://lumitoon.com/",
+                domains: ["luminousscans.gg", "luminousscans.net", "lumitoon.com", "luminouscomics.org"],
+                home: "https://luminouscomics.org/",
                 chapter_url: /chapter-[0-9]+.*\/$/g,
                 languages: "en"
             },
@@ -252,15 +252,15 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
                 mirrorName: "Rizz Comic",
                 canListFullMangas: false,
                 mirrorIcon: require("../../icons/rizz-comic-optimized.png"),
-                domains: ["rizzcomic.com"],
-                home: "https://rizzcomic.com",
+                domains: ["rizzcomic.com", "rizzfables.com"],
+                home: "https://rizzfables.com",
                 chapter_url: /chapter-[0-9]/g,
                 languages: "en"
             },
             {
                 // search_url: "https://realmscans.xyz/",
                 // series_list_selector: '.listupd a[href*="/series/"]',
-                chapter_list_selector: `.eph-num a[href*="rizzcomic.com"]`
+                chapter_list_selector: `.eph-num a[href*="rizzfables.com"]`
             }
         ),
         new MangaStream_1_1_4(

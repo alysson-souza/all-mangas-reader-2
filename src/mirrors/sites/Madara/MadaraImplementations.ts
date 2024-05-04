@@ -265,13 +265,13 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
                 mirrorName: "Immortal Updates",
                 mirrorIcon: ImmortalupdatesIcon,
                 languages: "en",
-                domains: ["immortalupdates.com"],
-                home: "https://immortalupdates.com/",
+                domains: ["immortalupdates.com", "mortalsgroove.com"],
+                home: "https://mortalsgroove.com/",
                 canListFullMangas: false,
                 chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g
             },
             {
-                search_url: "https://immortalupdates.com/",
+                search_url: "https://mortalsgroove.com/",
                 chapter_list_ajax: true,
                 isekai_chapter_url: true
             }
@@ -441,13 +441,13 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
                 mirrorName: "Manga Clash",
                 mirrorIcon: MangaClashIcon,
                 languages: "en",
-                domains: ["mangaclash.com"],
-                home: "https://mangaclash.com/",
+                domains: ["mangaclash.com", "toonclash.com"],
+                home: "https://toonclash.com/",
                 chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series|devmax)\/.*\/.+$/g,
                 canListFullMangas: false
             },
             {
-                search_url: "https://mangaclash.com/"
+                search_url: "https://toonclash.com/"
                 // chapters_a_sel: "li.wp-manga-chapter .li__text a",
                 // chapter_list_ajax: true,
                 // isekai_chapter_url: true,
@@ -906,13 +906,14 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
                 mirrorName: "Top Manhua",
                 mirrorIcon: TopManhuaIcon,
                 languages: "en",
-                domains: ["topmanhua.com"],
-                home: "https://www.topmanhua.com/",
+                domains: ["topmanhua.com", "manhuatop.org"],
+                home: "https://manhuatop.org/",
                 chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
                 canListFullMangas: false
             },
             {
-                search_url: "https://www.topmanhua.com/"
+                search_url: "https://manhuatop.org/",
+                img_src: "data-src"
             }
         ),
         new Madara(
