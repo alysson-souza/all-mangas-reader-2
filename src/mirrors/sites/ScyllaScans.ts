@@ -9,14 +9,14 @@ export class ScyllaScans extends BaseMirror implements MirrorImplementation {
     }
 
     mirrorName = "Scylla Scans"
-    canListFullMangas = true
+    canListFullMangas = false
     mirrorIcon = ScyllaScansIcon
     languages = "en"
     domains = ["scyllascans.org", "scyllacomics.xyz"]
     home = "https://scyllacomics.xyz/"
     chapter_url = /^\/(manhwa|comic|manga|webtoon|manhua|series|read)\/.*\/.+$/
 
-    private async getMangaListFromPage(search: string, page: number | string, res: InfoResult[] = []) {
+    async getMangaListFromPage(search: string, page: number | string, res: InfoResult[] = []) {
         const searchParams = new URLSearchParams()
         searchParams.set("title", search)
         if (page) {
@@ -39,7 +39,7 @@ export class ScyllaScans extends BaseMirror implements MirrorImplementation {
         const s = nextPageLink.attr("onclick")
         const nextPage = s.match(/page=(\d+)/)[1]
         if (Number(nextPage) > 1) {
-            return this.getMangaListFromPage(urlManga, nextPage, res)
+            return this.getMangaListFromPage(search, nextPage, res)
         }
 
         return res
