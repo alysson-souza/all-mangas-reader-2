@@ -1,5 +1,5 @@
 import { BaseMirror } from "./abstract/BaseMirror"
-import { MirrorImplementation } from "../../types/common"
+import { InfoResult, MirrorImplementation } from "../../types/common"
 import { MirrorHelper } from "../MirrorHelper"
 import ScyllaScansIcon from "../icons/serimanga-optimized.png"
 
@@ -12,133 +12,74 @@ export class ScyllaScans extends BaseMirror implements MirrorImplementation {
     canListFullMangas = true
     mirrorIcon = ScyllaScansIcon
     languages = "en"
-    domains = ["scyllascans.org"]
-    home = "https://scyllascans.org/"
-    apiUrl = "https://api.scyllascans.org/"
-    chapter_url = /\/(read).*/g
+    domains = ["scyllascans.org", "scyllacomics.xyz"]
+    home = "https://scyllacomics.xyz/"
+    chapter_url = /^\/(manhwa|comic|manga|webtoon|manhua|series|read)\/.*\/.+$/
 
-    async fetchGraphQl(query, variables) {
-        const { data } = await fetch(this.apiUrl, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                query,
-                variables
-            })
-        }).then(res => res.json())
+    private async getMangaListFromPage(search: string, page: number | string, res: InfoResult[] = []) {
+        const searchParams = new URLSearchParams()
+        searchParams.set("title", search)
+        if (page) {
+            searchParams.set("page", String(page))
+        }
+        const urlManga = this.home + "manga?" + searchParams.toString()
+        const doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
 
-        return data
+        const $ = this.parseHtml(doc)
+        $("main #card-real a").each(function () {
+            res.push([$("h2", this).first().text(), $(this).attr("href")])
+        })
+
+        const nextPageLink = $(".pagination .pagination-link").last()
+        if (nextPageLink.length <= 0 || nextPageLink.hasClass("pagination-disabled")) {
+            return res
+        }
+
+        // onclick="window.location.href='http://scyllacomics.xyz/manga?page=2'"
+        const s = nextPageLink.attr("onclick")
+        const nextPage = s.match(/page=(\d+)/)[1]
+        if (Number(nextPage) > 1) {
+            return this.getMangaListFromPage(urlManga, nextPage, res)
+        }
+
+        return res
     }
 
     async getMangaList(search: string) {
-        const query = `
-            query works($orderBy: String, $sortBy: String, $first: Int, $offset: Int, $languages: [Int], $showHidden: Boolean) {
-                works(orderBy: $orderBy, sortBy: $sortBy, first: $first, offset: $offset, languages: $languages, showHidden: $showHidden) {
-                name
-                language_name
-                stub
-                }
-            }
-            `
-
-        const { works } = await this.fetchGraphQl(query, {
-            orderBy: "asc",
-            sortBy: "id",
-            first: 1000,
-            offset: 0,
-            languages: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-            showHidden: true
-        })
-
-        return works.map(({ name, language_name, stub }) => {
-            return [name, "https://scyllascans.org/work/" + language_name + "/" + stub]
-        })
+        return this.getMangaListFromPage(search, 0, [])
     }
 
-    async getListChaps(url) {
-        const query = `
-            query chaptersByWork($workStub: String, $languages: [Int], $showHidden: Boolean) {
-                chaptersByWork(workStub: $workStub, languages: $languages, showHidden: $showHidden) {
-                    chapter
-                    subchapter
-                    read_path
-                }
-            }
-        `
-        const { chaptersByWork } = await this.fetchGraphQl(query, {
-            workStub: url.match(/([^\/]*)$/)[0],
-            languages: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-            showHidden: true
+    async getListChaps(urlManga: string) {
+        const doc = await this.mirrorHelper.loadPage(urlManga, { nocache: true, preventimages: true })
+        const res = []
+        const $ = this.parseHtml(doc)
+        $("#chapters-list > a").each(function () {
+            res.push([$("span", this).first().text(), $(this).attr("href")])
         })
-
-        return chaptersByWork.map(({ chapter, subchapter, read_path }) => {
-            if (subchapter != 0) chapter = chapter + "." + subchapter
-            return [chapter, this.home.replace(/\/$/, "") + read_path]
-        })
-    }
-
-    getChapterInfo(curUrl: String) {
-        const dataFromUrl = curUrl.match(/(?<=read\/)(.*)/)[0].split("/")
-        const [workStub, language, volume] = dataFromUrl
-        const [chapter, subChapter] = dataFromUrl[3].split(".")
-        const langIdentifiers = {
-            en: 2
-        }
-
-        return {
-            workStub,
-            languageId: langIdentifiers[language],
-            language: language,
-            chapter: parseInt(chapter),
-            volume: parseInt(volume),
-            subChapter: parseInt(subChapter)
-        }
+        return res
     }
 
     async getCurrentPageInfo(doc, curUrl) {
-        const { workStub, language } = this.getChapterInfo(curUrl)
-
         const $ = this.parseHtml(doc)
-
         return {
-            name: $('a[class*="ReaderControlsWork"]').attr("title"),
-            currentMangaURL: this.home + "work/" + language + "/" + workStub,
+            name: $("main > section h3 a").first().text(),
+            currentMangaURL: $("main > section > span > a").attr("href"),
             currentChapterURL: curUrl
         }
     }
 
     async getListImages(doc, curUrl, sender) {
-        const query = `
-            query chapterByWorkAndChapter($workStub: String, $language: Int, $volume: Int, $chapter: Int, $subChapter: Int, $showHidden: Boolean) {
-                chapterByWorkAndChapter(workStub: $workStub, language: $language, volume: $volume, chapter: $chapter, subchapter: $subChapter, showHidden: $showHidden) {
-                    uniqid
-                    work {
-                        uniqid
-                    }
-                pages {
-                        filename
-                    }
-                }
-            }
-        `
-
-        const { languageId, workStub, chapter, subChapter, volume } = this.getChapterInfo(curUrl)
-        const { chapterByWorkAndChapter: cha } = await this.fetchGraphQl(query, {
-            workStub,
-            language: languageId,
-            chapter,
-            subChapter,
-            volume,
-            showHidden: true
+        const $ = this.parseHtml(doc)
+        const res = []
+        $("#chapter-container img").each(function () {
+            res.push($(this).attr("data-src"))
         })
-        const startUrl = `${this.apiUrl}/works/${cha.work.uniqid}/${cha.uniqid}`
-        return cha.pages.map(page => `${startUrl}/${page.filename}?strip=all&quality=100`)
+        return res
     }
 
     isCurrentPageAChapterPage(doc, curUrl) {
-        return this.chapter_url.test(new URL(curUrl).pathname)
+        const pathname = new URL(curUrl).pathname
+        return this.chapter_url.test(pathname)
     }
 
     async getImageUrlFromPage(urlImage: string): Promise<string> {

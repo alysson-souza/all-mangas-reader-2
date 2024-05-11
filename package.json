@@ -7,7 +7,7 @@
         "**/*": "prettier --write --ignore-unknown"
     },
     "engines": {
-        "node": ">= 18.0.0 < 19.0.0"
+        "node": ">= 18.0.0 < 19.0.0 || >= 20.0.0 < 21.0.0"
     },
     "scripts": {
         "build": "cross-env NODE_ENV=production webpack --config webpack.config.js --progress",
