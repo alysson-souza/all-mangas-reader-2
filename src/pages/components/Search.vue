@@ -241,6 +241,7 @@ export default {
 </script>
 <style data-amr="true">
 .searchpanel {
+    background: #ffffff;
     overflow: auto;
 }
 .mirrors-cont {
