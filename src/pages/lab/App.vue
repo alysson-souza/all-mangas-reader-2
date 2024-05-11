@@ -75,7 +75,6 @@
                                 color="primary"
                                 type="submit"
                                 form="mirrorTests"
-                                @click="loadCourse()"
                                 >Load tests</v-btn
                             >
                         </v-col>
