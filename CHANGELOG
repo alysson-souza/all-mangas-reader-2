@@ -1,3 +1,7 @@
+### V2.5.8
+  Changes:
+    * Added the options storage engine for manifest v3 so all options will sync ahead of release of version 3
+
 ### V2.5.6
   Fixes:
     * Fixed some issues with downloading chapters

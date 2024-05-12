@@ -1,4 +1,5 @@
 import { THINSCAN } from "../../amr/options"
+import browser from "webextension-polyfill"
 
 const isFirefox = function () {
     // Firefox 1.0+ (tested on Firefox 45 - 53)
@@ -182,7 +183,16 @@ const actions = {
      * Override default options with options values in localStorage
      * @param {*} param0
      */
-    initOptions({ commit, dispatch, state }) {
+    async initOptions({ commit, dispatch, state }) {
+        let v3Options = await browser.storage.local.get(
+            Object.entries(default_options).reduce((a, [key, value]) => {
+                return {
+                    ...a,
+                    [key]: value
+                }
+            }, {})
+        )
+
         for (let key of Object.keys(state)) {
             let storedVal = localStorage["o." + key]
             if (storedVal) {
@@ -197,6 +207,7 @@ const actions = {
                     storedVal = storedVal.filter(cat => typeof cat.name !== "undefined")
                 }
                 commit("setOption", { key: key, value: storedVal })
+                browser.storage.local.set({ [key]: Array.isArray(storedVal) ? JSON.stringify(storedVal) : storedVal })
             }
         }
     },
@@ -208,6 +219,9 @@ const actions = {
     setOption({ commit, dispatch }, keyValObj) {
         commit("setOption", keyValObj)
         localStorage["o." + keyValObj.key] = keyValObj.value
+        browser.storage.local.set({
+            [keyValObj.key]: Array.isArray(keyValObj.value) ? JSON.stringify(keyValObj.value) : keyValObj.value
+        })
     },
     /**
      * Adds a category in categories states and save
@@ -217,6 +231,7 @@ const actions = {
     addCategory({ commit, dispatch, state }, name) {
         commit("addCategory", name)
         localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates)
+        browser.storage.local.set({ ["categoriesStates"]: JSON.stringify(state.categoriesStates) })
     },
     /**
      * Remove a non native category from categories states and save
@@ -226,6 +241,7 @@ const actions = {
     removeCategory({ commit, dispatch, state, rootState }, name) {
         commit("removeCategory", name)
         localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates)
+        browser.storage.local.set({ ["categoriesStates"]: JSON.stringify(state.categoriesStates) })
         for (let mg of rootState.mangas.all) {
             if (mg.cats.includes(name)) {
                 dispatch("removeCategoryFromManga", { key: mg.key, name: name })
@@ -240,6 +256,7 @@ const actions = {
     editCategory({ commit, dispatch, state, rootState }, nameChange) {
         commit("updateCategoryName", nameChange)
         localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates)
+        browser.storage.local.set({ ["categoriesStates"]: JSON.stringify(state.categoriesStates) })
         const { oldname, newname } = nameChange
 
         // Not very efficient way, but re-using existing methods
@@ -258,6 +275,7 @@ const actions = {
     addLanguageCategory({ commit, dispatch, state }, name) {
         commit("addLanguageCategory", name)
         localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates)
+        browser.storage.local.set({ ["categoriesStates"]: JSON.stringify(state.categoriesStates) })
     },
     /**
      * Adds a native category in categories states and save
@@ -267,6 +285,7 @@ const actions = {
     addNativeCategory({ commit, dispatch, state }, name) {
         commit("addNativeCategory", name)
         localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates)
+        browser.storage.local.set({ ["categoriesStates"]: JSON.stringify(state.categoriesStates) })
     },
     /**
      * Remove a language category from categories states and save
@@ -276,6 +295,7 @@ const actions = {
     removeLanguageCategory({ commit, dispatch, state, rootState }, name) {
         commit("removeLanguageCategory", name)
         localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates)
+        browser.storage.local.set({ ["categoriesStates"]: JSON.stringify(state.categoriesStates) })
     },
     /**
      * Updates a categories state and save
@@ -285,6 +305,7 @@ const actions = {
     updateCategory({ commit, dispatch, state }, catObj) {
         commit("updateCategory", catObj)
         localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates)
+        browser.storage.local.set({ ["categoriesStates"]: JSON.stringify(state.categoriesStates) })
     },
     /**
      * Updates a categories name and save, use to upgrade native categories names for i18n
@@ -294,6 +315,7 @@ const actions = {
     updateCategoryName({ commit, dispatch, state }, oldnew) {
         commit("updateCategoryName", oldnew)
         localStorage["o.categoriesStates"] = JSON.stringify(state.categoriesStates)
+        browser.storage.local.set({ ["categoriesStates"]: JSON.stringify(state.categoriesStates) })
     },
     /**
      * Add a language to readable languages list
@@ -303,6 +325,7 @@ const actions = {
     addReadLanguage({ commit, state }, lang) {
         commit("addReadLanguage", lang)
         localStorage["o.readlanguages"] = JSON.stringify(state.readlanguages)
+        browser.storage.local.set({ ["readlanguages"]: JSON.stringify(state.readlanguages) })
     },
     /**
      * Remove a language from readable languages list
@@ -312,6 +335,7 @@ const actions = {
     removeReadLanguage({ commit, state }, lang) {
         commit("removeReadLanguage", lang)
         localStorage["o.readlanguages"] = JSON.stringify(state.readlanguages)
+        browser.storage.local.set({ ["readlanguages"]: JSON.stringify(state.readlanguages) })
     }
 }
 
