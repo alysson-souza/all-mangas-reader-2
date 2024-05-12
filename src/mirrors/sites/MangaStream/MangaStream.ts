@@ -193,14 +193,15 @@ export const getMangaStreamImplementations = (mirrorHelper: MirrorHelper): Mirro
                     "asura.nacm.xyz",
                     "asuracomics.com",
                     "asuracomics.gg",
-                    "asuratoon.com"
+                    "asuratoon.com",
+                    "asuracomic.net"
                 ],
-                home: "https://asuratoon.com",
+                home: "https://asuracomic.net",
                 chapter_url: /\/.*?(chapter|ch)-[0-9]+.*\//g,
                 languages: "en"
             },
             {
-                search_url: "https://asuratoon.com",
+                search_url: "https://asuracomic.net",
                 chapters_a_sel: "div.bixbox.bxcl ul li div.eph-num a",
                 chapters_text_sel: "span.chapternum",
                 search_json: false,
