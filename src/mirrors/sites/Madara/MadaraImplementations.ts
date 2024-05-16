@@ -1113,6 +1113,53 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
                 search_url: "https://platinumscans.com/",
                 chapter_list_ajax: true
             }
+        ),
+        new Madara(
+            mirrorHelper,
+            {
+                mirrorName: "Dark Scan",
+                mirrorIcon: require("../../icons/dark-scan-optimized.png"),
+                languages: "es",
+                domains: ["dark-scan.com"],
+                home: "https://dark-scan.com/",
+                chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+                canListFullMangas: false
+            },
+            {
+                search_url: "https://dark-scan.com/",
+                chapter_list_ajax: true,
+                isekai_chapter_url: true
+            }
+        ),
+        new Madara(
+            mirrorHelper,
+            {
+                mirrorName: "Creepy Scans",
+                mirrorIcon: require("../../icons/creepy-scans-optimized.png"),
+                languages: "en",
+                domains: ["creepyscans.com"],
+                home: "https://creepyscans.com/",
+                chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+                canListFullMangas: false
+            },
+            {
+                search_url: "https://creepyscans.com/"
+            }
+        ),
+        new Madara(
+            mirrorHelper,
+            {
+                mirrorName: "Hari Manga",
+                mirrorIcon: require("../../icons/hari-manga-optimized.png"),
+                languages: "en",
+                domains: ["harimanga.com"],
+                home: "https://harimanga.com/",
+                chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+                canListFullMangas: false
+            },
+            {
+                search_url: "https://harimanga.com/"
+            }
         )
     ]
 }

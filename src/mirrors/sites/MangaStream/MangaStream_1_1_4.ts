@@ -282,6 +282,32 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
                     return parts.join("/")
                 }
             }
+        ),
+        new MangaStream_1_1_4(
+            mirrorHelper,
+            {
+                mirrorName: "Surya Toon",
+                mirrorIcon: require("../../icons/surya-toon-optimized.png"),
+                languages: "en",
+                domains: ["suryatoon.com"],
+                home: "https://suryatoon.com",
+                // canListFullMangas: true,
+                chapter_url: /^\/*\/.+$/g
+            },
+            {}
+        ),
+        new MangaStream_1_1_4(
+            mirrorHelper,
+            {
+                mirrorName: "Manga Galaxy",
+                mirrorIcon: require("../../icons/manga-galaxy-optimized.png"),
+                languages: "en",
+                domains: ["mangagalaxy.me"],
+                home: "https://mangagalaxy.me",
+                // canListFullMangas: true,
+                chapter_url: /^\/*\/.+$/g
+            },
+            {}
         )
     ]
 }
