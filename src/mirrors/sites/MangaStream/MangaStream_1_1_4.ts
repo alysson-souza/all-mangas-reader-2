@@ -305,9 +305,11 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
                 domains: ["mangagalaxy.me"],
                 home: "https://mangagalaxy.me",
                 // canListFullMangas: true,
-                chapter_url: /^\/*\/.+$/g
+                chapter_url: /\-chapter\-\d.+\//g
             },
-            {}
+            {
+                chapter_list_selector: "#chapterlist .eph-num a"
+            }
         )
     ]
 }
