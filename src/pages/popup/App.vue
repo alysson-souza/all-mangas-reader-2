@@ -6,6 +6,15 @@
                 <img src="/icons/icon_32.png" alt="All Mangas Reader" style="margin-right: 5px" />
                 <v-toolbar-title>{{ title }}</v-toolbar-title>
                 <v-spacer></v-spacer>
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn icon @click.stop="openChangelog()" v-on="on" v-bind="attrs">
+                            <v-icon>mdi-information</v-icon>
+                        </v-btn>
+                    </template>
+                    <span>{{ i18n("change_log_button_tooltip") }}</span>
+                </v-tooltip>
+
                 <v-btn icon @click.stop="toggleDarkMode()">
                     <v-icon>mdi-brightness-6</v-icon>
                 </v-btn>
@@ -78,6 +87,26 @@
                 </v-toolbar>
                 <v-main>
                     <Options v-show="options" :preOpen="optionsPreOpen" />
+                </v-main>
+            </v-card>
+        </v-dialog>
+
+        <!-- Changelog dialog-->
+        <v-dialog
+            v-model="changelog"
+            fullscreen
+            transition="dialog-bottom-transition"
+            hide-overlay
+            :content-class="istab()">
+            <v-card>
+                <v-toolbar max-height="64">
+                    <v-btn icon @click.native="closeChangelog()">
+                        <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                    <v-toolbar-title>{{ i18n("change_log_title") }}</v-toolbar-title>
+                </v-toolbar>
+                <v-main>
+                    <ChangeLog v-show="changelog" />
                 </v-main>
             </v-card>
         </v-dialog>
@@ -185,6 +214,7 @@ import Search from "../components/Search"
 import PopupResizer from "./resizePopup"
 import Timers from "../components/Timers"
 import ImportExport from "../components/ImportExport"
+import ChangeLog from "../components/ChangeLog"
 import browser from "webextension-polyfill"
 
 import streamSaver from "streamsaver"
@@ -201,6 +231,7 @@ export default {
             options: false,
             search: false,
             rpanel: false,
+            changelog: false,
             tabs: "refresh", // in rpanel, right tabs state
             toSearch: "", // phrase to search in search panel (used to load search from manga)
             alertmessage: "", // alert to display at the bottom of the popup
@@ -211,7 +242,7 @@ export default {
         }
     },
     name: "App",
-    components: { MangaList, Options, Search, Timers, ImportExport },
+    components: { MangaList, Options, Search, Timers, ImportExport, ChangeLog },
     created() {
         this.trackingDone = true //this.$store.state.options.allowtrackingdone == 1; // Forced to true to disable this
         this.cookiesDone = this.$store.state.options.allowcookiesdone == 1
@@ -287,6 +318,14 @@ export default {
         },
         closeOptions() {
             this.options = false
+            PopupResizer.setHeightToCurrent()
+        },
+        openChangelog() {
+            this.changelog = true
+            PopupResizer.setHeightToMax()
+        },
+        closeChangelog() {
+            this.changelog = false
             PopupResizer.setHeightToCurrent()
         },
         handleLoaded() {

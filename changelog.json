@@ -1,0 +1,95 @@
+{
+    "versions": [
+        {
+            "version": null,
+            "title": "[Unreleased]",
+            "date": null,
+            "body": "### New_Mirrors\r\n\r\n* Beta change placeholder",
+            "parsed": { "_": ["Beta change placeholder"], "New_Mirrors": ["Beta change placeholder"] }
+        },
+        {
+            "version": "3.0.0",
+            "title": "[3.0.0] - 2024-05-18",
+            "date": "2024-05-18",
+            "body": "### Notes\r\n* The extension has been rewritten to be compatible with manifest V3, this was a major overhaul that has been going on for a while. Unfortunately that means getting a complete changelog is going to be near impossible but I will try to get as many as I can included in this\r\n\r\n### New Features\r\n* A log for gist sync errors has been added\r\n\r\n### Removed Features\r\n* Removed error marking for fetching series list, will enable when bugs are worked out\r\n\r\n### New Mirrors\r\n* Like Manga                - https://likemanga.io\r\n* Surya Toon                - https://suryatoon.com\r\n* Dark Scan                 - https://dark-scan.com/\r\n* Creepy Scans              - https://creepyscans.com/\r\n* Hari Manga                - https://harimanga.com\r\n* Manga Galaxy              - https://mangagalaxy.me\r\n* SeiManga                  - https://seimanga.me\r\n* Reaper Scans (Fake)       - https://reaper-scans.com\r\n* Animated Glitched Comics  - https://agscomics.com\r\n\r\n### Mirror Fixes\r\n* Asura                     - Domain changed\r\n* Scylla Scans              - Changed website\r\n* Immortal Updates          - Domain changed\r\n* Manga Clash               - Domain changed\r\n* Top Manhua                - Domain changed\r\n* Luminous Scans            - Domain changed\r\n* Rizz Comics               - Domain changed\r\n* Manhwa Freak              - Domain changed\r\n* Immortal Updates          - Domain changed\r\n* Manga Clash               - Domain changed\r\n* Top Manhua                - Domain changed\r\n* Void Scans                - Domain changed\r\n* Reset Scans               - Domain changed\r\n* Zero Scans                - Domain changed\r\n* Manga Hub                 - Api added for fetching images\r\n* Mint Manga                - Fix getting chapter urls\r\n* Read M                    - Domain changed\r\n* Disaster Scans            - Domain changed\r\n* Night Scans               - Domain changed\r\n* Manga Fox                 - Random image failure fixes",
+            "parsed": {
+                "_": [
+                    "The extension has been rewritten to be compatible with manifest V3, this was a major overhaul that has been going on for a while. Unfortunately that means getting a complete changelog is going to be near impossible but I will try to get as many as I can included in this",
+                    "A log for gist sync errors has been added",
+                    "Removed error marking for fetching series list, will enable when bugs are worked out",
+                    "Like Manga                - https://likemanga.io",
+                    "Surya Toon                - https://suryatoon.com",
+                    "Dark Scan                 - https://dark-scan.com/",
+                    "Creepy Scans              - https://creepyscans.com/",
+                    "Hari Manga                - https://harimanga.com",
+                    "Manga Galaxy              - https://mangagalaxy.me",
+                    "SeiManga                  - https://seimanga.me",
+                    "Reaper Scans (Fake)       - https://reaper-scans.com",
+                    "Animated Glitched Comics  - https://agscomics.com",
+                    "Asura                     - Domain changed",
+                    "Scylla Scans              - Changed website",
+                    "Immortal Updates          - Domain changed",
+                    "Manga Clash               - Domain changed",
+                    "Top Manhua                - Domain changed",
+                    "Luminous Scans            - Domain changed",
+                    "Rizz Comics               - Domain changed",
+                    "Manhwa Freak              - Domain changed",
+                    "Immortal Updates          - Domain changed",
+                    "Manga Clash               - Domain changed",
+                    "Top Manhua                - Domain changed",
+                    "Void Scans                - Domain changed",
+                    "Reset Scans               - Domain changed",
+                    "Zero Scans                - Domain changed",
+                    "Manga Hub                 - Api added for fetching images",
+                    "Mint Manga                - Fix getting chapter urls",
+                    "Read M                    - Domain changed",
+                    "Disaster Scans            - Domain changed",
+                    "Night Scans               - Domain changed",
+                    "Manga Fox                 - Random image failure fixes"
+                ],
+                "Notes": [
+                    "The extension has been rewritten to be compatible with manifest V3, this was a major overhaul that has been going on for a while. Unfortunately that means getting a complete changelog is going to be near impossible but I will try to get as many as I can included in this"
+                ],
+                "New Features": ["A log for gist sync errors has been added"],
+                "Removed Features": [
+                    "Removed error marking for fetching series list, will enable when bugs are worked out"
+                ],
+                "New Mirrors": [
+                    "Like Manga                - https://likemanga.io",
+                    "Surya Toon                - https://suryatoon.com",
+                    "Dark Scan                 - https://dark-scan.com/",
+                    "Creepy Scans              - https://creepyscans.com/",
+                    "Hari Manga                - https://harimanga.com",
+                    "Manga Galaxy              - https://mangagalaxy.me",
+                    "SeiManga                  - https://seimanga.me",
+                    "Reaper Scans (Fake)       - https://reaper-scans.com",
+                    "Animated Glitched Comics  - https://agscomics.com"
+                ],
+                "Mirror Fixes": [
+                    "Asura                     - Domain changed",
+                    "Scylla Scans              - Changed website",
+                    "Immortal Updates          - Domain changed",
+                    "Manga Clash               - Domain changed",
+                    "Top Manhua                - Domain changed",
+                    "Luminous Scans            - Domain changed",
+                    "Rizz Comics               - Domain changed",
+                    "Manhwa Freak              - Domain changed",
+                    "Immortal Updates          - Domain changed",
+                    "Manga Clash               - Domain changed",
+                    "Top Manhua                - Domain changed",
+                    "Void Scans                - Domain changed",
+                    "Reset Scans               - Domain changed",
+                    "Zero Scans                - Domain changed",
+                    "Manga Hub                 - Api added for fetching images",
+                    "Mint Manga                - Fix getting chapter urls",
+                    "Read M                    - Domain changed",
+                    "Disaster Scans            - Domain changed",
+                    "Night Scans               - Domain changed",
+                    "Manga Fox                 - Random image failure fixes"
+                ]
+            }
+        }
+    ],
+    "title": "Changelog",
+    "description": "All notable changes to this project will be documented in this file.\r\n\r\nThis file is designed to be parsed by [changelog-parser](https://www.npmjs.com/package/changelog-parser).\r\nThe format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).\r\nThis project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\r\n\r\nThe following sections are the standard sections to use, please stick with them for consistency\r\n* New Features \r\n* Changed Features \r\n* Removed Features\r\n* Bug Fixes\r\n* New Mirrors \r\n* Mirror Fixes\r\n* Disabled_Mirrors\r\n* Notes - This is the catchall for anything that does not fit in the other sections"
+}

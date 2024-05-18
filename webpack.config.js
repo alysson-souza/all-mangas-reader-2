@@ -144,7 +144,7 @@ const config = {
         }),
         new WebpackShellPluginNext({
             onBuildStart: {
-                scripts: ["node ./scripts/optimize-mirrors-icons.js"],
+                scripts: ["node ./scripts/optimize-mirrors-icons.js", "node ./scripts/create-changelog-json.js"],
                 blocking: true
             }
         })

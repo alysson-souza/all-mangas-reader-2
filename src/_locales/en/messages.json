@@ -2040,5 +2040,17 @@
     "permissions_host_message_button": {
         "message": "Add Host permissions",
         "description": "Button to enable host permissions"
+    },
+    "change_log_button_tooltip": {
+        "message": "Changelog",
+        "description": "Tooltip for changelog button"
+    },
+    "change_log_title": {
+        "message": "Changelog",
+        "description": "Title for changelog dialog"
+    },
+    "change_log_beta_title": {
+        "message": "Beta Changes",
+        "description": "Title applied to [Unreleased] changelog entries so we can keep the format correct and display it nicely"
     }
 }
