@@ -1,6 +1,6 @@
 {
     "name": "all-mangas-reader",
-    "version": "2.5.8",
+    "version": "3.0.0",
     "description": "All Mangas Reader",
     "author": "Pierre-Louis Duhoux <pl.duhoux@gmail.com>",
     "lint-staged": {
