@@ -33,7 +33,7 @@
 
 <script>
 import i18n from "../../amr/i18n"
-import { default as log } from "../../../CHANGELOG.json"
+import { default as log } from "../../../changelog.json"
 
 export default {
     data() {

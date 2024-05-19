@@ -144,7 +144,7 @@ const config = {
         }),
         new WebpackShellPluginNext({
             onBuildStart: {
-                scripts: ["node ./scripts/optimize-mirrors-icons.js", "node ./scripts/create-changelog-json.js"],
+                scripts: ["node ./scripts/optimize-mirrors-icons.js"],
                 blocking: true
             }
         })
@@ -191,6 +191,15 @@ if (process.env.NODE_ENV === "production") {
             })
         ])
     }
+
+    config.plugins = (config.plugins || []).concat([
+        new WebpackShellPluginNext({
+            onBuildStart: {
+                scripts: ["node ./scripts/create-changelog-json.js"],
+                blocking: true
+            }
+        })
+    ])
 
     // Add manifest update after
     if (AMR_BROWSER) {
