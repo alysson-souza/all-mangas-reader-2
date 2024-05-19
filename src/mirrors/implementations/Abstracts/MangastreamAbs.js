@@ -1,7 +1,7 @@
 /**
  * Abstract implementation for all sites based on MangaStream theme https://mangastream.themesia.com/
  */
-window["MangastreamAbs"] = function (options) {
+globalThis["MangastreamAbs"] = function (options) {
     this.default_options = {
         search_a_sel: "div.bsx > a",
         chapters_a_sel: "div.cl > ul > li > span.leftoff > a",

@@ -578,6 +578,10 @@
         "message": "... has new chapter(s) on $1! Click anywhere to open the next unread chapter.",
         "description": "Text from notification. The notification title is the manga name, $1 is the website on which the manga to notify is read"
     },
+    "notif_message_chapter": {
+        "message": "next chapter $1",
+        "description": "Next chapter info"
+    },
     "content_nav_hidebar": {
         "message": "Hide AMR Toolbar",
         "description": "Tooltip to hide AMR bar in navigation bar"
@@ -718,6 +722,10 @@
     "refresh_last": {
         "message": "Refreshed $1 ago",
         "description": "Label to tell last time something was refreshed. $1 is an i18n string telling last time it was refreshed"
+    },
+    "refresh_next": {
+        "message": "Next update in $1",
+        "description": "When next chapter update should happen"
     },
     "refresh_lists_desc": {
         "message": "Delete lists of manga stored in local database. These lists are retrieved from websites on which we can get the whole manga list that can be read on the website. Deleting it does not affect your current reading list, these lists will be reloaded on next search for the enabled websites which support this functionality",
@@ -2013,5 +2021,36 @@
     "filter_manga_update_error": {
         "message": "Show only series with update errors",
         "description": "Message about mangas with errors updating filter toggle"
+    },
+    "__V3_0_0": {
+        "message": "Just a filler to separate new labels from old ones"
+    },
+    "page_permissions_title": {
+        "message": "Permissions - All Mangas Reader",
+        "description": "Title for permissions page"
+    },
+    "permissions_host_message_enabled": {
+        "message": "AMR Requires host permissions to work properly. You have these enabled",
+        "description": "Message if user has the host permissions enabled"
+    },
+    "permissions_host_message_disabled": {
+        "message": "AMR Requires host permissions to work properly, please click the button to add those permissions.",
+        "description": "Message if user has not enabled the host permissions, or disabled them"
+    },
+    "permissions_host_message_button": {
+        "message": "Add Host permissions",
+        "description": "Button to enable host permissions"
+    },
+    "change_log_button_tooltip": {
+        "message": "Changelog",
+        "description": "Tooltip for changelog button"
+    },
+    "change_log_title": {
+        "message": "Changelog",
+        "description": "Title for changelog dialog"
+    },
+    "change_log_beta_title": {
+        "message": "Beta Changes",
+        "description": "Title applied to [Unreleased] changelog entries so we can keep the format correct and display it nicely"
     }
 }

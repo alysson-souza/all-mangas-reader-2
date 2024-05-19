@@ -28,7 +28,7 @@
 import Shortcuts from "./Shortcuts"
 import { i18nmixin } from "../../mixins/i18n-mixin"
 
-let alt = "Alt",
+const alt = "Alt",
     shift = "Shift"
 export default {
     mixins: [i18nmixin],

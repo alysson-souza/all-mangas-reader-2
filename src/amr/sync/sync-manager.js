@@ -3,10 +3,8 @@ import GistStorage from "../storage/gist-storage"
 import BrowserStorage from "../storage/browser-storage"
 import { createLocalStorage } from "../storage/local-storage"
 import * as syncUtils from "./utils"
-import * as utils from "../../amr/utils"
-import { debug } from "../utils"
-import Storage from "../storage/model-storage"
-import Manga from "../manga"
+import { getAppLogger } from "../../shared/AppLogger"
+import { SyncTracker } from "./SyncTracker"
 
 const remoteStorages = {
     GistStorage,
@@ -20,12 +18,18 @@ const defaultConfig = {
 }
 
 class SyncManager {
-    constructor() {
+    /**
+     * @param logger
+     * @param {SyncTracker} syncTracker
+     */
+    constructor(logger, syncTracker) {
+        this.logger = logger
         /**
          * remoteStorages
          * @type {(Storage)[]}
          */
         this.remoteStorages = []
+        this.syncTracker = syncTracker
     }
 
     init(config, vuexStore, dispatch) {
@@ -99,48 +103,44 @@ class SyncManager {
      */
     async triggerSync(storageName) {
         const storage = this.remoteStorages.find(store => store.constructor.name === storageName)
-        if (storage) {
-            // Get update chapter and convert watchers
-            const isUpdating = this.vuexStore.options.isUpdatingChapterLists
-            const isConverting = this.vuexStore.options.isConverting
-            const isSyncing = this.vuexStore.options.isSyncing // in case user triggers a sync-out
-
-            // skip if one of these is running (sync-manager will retry by itself)
-            if (isUpdating || isConverting || isSyncing) {
-                debug(
-                    `[SYNC-${storage.constructor.name.replace(
-                        "Storage",
-                        ""
-                    )}] Skipping sync due to chapter lists being updated`
-                )
-                return
-            }
-            if (storage.retryDate && storage.retryDate.getTime() > Date.now()) {
-                debug(
-                    `[SYNC-${storage.constructor.name.replace(
-                        "Storage",
-                        ""
-                    )}] Skipping sync due to present retry date until ${storage.retryDate.toISOString()}`
-                )
-            } else {
-                debug(`[SYNC-${storage.constructor.name.replace("Storage", "")}] Starting sync`)
-                await this.dispatch("setOption", { key: "isSyncing", value: 1 }) // Set watcher
-                this.checkData(storage)
-                    .then(res => {
-                        this.dispatch("setOption", { key: "isSyncing", value: 0 }) // Unset watcher when done
-                        debug(`[SYNC-${storage.constructor.name.replace("Storage", "")}] Done`)
-                        debug(res)
-                    })
-                    .catch(e => {
-                        this.dispatch("setOption", { key: "isSyncing", value: 0 }) // Unset watcher on errors
-                        if (e instanceof ThrottleError) {
-                            storage.retryDate = e.getRetryAfterDate()
-                        } else if (e instanceof Error) {
-                            debug(`[SYNC-${storage.constructor.name.replace("Storage", "")}] ${e.message}`)
-                        }
-                    })
-            }
+        if (!storage) {
+            return
         }
+
+        const name = storage.name
+        const isUpdating = this.vuexStore.options.isUpdatingChapterLists
+        const isConverting = this.vuexStore.options.isConverting
+        const isSyncing = this.vuexStore.options.isSyncing
+        if (isUpdating || isConverting || isSyncing) {
+            this.logger.debug(`[SYNC-${name}] Skipping sync due to chapter lists being updated`)
+            return
+        }
+
+        if (storage.retryDate && storage.retryDate.getTime() > Date.now()) {
+            const isoString = storage.retryDate.toISOString()
+            this.logger.debug(`[SYNC-${name}] Skipping sync due to present retry date until ${isoString}`)
+            return
+        }
+
+        this.logger.debug(`[SYNC-${name}] Starting sync`)
+        await this.dispatch("setOption", { key: "isSyncing", value: 1 }) // Set watcher
+
+        this.checkData(storage)
+            .then(res => {
+                this.logger.debug(`[SYNC-${name}] Done`)
+                this.logger.debug(res)
+            })
+            .catch(e => {
+                this.syncTracker.triggerLastSyncError(e)
+                if (e instanceof ThrottleError) {
+                    storage.retryDate = e.getRetryAfterDate()
+                } else if (e instanceof Error) {
+                    this.logger.error(`[SYNC-${name}] ${e.message}`)
+                }
+            })
+            .finally(() => {
+                this.dispatch("setOption", { key: "isSyncing", value: 0 })
+            })
     }
 
     /**
@@ -148,26 +148,23 @@ class SyncManager {
      * @returns {Promise<{local: Manga[], remote: Manga[]}>}
      */
     async checkData(storage) {
-        const storageName = storage.constructor.name.replace("Storage", "")
-        debug(`[SYNC-${storageName}] Checking sync data`)
+        this.logger.debug(`[SYNC-${storage.name}] Checking sync data`)
         const localList = await this.localStorage.loadMangaList()
         const remoteList = await storage.getAll()
-        debug(`[SYNC-${storageName}] Comparing local and remote list`)
+        this.logger.debug(`[SYNC-${storage.name}] Comparing local and remote list`)
         const incoming = await this.processUpdatesToLocal(localList, remoteList)
         const outgoing = await this.processUpdatesToRemote(localList, remoteList, storage)
-        debug(`[SYNC-${storageName}] Completed sync data check`)
+        this.logger.debug(`[SYNC-${storage.name}] Completed sync data check`)
         return { incoming, outgoing }
     }
     /**
-     *
-     * @param {Manga[]} local
-     * @param {Manga[]} remote
+     * @TODO too complex, refactor...
      */
     async tsOpts() {
         const local = await this.localStorage.loadMangaList()
         for (const storage of this.remoteStorages) {
             const remote = await storage.getAll()
-            let d = Date.now()
+            const d = Date.now()
             for (const localManga of local) {
                 if (typeof localManga.tsOpts === "undefined") await this.dispatch("setMangaTsOpts", localManga, d)
             }
@@ -179,11 +176,13 @@ class SyncManager {
                 }
                 return r
             })
-            if (!upgrade) return debug(`[SYNC-${storage.constructor.name.replace("Storage", "")}] Nothing to update.`)
+            if (!upgrade)
+                return this.logger.debug(`[SYNC-${storage.constructor.name.replace("Storage", "")}] Nothing to update.`)
             if (storage.isdb) {
                 storage.set(upgradedRemote)
             } else {
                 await storage.saveAll(upgradedRemote).catch(e => {
+                    this.syncTracker.triggerLastSyncError(e)
                     if (e instanceof ThrottleError) {
                         storage.retryDate = e.getRetryAfterDate()
                         const later = storage.retryDate.getTime() - Date.now() + 2000
@@ -191,7 +190,7 @@ class SyncManager {
                             this.tsOpts()
                         }, later)
                     } else if (e instanceof Error) {
-                        debug(`[SYNC-${storage.constructor.name.replace("Storage", "")}] ${e.message}`)
+                        this.logger.error(`[SYNC-${storage.constructor.name.replace("Storage", "")}] ${e.message}`)
                     }
                 })
             }
@@ -303,7 +302,7 @@ class SyncManager {
                     await remoteStorage.saveAll([...updates, ...Array.from(updatesMap.values())])
                 }
             } catch (e) {
-                debug(
+                this.logger.debug(
                     `[SYNC-${remoteStorage.constructor.name.replace("Storage", "")}] Failed to sync keys to storage: ${
                         e.message
                     }`,
@@ -312,7 +311,7 @@ class SyncManager {
                 throw e
             }
         } else {
-            debug(`[SYNC-${remoteStorage.constructor.name.replace("Storage", "")}] Nothing to update.`)
+            this.logger.debug(`[SYNC-${remoteStorage.constructor.name.replace("Storage", "")}] Nothing to update.`)
         }
         return remoteUpdates
     }
@@ -351,6 +350,7 @@ class SyncManager {
                     deleted: syncUtils.DELETED
                 })
                 .catch(e => {
+                    this.syncTracker.triggerLastSyncError(e)
                     if (e instanceof ThrottleError) {
                         storage.retryDate = e.getRetryAfterDate()
                         const later = storage.retryDate.getTime() - Date.now() + 2000
@@ -358,7 +358,7 @@ class SyncManager {
                             this.deleteManga(key)
                         }, later)
                     } else if (e instanceof Error) {
-                        debug(`[SYNC-${storage.constructor.name.replace("Storage", "")}] ${e.message}`)
+                        this.logger.debug(`[SYNC-${storage.constructor.name.replace("Storage", "")}] ${e.message}`)
                     }
                 })
         }
@@ -426,6 +426,7 @@ class SyncManager {
             storage.set(remoteManga)
         } else {
             await storage.saveAll(remoteList).catch(e => {
+                this.syncTracker.triggerLastSyncError(e)
                 if (e instanceof ThrottleError) {
                     storage.retryDate = e.getRetryAfterDate()
                     const later = storage.retryDate.getTime() - Date.now() + 2000
@@ -433,7 +434,7 @@ class SyncManager {
                         this.setToRemote(localManga, mutatedKey)
                     }, later)
                 } else if (e instanceof Error) {
-                    debug(`[SYNC-${storage.constructor.name.replace("Storage", "")}] ${e.message}`)
+                    this.logger.debug(`[SYNC-${storage.constructor.name.replace("Storage", "")}] ${e.message}`)
                 }
             })
         }
@@ -460,6 +461,7 @@ class SyncManager {
                 .concat(payload.map(p => p.newManga))
 
             storage.saveAll(updated).catch(e => {
+                this.syncTracker.triggerLastSyncError(e)
                 if (e instanceof ThrottleError) {
                     storage.retryDate = e.getRetryAfterDate()
                     const later = storage.retryDate.getTime() - Date.now() + 2000
@@ -467,7 +469,7 @@ class SyncManager {
                         this.fixLang(payload)
                     }, later)
                 } else if (e instanceof Error) {
-                    debug(`[SYNC-${storage.constructor.name.replace("Storage", "")}] ${e.message}`)
+                    this.logger.debug(`[SYNC-${storage.constructor.name.replace("Storage", "")}] ${e.message}`)
                 }
             })
         }
@@ -476,14 +478,20 @@ class SyncManager {
 
 let instance
 /**
- *
+ * @TODO this should be only handled in background alone and interacted through
+ * sending background messages, not part of any vuex store methods.
+ * VUE App -> browser.runtime.sendMessage -> Background -> Handler -> SyncManager
  * @param {*} config
  * @param {*} vuexStore
+ * @param {*} dispatch
+ * @param {*} notificationManager only injected in background, until refactoring is done
  * @returns {SyncManager}
  */
-export const getSyncManager = (config, vuexStore, dispatch) => {
+export const getSyncManager = (config, vuexStore, dispatch, notificationManager = undefined) => {
     if (!instance) {
-        instance = new SyncManager()
+        const appLogger = getAppLogger(vuexStore.options)
+        const syncTracker = new SyncTracker(appLogger, vuexStore.options, dispatch, notificationManager)
+        instance = new SyncManager(appLogger, syncTracker)
     }
     if (config && vuexStore) {
         return instance.init(config, vuexStore, dispatch)

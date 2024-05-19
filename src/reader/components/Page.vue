@@ -88,7 +88,7 @@ export default {
         checkInViewPort() {
             let el = this.$el
             let top = el.offsetTop
-            let height = el.offsetHeight
+            const height = el.offsetHeight
 
             while (el.offsetParent) {
                 el = el.offsetParent

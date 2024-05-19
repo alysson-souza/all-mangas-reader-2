@@ -62,16 +62,15 @@ import browser from "webextension-polyfill"
 
 import options from "../state/options"
 import pageData from "../state/pagedata"
-import mirrorImpl from "../state/mirrorimpl"
 
 import { scansProvider } from "../helpers/ScansProvider"
-import util from "../helpers/util"
+import { Util } from "../helpers/util"
 import EventBus from "../helpers/EventBus"
-import { isFirefox } from "../../amr/utils"
 
 import Page from "./Page"
 import ThumbnailNavigator from "./ThumbnailNavigator"
 import PageNavigator from "./PageNavigator"
+import { isFirefox } from "../../shared/utils"
 
 /** Create a custom scroller (alias of $scrollTo method) to enable multiple scrollings (thumbs scroll simultaneously page scroll) */
 const thumbsScroller = scroller()
@@ -107,6 +106,8 @@ export default {
         }
     },
     props: {
+        /** Currently loaded mirror implementation **/
+        mirror: Object,
         direction: String /* Reading from left to right or right to left */,
         invertKeys: Boolean /* Invert keys in right to left mode */,
         book: Boolean /* Do we display side by side pages */,
@@ -119,6 +120,7 @@ export default {
         shouldInvertKeys: Boolean /* If keys and buttons should be flipped */
     },
     created() {
+        this.util = new Util(this.mirror)
         /** Initialize key handlers */
         this.autoNextChapter = false
         this.handlekeys()
@@ -134,7 +136,7 @@ export default {
         EventBus.$on("loaded-scan", this.updateProgress)
         /** Listen for a request of going to specific scan url */
         EventBus.$on("go-to-scanurl", url => {
-            util.debug("Restore previous last scan : " + url)
+            this.util.debug("Restore previous last scan : " + url)
             EventBus.$on("pages-loaded", () => {
                 // wait for the pages to be fully loaded
                 setTimeout(() => this.goScanUrl(url), 0) // add additional wait so the scroll is correct enough, 0 is enough because we just need to do it after the nextTick (in nextTick, pages are rearranged and watcher on pages will reset currentPage, do it after that)
@@ -156,12 +158,18 @@ export default {
             if (currentlyThumbsScrolling) return
             currentlyThumbsScrolling = true
             this.$nextTick(() => {
-                thumbsScroller(this.$refs["page-navigator"].$refs.thumbnail[nVal].$el, this.animationDuration, {
-                    container: this.$refs["page-navigator"],
-                    offset:
-                        (-(window.innerWidth - (this.drawer ? 300 : 0)) +
-                            this.$refs["page-navigator"].$refs.thumbnail[nVal].$el.clientWidth) /
-                        2,
+                // Rely on scansState.loaded
+                const pageNavigator = this.$refs["page-navigator"]
+                if (!pageNavigator) {
+                    return
+                }
+
+                const $el = pageNavigator.$refs.thumbnail[nVal].$el
+                const offset = -(window.innerWidth - (this.drawer ? 300 : 0)) + $el.clientWidth
+
+                thumbsScroller($el, this.animationDuration, {
+                    container: pageNavigator.$el,
+                    offset: offset / 2,
                     x: true,
                     y: false,
                     onDone: () => {
@@ -174,7 +182,7 @@ export default {
                 action: "saveCurrentState",
                 url: this.pageData.currentMangaURL,
                 language: this.pageData.language,
-                mirror: mirrorImpl.get().mirrorName,
+                mirror: this.mirror.mirrorName,
                 currentChapter: this.pageData.currentChapterURL,
                 currentScanUrl: this.getCurrentScanUrl()
             })
@@ -247,14 +255,14 @@ export default {
             }
         },
         firstScan() {
-            let cur = this.currentPage,
-                n = cur
+            const cur = this.currentPage
+            let n = cur
             if (cur - 1 >= 0) n = cur - 1
             return n === cur
         },
         lastScan() {
-            let cur = this.currentPage,
-                n = cur
+            const cur = this.currentPage
+            let n = cur
             if (cur + 1 < this.pages.length) n = cur + 1
             return n === cur
         }
@@ -265,7 +273,7 @@ export default {
          * Click on the scans container, if single page mode, go to next or previous page
          */
         pageChange(e) {
-            util.clearSelection()
+            this.util.clearSelection()
             if (this.fullchapter) return
 
             if (e.clientX >= this.$refs.scancontainer.clientWidth / 2) {
@@ -292,7 +300,7 @@ export default {
          *  - if last scan and click right --> go to next chapter
          */
         tryChapterChange(e) {
-            util.clearSelection()
+            this.util.clearSelection()
             if (e.clientX >= this.$refs.scancontainer.clientWidth / 2) {
                 if (this.lastScan) {
                     clearTimeout(this.scanClickTimeout)
@@ -329,9 +337,9 @@ export default {
         /** Called when all scans from chapter have been loaded */
         loadedChapter() {
             // All scans loaded. Build the book (regroup scans that can be read side by side, depending on double page scans (width > height) position)
-            let scans = []
-            let lastfull = 0,
-                nbscans = this.scansState.scans.length
+            const scans = []
+            let lastfull = 0
+            const nbscans = this.scansState.scans.length
             for (let i = 0; i < nbscans; i++) {
                 let full = false
                 if (this.scansState.scans[i].doublepage) {
@@ -350,10 +358,10 @@ export default {
             }
             // Calculates how to regroup pages
             let curPage = 0
-            let regrouped = []
+            const regrouped = []
             let curScan = 0
-            for (let sc of scans) {
-                let toadd = { src: sc.url, name: "" + (curScan + 1) }
+            for (const sc of scans) {
+                const toadd = { src: sc.url, name: "" + (curScan + 1) }
                 if (!regrouped[curPage]) {
                     regrouped[curPage] = [toadd]
                 } else {
@@ -375,7 +383,7 @@ export default {
         },
         /** Return a string containing the scan indexes (1-based) contained in the page of index page_index in the right order (using direction ltr or rtl) */
         displayPageScansIndexes(page_index) {
-            let scs = this.pages[page_index]
+            const scs = this.pages[page_index]
             if (scs.length === 1) return scs[0].name
             else {
                 if (this.direction === "ltr") return scs[0].name + " - " + scs[1].name
@@ -395,7 +403,7 @@ export default {
         },
         /** Go to scan url */
         goScanUrl(url) {
-            let ncur = this.getPageIndexFromScanUrl(url)
+            const ncur = this.getPageIndexFromScanUrl(url)
             if (ncur >= 0) this.goScan(ncur)
         },
         /** Go to scan */
@@ -426,8 +434,8 @@ export default {
         },
         /** Go to next scan */
         goNextScanImpl(doubletap = false, clicked = false) {
-            let cur = this.currentPage,
-                n = cur
+            const cur = this.currentPage
+            let n = cur
             if (cur + 1 < this.pages.length) n = cur + 1
 
             if (doubletap && n === cur) {
@@ -453,7 +461,7 @@ export default {
                 window.scroll(0, 0)
             } else {
                 // if current page top is visible, go to top of the page, if not and bottom not visible, go to bottom, else and if there is a next page go to top of next page
-                let curpage = this.$refs.page[this.currentPage]
+                const curpage = this.$refs.page[this.currentPage]
                 if (curpage.topInViewport && !curpage.atTop) {
                     // go to top of the current page
                     this.$scrollTo(curpage.$el, this.animationDuration)
@@ -479,8 +487,8 @@ export default {
         },
         /** Go to previous scan */
         goPreviousScanImpl(doubletap = false, clicked = false) {
-            let cur = this.currentPage,
-                n = cur
+            const cur = this.currentPage
+            let n = cur
             if (cur - 1 >= 0) n = cur - 1
 
             if (doubletap && n === cur) {
@@ -506,7 +514,7 @@ export default {
                 window.scroll(0, 0)
             } else {
                 // if current page bottom is visible, go to bottom of the current page, if not and top not visible, go to top, else and if there is a previous page go to bottom of previous page
-                let curpage = this.$refs.page[this.currentPage]
+                const curpage = this.$refs.page[this.currentPage]
                 if (curpage.bottomInViewport && !curpage.atBottom) {
                     // go to top of the current page
                     this.$scrollTo(curpage.$el, this.animationDuration, {
@@ -525,9 +533,9 @@ export default {
         },
         /** Keep the scroll ratio in vertical scrollbar while resizing scans (open drawer, resize window, change layout options...) */
         keepScrollPos(duration = 500) {
-            let ratio = this.scrollRatio
-            let start = Date.now()
-            let keepScrollPosAnime = () => {
+            const ratio = this.scrollRatio
+            const start = Date.now()
+            const keepScrollPosAnime = () => {
                 window.scroll(0, document.documentElement.scrollHeight * ratio)
                 if (Date.now() - start < duration) {
                     requestAnimationFrame(keepScrollPosAnime)
@@ -542,15 +550,15 @@ export default {
         },
         /** Handle key shortcuts */
         handlekeys() {
-            let registerKeys = e => {
+            const registerKeys = e => {
                 e = e || window.event
-                let t = e.target || e.srcElement
-                let prevent = () => {
+                const t = e.target || e.srcElement
+                const prevent = () => {
                     e.preventDefault()
                     e.stopPropagation()
                     e.stopImmediatePropagation()
                 }
-                if (!((t.type && t.type === "text") || t.nodeName.toLowerCase() === "textarea")) {
+                if (!((t.type && t.type === "text") || (t.nodeName && t.nodeName.toLowerCase() === "textarea"))) {
                     if (!e.shiftKey && !e.altKey) {
                         // Handle double tap events
                         let doubletap = false
@@ -580,7 +588,7 @@ export default {
                             // eslint-disable-next-line vue/no-mutating-props
                             this.resize = "none"
                             if (isFirefox()) {
-                                let zoom = this.$refs.scantable.style.transform.replace(/[^0-9.]+/g, "")
+                                const zoom = this.$refs.scantable.style.transform.replace(/[^0-9.]+/g, "")
                                 if (zoom === "0" || zoom === "") {
                                     this.$refs.scantable.style.transform = "scale(1)"
                                 } else {
@@ -603,7 +611,7 @@ export default {
                             // eslint-disable-next-line vue/no-mutating-props
                             this.resize = "none"
                             if (isFirefox()) {
-                                let zoom = this.$refs.scantable.style.transform.replace(/[^0-9.]+/g, "")
+                                const zoom = this.$refs.scantable.style.transform.replace(/[^0-9.]+/g, "")
                                 if (zoom === "0" || zoom === "") {
                                     this.$refs.scantable.style.transform = "scale(1)"
                                 } else {
@@ -646,7 +654,7 @@ export default {
                             prevent()
                         }
                         if (e.which === 32 && this.options.magicScrollEnabled) {
-                            let images = this.$refs.page
+                            const images = this.$refs.page
                             // Are we at the end of the last page
                             // can't use this.lastScan cause that is any point on last page, also wont work if the last scan is small
                             if (images[images.length - 1].$el.getBoundingClientRect().bottom - window.innerHeight < 1) {
@@ -668,13 +676,13 @@ export default {
                             } else {
                                 // Lets stay on current chapter
                                 // Find current images within view
-                                let targetScrollImages = [...images].filter(image => {
-                                    let rect = image.$el.getBoundingClientRect()
+                                const targetScrollImages = [...images].filter(image => {
+                                    const rect = image.$el.getBoundingClientRect()
                                     return rect.top <= window.innerHeight && rect.bottom > 1
                                 })
 
                                 // If multiple images filtered, get the last one. If none scroll use the top image
-                                let targetScrollImage = targetScrollImages[targetScrollImages.length - 1] || images[0]
+                                const targetScrollImage = targetScrollImages[targetScrollImages.length - 1] || images[0]
 
                                 // Is the target image top within view ? then scroll to the top of it
                                 if (targetScrollImage.$el.getBoundingClientRect().top > 1) {
@@ -695,7 +703,7 @@ export default {
                                 // We have to try to get to next image
                                 else {
                                     // Find next image
-                                    let nextScrollImage = targetScrollImage.$el.nextElementSibling
+                                    const nextScrollImage = targetScrollImage.$el.nextElementSibling
                                     // Scroll to it
                                     this.$scrollTo(nextScrollImage, this.animationDuration)
                                 }
@@ -745,7 +753,7 @@ export default {
             window.addEventListener("keydown", registerKeys, true)
 
             //disable default websites shortcuts
-            let stopProp = e => e.stopImmediatePropagation()
+            const stopProp = e => e.stopImmediatePropagation()
             window.addEventListener("keyup", stopProp, true)
             window.addEventListener("keypress", stopProp, true)
         },

@@ -1,5 +1,6 @@
 if (typeof registerMangaObject === "function") {
     registerMangaObject({
+        // SSL Certificate error, will not bypass to convert
         mirrorName: "EarlyManga",
         mirrorIcon: "earlymanga.png",
         languages: "en",

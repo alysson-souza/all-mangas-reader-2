@@ -22,21 +22,18 @@ const makeDestZipDirIfNotExists = () => {
     }
 }
 
-const buildZip = (src, dist, zipFilename) => {
+const buildZip = async (src, dist, zipFilename) => {
     console.info(`Building ${zipFilename}...`)
 
-    return new Promise((resolve, reject) => {
-        zipFolder(src, { saveTo: path.join(dist, zipFilename) }, (err, _) => {
-            if (err) {
-                reject(err)
-            } else {
-                resolve()
-            }
-        })
-    })
+    try {
+        await zipFolder(src, { saveTo: path.join(dist, zipFilename) })
+        console.info("OK")
+    } catch (e) {
+        console.error(e)
+    }
 }
 
-const main = () => {
+const main = async () => {
     let { name, version } = extractExtensionData()
     let extension = ".zip"
     if (process.argv.includes("-xpi")) {
@@ -44,18 +41,21 @@ const main = () => {
     }
 
     if (process.argv.includes("-patch")) {
-        let inc = process.argv[process.argv.findIndex(el => el === "-patch") + 1]
+        const inc = process.argv[process.argv.findIndex(el => el === "-patch") + 1]
         version = version + "." + inc
-        name = name + "-beta"
+
+        if (process.argv.includes("-alpha")) {
+            name = name + "-alpha"
+        } else {
+            name = name + "-beta"
+        }
     }
 
     const zipFilename = `${name}-${version}${extension}`
 
     makeDestZipDirIfNotExists()
 
-    buildZip(DEST_DIR, DEST_ZIP_DIR, zipFilename)
-        .then(() => console.info("OK"))
-        .catch(console.err)
+    await buildZip(DEST_DIR, DEST_ZIP_DIR, zipFilename)
 
     if (process.argv.includes("-push")) {
         console.log("Pushing to phone")

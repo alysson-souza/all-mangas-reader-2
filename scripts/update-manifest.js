@@ -8,11 +8,11 @@
  */
 const fs = require("fs")
 const path = require("path")
-let fileName = path.join(__dirname, "../dist/manifest.json")
-let ext = require(fileName)
+const fileName = path.join(__dirname, "../dist/manifest.json")
+const ext = require(fileName)
 
 if (process.argv.includes("-checkver")) {
-    let ver = process.argv[process.argv.findIndex(el => el === "-checkver") + 1]
+    const ver = process.argv[process.argv.findIndex(el => el === "-checkver") + 1]
     if (ver != ext.version) {
         console.log("Checking version failed: expected '" + ver + "', got '" + ext.version + "'.")
         process.exit(255)
@@ -21,33 +21,49 @@ if (process.argv.includes("-checkver")) {
 
 // update file entries
 let isBeta = false
+let isAlpha = false
 if (process.argv.includes("-patch")) {
-    let inc = process.argv[process.argv.findIndex(el => el === "-patch") + 1]
+    const inc = process.argv[process.argv.findIndex(el => el === "-patch") + 1]
     ext.version = ext.version + "." + inc
     ext.name = ext.name + " Beta"
     isBeta = true
 }
 
+if (process.argv.includes("-alpha")) {
+    ext.name = ext.name + " Alpha"
+    isAlpha = true
+    isBeta = false
+}
+
 if (process.argv.includes("-chrome")) {
-    if (!isBeta) {
-        // Chrome public key
-        ext.key =
-            "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2auEKHQ6Te138RdBhkI0iaCAkCQIddSyMYebuy//9xgtvYlFOKo0eX7S1FYaAUTccU0ZfkJGWUvzXiXTJ9eoKl+Wh4YHw/Yn4wHotDzbKl/ekl2icgMAldxcahXd4gLaBdMkEh/rQPFInJlm4oRAfQhoFIQtD3eHFxrYk4+B65hVEVhtiKGVF3Q9JTLeGaWTnYB6pnw+ch+/4zUG8i0OYjehmzKCCVERRb5w3QGG8DowbMsRojPpjfdAvXK6phURKbbQXh3pXRo5GfXtkdObnTd6TBS7txGIPjY5FjbFvyVXw8VJRVTEWoZ2feG9X4WPLuLs6XMzhcHSB1fR2HVFgQIDAQAB"
-        ext.update_url = "https://amr-releases.com/versions/chrome.xml"
-    } else {
+    if (isBeta) {
         // Chrome public key
         ext.key =
             "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwEXrIivz3obLG3bW6G+r3GJr+4OGo/QLWVRBwzO64Nnzlert7fAgZWT1suTchA5kc+nZRVwyE4cbi3HRSKcnMYFK1oQjq83XgeXD9uRee743P8S3Ek09TUecI/wYm1mi0r9khrBZgGIpO07Bj23/70VktYLBU4Sei8au2evcdJXcuNJ89LqwhagQGdfQGvN9RrAU/opk99Wn2OWjD6sYFhOMx/EBxgokJUeYHeBOmNNbyDrAoz8CkaEm2gqSRJ1AntoUfNgbwGtvmA4YYsR2jp8XMBQiPr75pE85t2I6spSDvIM0/uuH65cwcmBkrW3P4AohWD4DyCFThxQUjB534wIDAQAB"
         ext.update_url = "https://amr-releases.com/versions/chrome-beta.xml"
+    } else if (isAlpha) {
+        // Chrome public key
+        ext.key =
+            "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwEXrIivz3obLG3bW6G+r3GJr+4OGo/QLWVRBwzO64Nnzlert7fAgZWT1suTchA5kc+nZRVwyE4cbi3HRSKcnMYFK1oQjq83XgeXD9uRee743P8S3Ek09TUecI/wYm1mi0r9khrBZgGIpO07Bj23/70VktYLBU4Sei8au2evcdJXcuNJ89LqwhagQGdfQGvN9RrAU/opk99Wn2OWjD6sYFhOMx/EBxgokJUeYHeBOmNNbyDrAoz8CkaEm2gqSRJ1AntoUfNgbwGtvmA4YYsR2jp8XMBQiPr75pE85t2I6spSDvIM0/uuH65cwcmBkrW3P4AohWD4DyCFThxQUjB534wIDAQAB"
+        ext.update_url = "https://amr-releases.com/versions/chrome-alpha.xml"
+    } else {
+        // Chrome public key
+        ext.key =
+            "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2auEKHQ6Te138RdBhkI0iaCAkCQIddSyMYebuy//9xgtvYlFOKo0eX7S1FYaAUTccU0ZfkJGWUvzXiXTJ9eoKl+Wh4YHw/Yn4wHotDzbKl/ekl2icgMAldxcahXd4gLaBdMkEh/rQPFInJlm4oRAfQhoFIQtD3eHFxrYk4+B65hVEVhtiKGVF3Q9JTLeGaWTnYB6pnw+ch+/4zUG8i0OYjehmzKCCVERRb5w3QGG8DowbMsRojPpjfdAvXK6phURKbbQXh3pXRo5GfXtkdObnTd6TBS7txGIPjY5FjbFvyVXw8VJRVTEWoZ2feG9X4WPLuLs6XMzhcHSB1fR2HVFgQIDAQAB"
+        ext.update_url = "https://amr-releases.com/versions/chrome.xml"
     }
 } else if (process.argv.includes("-firefox")) {
-    ext.applications = ext.applications || {}
+    ext.background = {
+        scripts: ["background-worker.js"],
+        type: "module"
+    }
+    ext.browser_specific_settings = ext.browser_specific_settings || {}
     if (!isBeta) {
-        ext.applications.gecko = {
+        ext.browser_specific_settings.gecko = {
             id: "stable@allmangasreader.com" //no update url, distributed on AMO
         }
     } else {
-        ext.applications.gecko = {
+        ext.browser_specific_settings.gecko = {
             id: "beta@allmangasreader.com",
             update_url: "https://amr-releases.com/versions/firefox-beta.json"
         }

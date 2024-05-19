@@ -11,7 +11,8 @@
                     <v-icon>mdi-book-open-variant</v-icon>
                     {{ i18n("refresh_chapters") }}
                 </v-btn>
-                {{ i18n("refresh_last", lastchaps) }}
+                {{ i18n("refresh_last", lastchaps) }} <br />
+                {{ i18n("refresh_next", nextUpdateIn) }}
             </v-col>
         </v-row>
         <v-row>
@@ -40,9 +41,9 @@
 
 <script>
 import i18n from "../../amr/i18n"
-import * as utils from "../../amr/utils"
 import browser from "webextension-polyfill"
 import storedb from "../../amr/storedb"
+import { lastTime } from "../../shared/utils"
 
 export default {
     data() {
@@ -69,10 +70,15 @@ export default {
          * Convert timestamps in readable ... ago
          */
         lastchaps: function () {
-            return utils.lasttime(this.ticker - this.$store.state.options.lastChaptersUpdate)
+            return lastTime(this.ticker - this.$store.state.options.lastChaptersUpdate)
+        },
+        nextUpdateIn: function () {
+            const options = this.$store.state.options
+            const nextUpdateTs = options.lastChaptersUpdate + options.updatechap
+            return lastTime(nextUpdateTs - this.ticker)
         },
         lastmirs: function () {
-            return utils.lasttime(this.ticker - this.$store.state.options.lastMirrorsUpdate)
+            return lastTime(this.ticker - this.$store.state.options.lastMirrorsUpdate)
         }
     },
     methods: {

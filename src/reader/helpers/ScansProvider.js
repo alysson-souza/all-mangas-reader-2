@@ -1,5 +1,6 @@
-import mirrorImpl from "../state/mirrorimpl"
 import EventBus from "./EventBus"
+import browser from "webextension-polyfill"
+import pageData from "../state/pagedata"
 
 /**
  * This file handles Scans Loading, (unique scan and all scans from a chapter)
@@ -25,7 +26,7 @@ export const scansProvider = {
         scp.onloadchapter = () => EventBus.$emit("chapter-loaded")
         scp.onloadscan = () => {
             // change progress when scan loads
-            let nbloaded = this.state.scans.reduce((acc, sc) => acc + (sc.loading ? 0 : 1), 0)
+            const nbloaded = this.state.scans.reduce((acc, sc) => acc + (sc.loading ? 0 : 1), 0)
             this.state.progress = Math.floor((nbloaded / this.state.scans.length) * 100)
             this.state.loaded = nbloaded === this.state.scans.length
             EventBus.$emit("loaded-scan")
@@ -46,10 +47,10 @@ export const scansProvider = {
     },
 
     /** Initialize state with a whole list of scans urls */
-    init(scansUrl, inorder = false) {
+    init(scansUrl, mirror, inorder = false) {
         if (!scansUrl || scansUrl.length === 0) return
 
-        let scp = new ScansLoader(scansUrl)
+        const scp = new ScansLoader(scansUrl, mirror)
         this.initWithProvider(scp)
 
         // initialize scans
@@ -61,20 +62,20 @@ export const scansProvider = {
  * Create a ScansLoader, which loads scans in background
  */
 export const ScansLoader = class {
-    constructor(scansUrl) {
+    constructor(scansUrl, mirror) {
         this.scans = [] // list of scans [{url, loading, error, doublepage, scan HTMLImage}]
         this.loaded = false // top indicating all scans are loaded
         this.onloadchapter = () => {} // function to call when chapter is fully loaded
         this.onloadscan = () => {} // function to call when scan is loaded
 
         // initialize scans
-        this.scans.push(...scansUrl.map(url => new ScanLoader(url)))
+        this.scans.push(...scansUrl.map(url => new ScanLoader(url, mirror)))
     }
 
     /** Load all scans */
     async load(inorder = false) {
         // we create a new Promise to encapsulate the scan's load function because we need to call onloadscan after each load unitarily. We can't use then() to chain the load because that will trigger the load promise and we want to be able to call it in order OR all at the same time)
-        let pload = this.scans.map(
+        const pload = this.scans.map(
             sc =>
                 new Promise(async (resolve, reject) => {
                     await sc.load() // loads the scan
@@ -102,16 +103,34 @@ export const ScansLoader = class {
  * Handle a scan load, keeps original Image object to clone to insert scan somewhere
  */
 class ScanLoader {
-    /** Build the scan initial state */
-    constructor(url) {
-        this.url =
-            url /* url of the image, not necessarily the url of the picture but the one used to retrieve the picture */
-        this.loading = true /* is currently loading */
-        this.error = false /* is the scan rendering error */
-        this.doublepage = false /* is the scan a double page */
-        this.thinscan = false /* is the scan super thin (height > 3 * width) */
-        this.scan = document.createElement("img") /* Image containing the loaded scan, will be cloned to be displayed */
-        this.retried = false /* Has an auto retry of errors been attempted */
+    /**
+     * Build the scan initial state
+     * @param url {string}
+     * @param mirror {{ mirrorName: string }}
+     */
+    constructor(url, mirror) {
+        this.mirror = mirror
+
+        /* url of the image, not necessarily the url of the picture but the one used to retrieve the picture */
+        this.url = url
+
+        /* is currently loading */
+        this.loading = true
+
+        /** is the scan rendering error **/
+        this.error = false
+
+        /** is the scan a double page **/
+        this.doublepage = false
+
+        /** is the scan super thin (height > 3 * width) **/
+        this.thinscan = false
+
+        /** Image containing the loaded scan, will be cloned to be displayed **/
+        this.scan = document.createElement("img")
+
+        /* Has an auto retry of errors been attempted */
+        this.retried = false
     }
     /** Loads the scan */
     load() {
@@ -128,7 +147,7 @@ class ScanLoader {
 
         return new Promise(async (resolve, reject) => {
             this.scan.addEventListener("load", () => {
-                let img = this.scan
+                const img = this.scan
                 if (!img) return
                 /** Check if scan is double page */
                 if (img.width > img.height) {
@@ -142,7 +161,7 @@ class ScanLoader {
                 this.error = false
                 resolve()
             })
-            let manageError = e => {
+            const manageError = e => {
                 console.error("An error occurred while loading an image")
                 console.error(e)
                 this.loading = false
@@ -157,8 +176,17 @@ class ScanLoader {
                 manageError(e)
             })
             try {
+                // @TODO this used to replace url of prefix "https://.." to just "//.."
+                // Does not really work with fetch?
+                // const url = this.url.replace(/(^\w+:|^)/, "")
+
                 // Load the scan using implementation method
-                await mirrorImpl.get().getImageFromPageAndWrite(this.url.replace(/(^\w+:|^)/, ""), this.scan)
+                this.scan.src = await browser.runtime.sendMessage({
+                    action: "getImageUrlFromPageUrl",
+                    url: this.url,
+                    mirror: this.mirror.mirrorName,
+                    language: pageData.state.language
+                })
             } catch (e) {
                 manageError(e)
             }

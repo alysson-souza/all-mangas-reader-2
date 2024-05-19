@@ -1,5 +1,3 @@
-import * as utils from "./utils"
-
 // 0/1 have different meanings
 export const MANGA_READ_START = 0
 export const MANGA_READ_STOP = 1
@@ -10,14 +8,15 @@ export const MANGA_UPDATE_STOP = 0
 /**
  * Manga entry followed in AMR
  */
-export default class {
+export default class Manga {
     /**
      * Manga object constructor, copy properties and check validation
      * @param {*} obj
+     * @param {string} key
      */
-    constructor(obj) {
+    constructor(obj, key) {
         /** key of the manga */
-        this.key = utils.mangaKey(obj.url, obj.mirror, obj.language)
+        this.key = key
         this.mirror = obj.mirror
         this.name = obj.name
         this.url = obj.url

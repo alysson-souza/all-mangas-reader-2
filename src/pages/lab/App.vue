@@ -1,15 +1,41 @@
 <template>
     <v-app>
-        <v-toolbar app max-height="64">
+        <v-app-bar app max-height="64">
             <img src="/icons/icon_32.png" alt="All Mangas Reader" />
-            <v-toolbar-title v-text="title"></v-toolbar-title>
+            <v-toolbar-title>{{ title }}</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn icon @click.stop="options = true">
-                <v-icon>mdi-settings</v-icon>
+                <v-icon>mdi-cog</v-icon>
             </v-btn>
-        </v-toolbar>
+
+            <v-btn icon @click.stop="showMigrations = !showMigrations">
+                <v-icon v-if="showMigrations">mdi-eye-off</v-icon>
+                <v-icon v-if="!showMigrations">mdi-eye</v-icon>
+            </v-btn>
+        </v-app-bar>
         <v-main>
             <v-container fluid>
+                <div>
+                    <div>
+                        Migration progress {{ migrationProgress }}% ({{ getStats.newMirrorCount }}/{{
+                            getStats.oldMirrorCount
+                        }}). Disabled mirrors {{ getStats.disabledMirrorCount }}
+
+                        <v-icon small>mdi-settings</v-icon>
+                        <v-progress-linear height="20" color="success" :value="migrationProgress"></v-progress-linear>
+                    </div>
+                    <div v-if="showMigrations">
+                        <v-row v-for="(mirrorToMigrate, index) in getStats.mirrorsToMigrate" :key="index" class="ma-1">
+                            <v-col>
+                                <img :src="mirrorToMigrate.mirrorIcon" :alt="mirrorToMigrate.mirrorName" />
+                                <a :href="mirrorToMigrate.home" target="_blank">{{ mirrorToMigrate.mirrorName }}</a>
+                                - ({{ mirrorToMigrate.abstract || "Individual" }})
+                                <v-icon small v-if="mirrorToMigrate.disabled">mdi-stop</v-icon>
+                            </v-col>
+                        </v-row>
+                    </div>
+                </div>
+
                 <v-form ref="form" @submit.prevent="loadCourse" id="mirrorTests">
                     <div class="text-h5">Select the mirror to test :</div>
                     <v-row>
@@ -49,7 +75,6 @@
                                 color="primary"
                                 type="submit"
                                 form="mirrorTests"
-                                @click="loadCourse()"
                                 >Load tests</v-btn
                             >
                         </v-col>
@@ -71,8 +96,8 @@
                         v-for="(test, index) in finishedTests"
                         :key="index"
                         :class="
-                            'ma-4 pa-4 elevation-1 rounded-xl darken-1 ' +
-                            (testsResults[index] && testsResults[index].passed ? 'brown' : 'danger')
+                            'ma-4 pa-4 elevation-1 rounded-xl ' +
+                            (testsResults[index] && testsResults[index].passed ? 'green' : 'danger')
                         ">
                         <v-col cols="3">
                             <v-icon
@@ -100,8 +125,8 @@
                             <div
                                 v-if="testsResults[index].output.length > 0"
                                 :class="
-                                    (testsResults[index] && testsResults[index].passed ? 'brown' : 'danger') +
-                                    ' darken-4 ma-2 pa-2 elevation-1'
+                                    (testsResults[index] && testsResults[index].passed ? 'grey' : 'danger') +
+                                    ' ma-2 pa-2 elevation-1'
                                 ">
                                 <!-- display generated oututs during test -->
                                 <div v-for="(out, ind) in testsResults[index].output" :key="ind">
@@ -113,7 +138,7 @@
                                         v-model="out.currentValue"
                                         class="list-results"></v-select>
                                     <div v-if="out.display === 'select'">
-                                        Selected value : <i>{{ out.currentValue }}</i>
+                                        Selected value : <i class="text-break">{{ out.currentValue }}</i>
                                     </div>
                                     <span v-if="out.display === 'object'">{{
                                         JSON.stringify(out.value, null, 4)
@@ -164,12 +189,19 @@ import Options from "../components/Options"
 import tests from "./tests"
 import browser from "webextension-polyfill"
 import Vue from "vue"
+import { getMirrorHelper } from "../../mirrors/MirrorHelper"
+import { getMirrorLoader } from "../../mirrors/MirrorLoader"
+import { MigrationService } from "../../shared/migration/MigrationService"
 
 export default {
     data() {
+        const mirrorHelper = getMirrorHelper(this.$store.state.options)
+        const mirrorLoader = getMirrorLoader(mirrorHelper)
         return {
             title: "All Mangas Reader Lab",
+            migrationService: new MigrationService(mirrorLoader),
             options: false,
+            showMigrations: false,
             loadingMirrors: false,
             loadingTests: false,
             current: "", // current selected mirror
@@ -186,24 +218,32 @@ export default {
     },
     computed: {
         mirrors() {
-            return this.$store.state.mirrors.all.filter(m => m.disabled == undefined || !m.disabled)
+            return this.$store.state.mirrors.all
+                .filter(m => !m.disabled)
+                .sort((a, b) => a.mirrorName.localeCompare(b.mirrorName))
         },
         nbtests() {
             return this.tests.length
         },
         nbfailed() {
             let nb = 0
-            for (let res of this.testsResults) {
+            for (const res of this.testsResults) {
                 if (!res.passed) nb++
             }
             return nb
         },
         finishedTests() {
             //<v-row  v-if="currentTest >= 0 && index <= currentTest && testsResults.length >= index" v-for="(test, index) in tests"
-            let fin = this.tests.filter(
+            const fin = this.tests.filter(
                 (val, index) => this.currentTest >= 0 && index <= this.currentTest && this.testsResults.length >= index
             )
             return fin
+        },
+        getStats() {
+            return this.migrationService.stats()
+        },
+        migrationProgress() {
+            return Math.round((this.getStats.newMirrorCount / this.getStats.oldMirrorCount) * 100)
         }
     },
     name: "App",
@@ -247,28 +287,28 @@ export default {
          */
         async loadTests(step = 0, substep = 0) {
             console.log("Load the test course " + this.curtest)
-            let testid = this.curtest
+            const testid = this.curtest
             if (step === substep && step === 0) {
                 this.testsResults = []
                 this.currentTest = 0
                 this.forcedValues = {}
                 this.outputs = {}
             }
-            let mirror = this.mirrors.find(mir => mir.mirrorName === this.current)
+            const mirror = this.mirrors.find(mir => mir.mirrorName === this.current)
             let i = 0
-            for (let test of this.tests) {
+            for (const test of this.tests) {
                 i++
                 if (step !== 0 && i <= step) continue
                 this.currentTest = i - 1
                 let breakingFail = false
                 try {
                     let passed = true // result of current test
-                    let results = [] // text results of sub tests of the test
-                    let testouts = []
+                    const results = [] // text results of sub tests of the test
+                    const testouts = []
                     if (test.set) {
                         // values to set before testing
-                        for (let toset of test.set) {
-                            let spl = toset.split(" ")
+                        for (const toset of test.set) {
+                            const spl = toset.split(" ")
                             if (spl.length > 1) {
                                 if (!this.outputs[spl[1]])
                                     throw { message: "the required input " + spl[1] + " is missing." }
@@ -279,10 +319,10 @@ export default {
                             }
                         }
                     }
-                    for (let unit of test.tests) {
+                    for (const unit of test.tests) {
                         let isok, text // return from the test function
                         let tocall // test function to call
-                        let inputs = [] // inputs of the test function (first parameter is mirror)
+                        const inputs = [] // inputs of the test function (first parameter is mirror)
                         let output // output of the test function
                         if (typeof unit === "function") {
                             tocall = unit
@@ -291,7 +331,7 @@ export default {
                             // bind inputs
                             if (unit.input) {
                                 for (let inp of unit.input) {
-                                    let spl = inp.split(" ")
+                                    const spl = inp.split(" ")
                                     if (spl.length > 1) {
                                         let outname = spl[1]
                                         let optional = false
@@ -331,12 +371,12 @@ export default {
                             }
                         }
                         try {
-                            let ress = await tocall.bind(this)(mirror, ...inputs)
+                            const ress = await tocall.bind(this)(mirror, ...inputs)
                             if (testid !== this.curtest) {
                                 console.log("Interrupt the " + testid + " test course, has been deprecated")
                                 return // the current test course is deprecated, a new one has been launched
                             }
-                            let allres = []
+                            const allres = []
                             // if there is only one result, add it to the result array
                             if (ress.length > 0 && (ress[0] === true || ress[0] === false)) {
                                 allres.push(ress)
@@ -348,8 +388,8 @@ export default {
                                 // for all results of unit test
                                 if (unit.output !== undefined && unit.output.length > 0 && cur_outputs.length > 0) {
                                     for (let o = 0; o < cur_outputs.length; o++) {
-                                        let output = cur_outputs[o]
-                                        let name = unit.output[o]
+                                        const output = cur_outputs[o]
+                                        const name = unit.output[o]
                                         this.outputs[name] = output // save the output
                                         testouts.push({
                                             name: name,
@@ -406,10 +446,10 @@ export default {
         selectEntryRandomly(outputName) {
             if (this.forcedValues[outputName]) return this.forcedValues[outputName]
             for (let i = 0; i < this.currentTest; i++) {
-                for (let out of this.testsResults[i].output) {
+                for (const out of this.testsResults[i].output) {
                     if (out.name === outputName) {
                         //select a random value
-                        let val = out.value[Math.floor(Math.random() * out.value.length)].value
+                        const val = out.value[Math.floor(Math.random() * out.value.length)].value
                         //set it as model
                         out.currentValue = val
                         //return it
@@ -424,7 +464,7 @@ export default {
          */
         getEntryValue(outputName) {
             for (let i = 0; i < this.currentTest; i++) {
-                for (let out of this.testsResults[i].output) {
+                for (const out of this.testsResults[i].output) {
                     if (out.name === outputName) {
                         //return it
                         return out.currentValue
@@ -438,7 +478,7 @@ export default {
          */
         getEntryText(outputName) {
             for (let i = 0; i < this.currentTest; i++) {
-                for (let out of this.testsResults[i].output) {
+                for (const out of this.testsResults[i].output) {
                     if (out.name === outputName) {
                         //return the text
                         return out.value.find(el => el.value === out.currentValue).text
@@ -463,8 +503,8 @@ export default {
             // slice the results after the generated output
             let i = 0,
                 found = false
-            for (let res of this.testsResults) {
-                for (let out of res.output) {
+            for (const res of this.testsResults) {
+                for (const out of res.output) {
                     if (found === true) {
                         //delete outputs found after from previous outputs
                         delete this.outputs[out.name]

@@ -34,7 +34,7 @@
                                 <!-- name of the manga -->
                                 <v-col cols="4">
                                     <strong>
-                                        {{ res[fmtkey] === undefined ? "" : res[fmtkey][0].name }}
+                                        {{ res[fmtkey]?.[0]?.name ?? "— ⚠️" }}
                                     </strong>
                                 </v-col>
                                 <!-- mirror icons buttons to add to list -->
@@ -79,7 +79,7 @@
 import i18n from "../../amr/i18n"
 import browser from "webextension-polyfill"
 import SearchMirror from "./SearchMirror"
-import * as utils from "../../amr/utils"
+import { formatMangaName, getUnifiedLang, mangaKey } from "../../shared/utils"
 import Flag from "./Flag"
 
 export default {
@@ -87,6 +87,14 @@ export default {
         return {
             searchwrite: "",
             search: "",
+            /**
+             * Object that contains the search results grouped by language
+             * @type {{
+             *      [lanaugeKey: string]: {
+             *         [mirrorName: string]: { url: string, name: string, mirror: string, adding: boolean }[]
+             *      }
+             *  }}
+             */
             results: {},
             langs: [],
             langtabs: null
@@ -124,16 +132,27 @@ export default {
          * Add mangas to results
          */
         addMangas(mgs, searchphrase, languages) {
-            if (searchphrase !== this.search) return
+            if (searchphrase !== this.search) {
+                return
+            }
             // Set current lang of the implementation, multi if multiple is supported
             let curmirlang = "aa" // contains manga in multiple languages (aa to be first in list)
-            if (languages.split(",").length === 1) curmirlang = utils.getUnifiedLang(languages) // use unified lang so if a manga lang is 'gb' and another 'en', both will be under 'en'
+            if (languages.split(",").length === 1) {
+                // use unified lang so if a manga lang is 'gb' and another 'en', both will be under 'en'
+                curmirlang = getUnifiedLang(languages)
+            }
 
             // add new mangas to grouped list
-            let addMgs = (mgs, lang) => {
-                for (let mg of mgs) {
+            const addMgs = (mgs, lang) => {
+                for (const mg of mgs) {
+                    // Need to handle a case where we do not have valid manga, like error
+                    // [{ "error": "not found", "message": "No Series found" }]
+                    if (!mg.url || !mg.name) {
+                        continue
+                    }
+
                     mg.adding = false // is currently be added to list (display progress)
-                    let mgst = utils.formatMgName(mg.name)
+                    const mgst = formatMangaName(mg.name)
                     if (!this.results[lang]) this.results[lang] = {}
                     if (this.results[lang][mgst] !== undefined) {
                         this.results[lang][mgst].push(mg)
@@ -148,23 +167,33 @@ export default {
                 addMgs(mgs, curmirlang)
             } else {
                 // implementation returns object which keys are languages : {"en" : [[]], "fr": [[]]}
-                for (let l in mgs) {
-                    addMgs(mgs[l], utils.getUnifiedLang(l))
+                for (const l in mgs) {
+                    addMgs(mgs[l], getUnifiedLang(l))
                 }
             }
 
-            let lsts = {}
-            for (let l in this.results) {
-                // build sorted list of keys
-                let tmplst = []
-                Object.keys(this.results[l]).forEach(key => tmplst.push(this.results[l][key]))
+            const SORTED_KEY = "__SORTEDKEYS__"
+            for (const languageKey in this.results) {
+                const languageRecord = this.results[languageKey]
+                /** @type {{ name: string }[][]} **/
+                const tempList = []
+
+                Object.entries(languageRecord).forEach(([mangaKey, value]) => {
+                    if (mangaKey !== SORTED_KEY) {
+                        tempList.push(value)
+                    }
+                })
+
                 // sort list of lists by length and alphabetically inside
-                tmplst.sort((a, b) => {
-                    if (!a[0].name) return -1
+                tempList.sort((a, b) => {
+                    if (!a[0].name) {
+                        return -1
+                    }
                     return a.length === b.length ? a[0].name.localeCompare(b[0].name) : b.length - a.length
                 })
+
                 //add a property to sort entries in object
-                this.results[l]["__SORTEDKEYS__"] = tmplst.map(lst => utils.formatMgName(lst[0].name))
+                languageRecord[SORTED_KEY] = tempList.map(lst => formatMangaName(lst[0].name))
             }
 
             this.langs = Object.keys(this.results).sort()
@@ -192,11 +221,8 @@ export default {
          * True if manga is in reading list
          */
         isInList(mg) {
-            return (
-                this.$store.state.mangas.all.findIndex(
-                    m => m.key.indexOf(utils.mangaKey(mg.url, mg.mirror, mg.language)) === 0
-                ) !== -1
-            )
+            const key = mangaKey({ url: mg.url, mirror: mg.mirror, language: mg.language, rootState: this.$store })
+            return this.$store.state.mangas.all.some(m => m.key.indexOf(key) === 0)
         },
 
         handleIconClick(mg) {
@@ -215,6 +241,7 @@ export default {
 </script>
 <style data-amr="true">
 .searchpanel {
+    background: #ffffff;
     overflow: auto;
 }
 .mirrors-cont {

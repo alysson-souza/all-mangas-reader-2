@@ -35,7 +35,7 @@ export default {
          * called on error while loading image scan
          */
         async getScanUrl() {
-            let scan = await browser.runtime.sendMessage({
+            const scan = await browser.runtime.sendMessage({
                 action: "getScanUrl",
                 url: this.bookmark.scanUrl,
                 mirror: this.bookmark.mirror

@@ -1,4 +1,4 @@
-window["NextJs"] = function (options) {
+globalThis["NextJs"] = function (options) {
     this.canListFullMangas = false
     this.defaultOptions = {
         nextDataRegex: /&lt;script\s+id="__NEXT_DATA__"\s+type="application\/json"&gt;(.*?)&lt;\/script&gt;/m,

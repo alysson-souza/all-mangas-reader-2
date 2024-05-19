@@ -1,6 +1,5 @@
 import storedb from "../../amr/storedb"
-import * as utils from "../../amr/utils"
-import mirrors from "./mirrors"
+import { bookmarkKey } from "../../shared/utils"
 
 /**
  *  initial state of the bookmarks module
@@ -20,14 +19,13 @@ const getters = {
     allBookmarks: state => state.all
 }
 
-// actions
 const actions = {
     /**
      * Get bookmarks from local database
      * @param {*} param0
      */
     async initBookmarksFromDB({ commit, dispatch }) {
-        let bookmarks = await storedb.getBookmarks() // Get bookmarks from local database
+        const bookmarks = await storedb.getBookmarks() // Get bookmarks from local database
         // set bookmarks list in store
         commit("setBookmarks", bookmarks)
     },
@@ -36,29 +34,33 @@ const actions = {
      * @param {*} param0
      * @param {*} bm
      */
-    async createBookmark({ commit }, bm) {
+    async createBookmark({ commit, rootState }, bm) {
+        if (!bm.key) {
+            bm.key = bookmarkKey({ bookmark: bm, rootState: { state: rootState } })
+        }
         commit("createBookmark", bm)
         await storedb.storeBookmark(bm)
-        utils.debug("created description of bookmark " + bm.key + " in db")
     },
     /**
      * Updates the note on a bookmark
      * @param {*} param0
      * @param {*} bm bookmark with new note
      */
-    async updateBookmarkNote({ commit }, bm) {
+    async updateBookmarkNote({ commit, rootState }, bm) {
+        if (!bm.key) {
+            bm.key = bookmarkKey({ bookmark: bm, rootState: { state: rootState } })
+        }
         commit("updateBookmarkNote", bm)
         await storedb.storeBookmark(bm)
     },
     /**
      * Delete a bookmark in the store
      * @param {*} param0
-     * @param {*} key
+     * @param {*} bm existing bookmark
      */
-    async deleteBookmark({ commit }, { chapUrl, scanUrl, mirror }) {
-        let key = utils.mangaKey(chapUrl, mirror) + (scanUrl ? "_" + utils.mangaKey(scanUrl, mirror) : "")
-        let bm = state.all.find(bookmark => bookmark.key === key)
-        if (bm !== undefined) {
+    async deleteBookmark({ commit, rootState }, bm) {
+        const key = bookmarkKey({ bookmark: bm, rootState: { state: rootState } })
+        if (state.all.some(bookmark => bookmark.key === key)) {
             commit("deleteBookmark", key)
             await storedb.deleteBookmark(key)
         }
@@ -89,8 +91,7 @@ const mutations = {
      */
     createBookmark(state, bm) {
         if (!bm.key) {
-            bm.key =
-                utils.mangaKey(bm.chapUrl, bm.mirror) + (bm.scanUrl ? "_" + utils.mangaKey(bm.scanUrl, bm.mirror) : "")
+            bm.key = bookmarkKey({ bookmark: bm, rootState: this.$store })
         }
         state.all.push(bm)
     },
@@ -100,9 +101,7 @@ const mutations = {
      * @param {*} bm bookmark with new note
      */
     async updateBookmarkNote(state, bm) {
-        let key =
-            utils.mangaKey(bm.chapUrl, bm.mirror) + (bm.scanUrl ? "_" + utils.mangaKey(bm.scanUrl, bm.mirror) : "")
-        let bmn = state.all.find(bookmark => bookmark.key === key)
+        const bmn = state.all.find(bookmark => bookmark.key === bm.key)
         if (bmn !== undefined) {
             bmn.note = bm.note
         }
@@ -113,7 +112,7 @@ const mutations = {
      * @param {*} key key of the bookmark to delete
      */
     deleteBookmark(state, key) {
-        let bmindex = state.all.findIndex(bookmark => bookmark.key === key)
+        const bmindex = state.all.findIndex(bookmark => bookmark.key === key)
         if (bmindex >= 0) {
             state.all.splice(bmindex, 1)
         }

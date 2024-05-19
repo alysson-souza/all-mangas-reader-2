@@ -1,4 +1,4 @@
-window["MangaStream_1_1_4Abs"] = function (options) {
+globalThis["MangaStream_1_1_4Abs"] = function (options) {
     this.defaultOptions = {
         base_url: "",
         series_list_selector: '.listupd a[href*="/manga/"]',

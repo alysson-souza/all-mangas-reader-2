@@ -154,7 +154,7 @@
 </template>
 <script>
 import i18n from "../../amr/i18n"
-import * as utils from "../utils"
+import { countUsed } from "../../shared/utils"
 import Flag from "./Flag"
 
 const types_order = ["native", "language", undefined] // order of displayed categories types
@@ -187,12 +187,12 @@ export default {
             )
         },
         sortedCategories: function () {
-            let cats = this.categories // This is just to get rid of the eslint error
+            const cats = this.categories // This is just to get rid of the eslint error
             return cats.sort((a, b) => {
                 if (typeof a === "string") {
                     return a.localeCompare(b)
                 }
-                let at = types_order.findIndex(t => t === a.type),
+                const at = types_order.findIndex(t => t === a.type),
                     bt = types_order.findIndex(t => t === b.type)
                 return at === bt ? a.name.localeCompare(b.name) : at - bt
             })
@@ -250,7 +250,7 @@ export default {
             this.deleteCatDialog = false
         },
         onlyMe(cat) {
-            for (let c of this.categories) {
+            for (const c of this.categories) {
                 if (c.name === cat.name) {
                     this.$store.dispatch("updateCategory", {
                         name: c.name,
@@ -265,10 +265,10 @@ export default {
             }
         },
         countUsed(cat) {
-            return utils.countUsed(cat, this.$store.state.mangas.all)
+            return countUsed(cat, this.$store.state.mangas.all, this.$store.state.mirrors.all)
         },
         stateAll(state) {
-            for (let c of this.categories) {
+            for (const c of this.categories) {
                 this.$store.dispatch("updateCategory", {
                     name: c.name,
                     catstate: state

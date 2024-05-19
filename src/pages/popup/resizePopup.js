@@ -33,7 +33,7 @@ class PopupResizer {
         }
         if (this.bottomel) {
             if (this.starttime == 0) this.starttime = Date.now()
-            let cur = this.bottomel.getBoundingClientRect().bottom
+            const cur = this.bottomel.getBoundingClientRect().bottom
             if (cur !== this.oldHeight && !this.blocked) {
                 this.oldHeight = cur
                 document.getElementsByTagName("body")[0].style["height"] = cur + "px"
@@ -61,7 +61,7 @@ class PopupResizer {
         //console.log("set height to current");
         this.blocked = false
         if (!this.bottomel) this.bottomel = document.getElementById("__bottom_app__")
-        let cur = this.bottomel.getBoundingClientRect().bottom
+        const cur = this.bottomel.getBoundingClientRect().bottom
         document.getElementsByTagName("body")[0].style["height"] = cur + "px"
         document.documentElement.style["height"] = cur + "px"
         this.clickWindow()

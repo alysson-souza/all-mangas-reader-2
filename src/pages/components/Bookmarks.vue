@@ -55,8 +55,8 @@
                 }}</v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="red darken-1" flat @click.native="reallyDeleteBm()">{{ i18n("button_yes") }}</v-btn>
-                    <v-btn color="grey darken-1" flat @click.native="deleteBookmarkDialog = false">{{
+                    <v-btn color="red darken-1" text @click.native="reallyDeleteBm()">{{ i18n("button_yes") }}</v-btn>
+                    <v-btn color="grey darken-1" text @click.native="deleteBookmarkDialog = false">{{
                         i18n("button_no")
                     }}</v-btn>
                 </v-card-actions>
@@ -85,10 +85,10 @@
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="primary darken-1" flat @click.native="editBookmarkDialog = false">{{
+                    <v-btn color="primary darken-1" text @click.native="editBookmarkDialog = false">{{
                         i18n("button_cancel")
                     }}</v-btn>
-                    <v-btn color="primary darken-1" flat @click.native="reallyEditBm">{{ i18n("button_save") }}</v-btn>
+                    <v-btn color="primary darken-1" text @click.native="reallyEditBm">{{ i18n("button_save") }}</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -118,8 +118,8 @@ export default {
         sortBookmarkList: function () {
             // eslint-disable-next-line vue/no-side-effects-in-computed-properties, vue/no-mutating-props
             return this.bookmarkList.sort((a, b) => {
-                let cmp = a.name.localeCompare(b.name)
-                let cmpc = a.chapName.localeCompare(b.chapName)
+                const cmp = a.name.localeCompare(b.name)
+                const cmpc = a.chapName.localeCompare(b.chapName)
                 let cmps = 0
                 if (a.scanName && b.scanName) {
                     if (typeof a.scanName === "string") {
@@ -174,7 +174,7 @@ export default {
         },
         /** Called when BookmarkScan updates the url to display */
         changeUrl({ url, key }) {
-            let nbm = this.bookmarkList.find(bm => bm.key === key)
+            const nbm = this.bookmarkList.find(bm => bm.key === key)
             Vue.set(nbm, "displayedUrl", url)
         }
     },

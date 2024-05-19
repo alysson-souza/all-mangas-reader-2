@@ -36,15 +36,14 @@
                             <v-tooltip top content-class="icon-ttip">
                                 <template v-slot:activator="{ on }">
                                     <img
-                                        v-if="isMirrorEnabled && !manga.updateError"
+                                        v-if="
+                                            isMirrorEnabled /*&& !manga.updateError TODO: Re-enable this once the underlying issue is solved */
+                                        "
                                         class="m-icon"
                                         width="16"
                                         height="16"
                                         :src="mirror.mirrorIcon"
                                         v-on="on" />
-                                    <v-icon v-else-if="isMirrorEnabled && manga.updateError" small v-on="on"
-                                        >mdi-alert-outline</v-icon
-                                    >
                                     <v-icon v-else small v-on="on">mdi-cancel</v-icon>
                                 </template>
                                 <span>
@@ -409,6 +408,14 @@
                                 {{ i18n("list_details_reset_name") }}
                             </v-list-item-title>
                         </v-list-item>
+
+                        <!-- Copy manga JSON -->
+                        <v-list-item link @click="copyMangaDebug()">
+                            <v-list-item-title>
+                                <v-icon x-small left :class="loader">mdi-clipboard-outline </v-icon>
+                                Debug
+                            </v-list-item-title>
+                        </v-list-item>
                     </v-list>
                 </v-menu>
             </v-col>
@@ -454,8 +461,7 @@
 <script>
 import i18n from "../../amr/i18n"
 import browser from "webextension-polyfill"
-import * as utils from "../utils"
-import * as amrutils from "../../amr/utils"
+import { chapPath, darkText, getColor, mangaKey } from "../../shared/utils"
 import Flag from "./Flag"
 
 export default {
@@ -499,7 +505,7 @@ export default {
         },
         // current selected value
         selValue: function () {
-            return amrutils.chapPath(this.manga.lastChapterReadURL)
+            return chapPath(this.manga.lastChapterReadURL)
         },
         // AMR options
         options: function () {
@@ -519,7 +525,7 @@ export default {
         // format chapters list to be displayed
         chapsForSelect: function () {
             return this.listChaps.map(arr => {
-                return { value: amrutils.chapPath(arr[1]), text: arr[0], url: arr[1] }
+                return { value: chapPath(arr[1]), text: arr[0], url: arr[1] }
             })
         },
         showProgress: function () {
@@ -538,14 +544,19 @@ export default {
         },
         // number of days since last chapter has been published
         timeUpdated() {
-            let nbdays = Math.floor((Date.now() - this.manga.upts) / (1000 * 60 * 60 * 24))
+            const nbdays = Math.floor((Date.now() - this.manga.upts) / (1000 * 60 * 60 * 24))
             return nbdays
         },
         // list of languages
         languages() {
-            let alllangs = this.manga.languages === undefined ? [] : this.manga.languages.split(",")
+            const alllangs = this.manga.languages === undefined ? [] : this.manga.languages.split(",")
             return alllangs.filter(lang => {
-                let keylang = amrutils.mangaKey(this.manga.url, this.manga.mirror, lang)
+                const keylang = mangaKey({
+                    url: this.manga.url,
+                    mirror: this.manga.mirror,
+                    language: lang,
+                    rootState: this.$store
+                })
                 return this.$store.state.mangas.all.findIndex(m => m.key === keylang) === -1
             })
         },
@@ -583,7 +594,7 @@ export default {
             }
         },
         isDarkText: function () {
-            return utils.darkText(this.manga, this.manga.hasNew, this.options)
+            return darkText(this.manga, this.manga.hasNew, this.options)
         },
         categories() {
             return this.options.categoriesStates.filter(cat => cat.type !== "native" && cat.type != "language")
@@ -596,7 +607,10 @@ export default {
         },
         // bookmarks for this group
         bookmarks: function () {
-            return this.$store.state.bookmarks.all.filter(bm => this.manga.key.indexOf(amrutils.mangaKey(bm.url)) >= 0)
+            return this.$store.state.bookmarks.all.filter(bm => {
+                const key = mangaKey({ url: bm.url, rootState: this.$store })
+                return this.manga.key.indexOf(key) >= 0
+            })
         }
     },
     methods: {
@@ -615,14 +629,14 @@ export default {
          */
         color: function (light, invertable = false) {
             if (this.options.alternateColors && invertable) {
-                let odd = (this.groupIndex + 1) % 2 == 1
+                const odd = (this.groupIndex + 1) % 2 == 1
                 light += odd ? -2 : 1
             }
-            return utils.getColor(this.manga, this.manga.hasNew, this.options, light)
+            return getColor(this.manga, this.manga.hasNew, this.options, light)
         },
         /** get the real url from the value (url path used in select) in the manga list */
         urlFromValue: function (val) {
-            return this.listChaps.find(arr => amrutils.chapPath(arr[1]) === val)[1]
+            return this.listChaps.find(arr => chapPath(arr[1]) === val)[1]
         },
         /**
          * Mark last chapter as read
@@ -773,6 +787,14 @@ export default {
                 key: this.manga.key,
                 displayName: ""
             })
+        },
+        copyMangaDebug() {
+            const manga = JSON.stringify(this.manga, null, 2)
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(manga)
+            } else {
+                console.info(manga)
+            }
         },
         setOpenTrue() {
             this.canOpenTab = true

@@ -1,0 +1,1074 @@
+### V2.5.8
+  Changes:
+    * Added the options storage engine for manifest v3 so all options will sync ahead of release of version 3
+
+<<<<<<< HEAD:CHANGELOG
+### V2.5.6
+=======
+### V2.5.7
+>>>>>>> develop:CHANGELOG_OLD
+  Fixes:
+    * Fixed some issues with downloading chapters
+  
+  Mirror Fixes:
+    * Gourmet Scans - New domain
+    * Webtoons - Added 0.5 second delay when fetching chapter list pages
+    * Anigliscans - New Domain
+    * Cosmic Scans - New Domain
+    * Manhwa Top - Added anti cors headers to fetching chapter list
+    * Reset Scans - Fixed an annoyance which caused the count on unread chapters to be off by 1
+    * Manga Cultivator - New Domain
+
+### V2.5.5
+  Fixes:
+    * Zoom level not saved between sessions (Credit: @nonedark2008)
+
+  Mirror Fixes:
+    * Read Manga - Chapter list fix (Credit: @nonedark2008)
+    * Luminous Scans (Credit: @Kickunio)
+    * Batoto (Credit: @Kickunio)
+    * Reset Scans - Images loading
+    * Mint Manga - Chapter list fix (Credit: @nonedark2008)
+    * Leviatan Scans - Fix series name in reader
+    * MangaHub - Change cdn url
+    * Asura Scans - Chapter list and mangaurl change reverted (Credit: @nonedark2008)
+
+  New Mirrors:
+    * ManhwaHentai -  https://manhwahentai.me/ (Credit: @Kickunio)
+    * Animated Glitched Scans - https://anigliscans.com
+    * FM Team - https://fmteam.fr/
+    * Manga Clash - https://mangaclash.com/
+    * Nocturnal Scans - https://nocturnalscans.com
+    * Manhwa Freak - https://manhwafreak.com
+    * MangaHub - Change cdn url
+
+  Disabled Mirrors:
+    * Scan Trad disabled because the group disbanded
+
+  Note:
+    * For NHentai: This mirror does not support search, and each chapter is uploaded as its own series so this is not useful for tracking, 
+        just as a simple reader  replacemenet. Also chapters take a minute to load because a lot of background requests are needed to get all images
+### V2.5.4
+  Additions:
+    * New option in disable the bottom hover page navigation. It can be found in While Reading Mangas -> Chapter display mode -> Enable Bottom Hover Navigation
+  
+  Mirror Fixes:
+    * Scylla Scans - (Credit: @HenrikDK2)
+    * Read Manga / Mint Manga - Fix for image server selection (Credit: @nonedark2008)
+    * Manga Great - Fixed chapter list loading
+    * Leviatan Scans - Reverted change to image loading
+    * Toonily (.com) - Fixed image loading
+    * MangaHub - New cdn url format for images
+    * Luminous Scans - Removed the timestamp from series urls for accurate tracking
+    * Void Scans - Fixed image loading
+    * Mangadex - Fixed chapter loading issue
+  
+  New Mirror:
+    * Night Scans - https://nightscans.org
+
+### V2.5.3
+  New Mirrors:
+    * Scylla Scans - https://scyllascans.org/ (Credit: @HenrikDK2)
+    * Manga Lab - https://themangalab.com/
+    * Manhwa Top - https://manhwatop.com/
+    * Manga Read - https://www.mangaread.org/
+
+  Mirror Fixes:
+    * Luminous Scans - Fixed chapter list picking up an extra chapter first
+    * Tritinia Scans - New Domain
+    * Realm Scans - Url changes to mess with scraping
+    * Leviatan Scans - Fixed image loading
+    
+### V2.5.2
+  Changes:
+    * Added option to disable Magic Scroll
+  
+  Fixes:
+    * Fix gist sync with firefox (Credit: @JiPai)
+
+  New Mirror:
+    * Cosmic Scans - https://cosmicscans.com
+    * Banana Scan - https://banana-scan.com/ (Credit: @mmorain)
+
+  Mirror Fixes:
+    * Reset Scans - Fixed Chapter list text
+    * Manga Katana - Fixed image loading
+    * Flame Scans - Url change and image loading
+    * GD Scans - Domain changed
+    * MangaHub - Chapter list changed
+    * Manganato - Added another possible domain for chapters
+    * Luminous Scans - Updated to newer version of MangaStream
+    * Void Scans - Changed image source
+    * Lugnica Scan (Credit: @mmorain)
+### V2.5.1
+  Changes:
+    * Added last updated timestamp to import/export option
+    * Last updated timestamp is no longer added to gist sync (Credit: @JiPai)
+
+  Mirror Fixes:
+    * Aqua Manga - made change to remove ?style=list from chapter urls
+    * Astral Library - Removed www. from domain
+    * Sawamics - Fixed chapter list
+    * Reset Scans - Fixed issue with getting random series in chapter list and title not showing, full chapter list still missing
+    * Imperfect Comics - Switched site software
+    * Manganato - New chapter read url
+    * Komikcast - New domain
+
+### V2.5.0
+  This release comes with a new server to host them. There are issues with the automation on the existing server and I do not have access to change it.
+  All future chrome releases and firefox beta releases will come from https://amr-releases.com
+
+  Note: Search is currently not implimented on Reaper Scans, they have a new system and I do not want to delay a release while I work it out
+
+  Mirror Fixes:
+    * Manga Komi - Changed domain
+    * MangaFreak - Changed domain
+    * Reaper Scans - New website design
+    * Asura Scans - Changed domain
+
+### V2.4.9
+  New Mirrors:
+    * Leviatan Scans Spanish (https://es.leviatanscans.com/)
+    * Void Scans - Re-added void scans under the new domain for the group that took over the name
+
+  Mirror Fixes:
+    * Mangahub - Added api key to call
+    * MangaKatana - Fixed image fetching
+    * Twilight Scans - Fixed chapter list loading
+    * Luminous Scans - Removed the promo images from being loaded in the reader
+    * Leviatan Scans - Changed domain for new multi language releases
+    * Mangadex - 
+
+  Notes:
+    * Mangahub is currently working however with a api limit rate you can only read a few chapters at a time. I would advise using a different mirror
+    * The mangadex change has not been tested large scale because of an issue release beta versions, but it should not cause any issues
+    
+### V2.4.8
+  Mirror Fixes:
+    * Leviatan Scans - Fixed issue getting series name
+    * Mangahub - Fixed issue getting images
+    * Read Manga - Domain Change
+    * Reset Scans - Chapter url pattern change
+    * LHTranslation - Fix chapter list
+    * Luminous Scans - Removed timestamps from chapter list
+    * Mangadex - Increased the max chapter count to handle larger lists
+    * Manga Sushi - Domain Change
+
+  Disabled Mirrors:
+    * Arang Scans
+
+  Changes:
+    * Added code to allow us to customize any request header, even normally protected ones    
+### V2.4.7
+  Mirror Fixes:
+    * Zero Scans - Changed site software
+    * MM Scans - Changed chapter list fetch
+    * Manga Kawii - Domain changed (Credit: @mmorain)
+    * Scan FR - Domain changed (Credit: @mmorain & @JiPai)
+    * Batoto - Changed how we get images
+    * Comic Kiba - Changed chapter list fetch
+    * Komikcast - Domain changed
+    
+### V2.4.5
+  Changes: (All changes credit @JiPai)
+    * Added option to diplay all series on single page
+    * Removed pagination buttons if all series are displayed
+  
+  Mirror Fixes:
+    * ManhuaPlus - Fix chapter list and occasial series name being "Novel Info"
+    * Mangadex - Ignoring chapters that have external url links
+    * Manwha18 - Renamed to Manwha18.com, chapter url fixes (Credit @JiPai)
+    * Toonily - Chapter list fixed (Credit: @JiPai)
+
+  New Mirrors:
+    * Manwha18.net - https://manhwa18.net/
+### V2.4.4
+  Note:
+    This release comes with a major push to disable and fix mirrors credit to @JiPai, @Robo, and @Fahim for putting togeather the list
+    and doing initial investigation work to determine the appropriate list of actions. There are still some mirrors on the list to fix up 
+    but I wanted to get these out now since my long weekend is now over and I am back to work.
+
+  Changes:
+    * Changed the lab used for development to hide disabled mirrors
+
+  Fixes:
+    * Fixed issue with gist sync sending multiple requests at the same time (Credit @kYem)
+
+  New Mirrors:
+    * Realm Scans - https://realmscans.com/
+    * Dragon Tea - https://dragontea.ink/
+
+  Mirror Fixes:
+    * Manwha18 (Credit @JiPai)
+    * Scan FR (Credit @JiPai)
+    * 247 Manga (Credit @JiPai)
+    * Arang Scans  (Credit @JiPai)
+    * GD Scans (Credit @JiPai)
+    * Manga Stream
+    * Lily Manga
+    * Manga Dods
+    * Manhua Fast
+    * MM Scans
+    * Sawamics
+    * Setsu Scans
+    * Top Manhua
+    * Lynx Scans
+    * Kiryuu
+    * Manga Kawii
+    * Manga Llama
+    * Realm Scans
+    * Union Leitor
+    * Za Hard Top
+    * Shoujo Hearts
+
+  Mirrors Disabled: (Credit @JiPai)
+    * Aloalivn
+    * Cat Manga
+    * Dokusha
+    * Edelgarde Scans
+    * Glitchy Comics
+    * Hatigarm Scans
+    * Manga Turf
+    * Martial Scans
+    * Method Scans
+    * PM Scans
+    * Sam Manga
+    * Secret Scans
+    * Social Weebs
+    * Taptaptaptaptap
+    * Vanguard Scans
+    * Void Scans
+    * World Three
+    * Manga Stream
+
+### V2.4.3
+  Mirror Fixes:
+    * Leviatan Scans - Fixed the issue with the constantly changing url, series will need to be readded once more then should be fine
+    * Asura Scans - Fixed chapter list for some series and the first image being broken
+    * Batoto - Fixed batoto for non development builds. Sorry for a delay this was impossible to reproduce in development because of permissions
+    * Mangadex - The api was changed to move where images are pulled from
+
+### V2.4.2
+  Bug Avoidance:
+    * Forced manga list checking status to reset after a period of time if it gets stuck, avoiding issues where your list would only update once after loading
+
+  Bug Fix:
+    * Fixed (hopefully) an issue where group expanded status was being transfered to other series on list updates
+
+  Mirror Fixes:
+    * Asura Scans - Fixed images not loading
+
+  New Mirror:
+    * Alpha Scans (https://alpha-scans.org/)
+    
+### V2.4.1
+  Bug Fix:
+    * Fixed an issue where disabling a mirror via code would not fully disable it. Causing issues if you disabled the Mangadex V5 mirror
+
+  Mirror Fixes:
+    * Reaper Scans - Chapter list not loading
+    * Martial Scans - Chapter list not loading
+    * Pattern matching for chapter parts on FunManga, MangaInn, and ReadMangaToday
+    
+### V2.4.0
+  Mangadex Integration:
+    There is now some back and forth with your mangadex account built into AMR thanks to @JiPai with help from @Robo and @Fahim
+      * You can now login to your mangadex account through the AMR options page (Note: We DO NOT save your credentials!!!)
+      * Periodic logins are required to keep these features running
+      * This also fixed mangadex not pulling chapters for titles marked 18+
+
+    Features:
+      * Login to your mangadex account through AMR
+      * Mark chapters as read when you read them in AMR
+      * Import your follows from Mangadex into AMR
+      * Export your reading list from AMR into Mangadex follows
+
+  Mirror Fixes:
+    * Batoto - Issue with searching
+    * Manhua Plus - Fixed chapter list not working
+    * Mangapill - Fixed AMR not recognizing chapter pages
+    * ReadManga - URL change (Credit: @nonedark2008)
+    * Manwha18 - Site changed up many things
+    * Reset Scans - Fixed chapter list not working
+    * Manhuas - Fixed chapter list not working
+    * Lynx Scans - URL Format change
+    * Imperfect Comics - Fixed chapter list not working
+    * LHTranslations - Searching not working
+    * Asura Scans - Images not loading
+
+### V2.3.25
+  New Features:
+    * There is now a option to store the reading progress for manga that gets reset due to missing chapters in gist (Credit: @robo & @JiPai)
+
+  Fixes:
+    * Fix for copying image (Credit: @JiPai)
+    * Fix naming issue with marking latest manga read (Credit: @JiPai)
+    * Fix to prevent flooding remote storage (Credit: @JiPai)
+    * Fixed a few settings in the options menu
+
+  Changes:
+    * UI changes to the Manga List (Credit: @JiPai)
+    * Added button to toggle dark mode to the popup
+    * Added the checkbox back for remote storage if you already have it selected, so chromium users can turn it off
+
+  New Mirrors:
+    * Tachidesk - Another local manga reader (Credit: @Robo)
+
+  Mirror Fixes:
+    * Mangadex - Fix for broken reader icons
+    * Immortal Updates - Chapter list fixed
+    * Early Manga - Added another domain to fix reader
+    * Hiperdex - Updated how chapter list is generated
+    * Manytoon - Updated how chapter list is generated and image source
+    * Cat Manga - Chapter list was getting reversed due to a website change
+    * Webtoon XYZ - Chapter list was not loading
+
+### V2.3.24
+  Fixes:
+    * Fix for option to automatically add series when you read them
+    * Gist Sync should be working properly now (Credit @JiPai)
+    * Fixed copy image to clipboard (Credit: @JiPai)
+    
+  Mirror Fixes:
+    * Manga Freak
+    * Asura Scans - Will now give the amr loading screen for all pages, they have stopped being consistent for naming chapters
+    * Mangadex - Missed a few things from the api change
+
+### V2.3.23
+  New Features:
+    * Added right click context menu option to copy the image to clipboard, only works with png images
+
+  Changes:
+    * UI Improvemenets for the manga list (Credit @JiPai)
+    * UI Improvements for options page (Credit @JiPai)
+    * Added link in the supported mirrors option page to send you to the homepage for each site in a new tab
+
+  Fixes:
+    * Gist Sync description fixed for english language (Credit: @NoneDark)
+    * In extension downloads (updates and chapters) have been fixed in firefox (Credit: @JiPai)
+    * How sync worked has been rewritten to work more efficently and in some cases just work properly (Credit: @JiPai)
+
+  Mirror Fixes:
+    * Mangex has several fixes including a breaking api change (Credit: @JiPai)
+    * Leviatan Scans
+    * Manga Sushi
+    * Read Manga (Credit: @NoneDark)
+    * Small change to most Madara based mirrors to handle url format changes (ex between manga,manhua,comic,etc..)
+    * Asura Scans: Some series were not recognized due to url formatting
+    * Manga Cultivator
+    * LHTranslations: They are sticking with the new format so we have added support, all old entries will need re-added
+
+  New Mirrors:
+    * Leveler Scans (https://levelerscans.xyz/)
+
+### V2.3.22
+  New Features:
+    * Added reload image option to right click context menu, this should be used for images that load but are corrupted
+
+  Changes:
+    * Scans that fail to load will automatically retry 1 time
+    * Windows users on chromium browsers will now get the option to download a .7z file instead of .zip due to issues unpacking them (Credit: @JiPai)
+    * The new version alert can now be closed
+
+  Fixes:
+    * Issues with timing of sync and update chapter lists have been solved (Credit: @JiPai & @kYem)
+
+  New Mirrors:
+    * Comic Dom (https://comicdom.org/)
+    * 247 Manga (https://247manga.com/)
+    * Imperfect Comics (https://imperfectcomic.com/)
+    * Manga 347 (https://manga347.com/)
+    * Asura Scans Turkish (https://tr.asurascans.com/)
+    * Kun Manga (https://kunmanga.com/)
+    * Manga 1st Online (https://manga1st.online/)
+    * Mixed Manga (https://mixedmanga.com/)
+    * S2 Manga (https://s2manga.com/)
+    * Sam Manga (https://sammanga.com/)
+    * Zin Manga (https://zinmanga.com/)
+
+  Mirror Fixes:
+    * Lily Manga
+    * Reaper Scans
+    * Reset Scans
+    * Read Comic Online
+    * Mangadex - No longer has duplicate chapters and series with multiple groups released will only show the oldest chapter (Credit: @JiPai)
+    * Flame Scans - Possibly fixed the constant resetting of reading status, no promises because they constantly change it up
+    * Sad Scans
+    * Isekai Scans
+    * Early Manga
+    * Setsu Scans
+
+### V2.3.21
+  Changes:
+    * Statistics collection has been removed for the time being. It will probably be re-added at a later date
+    * There is now a confirmation box and option under settings menu to allow AMR to read / create cookies **
+
+  New Mirrors:
+    * Sawamics (https://sawamics.com/)
+
+  Note **: AMR creates cookies to force English on the Webtoons website, and pass an "I am adult" cookie to websites that have verifications
+  for more explicit content. Not allowing AMR to read / create cookies will hinder or break compatibility with these websites. This option can
+  be turned off / on at any time from the settings menu.
+  
+### V2.3.20
+  New Mirrors:
+    * Manga Cultivator (https://mangacultivator.com/)
+    * GD Scans (https://gdegenscans.xyz/)
+    * Unemployed Scans (https://unemployedscans.com/)
+
+  Mirror Fixes:
+    * Batoto - Added multiple domains
+    * Leviatan Scans - Added sort by chapter number due to weird volume ordering
+    * Manganelo - Added old domains for a few series that were not switched yet
+    * Manga Pill - Chapter list changed
+    * Reaper Scans - Switched site software, all old series will need readded
+
+
+  Mangadex is back!
+    This version introduces a "new" mirror labeled Mangadex V5, this was needed due to breaking changes in how the old mangadex series and title urls worked.
+    
+    When you launch your browser or reload the extension AMR will automatically try and convert any existing mangadex series you have followed to the new format,
+    so you will not need to do this manually. This can sometimes cause an out of memory error which will force you to reload the extension or your browser window
+    to continue, but I have not been able to reproduce it to find out why and test, since this is a one time thing I am not going to put any more time into trying.
+
+### V2.3.19
+  Fixes:
+    * Fix console error (Credit: @NoneDark)
+  Mirror Fixes:
+    * Read Manga and Mint Manga, empty chapter names (Credit: @NoneDark)
+
+  New Mirrors:
+    * Manga Pill (https://mangapill.com)
+    * Sad Scans (https://sadscans.com/)
+    * ZA Hard Top (https://zahard.top)
+
+### V2.3.18
+  Mirror Fixes:
+    * Komga - Fixed issue with newer versions of komga messing up the reader
+    * Toonily.com - Fixed manga list not populating
+    * Asura Scans - Fixed reader not finding all images
+
+  New Mirrors:
+    * Manga Komi (https://mangakomi.com/)
+    
+### V2.3.17
+  Fixes:
+    * Error handling in sync for deleting manga (Credit: @JiPai)
+    * Fixed reader removing its own style sheet by accident
+  
+  Mirror Fixes:
+    * Flame Scans chapter loading (https://flamescans.org)
+  
+  New Mirrors:
+    * Luminous Scans (https://www.luminousscans.com/)
+  
+  Re-enabled mirror:
+    * Mint Manga has returned and has been updated (https://mintmanga.live) (Credit @NoneDark)
+
+  Manganelo Change:
+    Manganelo has rebranded itself as Manganato, this comes with a new url and unfortunately a new series url format. This means
+    that any series you were following was reset and cannot be migrated automatically. You will need to re-add all series manually.
+    You can do this by clicking the series link which *should* redirect you to the new one so you do not have to actually search
+    for it. Sorry for this inconvienience but unfortunately there is little that can be done in this situation.
+    New url: https://manganato.com/
+
+### V2.3.16
+  Changes:
+    * Made import/export link not close current tab in Firefox
+
+  Fixes:
+    * Fixed style for import/export page
+    * Made some changes to how we remove styles, it should now get all of them (I hope)
+
+  New Mirrors:
+    * Batoto (https://bato.to) * See note
+    * Comic Kiba (https://comickiba.com/)
+    * Lily Manga (https://lilymanga.com/)
+
+  Mangafox/Fanfox Change:
+    Changed the chapter list sorting to actually read the chapter title to get a sort based on the chapter number that is in the name.
+    
+    This worked for martial peak previously due to chapters going into the volume section after breaking the 999 chapter limit on the normal list, this
+    was done now because there are several series that are being split into including volume number or not, this solves the ordering for those but may have
+    impacts on other series, this has run in beta for a week with no issues being reported so I am releasing this. Please report any issues
+
+  Note:
+    The mirror added as batoto has been labeled in AMR as "Batoto (fake)". This has been done because this is not the original site, the domain was
+    purchased and an aggregator site has been released under the name. This site appears just like any other aggregator so I have no issue adding it 
+    to AMR but I wanted to note that it is a different site before anyone blindly trusts it as the old batoto.
+
+### V2.3.15
+  Changes:
+    * Small update to help out the sync system
+    * Optimized chapter download for memory usage (Credit: @JiPai)
+
+  Fixes:
+    * Alpha Sort fixed (Credit: @Robo)
+
+  New Mirrors:
+    * Manga Kawaii (www.mangakawaii.com) (Credit @tarul)
+    * Lignica Scans (https://lugnica-scans.com/) (Credit @tarul)
+    * Le Cercle du Scan (https://lel.lecercleduscan.com) (Credit @tarul)
+    * Manhua Fast (https://manhuafast.com/) (Credit: @EqualDepth)
+    * Webtoon.xyz (https://www.webtoon.xyz/)
+
+  Mirror Fixes:
+    * Manga Katana (https://mangakatana.com)
+    * Scan FR (https://www.scan-fr.cc) (Credit @tarul)
+
+### V2.3.14
+  New Features:
+    * Added download button for new updates for chrome users, this will download a .zip file for easier install (Credit: @JiPai)
+
+  Changes:
+    * New series that are added will no longer default to "Stop Updating" and "Dont follow updates" when those series exist already in those states
+
+  Fixes:
+    * Fixed an issue with multi-select opening duplicate tabs under certain circumstances
+    * Possibly fixed an issue that caused manga list not to load when you have invalid manga series entries
+
+  Mirror Fixes:
+    * MangaKatana (https://mangakatana.com) (Credit: @Robo)
+    * Scan Trad (https://scantrad.net/) (Credit: @tarul)
+    * Scan Trad Union (https://scantrad-union.com/) (Credit: @tarul)
+
+### V2.3.13
+  This is a hotfix release to solve an issue with Waterfox Classic. No functionality has changed    
+
+### V2.3.12
+  New Features:
+    * Added category for series with disabled mirrors
+
+  Changes:
+    * Scale up option is now saved (Credit: @EqualDepth)
+    * Mirror images optimized to reduce file size (Credit @EqualDepth)
+    * Disabled Mirrors are now hidden in Gitlab Readme and options page (Credit: @JiPai)
+  
+  Fixes:
+    * Fixed edge icon in readme (Credit: @JiPai)
+  
+  Disabled Mirrors:
+    * Mangadex (This will be enabled again once it is back up in a manner AMR can work with)
+    * Hero Manhua
+    * Komikgo
+    * Love Heaven
+    * Manga Host
+    * Mangaichi Scans
+    * Mangashiro
+    * Manga Turk
+    * Nani Scans
+    * OT Scans
+    * Phoenix Serenade
+    * Sorcerer Weekly
+
+  New Mirrors:
+    * Reset Scans (https://reset-scans.com/)
+    * White Cloud Pavilion (https://whitecloudpavilion.com/) (Credit: @EqualDepth)
+
+  Mirror Fixes:
+    * Cat Manga (https://catmanga.org/)
+    * Mangafox - Fix for martial scans (http://fanfox.net)
+    * Read Comic (https://readcomiconline.li)
+    * ReadM (https://readm.org/)
+    * leviatanscans (https://leviatanscans.com/)
+    * LHTranslations (https://lhtranslation.net)
+    * PM Scans (https://reader.pmscans.com/)
+
+### V2.3.11
+  New Features:
+    * Option added to allow keyboard shortcuts / buttons to follow RTL reading mode (Credit: @EqualDepth)
+    * Option to disable smooth chapter navigation, chapter changes will force a page reload. Only disable this for use with MAL-Sync or other related trackers
+
+  Fixes:
+    * Changes made to handle SPA (Single Page Application) sites better
+    * Gist Sync was not correctly handling deleted manga (Credit @JiPai)
+    * Scale image up option fixed (Credit: @EqualDepth)
+
+  Changes:
+    * RTL reading mode no longer requires book mode to be active (Credit: @EqualDepth)
+    * Update gist-sync instructions in readme (Credit: @JiPai and @Bubo Mortis)
+    * Update options page to improve readability (Credit: @JiPai)
+    * Readme rewritten for clartity and added supported mirrors table on build (Credit: @JiPai)
+
+  New Mirrors:
+    * Koneko Scantrad (https://koneko-scantrad.fr)
+    * Scantrad Union (https://scantrad-union.com/)
+    * Cat Manga (https://catmanga.org/) (Credit @EqualDepth)
+    * Azure Manga (https://azuremanga.com/)
+    * Manga 1st (https://manga1st.com/)
+    * Setsu Scans (https://setsuscans.com/)
+
+  Mirror Fixes:
+    * Seri Manga (https://serimanga.com/)
+    * Komga Local Library (Credit: @Robo)
+    * Void Scans (https://voidscans.net/)
+
+### V2.3.10
+  New Features:
+    * Multi Select has been reworked and now offers the option to open latest read and next new chapter for selected series
+    * Added ability to sync manga via gist. (Credit: @JiPai)
+    * You can now change sort order to be ascending or descending order (Credit: @Robo)
+    * Added zoom out option for reader. Can be used if the images on a page are too wide
+
+  Changes:
+    * Changed how chapter refresh works to hit multiple sites at the same time but queue up series for each job for the delay
+    * Mirror Labratory overhaul (Credit @alyssonsouza)
+    * Options page has been updated to have extension panels to seperate sections. (Credit: @JiPai)
+    * Bookmarking scans has been redone. The yellow triangle is gone and a context menu (right click) has been added for it
+
+  Fixes:
+    * Export was not working when a series had no chapters (Credit @Robo)
+    * Fixed browser sync (Credit @JiPai)
+    * Language select flags were not working (Credit @JiPai)
+    * And error fixed with deleting manga (Credit: @kYem)
+    * Fixed duplicating categories when adding a new series with the same name as one already on your list
+    * Added some extra checks to remove elements/css that is added via javascript on mirror sites
+
+  New Mirrors:
+    * Astral Library (www.astrallibrary.net) (Credit @alyssonsouza)
+    * Vanguard Scans (https://vanguardbun.com/)
+    * Glitchy Comics (https://glitchycomics.com/) (Credit @alyssonsouza)
+    * Komga local server (https://komga.org) Note: This requires setting up options for url and username/password
+    * Socal Weebs (https://socialweebs.in)
+
+  Mirror Fixes:
+    * Marial Scans (https://martialscans.com/) (Credit: @alyssonsouza)
+    * Flame Scans (https://flamescans.org)
+    * Read Manga (http://readmanga.live)
+    * Non Stop Scans (https://www.nonstopscans.com/)
+    * Manga Dods (https://www.mangadods.com/)
+
+  Disabled Mirrors:
+    * Gekkou Scans
+    * Roselia Scans
+    * Twisted Hel Scans
+    * Mangazuki Info
+    * Yo Manga
+    * Manga Chan
+    * Manga Lib
+    * Komik Indo
+    * Nue Manga
+    * Mint Manga
+    * Komik Gue
+
+### V2.3.9
+  New Features:
+    * Added option to filter manga list by mirror (Currently ignores category filters when this is used)
+
+  Fixes:
+    * The mirror icons are now working in the reader again
+    * Remove more css from sites, this was causing large images on some sites
+
+  Changes:
+    * The reader side menu has been condensed a little bit. Longer series names should no longer cause a scrollbar
+
+  Mirror Fixes:
+    * LHTranslations (https://lhtranslation.net) (Courtesy of @Robo)
+    * Manhuaus (https://manhuaus.com/)
+    * Komikcast (https://komikcast.com/)
+    * Manganelo (https://manganelo.com/)
+
+  New Mirrors:
+    * Flame Scans (https://flamescans.org)
+    * Manga Fast (https://mangafast.net)
+    * Hiperdex (https://hiperdex.com/)
+    * Silent Sky Scans (https://reader.silentsky-scans.net)
+    * Lynx Scans (https://lynxscans.com/home)
+    * Immortal Updates (https://immortalupdates.com/)
+    * Manga Great (https://mangagreat.com/)
+    * Manga SY (https://www.mangasy.com/)
+    * MM Scans (https://mm-scans.com/)
+    * Tritinia Scans (https://tritinia.com/)
+
+### V2.3.8
+  New Features:
+    * Added download feature for current chapter (Courtesy of @Robo)
+
+  Fixes:
+    * Export manga list fixed
+    * The reader no longer tries to load unless it matches the pattern, preventing some issues when the website is restored (Courtesy of @Robo)
+    * Edit Category now shows up properly in dark mode
+    * Deleted chapters are no longer restored on sync (Courtesy of @kYem)
+
+  Changes:
+    * Notifications and reader now show custom manga names
+    * Sort Preference is now saved
+    * Sort by newest now is split into two options, one is the former behaviour and the other shows the ones with the most unread chapters first
+
+  Mirror Fixes:
+    * Manga4Life (https://manga4life.com)
+    * MangaSee (https://mangasee123.com)
+    * Asura Scans (https://asurascans.com/)
+    * Early Manga (https://earlymanga.org)
+    * Leviathan Scans (https://leviatanscans.com/)
+    * SKScans (https://skscans.com)
+
+### V2.3.7
+  Changes:
+    * Sort by new also sorts by most unread chapters (Courtesy of @Robo)
+    * Added Magic scroll to reader (Courtesy of @Robo)
+    * Adjusted bookmark triangle box size (Courtesy of @Robo)
+    * Adjusted alternating colors on reader (Courtesy of @Robo)
+    * Popup will force a new tab if detecting its opened from firefox pinned menu
+    * Last read chapter name has been added to export (Courtesy of @Robo)
+    * Adjusted number of pagination items that show up in the popup to reduce its size
+
+  Fixes:
+    * Search mirror icons have tooltips again
+
+  Mirror Fixes:
+    * Fixed Read Manhua chapter loading (https://readmanhua.net/)
+    * Changed Mangadex api back to the new server, they claim it is working now
+
+  Disabled Mirrors:
+    * Manga Panda
+    * Manga Reader
+
+### V2.3.6
+  Changes:
+    * Webtoon mode and custom names are now included in exports
+    * Custom categories are now added at the end of the import if they were missing
+
+  Fixes:
+    * Custom names are sorted correctly
+    * Fixed opacity for series that you are no longer updating
+    * Removed disabling mirrors by clicking on the row
+    * You can now enable a mirror if it got disabled and you have mangas from that mirror but you cannot disable them
+
+  New Mirrors:
+    * Seri Manga (https://serimanga.com/)
+
+  Mirror Fixes:
+    * Asura Scans (https://asurascans.com/)
+
+### V2.3.5
+  New Manga List:
+    - The entire manga list page has been rewritten for speed
+    - Pagination has been added with customizable per page options
+    - Loading, searching and filtering should be much faster on larger lists
+    - Added alternating color scheme option, this alternates dark/light background colors for each series
+    - The hidden options now only apply to one entry not a whole group
+
+  New Features:
+    - Ability to rename manga series
+    - This new name will be taken into account when grouping is enabled
+    - Option to default all chapters to have webtoon mode on (for series that you do not have added already)
+
+  Fixes:
+    - The top bar for certain pages have had the max height fixed so they do not take up half the page
+    - The bookmarks page (when you open in new tab) has been fixed
+
+  New Mirrors:
+    - Manga Katana (https://mangakatana.com)
+
+  Mirror Fixes:
+    - Scan Trad - Fixed image path so scans will load
+    - Arang Scans - Fixing Manga list not populating
+    - Chibi Manga - Forced switch to https and fixed manga list not populating
+    - Early Manga - They changed domains and site software, it is working now
+
+  Disabled Mirrors:
+    - Baca Manga
+    - Bang Aqua
+    - Doki Reader
+    - Easy Going Scans
+    - Elpsy Kingroo
+    - Fos Scans
+    - Helvetica Scans
+    - Ita Scans
+
+### V2.3.4
+  Mirror Fixes:
+    - Last time mangadex fix did not commit. Did it again
+
+### V2.3.3
+  Mirror Fixes:
+    - Reverted to old mangadex api url as that one seems to be working
+
+### V2.3.2
+  Mirror Fixes:
+    - Night Comic - Domain changed to force www.
+    - Reaper Scans - Fixed image url path
+
+  New Mirrors:
+    - Manga Bob (https://mangabob.com/)
+    - Toonily.net (https://toonily.net)
+    - Aloalivn (https://aloalivn.com/)
+
+### V2.3.1
+  Fixes:
+    - Updated the book offset icon so it appears
+    - Changed add category input so it responds to dark mode properly
+
+  Changes:
+    - Removed extra padding on reader options to condense those
+    - Made the manga title text smaller
+    - Added margin to AMR logo on the list page
+
+  New Mirrors:
+    - Void Scans (https://voidscans.com/)
+    - Top Manhua (https://topmanhua.com/)
+
+### V2.3.0
+  This release includes a major update of the backend libraries used to build this extension. Some ui elements have been reworked as a result of this but
+  the end result should be very similar
+
+  New Features:
+    - Added tab in options screen for mirror specific options
+    - Added option to select data saver option for mangadex
+    - Added option to select image server on mangadex (This is ignored when you have MD@Home turned on)
+
+  New Mirrors:
+    - Manga Llama (https://mangallama.com/)
+    - Manga Freak (https://w11.mangafreak.net)
+
+  Mirror Fixes:
+    - Asura Scans: Fixed broken images (they were only webscraper images not actual scans)
+    - Mangakakalot: Updated image selection to fix the reader
+    - Mangasee: Fixed image server path
+
+### V2.2.14
+  Fixes:
+    - Changed cdn for material icons due to an outage (Thanks to @GameBurrow)
+
+  Mirror Fixes:
+    - Scan Trad (https://scantrad.net)
+
+  New Mirrors:
+    - Read Comic Online (https://readcomiconline.to) - Note ths site has periodic captchas which cause amr to fail, this cannot be avoided
+
+### V2.2.13
+New Mirrors:
+  - Twilight Scans (https://twilightscans.com/)
+
+Disabled Mirrors:
+  - KKJ Scans
+
+### V2.2.12
+New Features:
+  - Ability to refresh chapters for a single manga series
+  - Ability to select multiple manga to set labels for at once
+
+Misc Changes:
+  - Added a little bit of padding to the bottom of the last image
+  - Removed http/https from page history call so changing chapters works when websites switch between http and https
+  - Vue Devtools support added back in
+  - Changed text of multilingual site tab in search, also made it a button to easily tell it is something to check
+  - Changed font size and list width when page is loaded in a tab instead of a popup. More work will be done later to make this look better
+
+New Mirrors:
+  - MangaTX (https://mangatx.com/)
+  - Random Translations (https://randomtranslations.com/)
+  - Asura Scans (https://asurascans.com/)
+
+Mirror Changes:
+  - Updated Mangadex to api V2
+
+Disabled Mirrors:
+  - Jaimini's Box
+  - Ninja Scans
+  - Pecintakomik
+
+### V2.2.11
+Mirror Changes:
+  - Changed MangaDex to not use cache busting on search and series updates
+
+### V2.2.10
+New Features:
+  - Added Text filter to your manga list. A button press will show/hide the input
+  - Added option to change search page behaviour to open the series page instead of adding when clicking a mirror icon
+
+### V2.2.9
+New Features:
+  - Added a button to toggle offsetting the first page in book mode in case there is a title page present.
+
+Mirror Fixes:
+  - PMScans moved to ajax loaded chapter list
+
+New Mirrors:
+  - Manhuaus (https://manhuaus.com/)
+  - Manga Dods (https://www.mangadods.com/)
+
+### V2.2.8
+New Features:
+  - Added an option to disable the thin scan optimization alert
+  - Allow Editing of existing category names
+
+Fixes:
+  - Fixed popup still appearing when selecting open in new tab on firefox
+
+Mirror Fixes:
+  - Switched mangahere back to https
+
+New Mirrors:
+  - SK Scans (https://skscans.com/)
+
+### V2.2.7
+New Features:
+  - Added Discord webhook for beta builds
+
+Mirror Fixes:
+  - Fix for madara sites last chapter issue
+  - Isekai Scans switch to https
+  - Scan FR domain change
+  - Manga Reader site changes
+
+New Mirrors:
+  - Manga Hasu (http://mangahasu.se/)
+  - Night Comic (https://nightcomic.com/)
+  - Ult Manga (https://ultmanga.com/)
+  - Manga Hub (https://mangahub.io/)
+  - Love Heaven (https://loveheaven.net/)
+  - Manga Sushi (https://mangasushi.net/)
+  - Method Scans (https://methodscans.com/)
+
+### V2.2.6
+Fixes:
+  - Fixed an issue with firefox 79 preventing some mirrors from functioning
+
+Changes:
+  - Added reload all errored scans button
+
+Mirror Fixes:
+  - Webtoons.com (Fixed search)
+  - Early Manga (Url Changed)
+  - Manhuas.net (Chapter List fix)
+
+New Mirrors:
+  - Manwha 18 (https://manhwa18.com/)
+
+### V2.2.5
+Changes:
+  - Added the ability to disable mirrors that are closed while keeping the manga listed
+
+Mirror Fixes:
+  - Early Manga (Url changed)
+  - MangaSee (Url and Website changed)
+  - Disaster Scans (Website changed)
+  - Webtoons (Added url to cookie)
+  - ManhuaPlus (Website changed)
+
+Mirrors Disabled:
+  - Mangarock
+
+### V2.2.4
+Fixes:
+ - Add a css fix for the bottom page selection for Toonily and possibly other Madara based sites
+
+Mirror Fixes:
+ - Nani Scans
+ - Manga Host
+ - Manganelo
+ - Mangakakalot
+
+New Mirrors:
+ - Early Manga
+ - Hero Manhua
+ - Manga4Life
+ - Manhua Plus
+ - Arang Scans
+ - Eldelgarde Scans
+ - KKJ Scans
+ - Manga Turf
+ - The No Names Scans
+ - Reaper Scans
+ - Secret Scans
+ - Hunlight Scans
+ - Non Stop Scans
+ - PM Scans
+
+### V2.2.3
+New Features :
+ - Added Webtoon mode which removes spaces between images. This is set on a per series basis
+ - Added toggle for zooming images to fit screen size. This does not persist
+Changes :
+ - Set the default options to save bandwidth and have a 2 second delay between update checks
+Fixes :
+ - Moved the tracking alert so it does not vanish
+ - Multiple categories no longer disappear
+ - Fixed the remove amr styling so mangadex no longer has red links and the footer is no longer in the middle of the page
+Mirrors :
+ - Attempted to fix webtoons.com, so far it appears to be working
+ - Added LHTranslation
+ - Added ReadM
+ - Added MartialScans
+ - Added Union Leitor
+
+### V2.2.1
+Mirrors:
+    - Multiple mirror fixes and additions
+
+### V2.2.0
+After Mozilla disabled AMR from their store, a few changes, maily technical, have been MANGADEX
+ - All scripts are within the extension, no more mirrors repo
+ - Ask for send data agreement to collect statistics
+ - Avoid security issues by sanitizing loaded pages
+
+### V2.1.1
+New features :
+ - Sync your manga list over different instances of your favorite browser (option in general, and sync in your browser)
+ - First working (usable) version on Firefox for Android
+ - Option to check for new version of the extension, be notified right in the popup (option is enabled by default on Chromium based browsers)
+ - Open manga chapter page when clicking manga name (in reader and popup)
+ - Option to wait for n seconds between two manga update requests (check for new chapters) ACTIVATE this option is you keep being banned from MANGADEX (it requires quite a few mangas on your list)
+Fixes
+ - Height of the manga list in reader overflow on buttons
+ - Fix security issues with websites implementing CORS
+ - Import mangas run in background so you can close the popup and your manga don't stop being imported
+
+### V2.1.0
+New Reader :
+ - On the online reader, the whole page is removed and replaced with AMR reader
+ - more layout options (one page at a time, resize height / container )
+ - load chapters quickly and navigate "in the reader", the next preloaded chapter loads instantly
+ - display thumbs of the whole manga at the bottom
+ - Smooth navigation between pages
+ - better ergonomy / design
+ - lots of shortcuts
+ - improved bookmarks with preview
+ - save current page and reload at this position
+Fixes :
+ - Improve popup loading time
+ - Update Vuetify, fix a few css issues
+
+### V2.0.3
+Websites implementation improvements (A lot of implementations have been added thanks to these improvements) :
+ - Abstract implementation for mirrors (A lot of websites are based on CMS like FoolSlide). Implement once for multiple websites
+ - Add a global helper accessible from implementation to reduce implementation code and improve readability
+ - Update the interface of websites implementation to be more modern (Promises and ES6 code)
+
+Languages support, handle multi lingual mangas :
+ - in search results, language is taken into account to display results (an implementation can return mangas in different languages on search request)
+ - in manga list, some implementations manage manga chapters in different languages, in this case, a flag next to the manga is displayed and allow the user to add other languages for the same manga
+ - option with readable languages list and auto deactivation of unreadable implementations
+ - language categories : if mangas are read in more than one language, native categories are added to filter by language
+
+Misc
+ - Improve the way chapters lists are displayed
+ - Improve Import functionnality to avoid errors (unknown websites, last chapter read url has been changed, try to guess the best one)
+ - Improve bookmarks display by using built in implementation function (allow issues for displaying scans from some websites)
+ - Add link in popup to open popup in new tab
+ - Upgrade webpack to version 4
+ - add a build mode build:dev-watch to hot reload extension in chrome while developing
+ - Remove babel and regenerator runtime as browser now supports native ES6
+
+Fixes :
+ - load implementation scripts multiple times and do not free them from memory
+ - Force table to be displayed correctly from content script (on some mirrors, scans were forced to the left)
+ - Delete unused language categories if needed
+ - Add last chapter published label at the end of the chapter if it is the last one while reading (this label disappeared between V1 and V2)
+ - popup does not disappear when removing a manga from a group
+ - empty manga added from search panel if multiple languages proposed
+ - css when displaying a "last time updated badge" on a manga
+ - Firefox scrollbar in popup (keep it in detached popup, ie new tab popup)
+ - border top radius of manga list if first item is a grouped manga
+
+### V2.0.2
+First released stable version of All Mangas Reader V2.
+This version aims to implement almost all functionnalities from V1.
+Missing functionnalities :
+ - Synchronization
+ - Personal statistics
+
+Improvements from V1 :
+ - Websites implementation loading is more stable

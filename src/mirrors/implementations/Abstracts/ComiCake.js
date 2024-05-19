@@ -1,7 +1,7 @@
 /**
  * Abstract implementation for all sites based on ComiCake
  */
-window["ComiCake"] = function (options) {
+globalThis["ComiCake"] = function (options) {
     this.default_options = {
         series_list_url: "/directory/",
         series_list_selector: ".mdc-card__media-title a",

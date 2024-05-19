@@ -1,7 +1,7 @@
 /**
  * Abstract implementation for all sites based on "Powered by Genkan."
  */
-window["GenkanAbs"] = function (options) {
+globalThis["GenkanAbs"] = function (options) {
     this.default_options = {
         base_url: "",
         search_path: "comics?query=",

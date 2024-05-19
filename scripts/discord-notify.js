@@ -1,11 +1,14 @@
-const axios = require("axios")
-
-let id, token, subject, body, version, patch
+let id, token, subject, body, version, patch, channel
 
 /* Build variables from arguments */
 const idIndex = process.argv.indexOf("--id")
 if (idIndex > -1) {
     id = process.argv[idIndex + 1]
+}
+
+const channelIndex = process.argv.indexOf("--channel")
+if (channelIndex > -1) {
+    channel = process.argv[channelIndex + 1]
 }
 
 const tokenIndex = process.argv.indexOf("--token")
@@ -33,17 +36,17 @@ if (patchIndex > -1) {
     patch = process.argv[patchIndex + 1]
 }
 
-if (!id || !token || !subject || !version || !patch) {
+if (!id || !token || !subject || !version || !patch || (channel !== "Alpha" && channel != "Beta")) {
     console.log("Invalid params")
     process.exit(255)
 }
 
-let url = `https://discordapp.com/api/webhooks/${id}/${token}`
+const url = `https://discordapp.com/api/webhooks/${id}/${token}`
 
 try {
-    let message = {
-        content: `<@&744261082067239093> Beta version ${version}.${patch} is now available`,
-        username: "Beta Build Bot",
+    const message = {
+        content: `<@&744261082067239093> ${channel} version ${version}.${patch} is now available`,
+        username: `${channel} Build Bot`,
         embeds: [
             {
                 title: subject,
@@ -54,7 +57,13 @@ try {
         ]
     }
 
-    axios.post(url, message)
+    fetch(url, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(message)
+    })
 } catch (error) {
     console.log(error)
 }

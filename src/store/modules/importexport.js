@@ -1,5 +1,6 @@
 import Manga from "../../amr/manga"
 import { Mangadex } from "../../background/misc/mangadex-v5-integration"
+import { mangaKey } from "../../shared/utils"
 
 let mangadex
 
@@ -258,8 +259,9 @@ const actions = {
         }
     },
 
-    async mangadexAddManga({ commit, dispatch }, { payload, lastOfList }) {
-        const mg = new Manga(payload)
+    async mangadexAddManga({ commit, dispatch, rootState }, { payload, lastOfList }) {
+        const key = mangaKey({ url: payload.url, mirror: payload.mirror, language: payload.language, rootState })
+        const mg = new Manga(payload, key)
         // formSync is true to avoid flooding the sync storage in case of loop
         await dispatch("addManga", { manga: mg, fromSync: true }, { root: true })
         if (lastOfList) await dispatch("initMangasFromDB", true, { root: true })
@@ -288,7 +290,7 @@ const actions = {
             await mangadex.markAsRead(url)
         }
         if (mirror === "Tachidesk") {
-            let tmpurl = new URL(url)
+            const tmpurl = new URL(url)
             tmpurl.pathname = "/api/v1" + tmpurl.pathname
             var formData = new FormData()
             formData.set("lastPageRead", "1")
@@ -298,6 +300,7 @@ const actions = {
                 body: formData
             })
         }
+        return true
     },
     /**
      * Triggered when updating chapter lists:

@@ -4,8 +4,17 @@
         <v-card>
             <v-toolbar>
                 <img src="/icons/icon_32.png" alt="All Mangas Reader" style="margin-right: 5px" />
-                <v-toolbar-title v-text="title"></v-toolbar-title>
+                <v-toolbar-title>{{ title }}</v-toolbar-title>
                 <v-spacer></v-spacer>
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn icon @click.stop="openChangelog()" v-on="on" v-bind="attrs">
+                            <v-icon>mdi-information</v-icon>
+                        </v-btn>
+                    </template>
+                    <span>{{ i18n("change_log_button_tooltip") }}</span>
+                </v-tooltip>
+
                 <v-btn icon @click.stop="toggleDarkMode()">
                     <v-icon>mdi-brightness-6</v-icon>
                 </v-btn>
@@ -51,7 +60,7 @@
                         icon="mdi-alert-decagram"
                         slot="activator">
                         {{ alertmessage }}
-                        <v-btn light class="ml-2" x-small @v-if="!utils.isFirefox()" @click="DownloadAMR()">
+                        <v-btn light class="ml-2" x-small @v-if="!isFirefox()" @click="DownloadAMR()">
                             <v-icon>mdi-cloud-download</v-icon>
                         </v-btn>
                     </v-alert>
@@ -81,6 +90,26 @@
                 </v-main>
             </v-card>
         </v-dialog>
+
+        <!-- Changelog dialog-->
+        <v-dialog
+            v-model="changelog"
+            fullscreen
+            transition="dialog-bottom-transition"
+            hide-overlay
+            :content-class="istab()">
+            <v-card>
+                <v-toolbar max-height="64">
+                    <v-btn icon @click.native="closeChangelog()">
+                        <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                    <v-toolbar-title>{{ i18n("change_log_title") }}</v-toolbar-title>
+                </v-toolbar>
+                <v-main>
+                    <ChangeLog v-show="changelog" />
+                </v-main>
+            </v-card>
+        </v-dialog>
         <!-- Mangadex integration dialog -->
         <v-dialog v-model="mangadex" max-width="500" hide-overlay persistent>
             <v-card>
@@ -103,7 +132,7 @@
         <!-- Search dialog -->
         <v-dialog v-model="search" fullscreen transition="dialog-bottom-transition" hide-overlay scrollable>
             <v-card tile>
-                <v-toolbar app max-height="64">
+                <v-toolbar max-height="64">
                     <v-btn icon @click.native="closeSearch()">
                         <v-icon>mdi-close</v-icon>
                     </v-btn>
@@ -118,20 +147,19 @@
         <v-navigation-drawer temporary v-model="rpanel" right absolute width="500">
             <!-- Links in right panel -->
             <v-container fluid class="pa-0 text-center" v-if="rpanel">
-                <v-row>
+                <v-row align="center">
                     <v-col cols="6">
                         <v-row>
-                            <v-col cols="3">
+                            <v-col cols="12">
                                 <v-btn text icon color="red darken-2" @click="opentab('https://allmangasreader.com')">
                                     <img src="/icons/icon_32.png" width="24" alt="All Mangas Reader" />
                                 </v-btn>
-                            </v-col>
-                            <v-col cols="3">
                                 <v-btn text icon color="yellow" @click="opentab('/pages/bookmarks/bookmarks.html')">
                                     <v-icon>mdi-star</v-icon>
                                 </v-btn>
-                            </v-col>
-                            <v-col cols="3">
+                                <v-btn text icon color="yellow" @click="opentab('/pages/lab/lab.html')">
+                                    <v-icon>mdi-antenna</v-icon>
+                                </v-btn>
                                 <v-btn
                                     text
                                     icon
@@ -141,8 +169,6 @@
                                     ">
                                     <v-icon>mdi-help</v-icon>
                                 </v-btn>
-                            </v-col>
-                            <v-col cols="3">
                                 <v-btn
                                     text
                                     icon
@@ -188,13 +214,14 @@ import Search from "../components/Search"
 import PopupResizer from "./resizePopup"
 import Timers from "../components/Timers"
 import ImportExport from "../components/ImportExport"
+import ChangeLog from "../components/ChangeLog"
 import browser from "webextension-polyfill"
-import * as utils from "../../amr/utils"
 
 import streamSaver from "streamsaver"
 import "streamsaver/examples/zip-stream"
-import mimedb from "mime-db"
 import * as ponyfill from "web-streams-polyfill/ponyfill"
+import { OptionStorage } from "../../shared/OptionStorage"
+import { isFirefox } from "../../shared/utils"
 streamSaver.WritableStream = ponyfill.WritableStream
 
 export default {
@@ -204,6 +231,7 @@ export default {
             options: false,
             search: false,
             rpanel: false,
+            changelog: false,
             tabs: "refresh", // in rpanel, right tabs state
             toSearch: "", // phrase to search in search panel (used to load search from manga)
             alertmessage: "", // alert to display at the bottom of the popup
@@ -214,10 +242,12 @@ export default {
         }
     },
     name: "App",
-    components: { MangaList, Options, Search, Timers, ImportExport },
+    components: { MangaList, Options, Search, Timers, ImportExport, ChangeLog },
     created() {
         this.trackingDone = true //this.$store.state.options.allowtrackingdone == 1; // Forced to true to disable this
         this.cookiesDone = this.$store.state.options.allowcookiesdone == 1
+
+        this.optionStorage = new OptionStorage()
         document.title = i18n("page_popup_title")
         // initialize state for store in popup from background
         this.$store.dispatch("getStateFromReference", {
@@ -225,14 +255,20 @@ export default {
             key: "all",
             mutation: "setMirrors"
         })
-        if (
-            this.$store.state.options.notifynewversion == 1 &&
-            ((localStorage.beta == 1 && localStorage.version != localStorage.latestBetaVersion) ||
-                (localStorage.beta == 0 && localStorage.version != localStorage.latestStableVersion))
-        ) {
-            this.alertmessage = this.i18n("amr_newversion")
-            this.tooltipalert = this.i18n("amr_newversion_long")
-        }
+
+        this.optionStorage
+            .getKeys(["beta", "version", "notifynewversion", "latestBetaVersion", "latestStableVersion"])
+            .then(({ beta, version, notifynewversion, latestBetaVersion, latestStableVersion }) => {
+                this.beta = beta
+
+                if (
+                    notifynewversion === 1 &&
+                    ((beta === 1 && version !== latestBetaVersion) || (beta === 0 && version !== latestStableVersion))
+                ) {
+                    this.alertmessage = this.i18n("amr_newversion")
+                    this.tooltipalert = this.i18n("amr_newversion_long")
+                }
+            })
     },
     computed: {
         // initialize mangadex integration options
@@ -284,6 +320,14 @@ export default {
             this.options = false
             PopupResizer.setHeightToCurrent()
         },
+        openChangelog() {
+            this.changelog = true
+            PopupResizer.setHeightToMax()
+        },
+        closeChangelog() {
+            this.changelog = false
+            PopupResizer.setHeightToCurrent()
+        },
         handleLoaded() {
             PopupResizer.setHeightToCurrent()
         },
@@ -322,14 +366,11 @@ export default {
          * Opens a url
          */
         opentab(url) {
-            browser.runtime.sendMessage({
-                action: "opentab",
-                url: url
-            })
+            browser.tabs.create({ url })
         },
         /** Opens import export tab. If Firefox, opens it in a new tab because file input closes the extension : https://bugzilla.mozilla.org/show_bug.cgi?id=1292701 */
         openImportExport() {
-            if (utils.isFirefox()) {
+            if (isFirefox()) {
                 setTimeout(() => (this.tabs = "refresh"), 150)
                 this.opentab("/pages/importexport/importexport.html")
                 // window.close();
@@ -338,7 +379,7 @@ export default {
         async DownloadAMR() {
             let url = "https://amr-releases.com/chrome/release/all-mangas-reader-latest.zip"
             let filename = "all-mangas-reader-latest.zip"
-            if (localStorage.beta) {
+            if (this.beta) {
                 url = "https://amr-releases.com/chrome/beta/all-mangas-reader-beta-latest.zip"
                 filename = "all-mangas-reader-beta-latest.zip"
             }

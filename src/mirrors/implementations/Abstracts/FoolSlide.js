@@ -1,7 +1,7 @@
 /**
  * Abstract implementation for all sites based on FoolSlide
  */
-window["FoolSlide"] = function (options) {
+globalThis["FoolSlide"] = function (options) {
     this.default_options = {
         base_url: "http://foo.slide/",
         series_list_url: "/directory/",

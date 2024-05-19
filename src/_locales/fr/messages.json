@@ -577,6 +577,10 @@
         "message": "... a de nouveaux chapitre(s) sur $1! Cliquez pour ouvrir le prochain chapitre non lu.",
         "description": "Text from notification. The notification title is the manga name, $1 is the website on which the manga to notify is read"
     },
+    "notif_message_chapter": {
+        "message": "chapitre suivant $1",
+        "description": "Next chapter info"
+    },
     "content_nav_hidebar": {
         "message": "Cacher la barre de navigation",
         "description": "Tooltip to hide AMR bar in navigation bar"
@@ -717,6 +721,10 @@
     "refresh_last": {
         "message": "Actualisé il y a $1",
         "description": "Label to tell last time something was refreshed. $1 is an i18n string telling last time it was refreshed"
+    },
+    "refresh_next": {
+        "message": "Prochaine mise à jour dans $1",
+        "description": "When next chapter update should happen"
     },
     "refresh_lists_desc": {
         "message": "Supprimer les listes de manga de votre base locale. Ces listes sont récupérées depuis les sites proposant la liste complète des manga qu'ils hébergent. Les supprimer n'affecte pas votre liste de lecture, ces listes seront rechargées à la prochaine recherche pour les sites activés qui supportent cette fonctionnalité",
@@ -2012,5 +2020,36 @@
     "filter_manga_update_error": {
         "message": "Afficher uniquement les séries avec des erreurs de mise à jour",
         "description": "Message about mangas with errors updating filter toggle"
+    },
+    "__V3_0_0": {
+        "message": "Just a filler to separate new labels from old ones"
+    },
+    "page_permissions_title": {
+        "message": "Autorisations - All Mangas Reader",
+        "description": "Title for permissions page"
+    },
+    "permissions_host_message_enabled": {
+        "message": "AMR nécessite les autorisations de l'hôte pour fonctionner correctement. Vous les avez activés",
+        "description": "Message if user has the host permissions enabled"
+    },
+    "permissions_host_message_disabled": {
+        "message": "AMR nécessite des autorisations d'hôte pour fonctionner correctement, veuillez cliquer sur le bouton pour ajouter ces autorisations.",
+        "description": "Message if user has not enabled the host permissions, or disabled them"
+    },
+    "permissions_host_message_button": {
+        "message": "Ajouter des autorisations d'hôte",
+        "description": "Button to enable host permissions"
+    },
+    "change_log_button_tooltip": {
+        "message": "Journal des modifications",
+        "description": "Tooltip for changelog button"
+    },
+    "change_log_title": {
+        "message": "Journal des modifications",
+        "description": "Title for changelog dialog"
+    },
+    "change_log_beta_title": {
+        "message": "Modifications bêta",
+        "description": "Title applied to [Unreleased] changelog entries so we can keep the format correct and display it nicely"
     }
 }
