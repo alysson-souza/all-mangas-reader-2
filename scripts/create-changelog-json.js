@@ -14,7 +14,7 @@ const ChangelogParser = require("changelog-parser")
 const file = fs.readFileSync(path.join(__dirname, "../CHANGELOG.md"), { encoding: "utf-8" })
 
 ChangelogParser({ text: file }).then(function (res) {
-    fs.writeFile(path.join(__dirname, "../changelog.json"), JSON.stringify(res), function (err) {
+    fs.writeFile(path.join(__dirname, "../changelog.json"), JSON.stringify(res, null, "    "), function (err) {
         if (err) return console.log(err)
         console.log("Changelog file built")
     })

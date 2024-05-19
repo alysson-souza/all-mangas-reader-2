@@ -6,8 +6,14 @@
             "date": null,
             "body": "### New_Mirrors\r\n\r\n-   Manga Park - https://mangapark.net\r\n-   Manga Reader.to - https://mangareader.to/home",
             "parsed": {
-                "_": ["Manga Park - https://mangapark.net", "Manga Reader.to - https://mangareader.to/home"],
-                "New_Mirrors": ["Manga Park - https://mangapark.net", "Manga Reader.to - https://mangareader.to/home"]
+                "_": [
+                    "Manga Park - https://mangapark.net",
+                    "Manga Reader.to - https://mangareader.to/home"
+                ],
+                "New_Mirrors": [
+                    "Manga Park - https://mangapark.net",
+                    "Manga Reader.to - https://mangareader.to/home"
+                ]
             }
         },
         {
@@ -53,7 +59,9 @@
                 "Notes": [
                     "The extension has been rewritten to be compatible with manifest V3, this was a major overhaul that has been going on for a while. Unfortunately that means getting a complete changelog is going to be near impossible but I will try to get as many as I can included in this"
                 ],
-                "New Features": ["A log for gist sync errors has been added"],
+                "New Features": [
+                    "A log for gist sync errors has been added"
+                ],
                 "Removed Features": [
                     "Removed error marking for fetching series list, will enable when bugs are worked out"
                 ],

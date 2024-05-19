@@ -1,3 +1,4 @@
 dist
 node_modules
 src/pages/flags.css
+changelog.json
