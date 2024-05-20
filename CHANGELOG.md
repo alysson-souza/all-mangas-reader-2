@@ -19,6 +19,10 @@ The following sections are the standard sections to use, please stick with them 
 
 ## [Unreleased]
 
+### Mirror Fixes
+
+-   Toonily.com - Fixed image loading
+
 ### New_Mirrors
 
 -   Manga Park - https://mangapark.net

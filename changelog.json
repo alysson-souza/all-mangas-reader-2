@@ -4,11 +4,15 @@
             "version": null,
             "title": "[Unreleased]",
             "date": null,
-            "body": "### New_Mirrors\r\n\r\n-   Manga Park - https://mangapark.net\r\n-   Manga Reader.to - https://mangareader.to/home",
+            "body": "### Mirror Fixes\r\n- Toonily.com - Fixed image loading\r\n\r\n### New_Mirrors\r\n\r\n-   Manga Park - https://mangapark.net\r\n-   Manga Reader.to - https://mangareader.to/home",
             "parsed": {
                 "_": [
+                    "Toonily.com - Fixed image loading",
                     "Manga Park - https://mangapark.net",
                     "Manga Reader.to - https://mangareader.to/home"
+                ],
+                "Mirror Fixes": [
+                    "Toonily.com - Fixed image loading"
                 ],
                 "New_Mirrors": [
                     "Manga Park - https://mangapark.net",
