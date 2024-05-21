@@ -4,19 +4,23 @@
             "version": null,
             "title": "[Unreleased]",
             "date": null,
-            "body": "### Mirror Fixes\r\n- Toonily.com - Fixed image loading\r\n\r\n### New_Mirrors\r\n\r\n-   Manga Park - https://mangapark.net\r\n-   Manga Reader.to - https://mangareader.to/home",
+            "body": "### Mirror Fixes\r\n\r\n-   Toonily.com - Fixed image loading\r\n\r\n### New_Mirrors\r\n\r\n-   Manga Park - https://mangapark.net\r\n-   Manga Reader.to - https://mangareader.to/home\r\n-   Fan Comics - https://www.mgeko.com\r\n-   Manga BTT - https://manhwabtt.com",
             "parsed": {
                 "_": [
                     "Toonily.com - Fixed image loading",
                     "Manga Park - https://mangapark.net",
-                    "Manga Reader.to - https://mangareader.to/home"
+                    "Manga Reader.to - https://mangareader.to/home",
+                    "Fan Comics - https://www.mgeko.com",
+                    "Manga BTT - https://manhwabtt.com"
                 ],
                 "Mirror Fixes": [
                     "Toonily.com - Fixed image loading"
                 ],
                 "New_Mirrors": [
                     "Manga Park - https://mangapark.net",
-                    "Manga Reader.to - https://mangareader.to/home"
+                    "Manga Reader.to - https://mangareader.to/home",
+                    "Fan Comics - https://www.mgeko.com",
+                    "Manga BTT - https://manhwabtt.com"
                 ]
             }
         },

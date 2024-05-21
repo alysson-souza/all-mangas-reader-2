@@ -27,6 +27,8 @@ The following sections are the standard sections to use, please stick with them 
 
 -   Manga Park - https://mangapark.net
 -   Manga Reader.to - https://mangareader.to/home
+-   Fan Comics - https://www.mgeko.com
+-   Manga BTT - https://manhwabtt.com
 
 ## [3.0.0] - 2024-05-19
 
