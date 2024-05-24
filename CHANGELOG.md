@@ -29,6 +29,7 @@ The following sections are the standard sections to use, please stick with them 
 -   Manga Reader.to - https://mangareader.to/home
 -   Fan Comics - https://www.mgeko.com
 -   Manga BTT - https://manhwabtt.com
+-   Manga Budddy - https://mangabuddy.com/home
 
 ## [3.0.0] - 2024-05-19
 
