@@ -97,14 +97,21 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
             home: "https://www.webtoon.xyz/",
             chapter_url: /^\/read\/.*\/.+$/g
         }),
-        new Madara(mirrorHelper, {
-            mirrorName: "Toonily",
-            mirrorIcon: ToonilyIcon,
-            languages: "en",
-            domains: ["toonily.com"],
-            home: "https://toonily.com/",
-            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g
-        }),
+        new Madara(
+            mirrorHelper,
+            {
+                mirrorName: "Toonily",
+                mirrorIcon: ToonilyIcon,
+                languages: "en",
+                domains: ["toonily.com"],
+                home: "https://toonily.com/",
+                chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g
+            },
+            {
+                img_src: "data-src",
+                secondary_img_src: "src"
+            }
+        ),
         new Madara(mirrorHelper, {
             mirrorName: "Toonily.Net",
             mirrorIcon: ToonilyNetIcon,

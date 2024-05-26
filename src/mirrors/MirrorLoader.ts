@@ -50,6 +50,11 @@ import { DisasterScans } from "./sites/DisasterScans"
 import { Dm5 } from "./sites/Dm5"
 import { ReaperScans } from "./sites/ReaperScans"
 import { LikeManga } from "./sites/LikeManga"
+import { MangaPark } from "./sites/MangaPark"
+import { MangaReaderTo } from "./sites/MangaReaderTo"
+import { FanComics } from "./sites/FanComics"
+import { MangaBTT } from "./sites/MangaBTT"
+import { MangaBuddy } from "./sites/MangaBuddy"
 
 export class MirrorLoader {
     lookupMap: Map<string, MirrorImplementation>
@@ -139,6 +144,11 @@ export const getMirrorLoader = (mirrorHelper: MirrorHelper) => {
             new Dm5(mirrorHelper),
             new ReaperScans(mirrorHelper),
             new LikeManga(mirrorHelper),
+            new MangaPark(mirrorHelper),
+            new MangaReaderTo(mirrorHelper),
+            new FanComics(mirrorHelper),
+            new MangaBTT(mirrorHelper),
+            new MangaBuddy(mirrorHelper),
 
             // Must be last, as we sometimes select based on same matching
             // domains (MangaDex), therefore we should prefer active ones first

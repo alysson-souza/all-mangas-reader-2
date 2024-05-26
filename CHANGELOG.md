@@ -17,6 +17,20 @@ The following sections are the standard sections to use, please stick with them 
 -   Disabled_Mirrors
 -   Notes - This is the catchall for anything that does not fit in the other sections
 
+## [3.0.1] - 2024-05-26
+
+### Mirror Fixes
+
+-   Toonily.com - Fixed image loading
+
+### New_Mirrors
+
+-   Manga Park - https://mangapark.net
+-   Manga Reader.to - https://mangareader.to/home
+-   Fan Comics - https://www.mgeko.com
+-   Manga BTT - https://manhwabtt.com
+-   Manga Budddy - https://mangabuddy.com/home
+
 ## [3.0.0] - 2024-05-19
 
 ### Notes
