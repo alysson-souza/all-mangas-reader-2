@@ -1,9 +1,9 @@
 {
     "versions": [
         {
-            "version": null,
-            "title": "[Unreleased]",
-            "date": null,
+            "version": "3.0.1",
+            "title": "[3.0.1] - 2024-05-26",
+            "date": "2024-05-26",
             "body": "### Mirror Fixes\r\n\r\n-   Toonily.com - Fixed image loading\r\n\r\n### New_Mirrors\r\n\r\n-   Manga Park - https://mangapark.net\r\n-   Manga Reader.to - https://mangareader.to/home\r\n-   Fan Comics - https://www.mgeko.com\r\n-   Manga BTT - https://manhwabtt.com\r\n-   Manga Budddy - https://mangabuddy.com/home",
             "parsed": {
                 "_": [
