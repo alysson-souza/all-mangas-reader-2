@@ -233,13 +233,13 @@ export const getMangaStreamImplementations = (mirrorHelper: MirrorHelper): Mirro
                 mirrorName: "Flame Scans",
                 canListFullMangas: false,
                 mirrorIcon: FlameScanIcon,
-                domains: ["flamescans.org", "flamecomics.com"],
-                home: "https://flamecomics.com",
+                domains: ["flamescans.org", "flamecomics.com", "flamecomics.me"],
+                home: "https://flamecomics.me",
                 chapter_url: /\/.*?chapter-[0-9]+.*\//g,
                 languages: "en"
             },
             {
-                search_url: "https://flamecomics.com",
+                search_url: "https://flamecomics.me",
                 chapters_a_sel: "div.bixbox.bxcl ul li a",
                 chapters_text_sel: "span.chapternum",
                 search_json: false,

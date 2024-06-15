@@ -15,7 +15,15 @@ The following sections are the standard sections to use, please stick with them 
 -   New Mirrors
 -   Mirror Fixes
 -   Disabled_Mirrors
--   Notes - This is the catchall for anything that does not fit in the other sections
+-   Notes - This is the catchall for anything that does not fit in the other sections.
+
+## [Unreleased]
+
+### Mirror Fixes
+
+-   Manga Galaxy - Fixed issue with single digit chapters
+-   Reset Scans - New domain
+-   Flame Scans - New domain
 
 ## [3.0.1] - 2024-05-26
 

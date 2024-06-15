@@ -1,6 +1,24 @@
 {
     "versions": [
         {
+            "version": null,
+            "title": "[Unreleased]",
+            "date": null,
+            "body": "### Mirror Fixes\r\n\r\n-   Manga Galaxy - Fixed issue with single digit chapters\r\n-   Reset Scans - New domain\r\n-   Flame Scans - New domain",
+            "parsed": {
+                "_": [
+                    "Manga Galaxy - Fixed issue with single digit chapters",
+                    "Reset Scans - New domain",
+                    "Flame Scans - New domain"
+                ],
+                "Mirror Fixes": [
+                    "Manga Galaxy - Fixed issue with single digit chapters",
+                    "Reset Scans - New domain",
+                    "Flame Scans - New domain"
+                ]
+            }
+        },
+        {
             "version": "3.0.1",
             "title": "[3.0.1] - 2024-05-26",
             "date": "2024-05-26",
@@ -112,5 +130,5 @@
         }
     ],
     "title": "Changelog",
-    "description": "All notable changes to this project will be documented in this file.\r\n\r\nThis file is designed to be parsed by [changelog-parser](https://www.npmjs.com/package/changelog-parser).\r\nThe format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).\r\nThis project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\r\n\r\nThe following sections are the standard sections to use, please stick with them for consistency\r\n\r\n-   New Features\r\n-   Changed Features\r\n-   Removed Features\r\n-   Bug Fixes\r\n-   New Mirrors\r\n-   Mirror Fixes\r\n-   Disabled_Mirrors\r\n-   Notes - This is the catchall for anything that does not fit in the other sections"
+    "description": "All notable changes to this project will be documented in this file.\r\n\r\nThis file is designed to be parsed by [changelog-parser](https://www.npmjs.com/package/changelog-parser).\r\nThe format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).\r\nThis project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\r\n\r\nThe following sections are the standard sections to use, please stick with them for consistency\r\n\r\n-   New Features\r\n-   Changed Features\r\n-   Removed Features\r\n-   Bug Fixes\r\n-   New Mirrors\r\n-   Mirror Fixes\r\n-   Disabled_Mirrors\r\n-   Notes - This is the catchall for anything that does not fit in the other sections."
 }

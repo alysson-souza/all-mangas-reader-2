@@ -813,13 +813,13 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
                 mirrorName: "Reset Scans",
                 mirrorIcon: ResetScansIcon,
                 languages: "en",
-                domains: ["reset-scans.com", "reset-scans.us", "reset-scans.xyz"],
-                home: "https://reset-scans.xyz/",
+                domains: ["reset-scans.com", "reset-scans.us", "reset-scans.xyz", "resetscan.com"],
+                home: "https://resetscan.com",
                 chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series|devmax)\/.*\/.+$/g,
                 canListFullMangas: false
             },
             {
-                search_url: "https://reset-scans.us/",
+                search_url: "https://resetscan.com/",
                 chapters_a_sel: "li.wp-manga-chapter .li__text a",
                 chapter_list_ajax: true,
                 isekai_chapter_url: true
