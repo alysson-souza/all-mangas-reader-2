@@ -25,6 +25,21 @@ The following sections are the standard sections to use, please stick with them 
 -   Reset Scans - New domain
 -   Flame Scans - New domain
 
+### New Mirrors
+
+-   Fire Scans - https://firescans.xyz/
+
+## Disabled Mirrors
+
+-   Toonily.Net
+-   Leveler Scans
+-   Manga 1st - Warnings from both uBlock and antivirus software about this site, will not bypass to check if it is still active and I advise no one to read from it
+-   Manga Dods
+-   Manga Lab - Warning about expired security certificate
+-   Read Manhua
+-   Alpha Scans - Warning from vpn about security certificate validation
+-   Cosmic Scans - The website says they are closed
+
 ## [3.0.1] - 2024-05-26
 
 ### Mirror Fixes

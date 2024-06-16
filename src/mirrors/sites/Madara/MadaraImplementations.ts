@@ -7,21 +7,17 @@ import AstralLibraryIcon from "../../icons/astrallibrary-optimized.png"
 import ChibiMangaIcon from "../../icons/chibimanga-optimized.png"
 import ComicDomIcon from "../../icons/comic-dom-optimized.png"
 import ComickibaIcon from "../../icons/comickiba-optimized.png"
-import DisasterScansIcon from "../../icons/disasterscans-optimized.png"
 import DragonTeaIcon from "../../icons/dragon-tea-optimized.png"
 import GDScansIcon from "../../icons/gd-scans-optimized.png"
 import HiperdexIcon from "../../icons/hiperdex-optimized.png"
 import ImmortalupdatesIcon from "../../icons/immortalupdates-optimized.png"
 import IsekaiScansIcon from "../../icons/isekaiscans-optimized.png"
 import KunMangaIcon from "../../icons/kun-manga-optimized.png"
-import LevelerScansIcon from "../../icons/leveler-scans-optimized.png"
 import LeviatanScansIcon from "../../icons/leviatanscans-optimized.png"
 import LHTranslationsIcon from "../../icons/lhtranslations-optimized.png"
 import LilyMangaIcon from "../../icons/lilymanga-optimized.png"
 import Manga1stOnlineIcon from "../../icons/manga1st-online-optimized.png"
-import Manga1stIcon from "../../icons/manga1st-optimized.png"
 import MangaBobIcon from "../../icons/mangabob-optimized.png"
-import MangaDodsIcon from "../../icons/mangadods-optimized.png"
 import MangaGreatIcon from "../../icons/mangagreat-optimized.png"
 import MangaKomiIcon from "../../icons/mangakomi-optimized.png"
 import MangaSushiIcon from "../../icons/mangasushi-optimized.png"
@@ -37,7 +33,6 @@ import MixedMangaIcon from "../../icons/mixed-manga-optimized.png"
 import MMScansIcon from "../../icons/mmscans-optimized.png"
 import NightComicIcon from "../../icons/nightcomic-optimized.png"
 import RandomTranslationsIcon from "../../icons/randomtranslations-optimized.png"
-import ReadManhuaIcon from "../../icons/readmanhua-optimized.png"
 import ResetScansIcon from "../../icons/reset-scans-optimized.png"
 import RuyaMangaIcon from "../../icons/ruya-manga-optimized.png"
 import S2MangaIcon from "../../icons/s2-manga-optimized.png"
@@ -45,7 +40,6 @@ import SawamicsIcon from "../../icons/sawamics-optimized.png"
 import SetsuScansIcon from "../../icons/setsuscans-optimized.png"
 import SKScansIcon from "../../icons/skscans-optimized.png"
 import ToonilyIcon from "../../icons/toonily-optimized.png"
-import ToonilyNetIcon from "../../icons/toonilynet-optimized.png"
 import TopManhuaIcon from "../../icons/topmanhua-optimized.png"
 import TritiniaScansIcon from "../../icons/tritiniascans-optimized.png"
 import TwilightScansIcon from "../../icons/twilightscans-optimized.png"
@@ -56,7 +50,6 @@ import ZinMangaIcon from "../../icons/zin-manga-optimized.png"
 import ThreeFourSevenMangaIcon from "../../icons/manga-347-optimized.png"
 import MangaClashIcon from "../../icons/manga-clash-optimized.png"
 import MangaCultivatorIcon from "../../icons/manga-cultivator-optimized.png"
-import MangaLabIcon from "../../icons/manga-lab-optimized.png"
 import MangaReadIcon from "../../icons/manga-read-optimized.png"
 import MangazukiMeIcon from "../../icons/mangazuki-optimized.png"
 import ManhuasIcon from "../../icons/manhuas-optimized.png"
@@ -112,14 +105,6 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
                 secondary_img_src: "src"
             }
         ),
-        new Madara(mirrorHelper, {
-            mirrorName: "Toonily.Net",
-            mirrorIcon: ToonilyNetIcon,
-            languages: "en",
-            domains: ["toonily.net"],
-            home: "https://toonily.net/",
-            chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g
-        }),
         new Madara(
             mirrorHelper,
             {
@@ -319,23 +304,6 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
         new Madara(
             mirrorHelper,
             {
-                mirrorName: "Leveler Scans",
-                mirrorIcon: LevelerScansIcon,
-                languages: "en",
-                domains: ["levelerscans.xyz"],
-                home: "https://levelerscans.xyz/",
-                chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
-                canListFullMangas: false
-            },
-            {
-                search_url: "https://levelerscans.xyz/",
-                chapter_list_ajax: true,
-                img_src: "data-src"
-            }
-        ),
-        new Madara(
-            mirrorHelper,
-            {
                 mirrorName: "Leviatan Scans",
                 mirrorIcon: LeviatanScansIcon,
                 languages: "en",
@@ -392,22 +360,6 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
                 search_url: "https://lilymanga.com/",
                 chapter_list_ajax: true,
                 isekai_chapter_url: true
-            }
-        ),
-        new Madara(
-            mirrorHelper,
-            {
-                mirrorName: "Manga 1st",
-                mirrorIcon: Manga1stIcon,
-                languages: "en",
-                domains: ["manga1st.com"],
-                home: "https://manga1st.com/",
-                chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
-                canListFullMangas: false
-            },
-            {
-                search_url: "https://manga1st.com/",
-                chapter_list_ajax: true
             }
         ),
         new Madara(
@@ -482,25 +434,6 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
         new Madara(
             mirrorHelper,
             {
-                mirrorName: "Manga Dods",
-                mirrorIcon: MangaDodsIcon,
-                languages: "en",
-                domains: ["mangadods.com"],
-                home: "https://www.mangadods.com/",
-                chapter_url: /\/manga\/.*\/(ch-)?\d/g,
-                canListFullMangas: false
-            },
-            {
-                search_url: "https://www.mangadods.com/",
-                img_src: "src",
-                chapter_list_ajax: false,
-                secondary_img_src: "data-src",
-                chapters_a_sel: "li.wp-manga-chapter a"
-            }
-        ),
-        new Madara(
-            mirrorHelper,
-            {
                 mirrorName: "Manga Great",
                 mirrorIcon: MangaGreatIcon,
                 languages: "en",
@@ -511,23 +444,6 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
             },
             {
                 search_url: "https://mangagreat.com/",
-                chapter_list_ajax: true,
-                isekai_chapter_url: true
-            }
-        ),
-        new Madara(
-            mirrorHelper,
-            {
-                mirrorName: "Manga Lab",
-                mirrorIcon: MangaLabIcon,
-                languages: "en",
-                domains: ["themangalab.com"],
-                home: "https://themangalab.com/",
-                chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series|read)\/.*\/.+$/g,
-                canListFullMangas: false
-            },
-            {
-                search_url: "https://themangalab.com/",
                 chapter_list_ajax: true,
                 isekai_chapter_url: true
             }
@@ -788,22 +704,6 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
             {
                 search_url: "https://randomtranslations.com/",
                 img_src: "data-src",
-                chapter_list_ajax: true
-            }
-        ),
-        new Madara(
-            mirrorHelper,
-            {
-                mirrorName: "Read Manhua",
-                mirrorIcon: ReadManhuaIcon,
-                languages: "en",
-                domains: ["readmanhua.net"],
-                home: "https://readmanhua.net/",
-                chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
-                canListFullMangas: true
-            },
-            {
-                search_url: "https://readmanhua.net/",
                 chapter_list_ajax: true
             }
         ),
@@ -1166,6 +1066,24 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
             },
             {
                 search_url: "https://harimanga.com/"
+            }
+        ),
+        new Madara(
+            mirrorHelper,
+            {
+                mirrorName: "Fire Scans",
+                mirrorIcon: require("../../icons/hari-manga-optimized.png"),
+                languages: "en",
+                domains: ["firescans.xyz"],
+                home: "https://firescans.xyz/",
+                chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+                canListFullMangas: false
+            },
+            {
+                chapter_list_ajax: true,
+                isekai_chapter_url: true,
+                chapter_list_ajax_selctor_type: "html",
+                chapter_list_ajax_selctor: "#manga-chapters-holder"
             }
         )
     ]
