@@ -24,6 +24,9 @@ The following sections are the standard sections to use, please stick with them 
 -   Manga Galaxy - Fixed issue with single digit chapters
 -   Reset Scans - New domain
 -   Flame Scans - New domain
+-   Nice Oppai - Changed language to Thai instead of english
+-   FM Team - Change language to French instead of english
+-   Manga Freak - Changed domains, possible issue with cloudflare
 
 ### New Mirrors
 

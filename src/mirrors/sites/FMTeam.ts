@@ -11,7 +11,7 @@ export class FMTeam extends BaseMirror implements MirrorImplementation {
     mirrorName = "FM Team"
     canListFullMangas = false
     mirrorIcon = FMTeamIcon
-    languages = "en"
+    languages = "fr"
     domains = ["fmteam.fr"]
     home = "http://fmteam.fr"
     chapter_url = /\/read\/.*\/ch\/\w+#?\d*/g

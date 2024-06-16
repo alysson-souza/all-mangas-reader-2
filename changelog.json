@@ -4,17 +4,45 @@
             "version": null,
             "title": "[Unreleased]",
             "date": null,
-            "body": "### Mirror Fixes\r\n\r\n-   Manga Galaxy - Fixed issue with single digit chapters\r\n-   Reset Scans - New domain\r\n-   Flame Scans - New domain",
+            "body": "### Mirror Fixes\r\n\r\n-   Manga Galaxy - Fixed issue with single digit chapters\r\n-   Reset Scans - New domain\r\n-   Flame Scans - New domain\r\n-   Nice Oppai - Changed language to Thai instead of english\r\n-   FM Team - Change language to French instead of english\r\n-   Manga Freak - Changed domains, possible issue with cloudflare\r\n\r\n### New Mirrors\r\n\r\n-   Fire Scans - https://firescans.xyz/",
             "parsed": {
                 "_": [
                     "Manga Galaxy - Fixed issue with single digit chapters",
                     "Reset Scans - New domain",
-                    "Flame Scans - New domain"
+                    "Flame Scans - New domain",
+                    "Nice Oppai - Changed language to Thai instead of english",
+                    "FM Team - Change language to French instead of english",
+                    "Manga Freak - Changed domains, possible issue with cloudflare",
+                    "Fire Scans - https://firescans.xyz/"
                 ],
                 "Mirror Fixes": [
                     "Manga Galaxy - Fixed issue with single digit chapters",
                     "Reset Scans - New domain",
-                    "Flame Scans - New domain"
+                    "Flame Scans - New domain",
+                    "Nice Oppai - Changed language to Thai instead of english",
+                    "FM Team - Change language to French instead of english",
+                    "Manga Freak - Changed domains, possible issue with cloudflare"
+                ],
+                "New Mirrors": [
+                    "Fire Scans - https://firescans.xyz/"
+                ]
+            }
+        },
+        {
+            "version": null,
+            "title": "Disabled Mirrors",
+            "date": null,
+            "body": "-   Toonily.Net\r\n-   Leveler Scans\r\n-   Manga 1st - Warnings from both uBlock and antivirus software about this site, will not bypass to check if it is still active and I advise no one to read from it\r\n-   Manga Dods\r\n-   Manga Lab - Warning about expired security certificate\r\n-   Read Manhua\r\n-   Alpha Scans - Warning from vpn about security certificate validation\r\n-   Cosmic Scans - The website says they are closed",
+            "parsed": {
+                "_": [
+                    "Toonily.Net",
+                    "Leveler Scans",
+                    "Manga 1st - Warnings from both uBlock and antivirus software about this site, will not bypass to check if it is still active and I advise no one to read from it",
+                    "Manga Dods",
+                    "Manga Lab - Warning about expired security certificate",
+                    "Read Manhua",
+                    "Alpha Scans - Warning from vpn about security certificate validation",
+                    "Cosmic Scans - The website says they are closed"
                 ]
             }
         },

@@ -11,7 +11,7 @@ export class Niceoppai extends BaseMirror implements MirrorImplementation {
     mirrorName = "Niceoppai"
     canListFullMangas = false
     mirrorIcon = NiceoppaiIcon
-    languages = "en"
+    languages = "th"
     domains = ["niceoppai.net"]
     home = "http://www.niceoppai.net/"
     chapter_url = /\/.+\/\d+/g
