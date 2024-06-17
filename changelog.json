@@ -4,9 +4,11 @@
             "version": null,
             "title": "[Unreleased]",
             "date": null,
-            "body": "### Mirror Fixes\r\n\r\n-   Manga Galaxy - Fixed issue with single digit chapters\r\n-   Reset Scans - New domain\r\n-   Flame Scans - New domain\r\n-   Nice Oppai - Changed language to Thai instead of english\r\n-   FM Team - Change language to French instead of english\r\n-   Manga Freak - Changed domains, possible issue with cloudflare\r\n\r\n### New Mirrors\r\n\r\n-   Fire Scans - https://firescans.xyz/",
+            "body": "### New Features\r\n-   Added a simple server and mirror for testing various different errors on so we can control when they happen and work on notifications/fixes for common problems\r\n\r\n### Changed Features\r\n-   I have re-enabled the error icons for series that have errors, and started added some different error messages in to identify the issue. More error codes will follow\r\n\r\n### Mirror Fixes\r\n\r\n-   Manga Galaxy - Fixed issue with single digit chapters\r\n-   Reset Scans - New domain\r\n-   Flame Scans - New domain\r\n-   Nice Oppai - Changed language to Thai instead of english\r\n-   FM Team - Change language to French instead of english\r\n-   Manga Freak - Changed domains, possible issue with cloudflare\r\n\r\n### New Mirrors\r\n\r\n-   Fire Scans - https://firescans.xyz/",
             "parsed": {
                 "_": [
+                    "Added a simple server and mirror for testing various different errors on so we can control when they happen and work on notifications/fixes for common problems",
+                    "I have re-enabled the error icons for series that have errors, and started added some different error messages in to identify the issue. More error codes will follow",
                     "Manga Galaxy - Fixed issue with single digit chapters",
                     "Reset Scans - New domain",
                     "Flame Scans - New domain",
@@ -14,6 +16,12 @@
                     "FM Team - Change language to French instead of english",
                     "Manga Freak - Changed domains, possible issue with cloudflare",
                     "Fire Scans - https://firescans.xyz/"
+                ],
+                "New Features": [
+                    "Added a simple server and mirror for testing various different errors on so we can control when they happen and work on notifications/fixes for common problems"
+                ],
+                "Changed Features": [
+                    "I have re-enabled the error icons for series that have errors, and started added some different error messages in to identify the issue. More error codes will follow"
                 ],
                 "Mirror Fixes": [
                     "Manga Galaxy - Fixed issue with single digit chapters",
@@ -158,5 +166,5 @@
         }
     ],
     "title": "Changelog",
-    "description": "All notable changes to this project will be documented in this file.\r\n\r\nThis file is designed to be parsed by [changelog-parser](https://www.npmjs.com/package/changelog-parser).\r\nThe format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).\r\nThis project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\r\n\r\nThe following sections are the standard sections to use, please stick with them for consistency\r\n\r\n-   New Features\r\n-   Changed Features\r\n-   Removed Features\r\n-   Bug Fixes\r\n-   New Mirrors\r\n-   Mirror Fixes\r\n-   Disabled_Mirrors\r\n-   Notes - This is the catchall for anything that does not fit in the other sections."
+    "description": "All notable changes to this project will be documented in this file.\r\n\r\nThis file is designed to be parsed by [changelog-parser](https://www.npmjs.com/package/changelog-parser).\r\nThe format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).\r\nThis project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\r\n\r\nThe following sections are the standard sections to use, please stick with them for consistency\r\n\r\n-   New Features\r\n-   Changed Features\r\n-   Removed Features\r\n-   Bug Fixes\r\n-   New Mirrors\r\n-   Mirror Fixes\r\n-   Disabled Mirrors\r\n-   Notes - This is the catchall for anything that does not fit in the other sections."
 }

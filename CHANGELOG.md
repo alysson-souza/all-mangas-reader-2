@@ -14,10 +14,18 @@ The following sections are the standard sections to use, please stick with them 
 -   Bug Fixes
 -   New Mirrors
 -   Mirror Fixes
--   Disabled_Mirrors
+-   Disabled Mirrors
 -   Notes - This is the catchall for anything that does not fit in the other sections.
 
 ## [Unreleased]
+
+### New Features
+
+-   Added a simple server and mirror for testing various different errors on so we can control when they happen and work on notifications/fixes for common problems
+
+### Changed Features
+
+-   I have re-enabled the error icons for series that have errors, and started added some different error messages in to identify the issue. More error codes will follow
 
 ### Mirror Fixes
 

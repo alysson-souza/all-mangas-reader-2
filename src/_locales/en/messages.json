@@ -2052,5 +2052,20 @@
     "change_log_beta_title": {
         "message": "Beta Changes",
         "description": "Title applied to [Unreleased] changelog entries so we can keep the format correct and display it nicely"
+    },
+    "__V3_0_2": {
+        "message": "Just a filler to separate new labels from old ones"
+    },
+    "manga_update_error_code_other": {
+        "message": "Error - An unidentified error occured when loading the series from the Mirror $1",
+        "description": "Error code for empty chapter list"
+    },
+    "manga_update_error_code_1": {
+        "message": "Error - Series page returned an empty chapter list from Mirror $1",
+        "description": "Error code for empty chapter list"
+    },
+    "manga_update_error_code_2": {
+        "message": "Error - Series page could not be loaded from Mirror $1",
+        "description": "Error code for failed to fetch list"
     }
 }
