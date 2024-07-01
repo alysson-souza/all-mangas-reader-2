@@ -80,8 +80,8 @@ export class ReadComicOnline extends BaseMirror implements MirrorImplementation 
     }
 
     async getListImages(doc, curUrl, sender) {
-        const unpack = (urlImg, origin: any = false) => {
-            let src = urlImg.replace(/_x236/g, "d").replace(/_x945/g, "g")
+        const unpack = (urlImg: string, origin: any = false) => {
+            let src = urlImg.replace(/pw_.g28x/g, "b").replace(/d2pr.x_27/g, "h")
             const alt = origin !== false
             if (!alt) origin = "https://2.bp.blogspot.com/"
 
