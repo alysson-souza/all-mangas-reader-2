@@ -83,7 +83,7 @@ export class ReadComicOnline extends BaseMirror implements MirrorImplementation 
         const unpack = (urlImg: string, origin: any = false) => {
             let src = urlImg.replace(/pw_.g28x/g, "b").replace(/d2pr.x_27/g, "h")
             const alt = origin !== false
-            if (!alt) origin = "https://2.bp.blogspot.com/"
+            if (!alt) origin = "https://2.bp.blogspot.com"
 
             if (src.indexOf("https") !== 0) {
                 // if encoded
@@ -102,10 +102,10 @@ export class ReadComicOnline extends BaseMirror implements MirrorImplementation 
                 src = src.substring(0, 13) + src.substring(17)
                 src = src.substring(0, src.length - 2) + (isSizeZero ? "=s0" : "=s1600")
 
-                src = origin + src + cmark
+                src = origin + "/" + src + cmark
             } else if (alt) {
                 // if not encoded, we still need to replace origin, when given
-                src = src.replace("https://2.bp.blogspot.com/", origin)
+                src = src.replace("https://2.bp.blogspot.com", origin)
             }
             return src
         }
