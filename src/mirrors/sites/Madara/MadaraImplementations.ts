@@ -56,6 +56,7 @@ import ManhuasIcon from "../../icons/manhuas-optimized.png"
 import ManhuausIcon from "../../icons/manhuaus-optimized.png"
 import GourmetScansIcon from "../../icons/gourmet-scans-optimized.png"
 import MangalekIcon from "../../icons/manga-lek-optimized.png"
+import { ManyToon } from "./ManyToon"
 
 /**
  * All implementations based of Madara are placed here
@@ -621,7 +622,7 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
                 img_src: "data-src"
             }
         ),
-        new Madara(
+        new ManyToon(
             mirrorHelper,
             {
                 mirrorName: "Manytoon",
@@ -634,9 +635,9 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
             },
             {
                 search_url: "https://manytoon.com/",
-                img_src: "data-src",
-                chapter_list_ajax: true,
-                isekai_chapter_url: true
+                img_src: "src"
+                // chapter_list_ajax: true,
+                // isekai_chapter_url: true
             }
         ),
         new Madara(

@@ -35,6 +35,11 @@ The following sections are the standard sections to use, please stick with them 
 -   Nice Oppai - Changed language to Thai instead of english
 -   FM Team - Change language to French instead of english
 -   Manga Freak - Changed domains, possible issue with cloudflare
+-   Read Comic Online - Changed image encryption and fix for alternative image source (Credit @jaygitsby)
+-   Manga Hasu - New domain
+-   Surya Toon - Extra chapter being picked up
+-   Many Toon - Changed image source
+-   Manhwa Freak - New domain. The old one still works but they will be shutting it down so migration to the new site is advised
 
 ### New Mirrors
 

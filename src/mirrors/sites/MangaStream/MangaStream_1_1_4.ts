@@ -294,7 +294,9 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
                 // canListFullMangas: true,
                 chapter_url: /^\/*\/.+$/g
             },
-            {}
+            {
+                chapter_list_selector: "#chapterlist .eph-num a"
+            }
         ),
         new MangaStream_1_1_4(
             mirrorHelper,
