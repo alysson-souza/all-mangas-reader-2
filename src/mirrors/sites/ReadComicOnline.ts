@@ -80,10 +80,10 @@ export class ReadComicOnline extends BaseMirror implements MirrorImplementation 
     }
 
     async getListImages(doc, curUrl, sender) {
-        const unpack = (urlImg, origin: any = false) => {
-            let src = urlImg.replace(/_x236/g, "d").replace(/_x945/g, "g")
+        const unpack = (urlImg: string, origin: any = false) => {
+            let src = urlImg.replace(/pw_.g28x/g, "b").replace(/d2pr.x_27/g, "h")
             const alt = origin !== false
-            if (!alt) origin = "https://2.bp.blogspot.com/"
+            if (!alt) origin = "https://2.bp.blogspot.com"
 
             if (src.indexOf("https") !== 0) {
                 // if encoded
@@ -93,19 +93,19 @@ export class ReadComicOnline extends BaseMirror implements MirrorImplementation 
                 const isSizeZero = sIndex > 0
                 if (!isSizeZero) sIndex = src.indexOf("=s1600?")
 
-                src = src.substring(4, sIndex)
-                src = src.substring(0, 18) + src.substring(21)
-                src = src.substring(0, src.length - 6) + src[src.length - 2] + src[src.length - 1]
+                src = src.substring(0, sIndex)
+                src = src.substring(8, 26) + src.substring(35)
+                src = src.substring(0, src.length - 7) + src[src.length - 2] + src[src.length - 1]
 
                 src = atob(src)
 
                 src = src.substring(0, 13) + src.substring(17)
                 src = src.substring(0, src.length - 2) + (isSizeZero ? "=s0" : "=s1600")
 
-                src = origin + src + cmark
+                src = origin + "/" + src + cmark
             } else if (alt) {
                 // if not encoded, we still need to replace origin, when given
-                src = src.replace("https://2.bp.blogspot.com/", origin)
+                src = src.replace("https://2.bp.blogspot.com", origin)
             }
             return src
         }
