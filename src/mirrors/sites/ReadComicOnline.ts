@@ -93,9 +93,9 @@ export class ReadComicOnline extends BaseMirror implements MirrorImplementation 
                 const isSizeZero = sIndex > 0
                 if (!isSizeZero) sIndex = src.indexOf("=s1600?")
 
-                src = src.substring(4, sIndex)
-                src = src.substring(0, 18) + src.substring(21)
-                src = src.substring(0, src.length - 6) + src[src.length - 2] + src[src.length - 1]
+                src = src.substring(0, sIndex)
+                src = src.substring(8, 26) + src.substring(35)
+                src = src.substring(0, src.length - 7) + src[src.length - 2] + src[src.length - 1]
 
                 src = atob(src)
 
