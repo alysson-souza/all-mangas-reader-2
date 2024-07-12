@@ -1,6 +1,17 @@
 {
     "versions": [
         {
+            "version": null,
+            "title": "[Unreleased]",
+            "date": null,
+            "body": "- No changes, had to fix an issue with release server and generate new versions",
+            "parsed": {
+                "_": [
+                    "No changes, had to fix an issue with release server and generate new versions"
+                ]
+            }
+        },
+        {
             "version": "3.0.1",
             "title": "[3.0.1] - 2024-07-12",
             "date": "2024-07-12",
