@@ -55,6 +55,7 @@ import { MangaReaderTo } from "./sites/MangaReaderTo"
 import { FanComics } from "./sites/FanComics"
 import { MangaBTT } from "./sites/MangaBTT"
 import { MangaBuddy } from "./sites/MangaBuddy"
+import { TestSite } from "./sites/_localTestServer"
 
 export class MirrorLoader {
     lookupMap: Map<string, MirrorImplementation>
@@ -149,6 +150,7 @@ export const getMirrorLoader = (mirrorHelper: MirrorHelper) => {
             new FanComics(mirrorHelper),
             new MangaBTT(mirrorHelper),
             new MangaBuddy(mirrorHelper),
+            new TestSite(mirrorHelper),
 
             // Must be last, as we sometimes select based on same matching
             // domains (MangaDex), therefore we should prefer active ones first

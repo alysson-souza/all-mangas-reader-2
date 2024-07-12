@@ -13,8 +13,8 @@ export class ManhwaFreak extends BaseMirror implements MirrorImplementation {
     canListFullMangas = true
     mirrorIcon = ManhwaFreakIcon
     languages = "en"
-    domains = ["manhwa-freak.com", "manhwafreak.com", "manhwa-freak.org"]
-    home = "https://manhwa-freak.org/"
+    domains = ["manhwa-freak.com", "manhwafreak.com", "manhwa-freak.org", " manhwafreak.site"]
+    home = " https://manhwafreak.site/"
     chapter_url = /\/.*?ch-[0-9]+.*\//g
     // regex for removing changing part from chapter URLs
     tidyChapterUrlRegex = /(.*ch-[0-9]+(?:-[0-9]+)*?)(\-\w{5,}){0,1}(\/.*)/

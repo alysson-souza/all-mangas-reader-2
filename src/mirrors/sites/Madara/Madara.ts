@@ -2,7 +2,7 @@ import { BaseMirror } from "../abstract/BaseMirror"
 import { JsonOptions, MirrorHelper } from "../../MirrorHelper"
 import { MirrorImplementation, MirrorObject } from "../../../types/common"
 
-const defaultOptions = {
+export const defaultOptions = {
     search_url: "",
     search_a_sel: "div.post-title > h4 > a",
     chapters_a_sel: "li.wp-manga-chapter > a",
@@ -37,7 +37,7 @@ export class Madara extends BaseMirror implements MirrorImplementation {
     mirrorName: string
     disabled: boolean | undefined
 
-    private readonly options: typeof defaultOptions
+    protected readonly options: typeof defaultOptions
 
     constructor(mirrorHelper: MirrorHelper, mirror: MirrorObject, options: Partial<typeof defaultOptions> = {}) {
         super(mirrorHelper)

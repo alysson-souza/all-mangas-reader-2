@@ -59,7 +59,11 @@ export default class Manga {
         // Scale Up images
         this.scaleUp = obj.scaleUp || 0
 
+        // Mark this series has an error updating
         this.updateError = obj.updateError || 0
+
+        // The error code for the update
+        this.updateErrorCode = obj.updateErrorCode || 0
 
         // Zoom images
         this.zoom = obj.zoom || 0

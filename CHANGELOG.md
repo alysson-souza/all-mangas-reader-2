@@ -14,8 +14,49 @@ The following sections are the standard sections to use, please stick with them 
 -   Bug Fixes
 -   New Mirrors
 -   Mirror Fixes
--   Disabled_Mirrors
--   Notes - This is the catchall for anything that does not fit in the other sections
+-   Disabled Mirrors
+-   Notes - This is the catchall for anything that does not fit in the other sections.
+
+## [3.0.1] - 2024-07-12
+
+### New Features
+
+-   Added a simple server and mirror for testing various different errors on so we can control when they happen and work on notifications/fixes for common problems
+
+### Changed Features
+
+-   I have re-enabled the error icons for series that have errors, and started added some different error messages in to identify the issue. More error codes will follow
+
+### Mirror Fixes
+
+-   Manga Galaxy - Fixed issue with single digit chapters
+-   Reset Scans - New domain
+-   Flame Scans - New domain
+-   Nice Oppai - Changed language to Thai instead of english
+-   FM Team - Change language to French instead of english
+-   Manga Freak - Changed domains, possible issue with cloudflare
+-   Read Comic Online - Changed image encryption and fix for alternative image source (Credit @jaygitsby)
+-   Manga Hasu - New domain
+-   Surya Toon - Extra chapter being picked up
+-   Many Toon - Changed image source
+-   Manhwa Freak - New domain. The old one still works but they will be shutting it down so migration to the new site is advised
+-   Read Comic Online - Fixed an issue recognizing chapter pages
+-   HyperDex - New domain
+
+### New Mirrors
+
+-   Fire Scans - https://firescans.xyz/
+
+## Disabled Mirrors
+
+-   Toonily.Net
+-   Leveler Scans
+-   Manga 1st - Warnings from both uBlock and antivirus software about this site, will not bypass to check if it is still active and I advise no one to read from it
+-   Manga Dods
+-   Manga Lab - Warning about expired security certificate
+-   Read Manhua
+-   Alpha Scans - Warning from vpn about security certificate validation
+-   Cosmic Scans - The website says they are closed
 
 ## [3.0.1] - 2024-05-26
 

@@ -36,9 +36,7 @@
                             <v-tooltip top content-class="icon-ttip">
                                 <template v-slot:activator="{ on }">
                                     <img
-                                        v-if="
-                                            isMirrorEnabled /*&& !manga.updateError TODO: Re-enable this once the underlying issue is solved */
-                                        "
+                                        v-if="isMirrorEnabled && !manga.updateError"
                                         class="m-icon"
                                         width="16"
                                         height="16"
@@ -49,7 +47,12 @@
                                 <span>
                                     <span v-if="isMirrorEnabled && !manga.updateError">{{ mirror.mirrorName }}</span>
                                     <span v-else-if="isMirrorEnabled && manga.updateError">{{
-                                        i18n("list_manga_update_error", manga.mirror)
+                                        i18n(
+                                            `manga_update_error_code_${
+                                                manga.updateErrorCode in [1, 2] ? manga.updateErrorCode : "other"
+                                            }`,
+                                            manga.mirror
+                                        )
                                     }}</span>
                                     <span v-else>{{ i18n("list_mirror_disabled_tooltip", manga.mirror) }}</span>
                                 </span>

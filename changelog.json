@@ -2,6 +2,74 @@
     "versions": [
         {
             "version": "3.0.1",
+            "title": "[3.0.1] - 2024-07-12",
+            "date": "2024-07-12",
+            "body": "### New Features\r\n\r\n-   Added a simple server and mirror for testing various different errors on so we can control when they happen and work on notifications/fixes for common problems\r\n\r\n### Changed Features\r\n\r\n-   I have re-enabled the error icons for series that have errors, and started added some different error messages in to identify the issue. More error codes will follow\r\n\r\n### Mirror Fixes\r\n\r\n-   Manga Galaxy - Fixed issue with single digit chapters\r\n-   Reset Scans - New domain\r\n-   Flame Scans - New domain\r\n-   Nice Oppai - Changed language to Thai instead of english\r\n-   FM Team - Change language to French instead of english\r\n-   Manga Freak - Changed domains, possible issue with cloudflare\r\n-   Read Comic Online - Changed image encryption and fix for alternative image source (Credit @jaygitsby)\r\n-   Manga Hasu - New domain\r\n-   Surya Toon - Extra chapter being picked up\r\n-   Many Toon - Changed image source\r\n-   Manhwa Freak - New domain. The old one still works but they will be shutting it down so migration to the new site is advised\r\n-   Read Comic Online - Fixed an issue recognizing chapter pages\r\n-   HyperDex - New domain\r\n\r\n### New Mirrors\r\n\r\n-   Fire Scans - https://firescans.xyz/",
+            "parsed": {
+                "_": [
+                    "Added a simple server and mirror for testing various different errors on so we can control when they happen and work on notifications/fixes for common problems",
+                    "I have re-enabled the error icons for series that have errors, and started added some different error messages in to identify the issue. More error codes will follow",
+                    "Manga Galaxy - Fixed issue with single digit chapters",
+                    "Reset Scans - New domain",
+                    "Flame Scans - New domain",
+                    "Nice Oppai - Changed language to Thai instead of english",
+                    "FM Team - Change language to French instead of english",
+                    "Manga Freak - Changed domains, possible issue with cloudflare",
+                    "Read Comic Online - Changed image encryption and fix for alternative image source (Credit @jaygitsby)",
+                    "Manga Hasu - New domain",
+                    "Surya Toon - Extra chapter being picked up",
+                    "Many Toon - Changed image source",
+                    "Manhwa Freak - New domain. The old one still works but they will be shutting it down so migration to the new site is advised",
+                    "Read Comic Online - Fixed an issue recognizing chapter pages",
+                    "HyperDex - New domain",
+                    "Fire Scans - https://firescans.xyz/"
+                ],
+                "New Features": [
+                    "Added a simple server and mirror for testing various different errors on so we can control when they happen and work on notifications/fixes for common problems"
+                ],
+                "Changed Features": [
+                    "I have re-enabled the error icons for series that have errors, and started added some different error messages in to identify the issue. More error codes will follow"
+                ],
+                "Mirror Fixes": [
+                    "Manga Galaxy - Fixed issue with single digit chapters",
+                    "Reset Scans - New domain",
+                    "Flame Scans - New domain",
+                    "Nice Oppai - Changed language to Thai instead of english",
+                    "FM Team - Change language to French instead of english",
+                    "Manga Freak - Changed domains, possible issue with cloudflare",
+                    "Read Comic Online - Changed image encryption and fix for alternative image source (Credit @jaygitsby)",
+                    "Manga Hasu - New domain",
+                    "Surya Toon - Extra chapter being picked up",
+                    "Many Toon - Changed image source",
+                    "Manhwa Freak - New domain. The old one still works but they will be shutting it down so migration to the new site is advised",
+                    "Read Comic Online - Fixed an issue recognizing chapter pages",
+                    "HyperDex - New domain"
+                ],
+                "New Mirrors": [
+                    "Fire Scans - https://firescans.xyz/"
+                ]
+            }
+        },
+        {
+            "version": null,
+            "title": "Disabled Mirrors",
+            "date": null,
+            "body": "-   Toonily.Net\r\n-   Leveler Scans\r\n-   Manga 1st - Warnings from both uBlock and antivirus software about this site, will not bypass to check if it is still active and I advise no one to read from it\r\n-   Manga Dods\r\n-   Manga Lab - Warning about expired security certificate\r\n-   Read Manhua\r\n-   Alpha Scans - Warning from vpn about security certificate validation\r\n-   Cosmic Scans - The website says they are closed",
+            "parsed": {
+                "_": [
+                    "Toonily.Net",
+                    "Leveler Scans",
+                    "Manga 1st - Warnings from both uBlock and antivirus software about this site, will not bypass to check if it is still active and I advise no one to read from it",
+                    "Manga Dods",
+                    "Manga Lab - Warning about expired security certificate",
+                    "Read Manhua",
+                    "Alpha Scans - Warning from vpn about security certificate validation",
+                    "Cosmic Scans - The website says they are closed"
+                ]
+            }
+        },
+        {
+            "version": "3.0.1",
             "title": "[3.0.1] - 2024-05-26",
             "date": "2024-05-26",
             "body": "### Mirror Fixes\r\n\r\n-   Toonily.com - Fixed image loading\r\n\r\n### New_Mirrors\r\n\r\n-   Manga Park - https://mangapark.net\r\n-   Manga Reader.to - https://mangareader.to/home\r\n-   Fan Comics - https://www.mgeko.com\r\n-   Manga BTT - https://manhwabtt.com\r\n-   Manga Budddy - https://mangabuddy.com/home",
@@ -112,5 +180,5 @@
         }
     ],
     "title": "Changelog",
-    "description": "All notable changes to this project will be documented in this file.\r\n\r\nThis file is designed to be parsed by [changelog-parser](https://www.npmjs.com/package/changelog-parser).\r\nThe format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).\r\nThis project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\r\n\r\nThe following sections are the standard sections to use, please stick with them for consistency\r\n\r\n-   New Features\r\n-   Changed Features\r\n-   Removed Features\r\n-   Bug Fixes\r\n-   New Mirrors\r\n-   Mirror Fixes\r\n-   Disabled_Mirrors\r\n-   Notes - This is the catchall for anything that does not fit in the other sections"
+    "description": "All notable changes to this project will be documented in this file.\r\n\r\nThis file is designed to be parsed by [changelog-parser](https://www.npmjs.com/package/changelog-parser).\r\nThe format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).\r\nThis project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\r\n\r\nThe following sections are the standard sections to use, please stick with them for consistency\r\n\r\n-   New Features\r\n-   Changed Features\r\n-   Removed Features\r\n-   Bug Fixes\r\n-   New Mirrors\r\n-   Mirror Fixes\r\n-   Disabled Mirrors\r\n-   Notes - This is the catchall for anything that does not fit in the other sections."
 }

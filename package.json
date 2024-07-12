@@ -1,6 +1,6 @@
 {
     "name": "all-mangas-reader",
-    "version": "3.0.1",
+    "version": "3.0.2",
     "description": "All Mangas Reader",
     "author": "Pierre-Louis Duhoux <pl.duhoux@gmail.com>",
     "lint-staged": {
@@ -22,7 +22,8 @@
         "android:dev": "yarn run build:dev && yarn run manifest:specify -firefox && yarn run build-zip -xpi -push",
         "discord:beta": "node scripts/discord-notify.js --channel \"Beta\"",
         "discord:alpha": "node scripts/discord-notify.js --channel \"Alpha\"",
-        "prepare": "husky install"
+        "prepare": "husky install",
+        "server:start": "node src_web/express.js"
     },
     "dependencies": {
         "@zip.js/zip.js": "^2.7.30",
@@ -61,6 +62,7 @@
         "eslint-config-prettier": "^9.0.0",
         "eslint-plugin-vue": "^9.19.2",
         "eslint-plugin-vuetify": "^1.1.0",
+        "express": "5.0.0-beta.3",
         "husky": "^8.0.3",
         "lint-staged": "^15.1.0",
         "prettier": "^2.8.8",

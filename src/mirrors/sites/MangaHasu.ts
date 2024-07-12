@@ -12,8 +12,8 @@ export class MangaHasu extends BaseMirror implements MirrorImplementation {
     canListFullMangas = false
     mirrorIcon = MangaHasuIcon
     languages = "en"
-    domains = ["mangahasu.se"]
-    home = "https://mangahasu.se/"
+    domains = ["mangahasu.se", "mangahasu.me"]
+    home = "https://mangahasu.me/"
     chapter_url = /^\/.+\/chapter.+\.html/g
 
     async getMangaList(search: string) {

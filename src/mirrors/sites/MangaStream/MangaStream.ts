@@ -1,9 +1,7 @@
 import { BaseMirror } from "../abstract/BaseMirror"
 import { CurrentPageInfo, MirrorImplementation, MirrorObject } from "../../../types/common"
 import { MirrorHelper } from "../../MirrorHelper"
-import AlphaScanIcon from "../../icons/alpha-scans-optimized.png"
 import AsuraScansIcon from "../../icons/asurascans-optimized.png"
-import ComicScansIcon from "../../icons/cosmic-scans-optimized.png"
 import FlameScanIcon from "../../icons/flamescans-optimized.png"
 import KiryuuIcon from "../../icons/kiryuu-optimized.png"
 import KomikavIcon from "../../icons/komikav-optimized.png"
@@ -167,23 +165,6 @@ export const getMangaStreamImplementations = (mirrorHelper: MirrorHelper): Mirro
         new MangaStream(
             mirrorHelper,
             {
-                mirrorName: "Alpha Scans",
-                canListFullMangas: false,
-                mirrorIcon: AlphaScanIcon,
-                domains: ["alpha-scans.org"],
-                home: "https://alpha-scans.org",
-                chapter_url: /\/.*?chapter-[0-9]+.*\//g,
-                languages: "en"
-            },
-            {
-                search_url: "https://alpha-scans.org",
-                chapters_a_sel: "div.bixbox.bxcl ul li a",
-                chapters_text_sel: "span.chapternum"
-            }
-        ),
-        new MangaStream(
-            mirrorHelper,
-            {
                 mirrorName: "Asura Scans",
                 canListFullMangas: false,
                 mirrorIcon: AsuraScansIcon,
@@ -213,33 +194,16 @@ export const getMangaStreamImplementations = (mirrorHelper: MirrorHelper): Mirro
         new MangaStream(
             mirrorHelper,
             {
-                mirrorName: "Cosmic Scans",
-                canListFullMangas: false,
-                mirrorIcon: ComicScansIcon,
-                domains: ["cosmicscans.com", "cosmic-scans.com"],
-                home: "https://cosmic-scans.com",
-                chapter_url: /\/.*?chapter-[0-9]+.*\//g,
-                languages: "en"
-            },
-            {
-                search_url: "https://cosmic-scans.com",
-                chapters_a_sel: "div.bixbox.bxcl ul li a",
-                chapters_text_sel: "span.chapternum"
-            }
-        ),
-        new MangaStream(
-            mirrorHelper,
-            {
                 mirrorName: "Flame Scans",
                 canListFullMangas: false,
                 mirrorIcon: FlameScanIcon,
-                domains: ["flamescans.org", "flamecomics.com"],
-                home: "https://flamecomics.com",
+                domains: ["flamescans.org", "flamecomics.com", "flamecomics.me"],
+                home: "https://flamecomics.me",
                 chapter_url: /\/.*?chapter-[0-9]+.*\//g,
                 languages: "en"
             },
             {
-                search_url: "https://flamecomics.com",
+                search_url: "https://flamecomics.me",
                 chapters_a_sel: "div.bixbox.bxcl ul li a",
                 chapters_text_sel: "span.chapternum",
                 search_json: false,

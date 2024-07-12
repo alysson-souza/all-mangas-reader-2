@@ -28,6 +28,8 @@ let syncManager
 // @TODO replace with actual error
 // actually have specific meaning, does not get saved to db
 const ABSTRACT_MANGA_MSG = "abstract_manga"
+const ERROR_CODE_EMPTY_LIST = 1
+const ERROR_CODE_FAILED_UPDATE = 2
 
 const logger = getAppLogger({ debug: 1 })
 
@@ -651,6 +653,7 @@ const actions = {
         const listChaps = await dispatch("getMangaChapters", mg)
         if (listChaps.length <= 0) {
             logger.error(`Not chapters found for ${key}, skipping refreshLastChapters...`)
+            dispatch("markHasUpdateError", { manga: mg, errorCode: ERROR_CODE_EMPTY_LIST })
             return
         }
 
@@ -800,9 +803,7 @@ const actions = {
                 .catch(e => {
                     if (e !== ABSTRACT_MANGA_MSG) {
                         logger.error(e)
-                        if (!mg.updateError) {
-                            // dispatch("markHasUpdateError", mg) TODO: This seems stuck, disabling for now
-                        }
+                        dispatch("markHasUpdateError", { manga: mg, errorCode: ERROR_CODE_FAILED_UPDATE })
                     }
                 })
         }
@@ -868,16 +869,18 @@ const actions = {
      * @param {*} vuex object
      * @param {*} message message contains info on a manga
      */
-    markHasUpdateError({ dispatch, commit, getters, rootState }, message) {
-        commit("markHasUpdateError", message)
+    markHasUpdateError({ dispatch, commit, getters, rootState }, { manga, errorCode }) {
+        commit("markHasUpdateError", { manga, errorCode })
+        dispatch("findAndUpdateManga", manga)
     },
     /**
      * Mark manga as having an update error
      * @param {*} vuex object
      * @param {*} message message contains info on a manga
      */
-    markNoUpdateError({ dispatch, commit, getters, rootState }, message) {
-        commit("markNoUpdateError", message)
+    markNoUpdateError({ dispatch, commit, getters, rootState }, manga) {
+        commit("markNoUpdateError", manga)
+        dispatch("findAndUpdateManga", manga)
     },
     /**
      * Change the update top on a manga
@@ -1102,10 +1105,11 @@ const mutations = {
      * @param {*} state
      * @param {*} param1 url of the manga and layout mode
      */
-    markHasUpdateError(state, { key, updateError }) {
-        const mg = state.all.find(manga => manga.key === key)
+    markHasUpdateError(state, { manga, errorCode }) {
+        const mg = state.all.find(m => m.key === manga.key)
         if (mg !== undefined) {
             mg.updateError = 1
+            mg.updateErrorCode = errorCode
         }
     },
     /**
@@ -1113,10 +1117,11 @@ const mutations = {
      * @param {*} state
      * @param {*} param1 url of the manga and layout mode
      */
-    markNoUpdateError(state, { key, updateError }) {
+    markNoUpdateError(state, { key }) {
         const mg = state.all.find(manga => manga.key === key)
         if (mg !== undefined) {
             mg.updateError = 0
+            mg.updateErrorCode = 0
         }
     },
 
