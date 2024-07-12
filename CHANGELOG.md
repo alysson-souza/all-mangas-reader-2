@@ -40,6 +40,8 @@ The following sections are the standard sections to use, please stick with them 
 -   Surya Toon - Extra chapter being picked up
 -   Many Toon - Changed image source
 -   Manhwa Freak - New domain. The old one still works but they will be shutting it down so migration to the new site is advised
+-   Read Comic Online - Fixed an issue recognizing chapter pages
+-   HyperDex - New domain
 
 ### New Mirrors
 

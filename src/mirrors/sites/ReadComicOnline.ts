@@ -14,7 +14,7 @@ export class ReadComicOnline extends BaseMirror implements MirrorImplementation 
     languages = "en"
     domains = ["readcomiconline.to", "readcomiconline.li"]
     home = "https://readcomiconline.li/"
-    chapter_url = /Comic\/.*\/.*\?id=/g
+    chapter_url = /Comic\/.*\?id=/g
 
     async getMangaList(search: string) {
         const doc = await this.mirrorHelper.loadPage(this.home + "/Search/Comic", {

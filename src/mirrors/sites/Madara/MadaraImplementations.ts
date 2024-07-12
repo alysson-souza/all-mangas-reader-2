@@ -241,12 +241,12 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
                 mirrorName: "Hiperdex",
                 mirrorIcon: HiperdexIcon,
                 languages: "en",
-                domains: ["hiperdex.com"],
-                home: "https://www.hiperdex.com/",
+                domains: ["hiperdex.com", "hiperdex.top"],
+                home: "https://www.hiperdex.top/",
                 chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g
             },
             {
-                search_url: "https://www.hiperdex.com/",
+                search_url: "https://www.hiperdex.top/",
                 search_json: true,
                 chapter_list_ajax: true,
                 isekai_chapter_url: true
