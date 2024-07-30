@@ -19,7 +19,20 @@ The following sections are the standard sections to use, please stick with them 
 
 ## [Unreleased]
 
--   No changes, had to fix an issue with release server and generate new versions
+### Bug Fixes
+
+-   Fixed an issue with search bar having a white background when in dark mode
+
+### Mirror Fixes
+
+-   Reset Scans - New domain
+-   Manga Reader - Disabled non english chapters from getting picked up for now because it breaks the chapter list
+-   Asura Comics - A bunch of changes to site design and url scheme
+-   Luminous Scans - New domain
+
+### New Mirrors
+
+-   UToon - https://utoon.net/
 
 ## [3.0.1] - 2024-07-12
 

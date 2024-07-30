@@ -4,10 +4,27 @@
             "version": null,
             "title": "[Unreleased]",
             "date": null,
-            "body": "- No changes, had to fix an issue with release server and generate new versions",
+            "body": "### Bug Fixes\r\n-   Fixed an issue with search bar having a white background when in dark mode\r\n\r\n### Mirror Fixes\r\n-   Reset Scans - New domain\r\n-   Manga Reader - Disabled non english chapters from getting picked up for now because it breaks the chapter list\r\n-   Asura Comics - A bunch of changes to site design and url scheme\r\n-   Luminous Scans - New domain\r\n\r\n### New Mirrors\r\n-   UToon - https://utoon.net/",
             "parsed": {
                 "_": [
-                    "No changes, had to fix an issue with release server and generate new versions"
+                    "Fixed an issue with search bar having a white background when in dark mode",
+                    "Reset Scans - New domain",
+                    "Manga Reader - Disabled non english chapters from getting picked up for now because it breaks the chapter list",
+                    "Asura Comics - A bunch of changes to site design and url scheme",
+                    "Luminous Scans - New domain",
+                    "UToon - https://utoon.net/"
+                ],
+                "Bug Fixes": [
+                    "Fixed an issue with search bar having a white background when in dark mode"
+                ],
+                "Mirror Fixes": [
+                    "Reset Scans - New domain",
+                    "Manga Reader - Disabled non english chapters from getting picked up for now because it breaks the chapter list",
+                    "Asura Comics - A bunch of changes to site design and url scheme",
+                    "Luminous Scans - New domain"
+                ],
+                "New Mirrors": [
+                    "UToon - https://utoon.net/"
                 ]
             }
         },

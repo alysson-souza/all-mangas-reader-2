@@ -138,8 +138,14 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
                 mirrorName: "Luminous Scans",
                 canListFullMangas: false,
                 mirrorIcon: LiminousScanIcon,
-                domains: ["luminousscans.gg", "luminousscans.net", "lumitoon.com", "luminouscomics.org"],
-                home: "https://luminouscomics.org/",
+                domains: [
+                    "luminousscans.gg",
+                    "luminousscans.net",
+                    "lumitoon.com",
+                    "luminouscomics.org",
+                    "luminous-scans.com/"
+                ],
+                home: "https://luminous-scans.com/",
                 chapter_url: /chapter-[0-9]+.*\/$/g,
                 languages: "en"
             },
@@ -295,6 +301,7 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
                 chapter_url: /^\/*\/.+$/g
             },
             {
+                base_url: "https://suryatoon.com/",
                 chapter_list_selector: "#chapterlist .eph-num a"
             }
         ),
@@ -310,8 +317,25 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
                 chapter_url: /\-chapter\-\d+\//g
             },
             {
+                base_url: "https://mangagalaxy.me/",
                 chapter_list_selector: "#chapterlist .eph-num a"
             }
-        )
+        ) /*,
+        new MangaStream_1_1_4(
+            mirrorHelper,
+            {
+                mirrorName: "GenZ Toons",
+                mirrorIcon: require("../../icons/gen-z-toons-optimized.png"),
+                languages: "en",
+                domains: ["genztoons.com"],
+                home: "https://genztoons.com",
+                // canListFullMangas: true,
+                chapter_url: /^\/*\/.+$/g
+            },
+            {
+                base_url: "https://genztoons.com/",
+                chapter_list_selector: "#chapterlist .eph-num a"
+            }
+        )*/
     ]
 }
