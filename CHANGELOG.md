@@ -29,6 +29,7 @@ The following sections are the standard sections to use, please stick with them 
 -   Manga Reader - Disabled non english chapters from getting picked up for now because it breaks the chapter list
 -   Asura Comics - A bunch of changes to site design and url scheme
 -   Luminous Scans - New domain
+-   Read Comic Online - Fix for image loading (Credit @Jay)
 
 ### New Mirrors
 
