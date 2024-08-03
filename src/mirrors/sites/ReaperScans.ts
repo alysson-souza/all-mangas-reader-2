@@ -14,7 +14,7 @@ export class ReaperScans extends BaseMirror implements MirrorImplementation {
     mirrorIcon = ReaperScansIcon
     languages = "en"
     domains = ["reaperscans.com", "reapercomics.com"]
-    home = "https://reapercomics.com"
+    home = "https://reaperscans.com"
     apiBaseUrl = "https://api.reaperscans.com/"
     chapter_url = /^\/series\/.+\/chapter-.+/g
 
@@ -34,6 +34,12 @@ export class ReaperScans extends BaseMirror implements MirrorImplementation {
         const json = await this.mirrorHelper.loadJson(
             `${this.apiBaseUrl}chapter/query?page=1&perPage=1000&series_id=${seriesId}`
         )
+
+        /*
+        https://reapercomics.com/series/seoul-station-necromancer/chapter-141
+        https://reaperscans.com/series/seoul-station-necromancer/chapter-142
+
+        */
 
         for (const chap of json.data) {
             if (chap.price == 0) {
