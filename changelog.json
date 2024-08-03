@@ -4,7 +4,7 @@
             "version": null,
             "title": "[Unreleased]",
             "date": null,
-            "body": "### Bug Fixes\r\n\r\n-   Fixed an issue with search bar having a white background when in dark mode\r\n\r\n### Mirror Fixes\r\n\r\n-   Reset Scans - New domain\r\n-   Manga Reader - Disabled non english chapters from getting picked up for now because it breaks the chapter list\r\n-   Asura Comics - A bunch of changes to site design and url scheme\r\n-   Luminous Scans - New domain\r\n-   Read Comic Online - Fix for image loading (Credit @Jay)\r\n\r\n### New Mirrors\r\n\r\n-   UToon - https://utoon.net/",
+            "body": "### Bug Fixes\r\n\r\n-   Fixed an issue with search bar having a white background when in dark mode\r\n\r\n### Mirror Fixes\r\n\r\n-   Reset Scans - New domain\r\n-   Manga Reader - Disabled non english chapters from getting picked up for now because it breaks the chapter list\r\n-   Asura Comics - A bunch of changes to site design and url scheme\r\n-   Luminous Scans - New domain\r\n-   Read Comic Online - Fix for image loading (Credit @Jay)\r\n-   Reaper Scans - New website, looks like this might actually work now o.o\r\n\r\n### New Mirrors\r\n\r\n-   UToon - https://utoon.net/",
             "parsed": {
                 "_": [
                     "Fixed an issue with search bar having a white background when in dark mode",
@@ -13,6 +13,7 @@
                     "Asura Comics - A bunch of changes to site design and url scheme",
                     "Luminous Scans - New domain",
                     "Read Comic Online - Fix for image loading (Credit @Jay)",
+                    "Reaper Scans - New website, looks like this might actually work now o.o",
                     "UToon - https://utoon.net/"
                 ],
                 "Bug Fixes": [
@@ -23,7 +24,8 @@
                     "Manga Reader - Disabled non english chapters from getting picked up for now because it breaks the chapter list",
                     "Asura Comics - A bunch of changes to site design and url scheme",
                     "Luminous Scans - New domain",
-                    "Read Comic Online - Fix for image loading (Credit @Jay)"
+                    "Read Comic Online - Fix for image loading (Credit @Jay)",
+                    "Reaper Scans - New website, looks like this might actually work now o.o"
                 ],
                 "New Mirrors": [
                     "UToon - https://utoon.net/"

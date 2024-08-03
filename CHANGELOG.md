@@ -30,6 +30,7 @@ The following sections are the standard sections to use, please stick with them 
 -   Asura Comics - A bunch of changes to site design and url scheme
 -   Luminous Scans - New domain
 -   Read Comic Online - Fix for image loading (Credit @Jay)
+-   Reaper Scans - New website, looks like this might actually work now o.o
 
 ### New Mirrors
 
