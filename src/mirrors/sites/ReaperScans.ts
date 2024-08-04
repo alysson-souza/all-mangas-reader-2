@@ -19,7 +19,14 @@ export class ReaperScans extends BaseMirror implements MirrorImplementation {
     chapter_url = /^\/series\/.+\/chapter-.+/g
 
     async getMangaList(search: string) {
-        return []
+        const json = await this.mirrorHelper.loadJson(`${this.apiBaseUrl}query?adult=true&query_string=${search}`)
+        const res = []
+
+        for (const series of json.data) {
+            res.push([series.title.trim(), `${this.home}/series/${series.series_slug}`])
+        }
+
+        return res
     }
 
     async getListChaps(urlManga) {
@@ -69,14 +76,25 @@ export class ReaperScans extends BaseMirror implements MirrorImplementation {
         // https://reaperscans.com/series/swordmasters-youngest-son/chapter-123
         // https://api.reaperscans.com/chapter/swordmasters-youngest-son/chapter-123
 
-        let res = []
+        /*
+        https://media.reaperscans.com/file/4SRBHm//comics/ba81b4c2-9c66-4943-8b77-f1c9f503384e/chapters/b1e613a5-18f2-4f03-a3cb-cad1eba385bf/000 ars copia.jpg
+                                                  comics/ba81b4c2-9c66-4943-8b77-f1c9f503384e/chapters/b1e613a5-18f2-4f03-a3cb-cad1eba385bf/000 ars copia.jpg
+        */
+
+        const res = []
 
         const url = this.apiBaseUrl + new URL(curUrl).pathname.replace("/series/", "chapter/")
 
         const json = await this.mirrorHelper.loadJson(url)
 
         if (json.chapter.chapter_type == "Comic") {
-            res = json.chapter.chapter_data.images
+            for (let image of json.chapter.chapter_data.images) {
+                if (!image.startsWith("https")) {
+                    image = "https://media.reaperscans.com/file/4SRBHm/" + image
+                }
+                res.push(image)
+            }
+            console.debug(res)
         }
 
         if (json.chapter.chapter_type == "Novel") {
