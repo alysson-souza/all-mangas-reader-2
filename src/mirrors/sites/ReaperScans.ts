@@ -86,9 +86,20 @@ export class ReaperScans extends BaseMirror implements MirrorImplementation {
         const url = this.apiBaseUrl + new URL(curUrl).pathname.replace("/series/", "chapter/")
 
         const json = await this.mirrorHelper.loadJson(url)
+        const uniqueImages = []
 
         if (json.chapter.chapter_type == "Comic") {
             for (let image of json.chapter.chapter_data.images) {
+                let imageName = image.split("/").pop().split(".")[0]
+                if (imageName.endsWith("f")) {
+                    imageName = imageName.substring(0, imageName.length - 1)
+                }
+
+                if (uniqueImages.includes(imageName)) {
+                    continue
+                }
+                uniqueImages.push(imageName)
+
                 if (!image.startsWith("https")) {
                     image = "https://media.reaperscans.com/file/4SRBHm/" + image
                 }
