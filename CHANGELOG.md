@@ -36,6 +36,10 @@ The following sections are the standard sections to use, please stick with them 
 
 -   UToon - https://utoon.net/
 
+### New Features
+
+-   I have added an experimental way to support novels by faking images to Reaper Scans. This is a test to see if I can do this without rewriting many parts of the extension to support text. This is best used in webtoon mode and I may look into ways to force it for these. For anyone interested try it out and give me feedback on discord as I fine tune this.
+
 ## [3.0.1] - 2024-07-12
 
 ### New Features

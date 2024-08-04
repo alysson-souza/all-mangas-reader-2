@@ -68,6 +68,7 @@ export class MangaStream_1_1_4 extends BaseMirror implements MirrorImplementatio
         $(this.options.chapter_list_selector, doc).each(function (index) {
             res.push([$(".chapternum", this).text().trim(), self.options.urlProcessorChapter($(this).attr("href"))])
         })
+        console.debug(res)
         return res
     }
 
@@ -143,7 +144,7 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
                     "luminousscans.net",
                     "lumitoon.com",
                     "luminouscomics.org",
-                    "luminous-scans.com/"
+                    "luminous-scans.com"
                 ],
                 home: "https://luminous-scans.com/",
                 chapter_url: /chapter-[0-9]+.*\/$/g,
@@ -311,16 +312,33 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
                 mirrorName: "Manga Galaxy",
                 mirrorIcon: require("../../icons/manga-galaxy-optimized.png"),
                 languages: "en",
-                domains: ["mangagalaxy.me"],
-                home: "https://mangagalaxy.me",
+                domains: ["mangagalaxy.me", "mangagalaxy.org"],
+                home: "https://mangagalaxy.org",
                 // canListFullMangas: true,
-                chapter_url: /\-chapter\-\d+\//g
+                chapter_url: /chapter\-\d+/g
             },
             {
-                base_url: "https://mangagalaxy.me/",
+                base_url: "https://mangagalaxy.org/",
                 chapter_list_selector: "#chapterlist .eph-num a"
             }
         ) /*,
+        new MangaStream_1_1_4(
+            mirrorHelper,
+            {
+                mirrorName: "Realm Oasis",
+                canListFullMangas: false,
+                mirrorIcon: require("../../icons/realm-oasis-optimized.png"),
+                domains: ["realmoasis.com"],
+                home: "https://realmoasis.com",
+                chapter_url: /.*\/.* /g,
+                languages: "en"
+            },
+            {
+                base_url: "https://realmoasis.com/",
+                // series_list_selector: '.listupd a[href*="/series/"]',
+                chapter_list_selector: "#chapterlist .eph-num a"
+            }
+        ) */ /*,
         new MangaStream_1_1_4(
             mirrorHelper,
             {

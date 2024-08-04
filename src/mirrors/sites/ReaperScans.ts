@@ -65,43 +65,71 @@ export class ReaperScans extends BaseMirror implements MirrorImplementation {
         }
     }
 
-    async getListImages(doc) {
-        const $ = this.parseHtml(doc)
-        const res = []
+    async getListImages(doc, curUrl) {
+        // https://reaperscans.com/series/swordmasters-youngest-son/chapter-123
+        // https://api.reaperscans.com/chapter/swordmasters-youngest-son/chapter-123
 
-        // Normal comics
-        if ($(".container img[loading='lazy']").length > 0) {
-            $(".container img[loading='lazy']").each(function (index) {
-                res.push($(this).attr("src"))
-            })
+        let res = []
+
+        const url = this.apiBaseUrl + new URL(curUrl).pathname.replace("/series/", "chapter/")
+
+        const json = await this.mirrorHelper.loadJson(url)
+
+        if (json.chapter.chapter_type == "Comic") {
+            res = json.chapter.chapter_data.images
         }
 
-        /*
-        // This is going to be a test of making blob images for showing novels without needing to redo shit, but unlike comic chapters they do not send raw html for novels so I need to figure out how to parse it later and try again
-        // Novel url for test: https://reaperscans.com/series/is-it-bad-that-the-main-characters-a-roleplayer
-        if ($(".container div#reader-container").length > 0) {
-            const promises = []
-            $(".container div#reader-container p").each(function(index) {
-                const e = $(this)
-                const canvas = new OffscreenCanvas(1,1)
-                const context = canvas.getContext('2d')
-                
-                context.rect(0, 0, 800, 100)
-                context.fillStyle = "black"
-                context.fill()
+        if (json.chapter.chapter_type == "Novel") {
+            const $ = this.parseHtml(json.chapter.chapter_content)
 
-                context.font = "30px Helvetica"
-                context.fillStyle = "ghostwhite"
-                context.fillText(e.text().trim(), 10, 10)
-                
-                promises.push(canvas.convertToBlob())
-            })
+            const lines = []
+            const lineLengthBeforeWrap = 140 // Number of characters to split the lines up for
+            const wrap = (s, w) => s.replace(new RegExp(`(?![^\\n]{1,${w}}$)([^\\n]{1,${w}})\\s`, "g"), "$1:|:")
 
-            await Promise.all(promises).then(vals => res.push(...vals))
+            for (const elem of $("p")) {
+                const line = $(elem).text().trim()
+
+                // console.debug('Line', line.length, line)
+
+                if (line.length > lineLengthBeforeWrap) {
+                    const parts = wrap(line, lineLengthBeforeWrap).split(":|:")
+                    // console.debug('Line Wrap detected', line, parts)
+
+                    lines.push(...parts)
+                } else {
+                    lines.push(line)
+                }
+            }
+
+            for (const line of lines) {
+                res.push(await this.createImageFromText(line))
+            }
         }
-        */
 
         return res
+    }
+
+    async createImageFromText(text) {
+        const height = 32
+        const canvas = new OffscreenCanvas(1000, height)
+        const context = canvas.getContext("2d")
+
+        context.rect(0, 0, 1000, height)
+        context.fillStyle = "black"
+        context.fill()
+
+        context.font = "15px Helvetica"
+        context.fillStyle = "ghostwhite"
+        context.fillText(text, 7, height - 7)
+
+        const blob = await canvas.convertToBlob()
+        const base64String = await new Promise(resolve => {
+            const reader = new FileReader()
+            reader.onloadend = () => resolve(reader.result)
+            reader.readAsDataURL(blob)
+        })
+
+        return base64String
     }
 
     isCurrentPageAChapterPage(doc) {

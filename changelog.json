@@ -4,7 +4,7 @@
             "version": null,
             "title": "[Unreleased]",
             "date": null,
-            "body": "### Bug Fixes\r\n\r\n-   Fixed an issue with search bar having a white background when in dark mode\r\n\r\n### Mirror Fixes\r\n\r\n-   Reset Scans - New domain\r\n-   Manga Reader - Disabled non english chapters from getting picked up for now because it breaks the chapter list\r\n-   Asura Comics - A bunch of changes to site design and url scheme\r\n-   Luminous Scans - New domain\r\n-   Read Comic Online - Fix for image loading (Credit @Jay)\r\n-   Reaper Scans - New website, looks like this might actually work now o.o\r\n\r\n### New Mirrors\r\n\r\n-   UToon - https://utoon.net/",
+            "body": "### Bug Fixes\r\n\r\n-   Fixed an issue with search bar having a white background when in dark mode\r\n\r\n### Mirror Fixes\r\n\r\n-   Reset Scans - New domain\r\n-   Manga Reader - Disabled non english chapters from getting picked up for now because it breaks the chapter list\r\n-   Asura Comics - A bunch of changes to site design and url scheme\r\n-   Luminous Scans - New domain\r\n-   Read Comic Online - Fix for image loading (Credit @Jay)\r\n-   Reaper Scans - New website, looks like this might actually work now o.o\r\n\r\n### New Mirrors\r\n\r\n-   UToon - https://utoon.net/\r\n\r\n### New Features\r\n-   I have added an experimental way to support novels by faking images to Reaper Scans. This is a test to see if I can do this without rewriting many parts of the extension to support text. This is best used in webtoon mode and I may look into ways to force it for these. For anyone interested try it out and give me feedback on discord as I fine tune this.",
             "parsed": {
                 "_": [
                     "Fixed an issue with search bar having a white background when in dark mode",
@@ -14,7 +14,8 @@
                     "Luminous Scans - New domain",
                     "Read Comic Online - Fix for image loading (Credit @Jay)",
                     "Reaper Scans - New website, looks like this might actually work now o.o",
-                    "UToon - https://utoon.net/"
+                    "UToon - https://utoon.net/",
+                    "I have added an experimental way to support novels by faking images to Reaper Scans. This is a test to see if I can do this without rewriting many parts of the extension to support text. This is best used in webtoon mode and I may look into ways to force it for these. For anyone interested try it out and give me feedback on discord as I fine tune this."
                 ],
                 "Bug Fixes": [
                     "Fixed an issue with search bar having a white background when in dark mode"
@@ -29,6 +30,9 @@
                 ],
                 "New Mirrors": [
                     "UToon - https://utoon.net/"
+                ],
+                "New Features": [
+                    "I have added an experimental way to support novels by faking images to Reaper Scans. This is a test to see if I can do this without rewriting many parts of the extension to support text. This is best used in webtoon mode and I may look into ways to force it for these. For anyone interested try it out and give me feedback on discord as I fine tune this."
                 ]
             }
         },
