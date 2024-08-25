@@ -44,6 +44,11 @@ The following sections are the standard sections to use, please stick with them 
 
 -   I have added an experimental way to support novels by faking images to Reaper Scans. This is a test to see if I can do this without rewriting many parts of the extension to support text. This is best used in webtoon mode and I may look into ways to force it for these. For anyone interested try it out and give me feedback on discord as I fine tune this.
 
+### Notes
+
+-   I have finally gotten around to working on the website. Currently I just copy/pasted the orignal website but I plan on working on it more later to change it. I adjusted the links in amr for my server
+-   I created a patreon and adjusted the links, I put this off for a long time but decided to end up doing it after all. My commitment to mainting this stays the same no matter the result of this as I use this extension extensively myself so keeping it maintained is also for my own use
+
 ## [3.0.1] - 2024-07-12
 
 ### New Features

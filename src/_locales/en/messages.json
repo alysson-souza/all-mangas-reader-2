@@ -1509,7 +1509,7 @@
         "description": "Title of the rate us dialog, appear once in a while, can stop receiving this dialog"
     },
     "reader_help_rate_message": {
-        "message": "You seem to **enjoy reading using All Mangas Reader** ! \n Maintaining and improving your All Mangas Reader experience takes us a lot of time and efforts. That would be nice if you could take a few seconds to give us feedback on **Firefox Addons**. Rate us and leave us a message, that will be really appreciated !\n Click on the _I give feedback now !_ button to go to Firefox Addons ! _(in another tab, we won't spoil your reading, don't worry :))_\n Remember that if you need help or if want to help, you can always join our community on [Discord](https://discord.gg/bdzk9hR) or [help us on Patreon](https://www.patreon.com/allmangasreader) !",
+        "message": "You seem to **enjoy reading using All Mangas Reader** ! \n Maintaining and improving your All Mangas Reader experience takes us a lot of time and efforts. That would be nice if you could take a few seconds to give us feedback on **Firefox Addons**. Rate us and leave us a message, that will be really appreciated !\n Click on the _I give feedback now !_ button to go to Firefox Addons ! _(in another tab, we won't spoil your reading, don't worry :))_\n Remember that if you need help or if want to help, you can always join our community on [Discord](https://discord.gg/bdzk9hR) or [help us on Patreon](https://www.patreon.com/allmangas) !",
         "description": "Message of the rate us dialog, appear once in a while, can stop receiving this dialog"
     },
     "reader_help_rate_action": {
@@ -1533,7 +1533,7 @@
         "description": "Title of the help us dialog, appear once in a while, can stop receiving this dialog"
     },
     "reader_help_1000_message": {
-        "message": "Wow ! You really **read a lot using All Mangas Reader** ! Already **$1 chapters !** \n We hope that you enjoy this extension, if you do, you can help us by [rating us on Firefox](https://addons.mozilla.org/firefox/addon/all-mangas-reader/) or by [giving us on Patreon](https://www.patreon.com/allmangasreader), every little contributions is really appreciated !\n Remember that if you need help or if want to help, you can always join us on [Discord](https://discord.gg/bdzk9hR) !",
+        "message": "Wow ! You really **read a lot using All Mangas Reader** ! Already **$1 chapters !** \n We hope that you enjoy this extension, if you do, you can help us by [rating us on Firefox](https://addons.mozilla.org/firefox/addon/all-mangas-reader/) or by [giving us on Patreon](https://www.patreon.com/allmangas), every little contributions is really appreciated !\n Remember that if you need help or if want to help, you can always join us on [Discord](https://discord.gg/bdzk9hR) !",
         "description": "Message of the help us dialog, appear once in a while, can stop receiving this dialog"
     },
     "reader_help_stop": {

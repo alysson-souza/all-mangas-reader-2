@@ -353,7 +353,7 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
                 base_url: "https://cypherscans.xyz/",
                 chapter_list_selector: "#chapterlist .eph-num a"
             }
-        ) /*,
+        )
         /*,
         new MangaStream_1_1_4(
             mirrorHelper,
@@ -372,6 +372,7 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
                 chapter_list_selector: "#chapterlist .eph-num a"
             }
         ) */
+        /*,
         new MangaStream_1_1_4(
             mirrorHelper,
             {
