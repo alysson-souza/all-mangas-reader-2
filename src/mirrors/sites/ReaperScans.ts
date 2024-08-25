@@ -112,54 +112,14 @@ export class ReaperScans extends BaseMirror implements MirrorImplementation {
             const $ = this.parseHtml(json.chapter.chapter_content)
 
             const lines = []
-            const lineLengthBeforeWrap = 140 // Number of characters to split the lines up for
-            const wrap = (s, w) => s.replace(new RegExp(`(?![^\\n]{1,${w}}$)([^\\n]{1,${w}})\\s`, "g"), "$1:|:")
-
             for (const elem of $("p")) {
-                const line = $(elem).text().trim()
-
-                // console.debug('Line', line.length, line)
-
-                if (line.length > lineLengthBeforeWrap) {
-                    const parts = wrap(line, lineLengthBeforeWrap).split(":|:")
-                    // console.debug('Line Wrap detected', line, parts)
-
-                    lines.push(...parts)
-                } else {
-                    lines.push(line)
-                }
+                lines.push($(elem).text().trim())
             }
 
-            for (const line of lines) {
-                res.push(await this.createImageFromText(line))
-            }
+            res.push(...(await this.mirrorHelper.createImagesFromText(lines)))
         }
 
         return res
-    }
-
-    async createImageFromText(text) {
-        const dark = this.mirrorHelper.getOption("darkreader") === 1
-        const height = 32
-        const canvas = new OffscreenCanvas(1000, height)
-        const context = canvas.getContext("2d")
-
-        context.rect(0, 0, 1000, height)
-        context.fillStyle = dark ? "black" : "ghostwhite"
-        context.fill()
-
-        context.font = "15px Helvetica"
-        context.fillStyle = dark ? "ghostwhite" : "black"
-        context.fillText(text, 7, height - 7)
-
-        const blob = await canvas.convertToBlob()
-        const base64String = await new Promise(resolve => {
-            const reader = new FileReader()
-            reader.onloadend = () => resolve(reader.result)
-            reader.readAsDataURL(blob)
-        })
-
-        return base64String
     }
 
     isCurrentPageAChapterPage(doc) {

@@ -19,6 +19,10 @@ The following sections are the standard sections to use, please stick with them 
 
 ## [Unreleased]
 
+### New Features
+
+-   Added a few options for novels including light/dark background colors and increased font size. Custom color/size options to come in a future update once I have tested them. These options can only be changed in the popup options not in the reader
+
 ### Bug Fixes
 
 -   Fixed a bug that forced a chapter list check when loading a page if you already tracked the series. Should drastically speed up loading Webtoons

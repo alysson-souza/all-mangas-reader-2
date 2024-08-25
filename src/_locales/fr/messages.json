@@ -2066,5 +2066,24 @@
     "manga_update_error_code_2": {
         "message": "Erreur - La page Série n'a pas pu être chargée depuis Mirror $1",
         "description": "Error code for failed to fetch list"
+    },
+    "__V3_0_3": {
+        "message": "Just a filler to separate new labels from old ones"
+    },
+    "options_novels": {
+        "message": "En lisant des romans",
+        "description": "Tab label for novel specific options"
+    },
+    "options_novels_display_mode": {
+        "message": "Nouvelles options d'affichage",
+        "description": "Expansion label for novel display options"
+    },
+    "option_novel_dark": {
+        "message": "Fond sombre pour de nouvelles images",
+        "description": "Option for making novel images dark"
+    },
+    "option_novel_large_text": {
+        "message": "Utilisez une taille de police plus grande pour le texte du roman",
+        "description": "Option for making novel font higher size"
     }
 }

@@ -8,6 +8,9 @@
             <v-tab href="#onwebsites" class="primary--text">
                 {{ i18n("options_on_websites") }}
             </v-tab>
+            <v-tab href="#novels" class="primary--text">
+                {{ i18n("options_novels") }}
+            </v-tab>
             <v-tab href="#supported" class="primary--text">
                 {{ i18n("options_supported") }}
             </v-tab>
@@ -618,6 +621,30 @@
                     </v-expansion-panel>
                 </v-expansion-panels>
             </v-tab-item>
+            <v-tab-item value="novels" transition="false">
+                <v-expansion-panels accordion focusable v-model="panels">
+                    <v-expansion-panel>
+                        <v-expansion-panel-header
+                            ><div class="text-h5 blue--text lighten-4">
+                                {{ i18n("options_novels_display_mode") }}
+                            </div></v-expansion-panel-header
+                        >
+                        <v-expansion-panel-content class="pt-6" color="slight-overlay">
+                            <!-- Dark background for novel images -->
+                            <v-checkbox
+                                v-model="novelDark"
+                                @change="setOption('novelDark')"
+                                :label="i18n('option_novel_dark')"></v-checkbox>
+
+                            <!-- Large text size for novel images -->
+                            <v-checkbox
+                                v-model="novelLargePrint"
+                                @change="setOption('novelLargePrint')"
+                                :label="i18n('option_novel_large_text')"></v-checkbox>
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-expansion-panels>
+            </v-tab-item>
             <v-tab-item value="supported" transition="false">
                 <v-expansion-panels accordion focusable v-model="panels">
                     <v-expansion-panel>
@@ -850,7 +877,9 @@ const converters = {
             "invertKeys",
             "smoothNavigation",
             "magicScrollEnabled",
-            "bottomNavigationEnabled"
+            "bottomNavigationEnabled",
+            "novelDark",
+            "novelLargePrint"
         ]
     }
 }

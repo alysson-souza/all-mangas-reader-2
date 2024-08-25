@@ -216,6 +216,79 @@ export class MirrorHelper {
     }
 
     /**
+     *  This is used to produce images to fake novels being series to read. Hacky but easier than rewriting amr to support text and images
+     *
+     * @param lines An array of text lines to produce the novel images
+     * @returns
+     */
+    public async createImagesFromText(lines: string[]): Promise<string[]> {
+        const linesProcessed = []
+        const images = []
+        const largeText = this.getOption("novelLargePrint") === 1
+        const lineLengthBeforeWrap = largeText ? 80 : 140 // Number of characters to split the lines up for
+        const wrap = (s, w) => s.replace(new RegExp(`(?![^\\n]{1,${w}}$)([^\\n]{1,${w}})\\s`, "g"), "$1:|:")
+
+        for (const line of lines) {
+            if (line.length > lineLengthBeforeWrap) {
+                const parts = this.wrapText(line, lineLengthBeforeWrap)
+                // console.debug('Line Wrap detected', line, parts)
+
+                linesProcessed.push(...parts)
+            } else {
+                linesProcessed.push(line)
+            }
+        }
+
+        for (const line of linesProcessed) {
+            images.push(await this.createImage(line))
+        }
+
+        return images
+    }
+
+    /**
+     *  This function is for wrapping novel text so that it does not over-run on the images
+     *
+     * @param string Input string to wrap
+     * @param width  Max number of characters before a string is wrapped. This will find the first space before the max width
+     * @returns
+     */
+    private wrapText(string: string, width: number): string[] {
+        return string.replace(new RegExp(`(?![^\\n]{1,${width}}$)([^\\n]{1,${width}})\\s`, "g"), "$1:|:").split(":|:")
+    }
+
+    /**
+     *  This function actually draws the image and returns a base64 encoded string to be used as the image src
+     *
+     * @param text Text to be drawn on the image
+     * @returns
+     */
+    private async createImage(text: string) {
+        const dark = this.getOption("novelDark") === 1
+        const largeText = this.getOption("novelLargePrint") === 1
+        const height = largeText ? 45 : 32
+        const canvas = new OffscreenCanvas(1000, height)
+        const context = canvas.getContext("2d")
+
+        context.rect(0, 0, largeText ? 1200 : 1000, height)
+        context.fillStyle = dark ? "black" : "ghostwhite"
+        context.fill()
+
+        context.font = `${largeText ? "25" : "15"}px Helvetica`
+        context.fillStyle = dark ? "ghostwhite" : "black"
+        context.fillText(text, 7, height - (largeText ? 15 : 7))
+
+        const blob = await canvas.convertToBlob()
+        const base64String = await new Promise(resolve => {
+            const reader = new FileReader()
+            reader.onloadend = () => resolve(reader.result)
+            reader.readAsDataURL(blob)
+        })
+
+        return base64String
+    }
+
+    /**
      * Set a cookie on a domain
      */
     async setCookie(setCookieObj: Cookies.SetDetailsType) {

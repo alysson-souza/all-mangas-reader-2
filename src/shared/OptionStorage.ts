@@ -161,7 +161,11 @@ export const getDefaultOptions = () => {
         komgaUser: "",
         komgaPassword: "",
 
-        tachideskUrl: "http://localhost:4567 "
+        tachideskUrl: "http://localhost:4567 ",
+
+        /** The options below are for novels */
+        novelDark: 0, // Dark background for novel images
+        novelLargePrint: 0 // Large print for novel images
     } as const
 }
 
