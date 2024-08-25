@@ -31,10 +31,14 @@ The following sections are the standard sections to use, please stick with them 
 -   Luminous Scans - New domain
 -   Read Comic Online - Fix for image loading (Credit @Jay)
 -   Reaper Scans - New website, looks like this might actually work now o.o
+-   Fan Comics - New domain
+-   Night Scans - New domain
 
 ### New Mirrors
 
 -   UToon - https://utoon.net/
+-   Drake Comic - https://drakecomic.com/
+-   Cypher Scans - https://cypherscans.xyz/
 
 ### New Features
 

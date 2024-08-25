@@ -190,11 +190,11 @@ export const getMangaStreamImplementations = (mirrorHelper: MirrorHelper): Mirro
                 chapters_a_sel: "h3.text-sm a",
                 // chapters_text_sel: "span.chapternum",
                 search_json: false,
-                img_sel: `img[alt="chapter"]`,
+                img_sel: `img[alt*="chapter"]`,
                 img_src: "src",
-                page_container_sel: `img[alt="chapter"]`,
+                page_container_sel: `img[alt*="chapter"]`,
                 manga_url_sel: `p:contains('All chapters are in') a`,
-                flame_scans_fuckery: true,
+                // flame_scans_fuckery: true,
                 fixSeriesUrl: url => {
                     if (!url.includes("https://asuracomic.net")) {
                         url = "https://asuracomic.net" + url

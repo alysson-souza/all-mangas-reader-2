@@ -1106,5 +1106,24 @@ export const getMadaraImplementations = (mirrorHelper: MirrorHelper): MirrorImpl
                 // chapter_list_ajax_selctor: "#manga-chapters-holder"
             }
         )
+        // new Madara(
+        //     mirrorHelper,
+        //     {
+        //         mirrorName: "Toon God",
+        //         mirrorIcon: require("../../icons/toon-god-optimized.png"),
+        //         languages: "en",
+        //         domains: ["toongod.org"],
+        //         home: "https://www.toongod.org/home/",
+        //         chapter_url: /^\/(manhwa|comic|manga|webtoon|manhua|series)\/.*\/.+$/g,
+        //         canListFullMangas: false
+        //     },
+        //     {
+        //         // chapter_list_ajax: true,
+        //         // isekai_chapter_url: true,
+        //         // chapters_a_sel: "li.wp-manga-chapter a:contains('Chapter')"
+        //         // chapter_list_ajax_selctor_type: "html",
+        //         // chapter_list_ajax_selctor: "#manga-chapters-holder"
+        //     }
+        // )
     ]
 }

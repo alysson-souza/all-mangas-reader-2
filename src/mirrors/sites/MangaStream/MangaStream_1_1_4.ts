@@ -183,9 +183,9 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
                 mirrorName: "Night Scans",
                 canListFullMangas: false,
                 mirrorIcon: NightScansIcon,
-                domains: ["nightscans.org", "nightscans.net", "night-scans.com"],
-                home: "https://night-scans.com",
-                chapter_url: /\/.*?-[0-9]+.*\//g,
+                domains: ["nightscans.org", "nightscans.net", "night-scans.com", "nightsup.net"],
+                home: "https://nightsup.net",
+                chapter_url: /\/.*?chapter-[0-9]+.*\//g,
                 languages: "en"
             },
             {
@@ -321,7 +321,40 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
                 base_url: "https://mangagalaxy.org/",
                 chapter_list_selector: "#chapterlist .eph-num a"
             }
+        ),
+        new MangaStream_1_1_4(
+            mirrorHelper,
+            {
+                mirrorName: "Drake Comic",
+                mirrorIcon: require("../../icons/drake-comic-optimized.png"),
+                languages: "en",
+                domains: ["drakecomic.com"],
+                home: "https://drakecomic.com",
+                // canListFullMangas: true,
+                chapter_url: /.*\-\d+/g
+            },
+            {
+                base_url: "https://drakecomic.com/"
+                // chapter_list_selector: "#chapterlist .eph-num a"
+            }
+        ),
+        new MangaStream_1_1_4(
+            mirrorHelper,
+            {
+                mirrorName: "Cypher Scans",
+                mirrorIcon: require("../../icons/cypher-scans-optimized.png"),
+                languages: "en",
+                domains: ["cypherscans.xyz"],
+                home: "https://cypherscans.xyz",
+                // canListFullMangas: true,
+                chapter_url: /chapter\-\d+/g
+            },
+            {
+                base_url: "https://cypherscans.xyz/",
+                chapter_list_selector: "#chapterlist .eph-num a"
+            }
         ) /*,
+        /*,
         new MangaStream_1_1_4(
             mirrorHelper,
             {
@@ -338,7 +371,7 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
                 // series_list_selector: '.listupd a[href*="/series/"]',
                 chapter_list_selector: "#chapterlist .eph-num a"
             }
-        ) */ /*,
+        ) */
         new MangaStream_1_1_4(
             mirrorHelper,
             {

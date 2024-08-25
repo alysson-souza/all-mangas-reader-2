@@ -146,6 +146,10 @@ const config = {
             onBuildStart: {
                 scripts: ["node ./scripts/optimize-mirrors-icons.js"],
                 blocking: true
+            },
+            onWatchRun: {
+                scripts: ["node ./scripts/optimize-mirrors-icons.js"],
+                blocking: true
             }
         })
     ]

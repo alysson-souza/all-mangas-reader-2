@@ -151,7 +151,7 @@
                     <v-col cols="6">
                         <v-row>
                             <v-col cols="12">
-                                <v-btn text icon color="red darken-2" @click="opentab('https://allmangasreader.com')">
+                                <v-btn text icon color="red darken-2" @click="opentab('https://amr-releases.com')">
                                     <img src="/icons/icon_32.png" width="24" alt="All Mangas Reader" />
                                 </v-btn>
                                 <v-btn text icon color="yellow" @click="opentab('/pages/bookmarks/bookmarks.html')">

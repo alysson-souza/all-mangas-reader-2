@@ -83,7 +83,7 @@ function initReader(mirror, title) {
     amrdiv.id = "app"
     document.body.appendChild(amrdiv)
 
-    removeStyles(true)
+    removeStyles(true, 5)
 
     // add this line for mobile : <meta name="viewport" content="width=device-width, initial-scale=1">
     var metaview = document.createElement("meta")
@@ -137,6 +137,7 @@ function removeJsAddedStuff(times = 10) {
 
 /** Remove styles from original page to avoid interference with AMR reader */
 function removeStyles(withInline = false, times = 10) {
+    console.debug("Running Remove Styles")
     const stylesheets = document.getElementsByTagName("link")
     let i, sheet
     for (i in stylesheets) {
@@ -157,12 +158,14 @@ function removeStyles(withInline = false, times = 10) {
         for (i in inline) {
             if (inline.hasOwnProperty(i)) {
                 sheet = inline[i]
+                // console.debug('Checking stylesheet', sheet)
                 if (
-                    !sheet.getAttribute("data-amr") &&
-                    sheet.getAttribute("type") &&
-                    sheet.getAttribute("type").toLowerCase() == "text/css" &&
-                    sheet.getAttribute("id") !== "vuetify-theme-stylesheet" &&
-                    sheet.getAttribute("id") !== "custom-scrollbar-css"
+                    (!sheet.getAttribute("data-amr") &&
+                        sheet.getAttribute("type") &&
+                        sheet.getAttribute("type").toLowerCase() == "text/css" &&
+                        sheet.getAttribute("id") !== "vuetify-theme-stylesheet" &&
+                        sheet.getAttribute("id") !== "custom-scrollbar-css") ||
+                    sheet.innerHTML.includes("tailwindcss")
                 ) {
                     sheet.parentNode.removeChild(sheet)
                     // console.log('Removing Sheet')

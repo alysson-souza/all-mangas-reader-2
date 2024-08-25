@@ -139,16 +139,17 @@ export class ReaperScans extends BaseMirror implements MirrorImplementation {
     }
 
     async createImageFromText(text) {
+        const dark = this.mirrorHelper.getOption("darkreader") === 1
         const height = 32
         const canvas = new OffscreenCanvas(1000, height)
         const context = canvas.getContext("2d")
 
         context.rect(0, 0, 1000, height)
-        context.fillStyle = "black"
+        context.fillStyle = dark ? "black" : "ghostwhite"
         context.fill()
 
         context.font = "15px Helvetica"
-        context.fillStyle = "ghostwhite"
+        context.fillStyle = dark ? "ghostwhite" : "black"
         context.fillText(text, 7, height - 7)
 
         const blob = await canvas.convertToBlob()

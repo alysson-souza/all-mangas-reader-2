@@ -4,6 +4,12 @@ import { mdFixLang } from "../../shared/mangaDexUtil"
 import MangaDexIcon from "../icons/mangadex-optimized.png"
 import { MirrorHelper } from "../MirrorHelper"
 
+/**
+ *  Urls with volume issues
+ * https://mangadex.org/title/afa40bc8-34fa-4b03-a1e1-50f4eb79f9da
+ * https://mangadex.org/title/e57ac6cc-c475-4ef1-a970-b2e261d2ca59/
+ */
+
 export interface Title {
     en: string
 }
