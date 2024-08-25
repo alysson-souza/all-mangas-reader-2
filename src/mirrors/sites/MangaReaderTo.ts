@@ -15,7 +15,7 @@ export class MangaReaderTo extends BaseMirror implements MirrorImplementation {
     domains = ["mangareader.to"]
     home = "https://mangareader.to/home"
     baseUrl = "https://mangareader.to"
-    chapter_url = /^\/read\/.*\/.*\/chapter-\d+/g
+    chapter_url = /^\/read\/.*\/en\/chapter-\d+/g
 
     async getMangaList(search: string) {
         const doc = await this.mirrorHelper.loadPage(this.baseUrl + "/search?keyword=" + search, {

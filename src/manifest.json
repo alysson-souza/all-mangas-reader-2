@@ -2,7 +2,7 @@
     "name": "All Mangas Reader",
     "description": "__MSG_description__",
     "author": "",
-    "version": "3.0.2",
+    "version": "3.0.3",
     "manifest_version": 3,
     "default_locale": "en",
     "icons": {
@@ -72,5 +72,5 @@
             "extension_ids": []
         }
     ],
-    "homepage_url": "https://www.allmangasreader.com/"
+    "homepage_url": "https://amr-releases.com"
 }

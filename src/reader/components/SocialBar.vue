@@ -55,7 +55,7 @@ export default {
                 {
                     icon: mdiPatreon,
                     tooltip: "reader_social_patreon",
-                    url: "https://www.patreon.com/allmangasreader",
+                    url: "https://www.patreon.com/allmangas",
                     color: "deep-orange lighten-1"
                 },
                 {
@@ -66,7 +66,7 @@ export default {
                 }
             ],
             social_shared: [
-                {
+                /*{
                     icon: mdiFacebook,
                     tooltip: "reader_social_facebook",
                     url: "https://www.facebook.com/allmangasreader/",
@@ -77,7 +77,7 @@ export default {
                     tooltip: "reader_social_twitter",
                     url: "https://twitter.com/AllMangasReader",
                     color: "light-blue"
-                }
+                }*/
             ],
             mdiShareVariant
         }

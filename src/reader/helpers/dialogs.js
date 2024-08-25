@@ -131,7 +131,7 @@ export const handleHelps = async function ($ref, util) {
             action: () => {
                 browser.runtime.sendMessage({
                     action: "opentab",
-                    url: "https://www.patreon.com/allmangasreader"
+                    url: "https://www.patreon.com/allmangas"
                 })
             },
             id: "patreon",

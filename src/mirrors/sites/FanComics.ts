@@ -12,8 +12,8 @@ export class FanComics extends BaseMirror implements MirrorImplementation {
     canListFullMangas = false
     mirrorIcon = FanComicsIcon
     languages = "en"
-    domains = ["mgeko.com"]
-    home = "https://www.mgeko.com"
+    domains = ["mgeko.com", "mgeko.cc"]
+    home = "https://www.mgeko.cc"
     chapter_url = /^\/reader\/.+\/.+\/*-chapter-.+$/g
 
     async getMangaList(search: string) {

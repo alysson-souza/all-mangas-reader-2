@@ -68,6 +68,7 @@ export class MangaStream_1_1_4 extends BaseMirror implements MirrorImplementatio
         $(this.options.chapter_list_selector, doc).each(function (index) {
             res.push([$(".chapternum", this).text().trim(), self.options.urlProcessorChapter($(this).attr("href"))])
         })
+        console.debug(res)
         return res
     }
 
@@ -138,8 +139,14 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
                 mirrorName: "Luminous Scans",
                 canListFullMangas: false,
                 mirrorIcon: LiminousScanIcon,
-                domains: ["luminousscans.gg", "luminousscans.net", "lumitoon.com", "luminouscomics.org"],
-                home: "https://luminouscomics.org/",
+                domains: [
+                    "luminousscans.gg",
+                    "luminousscans.net",
+                    "lumitoon.com",
+                    "luminouscomics.org",
+                    "luminous-scans.com"
+                ],
+                home: "https://luminous-scans.com/",
                 chapter_url: /chapter-[0-9]+.*\/$/g,
                 languages: "en"
             },
@@ -176,9 +183,9 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
                 mirrorName: "Night Scans",
                 canListFullMangas: false,
                 mirrorIcon: NightScansIcon,
-                domains: ["nightscans.org", "nightscans.net", "night-scans.com"],
-                home: "https://night-scans.com",
-                chapter_url: /\/.*?-[0-9]+.*\//g,
+                domains: ["nightscans.org", "nightscans.net", "night-scans.com", "nightsup.net"],
+                home: "https://nightsup.net",
+                chapter_url: /\/.*?chapter-[0-9]+.*\//g,
                 languages: "en"
             },
             {
@@ -295,6 +302,7 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
                 chapter_url: /^\/*\/.+$/g
             },
             {
+                base_url: "https://suryatoon.com/",
                 chapter_list_selector: "#chapterlist .eph-num a"
             }
         ),
@@ -304,14 +312,82 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
                 mirrorName: "Manga Galaxy",
                 mirrorIcon: require("../../icons/manga-galaxy-optimized.png"),
                 languages: "en",
-                domains: ["mangagalaxy.me"],
-                home: "https://mangagalaxy.me",
+                domains: ["mangagalaxy.me", "mangagalaxy.org"],
+                home: "https://mangagalaxy.org",
                 // canListFullMangas: true,
-                chapter_url: /\-chapter\-\d+\//g
+                chapter_url: /chapter\-\d+/g
             },
             {
+                base_url: "https://mangagalaxy.org/",
+                chapter_list_selector: "#chapterlist .eph-num a"
+            }
+        ),
+        new MangaStream_1_1_4(
+            mirrorHelper,
+            {
+                mirrorName: "Drake Comic",
+                mirrorIcon: require("../../icons/drake-comic-optimized.png"),
+                languages: "en",
+                domains: ["drakecomic.com"],
+                home: "https://drakecomic.com",
+                // canListFullMangas: true,
+                chapter_url: /.*\-\d+/g
+            },
+            {
+                base_url: "https://drakecomic.com/"
+                // chapter_list_selector: "#chapterlist .eph-num a"
+            }
+        ),
+        new MangaStream_1_1_4(
+            mirrorHelper,
+            {
+                mirrorName: "Cypher Scans",
+                mirrorIcon: require("../../icons/cypher-scans-optimized.png"),
+                languages: "en",
+                domains: ["cypherscans.xyz"],
+                home: "https://cypherscans.xyz",
+                // canListFullMangas: true,
+                chapter_url: /chapter\-\d+/g
+            },
+            {
+                base_url: "https://cypherscans.xyz/",
                 chapter_list_selector: "#chapterlist .eph-num a"
             }
         )
+        /*,
+        new MangaStream_1_1_4(
+            mirrorHelper,
+            {
+                mirrorName: "Realm Oasis",
+                canListFullMangas: false,
+                mirrorIcon: require("../../icons/realm-oasis-optimized.png"),
+                domains: ["realmoasis.com"],
+                home: "https://realmoasis.com",
+                chapter_url: /.*\/.* /g,
+                languages: "en"
+            },
+            {
+                base_url: "https://realmoasis.com/",
+                // series_list_selector: '.listupd a[href*="/series/"]',
+                chapter_list_selector: "#chapterlist .eph-num a"
+            }
+        ) */
+        /*,
+        new MangaStream_1_1_4(
+            mirrorHelper,
+            {
+                mirrorName: "GenZ Toons",
+                mirrorIcon: require("../../icons/gen-z-toons-optimized.png"),
+                languages: "en",
+                domains: ["genztoons.com"],
+                home: "https://genztoons.com",
+                // canListFullMangas: true,
+                chapter_url: /^\/*\/.+$/g
+            },
+            {
+                base_url: "https://genztoons.com/",
+                chapter_list_selector: "#chapterlist .eph-num a"
+            }
+        )*/
     ]
 }

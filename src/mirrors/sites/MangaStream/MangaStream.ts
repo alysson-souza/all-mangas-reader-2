@@ -126,6 +126,8 @@ class MangaStream extends BaseMirror implements MirrorImplementation {
             const chapter_url = _self.options.fixChapterUrl($(this).attr("href") + _self.options.chapter_url_suffix)
             res.push([chapter_text, chapter_url])
         })
+
+        // console.debug('Chapter list', res)
         return res
     }
 
@@ -156,6 +158,7 @@ class MangaStream extends BaseMirror implements MirrorImplementation {
     }
 
     isCurrentPageAChapterPage(doc) {
+        // console.debug(doc, this.options.page_container_sel, this.queryHtml(doc, this.options.page_container_sel))
         return this.queryHtml(doc, this.options.page_container_sel).length > 0
     }
 }
@@ -178,17 +181,32 @@ export const getMangaStreamImplementations = (mirrorHelper: MirrorHelper): Mirro
                     "asuracomic.net"
                 ],
                 home: "https://asuracomic.net",
-                chapter_url: /\/.*?(chapter|ch)-[0-9]+.*\//g,
+                // chapter_url: /\/.*?(chapter|ch)-[0-9]+.*\//g,
+                chapter_url: /\/series\/.*\/chapter\/\d+/g,
                 languages: "en"
             },
             {
-                search_url: "https://asuracomic.net",
-                chapters_a_sel: "div.bixbox.bxcl ul li div.eph-num a",
-                chapters_text_sel: "span.chapternum",
+                search_url: "https://asuracomic.net/series",
+                chapters_a_sel: "h3.text-sm a",
+                // chapters_text_sel: "span.chapternum",
                 search_json: false,
-                img_sel: `#readerarea img[width!="1px"]:not(.asurascans)`,
+                img_sel: `img[alt*="chapter"]`,
                 img_src: "src",
-                flame_scans_fuckery: true
+                page_container_sel: `img[alt*="chapter"]`,
+                manga_url_sel: `p:contains('All chapters are in') a`,
+                // flame_scans_fuckery: true,
+                fixSeriesUrl: url => {
+                    if (!url.includes("https://asuracomic.net")) {
+                        url = "https://asuracomic.net" + url
+                    }
+                    return url
+                },
+                fixChapterUrl: url => {
+                    if (!url.includes("https://asuracomic.net")) {
+                        url = "https://asuracomic.net/series/" + url
+                    }
+                    return url
+                }
             }
         ),
         new MangaStream(

@@ -17,7 +17,39 @@ The following sections are the standard sections to use, please stick with them 
 -   Disabled Mirrors
 -   Notes - This is the catchall for anything that does not fit in the other sections.
 
-## [3.0.1] - 2024-07-12
+## [3.0.3] - 2024-08-25
+
+### Bug Fixes
+
+-   Fixed an issue with search bar having a white background when in dark mode
+
+### Mirror Fixes
+
+-   Reset Scans - New domain
+-   Manga Reader - Disabled non english chapters from getting picked up for now because it breaks the chapter list
+-   Asura Comics - A bunch of changes to site design and url scheme
+-   Luminous Scans - New domain
+-   Read Comic Online - Fix for image loading (Credit @Jay)
+-   Reaper Scans - New website, looks like this might actually work now o.o
+-   Fan Comics - New domain
+-   Night Scans - New domain
+
+### New Mirrors
+
+-   UToon - https://utoon.net/
+-   Drake Comic - https://drakecomic.com/
+-   Cypher Scans - https://cypherscans.xyz/
+
+### New Features
+
+-   I have added an experimental way to support novels by faking images to Reaper Scans. This is a test to see if I can do this without rewriting many parts of the extension to support text. This is best used in webtoon mode and I may look into ways to force it for these. For anyone interested try it out and give me feedback on discord as I fine tune this.
+
+### Notes
+
+-   I have finally gotten around to working on the website. Currently I just copy/pasted the orignal website but I plan on working on it more later to change it. I adjusted the links in amr for my server
+-   I created a patreon and adjusted the links, I put this off for a long time but decided to end up doing it after all. My commitment to mainting this stays the same no matter the result of this as I use this extension extensively myself so keeping it maintained is also for my own use
+
+## [3.0.2] - 2024-07-12
 
 ### New Features
 
