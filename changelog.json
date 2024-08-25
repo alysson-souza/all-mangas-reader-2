@@ -1,9 +1,9 @@
 {
     "versions": [
         {
-            "version": null,
-            "title": "[Unreleased]",
-            "date": null,
+            "version": "3.0.3",
+            "title": "[3.0.3] - 2024-08-25",
+            "date": "2024-08-25",
             "body": "### Bug Fixes\r\n\r\n-   Fixed an issue with search bar having a white background when in dark mode\r\n\r\n### Mirror Fixes\r\n\r\n-   Reset Scans - New domain\r\n-   Manga Reader - Disabled non english chapters from getting picked up for now because it breaks the chapter list\r\n-   Asura Comics - A bunch of changes to site design and url scheme\r\n-   Luminous Scans - New domain\r\n-   Read Comic Online - Fix for image loading (Credit @Jay)\r\n-   Reaper Scans - New website, looks like this might actually work now o.o\r\n-   Fan Comics - New domain\r\n-   Night Scans - New domain\r\n\r\n### New Mirrors\r\n\r\n-   UToon - https://utoon.net/\r\n-   Drake Comic - https://drakecomic.com/\r\n-   Cypher Scans - https://cypherscans.xyz/\r\n\r\n### New Features\r\n\r\n-   I have added an experimental way to support novels by faking images to Reaper Scans. This is a test to see if I can do this without rewriting many parts of the extension to support text. This is best used in webtoon mode and I may look into ways to force it for these. For anyone interested try it out and give me feedback on discord as I fine tune this.\r\n\r\n### Notes\r\n\r\n-   I have finally gotten around to working on the website. Currently I just copy/pasted the orignal website but I plan on working on it more later to change it. I adjusted the links in amr for my server\r\n-   I created a patreon and adjusted the links, I put this off for a long time but decided to end up doing it after all. My commitment to mainting this stays the same no matter the result of this as I use this extension extensively myself so keeping it maintained is also for my own use",
             "parsed": {
                 "_": [
@@ -51,8 +51,8 @@
             }
         },
         {
-            "version": "3.0.1",
-            "title": "[3.0.1] - 2024-07-12",
+            "version": "3.0.2",
+            "title": "[3.0.2] - 2024-07-12",
             "date": "2024-07-12",
             "body": "### New Features\r\n\r\n-   Added a simple server and mirror for testing various different errors on so we can control when they happen and work on notifications/fixes for common problems\r\n\r\n### Changed Features\r\n\r\n-   I have re-enabled the error icons for series that have errors, and started added some different error messages in to identify the issue. More error codes will follow\r\n\r\n### Mirror Fixes\r\n\r\n-   Manga Galaxy - Fixed issue with single digit chapters\r\n-   Reset Scans - New domain\r\n-   Flame Scans - New domain\r\n-   Nice Oppai - Changed language to Thai instead of english\r\n-   FM Team - Change language to French instead of english\r\n-   Manga Freak - Changed domains, possible issue with cloudflare\r\n-   Read Comic Online - Changed image encryption and fix for alternative image source (Credit @jaygitsby)\r\n-   Manga Hasu - New domain\r\n-   Surya Toon - Extra chapter being picked up\r\n-   Many Toon - Changed image source\r\n-   Manhwa Freak - New domain. The old one still works but they will be shutting it down so migration to the new site is advised\r\n-   Read Comic Online - Fixed an issue recognizing chapter pages\r\n-   HyperDex - New domain\r\n\r\n### New Mirrors\r\n\r\n-   Fire Scans - https://firescans.xyz/",
             "parsed": {

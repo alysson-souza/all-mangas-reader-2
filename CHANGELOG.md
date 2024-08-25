@@ -17,7 +17,7 @@ The following sections are the standard sections to use, please stick with them 
 -   Disabled Mirrors
 -   Notes - This is the catchall for anything that does not fit in the other sections.
 
-## [Unreleased]
+## [3.0.3] - 2024-08-25
 
 ### Bug Fixes
 
@@ -49,7 +49,7 @@ The following sections are the standard sections to use, please stick with them 
 -   I have finally gotten around to working on the website. Currently I just copy/pasted the orignal website but I plan on working on it more later to change it. I adjusted the links in amr for my server
 -   I created a patreon and adjusted the links, I put this off for a long time but decided to end up doing it after all. My commitment to mainting this stays the same no matter the result of this as I use this extension extensively myself so keeping it maintained is also for my own use
 
-## [3.0.1] - 2024-07-12
+## [3.0.2] - 2024-07-12
 
 ### New Features
 
