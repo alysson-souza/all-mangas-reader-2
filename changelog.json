@@ -1,6 +1,20 @@
 {
     "versions": [
         {
+            "version": null,
+            "title": "[Unreleased]",
+            "date": null,
+            "body": "### Bug Fixes\r\n-   Fixed a bug that forced a chapter list check when loading a page if you already tracked the series. Should drastically speed up loading Webtoons",
+            "parsed": {
+                "_": [
+                    "Fixed a bug that forced a chapter list check when loading a page if you already tracked the series. Should drastically speed up loading Webtoons"
+                ],
+                "Bug Fixes": [
+                    "Fixed a bug that forced a chapter list check when loading a page if you already tracked the series. Should drastically speed up loading Webtoons"
+                ]
+            }
+        },
+        {
             "version": "3.0.3",
             "title": "[3.0.3] - 2024-08-25",
             "date": "2024-08-25",

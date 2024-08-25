@@ -1122,6 +1122,7 @@ export default {
             const alreadyLoadedListChaps = await browser.runtime.sendMessage({
                 action: "getListChaps",
                 url: this.pageData.currentMangaURL,
+                mirror: this.mirror.mirrorName,
                 language: this.pageData.language
             })
             if (alreadyLoadedListChaps && alreadyLoadedListChaps.length > 0) {

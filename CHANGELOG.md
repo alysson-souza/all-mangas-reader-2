@@ -17,6 +17,12 @@ The following sections are the standard sections to use, please stick with them 
 -   Disabled Mirrors
 -   Notes - This is the catchall for anything that does not fit in the other sections.
 
+## [Unreleased]
+
+### Bug Fixes
+
+-   Fixed a bug that forced a chapter list check when loading a page if you already tracked the series. Should drastically speed up loading Webtoons
+
 ## [3.0.3] - 2024-08-25
 
 ### Bug Fixes
