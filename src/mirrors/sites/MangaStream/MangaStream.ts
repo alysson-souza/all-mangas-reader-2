@@ -217,7 +217,7 @@ export const getMangaStreamImplementations = (mirrorHelper: MirrorHelper): Mirro
                 mirrorIcon: FlameScanIcon,
                 domains: ["flamescans.org", "flamecomics.com", "flamecomics.me"],
                 home: "https://flamecomics.me",
-                chapter_url: /\/.*?chapter-[0-9]+.*\//g,
+                chapter_url: /\/.*?chapter-?[0-9]+.*\//g,
                 languages: "en"
             },
             {
@@ -226,7 +226,7 @@ export const getMangaStreamImplementations = (mirrorHelper: MirrorHelper): Mirro
                 chapters_text_sel: "span.chapternum",
                 search_json: false,
                 img_sel: `#readerarea img[width!="1px"][class*="size-"]`,
-                img_src: "src",
+                img_src: "data-src",
                 fixChapterUrl: origUrl => {
                     const parts = origUrl.split("/")
 

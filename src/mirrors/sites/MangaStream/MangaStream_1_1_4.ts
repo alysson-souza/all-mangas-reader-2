@@ -353,6 +353,30 @@ export const getMangaStream114Implementations = (mirrorHelper: MirrorHelper): Mi
                 base_url: "https://cypherscans.xyz/",
                 chapter_list_selector: "#chapterlist .eph-num a"
             }
+        ),
+        new MangaStream_1_1_4(
+            mirrorHelper,
+            {
+                mirrorName: "Radiant Scans",
+                canListFullMangas: false,
+                mirrorIcon: require("../../icons/radiant-scans-optimized.png"),
+                domains: ["radiantscans.com"],
+                home: "https://radiantscans.com/",
+                chapter_url: /chapter-[0-9]+.*\/$/g,
+                languages: "en"
+            },
+            {
+                chapter_list_selector: "#chapterlist .eph-num a",
+                urlProcessorSeries: url => {
+                    const parts = url.split("/")
+                    const parts2 = parts[5].split("-")
+
+                    if (!isNaN(parts2[0]) && !isNaN(parseFloat(parts2[0]))) parts2.shift()
+
+                    parts[5] = parts2.join("-")
+                    return parts.join("/")
+                }
+            }
         )
         /*,
         new MangaStream_1_1_4(

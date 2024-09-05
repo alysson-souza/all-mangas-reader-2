@@ -27,6 +27,15 @@ The following sections are the standard sections to use, please stick with them 
 
 -   Fixed a bug that forced a chapter list check when loading a page if you already tracked the series. Should drastically speed up loading Webtoons
 
+### Mirror Fixes
+
+-   Reaper Scans - Fixed issue with loading images in new chapters
+-   Flame Scans - They changed url format and image source again
+
+### New Mirrors
+
+-   Radiant Scans (https://radiantscans.com/)
+
 ## [3.0.3] - 2024-08-25
 
 ### Bug Fixes

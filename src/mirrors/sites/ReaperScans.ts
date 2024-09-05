@@ -89,23 +89,43 @@ export class ReaperScans extends BaseMirror implements MirrorImplementation {
         const uniqueImages = []
 
         if (json.chapter.chapter_type == "Comic") {
-            for (let image of json.chapter.chapter_data.images) {
-                let imageName = image.split("/").pop().split(".")[0]
-                if (imageName.endsWith("f")) {
-                    imageName = imageName.substring(0, imageName.length - 1)
-                }
+            if (json.chapter.chapter_data.images) {
+                for (let image of json.chapter.chapter_data.images) {
+                    let imageName = image.split("/").pop().split(".")[0]
+                    if (imageName.endsWith("f")) {
+                        imageName = imageName.substring(0, imageName.length - 1)
+                    }
 
-                if (uniqueImages.includes(imageName)) {
-                    continue
-                }
-                uniqueImages.push(imageName)
+                    if (uniqueImages.includes(imageName)) {
+                        continue
+                    }
+                    uniqueImages.push(imageName)
 
-                if (!image.startsWith("https")) {
-                    image = "https://media.reaperscans.com/file/4SRBHm/" + image
+                    if (!image.startsWith("https")) {
+                        image = "https://media.reaperscans.com/file/4SRBHm/" + image
+                    }
+                    res.push(image)
                 }
-                res.push(image)
             }
-            console.debug(res)
+
+            if (json.chapter.chapter_data.files) {
+                for (const image of json.chapter.chapter_data.files) {
+                    let file = image.url
+
+                    if (uniqueImages.includes(file)) {
+                        continue
+                    }
+
+                    uniqueImages.push(file)
+
+                    if (!file.startsWith("https")) {
+                        file = "https://media.reaperscans.com/file/4SRBHm/" + file
+                    }
+
+                    res.push(file)
+                }
+            }
+            // console.debug(res)
         }
 
         if (json.chapter.chapter_type == "Novel") {
